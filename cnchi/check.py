@@ -34,8 +34,6 @@ import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
 
-from rank_mirrors import AutoRankmirrorsThread
-
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -60,9 +58,6 @@ class Check(GtkBaseBox):
         self.prepare_enough_space = None
         self.timeout_id = None
         self.prepare_best_results = None
-
-        # Boolean variable to check if reflector has been run once or not
-        self.reflector_launched = False
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -192,13 +187,6 @@ class Check(GtkBaseBox):
 
         # Enable forward button
         self.forward_button.set_sensitive(True)
-
-        if not self.testing and not self.reflector_launched:
-            # Launch reflector script to determine the 10 fastest mirrors
-            self.thread = AutoRankmirrorsThread()
-            self.thread.start()
-            self.reflector_launched = True
-
         return True
 
     def prepare(self, direction):

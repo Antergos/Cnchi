@@ -37,6 +37,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 import misc.i18n as i18n
 
+from rank_mirrors import AutoRankmirrorsThread
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -58,6 +59,9 @@ class Language(GtkBaseBox):
 
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
+
+        # Boolean variable to check if rank_mirrors has already been run
+        self.rank_mirrors_launched = False
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
@@ -144,7 +148,6 @@ class Language(GtkBaseBox):
                     lang = label.get_text()
 
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
-
         if len(lang) > 0:
             self.settings.set("language_name", display_map[lang][0])
             self.settings.set("language_code", display_map[lang][1])
@@ -156,6 +159,12 @@ class Language(GtkBaseBox):
         # Enable forward button
         self.forward_button.set_sensitive(True)
         self.show_all()
+
+        # Launch rank mirrors thread to optimize Arch and Antergos mirrorlists
+        if not self.testing and not self.rank_mirrors_launched:
+            self.thread = AutoRankmirrorsThread()
+            self.thread.start()
+            self.rank_mirrors_launched = True
 
 # When testing, no _() is available
 try:
