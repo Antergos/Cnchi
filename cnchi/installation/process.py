@@ -443,18 +443,8 @@ class InstallationProcess(multiprocessing.Process):
             self.pacman = None
             raise InstallError(_("Can't initialize pyalpm."))
 
-        # If we failed to download any packages earlier, try refreshing our mirrorlist
-        # before ALPM attempts to download them.
-        if self.settings.get('failed_download'):
-            from rank_mirrors import AutoRankmirrorsThread
-            retry = AutoRankmirrorsThread()
-            retry.start()
-            retry.join()
-
         # Refresh pacman databases
-        result = self.pacman.refresh()
-
-        if not result:
+        if not self.pacman.refresh():
             txt = _("Can't refresh pacman databases.")
             logging.error(txt)
             raise InstallError(txt)

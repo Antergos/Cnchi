@@ -27,10 +27,9 @@ import subprocess
 import os
 import logging
 import sys
-
+import queue
 import misc.misc as misc
 import show_message as show
-
 from gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
 
@@ -94,7 +93,19 @@ class Welcome(GtkBaseBox):
 
     def quit_cnchi(self):
         misc.remove_temp_files()
-        self.settings.set('stop_all_threads', True)
+        # We give 5 seconds to each process to finish
+        timeout = 5
+
+        while not self.global_process_queue.empty():
+            try:
+                proc = self.global_process_queue.get_nowait()
+                proc.join(timeout)
+                if proc.is_alive():
+                    proc.terminate()
+                    proc.join()
+            except queue.Empty:
+                pass
+
         logging.shutdown()
         sys.exit(0)
 
@@ -115,7 +126,7 @@ class Welcome(GtkBaseBox):
 
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()
-        # Tell timezone thread to start searching now
+        # Tell timezone process to start searching now
         self.settings.set('timezone_start', True)
         # Simulate a forward button click
         self.forward_button.clicked()

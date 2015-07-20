@@ -56,6 +56,7 @@ class ContextFilter(logging.Filter):
         record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
         return True
 
+
 class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
 
@@ -291,14 +292,12 @@ def threads_init():
         # which require a workaround to get threading working properly.
         # Workaround: Force GIL creation
         import threading
-
         threading.Thread(target=lambda: None).start()
 
     # Since version 3.10.2, calling threads_init is no longer needed.
     # See: https://wiki.gnome.org/PyGObject/Threading
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
-
         # Gdk.threads_init()
 
 

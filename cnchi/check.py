@@ -51,8 +51,6 @@ class Check(GtkBaseBox):
 
         self.remove_timer = False
 
-        self.thread = None
-
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
@@ -65,13 +63,6 @@ class Check(GtkBaseBox):
             self.checks_are_optional = params['checks_are_optional']
         else:
             self.checks_are_optional = False
-
-        '''
-        data_dir = self.settings.get('data')
-        image1 = self.ui.get_object('image1')
-        image1_path = os.path.join(data_dir, "images/antergos/antergos-for-everyone-white1.png")
-        image1.set_from_file(image1_path)
-        '''
 
     def translate_ui(self):
         """ Translates all ui elements """

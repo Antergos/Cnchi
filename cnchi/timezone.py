@@ -25,7 +25,6 @@
 from gi.repository import Gtk, Gdk
 
 import os
-import threading
 import multiprocessing
 import queue
 import urllib.request
@@ -37,7 +36,6 @@ import hashlib
 import misc.tz as tz
 import misc.misc as misc
 import misc.timezonemap as timezonemap
-from mirrorlist import GenerateMirrorListThread
 from gtkbasebox import GtkBaseBox
 
 NM = 'org.freedesktop.NetworkManager'
@@ -62,18 +60,12 @@ class Timezone(GtkBaseBox):
         # This is for populate_cities
         self.old_zone = None
 
-        # Autotimezone thread will store detected coords in this queue
+        # Autotimezone process will store detected coords in this queue
         self.auto_timezone_coords = multiprocessing.Queue()
 
-        # Thread to try to determine timezone.
+        # Process to try to determine timezone.
         self.autodetected_coords = None
-        self.auto_timezone_thread = None
-        self.start_auto_timezone_thread()
-
-        # Thread to generate a pacman mirrorlist based on country code
-        # Why do this? There're foreign mirrors faster than the Spanish ones... - Karasu
-        self.mirrorlist_thread = None
-        # self.start_mirrorlist_thread()
+        self.start_auto_timezone_process()
 
         # Setup window
         self.tzmap = timezonemap.TimezoneMap()
@@ -212,14 +204,11 @@ class Timezone(GtkBaseBox):
 
         self.show_all()
 
-    def start_auto_timezone_thread(self):
-        self.auto_timezone_thread = AutoTimezoneThread(self.auto_timezone_coords, self.settings)
-        self.auto_timezone_thread.start()
-
-    def start_mirrorlist_thread(self):
-        scripts_dir = os.path.join(self.settings.get('cnchi'), "scripts")
-        self.mirrorlist_thread = GenerateMirrorListThread(self.auto_timezone_coords, scripts_dir)
-        self.mirrorlist_thread.start()
+    def start_auto_timezone_process(self):
+        proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
+        proc.daemon = True
+        self.global_process_queue.put(proc)
+        proc.start()
 
     def log_location(self, loc):
         logging.debug("timezone human zone: %s", loc.human_zone)
@@ -267,26 +256,15 @@ class Timezone(GtkBaseBox):
 
         return True
 
-    def stop_threads(self):
-        logging.debug(_("Stoping timezone threads..."))
-        if self.auto_timezone_thread is not None:
-            self.auto_timezone_thread.stop()
-        if self.mirrorlist_thread is not None:
-            self.mirrorlist_thread.stop()
-
     def on_switch_ntp_activate(self, ntp_switch):
         self.settings['use_timesyncd'] = ntp_switch.get_active()
 
 
-class AutoTimezoneThread(threading.Thread):
+class AutoTimezoneProcess(multiprocessing.Process):
     def __init__(self, coords_queue, settings):
-        super(AutoTimezoneThread, self).__init__()
+        super(AutoTimezoneProcess, self).__init__()
         self.coords_queue = coords_queue
         self.settings = settings
-        self.stop_event = threading.Event()
-
-    def stop(self):
-        self.stop_event.set()
 
     def run(self):
         # Calculate logo hash
@@ -299,17 +277,16 @@ class AutoTimezoneThread(threading.Thread):
         logo_digest = logo_hasher.digest()
 
         # Wait until there is an Internet connection available
-        while not misc.has_connection():
-            if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
-                return
-            time.sleep(10)  # Delay and try again
-            logging.warning(_("Can't get network status."))
+        if not misc.has_connection():
+            logging.warning(_("Can't get network status. Cnchi will try again in a moment"))
+            while not misc.has_connection():
+                time.sleep(4)  # Wait 4 seconds and try again
+
+        logging.debug(_("A working network connection has been detected."))
 
         # Do not start looking for our timezone until we've reached the language screen
         # (welcome.py sets timezone_start to true when next is clicked)
         while not self.settings.get('timezone_start'):
-            if self.stop_event.is_set() or self.settings.get('stop_all_threads'):
-                return
             time.sleep(2)
 
         # OK, now get our timezone
@@ -332,19 +309,14 @@ class AutoTimezoneThread(threading.Thread):
 
         if coords:
             coords = coords.split()
-            msg = _("Timezone (latitude {0}, longitude {1}) detected.")
-            msg = msg.format(coords[0], coords[1])
-            logging.debug(msg)
+            logging.debug(
+                _("Timezone (latitude %s, longitude %s) detected."),
+                coords[0],
+                coords[1])
             self.coords_queue.put(coords)
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
 if __name__ == '__main__':
-    from test_screen import _, run
+    def _(x): return x
 
+    from test_screen import _, run
     run('Timezone')

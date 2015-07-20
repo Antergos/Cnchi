@@ -24,7 +24,7 @@
 
 """ Configuration module for Cnchi """
 
-from multiprocessing import Queue
+import multiprocessing
 
 
 class Settings(object):
@@ -34,7 +34,7 @@ class Settings(object):
         """ Initialize default configuration """
 
         # Creates a one element size queue
-        self.settings = Queue(1)
+        self.settings = multiprocessing.Queue(1)
 
         self.settings.put({
             'auto_device': '/dev/sda',
@@ -47,7 +47,6 @@ class Settings(object):
             'cnchi': '/usr/share/cnchi/',
             'country_name': '',
             'country_code': '',
-            'installer_thread_call': {},
             'data': '/usr/share/cnchi/data/',
             'desktop': 'gnome',
             'desktop_ask' : True,
@@ -88,7 +87,6 @@ class Settings(object):
             'rankmirrors_done': False,
             'require_password': True,
             'ruuid': '',
-            'stop_all_threads': False,
             'third_party_software': False,
             'timezone_human_zone': '',
             'timezone_country': '',

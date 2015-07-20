@@ -41,6 +41,7 @@ class GtkBaseBox(Gtk.Box):
         self.settings = params['settings']
         self.testing = params['testing']
         self.ui_dir = params['ui_dir']
+        self.global_process_queue = params['global_process_queue']
 
         self.prev_page = prev_page
         self.next_page = next_page
@@ -55,7 +56,7 @@ class GtkBaseBox(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
         self.ui.add_from_file(self.ui_file)
-        
+
         # Connect UI signals
         self.ui.connect_signals(child)
 

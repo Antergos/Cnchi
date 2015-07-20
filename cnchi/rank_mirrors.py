@@ -24,7 +24,6 @@
 
 """ Creates mirrorlist sorted by both latest updates and fastest connection """
 
-import threading
 import subprocess
 import logging
 import time
@@ -32,16 +31,17 @@ import os
 import shutil
 import requests
 import tempfile
+import multiprocessing
 
 import misc.misc as misc
 
 
-class AutoRankmirrorsThread(threading.Thread):
-    """ Thread class that downloads and sorts the mirrorlist """
+class AutoRankmirrorsProcess(multiprocessing.Process):
+    """ Process class that downloads and sorts the mirrorlist """
 
     def __init__(self):
-        """ Initialize thread class """
-        super(AutoRankmirrorsThread, self).__init__()
+        """ Initialize process class """
+        super(AutoRankmirrorsProcess, self).__init__()
         self.rankmirrors_pid = None
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
@@ -183,7 +183,7 @@ class AutoRankmirrorsThread(threading.Thread):
             self.sync([self.arch_mirrorlist])
 
     def run(self):
-        """ Run thread """
+        """ Run process """
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
@@ -207,5 +207,6 @@ class AutoRankmirrorsThread(threading.Thread):
 if __name__ == '__main__':
     def _(x): return x
 
-    rank_mirrors = AutoRankmirrorsThread()
+    rank_mirrors = AutoRankmirrorsProcess()
     rank_mirrors.start()
+    rank_mirrors.join()

@@ -26,6 +26,7 @@
 
 import os
 import sys
+import queue
 
 # When testing, no _() is available
 try:
@@ -367,6 +368,14 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('partition_mode', 'advanced')
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
+
+        while not self.global_process_queue.empty():
+            try:
+                proc = self.global_process_queue.get_nowait()
+                # This waits until process finishes, no matter the time.
+                proc.join()
+            except queue.Empty:
+                pass
 
         return True
 

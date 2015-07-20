@@ -37,7 +37,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 import misc.i18n as i18n
 
-from rank_mirrors import AutoRankmirrorsThread
+from rank_mirrors import AutoRankmirrorsProcess
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -160,10 +160,12 @@ class Language(GtkBaseBox):
         self.forward_button.set_sensitive(True)
         self.show_all()
 
-        # Launch rank mirrors thread to optimize Arch and Antergos mirrorlists
+        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
         if not self.testing and not self.rank_mirrors_launched:
-            self.thread = AutoRankmirrorsThread()
-            self.thread.start()
+            proc = AutoRankmirrorsProcess()
+            proc.daemon = True
+            self.global_process_queue.put(proc)
+            proc.start()
             self.rank_mirrors_launched = True
 
 # When testing, no _() is available
