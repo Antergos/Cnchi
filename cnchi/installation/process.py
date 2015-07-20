@@ -1063,7 +1063,7 @@ class InstallationProcess(multiprocessing.Process):
         if self.settings.get("feature_lamp") and not self.settings.get("feature_lemp"):
             try:
                 from installation import lamp
-                logging.debug(_("Configuring LAMP (%s)..."), web_server)
+                logging.debug(_("Configuring LAMP..."))
                 lamp.setup()
                 services.extend(["httpd", "mysqld"])
             except ImportError as error:
@@ -1072,7 +1072,7 @@ class InstallationProcess(multiprocessing.Process):
         elif self.settings.get("feature_lemp"):
             try:
                 from installation import lemp
-                logging.debug(_("Configuring LEMP (%s)..."), web_server)
+                logging.debug(_("Configuring LEMP..."))
                 lemp.setup()
                 services.extend(["nginx", "mysqld", "php-fpm"])
             except ImportError as error:
