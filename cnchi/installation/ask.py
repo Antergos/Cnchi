@@ -369,12 +369,9 @@ class InstallationAsk(GtkBaseBox):
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
 
-
-
         # Check if there are still processes running...
         must_wait = False
         for proc in self.process_list:
-            # This waits until process finishes, no matter the time.
             if proc.is_alive():
                 must_wait = True
                 break
@@ -401,6 +398,10 @@ class InstallationAsk(GtkBaseBox):
             wait_window.set_position(Gtk.WindowPosition.CENTER)
             wait_window.show_all()
 
+            ask_box = self.ui.get_object("ask")
+            if ask_box:
+                ask_box.set_sensitive(False)
+
             import time
             logging.debug(_("Waiting for all external processes to finish..."))
             while must_wait:
@@ -417,6 +418,9 @@ class InstallationAsk(GtkBaseBox):
                     Gtk.main_iteration()
             logging.debug(_("All external processes are finished. Installation can go on"))
             wait_window.hide()
+
+            if ask_box:
+                ask_box.set_sensitive(True)
 
         return True
 
