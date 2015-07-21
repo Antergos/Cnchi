@@ -123,24 +123,23 @@ class Hardware(object):
             self.product_id)
 
     @staticmethod
-    def call_script(self, path, dest_dir):
+    def call_script(self, script_path, dest_dir):
         if os.path.exists(path):
             cmd = [
                 "/usr/bin/bash",
-                path,
+                script_path,
                 dest_dir,
                 self.class_name]
             try:
                 subprocess.check_call(cmd, timeout=300)
-                logging.debug(_("Nvidia post-install script completed successfully."))
+                logging.debug(_("%s completed successfully."), script_path)
             except subprocess.CalledProcessError as process_error:
                 # Even though Post-install script call has failed we will try to continue with the installation.
-                logging.error(_("Error running nvidia post-install script"))
+                logging.error(_("Error running %s script"), script_path)
                 logging.error(_("Command %s failed"), process_error.cmd)
                 logging.error(_("Output: %s"), process_error.output)
             except subprocess.TimeoutExpired as timeout_error:
                 logging.error(timeout_error)
-
 
 
 class HardwareInstall(object):
@@ -283,16 +282,10 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             obj.post_install(dest_dir)
 
-try:
-    _("test")
-except NameError:
-    def _(txt): return txt
-
 
 ''' Test case '''
 if __name__ == "__main__":
-
-
+    def _(x): return x
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
@@ -302,14 +295,12 @@ if __name__ == "__main__":
         print("Hardware module added these packages :")
         print(txt)
 
+    """
     from nvidia import Nvidia
     if Nvidia().detect():
         print("Nvidia detected")
+    # Nvidia().post_install("/")
 
-    # TEST POSTINSTALL SCRIPT!!!!
-    Nvidia().post_install("/")
-
-    """
     from nvidia_340xx import Nvidia_340xx
     if Nvidia_340xx().detect():
         print("Nvidia-340xx detected")
@@ -317,7 +308,6 @@ if __name__ == "__main__":
     from nvidia_304xx import Nvidia_304xx
     if Nvidia_304xx().detect():
         print("nvidia-304xx detected")
-
 
     from catalyst import Catalyst
     if Catalyst().detect():

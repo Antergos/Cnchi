@@ -379,8 +379,9 @@ class InstallationAsk(GtkBaseBox):
         if must_wait:
             from gi.repository import Gtk
             txt1 = _("Ranking mirrors")
-            txt2 = _("Cnchi is still updating and optimizing your mirrorlists.\n"
-                     "Please be patient...")
+            txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
+            txt2 += "\n\n"
+            txt2 += _("Please be patient...")
             txt1 = "<big>{0}</big>".format(txt1)
             txt2 = "<i>{0}</i>".format(txt2)
             wait_ui = Gtk.Builder()

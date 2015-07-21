@@ -67,6 +67,8 @@ try:
 except ImportError as err:
     logging.error(err)
 
+import hardware.hardware as hardware
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
@@ -131,6 +133,10 @@ class InstallationProcess(multiprocessing.Process):
         self.packages = []
         self.pacman = None
         self.vbox = "False"
+
+        # Cnchi will store here info (packages needed, post install actions, ...)
+        # for the detected hardware
+        self.hardware_install = None
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -564,23 +570,20 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Selected kde language pack: %s"), pkg)
                 self.packages.append(pkg)
 
-        # Get packages needed for detected hardware
+        # Detect hardware and get needed packages for it
         try:
-            import hardware.hardware as hardware
             proprietary_graphic_drivers = self.settings.get('feature_graphic_drivers')
-            hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
-            driver_names = hardware_install.get_found_driver_names()
+            self.hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
+            driver_names = self.hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
                 logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
-            hardware_pkgs = hardware_install.get_packages()
+            hardware_pkgs = self.hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
                 logging.debug(_("Hardware module added these packages : %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
         except Exception as general_error:
             logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
 
@@ -1292,17 +1295,12 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(io_error)
 
         # Configure detected hardware
-        try:
-            import hardware.hardware as hardware
-
-            proprietary_graphic_drivers = self.settings.get('feature_graphic_drivers')
-            hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
-            logging.debug(_("Running post-install scripts from hardware module..."))
-            hardware_install.post_install(DEST_DIR)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except Exception as general_error:
-            logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
+        if self.hardware_install:
+            try:
+                logging.debug(_("Running detected hardware post-install actions..."))
+                self.hardware_install.post_install(DEST_DIR)
+            except Exception as general_error:
+                logging.error(_("Unknown error in hardware module. Output: %s"), general_error)
 
         # Setup user
 

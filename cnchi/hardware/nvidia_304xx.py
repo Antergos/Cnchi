@@ -36,9 +36,6 @@ CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 PRIORITY = 0
 
-POST_INSTALL_SCRIPT = "/usr/share/cnchi/scripts/nvidia.sh"
-
-
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 # nvidia, nvidia-340xx, nvidia-304xx
 # lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
