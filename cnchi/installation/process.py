@@ -570,20 +570,26 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Selected kde language pack: %s"), pkg)
                 self.packages.append(pkg)
 
-        # Detect hardware and get needed packages for it
         try:
-            proprietary_graphic_drivers = self.settings.get('feature_graphic_drivers')
-            self.hardware_install = hardware.HardwareInstall(proprietary_graphic_drivers)
+            # Detect which hardware drivers are needed
+            self.hardware_install = hardware.HardwareInstall(
+                proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
             driver_names = self.hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
                 logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
+
+            # Add needed hardware packages to our list
             hardware_pkgs = self.hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
-                logging.debug(_("Hardware module added these packages : %s"), txt)
+                logging.debug(_("Hardware module added these packages: %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
+
+            # Run pre-install scripts (only catalyst does something here atm)
+            logging.debug(_("Running hardware drivers pre-install jobs..."))
+            self.hardware_install.pre_install(DEST_DIR)
         except Exception as general_error:
             logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
 
@@ -611,8 +617,6 @@ class InstallationProcess(multiprocessing.Process):
                         self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
-        # The proprietary graphic drivers are an exception
-        # (the hardware module will tell us which packages are needed)
         logging.debug(_("Check for user desired features and add them to our installation"))
         self.add_features_packages(xml_root)
         logging.debug(_("All features needed packages have been added"))
@@ -1299,7 +1303,7 @@ class InstallationProcess(multiprocessing.Process):
         # always after having called the update_pacman_conf method
         if self.hardware_install:
             try:
-                logging.debug(_("Running detected hardware post-install actions..."))
+                logging.debug(_("Running hardware drivers post-install jobs..."))
                 self.hardware_install.post_install(DEST_DIR)
             except Exception as general_error:
                 logging.error(_("Unknown error in hardware module. Output: %s"), general_error)
