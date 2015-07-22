@@ -230,21 +230,6 @@
       </packages>
     </edition>
 
-<!--
-    <edition name="lxde" description="LXDE Desktop">
-      <packages>
-        <pkgname>evince</pkgname>
-        <pkgname>file-roller</pkgname>
-        <pkgname>galculator</pkgname>
-        <pkgname>leafpad</pkgname>
-        <pkgname>lxde</pkgname>
-        <pkgname>pragha</pkgname>
-        <pkgname>transmission-gtk</pkgname>
-        <pkgname>gnome-mplayer</pkgname>
-      </packages>
-    </edition>
--->
-
     <edition name="lxqt" description="LXQT Desktop">
       <packages>
       <pkgname>lxqt-about</pkgname>
