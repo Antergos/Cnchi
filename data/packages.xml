@@ -85,6 +85,8 @@
       <packages>
         <pkgname>cabextract</pkgname>
         <pkgname>bzip2</pkgname>
+        <pkgname>dialog</pkgname>
+        <pkgname>rsync</pkgname>
         <pkgname>sharutils</pkgname>
         <pkgname>unace</pkgname>
         <pkgname>uudeview</pkgname>
