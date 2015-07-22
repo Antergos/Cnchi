@@ -47,8 +47,12 @@ class Hardware(object):
         raise NotImplementedError("get_packages is not implemented")
 
     def post_install(self, dest_dir):
-        """ Runs post install commands """
-        raise NotImplementedError("postinstall is not implemented")
+        """ This method runs commands that need to be run AFTER installing the driver """
+        raise NotImplementedError("post_install is not implemented")
+
+    def pre_install(self, dest_dir):
+        """ This method runs commands that need to run BEFORE installing the driver """
+        pass
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
@@ -143,7 +147,13 @@ class Hardware(object):
 
 
 class HardwareInstall(object):
-    """ This class checks user's hardware """
+    """ This class checks user's hardware
+
+    If 'use_proprietary_graphic_drivers' is True, this module will try to install the proprietary
+    variants of the graphic drivers available (only if the hardware is detected).
+    For non graphical drivers, the open one is always choosen as default.
+    """
+
     def __init__(self, use_proprietary_graphic_drivers=False):
         self.use_proprietary_graphic_drivers = use_proprietary_graphic_drivers
 
@@ -276,6 +286,11 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             driver_names.append(obj.get_name())
         return driver_names
+
+    def pre_install(self, dest_dir):
+        """ Run pre install commands for all detected devices """
+        for obj in self.objects_used:
+            obj.pre_install(dest_dir)
 
     def post_install(self, dest_dir):
         """ Run post install commands for all detected devices """

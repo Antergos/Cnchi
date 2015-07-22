@@ -1295,6 +1295,8 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(io_error)
 
         # Configure detected hardware
+        # NOTE: Because hardware can need extra repos, this code must run
+        # always after having called the update_pacman_conf method
         if self.hardware_install:
             try:
                 logging.debug(_("Running detected hardware post-install actions..."))
