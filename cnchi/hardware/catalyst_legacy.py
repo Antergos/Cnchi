@@ -145,9 +145,9 @@ class Catalyst_legacy(Hardware):
         path = os.path.join(dest_dir, "etc/pacman.conf")
         self.add_repositories(path)
 
-    	super().chroot(self, ["systemctl", "enable", "atieventsd"])
-    	super().chroot(self, ["systemctl", "enable", "catalyst-hook"])
-    	super().chroot(self, ["systemctl", "enable", "temp-links-catalyst"])
+        super().chroot(self, ["systemctl", "enable", "atieventsd"])
+        super().chroot(self, ["systemctl", "enable", "catalyst-hook"])
+        super().chroot(self, ["systemctl", "enable", "temp-links-catalyst"])
 
         super().chroot(self, ["aticonfig", "--initial"], dest_dir)
 
