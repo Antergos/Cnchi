@@ -54,14 +54,11 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 return True
         return False
 
-    def sync(self, files_to_sync=None):
+    def sync(self):
         """ Synchronize cached writes to persistent storage """
         with misc.raised_privileges():
             try:
-                cmd = ['sync']
-                if files_to_sync:
-                    cmd.extend(files_to_sync)
-                subprocess.check_call(cmd)
+                subprocess.check_call(['sync'])
             except subprocess.CalledProcessError as why:
                 logging.warning(_("Can't synchronize cached writes to persistent storage: %s"), why)
 
@@ -85,7 +82,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), why)
             except OSError as why:
                 logging.debug(_('Error copying new mirrorlist files: %s'), why)
-        self.sync([self.arch_mirrorlist, self.antergos_mirrorlist])
+        self.sync()
 
     def run_reflector(self):
         """
@@ -102,7 +99,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     subprocess.check_call(cmd)
                 except subprocess.CalledProcessError as why:
                     logging.debug(_('Error running reflector on Arch mirrorlist: %s'), why)
-            self.sync([self.arch_mirrorlist])
+            self.sync()
 
     def uncomment_antergos_mirrors(self):
         """ Uncomment Antergos mirrors and comment out auto selection so
@@ -130,7 +127,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 # Write new one
                 with open(self.antergos_mirrorlist, 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
-            self.sync([self.antergos_mirrorlist])
+            self.sync()
 
     def run_rankmirrors(self):
         if os.path.exists("/usr/bin/rankmirrors"):
@@ -150,7 +147,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                             antergos_mirrorlist_file.write(temp_file.read())
                 except subprocess.CalledProcessError as why:
                     logging.debug(_('Error running rankmirrors on Antergos mirrorlist: %s'), why)
-            self.sync([self.antergos_mirrorlist])
+            self.sync()
 
     def remove_bad_mirrors(self):
         if os.path.exists(self.arch_mirrorlist):
@@ -181,7 +178,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             with misc.raised_privileges():
                 with open(self.arch_mirrorlist, 'w') as arch_mirrors:
                     arch_mirrors.write("\n".join(lines) + "\n")
-            self.sync([self.arch_mirrorlist])
+            self.sync()
 
     def run(self):
         """ Run process """
