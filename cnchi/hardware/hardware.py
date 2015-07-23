@@ -56,7 +56,7 @@ class Hardware(object):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if not class_id == self.class_id:
+        if len(self.class_id) > 0 and class_id != self.class_id:
             return False
 
         if len(self.vendor_id) > 0 and vendor_id != self.vendor_id:

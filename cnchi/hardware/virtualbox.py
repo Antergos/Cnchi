@@ -32,7 +32,7 @@ except ImportError:
 import os
 
 CLASS_NAME = "Virtualbox"
-CLASS_ID = ""
+CLASS_ID = "0x0300"
 VENDOR_ID = "0x80ee"
 DEVICES = ['0xbeef']
 
