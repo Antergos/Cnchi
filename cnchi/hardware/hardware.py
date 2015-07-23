@@ -219,19 +219,28 @@ class HardwareInstall(object):
             if len(objects) > 1:
                 # We have more than one driver for this device!
                 # We'll need to choose one
+
+                # Check if there is a proprietary driver
+                is_one_closed = False
+                for obj in objects:
+                    if obj.is_proprietary():
+                        is_one_closed = True
+
                 for obj in objects:
                     if not obj.is_graphic_driver():
                         # For non graphical drivers, we choose the open one as default
                         if not obj.is_proprietary():
                             objects_used.append(obj)
                     else:
-                        # It's a graphic driver, we need to know which one the user wants
-                        if not self.use_proprietary_graphic_drivers:
+                        # It's a graphic driver
+                        # We choose the open one if the user does not want to
+                        # use proprietary (or if all the ones available are open)
+                        if not self.use_proprietary_graphic_drivers or not is_one_closed:
                             # OK, we choose the open one
                             if not obj.is_proprietary():
                                 objects_used.append(obj)
                         else:
-                            # User wants the proprietary one
+                            # One of them is proprietary and user wants to use it
                             if obj.is_proprietary():
                                 objects_used.append(obj)
 
