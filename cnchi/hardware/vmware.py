@@ -44,4 +44,4 @@ class Vmware(Hardware):
         return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]
 
     def post_install(self, dest_dir):
-        super().chroot(self, ["systemctl", "enable", "vmtoolsd"])
+        super().chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)
