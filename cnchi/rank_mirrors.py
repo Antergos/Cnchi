@@ -108,28 +108,29 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             logging.debug('Failed to parse retrieved mirror data ', err)
 
     @staticmethod
-    def sort_mirrors_by_speed(mirrors=None, procs=5):
+    def sort_mirrors_by_speed(mirrors=None, threads=5):
         # Ensure that "mirrors" is a list and not a generator.
         if not isinstance(mirrors, list):
             mirrors = list(mirrors)
 
-        processes = min(procs, len(mirrors))
+        threads = min(threads, len(mirrors))
 
         rates = {}
 
-        # URL input queue.Queue
-        q_in = multiprocessing.Queue()
-        # URL and rate output queue.Queue
-        q_out = multiprocessing.Queue()
-
         # Check version of cryptsetup pkg (used to test mirror speed)
         try:
-            version = subprocess.check_output(['pacman', '-Ss', 'cryptsetup', '|', 'cut', '-d', ' ', '-f2', '|', 'xargs'],
-                                              shell=True, executable='/bin/bash')
+            version = subprocess.check_output(
+                ['pacman', '-Ss', 'cryptsetup', '|', 'cut', '-d', ' ', '-f2', '|', 'xargs'],
+                shell=True, executable='/bin/bash')
             logging.debug('cryptsetup version is: %s', version)
         except subprocess.CalledProcessError as err:
             logging.debug(err.output)
             version = False
+
+        # URL input queue.Queue
+        q_in = queue.Queue()
+        # URL and rate output queue.Queue
+        q_out = queue.Queue()
 
         def worker():
             while True:
@@ -154,10 +155,11 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 except (OSError, urllib.error.HTTPError, http.client.HTTPException):
                     pass
                 q_out.put((url, rate, dt))
+                q_in.task_done()
 
         # Launch threads
-        for i in range(procs):
-            t = multiprocessing.Process(target=worker)
+        for i in range(threads):
+            t = threading.Thread(target=worker)
             t.start()
 
         # Load the input queue.Queue
@@ -167,7 +169,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             logging.debug('rating %s\n', mirror['url'])
             q_in.put(mirror['url'])
 
-        q_in.join_thread()
+        q_in.join()
 
         # Log some extra data.
         url_len = str(url_len)
@@ -181,6 +183,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             kibps = rate / 1024.0
             logging.debug(fmt, (url, kibps, dt))
             rates[url] = rate
+            q_out.task_done()
 
         # Sort by rate.
         rated_mirrors = [m for m in mirrors if rates[m['url']] > 0]

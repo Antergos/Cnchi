@@ -1,3 +1,4 @@
+[2015-07-24 08:52:00 -0500]  daemonic processes cant have children, duh!                            Dustin Falgout  {00ce5d4}
 [2015-07-24 08:44:53 -0500]  use processes instead of threads                                       Dustin Falgout  {cc2b3d0}
 [2015-07-24 06:49:42 -0500]  Filter and sort arch mirrorlist ourselves. This way we have control..  Dustin Falgout  {f492000}
 [2015-07-23 17:05:30 +0200]  I was working with a new version without the pre-commit hook...            karasu      {685a11b}
