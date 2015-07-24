@@ -4,6 +4,7 @@
 #  rank_mirrors.py
 #
 #  Copyright © 2013-2015 Antergos
+#  Copyright © 2012, 2013  Xyne
 #
 #  This file is part of Cnchi.
 #
@@ -24,6 +25,11 @@
 
 """ Creates mirrorlist sorted by both latest updates and fastest connection """
 
+import queue
+import threading
+import urllib.request
+import urllib.error
+import http.client
 import subprocess
 import logging
 import time
@@ -43,18 +49,17 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         """ Initialize process class """
         super(AutoRankmirrorsProcess, self).__init__()
         self.rankmirrors_pid = None
+        self.json_obj = None
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
 
     @staticmethod
-    def check_mirror_status(mirrors, url):
-        for mirror in mirrors:
-            if mirror['url'] in url and mirror['completion_pct'] == 1 and mirror['score'] <= 4:
-                return True
-        return False
+    def is_good_mirror(m):
+        return m['last_sync'] and m['completion_pct'] == 1.0 and m['protocol'] == 'http' and m['delay'] <= 7200
 
-    def sync(self):
+    @staticmethod
+    def sync():
         """ Synchronize cached writes to persistent storage """
         with misc.raised_privileges():
             try:
@@ -62,44 +67,117 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             except subprocess.CalledProcessError as why:
                 logging.warning(_("Can't synchronize cached writes to persistent storage: %s"), why)
 
-    def update_mirrorlists(self):
-        """ Make sure we have the latest mirrorlist and antergos-mirrorlist files """
+    def update_mirrorlist(self):
+        """ Make sure we have the latest antergos-mirrorlist files """
         with misc.raised_privileges():
             try:
-                cmd = [
-                    'pacman', '-Syy', '--noconfirm', '--noprogressbar',
-                    '--quiet', 'pacman-mirrorlist', 'antergos-mirrorlist']
+                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', '--quiet', 'antergos-mirrorlist']
                 with open(os.devnull, 'w') as fnull:
                     subprocess.call(cmd, stdout=fnull, stderr=subprocess.STDOUT)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
-                files = ['mirrorlist', 'antergos-mirrorlist']
-                for filename in files:
-                    path = os.path.join("/etc/pacman.d", filename)
-                    pacnew_path = path + ".pacnew"
-                    if os.path.exists(pacnew_path):
-                        shutil.copy(pacnew_path, path)
+                pacnew_path = self.antergos_mirrorlist + ".pacnew"
+                if os.path.exists(pacnew_path):
+                    shutil.copy(pacnew_path, self.antergos_mirrorlist)
             except subprocess.CalledProcessError as why:
                 logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), why)
             except OSError as why:
                 logging.debug(_('Error copying new mirrorlist files: %s'), why)
         self.sync()
 
-    def run_reflector(self):
-        """
-        Reflector actually does perform speed tests when called and doesn't use speed results
-        from Arch's main server like we originally thought. If you monitor your network I/O
-        while running reflector command, you will see it is doing much more than
-        downloading the 4kb mirrorlist file. If ran with --verbose and without --save param it
-        will output the speed test results to STDOUT.
-        """
-        if os.path.exists("/usr/bin/reflector"):
-            with misc.raised_privileges():
+    def get_mirror_stats(self):
+        """Retrieve the current mirror status JSON data."""
+        if not self.json_obj:
+            try:
+                with requests.Session() as session:
+                    self.json_obj = session.get(self.arch_mirror_status).json()
+
+            except requests.RequestException as err:
+                logging.debug('Failed to retrieve mirror status information: %s', err)
+
+        try:
+            # Remove servers that have not synced, and parse the "last_sync" times for
+            # comparison later.
+            mirrors = self.json_obj['urls']
+
+            # Filter incomplete mirrors  and mirrors that haven't synced.
+            mirrors = list(m for m in mirrors if self.is_good_mirror(m))
+
+            self.json_obj['urls'] = mirrors
+            return mirrors
+        except KeyError as err:
+            logging.debug('Failed to parse retrieved mirror data ', err)
+
+    @staticmethod
+    def sort_mirrors_by_speed(mirrors=None, threads=5):
+        # Ensure that "mirrors" is a list and not a generator.
+        if not isinstance(mirrors, list):
+            mirrors = list(mirrors)
+
+        threads = min(threads, len(mirrors))
+
+        rates = {}
+
+        # URL input queue.Queue
+        q_in = queue.Queue()
+        # URL and rate output queue.Queue
+        q_out = queue.Queue()
+
+        def worker():
+            while True:
+                url = q_in.get()
+                db_subpath = 'core/os/i686/core.abs.tar.gz'
+                db_url = url + db_subpath
+                # Leave the rate as 0 if the connection fails.
+                # TODO: Consider more graceful error handling.
+                rate = 0
+                dt = float('NaN')
+
+                req = urllib.request.Request(url=db_url)
                 try:
-                    cmd = ['reflector', '-l', '30', '-p', 'http', '-f', '20', '--save', self.arch_mirrorlist]
-                    subprocess.check_call(cmd)
-                except subprocess.CalledProcessError as why:
-                    logging.debug(_('Error running reflector on Arch mirrorlist: %s'), why)
-            self.sync()
+                    t0 = time.time()
+                    with urllib.request.urlopen(req, None, 5) as f:
+                        size = len(f.read())
+                        dt = time.time() - t0
+                        rate = size / (dt)
+                except (OSError, urllib.error.HTTPError, http.client.HTTPException):
+                    pass
+            q_out.put((url, rate, dt))
+            q_in.task_done()
+
+        # Launch threads
+        for i in range(threads):
+            t = threading.Thread(target=worker)
+            t.daemon = True
+            t.start()
+
+        # Load the input queue.Queue
+        url_len = 0
+        for mirror in mirrors:
+            url_len = max(url_len, len(mirror['url']))
+            logging.debug('rating %s\n', mirror['url'])
+            q_in.put(mirror['url'])
+
+        q_in.join()
+
+        # Log some extra data.
+        url_len = str(url_len)
+        logging.debug(('%-' + url_len + 's  %14s  %9s\n'), ('Server', 'Rate', 'Time'))
+        fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s\n'
+
+        # Loop over the mirrors just to ensure that we get the rate for each mirror.
+        # The value in the loop does not (necessarily) correspond to the mirror.
+        for mirror in mirrors:
+            url, rate, dt = q_out.get()
+            kibps = rate / 1024.0
+            logging.debug(fmt, (url, kibps, dt))
+            rates[url] = rate
+            q_out.task_done()
+
+        # Sort by rate.
+        rated_mirrors = [m for m in mirrors if rates[m['url']] > 0]
+        rated_mirrors.sort(key=lambda m: rates[m['url']], reverse=True)
+
+        return rated_mirrors + [m for m in mirrors if rates[m['url']] == 0]
 
     def uncomment_antergos_mirrors(self):
         """ Uncomment Antergos mirrors and comment out auto selection so
@@ -149,36 +227,20 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     logging.debug(_('Error running rankmirrors on Antergos mirrorlist: %s'), why)
             self.sync()
 
-    def remove_bad_mirrors(self):
-        if os.path.exists(self.arch_mirrorlist):
-            # Use session to avoid silly warning
-            # See https://github.com/kennethreitz/requests/issues/1882
-            with requests.Session() as session:
-                status = session.get(self.arch_mirror_status).json()
-                mirrors = status['urls']
+    def filter_and_sort_arch_mirrorlist(self):
+        output = '# Arch Linux mirrorlist generated by Cnchi #\n'
+        mlist = self.get_mirror_stats()
+        mirrors = self.sort_mirrors_by_speed(mirrors=mlist)
 
-            with open(self.arch_mirrorlist) as arch_mirrors:
-                lines = [x.strip() for x in arch_mirrors.readlines()]
+        for mirror in mirrors:
+            line = "Server = {0}{1}/os/{2}\n".format(mirror['url'], '$repo', '$arch')
+            output += line
 
-            for i in range(len(lines)):
-                server_uncommented = lines[i].startswith("Server")
-                server_commented = lines[i].startswith("#Server")
-                if server_commented or server_uncommented:
-                    url = lines[i].split('=')[1].strip()
-                    check = self.check_mirror_status(mirrors, url)
-                    if not check and server_uncommented:
-                        # Bad mirror, comment it
-                        logging.debug('Removing bad mirror: %s', lines[i])
-                        lines[i] = "#" + lines[i]
-                    if check and server_commented:
-                        # It's a good mirror, uncomment it
-                        lines[i] = lines[i].lstrip("#")
-
-            # Write modified Arch mirrorlist
-            with misc.raised_privileges():
-                with open(self.arch_mirrorlist, 'w') as arch_mirrors:
-                    arch_mirrors.write("\n".join(lines) + "\n")
-            self.sync()
+        # Write modified Arch mirrorlist
+        with misc.raised_privileges():
+            with open(self.arch_mirrorlist, 'w') as arch_mirrors:
+                arch_mirrors.write(output)
+        self.sync()
 
     def run(self):
         """ Run process """
@@ -188,16 +250,13 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             time.sleep(4)  # Delay, try again after 4 seconds
 
         logging.debug(_("Updating both mirrorlists (Arch and Antergos)..."))
-        self.update_mirrorlists()
+        self.update_mirrorlist()
 
-        logging.debug(_("Running reflector command to sort Arch mirrors..."))
-        self.run_reflector()
+        logging.debug(_("Filtering and sorting Arch mirrors..."))
+        self.filter_and_sort_arch_mirrorlist()
 
         logging.debug(_("Running rankmirrors command to sort Antergos mirrors..."))
         self.run_rankmirrors()
-
-        logging.debug(_("Checking Arch mirrorlist against mirror status data..."))
-        self.remove_bad_mirrors()
 
         logging.debug(_("Auto mirror selection has been run successfully."))
 
