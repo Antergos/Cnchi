@@ -158,7 +158,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         # Launch threads
         for i in range(procs):
             t = multiprocessing.Process(target=worker)
-            t.daemon = True
             t.start()
 
         # Load the input queue.Queue
