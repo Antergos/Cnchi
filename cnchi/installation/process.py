@@ -1224,10 +1224,7 @@ class InstallationProcess(multiprocessing.Process):
             # networkmanager daemon (atm is just base install)
             # Enable systemd_networkd services
             # See: https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
-            self.enable_services([
-                "systemd-networkd",
-                "systemd-resolved",
-                "systemd-networkd-wait-online.service"])
+            self.enable_services(["systemd-networkd", "systemd-resolved"])
             # Setup systemd_networkd
             # TODO: Ask user for SSID and passphrase if a wireless link is found
             # (should this be done here or inside systemd_networkd.setup() ?)
@@ -1254,8 +1251,11 @@ class InstallationProcess(multiprocessing.Process):
         # Enable some useful services
         services = []
         if self.desktop != "base":
+            # In base there's no desktop manager ;)
             services.append(self.desktop_manager)
-        services.extend(["ModemManager", self.network_manager, "remote-fs.target", "haveged"])
+            # In base we use systemd-networkd (setup already done above)
+            services.append(self.network_manager)
+        services.extend(["ModemManager", "haveged"])
         self.enable_services(services)
 
         # Enable timesyncd service
