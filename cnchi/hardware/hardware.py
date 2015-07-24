@@ -214,51 +214,52 @@ class HardwareInstall(object):
 
         self.objects_used = []
         for device in self.objects_found:
-            objects = self.objects_found[device]
-            objects_used = []
-            if len(objects) > 1:
+            drivers_available = self.objects_found[device]
+            objects_selected = []
+            if len(drivers_available) > 1:
                 # We have more than one driver for this device!
                 # We'll need to choose one
 
                 # Check if there is a proprietary driver
                 is_one_closed = False
-                for obj in objects:
-                    if obj.is_proprietary():
+                for driver in drivers_available:
+                    if driver.is_proprietary():
                         is_one_closed = True
+                        break
 
-                for obj in objects:
-                    if not obj.is_graphic_driver():
+                for driver in drivers_available:
+                    if not driver.is_graphic_driver():
                         # For non graphical drivers, we choose the open one as default
-                        if not obj.is_proprietary():
-                            objects_used.append(obj)
+                        if not driver.is_proprietary():
+                            objects_selected.append(driver)
                     else:
                         # It's a graphic driver
                         # We choose the open one if the user does not want to
                         # use proprietary (or if all the ones available are open)
                         if not self.use_proprietary_graphic_drivers or not is_one_closed:
                             # OK, we choose the open one
-                            if not obj.is_proprietary():
-                                objects_used.append(obj)
+                            if not driver.is_proprietary():
+                                objects_selected.append(driver)
                         else:
                             # One of them is proprietary and user wants to use it
-                            if obj.is_proprietary():
-                                objects_used.append(obj)
+                            if driver.is_proprietary():
+                                objects_selected.append(driver)
 
-                if len(objects_used) > 1:
+                if len(objects_selected) > 1:
                     # We still have two or more options,
                     # let's check their priority
                     priorities = []
-                    for obj in objects_used:
-                        priorities.append(obj.get_priority())
-                    for obj in objects_used:
-                        if obj.get_priority() == max(priorities):
-                            self.objects_used.append(obj)
+                    for driver in objects_selected:
+                        priorities.append(driver.get_priority())
+                    for driver in objects_selected:
+                        if driver.get_priority() == max(priorities):
+                            self.objects_used.append(driver)
                             break
                 else:
-                    self.objects_used.append(objects_used)
+                    self.objects_used.append(objects_selected)
             else:
                 # Only one option, add it (it doesn't matter if it's open or not)
-                self.objects_used.append(objects[0])
+                self.objects_used.append(drivers_available[0])
 
     def get_devices(self):
         devices = []
