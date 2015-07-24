@@ -105,7 +105,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             self.json_obj['urls'] = mirrors
             return mirrors
         except KeyError as err:
-            logging.debug('Failed to parse retrieved mirror data ', err)
+            logging.debug('Failed to parse retrieved mirror data: %s', err)
 
     @staticmethod
     def sort_mirrors_by_speed(mirrors=None, threads=5):
@@ -166,15 +166,15 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         url_len = 0
         for mirror in mirrors:
             url_len = max(url_len, len(mirror['url']))
-            logging.debug('rating %s\n', mirror['url'])
+            logging.debug(_("Rating mirror '%s'"), mirror['url'])
             q_in.put(mirror['url'])
 
         q_in.join()
 
         # Log some extra data.
         url_len = str(url_len)
-        logging.debug(('%-' + url_len + 's  %14s  %9s\n') % ('Server', 'Rate', 'Time'))
-        fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s\n'
+        logging.debug(('%-' + url_len + 's  %14s  %9s') % ('Server', 'Rate', 'Time'))
+        fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
 
         # Loop over the mirrors just to ensure that we get the rate for each mirror.
         # The value in the loop does not (necessarily) correspond to the mirror.
