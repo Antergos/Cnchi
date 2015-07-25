@@ -260,8 +260,6 @@ class Bootloader(object):
 
         self.install_grub2_locales()
 
-        self.copy_grub2_theme_files()
-
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
 
@@ -325,8 +323,6 @@ class Bootloader(object):
 
         self.install_grub2_locales()
 
-        self.copy_grub2_theme_files()
-
         # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
         grub_defaults = [os.path.join(self.dest_dir, "boot/efi/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
                          os.path.join(self.dest_dir, "boot/efi/EFI/Microsoft/Boot", 'bootmgfw.efi')]
@@ -348,19 +344,6 @@ class Bootloader(object):
                     logging.warning(msg_failed, _("File already exists."))
                 except Exception as general_error:
                     logging.warning(msg_failed, general_error)
-
-        # Copy uefi shell if none exists in /boot/efi/EFI
-        shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/efi/EFI/")
-        try:
-            shutil.copy2(shell_src, shell_dst)
-        except FileNotFoundError:
-            logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
-        except FileExistsError:
-            pass
-        except Exception as general_error:
-            logging.warning(_("UEFI Shell drop-in could not be copied."))
-            logging.warning(general_error)
 
         # Run grub-mkconfig last
         logging.info(_("Generating grub.cfg"))
@@ -413,18 +396,6 @@ class Bootloader(object):
             logging.debug(_("50mounted-tests file patched successfully"))
         else:
             logging.warning(_("Failed to patch 50mounted-tests, file not found."))
-
-    def copy_grub2_theme_files(self):
-        """ Copy grub2 theme files to /boot """
-        logging.info(_("Copying GRUB(2) Theme Files"))
-        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
-        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
-        try:
-            shutil.copytree(theme_dir_src, theme_dir_dst)
-        except FileNotFoundError:
-            logging.warning(_("Grub2 theme files not found"))
-        except FileExistsError:
-            logging.warning(_("Grub2 theme files already exist."))
 
     def install_grub2_locales(self):
         """ Install Grub2 locales """

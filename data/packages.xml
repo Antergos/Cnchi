@@ -551,6 +551,7 @@
     <bootloader name="grub2">
       <pkgname>grub</pkgname>
       <pkgname>os-prober</pkgname>
+      <pkgname>grub2-theme-antergos</pkgname>
     </bootloader>
     <bootloader name="gummiboot">
       <pkgname>gummiboot</pkgname>
