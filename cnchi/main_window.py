@@ -37,6 +37,7 @@ import language
 import location
 import check
 import desktop
+import desktop_info as desktops
 import features
 import keymap
 import timezone
@@ -45,7 +46,6 @@ import slides
 import misc.misc as misc
 import info
 import show_message as show
-import desktop_environments as desktops
 
 from installation import ask as installation_ask
 from installation import automatic as installation_automatic

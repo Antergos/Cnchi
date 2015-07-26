@@ -28,7 +28,7 @@ from gi.repository import Gtk, GdkPixbuf
 import os
 import logging
 
-import desktop_environments as desktops
+import desktop_info as desktops
 import misc.misc as misc
 from gtkbasebox import GtkBaseBox
 

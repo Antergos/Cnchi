@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  desktop_environments.py
+#  desktop_info.py
 #
 #  Copyright © 2013-2015 Antergos
 #

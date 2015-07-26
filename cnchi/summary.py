@@ -32,7 +32,7 @@ import logging
 
 import misc.misc as misc
 import misc.gtkwidgets as gtkwidgets
-import desktop_environments
+import desktop_info
 from gtkbasebox import GtkBaseBox
 
 # Constants
@@ -97,7 +97,7 @@ class Summary(GtkBaseBox):
         # Desktop Environment
         statebox = self.ui.get_object("de_statebox")
         desktop = self.settings.get('desktop')
-        desktop_name = desktop_environments.NAMES[desktop]
+        desktop_name = desktop_info.NAMES[desktop]
         statebox.set_property("label", desktop_name)
 
         # Features

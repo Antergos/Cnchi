@@ -90,7 +90,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             try:
                 with requests.Session() as session:
                     self.json_obj = session.get(self.arch_mirror_status).json()
-
             except requests.RequestException as err:
                 logging.debug('Failed to retrieve mirror status information: %s', err)
 
@@ -173,7 +172,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Log some extra data.
         url_len = str(url_len)
-        logging.debug(('%-' + url_len + 's  %14s  %9s') % ('Server', 'Rate', 'Time'))
+        logging.debug(('%-' + url_len + 's  %14s  %9s'), "Server", "Rate", "Time")
         fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
 
         # Loop over the mirrors just to ensure that we get the rate for each mirror.
@@ -181,7 +180,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         for mirror in mirrors:
             url, rate, dt = q_out.get()
             kibps = rate / 1024.0
-            logging.debug(fmt % (url, kibps, dt))
+            logging.debug(fmt, url, kibps, dt)
             rates[url] = rate
             q_out.task_done()
 

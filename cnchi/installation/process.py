@@ -41,7 +41,7 @@ import traceback
 
 from mako.template import Template
 
-import desktop_environments as desktops
+import desktop_info as desktops
 import parted3.fs_module as fs
 import misc.misc as misc
 import pacman.pac as pac

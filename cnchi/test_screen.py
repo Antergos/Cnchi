@@ -109,7 +109,7 @@ def run(screen_name):
     settings = config.Settings()
     settings.set('data', '/usr/share/cnchi/data')
 
-    from desktop_environments import DESKTOPS
+    from desktop_info import DESKTOPS
 
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
