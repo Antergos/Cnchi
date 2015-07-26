@@ -411,7 +411,7 @@ class StateBox(StylizedFrame):
         hbox = Gtk.Box()
         hbox.set_spacing(10)
         self.image = Gtk.Image()
-        self.image.set_from_icon_name("yes", Gtk.IconSize.LARGE_TOOLBAR)
+        self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         self.image.set_margin_start(7)
         self.label = Gtk.Label(label=text)
         self.label.set_margin_end(15)

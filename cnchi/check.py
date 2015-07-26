@@ -71,7 +71,7 @@ class Check(GtkBaseBox):
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
-        self.prepare_enough_space.props.label = txt
+        self.prepare_enough_space.set_property("label", txt)
 
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
@@ -82,11 +82,11 @@ class Check(GtkBaseBox):
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
-        self.prepare_power_source.props.label = txt
+        self.prepare_power_source.set_property("label", txt)
 
         self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
         txt = _("is connected to the Internet")
-        self.prepare_network_connection.props.label = txt
+        self.prepare_network_connection.set_property("label", txt)
 
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
