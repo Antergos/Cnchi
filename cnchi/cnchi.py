@@ -112,10 +112,10 @@ def setup_logging():
 
     # Log format
     formatter = logging.Formatter(
-        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        fmt="[%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S")
 
-    # Create file handler
+    # File logger
     try:
         file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
         file_handler.setLevel(log_level)
@@ -124,6 +124,7 @@ def setup_logging():
     except PermissionError as permission_error:
         print("Can't open /tmp/cnchi.log : ", permission_error)
 
+    # Stdout logger
     if cmd_line.verbose:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
@@ -140,8 +141,12 @@ def setup_logging():
     socket_handler = logging.handlers.SocketHandler(
         log_server,
         logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-    # Don't bother with a formatter, since a socket handler sends the event as
-    # an unformatted pickle
+
+    socket_formatter = logging.Formatter(
+        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+    socket_handler.setFormatter(socket_formatter)
+
     logger.addHandler(socket_handler)
 
     # Also add uuid filter to requests logs
