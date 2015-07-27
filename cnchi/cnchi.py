@@ -135,27 +135,25 @@ def setup_logging():
     # Socket logger
     if cmd_line.log_server:
         log_server = cmd_line.log_server
-    else:
-        log_server = "localhost"
 
-    socket_handler = logging.handlers.SocketHandler(
-        log_server,
-        logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+        socket_handler = logging.handlers.SocketHandler(
+            log_server,
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT)
 
-    socket_formatter = logging.Formatter(
-        fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S")
-    socket_handler.setFormatter(socket_formatter)
+        socket_formatter = logging.Formatter(
+            fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+        socket_handler.setFormatter(socket_formatter)
 
-    logger.addHandler(socket_handler)
+        logger.addHandler(socket_handler)
 
-    # Also add uuid filter to requests logs
-    logger = logging.getLogger("requests.packages.urllib3.connectionpool")
-    logger.addFilter(filter)
+        # Also add uuid filter to requests logs
+        logger = logging.getLogger("requests.packages.urllib3.connectionpool")
+        logger.addFilter(filter)
 
-    uid = str(uuid.uuid1()).split("-")
-    myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-    logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
+        uid = str(uuid.uuid1()).split("-")
+        myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
 def check_gtk_version():
     """ Check GTK version """
