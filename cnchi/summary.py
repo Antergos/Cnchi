@@ -33,6 +33,7 @@ import logging
 import misc.misc as misc
 import misc.gtkwidgets as gtkwidgets
 import desktop_info
+import features_info
 from gtkbasebox import GtkBaseBox
 
 # Constants
@@ -102,12 +103,20 @@ class Summary(GtkBaseBox):
 
         # Features
         statebox = self.ui.get_object("features_statebox")
+        txt = ""
+        for feature in features_info.TITLES:
+            if self.settings.get("feature_" + feature):
+                txt += "{0} ".format(features_info.TITLES[feature])
+        statebox.set_property("label", txt)
 
-
+        # TODO: Partitions
+        # Note: As Cnchi is written, when using advanced installation
+        # everything is done in that screen (user input, real partitioning,
+        # creating fs...). Therefore, advanced screen should be split to be
+        # able to show this screen (summary) in between.
 
     def store_values(self):
         """ Continue """
-        # Remove timer
         return True
 
     def prepare(self, direction):
