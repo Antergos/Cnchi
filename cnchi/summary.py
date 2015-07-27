@@ -110,10 +110,10 @@ class Summary(GtkBaseBox):
         statebox.set_property("label", txt)
 
         # TODO: Partitions
-        # Note: As Cnchi is written, when using advanced installation
+        # Note: The way Cnchi is written, when using advanced installation
         # everything is done in that screen (user input, real partitioning,
         # creating fs...). Therefore, advanced screen should be split to be
-        # able to show this screen (summary) in between.
+        # able to show this screen (summary) in between (use stage_opts).
 
     def store_values(self):
         """ Continue """
