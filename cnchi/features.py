@@ -27,24 +27,12 @@
 from gi.repository import Gtk
 import subprocess
 import logging
-import desktop_info as desktops
+import desktop_info
+import features_info
 import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
 
-_features_icon_names = {
-    'aur': 'system-software-install',
-    'bluetooth': 'bluetooth',
-    'cups': 'printer',
-    'firefox': 'firefox',
-    'firewall': 'network-server',
-    'fonts': 'preferences-desktop-font',
-    'graphic_drivers' : 'gnome-system',
-    'lamp' : 'applications-internet',
-    'lts' : 'applications-accessories',
-    'office': 'accessories-text-editor',
-    'smb': 'gnome-mime-x-directory-smb-share',
-    'visual': 'video-display'}
 
 COL_IMAGE = 0
 COL_TITLE = 1
@@ -123,8 +111,8 @@ class Features(GtkBaseBox):
 
             self.listbox_rows[feature] = []
 
-            if feature in _features_icon_names:
-                icon_name = _features_icon_names[feature]
+            if feature in features_info.ICON_NAMES:
+                icon_name = features_info.ICON_NAMES[feature]
             else:
                 logging.warning(_("No icon found for feature %s"), feature)
                 icon_name = "missing"
@@ -208,120 +196,18 @@ class Features(GtkBaseBox):
         """ Translates all ui elements """
 
         desktop = self.settings.get('desktop')
-        txt = desktops.NAMES[desktop] + " - " + _("Feature Selection")
+        txt = desktop_info.NAMES[desktop] + " - " + _("Feature Selection")
         self.header.set_subtitle(txt)
 
-        # AUR
-        title = _("Arch User Repository (AUR) Support")
-        desc = _("The AUR is a community-driven repository for Arch users.")
-        tooltip = _("Use yaourt to install AUR packages.\n"
-                    "The AUR was created to organize and share new packages\n"
-                    "from the community and to help expedite popular packages'\n"
-                    "inclusion into the [community] repository.")
-        self.set_row_text('aur', title, desc, tooltip)
-
-        # Bluetooth
-        title = _("Bluetooth Support")
-        desc = _("Enables your system to make wireless connections via Bluetooth.")
-        tooltip = _("Bluetooth is a standard for the short-range wireless\n"
-                    "interconnection of cellular phones, computers, and\n"
-                    "other electronic devices. In Linux, the canonical\n"
-                    "implementation of the Bluetooth protocol stack is BlueZ")
-        self.set_row_text('bluetooth', title, desc, tooltip)
-
-        # Extra TTF Fonts
-        title = _("Extra Truetype Fonts")
-        desc = _("Installation of extra TrueType fonts")
-        tooltip = _("TrueType is an outline font standard developed by\n"
-                    "Apple and Microsoft in the late 1980s as a competitor\n"
-                    "to Adobe's Type 1 fonts used in PostScript. It has\n"
-                    "become the most common format for fonts on both the\n"
-                    "Mac OS and Microsoft Windows operating systems.")
-        self.set_row_text('fonts', title, desc, tooltip)
-
-        # Graphic drivers
-        if self.amd_detected() or self.nvidia_detected():
-            title = _("Graphic drivers (Proprietary)")
-            desc = _("Installs AMD or Nvidia proprietary graphic driver")
-            tooltip = _("Installs AMD or Nvidia proprietary graphic driver")
-            self.set_row_text('graphic_drivers', title, desc, tooltip)
-
-        # LAMP
-        title = _("Apache (or Nginx) + Mariadb + PHP")
-        desc = _("Apache (or Nginx) + Mariadb + PHP installation and setup")
-        tooltip = _("This option installs a web server (you can choose\n"
-                    "Apache or Nginx) plus a database server (Mariadb)\n"
-                    "and PHP")
-        self.set_row_text('lamp', title, desc, tooltip)
-
-        # Printing support (cups)
-        title = _("Printing Support")
-        desc = _("Installation of printer drivers and management tools.")
-        tooltip = _("CUPS is the standards-based, open source printing\n"
-                    "system developed by Apple Inc. for OS® X and other\n"
-                    "UNIX®-like operating systems.")
-        self.set_row_text('cups', title, desc, tooltip)
-
-        # LibreOffice
-        title = _("LibreOffice")
-        desc = _("Open source office suite. Supports editing MS Office files.")
-        tooltip = _("LibreOffice is the free power-packed Open Source\n"
-                    "personal productivity suite for Windows, Macintosh\n"
-                    "and Linux, that gives you six feature-rich applications\n"
-                    "for all your document production and data processing\n"
-                    "needs: Writer, Calc, Impress, Draw, Math and Base.")
-        self.set_row_text('office', title, desc, tooltip)
-
-        # Visual effects
-        title = _("Visual Effects")
-        desc = _("Enable transparency, shadows, and other desktop effects.")
-        tooltip = _("Compton is a lightweight, standalone composite manager,\n"
-                    "suitable for use with window managers that do not natively\n"
-                    "provide compositing functionality. Compton itself is a fork\n"
-                    "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
-                    "See the compton github page for further information.")
-        self.set_row_text('visual', title, desc, tooltip)
-
-        # Firewall
-        title = _("Uncomplicated Firewall")
-        desc = _("Control the incoming and outgoing network traffic.")
-        tooltip = _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
-                    "managing a netfilter firewall. It provides a command line\n"
-                    "interface and aims to be uncomplicated and easy to use.")
-        self.set_row_text('firewall', title, desc, tooltip)
-
-        # Kernel LTS
-        title = _("Kernel (LTS version)")
-        desc = _("Long term support (LTS) Linux kernel and modules.")
-        tooltip = _("The linux-lts package is an alternative Arch kernel package\n"
-                    "based upon Linux kernel 3.14 and is available in the core repository.\n"
-                    "This particular kernel version enjoys long-term support from upstream,\n"
-                    "including security fixes and some feature backports. Additionally, this\n"
-                    "package includes ext4 support. For Antergos users seeking a long-term\n"
-                    "support kernel, or who want a fallback kernel in case the latest kernel\n"
-                    "version causes problems, this option is the answer.")
-        self.set_row_text('lts', title, desc, tooltip)
-
-        # Firefox
-        title = _("Firefox Web Browser")
-        desc = _("A popular open-source graphical web browser from Mozilla")
-        tooltip = _("Mozilla Firefox (known simply as Firefox) is a free and\n"
-                    "open-source web browser developed for Windows, OS X, and Linux,\n"
-                    "with a mobile version for Android, by the Mozilla Foundation and\n"
-                    "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
-                    "layout engine to render web pages, which implements current and\n"
-                    "anticipated web standards.")
-        self.set_row_text('firefox', title, desc, tooltip)
-
-        # SMB
-        title = _("Windows sharing SMB")
-        desc = _("SMB provides shared access to files and printers")
-        tooltip = _("In computer networking, Server Message Block (SMB)\n"
-                    "operates as an application-layer network protocol mainly used\n"
-                    "for providing shared access to files, printers, serial ports,\n"
-                    "and miscellaneous communications between nodes on a network.\n"
-                    "Most usage of SMB involves computers running Microsoft Windows.")
-        self.set_row_text('smb', title, desc, tooltip)
+        for feature in self.features:
+            if feature == "graphic_drivers":
+                # Only add this feature if NVIDIA or AMD are detected
+                if not self.amd_detected() and not self.nvidia_detected():
+                    continue
+            title = _(features_info.TITLES[feature])
+            desc = _(features_info.DESCRIPTIONS[feature])
+            tooltip = _(features_info.TOOLTIPS[feature])
+            self.set_row_text(feature, title, desc, tooltip)
 
         # Sort listbox items
         self.listbox.invalidate_sort()
@@ -428,7 +314,7 @@ class Features(GtkBaseBox):
         """ Prepare features screen to get ready to show itself """
         # Each desktop has its own features
         desktop = self.settings.get('desktop')
-        self.features = desktops.FEATURES[desktop]
+        self.features = desktop_info.FEATURES[desktop]
         self.fill_listbox()
         self.translate_ui()
         self.show_all()

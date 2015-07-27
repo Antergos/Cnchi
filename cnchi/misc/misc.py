@@ -856,18 +856,16 @@ def get_nm_state():
 
 
 def has_connection():
-    # In a Virtualbox VM this returns true even when the host OS has no connection
-    # karasu: But the ip idea is not good too. It fails under too many circumstances
-    # (in this case is better a false positive than a false negative)
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-        return True
-
     try:
         url = 'http://130.206.13.20'
         urllib.request.urlopen(url, timeout=5)
         return True
-    except (OSError, timeout, urllib.error.URLError) as err:
-        logging.warning(err)
+    except (OSError, timeout, urllib.error.URLError) as url_err:
+        logging.warning(url_err)
+        # We can connect to that IP, let's ask NetworkManager
+        # In a Virtualbox VM this returns true even when the host OS has no connection
+        if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+            return True
         return False
 
 

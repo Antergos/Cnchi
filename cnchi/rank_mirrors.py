@@ -172,7 +172,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Log some extra data.
         url_len = str(url_len)
-        logging.debug(('%-' + url_len + 's  %14s  %9s'), "Server", "Rate", "Time")
+        logging.debug(('%-' + url_len + 's  %14s  %9s'), _("Server"), _("Rate"), _("Time"))
         fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
 
         # Loop over the mirrors just to ensure that we get the rate for each mirror.

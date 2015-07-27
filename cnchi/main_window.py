@@ -37,7 +37,7 @@ import language
 import location
 import check
 import desktop
-import desktop_info as desktops
+import desktop_info
 import features
 import keymap
 import timezone
@@ -115,13 +115,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Set enabled desktops
         if self.settings.get('z_hidden'):
-            self.settings.set("desktops", desktops.DESKTOPS_DEV)
+            self.settings.set("desktops", desktop_info.DESKTOPS_DEV)
         else:
-            self.settings.set("desktops", desktops.DESKTOPS)
+            self.settings.set("desktops", desktop_info.DESKTOPS)
 
         if cmd_line.environment:
             desktop = cmd_line.environment.lower()
-            if desktop in desktops.DESKTOPS:
+            if desktop in desktop_info.DESKTOPS:
                 self.settings.set('desktop', desktop)
                 self.settings.set('desktop_ask', False)
                 logging.debug("Cnchi will install the %s desktop environment", desktop)

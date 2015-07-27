@@ -28,7 +28,7 @@ from gi.repository import Gtk, GdkPixbuf
 import os
 import logging
 
-import desktop_info as desktops
+import desktop_info
 import misc.misc as misc
 from gtkbasebox import GtkBaseBox
 
@@ -62,8 +62,8 @@ class DesktopAsk(GtkBaseBox):
     def translate_ui(self, desktop, set_header=True):
         """ Translates all ui elements """
         label = self.ui.get_object("desktop_info")
-        txt = "<span weight='bold'>{0}</span>\n".format(desktops.NAMES[desktop])
-        description = desktops.DESCRIPTIONS[desktop]
+        txt = "<span weight='bold'>{0}</span>\n".format(desktop_info.NAMES[desktop])
+        description = desktop_info.DESCRIPTIONS[desktop]
         txt = txt + _(description)
         label.set_markup(txt)
 
@@ -78,7 +78,7 @@ class DesktopAsk(GtkBaseBox):
 
         # and this sets the icon
         filename = "desktop-environment-" + desktop.lower() + ".svg"
-        icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
+        icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
         icon_exists = os.path.exists(icon_path)
 
         if self.icon_desktop_image is None:
@@ -87,7 +87,7 @@ class DesktopAsk(GtkBaseBox):
                 self.icon_desktop_image = Gtk.Image.new_from_pixbuf(pixbuf)
             else:
                 filename = desktop.lower() + ".png"
-                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
                 icon_exists = os.path.exists(icon_path)
                 if icon_exists:
                     self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
@@ -102,7 +102,7 @@ class DesktopAsk(GtkBaseBox):
                 self.icon_desktop_image.set_from_pixbuf(pixbuf)
             else:
                 filename = desktop.lower() + ".png"
-                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
                 icon_exists = os.path.exists(icon_path)
                 if icon_exists:
                     self.icon_desktop_image.set_from_file(icon_path)
@@ -121,18 +121,18 @@ class DesktopAsk(GtkBaseBox):
 
     def set_desktop_list(self):
         """ Set desktop list in the ListBox """
-        for desktop in sorted(desktops.NAMES):
+        for desktop in sorted(desktop_info.NAMES):
             if desktop in self.enabled_desktops:
                 box = Gtk.HBox()
 
                 filename = "desktop-environment-" + desktop.lower() + ".svg"
-                icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "scalable", filename)
+                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
                 if os.path.exists(icon_path):
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 24, 24)
                     image = Gtk.Image.new_from_pixbuf(pixbuf)
                 else:
                     filename = desktop.lower() + ".png"
-                    icon_path = os.path.join(desktops.DESKTOP_ICONS_PATH, "24x24", filename)
+                    icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "24x24", filename)
                     if os.path.exists(icon_path):
                         image = Gtk.Image.new_from_file(icon_path)
                     else:
@@ -140,13 +140,13 @@ class DesktopAsk(GtkBaseBox):
                 box.pack_start(image, False, False, 2)
 
                 label = Gtk.Label()
-                label.set_markup(desktops.NAMES[desktop])
+                label.set_markup(desktop_info.NAMES[desktop])
                 box.pack_start(label, False, False, 2)
 
                 self.listbox.add(box)
 
         # Set Gnome as default
-        self.select_default_row(desktops.NAMES["gnome"])
+        self.select_default_row(desktop_info.NAMES["gnome"])
 
     @staticmethod
     def listbox_sort_by_name(row1, row2, user_data):
@@ -182,8 +182,8 @@ class DesktopAsk(GtkBaseBox):
 
     def set_desktop(self, desktop):
         """ Show desktop info """
-        for key in desktops.NAMES.keys():
-            if desktops.NAMES[key] == desktop:
+        for key in desktop_info.NAMES.keys():
+            if desktop_info.NAMES[key] == desktop:
                 self.desktop_choice = key
                 self.translate_ui(self.desktop_choice, set_header=False)
                 return

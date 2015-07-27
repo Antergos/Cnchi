@@ -41,7 +41,7 @@ import traceback
 
 from mako.template import Template
 
-import desktop_info as desktops
+import desktop_info
 import parted3.fs_module as fs
 import misc.misc as misc
 import pacman.pac as pac
@@ -522,7 +522,7 @@ class InstallationProcess(multiprocessing.Process):
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
 
-        lib = desktops.LIBS
+        lib = desktop_info.LIBS
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
@@ -652,7 +652,7 @@ class InstallationProcess(multiprocessing.Process):
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
-        lib = desktops.LIBS
+        lib = desktop_info.LIBS
 
         # Add necessary packages for user desired features to our install list
         for xml_features in xml_root.iter('features'):
@@ -1084,8 +1084,8 @@ class InstallationProcess(multiprocessing.Process):
         txt = _("Configuring LightDM desktop manager...")
         self.queue_event('info', txt)
 
-        if self.desktop in desktops.SESSIONS:
-            session = desktops.SESSIONS[self.desktop]
+        if self.desktop in desktop_info.SESSIONS:
+            session = desktop_info.SESSIONS[self.desktop]
         else:
             session = "default"
 
