@@ -83,6 +83,9 @@ class Keymap(GtkBaseBox):
                 "can manually specify qwerty, etc.\n\n"
                 "You can use the entry below the keyboard to test your\n"
                 "layout selection."))
+            lbl.set_hexpand(False)
+            lbl.set_line_wrap(True)
+            lbl.set_max_width_chars(50)
 
     def prepare(self, direction):
         self.translate_ui()
