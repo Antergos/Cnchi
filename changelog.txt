@@ -1,6 +1,168 @@
 Changelog
 ---------
 
+* Filter and sort arch mirrorlist ourselves.
+* Fixing hardware module
+* Virtualbox is detected again
+* Enable vmtoolsd if using vmware
+* Run pre-install jobs in process (catalyst)
+* Hardware module can detect and install catalyst and nvidia drivers
+* Removed unused lxde
+* Added dialog and rsync packages to base
+* Disable ask screen while waiting for rankmirrors to finish
+* Set title to wait window (and stop using deprecated margin_left and margin_right)
+* Wait for rankmirrors when we reach installation screen
+* Store Cnchi processes in a list, to clean up when we close
+* Run rank_mirrors and autotimezone as new processes (not threads)
+* Bugfix: Do not install apache if lemp is selected!
+* Translate update-mirrors.sh to python. Modularize rank_mirrors code
+* Trap IO errors so Cnchi does not stop even when LAMP/LEMP installation fails
+* Fix chroot import in lamp/lemp
+* Disable autologin if using base desktop (now it should work)
+* Fix bug in process.py (nonetype error)
+* Update pacman-mirrorlist in rankmirrors
+* Edit 00-keyboard.conf and vconsole.conf manually (old method)
+* Do not use sourceforge mirror even if it is present in antergos-mirrorlist
+* Fix halign in ask screen
+* Deutsch and other languages look nice now in check screen
+* Prevent labels to grow too much (so window does not grow, too)
+* Added lxqt packages (but lxqt is disabled atm!)
+* Do not wait for confirmation in rank_mirrors
+* Created a logserver for receiving user's logs (when they ask for it)
+* Cnchi can log remotely to a MongoDB database
+* Use thunar instead of pcmanfm in Openbox
+* Update antergos mirrorlist package before we rank the mirrors.
+* Added waldorf theme (to the Antergos repository, but not as default)
+* Download: Never fail when file size is unknown
+* Download: Try to trap connection errors
+* Add antergos-openbox-setup package to the Openbox installation (openbox-setup is deprecated)
+* Use new antergos-openbox-setup package
+* Add proprietary graphic drivers if the user desires so
+* Fixed detection of amd/nvidia graphic cards
+* Do not check if a LVM volume is an extended partition
+* Use systemd-timesyncd
+* Use row-activated signal in keymap.py
+* Keyboard widget is drawn as it should (finally!)
+* English+Canada=Canada location with English variant ;)
+* New keymap screen
+* Removed all ubiquity code related to keymap
+* Fixed issue #324 (https://github.com/Antergos/Cnchi/issues/324)
+* Fixed issue #278 (https://github.com/Antergos/Cnchi/issues/278)
+* An empty label is a valid label ;)
+* Do not allow "strange" labels in advanced.
+* Fix link creation. Fixes https://github.com/Antergos/Cnchi/issues/349
+* Write in vconsole.conf the correct keymap
+* Fix buggy Gtk window size with Openbox
+* Fixed issue #331
+* Run systemd-networkd setup in base install (wired connections)
+* Fixed https://github.com/Antergos/Cnchi/issues/351
+* Updated generate_update_info script
+* Use requests instead of urllib in updater.py
+* Subtract 1MB to LVM in GPT
+* Fixed systemd_networkd link finding
+* Added LEMP option
+* Fixed antergos/cnchi#351
+* Fixed #352
+* There's no need to add a tmpfs line to fstab (systemd takes care of it)
+* Fix disk size calculation.
+* Added lamp setup
+* Added warning message when using LUKS on a partition in advanced mode
+* Fix progress bars
+* Do not install bootloader if the user doesn't want to in automatic installation
+* Add python-pysmbc when using SMB shares
+* Percent was wrong when using simple text in a progress bar
+* Check that the url is not None.
+* Fix kde config issue reported in forum
+* Start vbox client services for vbox installs
+* Center user_info widgets to avoid making the main_window bigger
+* New window size
+* Merge pull request #343 from Wyn10/patch-2
+* Stop downloading process of all packages when just one can't be downloaded
+* Force to download a file in cache if it's md5 sum is wrong
+* Merge pull request #340 from Wyn10/patch-1
+* Use requests in updater.py
+* Use requests to check Internet version
+* Use symbolic icons in advanced
+* Fix #336
+* Update pacman.tmpl
+* Merge pull request #335 from Wyn10/patch-1
+* Update packages.xml
+* Fix features screen.
+* Merge pull request #334 from Wyn10/patch-1
+* If asked to, hardware module chooses the proprietary driver
+* Remove empathy from packages.xml (oversight)
+* Add lxsession to openbox packages for polkit agent
+* Fix window size. it seems like gtk is measuring the size differently
+* Add topIcons extension as default for gnome
+* Gnome - make dock nicer, add min/max buttons to windows
+* Replace - with -- in lvm vg partition path
+* Add multilib repo on 64 bit system
+* Change chromeos_laptop to cyapa just in case
+* Add support for chromebook touchpad settings to postinstall
+* Added -e option to select DE from command line (not that useful)
+* Fix several deprecation warnings
+* Show GTK wrong version error message in GUI
+* Include light-locker-settings
+* Fixed #297
+* Fix typo in gsettings script
+* Adjust the button styles for advanced and user_info screens
+* Allow format without label
+* Fix #318
+* Update gsettings keys that changed in 3.16
+* Do not add pycache files to update.info
+* New create_fs module.
+* Fixes check labels disappearance in advanced
+* Fixes typo in postinstall, other small changes related to screen
+* Cleaned advanced screen code.
+* Specify that we need a GTK version >= 3.16.0
+* Fixed encryption with gummiboot
+* Fix Gdk.Cursor.new deprecation
+* Add atk code for accessibility
+* Fixes #304
+* Add a --no-check parameter so that checks in check.py are not mandatory
+* Changed elif's for if's as partition layout must comply.
+* Enforce a /boot partition when using btrfs
+* kcalc package changed its name
+* Another KDE package was renamed (kdeutils-print-manager)
+* mount special dirs before running gummiboot install
+* Fixed malformed string in rank_mirrors
+* Fix gummiboot entries
+* Efi partition only exists with efi and grub2
+* Changed advanced partition requirements
+* Fix "Can't convert NoneType object to str" error
+* Fix gummiboot installation
+* Do not check for hdparm presence
+* Merge pull request #295 from Kirek/master
+* Fixes /home (not root and boot) bug mounting problem in advanced
+* Fix is_ssd function. The previous function crashes. (Ramon Buldó)
+* Trap exception if setxkbmap can't be set
+* bluedevil package was renamed upstream.
+* Fix an open entry in bootloader. Also added some debug messages.
+* Merge pull request #289 from prescott66/patch-5
+* Add gnome calendar to Gnome DE (Dušan Kazik)
+* Add Seahorse to manage passwords in Gnome
+* Merge pull request #288 from prescott66/patch-4
+* Fixed issue #284 (Dušan Kazik)
+* Added gnome-font-viewer
+* Merge pull request #248 from Llumex03/master
+* Merge pull request #287 from Kirek/master
+* Use default value when creating last partition with sgdisk. (Ramon Buldó)
+* When calculating partition sizes, return integers (Ramon Buldó)
+* swap and /boot don't necessarilly exist in advanced install. (Ramon Buldó)
+* Shell=True is used when check_call is used with a single string (Ramon Buldó)
+* Use same order as get_devices function when formatting partitions (Ramon Buldó)
+* Fix wrong device number in efi auto_partition (Ramon Buldó)
+* Fix language screen margin
+* Increase timeout for packages.xml and don't bail if we cant retrieve it
+* Move package list filter to the correct place
+* Prevent empty strings in package list. Fixes #283
+* Remove link when running run script
+* Move package list filter to the correct place
+* Changed to GLib.MAXFLOAT
+* Leave GPT for UEFI for the time being.
+* Ensure iso pkg cache is used when no cache is provided by user
+* Use totem in Mate DE (mate-mplayer no longer exists)
+
 * 0.7.x development series
 
 - Updated timezone and welcome screens appearance
@@ -49,4 +211,3 @@ Changelog
 Not fully finished, but improved:
 - Alongside installation
 - Autopartition GPT code.
-
