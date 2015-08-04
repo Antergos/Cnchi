@@ -44,6 +44,7 @@ import info
 import updater
 from raven.handlers.logging import SentryHandler
 from raven.conf import setup_logging
+from raven import Client as RavenClient
 
 # Command line options
 cmd_line = None
@@ -157,9 +158,10 @@ def setup_logging():
         myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
         logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
-    # Sentry logger
+        # Sentry logger
         sentry_dsn = get_sentry_dsn()
-        sentry_handler = SentryHandler(sentry_dsn)
+        client = RavenClient(dsn=sentry_dsn, include_paths=['cnchi'], release=info.CNCHI_VERSION)
+        sentry_handler = SentryHandler(client)
         setup_logging(sentry_handler)
 
 

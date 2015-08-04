@@ -1,3 +1,4 @@
+[2015-08-04 04:46:22 -0500]  add sentry logging handler                                             Dustin Falgout  {ab91f53}
 [2015-07-27 20:09:38 +0200]  Updated changelog.txt                                                      karasu      {6f36997}
 [2015-07-27 10:56:12 +0200]  Only send logs through TCP if asked (cnchi.log file is always used)        karasu      {9b89ee8}
 [2015-07-27 10:52:39 +0200]  Fix keyboard screen when using other languages than English                karasu      {c440c24}
