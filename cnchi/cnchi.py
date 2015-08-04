@@ -42,6 +42,8 @@ from gi.repository import Gio, Gtk, GObject
 import misc.misc as misc
 import info
 import updater
+from raven.handlers.logging import SentryHandler
+from raven.conf import setup_logging
 
 # Command line options
 cmd_line = None
@@ -154,6 +156,21 @@ def setup_logging():
         uid = str(uuid.uuid1()).split("-")
         myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
         logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
+
+    # Sentry logger
+        sentry_dsn = get_sentry_dsn()
+        sentry_handler = SentryHandler(sentry_dsn)
+        setup_logging(sentry_handler)
+
+
+def get_sentry_dsn():
+    config_path = '/etc/sentry-raven.conf'
+    if os.path.exists(config_path):
+        with open(config_path) as raven_conf:
+            sentry_dsn = [x.strip() for x in raven_conf.readline()]
+
+            return sentry_dsn
+
 
 def check_gtk_version():
     """ Check GTK version """
