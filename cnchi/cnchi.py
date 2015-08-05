@@ -45,9 +45,8 @@ import updater
 
 try:
     from raven.handlers.logging import SentryHandler
-    #from raven.conf import setup_logging
-    import raven.conf
     from raven import Client as RavenClient
+    import raven.conf
     RAVEN_AVAILABLE = True
 except ImportError:
     RAVEN_AVAILABLE = False
@@ -116,8 +115,8 @@ def setup_logging():
 
     logger.setLevel(log_level)
 
-    filter = ContextFilter()
-    logger.addFilter(filter)
+    context_filter = ContextFilter()
+    logger.addFilter(context_filter)
 
     # Log format
     formatter = logging.Formatter(
@@ -141,44 +140,54 @@ def setup_logging():
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
 
-    # Socket logger
     if cmd_line.log_server:
         log_server = cmd_line.log_server
 
-        socket_handler = logging.handlers.SocketHandler(
-            log_server,
-            logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+        if log_server == "raven" or log_server == "sentry":
+            # Sentry logger
+            if RAVEN_AVAILABLE:
+                sentry_dsn = get_sentry_dsn()
+                if sentry_dsn:
+                    client = RavenClient(
+                        dsn=sentry_dsn,
+                        include_paths=['cnchi'],
+                        release=info.CNCHI_VERSION)
+                    sentry_handler = SentryHandler(client)
+                    raven.conf.setup_logging(sentry_handler)
+                    sentry_handler.setLevel(logging.WARNING)
+                    logging.info(_("Sending Cnchi log messages to sentry server, too (using python-raven)."))
+                else:
+                    logging.warning(_("Cannot read the sentry server DSN."))
+                    logging.warning(_("Logging to sentry will not be available"))
+            else:
+                logging.warning(_("Cannot import python-raven."))
+                logging.warning(_("Logging to sentry will not be available"))
+        else:
+            # Socket logger
+            socket_handler = logging.handlers.SocketHandler(
+                log_server,
+                logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+            socket_formatter = logging.Formatter(
+                fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S")
+            socket_handler.setFormatter(socket_formatter)
+            logger.addHandler(socket_handler)
 
-        socket_formatter = logging.Formatter(
-            fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S")
-        socket_handler.setFormatter(socket_formatter)
+            # Also add uuid filter to requests logs
+            logger_requests = logging.getLogger("requests.packages.urllib3.connectionpool")
+            logger_requests.addFilter(context_filter)
 
-        logger.addHandler(socket_handler)
-
-        # Also add uuid filter to requests logs
-        logger = logging.getLogger("requests.packages.urllib3.connectionpool")
-        logger.addFilter(filter)
-
-        uid = str(uuid.uuid1()).split("-")
-        myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
-
-        # Sentry logger
-        if RAVEN_AVAILABLE:
-            sentry_dsn = get_sentry_dsn()
-            if sentry_dsn:
-                client = RavenClient(dsn=sentry_dsn, include_paths=['cnchi'], release=info.CNCHI_VERSION)
-                sentry_handler = SentryHandler(client)
-                raven.conf.setup_logging(sentry_handler)
+            uid = str(uuid.uuid1()).split("-")
+            myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+            logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
 
 def get_sentry_dsn():
-    config_path = '/etc/sentry-raven.conf'
+    config_path = '/etc/sentry-dsn.conf'
     sentry_dsn = None
     if os.path.exists(config_path):
         with open(config_path) as raven_conf:
-            sentry_dsn = [x.strip() for x in raven_conf.readline()]
+            sentry_dsn = raven_conf.readline().strip()
     return sentry_dsn
 
 
