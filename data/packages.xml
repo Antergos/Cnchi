@@ -203,6 +203,7 @@
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-keyring</pkgname>
         <pkgname>gvfs-mtp</pkgname>
         <pkgname>light-locker</pkgname>
         <pkgname>light-locker-settings</pkgname>
