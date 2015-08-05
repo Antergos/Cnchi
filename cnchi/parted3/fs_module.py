@@ -86,6 +86,35 @@ def get_type(part):
     return ret
 
 
+def get_pknames():
+    """ PKNAME: internal parent kernel device name """
+    pknames = {}
+    info = None
+    try:
+        cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
+        info = subprocess.check_output(cmd).decode().strip().split('\n')
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
+
+    if info:
+        # skip header
+        info = info[1:]
+        skip_list = ["disk", "rom", "loop", "arch_root-image"]
+        for line in info:
+            slip_line = False
+            for skip in skip_list:
+                if skip in line:
+                    skip_line = True
+                    break
+            if not skip_line:
+                line = line.split()
+                try:
+                    pknames[line[0]] = line[1]
+                except IndexError as err:
+                    pass
+    return pknames
+
+
 @misc.raise_privileges
 def label_fs(fstype, part, label):
     """ Get filesystem label """

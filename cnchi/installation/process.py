@@ -767,6 +767,9 @@ class InstallationProcess(multiprocessing.Process):
         use_luks = self.settings.get("use_luks")
         use_lvm = self.settings.get("use_lvm")
 
+        # Use lsblk to be able to match LUKS UUID with mapper UUID
+        pknames = fs.get_pknames()
+
         for mount_point in self.mount_devices:
             partition_path = self.mount_devices[mount_point]
             uuid = fs.get_uuid(partition_path)
@@ -822,14 +825,28 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add all LUKS partitions from Advanced Install (except root).
             if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
-                os.chmod(crypttab_path, 0o666)
+                # As the mapper with the filesystem will have a different UUID than
+                # the partition it is encrypted in, we have to take care of this here.
+                # Then we will be able to add it to crypttab
+
                 vol_name = partition_path[len("/dev/mapper/"):]
+                try:
+                    luks_partition_path = pknames[vol_name]
+                except KeyError:
+                    logging.error(_("Can't find the PKNAME value of %s"), partition_path)
+                    continue
+
+                luks_uuid = fs.get_uuid(luks_partition_path)
+
+                # OK, add it to crypttab with the correct uuid
+                os.chmod(crypttab_path, 0o666)
                 with open(crypttab_path, 'a') as crypttab_file:
-                    line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, uuid)
+                    line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
                     crypttab_file.write(line)
                     logging.debug(_("Added to crypttab : %s"), line)
                 os.chmod(crypttab_path, 0o600)
 
+                # Finally, the fstab line to mount the unencrypted fs
                 txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
                 all_lines.append(txt)
                 logging.debug(_("Added to fstab : %s"), txt)
@@ -853,13 +870,6 @@ class InstallationProcess(multiprocessing.Process):
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
 
-            '''
-            is_ssd = False
-            for ssd_device in self.ssd:
-                if ssd_device in partition_path:
-                    is_ssd = True
-            '''
-
             logging.debug("Device list : {0}".format(self.ssd))
             device = re.sub("[0-9]+$", "", partition_path)
             is_ssd = self.ssd.get(device)
@@ -874,7 +884,7 @@ class InstallationProcess(multiprocessing.Process):
                 elif "ext3" in myfmt or "ext4" in myfmt:
                     opts = 'defaults,rw,relatime,data=ordered'
                 else:
-                    opts = "defaults,rw,relatime"
+                    opts = 'defaults,rw,relatime'
             else:
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
