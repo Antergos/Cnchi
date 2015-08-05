@@ -61,7 +61,10 @@ class Bootloader(object):
 
         if "/boot" in self.mount_devices:
             boot_device = self.mount_devices["/boot"]
-            self.boot_uuid = fs.get_uuid(boot_device)
+        else:
+            # No dedicated /boot partition
+            boot_device = self.mount_devices["/"]
+        self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
         """ Installs the bootloader """
