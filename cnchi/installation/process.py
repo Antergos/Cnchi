@@ -831,20 +831,26 @@ class InstallationProcess(multiprocessing.Process):
 
                 vol_name = partition_path[len("/dev/mapper/"):]
                 try:
-                    luks_partition_path = pknames[vol_name]
+                    luks_partition_path = "/dev/" + pknames[vol_name]
                 except KeyError:
                     logging.error(_("Can't find the PKNAME value of %s"), partition_path)
                     continue
 
                 luks_uuid = fs.get_uuid(luks_partition_path)
 
-                # OK, add it to crypttab with the correct uuid
-                os.chmod(crypttab_path, 0o666)
-                with open(crypttab_path, 'a') as crypttab_file:
-                    line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
-                    crypttab_file.write(line)
-                    logging.debug(_("Added to crypttab : %s"), line)
-                os.chmod(crypttab_path, 0o600)
+                if len(luks_uuid) > 0:
+                    # OK, add it to crypttab with the correct uuid
+                    os.chmod(crypttab_path, 0o666)
+                    with open(crypttab_path, 'a') as crypttab_file:
+                        line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
+                        crypttab_file.write(line)
+                        logging.debug(_("Added to crypttab : %s"), line)
+                    os.chmod(crypttab_path, 0o600)
+                else:
+                    logging.error(
+                        _("Can't add luks uuid to crypttab for %s partition"),
+                        luks_partition_path)
+                    continue
 
                 # Finally, the fstab line to mount the unencrypted fs
                 txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)

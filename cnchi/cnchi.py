@@ -157,11 +157,15 @@ def setup_logging():
                     sentry_handler.setLevel(logging.WARNING)
                     logging.info(_("Sending Cnchi log messages to sentry server, too (using python-raven)."))
                 else:
-                    logging.warning(_("Cannot read the sentry server DSN."))
-                    logging.warning(_("Logging to sentry will not be available"))
+                    logging.warning(
+                        "%s %s",
+                        _("Cannot read the sentry server DSN."),
+                        _("Logging to sentry will not be possible."))
             else:
-                logging.warning(_("Cannot import python-raven."))
-                logging.warning(_("Logging to sentry will not be available"))
+                logging.warning(
+                    "%s %s",
+                    _("Cannot import python-raven."),
+                    _("Logging to sentry will not be possible."))
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
