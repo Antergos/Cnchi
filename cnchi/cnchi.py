@@ -42,9 +42,15 @@ from gi.repository import Gio, Gtk, GObject
 import misc.misc as misc
 import info
 import updater
-from raven.handlers.logging import SentryHandler
-from raven.conf import setup_logging
-from raven import Client as RavenClient
+
+try:
+    from raven.handlers.logging import SentryHandler
+    #from raven.conf import setup_logging
+    import raven.conf
+    from raven import Client as RavenClient
+    RAVEN_AVAILABLE = True
+except ImportError:
+    RAVEN_AVAILABLE = False
 
 # Command line options
 cmd_line = None
@@ -159,19 +165,21 @@ def setup_logging():
         logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
         # Sentry logger
-        sentry_dsn = get_sentry_dsn()
-        client = RavenClient(dsn=sentry_dsn, include_paths=['cnchi'], release=info.CNCHI_VERSION)
-        sentry_handler = SentryHandler(client)
-        setup_logging(sentry_handler)
+        if RAVEN_AVAILABLE:
+            sentry_dsn = get_sentry_dsn()
+            if sentry_dsn:
+                client = RavenClient(dsn=sentry_dsn, include_paths=['cnchi'], release=info.CNCHI_VERSION)
+                sentry_handler = SentryHandler(client)
+                raven.conf.setup_logging(sentry_handler)
 
 
 def get_sentry_dsn():
     config_path = '/etc/sentry-raven.conf'
+    sentry_dsn = None
     if os.path.exists(config_path):
         with open(config_path) as raven_conf:
             sentry_dsn = [x.strip() for x in raven_conf.readline()]
-
-            return sentry_dsn
+    return sentry_dsn
 
 
 def check_gtk_version():
@@ -416,15 +424,6 @@ def init_cnchi():
     # Init PyObject Threads
     threads_init()
 
-
-'''
-def sigterm_handler(_signo, _stack_frame):
-    print(_signo)
-    print(_stack_frame)
-    misc.remove_temp_files()
-    logging.shutdown()
-    sys.exit(0)
-'''
 
 if __name__ == '__main__':
     init_cnchi()
