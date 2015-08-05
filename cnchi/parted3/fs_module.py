@@ -101,7 +101,7 @@ def get_pknames():
         info = info[1:]
         skip_list = ["disk", "rom", "loop", "arch_root-image"]
         for line in info:
-            slip_line = False
+            skip_line = False
             for skip in skip_list:
                 if skip in line:
                     skip_line = True
