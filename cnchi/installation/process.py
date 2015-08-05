@@ -852,10 +852,12 @@ class InstallationProcess(multiprocessing.Process):
                         luks_partition_path)
                     continue
 
-                # Finally, the fstab line to mount the unencrypted fs
-                txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
-                all_lines.append(txt)
-                logging.debug(_("Added to fstab : %s"), txt)
+                # Finally, the fstab line to mount the unencrypted file system
+                # if a mount point has been specified by the user
+                if len(mount_point) > 0:
+                    txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
+                    all_lines.append(txt)
+                    logging.debug(_("Added to fstab : %s"), txt)
                 continue
 
             # fstab uses vfat to mount fat16 and fat32 partitions
