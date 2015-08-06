@@ -29,7 +29,6 @@ import subprocess
 import os
 import logging
 import re
-# import blivet
 
 import misc.misc as misc
 import misc.validation as validation
