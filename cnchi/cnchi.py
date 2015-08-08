@@ -44,10 +44,11 @@ import info
 import updater
 
 try:
-    from raven.handlers.logging import SentryHandler
-    from raven import Client as RavenClient
-    import raven.conf
-    RAVEN_AVAILABLE = True
+    # from raven.handlers.logging import SentryHandler
+    # from raven import Client as RavenClient
+    # import raven.conf
+    # RAVEN_AVAILABLE = True
+    from bugsnag.handlers import BugsnagHandler
 except ImportError:
     RAVEN_AVAILABLE = False
 
@@ -143,9 +144,9 @@ def setup_logging():
     if cmd_line.log_server:
         log_server = cmd_line.log_server
 
-        if log_server == "raven" or log_server == "sentry":
+        if log_server in ['raven', 'sentry', 'bugsnag']:
             # Sentry logger
-            if RAVEN_AVAILABLE:
+            if RAVEN_AVAILABLE and log_server != 'bugsnag':
                 sentry_dsn = get_sentry_dsn()
                 if sentry_dsn:
                     client = RavenClient(
@@ -161,6 +162,12 @@ def setup_logging():
                         "%s %s",
                         _("Cannot read the sentry server DSN."),
                         _("Logging to sentry will not be possible."))
+
+            elif RAVEN_AVAILABLE and log_server == 'bugsnag':
+                bugsnag_api = get_sentry_dsn()
+                if bugsnag_api:
+                    logger.addHandler(BugsnagHandler(api_key=bugsnag_api))
+                    logging.info(_("Sending Cnchi log messages to bugsnag server, too (using python-bugsnag)."))
             else:
                 logging.warning(
                     "%s %s",
