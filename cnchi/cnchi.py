@@ -72,8 +72,8 @@ class CnchiApp(Gtk.Application):
     def __init__(self):
         """ Constructor. Call base class """
         Gtk.Application.__init__(self,
-            application_id="com.antergos.cnchi",
-            flags=Gio.ApplicationFlags.FLAGS_NONE)
+                                 application_id="com.antergos.cnchi",
+                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
@@ -286,7 +286,7 @@ def parse_options():
     parser.add_argument(
         "-l", "--library",
         help=_("Choose which library to use when downloading packages."
-        " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
+               " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
         nargs='?')
     parser.add_argument(
         "-n", "--no-check",
@@ -299,7 +299,7 @@ def parse_options():
     parser.add_argument(
         "-s", "--log-server",
         help=_("Choose to which log server send Cnchi logs."
-        " Expects a hostname or an IP address"),
+               " Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
         "-t", "--testing",
