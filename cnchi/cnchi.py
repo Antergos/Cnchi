@@ -47,7 +47,7 @@ try:
     # from raven.handlers.logging import SentryHandler
     # from raven import Client as RavenClient
     # import raven.conf
-    # RAVEN_AVAILABLE = True
+    RAVEN_AVAILABLE = True
     from bugsnag.handlers import BugsnagHandler
 except ImportError:
     RAVEN_AVAILABLE = False
