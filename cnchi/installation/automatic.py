@@ -46,7 +46,7 @@ from installation import install
 
 
 class InstallationAutomatic(GtkBaseBox):
-    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "automatic", prev_page, next_page)
 
         self.auto_device = None

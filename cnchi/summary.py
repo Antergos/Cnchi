@@ -59,7 +59,6 @@ class Summary(GtkBaseBox):
 
         self.process = None
         self.install_screen = None
-        self.method = None
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -120,21 +119,27 @@ class Summary(GtkBaseBox):
         # everything is done in that screen (user input, real partitioning,
         # creating fs...). Therefore, advanced screen should be split to be
         # able to show this screen (summary) in between (use stage_opts).
-        changes = self.install_screen.get_changes()
+        install_screen = self.get_install_screen()
+        changes = install_screen.get_changes()
+
+    def get_install_screen(self):
+        method = self.settings.get('partition_mode')
+        return params["main_window"].pages[method]
 
     def store_values(self):
-        self.process = Process(self.install_screen, self.callback_queue)
+        install_screen = self.get_install_screen()
+        self.process = Process(install_screen, self.callback_queue)
         self.process.start()
         return True
 
     def prepare(self, direction):
         """ Load screen """
         self.translate_ui()
-        # install_screen stores the installation screen (whether is automatic, alongside or advanced)
-        self.method = self.settings.get('partition_mode')
-        print(self.method)
-        self.install_screen = params["main_window"].pages[self.method]
         self.show_all()
+
+    def get_prev_page(self):
+        method = self.settings.get('partition_mode')
+        return method
 
 
 # When testing, no _() is available
