@@ -38,7 +38,9 @@ import parted3.fs_module as fs
 import parted3.lvm as lvm
 import parted3.used_space as used_space
 
-from installation import process as installation_process
+from installation import installation_process
+from installation import format_process
+
 import show_message as show
 
 from gtkbasebox import GtkBaseBox
@@ -60,6 +62,39 @@ COL_SSD_VISIBLE = 13
 COL_SSD_SENSITIVE = 14
 COL_ENCRYPTED = 15
 
+
+class Action(object):
+    def __init__(self, path, create, relabel, format, mount_point, encrypt):
+        self.path = path
+        self.create = create
+        self.relabel = relabel
+        self.format = format
+        self.mount_point = mount_point
+        self.encrypt = encrypt
+
+    def __str__(self):
+        txt = _("Partition {} will be: ").format(path)
+        if self.create:
+            txt += _("created") + ", "
+        else:
+            txt += _("not created") + ", "
+        if self.relabel:
+            txt += _("relabeled") + ", "
+        else:
+            txt += _("not relabeled") + ", "
+        if self.format:
+            txt += _("formatted") + ", "
+        else:
+            txt += _("not formatted") + ", "
+        if self.mount_point:
+            txt += _("mounted at {}").format(mount_point) + ", "
+        else:
+            txt += _("not mounted") + ", "
+        if self.encrypt:
+            txt += _("and encrypted.")
+        else:
+            txt += _("and not encrypted.")
+        return txt
 
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
@@ -113,7 +148,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.show_changes_grid = None
 
         # Initialize some attributes
-        self.process = None
+        self.install_process = None
+        self.format_process = None
         self.diskdic = {}
 
         # Store here ALL partitions from ALL devices
@@ -920,7 +956,9 @@ class InstallationAdvanced(GtkBaseBox):
                 logging.error(process_error)
 
         # Is it worth to show some warning message here?
-        # No, created delete list as part of confirmation screen.
+        # No, created delete list (self.to_be_deleted) as part of
+        # confirmation screen.
+
         pm.delete_partition(disk, part)
 
         # Update the partition list treeview
@@ -1799,10 +1837,10 @@ class InstallationAdvanced(GtkBaseBox):
         changelist = []
         # Store values as (path, create?, label?, format?, mount_point, encrypt?)
         if self.lv_partitions:
-            for e in self.lv_partitions:
+            for partition_path in self.lv_partitions:
                 relabel = 'No'
                 encrypt = 'No'
-                uid = self.gen_partition_uid(path=e)
+                uid = self.gen_partition_uid(path=partition_path)
                 if uid in self.stage_opts:
                     is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
                     if fmt:
@@ -1821,8 +1859,8 @@ class InstallationAdvanced(GtkBaseBox):
                             fmt = 'Yes'
                         createme = 'Yes'
                     else:
-                        if e in self.orig_label_dic:
-                            if self.orig_label_dic[e] == lbl:
+                        if partition_path in self.orig_label_dic:
+                            if self.orig_label_dic[partition_path] == lbl:
                                 relabel = 'No'
                             else:
                                 relabel = 'Yes'
@@ -1840,7 +1878,10 @@ class InstallationAdvanced(GtkBaseBox):
                     encrypt = 'No'
 
                 if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
-                    changelist.append((e, createme, relabel, fmt, mnt, encrypt))
+                    # changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
+                    changelist.append(Action(partition_path, createme, relabel, fmt, mnt, encrypt))
+                    msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
+                    logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
         if self.disks:
             for disk_path in self.disks:
@@ -1942,7 +1983,8 @@ class InstallationAdvanced(GtkBaseBox):
                         mnt = ''
 
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
-                        changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
+                        #changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
+                        changelist.append(Action(partition_path, createme, relabel, fmt, mnt, encrypt))
                         msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
                         logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
@@ -1987,9 +2029,9 @@ class InstallationAdvanced(GtkBaseBox):
             y += 1
 
             # Partitions that will be modified
-            for ea in changelist:
+            for action in changelist:
                 x = 0
-                for txt in ea:
+                for txt in action:
                     lbl = Gtk.Label(label=txt, margin=margin)
                     grid.attach(lbl, x, y, 1, 1)
                     x += 1
@@ -2038,11 +2080,12 @@ class InstallationAdvanced(GtkBaseBox):
         # self.stop_advanced_progressbar = False
         # self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
 
-        # Apply partition changes
-        self.create_staged_partitions()
+        # Get ready to apply partition changes when asked by summary.py
+        # self.apply_changes()
+        self.prepare_format_process()
 
-        # Start the installation process
-        self.start_installation()
+        # Prepare the installation process
+        self.prepare_installation()
 
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
         # self.stop_advanced_progressbar = True
@@ -2073,8 +2116,20 @@ class InstallationAdvanced(GtkBaseBox):
             return True
     '''
 
-    def create_staged_partitions(self):
+    def get_mount_devices(self):
+        pass
+
+    def get_fs_devices(self):
+        pass
+
+    # create_staged_partitions
+    def prepare_format_process(self):
+    # def apply_changes(self):
         """ Create staged partitions """
+
+
+
+
         # Sometimes a swap partition can still be active at this point
         try:
             cmd = ["swapon", "--show=NAME", "--noheadings"]
@@ -2166,11 +2221,11 @@ class InstallationAdvanced(GtkBaseBox):
                             txt = txt.format(partition_path, vol_name)
                             logging.info(txt)
                             if not self.testing:
-                                # Do real encryption here!
-                                # TODO: Show a progress dialog here as setup_luks is slow
                                 with misc.raised_privileges():
-                                    ap.setup_luks(luks_device=partition_path, luks_name=vol_name,
-                                                  luks_pass=password)
+                                    ap.setup_luks(
+                                        luks_device=partition_path,
+                                        luks_name=vol_name,
+                                        luks_pass=password)
                                 self.settings.set("use_luks", True)
                                 luks_device = "/dev/mapper/" + vol_name
                                 error, msg = fs.create_fs(luks_device, fisy, lbl)
@@ -2216,8 +2271,8 @@ class InstallationAdvanced(GtkBaseBox):
                                     # a partition shouldn't be fatal
                                     logging.error(label_error)
 
-    def start_installation(self):
-        """ Start installation process """
+    def prepare_installation(self):
+        """ Prepare installation process """
 
         # Fill fs_devices and mount_devices dicts that are going to be used by InstallationProcess
         fs_devices = {}
@@ -2270,7 +2325,7 @@ class InstallationAdvanced(GtkBaseBox):
             logging.info(msg)
 
         if not self.testing:
-            self.process = installation_process.InstallationProcess(
+            self.install_process = installation_process.InstallationProcess(
                 self.settings,
                 self.callback_queue,
                 mount_devices,
@@ -2278,8 +2333,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.alternate_package_list,
                 self.ssd,
                 self.blvm)
-
-            self.process.start()
+            # self.install_process.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
 

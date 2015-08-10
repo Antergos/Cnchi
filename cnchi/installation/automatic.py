@@ -38,8 +38,6 @@ if __name__ == '__main__':
 
 import misc.misc as misc
 import parted3.fs_module as fs
-from installation import process as installation_process
-
 import parted
 
 from gtkbasebox import GtkBaseBox
