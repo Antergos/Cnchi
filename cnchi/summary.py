@@ -57,9 +57,9 @@ class Summary(GtkBaseBox):
         if scrolled_window:
             scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
-        # install_screen stores the installation screen (whether is automatic, alongside or advanced)
-        self.method = self.settings.get('partition_mode')
-        self.install_screen = param["main_window"].pages[method]
+        self.process = None
+        self.install_screen = None
+        self.method = None
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -130,6 +130,10 @@ class Summary(GtkBaseBox):
     def prepare(self, direction):
         """ Load screen """
         self.translate_ui()
+        # install_screen stores the installation screen (whether is automatic, alongside or advanced)
+        self.method = self.settings.get('partition_mode')
+        print(self.method)
+        self.install_screen = params["main_window"].pages[self.method]
         self.show_all()
 
 

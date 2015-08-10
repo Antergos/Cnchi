@@ -42,6 +42,8 @@ import parted
 
 from gtkbasebox import GtkBaseBox
 
+from installation import install
+
 
 class InstallationAutomatic(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
@@ -58,13 +60,16 @@ class InstallationAutomatic(GtkBaseBox):
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
         self.devices = {}
-        self.process = None
+        self.installation = None
 
         self.bootloader = "grub2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
         self.bootloader_device = {}
+
+        self.mount_devices = {}
+        self.fs_devices = {}
 
     def translate_ui(self):
         txt = _("Select drive:")
@@ -280,9 +285,6 @@ class InstallationAutomatic(GtkBaseBox):
 
 
     def set_bootloader(self):
-        txt = _("Cnchi will install Antergos on device %s")
-        logging.info(txt, self.auto_device)
-
         checkbox = self.ui.get_object("bootloader_device_check")
         if not checkbox.get_active():
             self.settings.set('bootloader_install', False)
@@ -296,20 +298,24 @@ class InstallationAutomatic(GtkBaseBox):
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
+    def run_install(self):
+        txt = _("Cnchi will install Antergos on device %s")
+        logging.info(txt, self.auto_device)
+
         self.settings.set('auto_device', self.auto_device)
 
         ssd = {self.auto_device: fs.is_ssd(self.auto_device)}
 
         if not self.testing:
-            self.process = installation_process.InstallationProcess(
+            self.installation = install.Installation(
                 self.settings,
                 self.callback_queue,
-                mount_devices,
-                fs_devices,
+                self.mount_devices,
+                self.fs_devices,
                 self.alternate_package_list,
                 ssd)
 
-            self.process.start()
+            self.installation.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
 

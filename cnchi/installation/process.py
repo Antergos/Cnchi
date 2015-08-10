@@ -31,6 +31,7 @@ import logging
 
 from misc.misc import InstallError
 
+
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
 
@@ -42,7 +43,7 @@ class Process(multiprocessing.Process):
         self.install_screen = install_screen
 
     def run(self):
-        """ Calls run_format and run_installation and takes care of exceptions """
+        """ Calls run_format and run_install and takes care of exceptions """
         try:
             self.install_screen.run_format()
             self.install_screen.run_install()

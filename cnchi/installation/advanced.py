@@ -38,7 +38,7 @@ import parted3.fs_module as fs
 import parted3.lvm as lvm
 import parted3.used_space as used_space
 
-from installation import process
+from installation import install
 
 import show_message as show
 
@@ -105,6 +105,10 @@ class InstallationAdvanced(GtkBaseBox):
         # Init class vars
 
         self.blvm = False
+
+        self.installation = None
+        self.mount_devices = {}
+        self.fs_devices = {}
 
         self.lv_partitions = []
         self.disks_changed = []
@@ -2069,15 +2073,13 @@ class InstallationAdvanced(GtkBaseBox):
         changelist.sort()
 
         self.disable_all_widgets()
-
         response = self.show_changes(changelist)
         if response == Gtk.ResponseType.CANCEL:
             self.enable_all_widgets()
             return False
+        self.enable_all_widgets()
 
         self.set_bootloader()
-
-        self.enable_all_widgets()
 
         return True
 
@@ -2092,19 +2094,20 @@ class InstallationAdvanced(GtkBaseBox):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-    '''
-    def on_advanced_progressbar_timeout(self):
-        """ Update value on the progress bar """
-        if self.stop_advanced_progressbar:
-            return False
+    def set_bootloader(self):
+        checkbox = self.ui.get_object("bootloader_device_check")
+        if checkbox.get_active() is False:
+            self.settings.set('bootloader_install', False)
+            logging.warning(_("Cnchi will not install any bootloader"))
         else:
-            self.advanced_progressbar.pulse()
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-            return True
-    '''
+            self.settings.set('bootloader_install', True)
+            self.settings.set('bootloader_device', self.bootloader_device)
 
-    # create_staged_partitions
+            self.settings.set('bootloader', self.bootloader)
+            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = msg.format(self.bootloader, self.bootloader_device)
+            logging.info(msg)
+
     def run_format(self):
         """ Create staged partitions """
         logging.debug(_("Creating partitions and their filesystems..."))
@@ -2250,26 +2253,12 @@ class InstallationAdvanced(GtkBaseBox):
                                     # a partition shouldn't be fatal
                                     logging.error(label_error)
 
-    def set_bootloader(self):
-        checkbox = self.ui.get_object("bootloader_device_check")
-        if checkbox.get_active() is False:
-            self.settings.set('bootloader_install', False)
-            logging.warning(_("Cnchi will not install any bootloader"))
-        else:
-            self.settings.set('bootloader_install', True)
-            self.settings.set('bootloader_device', self.bootloader_device)
-
-            self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader {0} in device {1}")
-            msg = msg.format(self.bootloader, self.bootloader_device)
-            logging.info(msg)
-
     def run_install(self):
         """ Start installation process """
 
-        # Fill fs_devices and mount_devices dicts that are going to be used by InstallationProcess
-        fs_devices = {}
-        mount_devices = {}
+        # Fill fs_devices and mount_devices dicts that are going to be used by the installation
+        self.fs_devices = {}
+        self.mount_devices = {}
         for disk_path in self.disks:
             (disk, result) = self.disks[disk_path]
             partitions = pm.get_partitions(disk)
@@ -2280,12 +2269,12 @@ class InstallationAdvanced(GtkBaseBox):
                 uid = self.gen_partition_uid(path=ppath)
                 if uid in self.stage_opts:
                     (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
-                    mount_devices[mount_point] = ppath
-                    fs_devices[ppath] = fs_type
+                    self.mount_devices[mount_point] = ppath
+                    self.fs_devices[ppath] = fs_type
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
                     if use_luks and len(vol_name) > 0:
-                        mount_devices[mount_point] = "/dev/mapper/" + vol_name
+                        self.mount_devices[mount_point] = "/dev/mapper/" + vol_name
             for partition_path in partition_list:
                 uid = self.gen_partition_uid(partition=partitions[partition_path])
                 if uid in self.stage_opts:
@@ -2293,28 +2282,27 @@ class InstallationAdvanced(GtkBaseBox):
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         # Do not mount extended or bios-gpt-boot partitions
                         continue
-                    mount_devices[mount_point] = partition_path
-                    fs_devices[partition_path] = fs_type
+                    self.mount_devices[mount_point] = partition_path
+                    self.fs_devices[partition_path] = fs_type
 
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
                     if use_luks and len(vol_name) > 0:
                         luks_device = "/dev/mapper/" + vol_name
-                        mount_devices[mount_point] = luks_device
-                        del fs_devices[partition_path]
-                        fs_devices[luks_device] = fs_type
-
+                        self.mount_devices[mount_point] = luks_device
+                        del self.fs_devices[partition_path]
+                        self.fs_devices[luks_device] = fs_type
 
         if not self.testing:
-            self.install_process = process.Process(
+            self.installation = install.Installation(
                 self.settings,
                 self.callback_queue,
-                mount_devices,
-                fs_devices,
+                self.mount_devices,
+                self.fs_devices,
                 self.alternate_package_list,
                 self.ssd,
                 self.blvm)
-            # self.install_process.start()
+            self.installation.start()
         else:
             logging.warning(_("Testing mode. Cnchi will not change anything!"))
 
