@@ -176,8 +176,8 @@ class InstallationAutomatic(GtkBaseBox):
         if luks_password != "":
             logging.debug(_("A root LUKS password has been set"))
 
-        logging.info(_("Automatic install on %s"), self.auto_device)
-        self.start_installation()
+        self.set_bootloader()
+
         return True
 
     def on_luks_password_changed(self, widget):
@@ -256,7 +256,30 @@ class InstallationAutomatic(GtkBaseBox):
         message.destroy()
         return response
 
-    def start_installation(self):
+    def run_format(self):
+        logging.debug(_("Creating partitions and their filesystems in %s"), self.auto_device)
+
+        # If no key password is given a key file is generated and stored in /boot
+        # (see auto_partition.py)
+
+        auto = auto_partition.AutoPartition(dest_dir=DEST_DIR,
+                                            auto_device=self.auto_device,
+                                            use_luks=self.settings.get("use_luks"),
+                                            luks_password=self.settings.get("luks_root_password"),
+                                            use_lvm=self.settings.get("use_lvm"),
+                                            use_home=self.settings.get("use_home"),
+                                            bootloader=self.settings.get("bootloader"),
+                                            callback_queue=self.callback_queue)
+        auto.run()
+
+        # Get mount_devices and fs_devices
+        # (mount_devices will be used when configuring GRUB in modify_grub_default)
+        # (fs_devices will be used when configuring the fstab file)
+        self.mount_devices = auto.get_mount_devices()
+        self.fs_devices = auto.get_fs_devices()
+
+
+    def set_bootloader(self):
         txt = _("Cnchi will install Antergos on device %s")
         logging.info(txt, self.auto_device)
 
@@ -272,12 +295,6 @@ class InstallationAutomatic(GtkBaseBox):
             msg = _("Antergos will install the bootloader '{0}' in device '{1}'")
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
-
-        # We don't need to pass which devices will be mounted nor which filesystems
-        # the devices will be formatted with, as auto_partition.py takes care of everything
-        # in an automatic installation.
-        mount_devices = {}
-        fs_devices = {}
 
         self.settings.set('auto_device', self.auto_device)
 

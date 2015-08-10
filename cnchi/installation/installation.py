@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Installation thread module. """
+""" Installation process module. """
 
 import crypt
 import logging
@@ -36,8 +36,6 @@ import time
 import re
 import urllib.request
 import urllib.error
-
-import traceback
 
 from mako.template import Template
 
@@ -89,17 +87,16 @@ class Installation(object):
     """ Installation process thread class """
 
     def __init__(self, settings, callback_queue, mount_devices,
-                 fs_devices, alternate_package_list="", ssd=None, blvm=False):
+                 fs_devices, ssd=None, blvm=False):
         """ Initialize installation class """
         multiprocessing.Process.__init__(self)
-
-        self.alternate_package_list = alternate_package_list
 
         self.callback_queue = callback_queue
         self.settings = settings
         self.method = self.settings.get('partition_mode')
         msg = _("Installing using the '{0}' method").format(self.method)
         self.queue_event('info', msg)
+        self.alternate_package_list = self.settings.get('alternate_package_list')
 
         # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
@@ -165,7 +162,7 @@ class Installation(object):
                 tries += 1
 
     @misc.raise_privileges
-    def run_installation(self):
+    def start(self):
         """ Run installation """
 
         '''

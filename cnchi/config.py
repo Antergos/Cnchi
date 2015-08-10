@@ -37,6 +37,7 @@ class Settings(object):
         self.settings = multiprocessing.Queue(1)
 
         self.settings.put({
+            'alternate_package_list': '',
             'auto_device': '/dev/sda',
             'bootloader': 'grub2',
             'bootloader_device': '/dev/sda',

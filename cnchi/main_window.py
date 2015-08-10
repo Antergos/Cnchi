@@ -30,7 +30,6 @@ import os
 import sys
 import multiprocessing
 import logging
-import queue
 import config
 import welcome
 import language
@@ -43,10 +42,10 @@ import keymap
 import timezone
 import user_info
 import slides
+import summary
 import misc.misc as misc
 import info
 import show_message as show
-
 from installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
@@ -179,10 +178,15 @@ class MainWindow(Gtk.ApplicationWindow):
         logging.info(_("Using %s to download packages"),
             self.settings.get("download_library"))
 
+        if cmd_line.packagelist:
+            self.settings.set('alternate_package_list', cmd_line.packagelist)
+            logging.info(_("Using '%s' file as package list"), self.settings.get('alternate_package_list'))
+
         self.set_titlebar(self.header)
 
         # Prepare params dict to pass common parameters to all screens
         self.params = dict()
+        self.params['main_window'] = self
         self.params['header'] = self.header
         self.params['ui_dir'] = self.ui_dir
         self.params['forward_button'] = self.forward_button
@@ -191,12 +195,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
         self.params['process_list'] = self.process_list
-
-        if cmd_line.packagelist:
-            self.params['alternate_package_list'] = cmd_line.packagelist
-            logging.info(_("Using '%s' file as package list"), self.params['alternate_package_list'])
-        else:
-            self.params['alternate_package_list'] = ""
 
         self.params['checks_are_optional'] = cmd_line.no_check
 
@@ -305,6 +303,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["installation_alongside"] = None
 
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
+        self.pages["summary"] = summary.Summary(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
 

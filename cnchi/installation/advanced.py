@@ -38,8 +38,7 @@ import parted3.fs_module as fs
 import parted3.lvm as lvm
 import parted3.used_space as used_space
 
-from installation import installation_process
-from installation import format_process
+from installation import process
 
 import show_message as show
 
@@ -2076,19 +2075,8 @@ class InstallationAdvanced(GtkBaseBox):
             self.enable_all_widgets()
             return False
 
-        self.set_cursor(Gdk.CursorType.WATCH)
-        # self.stop_advanced_progressbar = False
-        # self.advanced_progressbar_timeout_id = GLib.timeout_add(1000, self.on_advanced_progressbar_timeout)
+        self.set_bootloader()
 
-        # Get ready to apply partition changes when asked by summary.py
-        # self.apply_changes()
-        self.prepare_format_process()
-
-        # Prepare the installation process
-        self.prepare_installation()
-
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-        # self.stop_advanced_progressbar = True
         self.enable_all_widgets()
 
         return True
@@ -2116,19 +2104,10 @@ class InstallationAdvanced(GtkBaseBox):
             return True
     '''
 
-    def get_mount_devices(self):
-        pass
-
-    def get_fs_devices(self):
-        pass
-
     # create_staged_partitions
-    def prepare_format_process(self):
-    # def apply_changes(self):
+    def run_format(self):
         """ Create staged partitions """
-
-
-
+        logging.debug(_("Creating partitions and their filesystems..."))
 
         # Sometimes a swap partition can still be active at this point
         try:
@@ -2155,7 +2134,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
 
-            apartitions = list(partitions) + self.lv_partitions
+            all_partitions = list(partitions) + self.lv_partitions
 
             # Checks if a boot partition exists
             noboot = True
@@ -2163,7 +2142,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if self.stage_opts[allopts][2] == '/boot' or self.stage_opts[allopts][2] == '/boot/efi':
                     noboot = False
 
-            for partition_path in apartitions:
+            for partition_path in all_partitions:
                 # Get label, mount point and filesystem of staged partitions
                 uid = self.gen_partition_uid(path=partition_path)
                 if uid in self.stage_opts:
@@ -2271,8 +2250,22 @@ class InstallationAdvanced(GtkBaseBox):
                                     # a partition shouldn't be fatal
                                     logging.error(label_error)
 
-    def prepare_installation(self):
-        """ Prepare installation process """
+    def set_bootloader(self):
+        checkbox = self.ui.get_object("bootloader_device_check")
+        if checkbox.get_active() is False:
+            self.settings.set('bootloader_install', False)
+            logging.warning(_("Cnchi will not install any bootloader"))
+        else:
+            self.settings.set('bootloader_install', True)
+            self.settings.set('bootloader_device', self.bootloader_device)
+
+            self.settings.set('bootloader', self.bootloader)
+            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = msg.format(self.bootloader, self.bootloader_device)
+            logging.info(msg)
+
+    def run_install(self):
+        """ Start installation process """
 
         # Fill fs_devices and mount_devices dicts that are going to be used by InstallationProcess
         fs_devices = {}
@@ -2311,21 +2304,9 @@ class InstallationAdvanced(GtkBaseBox):
                         del fs_devices[partition_path]
                         fs_devices[luks_device] = fs_type
 
-        checkbox = self.ui.get_object("bootloader_device_check")
-        if checkbox.get_active() is False:
-            self.settings.set('bootloader_install', False)
-            logging.warning(_("Cnchi will not install any bootloader"))
-        else:
-            self.settings.set('bootloader_install', True)
-            self.settings.set('bootloader_device', self.bootloader_device)
-
-            self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader {0} in device {1}")
-            msg = msg.format(self.bootloader, self.bootloader_device)
-            logging.info(msg)
 
         if not self.testing:
-            self.install_process = installation_process.InstallationProcess(
+            self.install_process = process.Process(
                 self.settings,
                 self.callback_queue,
                 mount_devices,

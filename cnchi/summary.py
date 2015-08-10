@@ -36,6 +36,8 @@ import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
 
+from installation.process import Process
+
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -54,6 +56,10 @@ class Summary(GtkBaseBox):
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
             scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+
+        # install_screen stores the installation screen (whether is automatic, alongside or advanced)
+        self.method = self.settings.get('partition_mode')
+        self.install_screen = param["main_window"].pages[method]
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -114,9 +120,11 @@ class Summary(GtkBaseBox):
         # everything is done in that screen (user input, real partitioning,
         # creating fs...). Therefore, advanced screen should be split to be
         # able to show this screen (summary) in between (use stage_opts).
+        changes = self.install_screen.get_changes()
 
     def store_values(self):
-        """ Continue """
+        self.process = Process(self.install_screen, self.callback_queue)
+        self.process.start()
         return True
 
     def prepare(self, direction):

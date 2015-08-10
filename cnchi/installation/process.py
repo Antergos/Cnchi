@@ -22,61 +22,62 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Installation thread module. """
+""" Format and Installation process module. """
 
 import multiprocessing
+import subprocess
+import traceback
+import logging
 
-from installation import Installation
-from installation import Format
+from misc.misc import InstallError
 
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
 
-    def __init__(self, settings, callback_queue, mount_devices, fs_devices,  alternate_package_list="", ssd=None, blvm=False):
-
-        """ Initialize installation class """
+    def __init__(self, install_screen, callback_queue):
+        """ Initialize process class """
         multiprocessing.Process.__init__(self)
 
-        self.alternate_package_list = alternate_package_list
         self.callback_queue = callback_queue
-        self.settings = settings
-        self.method = self.settings.get('partition_mode')
-
-        # This flag tells us if there is a lvm partition (from advanced install)
-        # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
-        self.blvm = blvm
-
-        if ssd is not None:
-            self.ssd = ssd
-        else:
-            self.ssd = {}
-
-        self.mount_devices = mount_devices
-        self.fs_devices = fs_devices
-
-        self.running = True
-        self.error = False
-
-        # Initialize some vars that are correctly initialized elsewhere
-        self.auto_device = ""
-        self.packages = []
-        self.pacman = None
-        self.vbox = "False"
-
+        self.install_screen = install_screen
 
     def run(self):
-        """ Calls run_installation and takes care of exceptions """
+        """ Calls run_format and run_installation and takes care of exceptions """
+        try:
+            self.install_screen.run_format()
+            self.install_screen.run_install()
+        except subprocess.CalledProcessError as process_error:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            logging.error(_("Error running command %s"), process_error.cmd)
+            logging.error(_("Output: %s"), process_error.output)
+            for line in trace:
+                logging.error(line)
+            self.queue_fatal_event(process_error.output)
+        except (InstallError,
+                pyalpm.error,
+                KeyboardInterrupt,
+                TypeError,
+                AttributeError,
+                OSError,
+                IOError) as install_error:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            logging.error(install_error)
+            for line in trace:
+                logging.error(line)
+            self.queue_fatal_event(install_error)
 
-        self.run_format()
-        self.run_installation()
+    def queue_fatal_event(self, txt):
+        """ Queues the fatal event and exits process """
+        self.queue_event('error', txt)
+        sys.exit(0)
 
-    def run_format(self):
-        pass
-
-    def run_installation(self):
-
-        self.installation = Installation()
-  def __init__(self, settings, callback_queue, mount_devices,
-                 fs_devices, alternate_package_list="", ssd=None, blvm=False):
-        (self, settings, callback_queue, mount_devices,
-                     fs_devices, alternate_package_list="", ssd=None, blvm=False):
+    def queue_event(self, event_type, event_text=""):
+        if self.callback_queue is not None:
+            try:
+                self.callback_queue.put_nowait((event_type, event_text))
+            except queue.Full:
+                pass
+        else:
+            print("{0}: {1}".format(event_type, event_text))
