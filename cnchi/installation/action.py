@@ -42,9 +42,11 @@ class Action(object):
             txt = self.info_txt
         else:
             if self.action_type == "create":
-                txt = _("Device {0} will be created") + ", "
+                txt = _("Device {0} will be created").format(self.path)
+                txt += ", "
             elif self.action_type == "modify":
-                txt = _("Device {0} will be modified") + ", "
+                txt = _("Device {0} will be modified").format(self.path)
+                txt += ", "
             if self.relabel:
                 txt += _("relabeled") + ", "
             else:
@@ -54,9 +56,11 @@ class Action(object):
             else:
                 txt += _("not formatted") + ", "
             if self.mount_point:
-                txt += _("mounted at {0}").format(self.mount_point) + ", "
+                txt += _("mounted as {0}").format(self.mount_point)
+                txt += " "
             else:
-                txt += _("not mounted") + ", "
+                txt += _("not mounted")
+                txt += " "
             if self.encrypt:
                 txt += _("and encrypted.")
             else:

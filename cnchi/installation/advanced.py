@@ -1814,54 +1814,51 @@ class InstallationAdvanced(GtkBaseBox):
         # Store values as (path, create?, label?, format?, mount_point, encrypt?)
         if self.lv_partitions:
             for partition_path in self.lv_partitions:
-                relabel = 'No'
-                encrypt = 'No'
+                relabel = False
+                encrypt = False
                 uid = self.gen_partition_uid(path=partition_path)
                 if uid in self.stage_opts:
                     is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
-                    if fmt:
-                        fmt = 'Yes'
-                    else:
-                        fmt = 'No'
+
                     # Advanced method formats root by default
                     # https://github.com/Antergos/Cnchi/issues/8
                     if mnt == "/":
-                        fmt = 'Yes'
+                        fmt = True
                     if is_new:
                         if lbl != "":
-                            relabel = 'Yes'
+                            relabel = True
                         # Avoid extended and bios-gpt-boot partitions getting fmt flag true on new creation
                         if fsystem != "extended" and fsystem != "bios-gpt-boot":
-                            fmt = 'Yes'
-                        createme = 'Yes'
+                            fmt = True
+                        createme = True
                     else:
                         if partition_path in self.orig_label_dic:
                             if self.orig_label_dic[partition_path] == lbl:
-                                relabel = 'No'
+                                relabel = False
                             else:
-                                relabel = 'Yes'
-                        createme = 'No'
+                                relabel = True
+                        createme = False
 
                     if uid in self.luks_options:
                         (use_luks, vol_name, password) = self.luks_options[uid]
                         if use_luks:
-                            encrypt = 'Yes'
+                            encrypt = True
                 else:
-                    relabel = 'No'
-                    fmt = 'No'
-                    createme = 'No'
+                    relabel = False
+                    fmt = False
+                    createme = False
                     mnt = ''
-                    encrypt = 'No'
+                    encrypt = False
 
-                if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
+                if createme or relabel or fmt or mnt or encrypt:
                     # changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                    if createme == 'Yes':
+                    if createme:
                         action_type = "create"
                     else:
                         action_type = "modify"
-                    changelist.append(action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt))
-                    msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
-                    logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
+                    act = action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt)
+                    changelist.append(act)
+                    logging.debug(str(act))
 
         if self.disks:
             for disk_path in self.disks:
@@ -1869,8 +1866,8 @@ class InstallationAdvanced(GtkBaseBox):
                 partitions = pm.get_partitions(disk)
                 for partition_path in partitions:
                     # Init vars
-                    relabel = 'No'
-                    encrypt = 'No'
+                    relabel = False
+                    encrypt = False
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         if disk.device.busy:
@@ -1927,50 +1924,45 @@ class InstallationAdvanced(GtkBaseBox):
 
                         (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
 
-                        if fmt:
-                            fmt = 'Yes'
-                        else:
-                            fmt = 'No'
-
                         # Advanced method formats root by default
                         # https://github.com/Antergos/Cnchi/issues/8
                         if mnt == "/":
-                            fmt = 'Yes'
+                            fmt = True
 
                         if is_new:
                             if lbl != "":
-                                relabel = 'Yes'
+                                relabel = True
                             # Avoid extended and bios-gpt-boot partitions getting fmt flag true on new creation
                             if fsystem != "extended" and fsystem != "bios-gpt-boot":
-                                fmt = 'Yes'
-                            createme = 'Yes'
+                                fmt = True
+                            createme = True
                         else:
                             if partition_path in self.orig_label_dic:
                                 if self.orig_label_dic[partition_path] == lbl:
-                                    relabel = 'No'
+                                    relabel = False
                                 else:
-                                    relabel = 'Yes'
-                            createme = 'No'
+                                    relabel = True
+                            createme = False
 
                         if uid in self.luks_options:
                             (use_luks, vol_name, password) = self.luks_options[uid]
                             if use_luks:
-                                encrypt = 'Yes'
+                                encrypt = True
                     else:
-                        relabel = 'No'
-                        fmt = 'No'
-                        createme = 'No'
+                        relabel = False
+                        fmt = False
+                        createme = False
                         mnt = ''
 
-                    if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
+                    if createme or relabel or fmt or mnt or encrypt:
                         #changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                        if createme == 'Yes':
+                        if createme:
                             action_type = "create"
                         else:
                             action_type = "modify"
-                        changelist.append(action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt))
-                        msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
-                        logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
+                        act = action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt)
+                        changelist.append(act)
+                        logging.debug(str(act))
 
             return changelist
 
