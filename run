@@ -12,7 +12,7 @@ _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _CACHE="/var/cache/pacman/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v"
+_CNCHI_OPTIONS="-d -v --disable-rank-mirrors"
 _LOG_SERVER="-s sentry"
 
 if [ -f /usr/bin/python3 ]; then

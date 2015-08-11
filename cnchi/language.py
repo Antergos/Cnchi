@@ -62,7 +62,6 @@ class Language(GtkBaseBox):
 
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
-
         self.disable_rank_mirrors = params['disable_rank_mirrors']
 
     def on_listbox_row_selected(self, listbox, listbox_row):
@@ -170,6 +169,8 @@ class Language(GtkBaseBox):
             proc.start()
             self.process_list.append(proc)
             self.rank_mirrors_launched = True
+        else:
+            logging.warning(_("Not running rank mirrors. This is discouraged."))
 
 # When testing, no _() is available
 try:
