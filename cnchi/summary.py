@@ -38,6 +38,8 @@ from gtkbasebox import GtkBaseBox
 
 from installation.process import Process
 
+import show_message as show
+
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -135,27 +137,25 @@ class Summary(GtkBaseBox):
             install_screen = None
         return install_screen
 
+    def prepare(self, direction):
+        """ Load screen """
+        self.translate_ui()
+
+        # self.forward_button.set_label(_("Install now!"))
+        # self.forward_button.set_name('fwd_btn_install_now')
+
+        self.show_all()
+
     def store_values(self):
+        response = show.question(_("Are you REALLY sure you want to continue?"))
+        if response != Gtk.ResponseType.YES:
+            return False
         install_screen = self.get_install_screen()
         self.process = Process(install_screen, self.callback_queue)
         self.process.start()
         return True
 
-    def prepare(self, direction):
-        """ Load screen """
-        self.translate_ui()
-
-        self.forward_button.set_name('fwd_btn_install_now')
-        txt = _("Install now!")
-        self.forward_button.set_label(txt)
-
-        self.show_all()
-
     def get_prev_page(self):
-        self.forward_button.set_name('fwd_btn')
-        self.forward_button.set_label('')
-        self.forward_button.set_always_show_image(True)
-
         page = "installation_" + self.settings.get('partition_mode')
         return page
 

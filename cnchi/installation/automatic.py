@@ -165,11 +165,19 @@ class InstallationAutomatic(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
         self.populate_devices()
+
+        # image = Gtk.Image.new_from_icon_name("go-next-symbolic", Gtk.IconSize.BUTTON)
+        # self.forward_button.set_label("")
+        # self.forward_button.set_image(image)
+        # self.forward_button.set_always_show_image(True)
+        # self.forward_button.set_name('fwd_btn')
+
         self.show_all()
         self.fill_bootloader_entry()
 
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
+
 
         # self.forward_button.set_sensitive(False)
 
