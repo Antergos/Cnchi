@@ -41,9 +41,9 @@ class Action(object):
         elif self.action_type == "info":
             txt = self.info_txt
         else:
-            if self.action_type = "create":
+            if self.action_type == "create":
                 txt = _("Partition {0} will be created") + ", "
-            elif self.action_type = "modify":
+            elif self.action_type == "modify":
                 txt = _("Partition {0} will be modified") + ", "
             if self.relabel:
                 txt += _("relabeled") + ", "
