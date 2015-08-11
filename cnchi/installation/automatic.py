@@ -282,13 +282,13 @@ class InstallationAutomatic(GtkBaseBox):
         mount_devices = auto.get_mount_devices()
         fs_devices = auto.get_fs_devices()
 
-        for device in fs_devices:
-            txt = _("Device {0} will be created ({1} filesystem)").format(device, fs_devices[device])
-            act = action.Action("info", txt)
-            change_list.append(act)
+        mount_points = {}
+        for mount_point in mount_devices:
+            device = mount_devices[mount_point]
+            mount_points[device] = mount_point
 
-        for device in mount_devices:
-            txt = _("Device {0} will be mounted as {1}").format(mount_devices[device], device)
+        for device in fs_devices:
+            txt = _("Device {0} will be created ({1} filesystem) as {2}").format(device, fs_devices[device], mount_points[device])
             act = action.Action("info", txt)
             change_list.append(act)
 
