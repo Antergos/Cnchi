@@ -116,6 +116,7 @@ def run(screen_name):
 
     params = {
         'title': "Cnchi",
+	'main_window': window,
         'ui_dir': "/usr/share/cnchi/ui",
         'disable_tryit': False,
         'settings': settings,

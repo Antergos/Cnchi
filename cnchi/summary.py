@@ -117,16 +117,21 @@ class Summary(GtkBaseBox):
 
         # Partitions
         install_screen = self.get_install_screen()
-        changes = install_screen.get_changes()
-        statebox = self.ui.get_object("partitions_statebox")
-        txt = ""
-        for action in changes:
-            txt += "{0}\n".format(str(action))
-        statebox.set_property("label", txt)
+        if install_screen:
+            changes = install_screen.get_changes()
+            statebox = self.ui.get_object("partitions_statebox")
+            txt = ""
+            for action in changes:
+                txt += "{0}\n".format(str(action))
+            statebox.set_property("label", txt)
 
     def get_install_screen(self):
         method = self.settings.get('partition_mode')
-        return self.main_window.pages[method]
+        try:
+            install_screen = self.main_window.pages[method]
+        except AttributeError:
+            install_screen = None
+        return install_screen
 
     def store_values(self):
         install_screen = self.get_install_screen()
