@@ -295,7 +295,7 @@ class InstallationAutomatic(GtkBaseBox):
             device = mount_devices[mount_point]
             mount_points[device] = mount_point
 
-        for device in fs_devices:
+        for device in sorted(fs_devices.keys()):
             try:
                 txt = _("Device {0} will be created ({1} filesystem) as {2}").format(device, fs_devices[device], mount_points[device])
             except KeyError:
