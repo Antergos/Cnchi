@@ -1793,9 +1793,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.forward_button.set_sensitive(check_ok)
 
         if check_ok:
-            self.forward_button.set_name('fwd_btn_install_now')
-            txt = _("Install now!")
-            self.forward_button.set_label(txt)
+            self.forward_button.set_sensitive(True)
             self.check_ok_once = True
         elif self.check_ok_once:
             self.forward_button.set_name('fwd_btn')

@@ -175,9 +175,9 @@ class InstallationAutomatic(GtkBaseBox):
 
     def store_values(self):
         """ Let's do our installation! """
-        response = self.show_warning()
-        if response == Gtk.ResponseType.NO:
-            return False
+        #response = self.show_warning()
+        #if response == Gtk.ResponseType.NO:
+        #   return False
 
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_root_password', luks_password)

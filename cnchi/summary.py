@@ -144,9 +144,17 @@ class Summary(GtkBaseBox):
     def prepare(self, direction):
         """ Load screen """
         self.translate_ui()
+
+        self.forward_button.set_name('fwd_btn_install_now')
+        txt = _("Install now!")
+        self.forward_button.set_label(txt)
+
         self.show_all()
 
     def get_prev_page(self):
+        self.forward_button.set_name('fwd_btn')
+        self.forward_button.set_label('')
+
         page = "installation_" + self.settings.get('partition_mode')
         return page
 
