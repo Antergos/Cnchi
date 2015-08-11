@@ -54,7 +54,7 @@ class Action(object):
             else:
                 txt += _("not formatted") + ", "
             if self.mount_point:
-                txt += _("mounted at {0}").format(mount_point) + ", "
+                txt += _("mounted at {0}").format(self.mount_point) + ", "
             else:
                 txt += _("not mounted") + ", "
             if self.encrypt:
