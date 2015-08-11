@@ -37,14 +37,14 @@ class Action(object):
 
     def __str__(self):
         if self.action_type == "delete":
-            txt = _("Partition {0} will be deleted!").format(self.path)
+            txt = _("Device {0} will be deleted!").format(self.path)
         elif self.action_type == "info":
             txt = self.info_txt
         else:
             if self.action_type == "create":
-                txt = _("Partition {0} will be created") + ", "
+                txt = _("Device {0} will be created") + ", "
             elif self.action_type == "modify":
-                txt = _("Partition {0} will be modified") + ", "
+                txt = _("Device {0} will be modified") + ", "
             if self.relabel:
                 txt += _("relabeled") + ", "
             else:
