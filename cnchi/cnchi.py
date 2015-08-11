@@ -314,6 +314,10 @@ def parse_options():
         help=_("Do not search for new Cnchi versions online"),
         action="store_true")
     parser.add_argument(
+        "--disable-rank-mirrors",
+        help=_("Do not try to rank Arch and Antergos mirrors"),
+        action="store_true")
+    parser.add_argument(
         "-v", "--verbose",
         help=_("Show logging messages to stdout"),
         action="store_true")

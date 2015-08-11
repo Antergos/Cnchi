@@ -63,6 +63,8 @@ class Language(GtkBaseBox):
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
 
+        self.disable_rank_mirrors = params['disable_rank_mirrors']
+
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
@@ -161,7 +163,7 @@ class Language(GtkBaseBox):
         self.show_all()
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        if not self.testing and not self.rank_mirrors_launched:
+        if not self.testing and not self.disable_rank_mirrors and not self.rank_mirrors_launched:
             proc = AutoRankmirrorsProcess()
             proc.daemon = True
             proc.name = "rankmirrors"
