@@ -126,9 +126,9 @@ class Summary(GtkBaseBox):
             statebox.set_property("label", txt)
 
     def get_install_screen(self):
-        method = self.settings.get('partition_mode')
+        page = "installation_" + self.settings.get('partition_mode')
         try:
-            install_screen = self.main_window.pages[method]
+            install_screen = self.main_window.pages[page]
         except AttributeError:
             install_screen = None
         return install_screen
