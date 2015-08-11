@@ -43,6 +43,7 @@ import parted
 from gtkbasebox import GtkBaseBox
 
 from installation import install
+from installation import action
 
 
 class InstallationAutomatic(GtkBaseBox):
@@ -260,6 +261,36 @@ class InstallationAutomatic(GtkBaseBox):
         response = message.run()
         message.destroy()
         return response
+
+    def get_changes(self):
+        """ Grab all changes for confirmation """
+        change_list = []
+        change_list.append(action.Action("delete", self.auto_device))
+
+        auto = auto_partition.AutoPartition(dest_dir=DEST_DIR,
+                                            auto_device=self.auto_device,
+                                            use_luks=self.settings.get("use_luks"),
+                                            luks_password=self.settings.get("luks_root_password"),
+                                            use_lvm=self.settings.get("use_lvm"),
+                                            use_home=self.settings.get("use_home"),
+                                            bootloader=self.settings.get("bootloader"),
+                                            callback_queue=self.callback_queue)
+
+        devices = auto.get_devices()
+        mount_devices = auto.get_mount_devices()
+        fs_devices = auto.get_fs_devices()
+
+        for device in fs_devices:
+            txt = _("Device {0} will be created ({1} filesystem)").format(device, fs_devices[device])
+            act = action.Action("info", txt)
+            change_list.append(act)
+
+        for device in mount_devices:
+            txt = _("Device {0} will be mounted at {1}").format(device, mount_devices[device])
+            act = action.Action("info", txt)
+            change_list.append(act)
+
+        return change_list
 
     def run_format(self):
         logging.debug(_("Creating partitions and their filesystems in %s"), self.auto_device)

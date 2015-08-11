@@ -39,6 +39,7 @@ import parted3.lvm as lvm
 import parted3.used_space as used_space
 
 from installation import install
+from installation import action
 
 import show_message as show
 
@@ -62,38 +63,6 @@ COL_SSD_SENSITIVE = 14
 COL_ENCRYPTED = 15
 
 
-class Action(object):
-    def __init__(self, path, create, relabel, format, mount_point, encrypt):
-        self.path = path
-        self.create = create
-        self.relabel = relabel
-        self.format = format
-        self.mount_point = mount_point
-        self.encrypt = encrypt
-
-    def __str__(self):
-        txt = _("Partition {} will be: ").format(path)
-        if self.create:
-            txt += _("created") + ", "
-        else:
-            txt += _("not created") + ", "
-        if self.relabel:
-            txt += _("relabeled") + ", "
-        else:
-            txt += _("not relabeled") + ", "
-        if self.format:
-            txt += _("formatted") + ", "
-        else:
-            txt += _("not formatted") + ", "
-        if self.mount_point:
-            txt += _("mounted at {}").format(mount_point) + ", "
-        else:
-            txt += _("not mounted") + ", "
-        if self.encrypt:
-            txt += _("and encrypted.")
-        else:
-            txt += _("and not encrypted.")
-        return txt
 
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
@@ -147,8 +116,6 @@ class InstallationAdvanced(GtkBaseBox):
 
         # We will store if our device is SSD or not
         self.ssd = {}
-
-        self.show_changes_grid = None
 
         # Initialize some attributes
         self.install_process = None
@@ -1838,6 +1805,12 @@ class InstallationAdvanced(GtkBaseBox):
     def get_changes(self):
         """ Grab all changes for confirmation """
         changelist = []
+
+        # First, show partitions that will be deleted
+        self.to_be_deleted.sort()
+        for partition_path in self.to_be_deleted:
+            changelist.append(action.Action("delete", partition_path))
+
         # Store values as (path, create?, label?, format?, mount_point, encrypt?)
         if self.lv_partitions:
             for partition_path in self.lv_partitions:
@@ -1882,7 +1855,11 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
                     # changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                    changelist.append(Action(partition_path, createme, relabel, fmt, mnt, encrypt))
+                    if createme == 'Yes':
+                        action_type = "create"
+                    else:
+                        action_type = "modify"
+                    changelist.append(action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt))
                     msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
                     logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
@@ -1987,72 +1964,16 @@ class InstallationAdvanced(GtkBaseBox):
 
                     if createme == 'Yes' or relabel == 'Yes' or fmt == 'Yes' or mnt or encrypt == 'Yes':
                         #changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
-                        changelist.append(Action(partition_path, createme, relabel, fmt, mnt, encrypt))
+                        if createme == 'Yes':
+                            action_type = "create"
+                        else:
+                            action_type = "modify"
+                        changelist.append(action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt))
                         msg = _("Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]")
                         logging.debug(msg, partition_path, createme, relabel, fmt, mnt, encrypt)
 
             return changelist
 
-    def show_changes(self, changelist):
-        """ Show all changes to the user before doing anything, just in case. """
-        if self.show_changes_grid is not None:
-            self.show_changes_grid.destroy()
-
-        vbox = self.ui.get_object("dialog-vbox6")
-        grid = Gtk.Grid()
-        vbox.pack_start(grid, True, True, 2)
-        self.show_changes_grid = grid
-
-        margin = 8
-
-        bold = "<b>{0}</b>"
-        y = 0
-
-        self.to_be_deleted.sort()
-
-        # First, show partitions that will be deleted
-        for ea in self.to_be_deleted:
-            lbl_text = _("Partition {0} will be deleted").format(ea)
-            lbl = Gtk.Label(label=lbl_text, margin=margin)
-            lbl.set_alignment(0, 0.5)
-            grid.attach(lbl, 0, y, 4, 1)
-            y += 1
-
-        if changelist:
-            # Partitions that will be modified (header)
-            labels = [_("Partition"), _("New"), _("Relabel"), _("Format"), _("Mount"), _("Encrypt")]
-
-            x = 0
-            for txt in labels:
-                lbl = Gtk.Label(margin=margin)
-                lbl.set_markup(bold.format(txt))
-                grid.attach(lbl, x, y, 1, 1)
-                x += 1
-
-            y += 1
-
-            # Partitions that will be modified
-            for action in changelist:
-                x = 0
-                for txt in action:
-                    lbl = Gtk.Label(label=txt, margin=margin)
-                    grid.attach(lbl, x, y, 1, 1)
-                    x += 1
-                y += 1
-
-        changelist_dialog = self.ui.get_object("changelist_dialog")
-        changelist_dialog.set_title(_('These disks will have partition actions:'))
-        changelist_dialog.show_all()
-
-        # Dialog windows should be set transient for the main application window they were spawned from.
-        changelist_dialog.set_transient_for(self.get_toplevel())
-
-        response = changelist_dialog.run()
-        changelist_dialog.hide()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
-        return response
 
     @staticmethod
     def set_cursor(cursor_type):
@@ -2065,22 +1986,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def store_values(self):
         """ The user clicks 'Install now!' """
-        changelist = self.get_changes()
-        if not changelist:
-            # Something wrong has happened or there's nothing to change
-            return False
-
-        changelist.sort()
-
-        self.disable_all_widgets()
-        response = self.show_changes(changelist)
-        if response == Gtk.ResponseType.CANCEL:
-            self.enable_all_widgets()
-            return False
-        self.enable_all_widgets()
-
         self.set_bootloader()
-
         return True
 
     def disable_all_widgets(self):

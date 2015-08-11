@@ -425,7 +425,6 @@ class AutoPartition(object):
         fs_label = fs.get_label(device)
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
-    @property
     def get_devices(self):
         """ Set (and return) all partitions on the device """
         devices = {}
@@ -489,7 +488,7 @@ class AutoPartition(object):
     def get_mount_devices(self):
         """ Specify for each mount point which device we must mount there """
 
-        devices = self.get_devices
+        devices = self.get_devices()
         mount_devices = {}
 
         if self.GPT and self.bootloader == "grub2":
@@ -516,7 +515,7 @@ class AutoPartition(object):
     def get_fs_devices(self):
         """ Return which filesystem is in a selected device """
 
-        devices = self.get_devices
+        devices = self.get_devices()
 
         fs_devices = {}
 
@@ -766,7 +765,7 @@ class AutoPartition(object):
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
 
-        devices = self.get_devices
+        devices = self.get_devices()
 
         if self.GPT and self.bootloader == "grub2":
             logging.debug("EFI: %s", devices['efi'])

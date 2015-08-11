@@ -97,7 +97,7 @@ class Summary(GtkBaseBox):
         variant = self.settings.get("keyboard_variant")
         txt = _("Layout: {0}").format(layout)
         if variant:
-            txt += "\n" + _("Variant: {1}").format(variant)
+            txt += "\n" + _("Variant: {0}").format(variant)
         statebox.set_property("label", txt)
 
         # Desktop Environment
