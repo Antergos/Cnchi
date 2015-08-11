@@ -348,7 +348,6 @@ class InstallationAutomatic(GtkBaseBox):
                 self.callback_queue,
                 self.mount_devices,
                 self.fs_devices,
-                self.alternate_package_list,
                 ssd)
 
             self.installation.start()

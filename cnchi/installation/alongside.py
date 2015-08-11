@@ -421,8 +421,7 @@ class InstallationAlongside(GtkBaseBox):
                 self.settings,
                 self.callback_queue,
                 mount_devices,
-                fs_devices,
-                self.alternate_package_list)
+                fs_devices)
 
             self.process.start()
         else:

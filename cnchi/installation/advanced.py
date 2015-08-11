@@ -2205,7 +2205,6 @@ class InstallationAdvanced(GtkBaseBox):
                 self.callback_queue,
                 self.mount_devices,
                 self.fs_devices,
-                self.alternate_package_list,
                 self.ssd,
                 self.blvm)
             self.installation.start()

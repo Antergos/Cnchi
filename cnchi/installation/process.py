@@ -28,7 +28,7 @@ import multiprocessing
 import subprocess
 import traceback
 import logging
-
+import sys
 import misc.misc as misc
 import pyalpm
 
