@@ -22,7 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" Check screen (detects if Antergos prerequisites are meet) """
+""" Summary screen (last chance for the user) """
 
 
 from gi.repository import Gtk, GLib
