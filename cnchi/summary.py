@@ -61,6 +61,7 @@ class Summary(GtkBaseBox):
         if scrolled_window:
             scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
+        self.num_features = 0
         self.process = None
 
     def translate_ui(self):
@@ -112,9 +113,11 @@ class Summary(GtkBaseBox):
         # Features
         statebox = self.ui.get_object("features_statebox")
         txt = ""
+        self.num_features = 0
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
                 txt += "{0}\n".format(features_info.TITLES[feature])
+                self.num_features += 1
         txt = txt[:-1]
         statebox.set_property("label", txt)
 
@@ -145,6 +148,14 @@ class Summary(GtkBaseBox):
         # self.forward_button.set_name('fwd_btn_install_now')
 
         self.show_all()
+
+        # Hide features statebox if no features are selected
+        if self.num_features == 0:
+            statebox = self.ui.get_object("features_statebox")
+            statebox.hide()
+            label = self.ui.get_object("features_label")
+            label.hide()
+
 
     def store_values(self):
         response = show.question(
