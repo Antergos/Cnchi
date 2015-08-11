@@ -89,7 +89,6 @@ class Installation(object):
     def __init__(self, settings, callback_queue, mount_devices,
                  fs_devices, ssd=None, blvm=False):
         """ Initialize installation class """
-        multiprocessing.Process.__init__(self)
 
         self.callback_queue = callback_queue
         self.settings = settings

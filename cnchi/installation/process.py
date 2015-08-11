@@ -29,8 +29,8 @@ import subprocess
 import traceback
 import logging
 
-from misc.misc import InstallError
-
+import misc.misc as misc
+import pyalpm
 
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
@@ -45,8 +45,9 @@ class Process(multiprocessing.Process):
     def run(self):
         """ Calls run_format and run_install and takes care of exceptions """
         try:
-            self.install_screen.run_format()
-            self.install_screen.run_install()
+            with misc.raised_privileges():
+                self.install_screen.run_format()
+                self.install_screen.run_install()
         except subprocess.CalledProcessError as process_error:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
@@ -55,7 +56,7 @@ class Process(multiprocessing.Process):
             for line in trace:
                 logging.error(line)
             self.queue_fatal_event(process_error.output)
-        except (InstallError,
+        except (misc.InstallError,
                 pyalpm.error,
                 KeyboardInterrupt,
                 TypeError,
