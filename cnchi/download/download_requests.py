@@ -161,7 +161,7 @@ class Download(object):
                     with requests.Session() as session:
                         try:
                             #r = requests.get(url, stream=True)
-                            r = session.get(url)
+                            r = session.get(url, stream=True)
                         except requests.exceptions.ConnectionError as connection_error:
                             logging.warning(_("Can't download {0}").format(url))
                             logging.warning(connection_error)
