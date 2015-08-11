@@ -145,8 +145,8 @@ class Summary(GtkBaseBox):
         self.show_all()
 
     def get_prev_page(self):
-        method = self.settings.get('partition_mode')
-        return method
+        page = "installation_" + self.settings.get('partition_mode')
+        return page
 
 
 # When testing, no _() is available

@@ -288,7 +288,7 @@ class InstallationAutomatic(GtkBaseBox):
             change_list.append(act)
 
         for device in mount_devices:
-            txt = _("Device {0} will be mounted at {1}").format(device, mount_devices[device])
+            txt = _("Device {0} will be mounted as {1}").format(mount_devices[device], device)
             act = action.Action("info", txt)
             change_list.append(act)
 
