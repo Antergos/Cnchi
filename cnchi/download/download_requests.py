@@ -159,67 +159,68 @@ class Download(object):
                     completed_length = 0
                     start = time.clock()
                     try:
-                        with requests.get(url, stream=True) as r:
-                            if r.status_code == requests.codes.ok:
-                                # Get total file length
-                                try:
-                                    total_length = int(r.headers.get('content-length'))
-                                except TypeError:
-                                    total_length = 0
-                                    logging.warning(
-                                        _("Metalink for package %s has no size info"),
-                                        element['identity'])
-
-                                md5_hash = hashlib.md5()
-                                with open(dst_path, 'wb') as xz_file:
-                                    for data in r.iter_content(1024):
-                                        if not data:
-                                            break
-                                        xz_file.write(data)
-                                        md5_hash.update(data)
-                                        completed_length += len(data)
-                                        old_percent = percent
-                                        if total_length > 0:
-                                            percent = round(float(completed_length / total_length), 2)
-                                        else:
-                                            percent += 0.1
-                                        if old_percent != percent:
-                                            self.queue_event('percent', percent)
-
-                                        bps = (completed_length // (time.clock() - start)) / 1024
-                                        if bps > 1024:
-                                            Mbps = bps / 1024
-                                            progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
-                                        else:
-                                            progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
-                                        self.queue_event('progress_bar_show_text', progress_text)
-
-                                    md5 = md5_hash.hexdigest()
-
-                                    if element['hash'] is not None and element['hash'] != md5:
-                                        logging.warning(
-                                            _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
-                                            element['hash'],
-                                            md5,
-                                            element['filename'])
-                                        logging.warning(_("Cnchi will try another mirror."))
-                                        # Force to download it again
-                                        download_error = True
-                                    else:
-                                        download_error = False
-                                        downloaded += 1
-                                        # Get out of the for loop, as we managed
-                                        # to download the package
-                                        break
-                            else:
-                                download_error = True
-                                logging.warning(_("Can't download {0}").format(url))
-                                logging.warning(_("Cnchi will try another mirror."))
+                        r = requests.get(url, stream=True)
                     except requests.exceptions.ConnectionError as connection_error:
                         logging.warning(_("Can't download {0}").format(url))
                         logging.warning(connection_error)
                         logging.warning(_("Cnchi will try another mirror."))
                         continue
+
+                    if r.status_code == requests.codes.ok:
+                        # Get total file length
+                        try:
+                            total_length = int(r.headers.get('content-length'))
+                        except TypeError:
+                            total_length = 0
+                            logging.warning(
+                                _("Metalink for package %s has no size info"),
+                                element['identity'])
+
+                        md5_hash = hashlib.md5()
+                        with open(dst_path, 'wb') as xz_file:
+                            for data in r.iter_content(1024):
+                                if not data:
+                                    break
+                                xz_file.write(data)
+                                md5_hash.update(data)
+                                completed_length += len(data)
+                                old_percent = percent
+                                if total_length > 0:
+                                    percent = round(float(completed_length / total_length), 2)
+                                else:
+                                    percent += 0.1
+                                if old_percent != percent:
+                                    self.queue_event('percent', percent)
+
+                                bps = (completed_length // (time.clock() - start)) / 1024
+                                if bps > 1024:
+                                    Mbps = bps / 1024
+                                    progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
+                                else:
+                                    progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
+                                self.queue_event('progress_bar_show_text', progress_text)
+
+                            md5 = md5_hash.hexdigest()
+
+                            if element['hash'] is not None and element['hash'] != md5:
+                                logging.warning(
+                                    _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                                    element['hash'],
+                                    md5,
+                                    element['filename'])
+                                logging.warning(_("Cnchi will try another mirror."))
+                                # Force to download it again
+                                download_error = True
+                            else:
+                                download_error = False
+                                downloaded += 1
+                                # Get out of the for loop, as we managed
+                                # to download the package
+                                break
+                    else:
+                        download_error = True
+                        logging.warning(_("Can't download {0}").format(url))
+                        logging.warning(_("Cnchi will try another mirror."))
 
                 if download_error:
                     # None of the mirror urls works.
