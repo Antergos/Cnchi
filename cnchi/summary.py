@@ -112,7 +112,7 @@ class Summary(GtkBaseBox):
         txt = ""
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
-                txt += "{0} ".format(features_info.TITLES[feature])
+                txt += "{0}\n".format(features_info.TITLES[feature])
         statebox.set_property("label", txt)
 
         # Partitions
