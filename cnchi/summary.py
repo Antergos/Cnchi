@@ -53,12 +53,13 @@ class Summary(GtkBaseBox):
         """ Init class ui """
         super().__init__(self, params, "summary", prev_page, next_page)
 
+        self.main_window = params['main_window']
+
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
             scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         self.process = None
-        self.install_screen = None
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -114,17 +115,18 @@ class Summary(GtkBaseBox):
                 txt += "{0} ".format(features_info.TITLES[feature])
         statebox.set_property("label", txt)
 
-        # TODO: Partitions
-        # Note: The way Cnchi is written, when using advanced installation
-        # everything is done in that screen (user input, real partitioning,
-        # creating fs...). Therefore, advanced screen should be split to be
-        # able to show this screen (summary) in between (use stage_opts).
+        # Partitions
         install_screen = self.get_install_screen()
         changes = install_screen.get_changes()
+        statebox = self.ui.get_object("partitions_statebox")
+        txt = ""
+        for action in changes:
+            txt += "{0}\n".format(str(action))
+        statebox.set_property("label", txt)
 
     def get_install_screen(self):
         method = self.settings.get('partition_mode')
-        return params["main_window"].pages[method]
+        return self.main_window.pages[method]
 
     def store_values(self):
         install_screen = self.get_install_screen()
