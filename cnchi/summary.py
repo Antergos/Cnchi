@@ -147,7 +147,9 @@ class Summary(GtkBaseBox):
         self.show_all()
 
     def store_values(self):
-        response = show.question(_("Are you REALLY sure you want to continue?"))
+        response = show.question(
+            self.get_toplevel(),
+            _("Are you REALLY sure you want to continue?"))
         if response != Gtk.ResponseType.YES:
             return False
         install_screen = self.get_install_screen()
