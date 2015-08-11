@@ -288,7 +288,10 @@ class InstallationAutomatic(GtkBaseBox):
             mount_points[device] = mount_point
 
         for device in fs_devices:
-            txt = _("Device {0} will be created ({1} filesystem) as {2}").format(device, fs_devices[device], mount_points[device])
+            try:
+                txt = _("Device {0} will be created ({1} filesystem) as {2}").format(device, fs_devices[device], mount_points[device])
+            except KeyError:
+                txt = _("Device {0} will be created ({1} filesystem)").format(device, fs_devices[device])
             act = action.Action("info", txt)
             change_list.append(act)
 
