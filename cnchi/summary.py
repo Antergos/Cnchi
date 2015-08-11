@@ -113,6 +113,7 @@ class Summary(GtkBaseBox):
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
                 txt += "{0}\n".format(features_info.TITLES[feature])
+        txt = txt[:-1]
         statebox.set_property("label", txt)
 
         # Partitions
@@ -123,6 +124,7 @@ class Summary(GtkBaseBox):
             txt = ""
             for action in changes:
                 txt += "{0}\n".format(str(action))
+            txt = txt[:-1]
             statebox.set_property("label", txt)
 
     def get_install_screen(self):
