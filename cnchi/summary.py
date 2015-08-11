@@ -154,6 +154,7 @@ class Summary(GtkBaseBox):
     def get_prev_page(self):
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_label('')
+        self.forward_button.set_always_show_image(True)
 
         page = "installation_" + self.settings.get('partition_mode')
         return page
