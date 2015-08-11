@@ -46,6 +46,8 @@ from installation import install
 from installation import action
 from installation import auto_partition
 
+DEST_DIR = "/install"
+
 class InstallationAutomatic(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "automatic", prev_page, next_page)
