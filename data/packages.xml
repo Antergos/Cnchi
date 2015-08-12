@@ -288,13 +288,12 @@
       <packages>
         <pkgname>enlightenment</pkgname>
         <pkgname>gksu</pkgname>
-        <pkgname>gtk-theme-e17gtk</pkgname>
         <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
         <pkgname>polkit-gnome</pkgname>
-        <pkgname>pragha</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
+        <pkgname>rage</pkgname>
       </packages>
     </edition>
 
