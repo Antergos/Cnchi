@@ -286,14 +286,14 @@
 
     <edition name="Enlightenment" description="Enlightenment Desktop">
       <packages>
+        <pkgname>antergos-enlightenment-setup</pkgname>
         <pkgname>enlightenment</pkgname>
-        <pkgname>gksu</pkgname>
         <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
         <pkgname>polkit-gnome</pkgname>
+        <pkgname>rage</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
-        <pkgname>rage</pkgname>
       </packages>
     </edition>
 

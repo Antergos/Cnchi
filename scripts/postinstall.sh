@@ -420,7 +420,40 @@ nox_settings()
 enlightenment_settings()
 {
     # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
-    echo "TODO"
+    # copy antergos menu icon
+    mkdir -p ${DESTDIR}/usr/share/antergos/
+    cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+    # Setup user defaults
+    chroot ${DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${USER_NAME}
+
+    # Set settings
+    cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+    mkdir -p ${DESTDIR}/var/run/dbus
+    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    rm ${DESTDIR}/usr/bin/set-settings
+
+    # Set skel directory
+    cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+    # Set default directories
+    chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+    # Set enlightenment in .dmrc
+    echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+    echo "Session=enlightenment" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+    echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
+
+    # Add lxpolkit to autostart apps
+    cp /etc/xdg/autostart/lxpolkit.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart
+
+    # xscreensaver config
+    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+    cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 }
 
 postinstall()
