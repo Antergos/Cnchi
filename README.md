@@ -13,8 +13,8 @@ This this is latest development code which hasn't been released yet, AKA: **Cnch
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
 |*Cnchi Legacy*|*v0.8.151*|*Frozen*|
-|**Cnchi Stable**|**v0.10.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.11.x | Active Development|
+|Cnchi Stable|v0.10.x|Bug Fixes Only|
+|**Cnchi Next** | **v0.11.x** | **Active Development**|
 
 ## Usage:
 
