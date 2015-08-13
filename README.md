@@ -4,17 +4,17 @@
 
 <a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a>
 
-You are viewing the `master` branch.
+You are viewing the `master` branch of the development repo.
 
 ## Current Status
 
-This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
+This this is latest development code which hasn't been released yet, AKA: **Cnchi Next**. 
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
-|*Cnchi Legacy*|*v0.6.53*|*Frozen*|
-|**Cnchi Stable**|**v0.8.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.9.x | Active Development|
+|*Cnchi Legacy*|*v0.8.151*|*Frozen*|
+|Cnchi Stable|v0.10.x|Bug Fixes Only|
+|**Cnchi Next** | **v0.11.x** | **Active Development**|
 
 ## Usage:
 
