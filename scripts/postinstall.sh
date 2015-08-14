@@ -187,7 +187,7 @@ lxqt_settings()
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
     echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
     echo "__userfile__=true" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
-    echo "icon_theme=Faenza" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+    echo "icon_theme=Numix" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
     echo "theme=ambiance" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 
     # Set panel launchers
