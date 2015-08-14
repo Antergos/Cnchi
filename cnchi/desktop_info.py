@@ -28,7 +28,7 @@
 
 DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxde", "lxqt", "plasma5"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt", "plasma5"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -47,7 +47,6 @@ NAMES = {
     'gnome': "Gnome",
     'cinnamon': "Cinnamon",
     'xfce': "Xfce",
-    'lxde': "LXDE",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
     'kde4': "KDE 4",
@@ -56,7 +55,7 @@ NAMES = {
     'mate': "MATE"}
 
 LIBS = {
-    'gtk': ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
+    'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
 ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "lamp", "lts", "office", "visual", "firewall", "smb"]
@@ -71,7 +70,6 @@ FEATURES = {
     'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
     'base' : ["aur", "cups", "fonts", "lamp", "lts"],
     'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb", "visual"],
-    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
     'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
     'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"]}
 
@@ -84,8 +82,7 @@ SESSIONS = {
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
-    'lxde': 'lx-session',  # FIXME: check this!
-    'lxqt': 'lxqt',  # FIXME: check this!
+    'lxqt': 'lx-session',  # FIXME: check this!
     'xfce': 'xfce'}
 
 
@@ -109,11 +106,6 @@ DESCRIPTIONS = {
               "be fast and low on system resources, while remaining visually "
               "appealing and user friendly. It is a great option for use "
               "on older computers or those with low hardware specifications. "),
-
-    'lxde': _("LXDE is an extremely fast-performing and energy-saving desktop "
-              "environment. It uses less CPU and RAM than other environments. "
-              "LXDE is especially designed for cloud computers with low hardware "
-              "specifications such as netbooks, mobile devices, and older computers."),
 
     'openbox': _("Openbox is a highly configurable, next generation window "
                  "manager with extensive standards support. It's default theme "
