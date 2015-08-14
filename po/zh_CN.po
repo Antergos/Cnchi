@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
 "POT-Creation-Date: 2015-07-22 22:44+CEST\n"
-"PO-Revision-Date: 2015-07-24 14:03+0000\n"
+"PO-Revision-Date: 2015-08-09 07:13+0000\n"
 "Last-Translator: Dean Chen <wsxy162@gmail.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/antergos/language/zh_CN/)\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/faidoc/antergos/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -771,7 +771,7 @@ msgstr "不能在LVM文件系统类型下编辑一个分区"
 
 #: cnchi/installation/advanced.py:789
 msgid "Can't use same mount point twice."
-msgstr "无法两次使用同一个挂载点..."
+msgstr "无法两次使用同一个挂载点。"
 
 #: cnchi/installation/advanced.py:791
 msgid "Root partition must be formatted."
@@ -2071,7 +2071,7 @@ msgid ""
 "\n"
 "You can use the entry below the keyboard to test your\n"
 "layout selection."
-msgstr "选择您的键盘布局和变体 (如果适用)。\n例如，默认 Slovak 变体是 qwertz，但您\n可以手动指定为 qwerty 键盘等。\n\n你可以使用下面的键盘输入来测试您的布局选择。"
+msgstr "选择您的键盘布局和变体 (如果适用的话)。\n例如，默认 Slovak 变体是 qwertz，但您\n可以手动指定为 qwerty 键盘等。\n\n你可以使用下面的键盘输入来测试您的布局选择。"
 
 #: cnchi/keymap.py:123
 msgid "Can't match a keymap for country code '%s'"
@@ -2087,7 +2087,7 @@ msgstr "未知的布局描述 %s"
 
 #: cnchi/keymap.py:242
 msgid "Unknown variant description %s"
-msgstr "未知的键盘变体说明 %s"
+msgstr "未知的键盘变体描述 %s"
 
 #: cnchi/keymap.py:268
 msgid "Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})"
@@ -2344,7 +2344,7 @@ msgstr "正在检查密匙环中的密钥..."
 
 #: cnchi/pacman/pac.py:462
 msgid "Downloading missing keys into the keyring..."
-msgstr "正在下载遗失的钥匙到密匙环中......"
+msgstr "正在下载遗失的钥匙到密匙环中..."
 
 #: cnchi/pacman/pac.py:501
 msgid "Installing {0} ({1}/{2})"

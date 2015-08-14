@@ -1,6 +1,5 @@
-# Cnchi - Antergos Installer
+# Cnchi
 # Copyright (C) 2013-2015 Antergos
-# Antergos Developers <devATantergos.com>
 # 
 # Translators:
 # freddy4212 <freddy4212@gmail.com>, 2013
@@ -9,20 +8,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-07 04:55+0000\n"
+"POT-Creation-Date: 2015-07-22 22:44+CEST\n"
+"PO-Revision-Date: 2015-07-30 03:21+0000\n"
 "Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/antergos/language/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/faidoc/antergos/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.7.4\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 
 #: cnchi/bootinfo.py:66 cnchi/bootinfo.py:79 cnchi/bootinfo.py:85
 #: cnchi/bootinfo.py:134 cnchi/bootinfo.py:139 cnchi/bootinfo.py:148
@@ -39,119 +34,134 @@ msgstr "呼叫 hexdump 指令時發生錯誤：%s"
 msgid "Unknown partition id %s"
 msgstr "未知的分割區 id %s"
 
-#: cnchi/check.py:77
+#: cnchi/check.py:69
 msgid "System Check"
 msgstr "系統檢查"
 
-#: cnchi/check.py:81
+#: cnchi/check.py:73
 msgid "has at least {0}GB available storage space. (*)"
 msgstr "有至少 {0}GB 的可用磁碟空間。(*)"
 
-#: cnchi/check.py:84
+#: cnchi/check.py:76
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
 msgstr "這高度取決於您所選擇的桌面環境，所以您可能會需要更多的空間。"
 
-#: cnchi/check.py:89
+#: cnchi/check.py:84
 msgid "is plugged in to a power source"
 msgstr "已插入電力來源"
 
-#: cnchi/check.py:93
+#: cnchi/check.py:88
 msgid "is connected to the Internet"
 msgstr "連上網際網路"
 
-#: cnchi/check.py:97
+#: cnchi/check.py:92
 msgid "For best results, please ensure that this computer:"
 msgstr "為獲得最佳結果，請確定您的電腦："
 
-#: cnchi/check.py:174
+#: cnchi/check.py:175
 msgid "We have Internet connection."
 msgstr "我們有網際網路連線了。"
 
-#: cnchi/check.py:175
+#: cnchi/check.py:176
 msgid "We're connected to a power source."
 msgstr "我們連上電力來源了。"
 
-#: cnchi/check.py:176
+#: cnchi/check.py:177
 msgid "We have enough disk space."
 msgstr "我們有足夠的磁碟空間。"
 
-#: cnchi/check.py:201 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
-#: cnchi/features.py:382 cnchi/installation/advanced.py:2194
-#: cnchi/installation/alongside.py:37 cnchi/installation/ask.py:32
-#: cnchi/installation/automatic.py:299 cnchi/installation/bootloader.py:42
-#: cnchi/installation/chroot.py:33 cnchi/keymap.py:288 cnchi/language.py:155
-#: cnchi/location.py:230 cnchi/slides.py:245 cnchi/timezone.py:323
-#: cnchi/user_info.py:304 cnchi/welcome.py:147 cnchi/wireless.py:159
-#: cnchi/cnchi.py:62
+#: cnchi/check.py:195 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
+#: cnchi/features.py:453 cnchi/installation/advanced.py:2289
+#: cnchi/installation/alongside.py:37 cnchi/installation/ask.py:33
+#: cnchi/installation/automatic.py:303 cnchi/installation/bootloader.py:42
+#: cnchi/installation/chroot.py:33 cnchi/keymap.py:287 cnchi/language.py:174
+#: cnchi/location.py:247 cnchi/slides.py:246 cnchi/user_info.py:327
+#: cnchi/welcome.py:151 cnchi/wireless.py:159 cnchi/cnchi.py:74
 msgid "Can't create Cnchi main window: {0}"
 msgstr "無法建立 Cnchi 主視窗：{0}"
 
-#: cnchi/cnchi.py:162
+#: cnchi/cnchi.py:153
+msgid "Sending Cnchi logs to {0} with id '{1}'"
+msgstr "正在以 ID「{1}」傳送 Cnchi 記錄檔到 {0}"
+
+#: cnchi/cnchi.py:198
 msgid "Using pyalpm v{0} as interface to libalpm v{1}"
 msgstr "正在使用 pyalpm v{0} 做為 libalpm v{1} 的介面"
 
-#: cnchi/cnchi.py:177
+#: cnchi/cnchi.py:213
 msgid "Cnchi v{0} - Antergos Installer"
 msgstr "Cnchi v{0} － Antergos 安裝程式"
 
-#: cnchi/cnchi.py:182
-msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr "使用 Aria2 下載 Antergos 軟體包 （）實驗性"
-
-#: cnchi/cnchi.py:186
+#: cnchi/cnchi.py:218
 msgid "Use pre-downloaded xz packages when possible"
 msgstr "如果可以的話，使用預先下載的 xz 套件"
 
-#: cnchi/cnchi.py:190
+#: cnchi/cnchi.py:222
 msgid "Sets Cnchi log level to 'debug'"
 msgstr "將 Cnchi 記錄檔層級設定為 'debug'"
 
-#: cnchi/cnchi.py:194
+#: cnchi/cnchi.py:226
+msgid "Sets the Desktop Environment that will be installed"
+msgstr "所設定的桌面環境將會被安裝"
+
+#: cnchi/cnchi.py:230
 msgid "Runs cnchi even if it detects that another instance is running"
 msgstr "即使偵測到其他實體正在執行也要執行 Cnchi"
 
-#: cnchi/cnchi.py:198
+#: cnchi/cnchi.py:234
 msgid "Disables first screen's 'try it' option"
 msgstr "停用歡迎螢幕中的「試用」選項"
 
-#: cnchi/cnchi.py:202
+#: cnchi/cnchi.py:238
+msgid ""
+"Choose which library to use when downloading packages. Possible options are "
+"'requests' (default), 'urllib' and 'aria2'"
+msgstr "選取您要使用哪一個函式庫來下載軟體包。可能的選項有「requests」（預設）、「urllib」及「aria2」"
+
+#: cnchi/cnchi.py:243
+msgid "Makes checks optional in check screen"
+msgstr "在檢查螢幕中對可選項目做出檢查"
+
+#: cnchi/cnchi.py:247
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
 msgstr "參考本機的 xml 檔而不是預設值安裝軟體包"
 
-#: cnchi/cnchi.py:206
+#: cnchi/cnchi.py:251
+msgid ""
+"Choose to which log server send Cnchi logs. Expects a hostname or an IP "
+"address"
+msgstr "選擇要寄送 Cnchi 的記錄檔到哪一個記錄檔伺服器。預期為一個主機名稱或一個 IP 位址"
+
+#: cnchi/cnchi.py:256
 msgid "Do not perform any changes (useful for developers)"
 msgstr "不要進行任何變更（對開發者很有用）"
 
-#: cnchi/cnchi.py:210
+#: cnchi/cnchi.py:260
 msgid "Upgrade/downgrade Cnchi to the web version"
 msgstr "升級/降級 Cnchi 到網路版"
 
-#: cnchi/cnchi.py:214
+#: cnchi/cnchi.py:264
 msgid "Do not search for new Cnchi versions online"
 msgstr "不要線上尋找新版本的 Cnchi"
 
-#: cnchi/cnchi.py:218
+#: cnchi/cnchi.py:268
 msgid "Show logging messages to stdout"
 msgstr "顯示記錄訊息到標準輸出"
 
-#: cnchi/cnchi.py:222
+#: cnchi/cnchi.py:272
 msgid "Show options in development (for developers only, do not use this!)"
 msgstr "顯示仍在開發中的選項（開發者專用，不要使用這個！）"
 
-#: cnchi/cnchi.py:261
+#: cnchi/cnchi.py:311
 msgid "Program updated! Restarting..."
 msgstr "程式已升級！正在重新啟動..."
 
-#: cnchi/cnchi.py:301
+#: cnchi/cnchi.py:351
 msgid "Cnchi files not found. Please, install Cnchi using pacman"
 msgstr "找不到 Cnchi 檔案。請使用 pacman 重新安裝 Cnchi"
-
-#: cnchi/cnchi.py:305
-msgid "Please install '{0}' before running this installer"
-msgstr "在執行本安裝程式前，請先安裝 '{0}'"
 
 #: cnchi/desktop.py:114
 msgid "Choose Your Desktop"
@@ -161,14 +171,14 @@ msgstr "選擇您的桌面環境"
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi 將會以 '%s' 桌面環境安裝 Antergos"
 
-#: cnchi/desktop_environments.py:115
+#: cnchi/desktop_environments.py:98
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "Gnome 3 是一個使用您的電腦簡單且優雅的方式。它的主要特性是有一個概覽按鈕來讓您很容易的可以進行您所有的基礎工作。GNOME 3 是 Antergos 的預設桌面環境。"
 
-#: cnchi/desktop_environments.py:120
+#: cnchi/desktop_environments.py:103
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -176,7 +186,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon 是 GNOME 3 的一個分支，由（且專為）Linux Mint 開發。它提供使用者 GNOME 3 的現代科技與傳統桌面的完美結合。Cinnamon 是為所有人所設計的。"
 
-#: cnchi/desktop_environments.py:125
+#: cnchi/desktop_environments.py:108
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -184,7 +194,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce 是一個輕量的桌面環境。它非常快速且占用很少系統資源，但仍非常具有視覺吸引力，且對使用者仍相當友善。它在那些低階配置的老電腦上是很好的選擇。"
 
-#: cnchi/desktop_environments.py:130
+#: cnchi/desktop_environments.py:113
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -192,7 +202,7 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE 是一個非常快速且節省能源的桌面環境。它使用與其他桌面環境相比較少的 CPU 及 RAM。LXDE 被設計用於那些低階配置的雲端裝置，像是小筆電、行動裝置或是老電腦等。"
 
-#: cnchi/desktop_environments.py:135
+#: cnchi/desktop_environments.py:118
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
 "extensive standards support. It's default theme is well known for its "
@@ -200,42 +210,42 @@ msgid ""
 "faster. Perfect for low hardware specifications, too."
 msgstr "Openbox 是一個高自訂性，次世代的視窗管理員，支援許多延伸標準。它的預設主題以簡單有彈性著名。您的桌面將會變得簡潔且快速。在低階硬體上也是非常好的選擇。"
 
-#: cnchi/desktop_environments.py:140
+#: cnchi/desktop_environments.py:123
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
 msgstr "Enlightenment 不只是 Linux/X11 或其他系統上的視窗管理員，同時也是可以幫助你花費較少的時間創造一個漂亮的使用者介面的一套完整的函式庫"
 
-#: cnchi/desktop_environments.py:144
+#: cnchi/desktop_environments.py:127
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
 msgstr "如果您在尋找熟悉的工作環境，KDE Plasma 工作空間提供了所有現代桌面所需要的工具，所以您可以從一開始就很有生產力。"
 
-#: cnchi/desktop_environments.py:148
+#: cnchi/desktop_environments.py:131
 msgid ""
 "Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
 "provides a visually updated core desktop experience that is easy to use and "
 "familiar to the user. "
 msgstr "Plasma 5.0是 KDE 工作空間的一個新的主要版本。它提供了一個易於使用且使用者友好的核心桌面體驗的視覺升級。"
 
-#: cnchi/desktop_environments.py:152
+#: cnchi/desktop_environments.py:135
 msgid ""
 "LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
 "technologies. It has been tailored for users who value simplicity, speed, "
 "and an intuitive interface."
 msgstr "LXQt 是一個基於 Qt 的進階、易於使用、且反應快速的桌面環境。它非常適合那些注重簡潔，快速。且直覺的介面的使用者。"
 
-#: cnchi/desktop_environments.py:156
+#: cnchi/desktop_environments.py:139
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "這個選項將會把 Antergos 安裝成只有命令列的系統，而不包含任何的圖型介面。安裝完後您可以利用命令列軟體包管理員安裝軟體的方式自訂 Antergos。"
 
-#: cnchi/desktop_environments.py:160
+#: cnchi/desktop_environments.py:143
 msgid ""
 "An intuitive, attractive and lightweight desktop environment, fork of GNOME "
 "2. MATE is one of the best options for use on older computers or those with "
@@ -260,35 +270,39 @@ msgstr "無法加入 uris 到 Aria2。錯誤輸出：%s"
 msgid "Can't run aria2: %s"
 msgstr "無法執行 aria2：%s"
 
-#: cnchi/download/download.py:94
+#: cnchi/download/download.py:97
 msgid "Can't create download package list. Check log output for details"
 msgstr "無法建立下載套件列表。檢查記錄檔輸出以獲得更多資訊"
 
-#: cnchi/download/download.py:97
-msgid "Using aria2 to download packages"
-msgstr "正在使用 aria2 下載軟體包"
+#: cnchi/download/download.py:99
+msgid "Using %s library to download packages"
+msgstr "正在使用 %s 下載軟體包"
 
-#: cnchi/download/download.py:103
-msgid "Using urllib to download packages"
-msgstr "正在使用 urllib 下載軟體包"
+#: cnchi/download/download.py:113
+msgid "Unknown '%s' library, Cnchi will use the 'requests' one as default"
+msgstr "未知的「%s」函式庫，Cnchi 將會使用「requests」做為預設"
 
-#: cnchi/download/download.py:114
+#: cnchi/download/download.py:126 cnchi/installation/process.py:714
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr "無法安裝必須的軟體包。Cnchi 無法繼續。"
+
+#: cnchi/download/download.py:132
 msgid "Creating the list of packages to download..."
 msgstr "正在建立要下載的軟體包列表..."
 
-#: cnchi/download/download.py:127 cnchi/download/metalink.py:483
+#: cnchi/download/download.py:145 cnchi/download/metalink.py:483
 msgid "Can't initialize pyalpm: %s"
 msgstr "無法初始化 pyalpm：%s"
 
-#: cnchi/download/download.py:134
+#: cnchi/download/download.py:152
 msgid "Error creating metalink for package %s. Installation will stop"
 msgstr "在建立 %s 軟體包的 metalink 時發生錯誤。安裝將會停止"
 
-#: cnchi/download/download.py:150
+#: cnchi/download/download.py:168
 msgid "Can't create download set: %s"
 msgstr "無法建立下載套組： %s"
 
-#: cnchi/download/download.py:157
+#: cnchi/download/download.py:175
 msgid "Can't release pyalpm: %s"
 msgstr "無法釋放 pyalpm： %s"
 
@@ -300,9 +314,61 @@ msgstr "Aria2 並未執行中。"
 msgid "Downloading packages... ({0}/{1})..."
 msgstr "正在下載軟體包... ({0}/{1})..."
 
-#: cnchi/download/download_aria2.py:107 cnchi/download/download_urllib.py:135
+#: cnchi/download/download_aria2.py:107
+#: cnchi/download/download_requests.py:111
+#: cnchi/download/download_urllib.py:138
 msgid "File %s already exists, Cnchi will not overwrite it"
 msgstr "檔案 %s 已存在，Cnchi 將不會覆寫它"
+
+#: cnchi/download/download_requests.py:72
+#: cnchi/download/download_urllib.py:116
+msgid "Downloading {0} {1} ({2}/{3})..."
+msgstr "正在下載 {0} {1} ({2}/{3})..."
+
+#: cnchi/download/download_requests.py:101
+#: cnchi/download/download_requests.py:123
+#: cnchi/download/download_requests.py:207
+msgid "MD5 hash (url:%s, file:%s) of file %s do not match!"
+msgstr "MD5 雜湊值（URL：%s、檔案：%s）在檔案 %s 處不符合！"
+
+#: cnchi/download/download_requests.py:106
+#: cnchi/download/download_requests.py:127
+#: cnchi/download/download_requests.py:142
+msgid "Cnchi will download it"
+msgstr "Cnchi 將會下載它"
+
+#: cnchi/download/download_requests.py:132
+msgid "%s found in suplied pkg cache. Copying..."
+msgstr "在所提供的軟體包快取中找到 %s。正在複製..."
+
+#: cnchi/download/download_requests.py:139
+msgid "Error copying %s to %s."
+msgstr "正在複製 %s 到 %s 時發生錯誤。"
+
+#: cnchi/download/download_requests.py:152
+msgid "Package %s v%s has an empty url for this mirror"
+msgstr "軟體包 %s v%s 在此鏡像有一個空的 URL"
+
+#: cnchi/download/download_requests.py:164
+#: cnchi/download/download_requests.py:222
+msgid "Can't download {0}"
+msgstr "無法下載 {0}"
+
+#: cnchi/download/download_requests.py:166
+#: cnchi/download/download_requests.py:211
+#: cnchi/download/download_requests.py:223
+msgid "Cnchi will try another mirror."
+msgstr "Cnchi 將會嘗試其他鏡像。"
+
+#: cnchi/download/download_requests.py:176
+#: cnchi/download/download_urllib.py:123
+msgid "Metalink for package %s has no size info"
+msgstr "軟體包 %s 的 metalink 沒有大小資訊"
+
+#: cnchi/download/download_requests.py:229
+#: cnchi/download/download_urllib.py:198
+msgid "Can't download {0}, even after trying all available mirrors"
+msgstr "無法下載 {0} ，且已嘗試所有可用的鏡像"
 
 #: cnchi/download/download_urllib.py:40
 msgid "Wrong url, will try another one if available."
@@ -321,17 +387,13 @@ msgstr "HTTP 錯誤： {0}"
 msgid "URL Error : {0}"
 msgstr "URL 錯誤： {0}"
 
-#: cnchi/download/download_urllib.py:115
-msgid "Downloading {0} {1} ({2}/{3})..."
-msgstr "正在下載 {0} {1} ({2}/{3})..."
+#: cnchi/download/download_urllib.py:144
+msgid "%s found in iso pkg cache. Copying..."
+msgstr "在 ISO 映像檔中的軟體包快取中找到 %s。正在複製..."
 
-#: cnchi/download/download_urllib.py:122
-msgid "Metalink for package %s has no size info"
-msgstr "軟體包 %s 的 metalink 沒有大小資訊"
-
-#: cnchi/download/download_urllib.py:185
-msgid "Can't download {0}, even after trying all available mirrors"
-msgstr "無法下載 {0} ，且已嘗試所有可用的鏡像"
+#: cnchi/download/download_urllib.py:150
+msgid "Error copying %s to %s. Cnchi will try to download it"
+msgstr "正在複製 %s 到 %s 時發生錯誤。Cnchi 將會嘗試下載它"
 
 #: cnchi/download/metalink.py:110
 msgid "Unable to create download queue for package {0}"
@@ -357,19 +419,23 @@ msgstr "家目錄將不會被加密。"
 msgid "Can't run encfs. Bad password?"
 msgstr "無法執行 encfs。錯誤的密碼？"
 
-#: cnchi/features.py:174
+#: cnchi/features.py:129
+msgid "No icon found for feature %s"
+msgstr "找不到功能 %s 的圖示"
+
+#: cnchi/features.py:211
 msgid "Feature Selection"
 msgstr "特性選擇"
 
-#: cnchi/features.py:178
+#: cnchi/features.py:215
 msgid "Arch User Repository (AUR) Support"
 msgstr "Arch Linux社群使用者軟體倉庫 (AUR) 支援"
 
-#: cnchi/features.py:179
+#: cnchi/features.py:216
 msgid "The AUR is a community-driven repository for Arch users."
 msgstr "AUR 是一個為 Arch Linux 使用者設計的社群驅動的套件庫。"
 
-#: cnchi/features.py:180
+#: cnchi/features.py:217
 msgid ""
 "Use yaourt to install AUR packages.\n"
 "The AUR was created to organize and share new packages\n"
@@ -377,15 +443,15 @@ msgid ""
 "inclusion into the [community] repository."
 msgstr "使用 yaourt 以安裝 AUR 軟體包。\nAUR 被創造用來組織和分享從社群而來的新的軟體包\n並且幫助流行的軟體包'\n包含到 [community] 套件庫。"
 
-#: cnchi/features.py:187
+#: cnchi/features.py:224
 msgid "Bluetooth Support"
 msgstr "藍牙支援"
 
-#: cnchi/features.py:188
+#: cnchi/features.py:225
 msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "啟用您系統上經由藍牙的無線連線。"
 
-#: cnchi/features.py:189
+#: cnchi/features.py:226
 msgid ""
 "Bluetooth is a standard for the short-range wireless\n"
 "interconnection of cellular phones, computers, and\n"
@@ -393,15 +459,15 @@ msgid ""
 "implementation of the Bluetooth protocol stack is BlueZ"
 msgstr "藍牙是一個短距離無線通訊的標準\n為手機、電腦以及\n其他電子設備設計。在 Linux 中，最完整且廣為使用的\n藍牙協議堆疊實作是 BlueZ"
 
-#: cnchi/features.py:196
+#: cnchi/features.py:233
 msgid "Extra Truetype Fonts"
 msgstr "額外的 Truetype 字型"
 
-#: cnchi/features.py:197
+#: cnchi/features.py:234
 msgid "Installation of extra TrueType fonts"
 msgstr "安裝額外的 TrueType 字型"
 
-#: cnchi/features.py:198
+#: cnchi/features.py:235
 msgid ""
 "TrueType is an outline font standard developed by\n"
 "Apple and Microsoft in the late 1980s as a competitor\n"
@@ -410,30 +476,53 @@ msgid ""
 "Mac OS and Microsoft Windows operating systems."
 msgstr "TrueType 是一種輪廓字型標準\n由蘋果公司及微軟公司在 1980 年代晚期所開發\n作為 Adobe 使用 PostScript 的 Type 1 字型的競爭者。\n它已經變成相當普遍的字型\n在 Mac OS 以及 Microsoft Windows 作業系統上都是。"
 
-#: cnchi/features.py:206
+#: cnchi/features.py:244
+msgid "Graphic drivers (Proprietary)"
+msgstr "顯示卡驅動程式（專有）"
+
+#: cnchi/features.py:245 cnchi/features.py:246
+msgid "Installs AMD or Nvidia proprietary graphic driver"
+msgstr "安裝 AMD 或 Nvidia 的專有驅動程式"
+
+#: cnchi/features.py:250
+msgid "Apache (or Nginx) + Mariadb + PHP"
+msgstr "Apache（或 Nginx） + Mariadb + PHP"
+
+#: cnchi/features.py:251
+msgid "Apache (or Nginx) + Mariadb + PHP installation and setup"
+msgstr "Apache（或 Nginx） + Mariadb + PHP 安裝及設定"
+
+#: cnchi/features.py:252
+msgid ""
+"This option installs a web server (you can choose\n"
+"Apache or Nginx) plus a database server (Mariadb)\n"
+"and PHP"
+msgstr "這個選項會安裝一個網頁伺服器（您可以選擇\nApache 或 Nginx）加上一個資料庫伺服器 (Mariadb)\n及 PHP"
+
+#: cnchi/features.py:258
 msgid "Printing Support"
 msgstr "列印支援"
 
-#: cnchi/features.py:207
+#: cnchi/features.py:259
 msgid "Installation of printer drivers and management tools."
 msgstr "安裝印表機驅動程式及管理軟體。"
 
-#: cnchi/features.py:208
+#: cnchi/features.py:260
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
 msgstr "CUPS 是一個基於標準，且開放原始碼的\n列印系統，由蘋果公司所開發給 OS\\302\\256 X 及其他\nUNIX\\302\\256-like 作業系統所使用。"
 
-#: cnchi/features.py:214
+#: cnchi/features.py:266
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: cnchi/features.py:215
+#: cnchi/features.py:267
 msgid "Open source office suite. Supports editing MS Office files."
 msgstr "開放原始碼辦公軟體套裝。支援微軟 Office 檔案。"
 
-#: cnchi/features.py:216
+#: cnchi/features.py:268
 msgid ""
 "LibreOffice is the free power-packed Open Source\n"
 "personal productivity suite for Windows, Macintosh\n"
@@ -442,15 +531,15 @@ msgid ""
 "needs: Writer, Calc, Impress, Draw, Math and Base."
 msgstr "LibreOffice 是一套自由且開放原始碼的\n個人生產力套裝軟體，可在 Windows、Macintosh\n及 Linux 上執行，裡面包含了六個多功能的應用程式\n專為你所有文件生產及資料處理設計\n內含：Writer、Calc、Impress、Draw、Math 及 Base。"
 
-#: cnchi/features.py:224
+#: cnchi/features.py:276
 msgid "Visual Effects"
 msgstr "視覺效果"
 
-#: cnchi/features.py:225
+#: cnchi/features.py:277
 msgid "Enable transparency, shadows, and other desktop effects."
 msgstr "啟用半透明、陰影以及其他桌面效果。"
 
-#: cnchi/features.py:226
+#: cnchi/features.py:278
 msgid ""
 "Compton is a lightweight, standalone composite manager,\n"
 "suitable for use with window managers that do not natively\n"
@@ -459,30 +548,49 @@ msgid ""
 "See the compton github page for further information."
 msgstr "Compton 是一個輕量、獨立的合成管理器，\n適合與不包含原生合成效果的視窗管理器一起使用。\nCompton 衍生自 xcompmgr-dana，\n而 xcompmgr-dana 則是衍生自 xcompmgr。\n參見 compton 的 github 頁面以取得更多資訊。"
 
-#: cnchi/features.py:234
+#: cnchi/features.py:286
 msgid "Uncomplicated Firewall"
 msgstr "簡易的防火牆"
 
-#: cnchi/features.py:235
+#: cnchi/features.py:287
 msgid "Control the incoming and outgoing network traffic."
 msgstr "控管進出的網路連線。"
 
-#: cnchi/features.py:236
+#: cnchi/features.py:288
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
 msgstr "Ufw 全名為 Uncomplicated Firewall，也就是簡易型的防火牆，\n是用來管理網路過濾的防火牆。它提供了一個命令列介面\n其目標是將防火牆的複雜設定簡單化，且易於使用。"
 
-#: cnchi/features.py:256
+#: cnchi/features.py:294
+msgid "Kernel (LTS version)"
+msgstr "核心（LTS 版本）"
+
+#: cnchi/features.py:295
+msgid "Long term support (LTS) Linux kernel and modules."
+msgstr "長期支援 (LTS) Linux 核心及模組。"
+
+#: cnchi/features.py:296
+msgid ""
+"The linux-lts package is an alternative Arch kernel package\n"
+"based upon Linux kernel 3.14 and is available in the core repository.\n"
+"This particular kernel version enjoys long-term support from upstream,\n"
+"including security fixes and some feature backports. Additionally, this\n"
+"package includes ext4 support. For Antergos users seeking a long-term\n"
+"support kernel, or who want a fallback kernel in case the latest kernel\n"
+"version causes problems, this option is the answer."
+msgstr "Linux-lts 軟體包是一個 Arch 核心軟體包的替代品\n其基於 Linux 核心 3.14 且在 core 套件庫中提供。\n這個特殊的核心版本獲得從上游而來的長期支援，\n包含了安全性修復及一些向後移植的功能。此外，這個\n套件包含了 ext4 支援。提供給在找尋長期支援核心的\nAntergos 使用者，或是那些因為最新版本核心發生問題\n而想要尋找一個較穩定的替代版本的使用者，這就是最好的選擇。"
+
+#: cnchi/features.py:306
 msgid "Firefox Web Browser"
 msgstr "Firefox 網路瀏覽器"
 
-#: cnchi/features.py:257
+#: cnchi/features.py:307
 msgid "A popular open-source graphical web browser from Mozilla"
 msgstr "一個流行的開放原始碼、圖形使用者介面的網路瀏覽器，來自 Mozilla"
 
-#: cnchi/features.py:258
+#: cnchi/features.py:308
 msgid ""
 "Mozilla Firefox (known simply as Firefox) is a free and\n"
 "open-source web browser developed for Windows, OS X, and Linux,\n"
@@ -492,15 +600,15 @@ msgid ""
 "anticipated web standards."
 msgstr "Mozilla Firefox （通常被簡稱為 Firefox）是一個自由且\n開放原始碼的網路瀏覽器，為 Windows、OS X、Linux 開發，\n也有為 Android 設計的行動版本，來自 Mozilla 基金會及\n其全資子公司，Mozilla 公司。Firefox 使用 Gecko\n排版引擎來渲染網頁，實現了目前及\n未來可能會出現的網路標準。"
 
-#: cnchi/features.py:267
+#: cnchi/features.py:317
 msgid "Windows sharing SMB"
 msgstr "Windows 分享 SMB"
 
-#: cnchi/features.py:268
+#: cnchi/features.py:318
 msgid "SMB provides shared access to files and printers"
 msgstr "SMB 提供了檔案及印表機的分享方法"
 
-#: cnchi/features.py:269
+#: cnchi/features.py:319
 msgid ""
 "In computer networking, Server Message Block (SMB)\n"
 "operates as an application-layer network protocol mainly used\n"
@@ -509,15 +617,19 @@ msgid ""
 "Most usage of SMB involves computers running Microsoft Windows."
 msgstr "在電腦網路中，伺服器訊息區塊(SMB)\n作為一個應用程式層網路協議，用作\n提供檔案、印表機、匯流排及各式各樣\n在網路上各節點間的通訊。\n大多數使用 SMB 的電腦是執行 Microsoft Windows。"
 
-#: cnchi/features.py:310
+#: cnchi/features.py:363
 msgid "Selected '%s' feature to install"
 msgstr "選定 '%s' 功能以安裝"
 
-#: cnchi/features.py:330
+#: cnchi/features.py:384
+msgid "Do you want to install the Nginx server instead of the Apache server?"
+msgstr "您想要安裝 Nginx 伺服器而不是 Apache 伺服器嗎？"
+
+#: cnchi/features.py:401
 msgid "Arch User Repository - Disclaimer"
 msgstr "Arch Linux社群使用者軟體倉庫－拒絕"
 
-#: cnchi/features.py:331
+#: cnchi/features.py:402
 msgid ""
 "The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
 "that supplement software available from the official repositories.\n"
@@ -525,11 +637,11 @@ msgid ""
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
 msgstr "Arch Linux社群使用者軟體倉庫是使用者提供的 PKGBUILD 的集合\n其可作為官方套件庫的補充。\n\nAUR 是由使用者社群所驅動而不被 Arch 或 Antergos 所支援。\n"
 
-#: cnchi/features.py:336
+#: cnchi/features.py:407
 msgid "Uncomplicated Firewall will be installed with these rules:"
 msgstr "簡易的防火牆將會使用下列規則安裝："
 
-#: cnchi/features.py:338
+#: cnchi/features.py:409
 msgid ""
 "ufw default deny\n"
 "ufw allow from {0}\n"
@@ -537,346 +649,431 @@ msgid ""
 "ufw allow SSH"
 msgstr "ufw 預設拒絕\nufw 從 {0} 允許\nufw 允許通過\nufw 允許 SSH"
 
-#: cnchi/hardware/hardware.py:80 cnchi/installation/chroot.py:155
+#: cnchi/hardware/hardware.py:120 cnchi/installation/chroot.py:139
 msgid "Error running command: %s"
 msgstr "執行命令錯誤： %s"
 
-#: cnchi/hardware/hardware.py:113
+#: cnchi/hardware/hardware.py:139
+msgid "%s completed successfully."
+msgstr "%s 已成功完成。"
+
+#: cnchi/hardware/hardware.py:142
+msgid "Error running %s script"
+msgstr "執行 %s 指令稿時發生錯誤"
+
+#: cnchi/hardware/hardware.py:143 cnchi/installation/auto_partition.py:87
+#: cnchi/installation/auto_partition.py:93
+#: cnchi/installation/auto_partition.py:139
+#: cnchi/installation/auto_partition.py:150
+#: cnchi/installation/auto_partition.py:187
+#: cnchi/installation/auto_partition.py:210
+#: cnchi/installation/auto_partition.py:220
+#: cnchi/installation/auto_partition.py:232
+#: cnchi/installation/auto_partition.py:261
+#: cnchi/installation/auto_partition.py:293
+#: cnchi/installation/auto_partition.py:306
+#: cnchi/installation/auto_partition.py:382
+#: cnchi/installation/auto_partition.py:390
+#: cnchi/installation/auto_partition.py:411
+#: cnchi/installation/auto_partition.py:795
+#: cnchi/installation/auto_partition.py:804
+#: cnchi/installation/auto_partition.py:840
+#: cnchi/installation/auto_partition.py:902 cnchi/installation/process.py:471
+#: cnchi/installation/process.py:482 cnchi/installation/process.py:493
+#: cnchi/installation/process.py:1454
+msgid "Command %s failed"
+msgstr "指令 %s 執行失敗"
+
+#: cnchi/hardware/hardware.py:144 cnchi/installation/auto_partition.py:88
+#: cnchi/installation/auto_partition.py:94
+#: cnchi/installation/auto_partition.py:140
+#: cnchi/installation/auto_partition.py:151
+#: cnchi/installation/auto_partition.py:188
+#: cnchi/installation/auto_partition.py:211
+#: cnchi/installation/auto_partition.py:221
+#: cnchi/installation/auto_partition.py:233
+#: cnchi/installation/auto_partition.py:262
+#: cnchi/installation/auto_partition.py:294
+#: cnchi/installation/auto_partition.py:307
+#: cnchi/installation/auto_partition.py:383
+#: cnchi/installation/auto_partition.py:391
+#: cnchi/installation/auto_partition.py:412
+#: cnchi/installation/auto_partition.py:805
+#: cnchi/installation/auto_partition.py:841
+#: cnchi/installation/auto_partition.py:903 cnchi/installation/process.py:176
+#: cnchi/installation/process.py:472 cnchi/installation/process.py:483
+#: cnchi/installation/process.py:494 cnchi/installation/process.py:1455
+msgid "Output: %s"
+msgstr "輸出：%s"
+
+#: cnchi/hardware/hardware.py:188
 msgid "Error importing %s from %s : %s"
 msgstr "匯入 %s 從 %s 時發生錯誤： %s"
 
-#: cnchi/hardware/hardware.py:115
+#: cnchi/hardware/hardware.py:190
 msgid "Unexpected error importing %s: %s"
 msgstr "匯入 %s 時發生非預期的錯誤： %s"
 
-#: cnchi/installation/advanced.py:259 cnchi/installation/advanced.py:578
-#: cnchi/installation/advanced.py:592
+#: cnchi/hardware/hardware.py:196
+msgid "Cnchi will test %d drivers for %d hardware devices"
+msgstr "Cnchi 將測試 %d 驅動程式為 %d 硬體裝置"
+
+#: cnchi/installation/advanced.py:261 cnchi/installation/advanced.py:608
+#: cnchi/installation/advanced.py:622
 msgid "free space"
 msgstr "剩餘空間"
 
-#: cnchi/installation/advanced.py:360
+#: cnchi/installation/advanced.py:396
 msgid "Device"
 msgstr "裝置"
 
-#: cnchi/installation/advanced.py:363
+#: cnchi/installation/advanced.py:399
 msgid "Type"
 msgstr "類型"
 
-#: cnchi/installation/advanced.py:366
+#: cnchi/installation/advanced.py:402
 msgid "Mount point"
 msgstr "掛載點"
 
-#: cnchi/installation/advanced.py:369
+#: cnchi/installation/advanced.py:405
 msgid "Label"
 msgstr "標籤"
 
-#: cnchi/installation/advanced.py:376 cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:412 cnchi/installation/advanced.py:1979
 msgid "Format"
 msgstr "格式化"
 
-#: cnchi/installation/advanced.py:383
+#: cnchi/installation/advanced.py:419
 msgid "Size"
 msgstr "大小"
 
-#: cnchi/installation/advanced.py:386
+#: cnchi/installation/advanced.py:422
 msgid "Used"
 msgstr "已使用"
 
-#: cnchi/installation/advanced.py:389
+#: cnchi/installation/advanced.py:425
 msgid "Flags"
 msgstr "旗標"
 
-#: cnchi/installation/advanced.py:396
+#: cnchi/installation/advanced.py:432
 msgid "SSD"
 msgstr "固態硬碟"
 
-#: cnchi/installation/advanced.py:560
+#: cnchi/installation/advanced.py:590
 msgid "none"
 msgstr "無"
 
-#: cnchi/installation/advanced.py:702
+#: cnchi/installation/advanced.py:727
 msgid "Can't edit a partition with LVM filesystem type"
 msgstr "無法以 LVM 檔案系統的型式編輯單一分割區"
 
-#: cnchi/installation/advanced.py:761
+#: cnchi/installation/advanced.py:789
 msgid "Can't use same mount point twice."
 msgstr "無法使用同一個掛載點兩次。"
 
-#: cnchi/installation/advanced.py:763
+#: cnchi/installation/advanced.py:791
 msgid "Root partition must be formatted."
 msgstr "根目錄分割區必須格式化。"
 
-#: cnchi/installation/advanced.py:861
+#: cnchi/installation/advanced.py:798 cnchi/installation/advanced.py:1100
+msgid "'%s' is not a valid label"
+msgstr "「%s」不是一個有效的標籤"
+
+#: cnchi/installation/advanced.py:813 cnchi/installation/advanced.py:1151
+msgid "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."
+msgstr "/boot 或 /boot/efi 在 UEFI 系統下需要為 fat32 檔案系統。強制使用它。"
+
+#: cnchi/installation/advanced.py:899
 msgid "You will delete the partition %s from disk %s"
 msgstr "您將要刪除分割區 %s 從 %s 磁碟上"
 
-#: cnchi/installation/advanced.py:879
+#: cnchi/installation/advanced.py:917
 msgid "Unmounting %s..."
 msgstr "正在卸載 %s..."
 
-#: cnchi/installation/advanced.py:1004
+#: cnchi/installation/advanced.py:1042
 msgid "Sorry, you already have {0} primary partitions created."
 msgstr "抱歉，您已經建立了 {0} 個主要分割區了。"
 
-#: cnchi/installation/advanced.py:1008
+#: cnchi/installation/advanced.py:1046
 msgid "Sorry, you already have {0} primary and 1 extended partitions created."
 msgstr "抱歉，您已經建立了 {0} 個主要分割區及 1 個延伸分割區了。"
 
-#: cnchi/installation/advanced.py:1063
+#: cnchi/installation/advanced.py:1105
 msgid "Can't use same mount point twice..."
 msgstr "無法使用同一個掛載點兩次..."
 
-#: cnchi/installation/advanced.py:1088
+#: cnchi/installation/advanced.py:1130
 msgid "Creating a primary partition"
 msgstr "正在創建一個主要分割區"
 
-#: cnchi/installation/advanced.py:1099
+#: cnchi/installation/advanced.py:1141
 msgid "Creating an extended partition"
 msgstr "正在創建一個延伸分割區"
 
-#: cnchi/installation/advanced.py:1105
+#: cnchi/installation/advanced.py:1147
 msgid "Creating a logical partition"
 msgstr "正在創建一個邏輯分割區"
 
-#: cnchi/installation/advanced.py:1289
+#: cnchi/installation/advanced.py:1203
+msgid "Using LUKS encryption will DELETE all partition contents!"
+msgstr "使用 LUKS 加密將會刪除所有的分割區內容！"
+
+#: cnchi/installation/advanced.py:1215
+msgid "LUKS passwords do not match!"
+msgstr "LUKS 密碼不符合！"
+
+#: cnchi/installation/advanced.py:1340
 msgid "Advanced Installation Mode"
 msgstr "進階安裝模式"
 
-#: cnchi/installation/advanced.py:1291 cnchi/installation/automatic.py:101
+#: cnchi/installation/advanced.py:1342 cnchi/installation/automatic.py:101
 msgid "Use the device below for boot loader installation:"
 msgstr "使用下列裝置安裝開機載入器："
 
-#: cnchi/installation/advanced.py:1296 cnchi/installation/automatic.py:106
+#: cnchi/installation/advanced.py:1347 cnchi/installation/automatic.py:106
 msgid "Bootloader:"
 msgstr "開機管理程式："
 
-#: cnchi/installation/advanced.py:1300 cnchi/installation/automatic.py:110
+#: cnchi/installation/advanced.py:1351 cnchi/installation/automatic.py:110
 msgid "Device:"
 msgstr "裝置："
 
-#: cnchi/installation/advanced.py:1304
+#: cnchi/installation/advanced.py:1355
 msgid "Mount Checklist:"
 msgstr "掛載點確認清單："
 
-#: cnchi/installation/advanced.py:1310
+#: cnchi/installation/advanced.py:1361
 msgid "Root"
 msgstr "Root"
 
-#: cnchi/installation/advanced.py:1314
+#: cnchi/installation/advanced.py:1365
 msgid "Boot"
 msgstr "Boot"
 
-#: cnchi/installation/advanced.py:1318
+#: cnchi/installation/advanced.py:1369
 msgid "EFI"
 msgstr "EFI"
 
-#: cnchi/installation/advanced.py:1322
+#: cnchi/installation/advanced.py:1373
 msgid "Swap"
 msgstr "Swap"
 
-#: cnchi/installation/advanced.py:1332
+#: cnchi/installation/advanced.py:1383
 msgid "Undo"
 msgstr "復原"
 
-#: cnchi/installation/advanced.py:1335 cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1386 cnchi/installation/advanced.py:1979
 msgid "New"
 msgstr "新的"
 
-#: cnchi/installation/advanced.py:1338
+#: cnchi/installation/advanced.py:1389
 msgid "Delete"
 msgstr "刪除"
 
-#: cnchi/installation/advanced.py:1341
+#: cnchi/installation/advanced.py:1392
 msgid "Edit..."
 msgstr "編輯..."
 
-#: cnchi/installation/advanced.py:1344
+#: cnchi/installation/advanced.py:1395
 msgid "New partition table"
 msgstr "新的分割表"
 
-#: cnchi/installation/advanced.py:1355
+#: cnchi/installation/advanced.py:1406
 msgid "_Cancel"
 msgstr "取消(_C)"
 
-#: cnchi/installation/advanced.py:1366
+#: cnchi/installation/advanced.py:1417
 msgid "_Apply"
 msgstr "套用(_A)"
 
-#: cnchi/installation/advanced.py:1369
+#: cnchi/installation/advanced.py:1420
 msgid "Size:"
 msgstr "大小:"
 
-#: cnchi/installation/advanced.py:1373
+#: cnchi/installation/advanced.py:1424
 msgid "Type:"
 msgstr "類型:"
 
-#: cnchi/installation/advanced.py:1377
+#: cnchi/installation/advanced.py:1428
 msgid "Primary"
 msgstr "主要"
 
-#: cnchi/installation/advanced.py:1381
+#: cnchi/installation/advanced.py:1432
 msgid "Logical"
 msgstr "邏輯"
 
-#: cnchi/installation/advanced.py:1385
+#: cnchi/installation/advanced.py:1436
 msgid "Extended"
 msgstr "延伸"
 
-#: cnchi/installation/advanced.py:1389
+#: cnchi/installation/advanced.py:1440
 msgid "Beginning of this space"
 msgstr "這個空間的開始"
 
-#: cnchi/installation/advanced.py:1393
+#: cnchi/installation/advanced.py:1444
 msgid "End of this space"
 msgstr "這個空間的結尾"
 
-#: cnchi/installation/advanced.py:1397 cnchi/installation/advanced.py:1414
+#: cnchi/installation/advanced.py:1448 cnchi/installation/advanced.py:1465
 msgid "Use As:"
 msgstr "做為："
 
-#: cnchi/installation/advanced.py:1401 cnchi/installation/advanced.py:1418
+#: cnchi/installation/advanced.py:1452 cnchi/installation/advanced.py:1469
 msgid "Mount Point:"
 msgstr "掛載點："
 
-#: cnchi/installation/advanced.py:1405 cnchi/installation/advanced.py:1422
+#: cnchi/installation/advanced.py:1456 cnchi/installation/advanced.py:1473
 msgid "Label (optional):"
 msgstr "標籤（可選）："
 
-#: cnchi/installation/advanced.py:1409 cnchi/installation/advanced.py:1430
+#: cnchi/installation/advanced.py:1460 cnchi/installation/advanced.py:1481
 msgid "Encryption Options..."
 msgstr "加密選項..."
 
-#: cnchi/installation/advanced.py:1426
+#: cnchi/installation/advanced.py:1477
 msgid "Format:"
 msgstr "格式化:"
 
-#: cnchi/installation/advanced.py:1435
+#: cnchi/installation/advanced.py:1486
 msgid "Partition Table Type:"
 msgstr "分割表類型："
 
-#: cnchi/installation/advanced.py:1440
+#: cnchi/installation/advanced.py:1491
 msgid "Create Partition Table"
 msgstr "創建分割表"
 
-#: cnchi/installation/advanced.py:1443
+#: cnchi/installation/advanced.py:1494
 msgid "Use LUKS encryption:"
 msgstr "使用 LUKS 加密："
 
-#: cnchi/installation/advanced.py:1447
+#: cnchi/installation/advanced.py:1498
 msgid "LUKS volume name:"
 msgstr "LUKS 卷名稱："
 
-#: cnchi/installation/advanced.py:1451 cnchi/wireless.py:70
+#: cnchi/installation/advanced.py:1502 cnchi/wireless.py:70
 msgid "Password:"
 msgstr "密碼："
 
-#: cnchi/installation/advanced.py:1455
+#: cnchi/installation/advanced.py:1506
 msgid "Confirm password:"
 msgstr "確認密碼："
 
-#: cnchi/installation/advanced.py:1525
+#: cnchi/installation/advanced.py:1576
 msgid "Creating a new %s partition table for disk %s"
 msgstr "正在創建一個新的 %s 分割表給磁碟 %s"
 
-#: cnchi/installation/advanced.py:1534
+#: cnchi/installation/advanced.py:1585
 msgid ""
 "GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
 "\n"
 "Cnchi will create this BIOS Boot Partition for you."
 msgstr "GRUB 在 BIOS 系統中需要一個 BIOS 開機分割區以嵌入它的 core.img 檔案，因為 GPT 分割的系統缺乏 post-MBR 分隔。\n\nCnchi 將會為您建立這個 BIOS 開機分割區。"
 
-#: cnchi/installation/advanced.py:1568
+#: cnchi/installation/advanced.py:1614
 msgid "Can't create BIOS GPT Boot partition!"
 msgstr "無法建立 BIOS GPT 開機分割區！"
 
-#: cnchi/installation/advanced.py:1595
+#: cnchi/installation/advanced.py:1643
 msgid "Couldn't create BIOS GPT Boot partition"
 msgstr "無法建立 BIOS GPT 開機分割區"
 
-#: cnchi/installation/advanced.py:1789
+#: cnchi/installation/advanced.py:1790
+msgid "Install now!"
+msgstr "立刻安裝!"
+
+#: cnchi/installation/advanced.py:1865
 msgid ""
 "{0} is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} 已被掛載為 swap。\n要繼續其必須被卸載。\n按確定以卸載，或按否以返回\n"
 
-#: cnchi/installation/advanced.py:1793
+#: cnchi/installation/advanced.py:1869
 msgid ""
 "{0} is mounted in '{1}'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} 已經掛載到 「{1}」。\n要繼續必須先將其卸載。\n按是以卸載，或否以返回\n"
 
-#: cnchi/installation/advanced.py:1804 cnchi/installation/advanced.py:1825
+#: cnchi/installation/advanced.py:1880 cnchi/installation/advanced.py:1901
 msgid "%s unmounted"
 msgstr "%s 已卸載"
 
-#: cnchi/installation/advanced.py:1818
+#: cnchi/installation/advanced.py:1894
 msgid "Swap partition %s unmounted"
 msgstr "交換分割區 %s 已卸載"
 
-#: cnchi/installation/advanced.py:1829
+#: cnchi/installation/advanced.py:1905
 msgid "%s shows as mounted (busy) but it has no mount point"
 msgstr "%s 似乎正掛載著（忙碌）但是它並沒有掛載點"
 
-#: cnchi/installation/advanced.py:1871
+#: cnchi/installation/advanced.py:1947
 msgid ""
 "Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
 msgstr "已加入 %s 至變更列表中：createme[%s] 重新標籤[%s] fmt[%s] mnt[%s] 加密[%s]"
 
-#: cnchi/installation/advanced.py:1895
+#: cnchi/installation/advanced.py:1971
 msgid "Partition {0} will be deleted"
 msgstr "分割區 {0} 將會被刪除"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Encrypt"
 msgstr "加密"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Mount"
 msgstr "裝載"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Partition"
 msgstr "分區"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Relabel"
 msgstr "重新標籤"
 
-#: cnchi/installation/advanced.py:1924
+#: cnchi/installation/advanced.py:2000
 msgid "These disks will have partition actions:"
 msgstr "這個磁碟將會有這些分割區動作："
 
-#: cnchi/installation/advanced.py:2024
+#: cnchi/installation/advanced.py:2100
 msgid "Finished saving changes in %s"
 msgstr "儲存變更到 %s 中完成"
 
-#: cnchi/installation/advanced.py:2048
+#: cnchi/installation/advanced.py:2121
 msgid "Creating new {0} filesystem in {1} labeled {2}"
 msgstr "正在建立新的 {0} 檔案系統在 {1} 中被標籤為 {2}"
 
-#: cnchi/installation/advanced.py:2051
+#: cnchi/installation/advanced.py:2124
 msgid "Creating new {0} filesystem in {1}"
 msgstr "正在建立新的 {0} 檔案系統在 {1}"
 
-#: cnchi/installation/advanced.py:2080
+#: cnchi/installation/advanced.py:2152
+msgid "Volume name is %s"
+msgstr "卷冊名稱為 %s"
+
+#: cnchi/installation/advanced.py:2166
 msgid "Encrypting {0}, assigning volume name {1} and formatting it..."
 msgstr "正在加密 {0}，正在分配卷名稱 {1} 且正在對其格式化..."
 
-#: cnchi/installation/advanced.py:2110
+#: cnchi/installation/advanced.py:2181
+msgid "Couldn't format LUKS device '{0}' with label '{1}' as '{2}'"
+msgstr "無法格式化 LUKS 裝置「{0}」 使用標籤 「{1}」 作為 「{2}」"
+
+#: cnchi/installation/advanced.py:2205
 msgid "Couldn't format partition '{0}' with label '{1}' as '{2}'"
 msgstr "無法格式化分割區 「{0}」 使用標籤 「{1}」 作為 「{2}」"
 
-#: cnchi/installation/advanced.py:2168 cnchi/installation/automatic.py:264
+#: cnchi/installation/advanced.py:2263 cnchi/installation/automatic.py:268
 msgid "Cnchi will not install any bootloader"
 msgstr "Cnchi 將不會安裝任何開機管理程式"
 
-#: cnchi/installation/advanced.py:2174
+#: cnchi/installation/advanced.py:2269
 msgid "Antergos will install the bootloader {0} in device {1}"
 msgstr "Antergos 將會安裝 {0} 開機管理程式在 {1}"
 
-#: cnchi/installation/advanced.py:2190 cnchi/installation/automatic.py:295
+#: cnchi/installation/advanced.py:2285 cnchi/installation/automatic.py:299
 msgid "Testing mode. Cnchi will not change anything!"
 msgstr "測試模式。Cnchi 將不會改動任何東西！"
 
@@ -930,316 +1127,270 @@ msgstr "無法找到任何備用的分割區號碼。\n並存安裝將不會繼�
 msgid "Can't find any installed OS!"
 msgstr "找不到任何已安裝的作業系統！"
 
-#: cnchi/installation/ask.py:109
-msgid "Cnchi will enable the 'alongside' installation mode."
-msgstr "Cnchi 將會啟用「並存」安裝模式。"
-
-#: cnchi/installation/ask.py:111
-msgid "Cnchi will NOT enable the 'alongside' installation mode."
-msgstr "Cnchi 將不會啟用「並存」安裝模式。"
-
-#: cnchi/installation/ask.py:125
+#: cnchi/installation/ask.py:127
 msgid "The 'alongside' installation mode does not work in UEFI systems"
 msgstr "「並存」安裝模式在 UEFI 系統上無法運作"
 
-#: cnchi/installation/ask.py:140
+#: cnchi/installation/ask.py:141
 msgid "Windows(tm) OS detected."
 msgstr "偵測到 Windows(tm) 作業系統。"
 
-#: cnchi/installation/ask.py:143
+#: cnchi/installation/ask.py:144
 msgid "Windows(tm) OS not detected."
 msgstr "未偵測到 Windows(tm) 作業系統。"
 
-#: cnchi/installation/ask.py:146
+#: cnchi/installation/ask.py:147
 msgid "Can't detect any OS in device sda."
 msgstr "無法在 sda 裝置上偵測到任何作業系統。"
 
-#: cnchi/installation/ask.py:150
+#: cnchi/installation/ask.py:151
 msgid "Unsuported disk layout for the 'alongside' installation mode"
 msgstr "不被「並存」安裝模式所支援的磁碟佈局"
 
-#: cnchi/installation/ask.py:195
+#: cnchi/installation/ask.py:196
 msgid " and "
 msgstr "及"
 
-#: cnchi/installation/ask.py:209
+#: cnchi/installation/ask.py:210
 msgid "Installation Type"
 msgstr "安裝類型"
 
-#: cnchi/installation/ask.py:222
+#: cnchi/installation/ask.py:225
 msgid "Replace {0} with Antergos"
 msgstr "以 {0} 取代 Antergos"
 
-#: cnchi/installation/ask.py:224
+#: cnchi/installation/ask.py:227
 msgid "Erase disk and install Antergos"
 msgstr "抹除磁碟並安裝 Antergos"
 
-#: cnchi/installation/ask.py:228
+#: cnchi/installation/ask.py:232
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "警告：這樣將會抹除所有在您磁碟上的資料。"
 
-#: cnchi/installation/ask.py:234
+#: cnchi/installation/ask.py:241
 msgid "Encrypt this installation for increased security."
 msgstr "加密本次安裝以獲得更高的安全性。"
 
-#: cnchi/installation/ask.py:238
+#: cnchi/installation/ask.py:249
 msgid "You will be asked to create an encryption password in the next step."
 msgstr "您將會在下一個步驟輸入加密的密碼。"
 
-#: cnchi/installation/ask.py:243
+#: cnchi/installation/ask.py:258
 msgid "Use LVM with this installation."
 msgstr "在這個安裝上使用 LVM。"
 
-#: cnchi/installation/ask.py:247
+#: cnchi/installation/ask.py:266
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
 msgstr "將會設定 LVM 讓您以更簡單的方法產生快照及變更分割區大小。"
 
-#: cnchi/installation/ask.py:252
+#: cnchi/installation/ask.py:275
 msgid "Set your Home in a different partition/volume"
 msgstr "將您的家目錄設定在不同的分割區/卷中"
 
-#: cnchi/installation/ask.py:256
+#: cnchi/installation/ask.py:283
 msgid ""
 "This will setup you /home directory in a different partition or volume."
 msgstr "這將會將您的 /home 目錄設定到不同的分割區或卷中"
 
-#: cnchi/installation/ask.py:262
-msgid "Install Antergos alongside {0}"
-msgstr "Antergos 與 {0} 並存安裝"
+#: cnchi/installation/ask.py:306
+msgid "How would you like to proceed?"
+msgstr "您想要如何處理？"
 
-#: cnchi/installation/ask.py:267
-msgid "Installs Antergos without removing {0}"
-msgstr "安裝 Antergos 而不移除 {0}"
-
-#: cnchi/installation/ask.py:272
-msgid "This computer has {0} installed."
-msgstr "此電腦已安裝 {0}。"
-
-#: cnchi/installation/ask.py:273 cnchi/installation/ask.py:275
-msgid "What do you want to do?"
-msgstr "您想要做什麼？"
-
-#: cnchi/installation/ask.py:283
+#: cnchi/installation/ask.py:318
 msgid "Choose exactly where Antergos should be installed."
 msgstr "選擇 Antergos 應該要如何安裝。"
 
-#: cnchi/installation/ask.py:286
+#: cnchi/installation/ask.py:322
 msgid "Edit partition table and choose mount points."
 msgstr "編輯分割表並選擇掛載點。"
 
-#: cnchi/installation/ask.py:317
+#: cnchi/installation/ask.py:356
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "Antergos 將會使用 LUKS 進行加密安裝"
 
-#: cnchi/installation/ask.py:320
+#: cnchi/installation/ask.py:359
 msgid "Antergos will be installed using LVM volumes"
 msgstr "Antergos 將會使用 LVM 卷安裝"
 
-#: cnchi/installation/ask.py:322
+#: cnchi/installation/ask.py:361
 msgid "Antergos will be installed using a separate /home volume."
 msgstr "Antergos 將會使用分離的 /home 卷安裝。"
 
-#: cnchi/installation/ask.py:324
+#: cnchi/installation/ask.py:363
 msgid "Antergos will be installed using a separate /home partition."
 msgstr "Antergos 將會使用分離的 /home 分割區安裝。"
 
-#: cnchi/installation/auto_partition.py:79
+#: cnchi/installation/ask.py:381
+msgid "Ranking mirrors"
+msgstr "正在排序鏡像"
+
+#: cnchi/installation/ask.py:382
+msgid "Cnchi is still updating and optimizing your mirror lists."
+msgstr "Cnchi 仍在更新並最佳化您的鏡像列表。"
+
+#: cnchi/installation/ask.py:384
+msgid "Please be patient..."
+msgstr "請耐心等待..."
+
+#: cnchi/installation/ask.py:407
+msgid "Waiting for all external processes to finish..."
+msgstr "正在等待所有外部行程結束..."
+
+#: cnchi/installation/ask.py:420
+msgid "All external processes are finished. Installation can go on"
+msgstr "所有外部行程都已結束。安裝繼續"
+
+#: cnchi/installation/auto_partition.py:67
 msgid "Unmounting %s"
 msgstr "正在卸載 %s"
 
-#: cnchi/installation/auto_partition.py:83
+#: cnchi/installation/auto_partition.py:71
 msgid "Unmounting %s failed. Trying lazy arg."
 msgstr "卸載 %s 失敗。正在嘗試 lazy arg。"
 
-#: cnchi/installation/auto_partition.py:87
+#: cnchi/installation/auto_partition.py:75
 msgid "Unmounting %s failed."
 msgstr "卸載 %s 失敗。"
 
-#: cnchi/installation/auto_partition.py:99
-#: cnchi/installation/auto_partition.py:105
-#: cnchi/installation/auto_partition.py:151
-#: cnchi/installation/auto_partition.py:162
-#: cnchi/installation/auto_partition.py:198
-#: cnchi/installation/auto_partition.py:221
-#: cnchi/installation/auto_partition.py:231
-#: cnchi/installation/auto_partition.py:243
-#: cnchi/installation/auto_partition.py:272
-#: cnchi/installation/auto_partition.py:300
-#: cnchi/installation/auto_partition.py:313
-#: cnchi/installation/auto_partition.py:387
-#: cnchi/installation/auto_partition.py:395
-#: cnchi/installation/auto_partition.py:416
-#: cnchi/installation/auto_partition.py:784
-#: cnchi/installation/auto_partition.py:793
-#: cnchi/installation/auto_partition.py:828
-#: cnchi/installation/auto_partition.py:885 cnchi/installation/process.py:456
-#: cnchi/installation/process.py:467 cnchi/installation/process.py:478
-#: cnchi/installation/process.py:1381
-msgid "Command %s failed"
-msgstr "指令 %s 執行失敗"
-
-#: cnchi/installation/auto_partition.py:100
-#: cnchi/installation/auto_partition.py:106
-#: cnchi/installation/auto_partition.py:152
-#: cnchi/installation/auto_partition.py:163
-#: cnchi/installation/auto_partition.py:199
-#: cnchi/installation/auto_partition.py:222
-#: cnchi/installation/auto_partition.py:232
-#: cnchi/installation/auto_partition.py:244
-#: cnchi/installation/auto_partition.py:273
-#: cnchi/installation/auto_partition.py:301
-#: cnchi/installation/auto_partition.py:314
-#: cnchi/installation/auto_partition.py:388
-#: cnchi/installation/auto_partition.py:396
-#: cnchi/installation/auto_partition.py:417
-#: cnchi/installation/auto_partition.py:785
-#: cnchi/installation/auto_partition.py:794
-#: cnchi/installation/auto_partition.py:829
-#: cnchi/installation/auto_partition.py:886 cnchi/installation/process.py:171
-#: cnchi/installation/process.py:457 cnchi/installation/process.py:468
-#: cnchi/installation/process.py:479 cnchi/installation/process.py:1382
-msgid "Output: %s"
-msgstr "輸出：%s"
-
-#: cnchi/installation/auto_partition.py:150
+#: cnchi/installation/auto_partition.py:138
 msgid "Can't delete existent LVM volumes"
 msgstr "無法刪除已存在的 LVM 卷"
 
-#: cnchi/installation/auto_partition.py:161
+#: cnchi/installation/auto_partition.py:149
 msgid "Can't close already opened LUKS devices"
 msgstr "無法關閉已經開啟的 LUKS 裝置"
 
-#: cnchi/installation/auto_partition.py:170
+#: cnchi/installation/auto_partition.py:158
 msgid "Can't setup LUKS in device {0}. A password or a key file are needed"
 msgstr "無法在裝置 {0} 上設定 LUKS。需要密碼或金鑰檔"
 
-#: cnchi/installation/auto_partition.py:178
+#: cnchi/installation/auto_partition.py:166
 msgid "Cnchi will setup LUKS on device %s"
 msgstr "Cnchi 將會在裝置 %s 上設定 LUKS"
 
-#: cnchi/installation/auto_partition.py:196
-#: cnchi/installation/auto_partition.py:219
+#: cnchi/installation/auto_partition.py:185
+#: cnchi/installation/auto_partition.py:208
 msgid "Can't format and open the LUKS device {0}"
 msgstr "無法格式化及開啟 LUKS 裝置 {0}"
 
-#: cnchi/installation/auto_partition.py:230
+#: cnchi/installation/auto_partition.py:219
 msgid "Can't wipe filesystem of device %s"
 msgstr "無法抹除 %s 裝置上的檔案系統"
 
-#: cnchi/installation/auto_partition.py:242
+#: cnchi/installation/auto_partition.py:231
 msgid "Can't run dd command"
 msgstr "無法執行 dd 指令"
 
-#: cnchi/installation/auto_partition.py:270
-#: cnchi/installation/auto_partition.py:298
+#: cnchi/installation/auto_partition.py:259
+#: cnchi/installation/auto_partition.py:291
 msgid "Error creating a new partition on device {0}"
 msgstr "在建立在裝置 {0} 上的新分割區時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:311
+#: cnchi/installation/auto_partition.py:304
 msgid "Error creating a new partition table on device {0}"
 msgstr "在建立在裝置 {0} 上的新分割表時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:350
+#: cnchi/installation/auto_partition.py:345
 msgid "Will format device %s as %s"
 msgstr "將會格式化裝置 %s 為 %s"
 
-#: cnchi/installation/auto_partition.py:359 cnchi/installation/process.py:297
+#: cnchi/installation/auto_partition.py:354 cnchi/installation/process.py:310
 msgid "Can't activate swap in %s"
 msgstr "無法在 %s 上啟用 swap"
 
-#: cnchi/installation/auto_partition.py:360
-#: cnchi/installation/auto_partition.py:666 cnchi/installation/chroot.py:123
-#: cnchi/installation/process.py:289 cnchi/installation/process.py:298
+#: cnchi/installation/auto_partition.py:355
+#: cnchi/installation/auto_partition.py:671 cnchi/installation/process.py:302
+#: cnchi/installation/process.py:311
 msgid "Command %s has failed."
 msgstr "指令 %s 執行失敗。"
 
-#: cnchi/installation/auto_partition.py:361
-#: cnchi/installation/auto_partition.py:667 cnchi/installation/chroot.py:125
-#: cnchi/installation/process.py:290 cnchi/installation/process.py:299
+#: cnchi/installation/auto_partition.py:356
+#: cnchi/installation/auto_partition.py:672 cnchi/installation/process.py:303
+#: cnchi/installation/process.py:312
 msgid "Output : %s"
 msgstr "輸出：%s"
 
-#: cnchi/installation/auto_partition.py:377
+#: cnchi/installation/auto_partition.py:372
 msgid "Unknown filesystem type {0}"
 msgstr "未知的檔案系統類型 {0}"
 
-#: cnchi/installation/auto_partition.py:385
+#: cnchi/installation/auto_partition.py:380
 msgid "Can't create filesystem {0}"
 msgstr "無法建立檔案系統 {0}"
 
-#: cnchi/installation/auto_partition.py:414
+#: cnchi/installation/auto_partition.py:409
 msgid "Error trying to  mount {0} in {1}"
 msgstr "嘗試掛載 {0} 在 {1} 上時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:430
+#: cnchi/installation/auto_partition.py:426
 msgid "Device details: %s UUID=%s LABEL=%s"
 msgstr "裝置細節： %s UUID=%s 標籤=%s"
 
-#: cnchi/installation/auto_partition.py:513
+#: cnchi/installation/auto_partition.py:512
 msgid "%s will be mounted as %s"
 msgstr "%s 將會被掛載為 %s"
 
-#: cnchi/installation/auto_partition.py:545
+#: cnchi/installation/auto_partition.py:548
 msgid "Device %s will have a %s filesystem"
 msgstr "裝置 %s 將會有 %s 檔案系統"
 
-#: cnchi/installation/auto_partition.py:593
+#: cnchi/installation/auto_partition.py:602
 msgid "Total disk size: %dMiB"
 msgstr "磁碟總大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:595
+#: cnchi/installation/auto_partition.py:604
 msgid "EFI System Partition (ESP) size: %dMiB"
 msgstr "EFI 系統分割區 (ESP) 大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:596
+#: cnchi/installation/auto_partition.py:605
 msgid "Boot partition size: %dMiB"
 msgstr "開機分割區大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:599
+#: cnchi/installation/auto_partition.py:608
 msgid "LVM physical volume size: %dMiB"
 msgstr "LVM 物理卷大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:601
+#: cnchi/installation/auto_partition.py:610
 msgid "Swap partition size: %dMiB"
 msgstr "交換分割區大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:602
+#: cnchi/installation/auto_partition.py:611
 msgid "Root partition size: %dMiB"
 msgstr "根分割區大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:605
+#: cnchi/installation/auto_partition.py:614
 msgid "Home partition size: %dMiB"
 msgstr "家目錄分割區大小： %dMiB"
 
-#: cnchi/installation/auto_partition.py:625
+#: cnchi/installation/auto_partition.py:634
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "routine for partitioning and mounting devices."
 msgstr "無法偵測您的裝置大小，請使用進階安裝模式以分割及掛載裝置。"
 
-#: cnchi/installation/auto_partition.py:664
+#: cnchi/installation/auto_partition.py:669
 msgid "Error informing the kernel of the partition change."
 msgstr "分割區變動的核心通知錯誤。"
 
-#: cnchi/installation/auto_partition.py:777
+#: cnchi/installation/auto_partition.py:788
 msgid "Cnchi will setup LVM on device %s"
 msgstr "Cnchi 將會在裝置 %s 上設定 LVM"
 
-#: cnchi/installation/auto_partition.py:782
+#: cnchi/installation/auto_partition.py:793
 msgid "Error creating LVM physical volume"
 msgstr "建立 LVM 物理卷時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:791
+#: cnchi/installation/auto_partition.py:802
 msgid "Error creating LVM volume group"
 msgstr "建立 LVM 卷群組時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:826
+#: cnchi/installation/auto_partition.py:838
 msgid "Error creating LVM logical volume"
 msgstr "建立 LVM 邏輯卷時發生錯誤"
 
-#: cnchi/installation/auto_partition.py:883
+#: cnchi/installation/auto_partition.py:900
 msgid "Can't copy LUKS keyfile to the installation device"
 msgstr "無法複製 LUKS 金鑰檔案至安裝的裝置"
 
@@ -1261,7 +1412,7 @@ msgstr "選擇要用以安裝 Antergos 的磁碟並按上面的按鈕以開始�
 msgid "Encryption Password:"
 msgstr "加密密碼："
 
-#: cnchi/installation/automatic.py:89 cnchi/user_info.py:101
+#: cnchi/installation/automatic.py:89 cnchi/user_info.py:124
 msgid "Confirm your password:"
 msgstr "確認您的密碼："
 
@@ -1285,609 +1436,728 @@ msgstr "根 LUKS 密碼已經被設定"
 msgid "Automatic install on %s"
 msgstr "在 %s 上自動安裝"
 
-#: cnchi/installation/automatic.py:244
+#: cnchi/installation/automatic.py:248
 msgid ""
 "Do you really want to proceed and delete all your content on your hard "
 "drive?"
 msgstr "您真的想要繼續並刪除您硬碟上所有的內容嗎？"
 
-#: cnchi/installation/automatic.py:258
+#: cnchi/installation/automatic.py:262
 msgid "Cnchi will install Antergos on device %s"
 msgstr "Cnchi 將會把 Antergos 安裝到裝置 %s"
 
-#: cnchi/installation/automatic.py:270
+#: cnchi/installation/automatic.py:274
 msgid "Antergos will install the bootloader '{0}' in device '{1}'"
 msgstr "Antergos 將會安裝 「{0}」 開機管理程式在 「{1}」"
 
-#: cnchi/installation/bootloader.py:88
+#: cnchi/installation/bootloader.py:76
+msgid "Cnchi will install the Gummiboot loader"
+msgstr "Cnchi 將會安裝 Gummiboot 開機管理程式"
+
+#: cnchi/installation/bootloader.py:84
+msgid "Cnchi will install the Grub2 (efi) loader"
+msgstr "Cnchi 將會安裝 Grub2 (efi) 開機管理程式"
+
+#: cnchi/installation/bootloader.py:87
+msgid "Cnchi will install the Grub2 (bios) loader"
+msgstr "Cnchi 將會安裝 Grub2 (bios) 開機管理程式"
+
+#: cnchi/installation/bootloader.py:95
 msgid ""
 "'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope"
 " it's ok"
 msgstr "「ruuid」變量未被設定。我無法檢查在 grub.cfg 中的根 UUID，讓我們希望它是正常的"
 
-#: cnchi/installation/bootloader.py:158
+#: cnchi/installation/bootloader.py:119
+msgid "Wrong uuid in grub.cfg, Cnchi will try to fix it."
+msgstr "在 grub.cfg 中的錯誤 UUID，Cnchi 將會嘗試修復它。"
+
+#: cnchi/installation/bootloader.py:180
 msgid "/etc/default/grub configuration completed successfully."
 msgstr "/etc/default/grub 設定成功完成"
 
-#: cnchi/installation/bootloader.py:203
+#: cnchi/installation/bootloader.py:225
 msgid "Could not copy %s to grub.d"
 msgstr "無法複製 %s 到 grub.d"
 
-#: cnchi/installation/bootloader.py:212
+#: cnchi/installation/bootloader.py:234
 msgid "Installing GRUB(2) BIOS boot loader in {0}"
 msgstr "正在安裝 GRUB(2) BIOS 開機載入器到 {0}"
 
-#: cnchi/installation/bootloader.py:242
+#: cnchi/installation/bootloader.py:255
+msgid "Command grub-install failed. Error output: %s"
+msgstr "命令 grub-install 失敗。錯誤輸出：%s"
+
+#: cnchi/installation/bootloader.py:257
+msgid "Command grub-install timed out."
+msgstr "命令 grub-install 逾時。"
+
+#: cnchi/installation/bootloader.py:259
+msgid "Command grub-install failed. Unknown Error: %s"
+msgstr "命令 grub-install 失敗。未知錯誤：%s"
+
+#: cnchi/installation/bootloader.py:269 cnchi/installation/bootloader.py:375
+msgid "Running grub-mkconfig..."
+msgstr "正在執行 grub-mkconfig..."
+
+#: cnchi/installation/bootloader.py:275
 msgid ""
 "grub-mkconfig does not respond. Killing grub-mount and os-prober so we can "
 "continue."
 msgstr "grub-mkconfig 沒有回應。正在砍除 grub-mount 及 os-prober，這樣，我們才能繼續。"
 
-#: cnchi/installation/bootloader.py:250
+#: cnchi/installation/bootloader.py:283
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS 已經成功安裝。"
 
-#: cnchi/installation/bootloader.py:254
+#: cnchi/installation/bootloader.py:287
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "安裝 GRUB(2) BIOS 時發生錯誤。"
 
-#: cnchi/installation/bootloader.py:271
+#: cnchi/installation/bootloader.py:304
 msgid "Installing GRUB(2) UEFI {0} boot loader"
 msgstr "正在安裝 GRUB(2) UEFI {0} 開機載入器"
 
-#: cnchi/installation/bootloader.py:306
+#: cnchi/installation/bootloader.py:339
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
 msgstr "在 %s 沒有發現 OEM 載入器。正在複製 Grub(2) 到目錄中。"
 
-#: cnchi/installation/bootloader.py:309
+#: cnchi/installation/bootloader.py:342
 msgid "Copying Grub(2) into OEM dir failed: %s"
 msgstr "複製 Grub(2) 到 OEM 目錄失敗：%s"
 
-#: cnchi/installation/bootloader.py:313
+#: cnchi/installation/bootloader.py:346
 msgid "File not found."
 msgstr "找不到檔案。"
 
-#: cnchi/installation/bootloader.py:315
+#: cnchi/installation/bootloader.py:348
 msgid "File already exists."
 msgstr "檔案已經存在。"
 
-#: cnchi/installation/bootloader.py:325
+#: cnchi/installation/bootloader.py:358
 msgid "UEFI Shell drop-in not found at %s"
 msgstr "未在 %s 中發現內建的 UEFI 殼層"
 
-#: cnchi/installation/bootloader.py:329
+#: cnchi/installation/bootloader.py:362
 msgid "UEFI Shell drop-in could not be copied."
 msgstr "內建的 UEFI 殼層無法複製。"
 
-#: cnchi/installation/bootloader.py:333
+#: cnchi/installation/bootloader.py:366
 msgid "Generating grub.cfg"
 msgstr "正在產生 grub.cfg"
 
-#: cnchi/installation/bootloader.py:347
+#: cnchi/installation/bootloader.py:381
 msgid ""
 "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
 msgstr "grub-mkconfig 似乎沒有回應。正在砍除 grub-mount 及 os-prober，這樣，我們才能繼續。"
 
-#: cnchi/installation/bootloader.py:365
+#: cnchi/installation/bootloader.py:394
+msgid "Path '%s' doesn't exist, when it should"
+msgstr "路徑「%s」不存在，但是它應該存在"
+
+#: cnchi/installation/bootloader.py:397
 msgid "GRUB(2) UEFI install completed successfully"
 msgstr "GRUB(2) UEFI 成功安裝。"
 
-#: cnchi/installation/bootloader.py:369
+#: cnchi/installation/bootloader.py:401
 msgid "GRUB(2) UEFI install may not have completed successfully."
 msgstr "GRUB(2) UEFI 的安裝可能沒有成功的完成。"
 
-#: cnchi/installation/bootloader.py:381
+#: cnchi/installation/bootloader.py:413
 msgid "50mounted-tests file patched successfully"
 msgstr "50mounted-tests 檔案成功打上 patch"
 
-#: cnchi/installation/bootloader.py:383
+#: cnchi/installation/bootloader.py:415
 msgid "Failed to patch 50mounted-tests, file not found."
 msgstr "patch 50mounted-tests 失敗，檔案找不到。"
 
-#: cnchi/installation/bootloader.py:387
+#: cnchi/installation/bootloader.py:419
 msgid "Copying GRUB(2) Theme Files"
 msgstr "正在複製 GRUB(2) 主題檔案"
 
-#: cnchi/installation/bootloader.py:393
+#: cnchi/installation/bootloader.py:425
 msgid "Grub2 theme files not found"
 msgstr "Grub2 主題檔案找不到"
 
-#: cnchi/installation/bootloader.py:395
+#: cnchi/installation/bootloader.py:427
 msgid "Grub2 theme files already exist."
 msgstr "Grub2 主題檔案已經存在。"
 
-#: cnchi/installation/bootloader.py:399
+#: cnchi/installation/bootloader.py:431
 msgid "Installing Grub2 locales."
 msgstr "正在安裝 Grub2 語系。"
 
-#: cnchi/installation/bootloader.py:410
+#: cnchi/installation/bootloader.py:441
 msgid "Can't install GRUB(2) locale."
 msgstr "無法安裝 GRUB(2) 語系。"
 
-#: cnchi/installation/bootloader.py:494
+#: cnchi/installation/bootloader.py:549
+msgid "Installing gummiboot bootloader..."
+msgstr "正在安裝 gummiboot 開機管理程式..."
+
+#: cnchi/installation/bootloader.py:555
 msgid "Gummiboot install completed successfully"
 msgstr "Gummiboot 成功安裝"
 
-#: cnchi/installation/bootloader.py:498
-msgid "Gummiboot install has NOT completed successfully!"
-msgstr "Gummiboot 的安裝沒有成功的完成！"
+#: cnchi/installation/bootloader.py:558
+msgid "Command gummiboot failed. Error output: %s"
+msgstr "命令 gummiboot 失敗。錯誤輸出：%s"
 
-#: cnchi/installation/bootloader.py:530
+#: cnchi/installation/bootloader.py:561
+msgid "Command gummiboot timed out."
+msgstr "命令 gummiboot 逾時。"
+
+#: cnchi/installation/bootloader.py:564
+msgid "Command gummiboot failed. Unknown Error: %s"
+msgstr "命令 gummiboot 失敗。未知錯誤：%s"
+
+#: cnchi/installation/bootloader.py:596
 msgid "Can't freeze/unfreeze xfs system"
 msgstr "無法 凍結/解凍 xfs 系統"
 
-#: cnchi/installation/chroot.py:48
+#: cnchi/installation/chroot.py:61
 msgid "Special dirs are already mounted. Skipping."
 msgstr "特殊目錄已掛載。略過。"
 
-#: cnchi/installation/chroot.py:103
+#: cnchi/installation/chroot.py:91
 msgid "Special dirs are not mounted. Skipping."
 msgstr "特殊目錄未掛載。略過。"
 
-#: cnchi/installation/chroot.py:122
-msgid "Unable to umount %s"
-msgstr "無法卸載 %s"
-
-#: cnchi/installation/chroot.py:152
+#: cnchi/installation/chroot.py:136
 msgid "Timeout running the command %s"
 msgstr "執行命令逾時： %s"
 
-#: cnchi/installation/chroot.py:153 cnchi/installation/chroot.py:156
+#: cnchi/installation/chroot.py:137 cnchi/installation/chroot.py:140
 msgid "Cnchi will try to continue anyways"
 msgstr "無論如何，Cnchi 將會嘗試繼續下去"
 
-#: cnchi/installation/firewall.py:73
+#: cnchi/installation/firewall.py:72
 msgid "Aborted"
 msgstr "已中斷"
+
+#: cnchi/installation/lamp.py:51 cnchi/installation/lemp.py:50
+msgid "Doing Mariadb setup..."
+msgstr "正在設定 Mariadb..."
+
+#: cnchi/installation/lamp.py:53
+msgid "Mariadb setup done. Doing Apache setup..."
+msgstr "Mariadb 設定完成。正在設定 Apache..."
+
+#: cnchi/installation/lamp.py:55
+msgid "Apache setup done. Doing PHP setup..."
+msgstr "Apache 設定完成。正在設定 PHP..."
+
+#: cnchi/installation/lamp.py:57
+msgid "PHP setup done."
+msgstr "PHP 設定完成。"
+
+#: cnchi/installation/lemp.py:52
+msgid "Mariadb setup done. Doing Nginx setup..."
+msgstr "Mariadb 設定完成。正在設定 Nginx..."
+
+#: cnchi/installation/lemp.py:54
+msgid "Nginx setup done. Doing PHP-fpm setup..."
+msgstr "Nginx 設定完成。正在設定 PHP-fpm..."
+
+#: cnchi/installation/lemp.py:56
+msgid "PHP-fpm setup done."
+msgstr "PHP-fpm 設定完成。"
 
 #: cnchi/installation/mkinitcpio.py:101
 msgid "Setting hooks and modules in mkinitcpio.conf"
 msgstr "正在設定 mkinitcpio.conf 中的 hooks 和模組"
 
-#: cnchi/installation/process.py:99
+#: cnchi/installation/process.py:101
 msgid "Installing using the '{0}' method"
 msgstr "正在使用 「{0}」 方法安裝"
 
-#: cnchi/installation/process.py:170
+#: cnchi/installation/process.py:175
 msgid "Error running command %s"
 msgstr "執行命令 %s 錯誤"
 
-#: cnchi/installation/process.py:211
+#: cnchi/installation/process.py:222
 msgid "Creating partitions and their filesystems in %s"
 msgstr "在 %s 創建分割區及其檔案系統"
 
-#: cnchi/installation/process.py:257 cnchi/installation/process.py:282
+#: cnchi/installation/process.py:269 cnchi/installation/process.py:296
 msgid "Mounting partition {0} into {1} directory"
 msgstr "正在掛載分割區 {0} 到 {1} 目錄"
 
-#: cnchi/installation/process.py:265
+#: cnchi/installation/process.py:276
 msgid "Mounting partition {0} into {1}/boot directory"
 msgstr "正在掛載分割區 {0} 到 {1}/boot 目錄"
 
-#: cnchi/installation/process.py:288
+#: cnchi/installation/process.py:301
 msgid "Can't mount %s in %s"
 msgstr "無法裝載%s在%s"
 
-#: cnchi/installation/process.py:293
+#: cnchi/installation/process.py:306
 msgid "Activating swap in %s"
 msgstr "正在 %s 上啟用 swap"
 
-#: cnchi/installation/process.py:309
+#: cnchi/installation/process.py:322
 msgid "%s deleted"
 msgstr "%s 已刪除"
 
-#: cnchi/installation/process.py:335
+#: cnchi/installation/process.py:347
 msgid "Prepare pacman..."
 msgstr "準備 pacman..."
 
-#: cnchi/installation/process.py:337
+#: cnchi/installation/process.py:349
 msgid "Pacman ready"
 msgstr "Pacman 準備好了"
 
-#: cnchi/installation/process.py:339
+#: cnchi/installation/process.py:351
 msgid "Selecting packages..."
 msgstr "正在選擇軟體包..."
 
-#: cnchi/installation/process.py:341
+#: cnchi/installation/process.py:353
 msgid "Packages selected"
 msgstr "軟體包已選擇"
 
-#: cnchi/installation/process.py:346
+#: cnchi/installation/process.py:358
 msgid "Removed 'v86d' package from list"
 msgstr "已從列表中移除「v86d」軟體包"
 
-#: cnchi/installation/process.py:348
+#: cnchi/installation/process.py:360
 msgid "Downloading packages..."
 msgstr "正在下載軟體包..."
 
-#: cnchi/installation/process.py:351 cnchi/installation/process.py:686
+#: cnchi/installation/process.py:363 cnchi/installation/process.py:704
 msgid "Installing packages..."
 msgstr "正在安裝軟體包..."
 
-#: cnchi/installation/process.py:354
+#: cnchi/installation/process.py:366
 msgid "Configuring system..."
 msgstr "正在設定系統..."
 
-#: cnchi/installation/process.py:366
+#: cnchi/installation/process.py:378
 msgid "Installation finished"
 msgstr "安裝完成。"
 
-#: cnchi/installation/process.py:380
+#: cnchi/installation/process.py:392
 msgid "Can't copy Cnchi log to %s"
 msgstr "無法複製 Cnchi 的記錄檔到 %s"
 
-#: cnchi/installation/process.py:405
+#: cnchi/installation/process.py:423
 msgid "Creating a temporary pacman.conf for {0} architecture"
 msgstr "正在建立一個 {0} 架構的暫時性的 pacman.conf"
 
-#: cnchi/installation/process.py:433
+#: cnchi/installation/process.py:450
 msgid "Can't initialize pyalpm."
 msgstr "無法初始化 pyalpm"
 
-#: cnchi/installation/process.py:439
+#: cnchi/installation/process.py:454
 msgid "Can't refresh pacman databases."
 msgstr "無法重新整理 pacman 資料庫。"
 
-#: cnchi/installation/process.py:455
+#: cnchi/installation/process.py:470
 msgid "Can't start haveged service"
 msgstr "無法啟動 haveged 服務"
 
-#: cnchi/installation/process.py:466
+#: cnchi/installation/process.py:481
 msgid "Error deleting old gnupg files"
 msgstr "刪除舊的 gnupg 檔案時發生錯誤"
 
-#: cnchi/installation/process.py:477
+#: cnchi/installation/process.py:492
 msgid "Error regenerating gnupg files with pacman-key"
 msgstr "使用 pacman-key 重新產生 gnupg 檔案時發生錯誤"
 
-#: cnchi/installation/process.py:491
+#: cnchi/installation/process.py:506
 msgid "Getting package list..."
 msgstr "正在取的軟體包列表..."
 
-#: cnchi/installation/process.py:501
-msgid "Can't retrieve remote package list, using a local file instead."
+#: cnchi/installation/process.py:510
+msgid "Getting url {0}..."
+msgstr "正在取得 URL {0}..."
+
+#: cnchi/installation/process.py:517
+msgid "Can't retrieve remote package list, using the local file instead."
 msgstr "無法擷取遠端軟體包列表，正在使用本機檔案做為替代。"
 
-#: cnchi/installation/process.py:528
+#: cnchi/installation/process.py:520
+msgid "Loading {0}"
+msgstr "正在載入 {0}"
+
+#: cnchi/installation/process.py:545
 msgid "Adding '%s' desktop packages"
 msgstr "添加 '%s' 桌面軟體包"
 
-#: cnchi/installation/process.py:553
+#: cnchi/installation/process.py:570
 msgid "Selected kde language pack: %s"
 msgstr "已選取的 kde 語言包：%s"
 
-#: cnchi/installation/process.py:569
+#: cnchi/installation/process.py:579
 msgid "Hardware module detected this drivers: %s"
 msgstr "硬體模組已經偵測到這些驅動程式：%s"
 
-#: cnchi/installation/process.py:573
-msgid "Hardware module added these packages : %s"
+#: cnchi/installation/process.py:585
+msgid "Hardware module added these packages: %s"
 msgstr "已經加入這些硬體模組軟體包：%s"
 
-#: cnchi/installation/process.py:582 cnchi/installation/process.py:1257
-msgid "Can't import hardware module."
-msgstr "無法匯入硬體模組。"
+#: cnchi/installation/process.py:591
+msgid "Running hardware drivers pre-install jobs..."
+msgstr "正在執行硬體驅動程式安裝前工作..."
 
-#: cnchi/installation/process.py:584 cnchi/installation/process.py:1259
+#: cnchi/installation/process.py:594 cnchi/installation/process.py:1309
 msgid "Unknown error in hardware module. Output: %s"
 msgstr "在硬體模組中有未知的錯誤。輸出：%s"
 
-#: cnchi/installation/process.py:587
+#: cnchi/installation/process.py:597
 msgid "Adding filesystem packages"
 msgstr "加入檔案系統軟體包"
 
-#: cnchi/installation/process.py:610
+#: cnchi/installation/process.py:620
 msgid "Check for user desired features and add them to our installation"
 msgstr "檢查使用者需要的特性並將它們加入到安裝中"
 
-#: cnchi/installation/process.py:612
+#: cnchi/installation/process.py:622
 msgid "All features needed packages have been added"
 msgstr "所有必須的軟體包都已加入"
 
-#: cnchi/installation/process.py:617
+#: cnchi/installation/process.py:627
 msgid "Selecting chinese fonts."
 msgstr "正在選擇中文字體。"
 
-#: cnchi/installation/process.py:629
+#: cnchi/installation/process.py:639
 msgid "Adding '%s' bootloader packages"
 msgstr "正在加入 「%s」 開機管理程式軟體包"
 
-#: cnchi/installation/process.py:635
+#: cnchi/installation/process.py:645
 msgid "Couldn't find %s bootloader packages!"
 msgstr "找不到 %s 開機載入器軟體包！"
 
-#: cnchi/installation/process.py:648
+#: cnchi/installation/process.py:665
 msgid "Adding packages for '%s' feature."
 msgstr "正在為 '%s' 功能新增軟體包。"
 
-#: cnchi/installation/process.py:660
+#: cnchi/installation/process.py:677
 msgid "Selecting package %s for feature %s"
 msgstr "正在選擇軟體包 %s 為功能 %s"
 
-#: cnchi/installation/process.py:667
+#: cnchi/installation/process.py:684
 msgid "Add libreoffice language package"
 msgstr "加入 libreoffice 語言包"
 
-#: cnchi/installation/process.py:696
-msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr "無法安裝必須的軟體包。Cnchi 無法繼續。"
-
-#: cnchi/installation/process.py:733
+#: cnchi/installation/process.py:751
 msgid "Can't copy network configuration files"
 msgstr "無法複製網路設定檔案"
 
-#: cnchi/installation/process.py:772 cnchi/installation/process.py:798
-#: cnchi/installation/process.py:813 cnchi/installation/process.py:870
-#: cnchi/installation/process.py:875
+#: cnchi/installation/process.py:775
+msgid "Can't get {0} partition UUID. It won't be added to fstab"
+msgstr "無法取得 {0} 分割區的 UUID。它將不會被加入到 fstab 中"
+
+#: cnchi/installation/process.py:794 cnchi/installation/process.py:820
+#: cnchi/installation/process.py:835 cnchi/installation/process.py:900
 msgid "Added to fstab : %s"
 msgstr "加入到fstab： %s"
 
-#: cnchi/installation/process.py:792 cnchi/installation/process.py:808
+#: cnchi/installation/process.py:814 cnchi/installation/process.py:830
 msgid "Added to crypttab : %s"
 msgstr "已加入 crypttab：%s"
 
-#: cnchi/installation/process.py:883
+#: cnchi/installation/process.py:908
 msgid "fstab written."
 msgstr "fstab 已寫入。"
 
-#: cnchi/installation/process.py:892
+#: cnchi/installation/process.py:917
 msgid "Could not copy udev rule for SSDs"
 msgstr "無法複製固態硬碟的 udev 規則"
 
-#: cnchi/installation/process.py:903
-msgid "Enabled %s service."
-msgstr "啟動 %s 服務。"
+#: cnchi/installation/process.py:930
+msgid "Service '%s' has been enabled."
+msgstr "服務「%s」已被啟用。"
 
-#: cnchi/installation/process.py:905
+#: cnchi/installation/process.py:932
 msgid "Can't find service %s"
 msgstr "找不到服務 %s"
 
-#: cnchi/installation/process.py:913
+#: cnchi/installation/process.py:940
 msgid "Error creating password hash for user %s"
 msgstr "建立使用者 %s 的密碼雜湊值時發生錯誤"
 
-#: cnchi/installation/process.py:919
+#: cnchi/installation/process.py:946
 msgid "Error changing password for user %s"
 msgstr "更換使用者 %s 的密碼時發生錯誤"
 
-#: cnchi/installation/process.py:941
+#: cnchi/installation/process.py:957
+msgid "Error adjusting hardware clock"
+msgstr "調整硬體時鐘時發生錯誤..."
+
+#: cnchi/installation/process.py:982
 msgid "Can't find pacman configuration file"
 msgstr "找不到 pacman 設定檔案"
 
-#: cnchi/installation/process.py:960
+#: cnchi/installation/process.py:1001
 msgid "Can't find locale.gen file"
 msgstr "找不到 locale.gen 檔案"
 
-#: cnchi/installation/process.py:972
+#: cnchi/installation/process.py:1013
 msgid "Copying xz files from cache..."
 msgstr "正在從快取中複製 xz 檔案..."
 
-#: cnchi/installation/process.py:1009
+#: cnchi/installation/process.py:1049
 msgid "Configuring firewall..."
 msgstr "正在設定防火牆..."
 
-#: cnchi/installation/process.py:1033
+#: cnchi/installation/process.py:1063
+msgid "Configuring LAMP..."
+msgstr "正在設定 LAMP..."
+
+#: cnchi/installation/process.py:1067
+msgid "Can't import LAMP module"
+msgstr "無法匯入 LAMP 模組"
+
+#: cnchi/installation/process.py:1072
+msgid "Configuring LEMP..."
+msgstr "正在設定 LEMP..."
+
+#: cnchi/installation/process.py:1076
+msgid "Can't import LEMP module"
+msgstr "無法匯入 LEMP 模組"
+
+#: cnchi/installation/process.py:1084
 msgid "Configuring LightDM desktop manager..."
 msgstr "正在設定 LightDM 桌面管理員..."
 
-#: cnchi/installation/process.py:1065
+#: cnchi/installation/process.py:1116
 msgid "LightDM display manager configuration completed."
 msgstr "LightDM 顯示管理員設定完成。"
 
-#: cnchi/installation/process.py:1068
+#: cnchi/installation/process.py:1119
 msgid "Error while trying to configure the LightDM display manager"
 msgstr "嘗試設定 LightDM 顯示管理器時遇到錯誤"
 
-#: cnchi/installation/process.py:1154
+#: cnchi/installation/process.py:1205
 msgid "Configuring your new system"
 msgstr "正在設定新系統"
 
-#: cnchi/installation/process.py:1160
+#: cnchi/installation/process.py:1211
 msgid "fstab file generated."
 msgstr "fstab 檔案已生成。"
 
-#: cnchi/installation/process.py:1165
+#: cnchi/installation/process.py:1216
 msgid "SSD udev rule copied successfully"
 msgstr "固態硬碟的 udev 規則複製成功"
 
-#: cnchi/installation/process.py:1181
-msgid "Cnchi will configure netctl using the %s profile"
-msgstr "Cnchi 將會使用 %s 設定檔設定 netctl"
+#: cnchi/installation/process.py:1237
+msgid "Network configuration done."
+msgstr "網路設定已完成。"
 
-#: cnchi/installation/process.py:1188
-msgid "Can't copy network configuration profiles"
-msgstr "無法複製網路設定檔"
-
-#: cnchi/installation/process.py:1195
-msgid "Network configuration copied."
-msgstr "網路設定已複製。"
-
-#: cnchi/installation/process.py:1201
+#: cnchi/installation/process.py:1243
 msgid "Mirror list copied."
 msgstr "鏡像列表已複製。"
 
-#: cnchi/installation/process.py:1203
+#: cnchi/installation/process.py:1245
 msgid "Can't copy mirrorlist file"
 msgstr "無法複製鏡像列表檔案"
 
-#: cnchi/installation/process.py:1210
+#: cnchi/installation/process.py:1252
 msgid "Generated /etc/pacman.conf"
 msgstr "已經生成 /etc/pacman.conf"
 
-#: cnchi/installation/process.py:1227
+#: cnchi/installation/process.py:1274
 msgid "Timezone set."
 msgstr "時區設定。"
 
-#: cnchi/installation/process.py:1247
+#: cnchi/installation/process.py:1296
 msgid "Sudo configuration for user %s done."
 msgstr "使用者 %s 的 sudo 設定已完成。"
 
-#: cnchi/installation/process.py:1254
-msgid "Running post-install scripts from hardware module..."
-msgstr "正在從硬體模組中執行安裝後指令稿..."
+#: cnchi/installation/process.py:1306
+msgid "Running hardware drivers post-install jobs..."
+msgstr "正在執行硬體驅動程式安裝後工作..."
 
-#: cnchi/installation/process.py:1279
+#: cnchi/installation/process.py:1328
 msgid "User %s added."
 msgstr "使用者 %s 已加入。"
 
-#: cnchi/installation/process.py:1294
+#: cnchi/installation/process.py:1343
 msgid "Hostname set to %s."
 msgstr "主機名稱設定為 %s。"
 
-#: cnchi/installation/process.py:1298
+#: cnchi/installation/process.py:1347
 msgid "Set the same password to root."
 msgstr "設定相同的密碼給 root。"
 
-#: cnchi/installation/process.py:1304
+#: cnchi/installation/process.py:1351
 msgid "Generating locales..."
 msgstr "正在產生語系碼..."
 
-#: cnchi/installation/process.py:1323
+#: cnchi/installation/process.py:1363
 msgid "Adjusting hardware clock..."
 msgstr "正在調整硬體時鐘..."
 
-#: cnchi/installation/process.py:1328
-msgid "Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"
-msgstr "為 xkblayout 設定 /etc/X11/xorg.conf.d/10-keyboard.conf"
+#: cnchi/installation/process.py:1366
+msgid "Configuring keymap..."
+msgstr "正在設定鍵盤佈局..."
 
-#: cnchi/installation/process.py:1340
-msgid "10-keyboard.conf written."
-msgstr "10-keyboard.conf 已寫入。"
+#: cnchi/installation/process.py:1373
+msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
+msgstr "為 xkblayout 設定 /etc/X11/xorg.conf.d/00-keyboard.conf"
 
-#: cnchi/installation/process.py:1345
-msgid "Configuring hardware ..."
+#: cnchi/installation/process.py:1389
+msgid "00-keyboard.conf written."
+msgstr "00-keyboard.conf 已寫入。"
+
+#: cnchi/installation/process.py:1404
+msgid "Configuring hardware..."
 msgstr "正在設定硬體..."
 
-#: cnchi/installation/process.py:1353
+#: cnchi/installation/process.py:1414
 msgid "Updated Alsa mixer settings"
 msgstr "已更新 Alsa mixer 設定"
 
-#: cnchi/installation/process.py:1361
+#: cnchi/installation/process.py:1422
 msgid "Updated fluidsynth configuration file"
 msgstr "已更新 fluidsynth 設定檔"
 
-#: cnchi/installation/process.py:1367
+#: cnchi/installation/process.py:1428
 msgid "Configuring System Startup..."
 msgstr "正在設定系統啟動..."
 
-#: cnchi/installation/process.py:1370
+#: cnchi/installation/process.py:1431
 msgid "Call Cnchi post-install script"
 msgstr "呼叫 Cnchi 安裝後腳本"
 
-#: cnchi/installation/process.py:1377
+#: cnchi/installation/process.py:1450
 msgid "Post install script completed successfully."
 msgstr "安裝後指令稿執行成功。"
 
-#: cnchi/installation/process.py:1380
+#: cnchi/installation/process.py:1453
 msgid "Error running post-install script"
 msgstr "執行 Cnchi 安裝後腳本時發生錯誤"
 
-#: cnchi/installation/process.py:1396
+#: cnchi/installation/process.py:1469
 msgid "Encrypting user home dir..."
 msgstr "正在加密使用者家目錄..."
 
-#: cnchi/installation/process.py:1398
+#: cnchi/installation/process.py:1471
 msgid "User home dir encrypted"
 msgstr "使用者家目錄已加密"
 
-#: cnchi/installation/process.py:1403
+#: cnchi/installation/process.py:1476
 msgid "Installing bootloader..."
 msgstr "正在安裝開機載入器..."
 
-#: cnchi/installation/process.py:1409
-msgid "Couldn't install boot loader: %s"
-msgstr "無法安裝開機管理程式： %s"
+#: cnchi/installation/process.py:1481
+msgid "While installing boot loader Cnchi encountered this error: %s"
+msgstr "當安裝開機管理程式時，Cnchi 遇到了這個錯誤：%s"
 
-#: cnchi/installation/process.py:1415
+#: cnchi/installation/process.py:1487
 msgid "Copying install log to /var/log."
 msgstr "正在複製安裝記錄檔到 /var/log。"
 
-#: cnchi/keymap.py:60
+#: cnchi/installation/systemd_networkd.py:79
+msgid "systemd-networkd configuration failed."
+msgstr "systemd-networkd 設定失敗。"
+
+#: cnchi/installation/systemd_networkd.py:82
+msgid "Found [%s] links and [%s] are wireless"
+msgstr "找到 [%s] 連結及 [%s] 是無線的"
+
+#: cnchi/keymap.py:76
 msgid "Select Your Keyboard Layout"
 msgstr "選擇您的鍵盤配置"
 
-#: cnchi/keymap.py:63
-msgid "Keyboard Layouts"
-msgstr "鍵盤配置"
+#: cnchi/keymap.py:81
+msgid ""
+"Choose your keyboard layout and variant (if applies).\n"
+"For instance, the default Slovak variant is qwertz, but you\n"
+"can manually specify qwerty, etc.\n"
+"\n"
+"You can use the entry below the keyboard to test your\n"
+"layout selection."
+msgstr "選取您的鍵盤佈局及變體（如果需要的話）。\n例如，預設的斯洛伐克變種為 qwertz，但是您\n可以手動指定為 qwerty 等。\n\n您可以使用下列的項目來測試您的\n鍵盤佈局。"
 
-#: cnchi/keymap.py:66
-msgid "Keyboard Variants"
-msgstr "鍵盤變體"
+#: cnchi/keymap.py:123
+msgid "Can't match a keymap for country code '%s'"
+msgstr "無法符合國家代碼「%s」的鍵盤佈局"
 
-#: cnchi/keymap.py:70
-msgid "Layouts"
-msgstr "鍵盤配置"
+#: cnchi/keymap.py:164 cnchi/keymap.py:178
+msgid "Can't find value '%s' in treeview"
+msgstr "在樹狀檢視中找不到值「%s」"
 
-#: cnchi/keymap.py:76
-msgid "Variants"
-msgstr "變體"
+#: cnchi/keymap.py:230
+msgid "Unknown layout description %s"
+msgstr "未知的佈局描述 %s"
 
-#: cnchi/keymap.py:104
-msgid "keyboard_layout is %s"
-msgstr "鍵盤配置是 %s"
+#: cnchi/keymap.py:242
+msgid "Unknown variant description %s"
+msgstr "未知的變體描述 %s"
 
-#: cnchi/language.py:74
+#: cnchi/keymap.py:268
+msgid "Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})"
+msgstr "將鍵盤設定為佈局名稱「{0}」({1}) 及變體名稱「{2}」({3})"
+
+#: cnchi/keymap.py:274
+msgid "Set keyboard to layout name '{0}' ({1})"
+msgstr "將鍵盤設定為佈局名稱「{0}」({1})"
+
+#: cnchi/language.py:78
 msgid "Notice: The Cnchi Installer is beta software."
 msgstr "注意：Cnchi 是仍在測試中的軟體"
 
-#: cnchi/language.py:76
+#: cnchi/language.py:80
 msgid ""
-"Cnchi is pre-release beta software that is under active development.\n"
-"It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
-"setups. Please proceed with caution as data loss is possible!\n"
+"Cnchi is pre-release beta software that is under active development. It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible!\n"
 "\n"
-"If you find any bugs, please report them at http://bugs.antergos.com"
-msgstr "Cnchi 是仍在積極開發中測試版軟體。\n它仍無法處理 RAID ，btrfs 子卷，或是其他\n進階設定。請注意可能會有資料遺失的危險！\n\n如果您發現任何程式錯誤，請在 http://bugs.antergos.com 回報"
+"If you find any bugs, please report them at {0}"
+msgstr "Cnchi 是仍在積極開發中的測試版軟體。\n它仍無法處理 RAID ，btrfs 子卷，或是其他\n進階設定。請注意可能會有資料遺失的危險！\n\n如果您發現任何程式錯誤，請在 {0} 回報"
 
-#: cnchi/language.py:84
+#: cnchi/language.py:93
 msgid "Choose your language"
 msgstr "選擇您的語言"
 
-#: cnchi/language.py:123
+#: cnchi/language.py:132
 msgid "Can't find translation file for the %s language"
 msgstr "找不到 %s 語言的翻譯檔"
 
-#: cnchi/location.py:70
+#: cnchi/location.py:71
 msgid ""
-"The location you select will be used to help determine the system locale.\n"
-"It should normally be the country in which you reside.\n"
-"Here is a shortlist of locations based on the language you selected."
-msgstr "您選擇的地區將協助決定您的系統語系。\n它通常是您居住的國家。\n這是一份簡短的，基於您所選擇的語言的地區列表。"
+"The location you select will be used to help determine the system locale. It"
+" should normally be the country in which you reside. Here is a shortlist of "
+"locations based on the language you selected."
+msgstr "您選擇的地區將協助決定您的系統語系。它通常是您居住的國家。這是一份簡短的，基於您所選擇的語言的地區列表。"
 
-#: cnchi/location.py:77
+#: cnchi/location.py:78
 msgid "Country, territory or area:"
 msgstr "國家，地區或區域："
 
-#: cnchi/location.py:82
+#: cnchi/location.py:83
 msgid "Show all locations"
 msgstr "顯示所有地區"
 
-#: cnchi/location.py:85
+#: cnchi/location.py:86
 msgid "Select your location"
 msgstr "選擇您的地區"
 
-#: cnchi/location.py:204 cnchi/location.py:212 cnchi/misc/misc.py:955
-#: cnchi/misc/misc.py:963
+#: cnchi/location.py:204 cnchi/location.py:212 cnchi/misc/misc.py:963
+#: cnchi/misc/misc.py:971
 msgid "locale changed to : %s"
 msgstr "語系變更為： %s"
 
 #: cnchi/location.py:206 cnchi/location.py:215 cnchi/location.py:217
-#: cnchi/misc/misc.py:965 cnchi/misc/misc.py:967
+#: cnchi/misc/misc.py:973 cnchi/misc/misc.py:976
 msgid "Can't change to locale '%s'"
 msgstr "無法變更語系為 '%s'"
 
-#: cnchi/main_window.py:68
+#: cnchi/location.py:233
+msgid "Can't get country code from %s location"
+msgstr "無法取得 %s 地區的國家代碼"
+
+#: cnchi/main_window.py:73
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "本安裝程式必須以管理者的身份執行，如果不是以管理者身份就不能繼續。"
 
-#: cnchi/main_window.py:76
+#: cnchi/main_window.py:81
 msgid "File '%s' already exists."
 msgstr "檔案 「%s」 已經存在。"
 
-#: cnchi/main_window.py:77
+#: cnchi/main_window.py:82
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -1898,47 +2168,43 @@ msgid ""
 "Offending file: '{0}'"
 msgstr "您不能同時執行兩個安裝程式。\n\n如果您確定安裝程式並未執行中\n您可以使用 --force 參數執行本安裝程式\n或者您也可以手動刪除造成問題的檔案。\n\n造成問題的檔案：「{0}」"
 
-#: cnchi/main_window.py:85
+#: cnchi/main_window.py:90
 msgid "Cnchi installer version %s"
 msgstr "Cnchi 安裝程式版本 %s"
 
-#: cnchi/main_window.py:165
-msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "正在使用 Aria2 下載軟體包 - 實驗性"
+#: cnchi/main_window.py:156
+msgid "Next step"
+msgstr "下一步"
 
-#: cnchi/main_window.py:181
+#: cnchi/main_window.py:157
+msgid "Previous step"
+msgstr "上一步"
+
+#: cnchi/main_window.py:179
+msgid "Using %s to download packages"
+msgstr "正在使用 %s 下載軟體包"
+
+#: cnchi/main_window.py:197
 msgid "Using '%s' file as package list"
 msgstr "正在使用 '%s' 檔案作為軟體包列表"
 
-#: cnchi/main_window.py:202
+#: cnchi/main_window.py:228
 msgid "Antergos Installer"
 msgstr "Antergos安裝程式"
 
-#: cnchi/main_window.py:343
+#: cnchi/main_window.py:376
 msgid "Do you really want to quit the installer?"
 msgstr "您真的想要離開本安裝程式嗎？"
 
-#: cnchi/main_window.py:352
+#: cnchi/main_window.py:385
 msgid "Quiting installer..."
 msgstr "正在離開安裝程式..."
 
-#: cnchi/mirrorlist.py:73
-msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr "無法獲得國家代碼以創建 pacman 的鏡像列表"
+#: cnchi/misc/keyboard_names.py:88
+msgid "Can't find %s file!"
+msgstr "找不到 %s 檔案！"
 
-#: cnchi/mirrorlist.py:87
-msgid "Couldn't generate mirrorlist for pacman based on country code: %s"
-msgstr "無法利用國家代碼創建 pacman 的鏡像列表：%s"
-
-#: cnchi/mirrorlist.py:95
-msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr "已下載基於 %s 國家代碼的特殊鏡像列表"
-
-#: cnchi/mirrorlist.py:97
-msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr "無法利用國家代碼創建 pacman 的鏡像列表"
-
-#: cnchi/misc/misc.py:957
+#: cnchi/misc/misc.py:965
 msgid "Can't change to locale '%s' : %s"
 msgstr "無法變更語系為 「%s」：%s"
 
@@ -1966,123 +2232,127 @@ msgstr "強壯的密碼"
 msgid "Passwords do not match"
 msgstr "密碼不符合"
 
-#: cnchi/pacman/pac.py:140
+#: cnchi/pacman/pac.py:110
+msgid "alpm init with root dir '{0}' and db path '{1}'"
+msgstr "alpm 使用根目錄「{0}」及資料庫路徑「{1}」初始化"
+
+#: cnchi/pacman/pac.py:153
 msgid "Prepare alpm transaction..."
 msgstr "準備 alpm 事務處理..."
 
-#: cnchi/pacman/pac.py:142
+#: cnchi/pacman/pac.py:155
 msgid "Commit alpm transaction..."
 msgstr "遞交 alpm 事務處理..."
 
-#: cnchi/pacman/pac.py:145
+#: cnchi/pacman/pac.py:158
 msgid "Can't finalize alpm transaction: %s"
 msgstr "無法完成 alpm 處理事項：%s"
 
-#: cnchi/pacman/pac.py:149
+#: cnchi/pacman/pac.py:162
 msgid "Releasing alpm transaction..."
 msgstr "釋出 alpm 事務處理..."
 
-#: cnchi/pacman/pac.py:151
+#: cnchi/pacman/pac.py:164
 msgid "Alpm transaction done."
 msgstr "Alpm 事務處理完成。"
 
-#: cnchi/pacman/pac.py:177
+#: cnchi/pacman/pac.py:190
 msgid "Can't init alpm transaction: %s"
 msgstr "無法初始化 alpm 處理事項：%s"
 
-#: cnchi/pacman/pac.py:214
+#: cnchi/pacman/pac.py:227
 msgid "Target %s not found"
 msgstr "目標 %s 找不到"
 
-#: cnchi/pacman/pac.py:221 cnchi/pacman/pac.py:304
+#: cnchi/pacman/pac.py:234 cnchi/pacman/pac.py:317
 msgid "Can't init transaction"
 msgstr "無法初始化處理事項"
 
-#: cnchi/pacman/pac.py:225
+#: cnchi/pacman/pac.py:238
 msgid "Adding package '%s' to remove transaction"
 msgstr "正在加入軟體包 「%s」 到移除的處理事項中"
 
-#: cnchi/pacman/pac.py:233 cnchi/pacman/pac.py:250
+#: cnchi/pacman/pac.py:246 cnchi/pacman/pac.py:263
 msgid "alpm is not initialised"
 msgstr "alpm 並未初始化"
 
-#: cnchi/pacman/pac.py:254
+#: cnchi/pacman/pac.py:267
 msgid "Package list is empty"
 msgstr "軟體包列表為空"
 
-#: cnchi/pacman/pac.py:257
+#: cnchi/pacman/pac.py:270
 msgid "Cnchi will install a list of packages like pacman -S"
 msgstr "Cnchi 將會以類似 pacman -S 的方式安裝列表中的軟體包"
 
-#: cnchi/pacman/pac.py:285
+#: cnchi/pacman/pac.py:298
 msgid "Can't find a package or group called '%s'"
 msgstr "無法找到名為 '%s' 的軟體包或群組"
 
-#: cnchi/pacman/pac.py:291
+#: cnchi/pacman/pac.py:304
 msgid "No targets found"
 msgstr "找不到目標"
 
-#: cnchi/pacman/pac.py:422
+#: cnchi/pacman/pac.py:435
 msgid "Checking dependencies..."
 msgstr "正在檢查相依性..."
 
-#: cnchi/pacman/pac.py:424
+#: cnchi/pacman/pac.py:437
 msgid "Checking file conflicts..."
 msgstr "正在檢查檔案衝突..."
 
-#: cnchi/pacman/pac.py:426
+#: cnchi/pacman/pac.py:439
 msgid "Resolving dependencies..."
 msgstr "正在解決相依性..."
 
-#: cnchi/pacman/pac.py:428
+#: cnchi/pacman/pac.py:441
 msgid "Checking inter conflicts..."
 msgstr "正在檢查內部衝突..."
 
-#: cnchi/pacman/pac.py:433
+#: cnchi/pacman/pac.py:446
 msgid "Checking integrity..."
 msgstr "正在檢查完整性..."
 
-#: cnchi/pacman/pac.py:435
+#: cnchi/pacman/pac.py:448
 msgid "Loading packages..."
 msgstr "正在載入軟體包..."
 
-#: cnchi/pacman/pac.py:437
+#: cnchi/pacman/pac.py:450
 msgid "Checking target delta's integrity..."
 msgstr "正在檢查目標差異的完整性..."
 
-#: cnchi/pacman/pac.py:439
+#: cnchi/pacman/pac.py:452
 msgid "Applying deltas to packages..."
 msgstr "正在套用差異至軟體包..."
 
-#: cnchi/pacman/pac.py:441
+#: cnchi/pacman/pac.py:454
 msgid "Applying delta patch to target package..."
 msgstr "正在套用差異 patch 到目標軟體包..."
 
-#: cnchi/pacman/pac.py:443
+#: cnchi/pacman/pac.py:456
 msgid "Downloading files from the repository..."
 msgstr "正在從套件庫下載檔案..."
 
-#: cnchi/pacman/pac.py:445
+#: cnchi/pacman/pac.py:458
 msgid "Checking disk space..."
 msgstr "正在檢查磁碟空間..."
 
-#: cnchi/pacman/pac.py:447
+#: cnchi/pacman/pac.py:460
 msgid "Checking keys in keyring..."
 msgstr "正在檢查鑰匙圈中的鑰匙..."
 
-#: cnchi/pacman/pac.py:449
+#: cnchi/pacman/pac.py:462
 msgid "Downloading missing keys into the keyring..."
 msgstr "正在下載遺失的金鑰至鑰匙圈中..."
 
-#: cnchi/pacman/pac.py:488
+#: cnchi/pacman/pac.py:501
 msgid "Installing {0} ({1}/{2})"
 msgstr "正在安裝 {0} ({1}/{2})"
 
-#: cnchi/pacman/pac.py:513
+#: cnchi/pacman/pac.py:526
 msgid "Updating {0} database"
 msgstr "正在更新 {0} 資料庫"
 
-#: cnchi/pacman/pac.py:522
+#: cnchi/pacman/pac.py:535
 msgid "Downloading {0}..."
 msgstr "正在下載 {0}..."
 
@@ -2094,15 +2364,23 @@ msgstr "單獨指定安裝"
 msgid "Installed as a dependency for another package"
 msgstr "作爲其他軟體包的依賴關係安裝"
 
-#: cnchi/parted3/fs_module.py:103
+#: cnchi/parted3/fs_module.py:43
+msgid "Can't get partition %s UUID"
+msgstr "無法取得分割區 %s 的 UUID"
+
+#: cnchi/parted3/fs_module.py:51
+msgid "Can't get partition %s label (or it does not have any)"
+msgstr "無法取得 %s 的標籤（或是它並沒有標籤）"
+
+#: cnchi/parted3/fs_module.py:119
 msgid "Can't label a {0} partition"
 msgstr "無法標籤 {0} 分割區"
 
-#: cnchi/parted3/fs_module.py:188
-msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr "無法確認 %s 是否為固態硬碟"
+#: cnchi/parted3/fs_module.py:154
+msgid "Unknown filesystem {0}"
+msgstr "未知的檔案系統 {0}"
 
-#: cnchi/parted3/fs_module.py:213
+#: cnchi/parted3/fs_module.py:237
 msgid "Sorry but filesystem %s can't be shrinked"
 msgstr "抱歉，但是檔案系統 %s 無法縮小"
 
@@ -2140,41 +2418,69 @@ msgstr "無法偵測 {0} 的已使用空間"
 msgid "Can't detect used space of NTFS partition %s"
 msgstr "無法偵測 NTFS 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:69
+#: cnchi/parted3/used_space.py:71
 msgid "Can't detect used space of EXTFS partition %s"
 msgstr "無法偵測 EXTFS 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:100
+#: cnchi/parted3/used_space.py:103
 msgid "Can't detect used space of FAT partition %s"
 msgstr "無法偵測 FAT 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:131
+#: cnchi/parted3/used_space.py:134
 msgid "Can't detect used space of JFS partition %s"
 msgstr "無法偵測 JFS 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:156
+#: cnchi/parted3/used_space.py:159
 msgid "Can't detect used space of REISERFS partition %s"
 msgstr "無法偵測 REISERFS 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:184
+#: cnchi/parted3/used_space.py:187
 msgid "Can't detect used space of BTRFS partition %s"
 msgstr "無法偵測 BTRFS 分割區 %s 的已使用空間"
 
-#: cnchi/parted3/used_space.py:221
+#: cnchi/parted3/used_space.py:224
 msgid "Can't detect used space of XFS partition %s"
 msgstr "無法偵測 XFS 分割區 %s 的已使用空間"
 
-#: cnchi/rank_mirrors.py:66
-msgid "Can't find update mirrors script"
-msgstr "找不到鏡像更新指令稿"
+#: cnchi/rank_mirrors.py:63
+msgid "Can't synchronize cached writes to persistent storage: %s"
+msgstr "無法同步已快取的寫入到持久儲存：%s"
 
-#: cnchi/rank_mirrors.py:98
-msgid "Couldn't execute auto mirror selection"
-msgstr "無法執行自動鏡像選擇"
+#: cnchi/rank_mirrors.py:82
+msgid "Update of antergos-mirrorlist package failed with error: %s"
+msgstr "更新 antergos-mirrorlist 軟體包時遇到錯誤：%s"
 
-#: cnchi/rank_mirrors.py:132
-msgid "Auto mirror selection has been run successfully"
-msgstr "自動鏡像選擇已成功執行"
+#: cnchi/rank_mirrors.py:84
+msgid "Error copying new mirrorlist files: %s"
+msgstr "複製新的鏡像列表檔案時遇到錯誤：%s"
+
+#: cnchi/rank_mirrors.py:101
+msgid "Error running reflector on Arch mirrorlist: %s"
+msgstr "在 Arch 的鏡像列表執行 reflector 發生錯誤：%s"
+
+#: cnchi/rank_mirrors.py:149
+msgid "Error running rankmirrors on Antergos mirrorlist: %s"
+msgstr "在 Antergos 鏡像列表執行 rankmirrors 時發生錯誤：%s"
+
+#: cnchi/rank_mirrors.py:190
+msgid "Updating both mirrorlists (Arch and Antergos)..."
+msgstr "正在更新兩個鏡像列表（Arch 與 Antergos 的）..."
+
+#: cnchi/rank_mirrors.py:193
+msgid "Running reflector command to sort Arch mirrors..."
+msgstr "正在執行 reflector 以排序 Arch 的鏡像..."
+
+#: cnchi/rank_mirrors.py:196
+msgid "Running rankmirrors command to sort Antergos mirrors..."
+msgstr "正在執行 reflector 以排序 Antergos 的鏡像..."
+
+#: cnchi/rank_mirrors.py:199
+msgid "Checking Arch mirrorlist against mirror status data..."
+msgstr "正在使用鏡像狀態資料檢查 Arch 的鏡像列表..."
+
+#: cnchi/rank_mirrors.py:202
+msgid "Auto mirror selection has been run successfully."
+msgstr "自動鏡像選擇已成功執行。"
 
 #: cnchi/show_message.py:55
 msgid "Antergos Installer - Error"
@@ -2192,15 +2498,15 @@ msgstr "Antergos安裝程式-訊息"
 msgid "Antergos Installer - Confirmation"
 msgstr "Antergos 安裝程式 - 確認"
 
-#: cnchi/slides.py:73
+#: cnchi/slides.py:74
 msgid "Please wait..."
 msgstr "請燒等......"
 
-#: cnchi/slides.py:75
+#: cnchi/slides.py:76
 msgid "Installing Antergos..."
 msgstr "正在安裝 Antergos..."
 
-#: cnchi/slides.py:187
+#: cnchi/slides.py:190
 msgid ""
 "IMPORTANT: There may have been a problem with the bootloader\n"
 "installation which could prevent your system from booting properly. Before\n"
@@ -2211,194 +2517,210 @@ msgid ""
 "Would you like to view the wiki page now?"
 msgstr "重要：開機管理程式可能有問題\n可能會造成您的系統無法正確開機。\n在您重新開機前，您可能必須檢查開機管理程式是否安裝並設定完成。\nArch Linux 的 Wiki 包含了疑難排解資訊：\n\thttps://wiki.archlinux.org/index.php/GRUB\n\n您想要立即觀看這個 wiki 頁面嗎？"
 
-#: cnchi/slides.py:200
+#: cnchi/slides.py:202
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr "安裝完成！\n您想要立即重新啟動您的系統嗎？"
 
-#: cnchi/timezone.py:90
+#: cnchi/timezone.py:82
 msgid "Zone:"
 msgstr "時區："
 
-#: cnchi/timezone.py:94
+#: cnchi/timezone.py:86
 msgid "Region:"
 msgstr "地區："
 
-#: cnchi/timezone.py:98
+#: cnchi/timezone.py:90
 msgid "Use Network Time Protocol (NTP) for clock synchronization"
 msgstr "使用網路時間協議(NTP)來同步您的時鐘："
 
-#: cnchi/timezone.py:101
+#: cnchi/timezone.py:93
 msgid "Select Your Timezone"
 msgstr "選擇您的時區"
 
-#: cnchi/timezone.py:110
+#: cnchi/timezone.py:102
 msgid "location changed to : %s"
 msgstr "地區變更至： %s"
 
-#: cnchi/timezone.py:189
+#: cnchi/timezone.py:181
 msgid "Can't autodetect timezone coordinates"
 msgstr "無法自動偵測所在時區"
 
-#: cnchi/timezone.py:252
-msgid "Stoping timezone threads..."
-msgstr "正在停止時區線程..."
+#: cnchi/timezone.py:284
+msgid "Can't get network status. Cnchi will try again in a moment"
+msgstr "無法取得網路狀態。Cnchi 將會在稍後繼續嘗試"
 
-#: cnchi/timezone.py:287
-msgid "Can't get network status."
-msgstr "無法取得網路狀態。"
+#: cnchi/timezone.py:288
+msgid "A working network connection has been detected."
+msgstr "已偵測到一個運作中的網路連線。"
 
-#: cnchi/timezone.py:298
+#: cnchi/timezone.py:297
 msgid "We have connection. Let's get our timezone"
 msgstr "我們有網路連線了。讓我們取得我們的時區"
 
 #: cnchi/timezone.py:316
-msgid "Timezone (latitude {0}, longitude {1}) detected."
-msgstr "時區（緯度 {0}，經度 {1}）已偵測。"
+msgid "Timezone (latitude %s, longitude %s) detected."
+msgstr "時區（緯度 %s，經度 %s）已偵測。"
 
-#: cnchi/updater.py:68
+#: cnchi/updater.py:67
 msgid ""
 "Could not find 'update.info' file. Cnchi will not be able to update itself."
 msgstr "找不到「update.info」檔案。Cnchi 將無法更新它自己。"
 
-#: cnchi/updater.py:88
+#: cnchi/updater.py:93
 msgid "Cnchi Internet version: %s"
 msgstr "Cnchi 網路版本： %s"
 
-#: cnchi/updater.py:128
+#: cnchi/updater.py:133
 msgid "New version found. Updating installer..."
 msgstr "找到新版本。正在更新安裝程式..."
 
-#: cnchi/updater.py:131
+#: cnchi/updater.py:136
 msgid "No new version found. Updating anyways..."
 msgstr "並未找到新版本。無論如何都要更新..."
 
-#: cnchi/updater.py:135
+#: cnchi/updater.py:140
 msgid "Downloading new version of Cnchi..."
 msgstr "正在下載新版本的 Cnchi..."
 
-#: cnchi/updater.py:139
+#: cnchi/updater.py:144
 msgid "Can't download new Cnchi version."
 msgstr "無法下載新的 Cnchi 版本。"
 
-#: cnchi/updater.py:143
+#: cnchi/updater.py:148
 msgid "Uncompressing new version..."
 msgstr "正在解壓縮新版本..."
 
-#: cnchi/updater.py:189
+#: cnchi/updater.py:192
+msgid "Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"
+msgstr "錯誤的 md5 (%s)。下載錯誤或錯誤的檔案，Cnchi 將不會更新它自己"
+
+#: cnchi/updater.py:198
+msgid "File %s is not in md5 signatures list"
+msgstr "檔案 %s 不在 md5 簽名列表中"
+
+#: cnchi/updater.py:212
+msgid "Copying %s to %s..."
+msgstr "正在複製 %s 到 %s..."
+
+#: cnchi/updater.py:218
 msgid "Can't copy %s to %s"
 msgstr "無法複製 %s 到 %s"
 
-#: cnchi/updater.py:192
-msgid "Wrong md5. Bad download or wrong file, won't update this one"
-msgstr "錯誤的 md5。下載錯誤或錯誤的檔案，將不會更新這一個"
-
-#: cnchi/user_info.py:73
+#: cnchi/user_info.py:92
 msgid "Your name:"
 msgstr "您的名字:"
 
-#: cnchi/user_info.py:77
+#: cnchi/user_info.py:96
 msgid "Your name"
 msgstr "您的名字"
 
-#: cnchi/user_info.py:81
+#: cnchi/user_info.py:100
 msgid "Your computer's name:"
 msgstr "您的電腦名稱"
 
-#: cnchi/user_info.py:85
+#: cnchi/user_info.py:104
+msgid "Hostname"
+msgstr "主機名稱"
+
+#: cnchi/user_info.py:108
 msgid "Pick a username:"
 msgstr "選擇一個使用者名稱："
 
-#: cnchi/user_info.py:89
+#: cnchi/user_info.py:112
 msgid "Username"
 msgstr "使用者名稱"
 
-#: cnchi/user_info.py:93
+#: cnchi/user_info.py:116
 msgid "Choose a password:"
 msgstr "選擇一個密碼："
 
-#: cnchi/user_info.py:97
+#: cnchi/user_info.py:120
 msgid "Password"
 msgstr "密碼"
 
-#: cnchi/user_info.py:105
+#: cnchi/user_info.py:128
 msgid "Confirm password"
 msgstr "確認密碼"
 
-#: cnchi/user_info.py:109
+#: cnchi/user_info.py:132
 msgid "Identifies your system to other computers and devices."
 msgstr "識別您的系統與其它裝置。"
 
-#: cnchi/user_info.py:115
+#: cnchi/user_info.py:138
 msgid "You must enter a name"
 msgstr "您必須輸入一個名字"
 
-#: cnchi/user_info.py:119
+#: cnchi/user_info.py:142
 msgid "You must enter a username"
 msgstr "您必須輸入一個使用者名稱"
 
-#: cnchi/user_info.py:123
+#: cnchi/user_info.py:146
 msgid "You must enter a password"
 msgstr "您必須輸入一個密碼"
 
-#: cnchi/user_info.py:127
+#: cnchi/user_info.py:150
 msgid "Log in automatically"
 msgstr "自動登入"
 
-#: cnchi/user_info.py:128
+#: cnchi/user_info.py:151
 msgid "Require my password to log in"
 msgstr "需要您的密碼登入"
 
-#: cnchi/user_info.py:129
+#: cnchi/user_info.py:152
 msgid "Encrypt my home folder"
 msgstr "加密您的家目錄"
 
-#: cnchi/user_info.py:132
+#: cnchi/user_info.py:155
 msgid "show password"
 msgstr "顯示密碼"
 
-#: cnchi/user_info.py:134
+#: cnchi/user_info.py:157
 msgid "Create Your User Account"
 msgstr "創建您的使用者帳戶"
 
-#: cnchi/user_info.py:183
+#: cnchi/user_info.py:206
 msgid "Are you sure you want to encrypt your home directory?"
 msgstr "您確定要加密您的家目錄嗎？"
 
-#: cnchi/user_info.py:246
+#: cnchi/user_info.py:226
+msgid "Save"
+msgstr "儲存"
+
+#: cnchi/user_info.py:269
 msgid "Invalid characters entered"
 msgstr "輸入了不允許使用的字元"
 
-#: cnchi/user_info.py:250
+#: cnchi/user_info.py:273
 msgid "Username can't contain dots"
 msgstr "使用者名稱不能包含小數點"
 
-#: cnchi/user_info.py:254
+#: cnchi/user_info.py:277
 msgid "Too many characters"
 msgstr "過多字元"
 
-#: cnchi/welcome.py:73
-msgid "Try Antergos without making any changes to your system."
+#: cnchi/welcome.py:72
+msgid "Use Antergos without making any changes to your system."
 msgstr "試用 Antergos 而不對您的系統做出任何變更。"
 
-#: cnchi/welcome.py:79
+#: cnchi/welcome.py:78
 msgid "Create a permanent place for Antergos on your system."
 msgstr "在您的系統上建立一塊為 Antergos 準備的永久區塊。"
 
-#: cnchi/welcome.py:83
+#: cnchi/welcome.py:82
 msgid "Try It"
 msgstr "試用"
 
-#: cnchi/welcome.py:89
+#: cnchi/welcome.py:88
 msgid "Install It"
 msgstr "安裝它"
 
-#: cnchi/welcome.py:92
+#: cnchi/welcome.py:91
 msgid "Welcome to Antergos!"
 msgstr "歡迎來到Antergos!"
 
-#: cnchi/welcome.py:125
+#: cnchi/welcome.py:129
 msgid "Loading, please wait..."
 msgstr "正在載入，請稍候......"
 
