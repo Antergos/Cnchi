@@ -1,3 +1,6 @@
+[2015-08-14 16:08:40 +0200]  Updated translations                                                       karasu      {5b4af5a}
+[2015-08-13 12:15:36 -0500]  Update README.md                                                       Dustin Falgout  {3d92a90}
+[2015-08-08 05:55:04 -0500]  fixed a couple pep8 indentation warnings                               Dustin Falgout  {210e082}
 [2015-08-08 01:21:50 -0500]  oops :grimacing:                                                       Dustin Falgout  {d1e95b5}
 [2015-08-08 01:20:49 -0500]  test bugsnag since its free                                            Dustin Falgout  {aeeb7bd}
 [2015-08-06 22:03:59 +0200]  Remove unused import                                                       karasu      {867d497}
