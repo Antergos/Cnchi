@@ -1,26 +1,21 @@
-# Cnchi - Antergos Installer
+# Cnchi
 # Copyright (C) 2013-2015 Antergos
-# Antergos Developers <devATantergos.com>
 # 
 # Translators:
 # Ḷḷumex03 <tornes@opmbx.org>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"POT-Creation-Date: 2015-03-31 04:15-0600\n"
-"PO-Revision-Date: 2015-04-14 21:59+0000\n"
-"Last-Translator: Ḷḷumex03 <tornes@opmbx.org>\n"
-"Language-Team: Asturian (http://www.transifex.com/projects/p/antergos/language/ast/)\n"
+"POT-Creation-Date: 2015-07-22 22:44+CEST\n"
+"PO-Revision-Date: 2015-07-22 20:51+0000\n"
+"Last-Translator: Gustau Castells <karasu@antergos.com>\n"
+"Language-Team: Asturian (http://www.transifex.com/faidoc/antergos/language/ast/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
 "Language: ast\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.4\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ..\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 
 #: cnchi/bootinfo.py:66 cnchi/bootinfo.py:79 cnchi/bootinfo.py:85
 #: cnchi/bootinfo.py:134 cnchi/bootinfo.py:139 cnchi/bootinfo.py:148
@@ -35,121 +30,136 @@ msgstr "Fallu llamando'l comandu hexdump: %s"
 
 #: cnchi/bootinfo.py:133
 msgid "Unknown partition id %s"
-msgstr ""
+msgstr "ID de partición %s desconocida"
 
-#: cnchi/check.py:77
+#: cnchi/check.py:69
 msgid "System Check"
 msgstr "Comprobación del sistema"
 
-#: cnchi/check.py:81
+#: cnchi/check.py:73
 msgid "has at least {0}GB available storage space. (*)"
 msgstr "tien polo menos {0}GB d'espaciu en discu disponible. (*)"
 
-#: cnchi/check.py:84
+#: cnchi/check.py:76
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
 msgstr "Esto ta arreyao al entronu d'escritoriu qu'escueyas, asina que podríes necesitar más espaciu."
 
-#: cnchi/check.py:89
+#: cnchi/check.py:84
 msgid "is plugged in to a power source"
 msgstr "ta enchufáu a una fonte d'enerxía"
 
-#: cnchi/check.py:93
+#: cnchi/check.py:88
 msgid "is connected to the Internet"
 msgstr "ta coneutáu a internet"
 
-#: cnchi/check.py:97
+#: cnchi/check.py:92
 msgid "For best results, please ensure that this computer:"
 msgstr "Pa los meyores resultaos, asegúrate por favor qu'esti ordenador:"
 
-#: cnchi/check.py:174
+#: cnchi/check.py:175
 msgid "We have Internet connection."
 msgstr "Tenemos conexón a internet."
 
-#: cnchi/check.py:175
+#: cnchi/check.py:176
 msgid "We're connected to a power source."
 msgstr "Tamos coneutaos a una fonte d'enerxía."
 
-#: cnchi/check.py:176
+#: cnchi/check.py:177
 msgid "We have enough disk space."
 msgstr "Tenemos espaciu en discu abondo."
 
-#: cnchi/check.py:201 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
-#: cnchi/features.py:382 cnchi/installation/advanced.py:2194
-#: cnchi/installation/alongside.py:37 cnchi/installation/ask.py:32
-#: cnchi/installation/automatic.py:299 cnchi/installation/bootloader.py:42
-#: cnchi/installation/chroot.py:33 cnchi/keymap.py:288 cnchi/language.py:155
-#: cnchi/location.py:230 cnchi/slides.py:245 cnchi/timezone.py:323
-#: cnchi/user_info.py:304 cnchi/welcome.py:147 cnchi/wireless.py:159
-#: cnchi/cnchi.py:62
+#: cnchi/check.py:195 cnchi/desktop.py:214 cnchi/download/download_aria2.py:35
+#: cnchi/features.py:453 cnchi/installation/advanced.py:2289
+#: cnchi/installation/alongside.py:37 cnchi/installation/ask.py:33
+#: cnchi/installation/automatic.py:303 cnchi/installation/bootloader.py:42
+#: cnchi/installation/chroot.py:33 cnchi/keymap.py:287 cnchi/language.py:174
+#: cnchi/location.py:247 cnchi/slides.py:246 cnchi/user_info.py:327
+#: cnchi/welcome.py:151 cnchi/wireless.py:159 cnchi/cnchi.py:74
 msgid "Can't create Cnchi main window: {0}"
 msgstr "Nun pue crase la ventana principal Cnchi: {0}"
 
-#: cnchi/cnchi.py:162
+#: cnchi/cnchi.py:153
+msgid "Sending Cnchi logs to {0} with id '{1}'"
+msgstr ""
+
+#: cnchi/cnchi.py:198
 msgid "Using pyalpm v{0} as interface to libalpm v{1}"
 msgstr "Usando pyalpm v{0} como interfaz pa libalpm v{1}"
 
-#: cnchi/cnchi.py:177
+#: cnchi/cnchi.py:213
 msgid "Cnchi v{0} - Antergos Installer"
 msgstr "Cnchi v{0} - Instalador d'Antergos"
 
-#: cnchi/cnchi.py:182
-msgid "Use aria2 to download Antergos packages (EXPERIMENTAL)"
-msgstr "Usa aria2 pa baxar los paquetes d'Antergos (ESPERIMENTAL)"
-
-#: cnchi/cnchi.py:186
+#: cnchi/cnchi.py:218
 msgid "Use pre-downloaded xz packages when possible"
 msgstr "Usa paquetes xz baxaos d'enantes cuando sía posible"
 
-#: cnchi/cnchi.py:190
+#: cnchi/cnchi.py:222
 msgid "Sets Cnchi log level to 'debug'"
 msgstr "Afita'l nivel de rexistru de Cnchi a 'debug'"
 
-#: cnchi/cnchi.py:194
+#: cnchi/cnchi.py:226
+msgid "Sets the Desktop Environment that will be installed"
+msgstr ""
+
+#: cnchi/cnchi.py:230
 msgid "Runs cnchi even if it detects that another instance is running"
 msgstr "Executa Cnchi magar que se deteute otra instancia n'execución"
 
-#: cnchi/cnchi.py:198
+#: cnchi/cnchi.py:234
 msgid "Disables first screen's 'try it' option"
 msgstr "Deshabilita la primer pantalla de 'Pruébalu'"
 
-#: cnchi/cnchi.py:202
+#: cnchi/cnchi.py:238
+msgid ""
+"Choose which library to use when downloading packages. Possible options are "
+"'requests' (default), 'urllib' and 'aria2'"
+msgstr ""
+
+#: cnchi/cnchi.py:243
+msgid "Makes checks optional in check screen"
+msgstr ""
+
+#: cnchi/cnchi.py:247
 msgid ""
 "Install the packages referenced by a local xml instead of the default ones"
 msgstr "Instala paquetes referenciaos por un XML llocal en cuantes de los predeterminaos"
 
-#: cnchi/cnchi.py:206
+#: cnchi/cnchi.py:251
+msgid ""
+"Choose to which log server send Cnchi logs. Expects a hostname or an IP "
+"address"
+msgstr ""
+
+#: cnchi/cnchi.py:256
 msgid "Do not perform any changes (useful for developers)"
 msgstr "Nun fai denguna camudancia (útil pa desendolcadores)"
 
-#: cnchi/cnchi.py:210
+#: cnchi/cnchi.py:260
 msgid "Upgrade/downgrade Cnchi to the web version"
 msgstr "Anueva/Baxa de versión Cnchi a la versión web"
 
-#: cnchi/cnchi.py:214
+#: cnchi/cnchi.py:264
 msgid "Do not search for new Cnchi versions online"
 msgstr "Nun gueta por versiones nueves de Cnchi en llinia"
 
-#: cnchi/cnchi.py:218
+#: cnchi/cnchi.py:268
 msgid "Show logging messages to stdout"
 msgstr "Amuesa mensaxes de rexistru a stdout"
 
-#: cnchi/cnchi.py:222
+#: cnchi/cnchi.py:272
 msgid "Show options in development (for developers only, do not use this!)"
 msgstr "Amuesa opciones en desendolcu (namái pa desendolcadores, ¡nun uses esto!)"
 
-#: cnchi/cnchi.py:261
+#: cnchi/cnchi.py:311
 msgid "Program updated! Restarting..."
 msgstr "¡Programa anováu! Reaniciando..."
 
-#: cnchi/cnchi.py:301
+#: cnchi/cnchi.py:351
 msgid "Cnchi files not found. Please, install Cnchi using pacman"
 msgstr "Nun s'alcontraron los ficheros de Cnchi. Por favor, instala Cnchi usando pacman"
-
-#: cnchi/cnchi.py:305
-msgid "Please install '{0}' before running this installer"
-msgstr "Por favor, instala '{0}' enantes d'executar esti instalador"
 
 #: cnchi/desktop.py:114
 msgid "Choose Your Desktop"
@@ -159,14 +169,14 @@ msgstr "Escueyi'l to escritoriu"
 msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi instalará Antergos col escritoriu '%s'"
 
-#: cnchi/desktop_environments.py:115
+#: cnchi/desktop_environments.py:98
 msgid ""
 "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "Gnome 3 ye un mou cenciellu y elegante d'usar el to odenador. Inclúi la Vista previa d'Actividaes que ye un mou cenciellu d'acceder a toles tos xeres básiques. GNOME 3 ye l'escritoriu por defeutu n'Antergos."
 
-#: cnchi/desktop_environments.py:120
+#: cnchi/desktop_environments.py:103
 msgid ""
 "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
@@ -174,7 +184,7 @@ msgid ""
 "levels. "
 msgstr "Cinnamon ye una variación de GNOME 3 desendolcada por (y pa) Linux Mint. Apurre a los usuarios más qu'una interfaz d'escritoriu tradicional coles téuniques más nueves de composición de GNOME 3. Cinnamon ye pa usuarios de tolos niveles."
 
-#: cnchi/desktop_environments.py:125
+#: cnchi/desktop_environments.py:108
 msgid ""
 "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
@@ -182,7 +192,7 @@ msgid ""
 "specifications. "
 msgstr "Xfce ye un entornu d'escritoriu llixeru. Tien como oxetivu ser rápidu y baxu en recursos, entrín remana un aspeutu visual ya interfaz amigables. Ye una opción perfeuta pa usar n'ordenadores vieyos o que tengan especificaciones de hardware baxes."
 
-#: cnchi/desktop_environments.py:130
+#: cnchi/desktop_environments.py:113
 msgid ""
 "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
@@ -190,7 +200,7 @@ msgid ""
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE ye un entornu d'escritoriu perrápidu y espertu n'aforrar recursos. Usa menos CPU y RAM qu'otros entornos. LXDE ta diseñáu especialmente pa ordenadores na ñube con especificaciones de hardware baxes como netbooks, preseos móviles, y otros ordenadores vieyos."
 
-#: cnchi/desktop_environments.py:135
+#: cnchi/desktop_environments.py:118
 msgid ""
 "Openbox is a highly configurable, next generation window manager with "
 "extensive standards support. It's default theme is well known for its "
@@ -198,42 +208,42 @@ msgid ""
 "faster. Perfect for low hardware specifications, too."
 msgstr "Openbox ye un alministrador de ventanes mui configurable y de nueva xeneración con sofitu a estándares estendíos. El so tema por defeutu ye bien conocíu pol so aspeutu minimalista y flexible. El to escritoriu sedrá llimpiu y más rápidu. Perfeutu pa especificaciones de hardware baxes, tamién."
 
-#: cnchi/desktop_environments.py:140
+#: cnchi/desktop_environments.py:123
 msgid ""
 "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
 msgstr "Enlightenment nun ye namás qu'un xestor de ventanes pa Linux/X11 y otros, sinón tamién un conxuntu completu de biblioteques p'ayudate a crear interfaces d'usuariu perguapes con munchu menos trabayu."
 
-#: cnchi/desktop_environments.py:144
+#: cnchi/desktop_environments.py:127
 msgid ""
 "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
 msgstr "Si tas guetando un entornu de trabayu familiar, l'escritoriu Plasma de KDE ufre toles ferramientes riquíes pa una esperiencia d'escritoriu moderna pa qu'asina puea ser productiva dende l'entamu."
 
-#: cnchi/desktop_environments.py:148
+#: cnchi/desktop_environments.py:131
 msgid ""
 "Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
 "provides a visually updated core desktop experience that is easy to use and "
 "familiar to the user. "
 msgstr "Plasma 5.0 introduz una ufierta nueva na estaya de trabayu de KDE. Apurre una esperiencia d'escritoriu con un aspeutu anováu que ye cenciellu d'usar y familiar col usuariu."
 
-#: cnchi/desktop_environments.py:152
+#: cnchi/desktop_environments.py:135
 msgid ""
 "LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
 "technologies. It has been tailored for users who value simplicity, speed, "
 "and an intuitive interface."
 msgstr "LXQt ye un entornu d'escritoriu avanzáu, cenciellu d'usar, y rápidu basáu nes teunoloxíes QT. Fíxose por usuarios que valoren la cenciellez, velocidá, y una interfaz intuitiva."
 
-#: cnchi/desktop_environments.py:156
+#: cnchi/desktop_environments.py:139
 msgid ""
 "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "Esta opción instalará Antergos como un sistema per llinia comandos, ensin denguna triba d'interfaz gráfica. Dempués de la instalación pues personalizar Antergos instalando paquetes col xestor de paquetes en llinia comandos."
 
-#: cnchi/desktop_environments.py:160
+#: cnchi/desktop_environments.py:143
 msgid ""
 "An intuitive, attractive and lightweight desktop environment, fork of GNOME "
 "2. MATE is one of the best options for use on older computers or those with "
@@ -258,35 +268,39 @@ msgstr ""
 msgid "Can't run aria2: %s"
 msgstr "Nun pue executase aria2: %s"
 
-#: cnchi/download/download.py:94
+#: cnchi/download/download.py:97
 msgid "Can't create download package list. Check log output for details"
 msgstr ""
 
-#: cnchi/download/download.py:97
-msgid "Using aria2 to download packages"
-msgstr "Usando Aria2 pa baxar los paquetes"
+#: cnchi/download/download.py:99
+msgid "Using %s library to download packages"
+msgstr ""
 
-#: cnchi/download/download.py:103
-msgid "Using urllib to download packages"
-msgstr "Usando urlib pa baxar los paquetes"
+#: cnchi/download/download.py:113
+msgid "Unknown '%s' library, Cnchi will use the 'requests' one as default"
+msgstr ""
 
-#: cnchi/download/download.py:114
+#: cnchi/download/download.py:126 cnchi/installation/process.py:714
+msgid "Can't install necessary packages. Cnchi can't continue."
+msgstr "Nun puen instalase los paquetes necesarios. Cnchi nun pue siguir."
+
+#: cnchi/download/download.py:132
 msgid "Creating the list of packages to download..."
 msgstr "Creando llista de paquetes pa baxar..."
 
-#: cnchi/download/download.py:127 cnchi/download/metalink.py:483
+#: cnchi/download/download.py:145 cnchi/download/metalink.py:483
 msgid "Can't initialize pyalpm: %s"
 msgstr "Nun pue aniciase pyalpm: %s"
 
-#: cnchi/download/download.py:134
+#: cnchi/download/download.py:152
 msgid "Error creating metalink for package %s. Installation will stop"
 msgstr "Fallu creando l'enllaz meta pal paquete %s. La instalación pararáse"
 
-#: cnchi/download/download.py:150
+#: cnchi/download/download.py:168
 msgid "Can't create download set: %s"
 msgstr "Nun pue crease'l conxuntu de descarga: %s"
 
-#: cnchi/download/download.py:157
+#: cnchi/download/download.py:175
 msgid "Can't release pyalpm: %s"
 msgstr "Nun pue llanzase pyalpm: %s"
 
@@ -298,9 +312,61 @@ msgstr "Aria2 nun ta executándose."
 msgid "Downloading packages... ({0}/{1})..."
 msgstr "Baxando paquetes... ({0}/{1})..."
 
-#: cnchi/download/download_aria2.py:107 cnchi/download/download_urllib.py:135
+#: cnchi/download/download_aria2.py:107
+#: cnchi/download/download_requests.py:111
+#: cnchi/download/download_urllib.py:138
 msgid "File %s already exists, Cnchi will not overwrite it"
 msgstr "El ficheru %s yá esiste, Cnchi nun lu sobrescribirá"
+
+#: cnchi/download/download_requests.py:72
+#: cnchi/download/download_urllib.py:116
+msgid "Downloading {0} {1} ({2}/{3})..."
+msgstr "Baxando {0} {1} ({2}/{3})..."
+
+#: cnchi/download/download_requests.py:101
+#: cnchi/download/download_requests.py:123
+#: cnchi/download/download_requests.py:207
+msgid "MD5 hash (url:%s, file:%s) of file %s do not match!"
+msgstr ""
+
+#: cnchi/download/download_requests.py:106
+#: cnchi/download/download_requests.py:127
+#: cnchi/download/download_requests.py:142
+msgid "Cnchi will download it"
+msgstr ""
+
+#: cnchi/download/download_requests.py:132
+msgid "%s found in suplied pkg cache. Copying..."
+msgstr ""
+
+#: cnchi/download/download_requests.py:139
+msgid "Error copying %s to %s."
+msgstr ""
+
+#: cnchi/download/download_requests.py:152
+msgid "Package %s v%s has an empty url for this mirror"
+msgstr ""
+
+#: cnchi/download/download_requests.py:164
+#: cnchi/download/download_requests.py:222
+msgid "Can't download {0}"
+msgstr ""
+
+#: cnchi/download/download_requests.py:166
+#: cnchi/download/download_requests.py:211
+#: cnchi/download/download_requests.py:223
+msgid "Cnchi will try another mirror."
+msgstr ""
+
+#: cnchi/download/download_requests.py:176
+#: cnchi/download/download_urllib.py:123
+msgid "Metalink for package %s has no size info"
+msgstr "L'enllaz meta pal paquete %s nun tien la información de tamañu"
+
+#: cnchi/download/download_requests.py:229
+#: cnchi/download/download_urllib.py:198
+msgid "Can't download {0}, even after trying all available mirrors"
+msgstr "Nun pue baxase {0}, inclusu dempués d'intentalo con tolos espeyos disponibles"
 
 #: cnchi/download/download_urllib.py:40
 msgid "Wrong url, will try another one if available."
@@ -319,17 +385,13 @@ msgstr ""
 msgid "URL Error : {0}"
 msgstr ""
 
-#: cnchi/download/download_urllib.py:115
-msgid "Downloading {0} {1} ({2}/{3})..."
-msgstr "Baxando {0} {1} ({2}/{3})..."
+#: cnchi/download/download_urllib.py:144
+msgid "%s found in iso pkg cache. Copying..."
+msgstr ""
 
-#: cnchi/download/download_urllib.py:122
-msgid "Metalink for package %s has no size info"
-msgstr "L'enllaz meta pal paquete %s nun tien la información de tamañu"
-
-#: cnchi/download/download_urllib.py:185
-msgid "Can't download {0}, even after trying all available mirrors"
-msgstr "Nun pue baxase {0}, inclusu dempués d'intentalo con tolos espeyos disponibles"
+#: cnchi/download/download_urllib.py:150
+msgid "Error copying %s to %s. Cnchi will try to download it"
+msgstr ""
 
 #: cnchi/download/metalink.py:110
 msgid "Unable to create download queue for package {0}"
@@ -353,21 +415,25 @@ msgstr ""
 
 #: cnchi/encfs.py:130
 msgid "Can't run encfs. Bad password?"
+msgstr "Nun pue executase encfs. ¿Contraseña incorreuta?"
+
+#: cnchi/features.py:129
+msgid "No icon found for feature %s"
 msgstr ""
 
-#: cnchi/features.py:174
+#: cnchi/features.py:211
 msgid "Feature Selection"
 msgstr "Esbilla de carauterístiques"
 
-#: cnchi/features.py:178
+#: cnchi/features.py:215
 msgid "Arch User Repository (AUR) Support"
 msgstr "Sofitu d'Arch User Repository (AUR)"
 
-#: cnchi/features.py:179
+#: cnchi/features.py:216
 msgid "The AUR is a community-driven repository for Arch users."
 msgstr "AUR ye un repositoriu fechu pola comunidá pa usuarios d'Arch."
 
-#: cnchi/features.py:180
+#: cnchi/features.py:217
 msgid ""
 "Use yaourt to install AUR packages.\n"
 "The AUR was created to organize and share new packages\n"
@@ -375,15 +441,15 @@ msgid ""
 "inclusion into the [community] repository."
 msgstr "Usa yaourt pa instalar paquetes d'AUR.\nL'AUR creóse pa organizar y compartir paquetes nuevos\nde la comunidá y p'ayudar a facilitar la so amestadura al\nrepositoriu [community]."
 
-#: cnchi/features.py:187
+#: cnchi/features.py:224
 msgid "Bluetooth Support"
 msgstr "Sofitu de Bluetooth"
 
-#: cnchi/features.py:188
+#: cnchi/features.py:225
 msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "Fai que'l to sistema puea afitar conexones inalámbriques per Bluetooth."
 
-#: cnchi/features.py:189
+#: cnchi/features.py:226
 msgid ""
 "Bluetooth is a standard for the short-range wireless\n"
 "interconnection of cellular phones, computers, and\n"
@@ -391,15 +457,15 @@ msgid ""
 "implementation of the Bluetooth protocol stack is BlueZ"
 msgstr "Bluetooth ye un estándar inalámbricu d'algame\ncurtiu pa interconeutar teléfonos móviles, ordenadores,\ny otros preseos electrónicos. En Linux, la implementación\ncanónica d'esti protocolu ye BlueZ"
 
-#: cnchi/features.py:196
+#: cnchi/features.py:233
 msgid "Extra Truetype Fonts"
 msgstr "Fontes Truetype estra"
 
-#: cnchi/features.py:197
+#: cnchi/features.py:234
 msgid "Installation of extra TrueType fonts"
 msgstr "Instalación de fontes TrueType estra"
 
-#: cnchi/features.py:198
+#: cnchi/features.py:235
 msgid ""
 "TrueType is an outline font standard developed by\n"
 "Apple and Microsoft in the late 1980s as a competitor\n"
@@ -408,30 +474,53 @@ msgid ""
 "Mac OS and Microsoft Windows operating systems."
 msgstr "TrueType ye una fonte estándar desendolcada por\nApple y Microsoft en 1980 como una competidora de\nles fontes d'Adobe Type 1 usaes en PostScript.\nFíxose'l formatu más común pa fontes nos sistemes\noperativos de Mac OS y Microsoft Windows."
 
-#: cnchi/features.py:206
+#: cnchi/features.py:244
+msgid "Graphic drivers (Proprietary)"
+msgstr ""
+
+#: cnchi/features.py:245 cnchi/features.py:246
+msgid "Installs AMD or Nvidia proprietary graphic driver"
+msgstr ""
+
+#: cnchi/features.py:250
+msgid "Apache (or Nginx) + Mariadb + PHP"
+msgstr ""
+
+#: cnchi/features.py:251
+msgid "Apache (or Nginx) + Mariadb + PHP installation and setup"
+msgstr ""
+
+#: cnchi/features.py:252
+msgid ""
+"This option installs a web server (you can choose\n"
+"Apache or Nginx) plus a database server (Mariadb)\n"
+"and PHP"
+msgstr ""
+
+#: cnchi/features.py:258
 msgid "Printing Support"
 msgstr "Sofitu d'imprentación"
 
-#: cnchi/features.py:207
+#: cnchi/features.py:259
 msgid "Installation of printer drivers and management tools."
 msgstr "Instalación de controladores d'imprentadores y ferramientes d'alministración."
 
-#: cnchi/features.py:208
+#: cnchi/features.py:260
 msgid ""
 "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
 msgstr "CUPS ye'l sistema estándar y de códigu llibre desendolcáu por\nApple Inc. pa OS\\302\\256 X y otros sistemas operativos UNIX\\302\\256"
 
-#: cnchi/features.py:214
+#: cnchi/features.py:266
 msgid "LibreOffice"
 msgstr "LibreOffice"
 
-#: cnchi/features.py:215
+#: cnchi/features.py:267
 msgid "Open source office suite. Supports editing MS Office files."
 msgstr "Suit ofimática Open Source. Sofita la edición de ficheros MS Office."
 
-#: cnchi/features.py:216
+#: cnchi/features.py:268
 msgid ""
 "LibreOffice is the free power-packed Open Source\n"
 "personal productivity suite for Windows, Macintosh\n"
@@ -440,15 +529,15 @@ msgid ""
 "needs: Writer, Calc, Impress, Draw, Math and Base."
 msgstr "LibreOffice ye una suit ofimática llibre pa Windows,\nMacintosh y Linux, qu'apurre 6 aplicacioes pa toles tos\nnecesidaes de producción de documentos y procesamientu\nde datos: Write, Calc, Impress, Draw, Math y Base."
 
-#: cnchi/features.py:224
+#: cnchi/features.py:276
 msgid "Visual Effects"
 msgstr "Efeutos visuales"
 
-#: cnchi/features.py:225
+#: cnchi/features.py:277
 msgid "Enable transparency, shadows, and other desktop effects."
 msgstr "Habilita la tresparencia, solombres y otros efeutos d'escritoriu."
 
-#: cnchi/features.py:226
+#: cnchi/features.py:278
 msgid ""
 "Compton is a lightweight, standalone composite manager,\n"
 "suitable for use with window managers that do not natively\n"
@@ -457,30 +546,49 @@ msgid ""
 "See the compton github page for further information."
 msgstr "Compton ye un alministrador de composición llixeru,\nperfeutu pa usar colos alministradores de ventanes que\nnun apurren nativamente fucionalidaes de composición.\nCompton ye una variante de xcompmgr-dana, qu'al\nmesmu tiempu ye variante de xcompmgr.\nMira la páxina Github de Compton pa más información."
 
-#: cnchi/features.py:234
+#: cnchi/features.py:286
 msgid "Uncomplicated Firewall"
 msgstr "Uncomplicated Firewall"
 
-#: cnchi/features.py:235
+#: cnchi/features.py:287
 msgid "Control the incoming and outgoing network traffic."
 msgstr "Controla'l tráficu de rede entrante y saliente."
 
-#: cnchi/features.py:236
+#: cnchi/features.py:288
 msgid ""
 "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
 msgstr "Ufw son les sigles d'Uncomplicated Firewall, y ye un\nprograma p'alministrar los filtros de rede. Apurre una\ninterfaz de llinia de comandos y tien l'oxetivu de ser\ncenciellu d'usar."
 
-#: cnchi/features.py:256
+#: cnchi/features.py:294
+msgid "Kernel (LTS version)"
+msgstr ""
+
+#: cnchi/features.py:295
+msgid "Long term support (LTS) Linux kernel and modules."
+msgstr "Kernel y módulos de Linux LTS (Long Term Support)"
+
+#: cnchi/features.py:296
+msgid ""
+"The linux-lts package is an alternative Arch kernel package\n"
+"based upon Linux kernel 3.14 and is available in the core repository.\n"
+"This particular kernel version enjoys long-term support from upstream,\n"
+"including security fixes and some feature backports. Additionally, this\n"
+"package includes ext4 support. For Antergos users seeking a long-term\n"
+"support kernel, or who want a fallback kernel in case the latest kernel\n"
+"version causes problems, this option is the answer."
+msgstr "El paquete linux-lts ye una alternativa al paquete de kernel d'Arch Linux\nbasáu sobro'l kernel Linux 3.14 y ta disponible nel repositoriu core.\nEsta versión particular del kernel axunta sofitu a llargu plazu del upstream\nxunto con igues de seguridá y dalgunes carauterístiques de les verisiones\nnueves. Amás, esti paquete inclúi sofitu d'EXT4. Pa usuarios d'Antergos\nque gueten un kernel con sofitu a llargu plazu, o quieren baxalu de versión\nen casu de que les caberes versiones causen problemes, esta opción ye\nla rempuesta."
+
+#: cnchi/features.py:306
 msgid "Firefox Web Browser"
 msgstr "Restolador web Firefox"
 
-#: cnchi/features.py:257
+#: cnchi/features.py:307
 msgid "A popular open-source graphical web browser from Mozilla"
 msgstr "Un restolador web popular, gráficu y libre de Mozilla"
 
-#: cnchi/features.py:258
+#: cnchi/features.py:308
 msgid ""
 "Mozilla Firefox (known simply as Firefox) is a free and\n"
 "open-source web browser developed for Windows, OS X, and Linux,\n"
@@ -490,15 +598,15 @@ msgid ""
 "anticipated web standards."
 msgstr "Mozilla Firefox (conocíu simplemente como Firefox) ye un\nrestolador web llibre y de baldre desendolcáu pa Windows,\nOS X, Linux y Android pola Mozilla Foundation y la so subsidiaria\nMozilla Corporation. Firefox usa la distribución del motor Gecko\npa renderizar páxines web, qu'anguaño implementa y anticípase\na los estándares web."
 
-#: cnchi/features.py:267
+#: cnchi/features.py:317
 msgid "Windows sharing SMB"
 msgstr "Comparticiones de Windows SMB"
 
-#: cnchi/features.py:268
+#: cnchi/features.py:318
 msgid "SMB provides shared access to files and printers"
 msgstr "SMB apurre accesu compartíu a ficheros ya imprentadores"
 
-#: cnchi/features.py:269
+#: cnchi/features.py:319
 msgid ""
 "In computer networking, Server Message Block (SMB)\n"
 "operates as an application-layer network protocol mainly used\n"
@@ -507,15 +615,19 @@ msgid ""
 "Most usage of SMB involves computers running Microsoft Windows."
 msgstr "Na rede d'ordenadores, Server Message Block (SMB)\nopera como una capa d'aplicación nel protocolu de rede usáu\nprincipalmente p'apurrir l'accesu compartíu a ficheros, imprentadores,\npuertos de serial, y otres comunicaciones ente nodos nuna rede.\nL'usu mayoritariu de SMB dase n'ordenadores executando Microsoft Windows."
 
-#: cnchi/features.py:310
+#: cnchi/features.py:363
 msgid "Selected '%s' feature to install"
 msgstr "Esbillóse pa instalar la carauterística '%s'"
 
-#: cnchi/features.py:330
+#: cnchi/features.py:384
+msgid "Do you want to install the Nginx server instead of the Apache server?"
+msgstr ""
+
+#: cnchi/features.py:401
 msgid "Arch User Repository - Disclaimer"
 msgstr "Arch User Repository - Alcuerdu"
 
-#: cnchi/features.py:331
+#: cnchi/features.py:402
 msgid ""
 "The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
 "that supplement software available from the official repositories.\n"
@@ -523,11 +635,11 @@ msgid ""
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
 msgstr "L'Arch User Repository ye una coleición de PKGBUILDs xubíos polos\nusuarios qu'apurren software disponible dende los repositorios oficiales.\n\nL'AUR ta fechu pola comunidá y NUN ta sofitáu por Arch o Antergos.\n"
 
-#: cnchi/features.py:336
+#: cnchi/features.py:407
 msgid "Uncomplicated Firewall will be installed with these rules:"
 msgstr "Uncomplicated Firewall instalaráse con estes regles:"
 
-#: cnchi/features.py:338
+#: cnchi/features.py:409
 msgid ""
 "ufw default deny\n"
 "ufw allow from {0}\n"
@@ -535,346 +647,431 @@ msgid ""
 "ufw allow SSH"
 msgstr "ufw por defeutu refugar\nufw permitir dende {0}\nufw permitir Transmission\nufw permitir SSH"
 
-#: cnchi/hardware/hardware.py:80 cnchi/installation/chroot.py:155
+#: cnchi/hardware/hardware.py:120 cnchi/installation/chroot.py:139
 msgid "Error running command: %s"
 msgstr "Fallu executando'l programa: %s"
 
-#: cnchi/hardware/hardware.py:113
+#: cnchi/hardware/hardware.py:139
+msgid "%s completed successfully."
+msgstr ""
+
+#: cnchi/hardware/hardware.py:142
+msgid "Error running %s script"
+msgstr ""
+
+#: cnchi/hardware/hardware.py:143 cnchi/installation/auto_partition.py:87
+#: cnchi/installation/auto_partition.py:93
+#: cnchi/installation/auto_partition.py:139
+#: cnchi/installation/auto_partition.py:150
+#: cnchi/installation/auto_partition.py:187
+#: cnchi/installation/auto_partition.py:210
+#: cnchi/installation/auto_partition.py:220
+#: cnchi/installation/auto_partition.py:232
+#: cnchi/installation/auto_partition.py:261
+#: cnchi/installation/auto_partition.py:293
+#: cnchi/installation/auto_partition.py:306
+#: cnchi/installation/auto_partition.py:382
+#: cnchi/installation/auto_partition.py:390
+#: cnchi/installation/auto_partition.py:411
+#: cnchi/installation/auto_partition.py:795
+#: cnchi/installation/auto_partition.py:804
+#: cnchi/installation/auto_partition.py:840
+#: cnchi/installation/auto_partition.py:902 cnchi/installation/process.py:471
+#: cnchi/installation/process.py:482 cnchi/installation/process.py:493
+#: cnchi/installation/process.py:1454
+msgid "Command %s failed"
+msgstr "Falló'l comandu %s"
+
+#: cnchi/hardware/hardware.py:144 cnchi/installation/auto_partition.py:88
+#: cnchi/installation/auto_partition.py:94
+#: cnchi/installation/auto_partition.py:140
+#: cnchi/installation/auto_partition.py:151
+#: cnchi/installation/auto_partition.py:188
+#: cnchi/installation/auto_partition.py:211
+#: cnchi/installation/auto_partition.py:221
+#: cnchi/installation/auto_partition.py:233
+#: cnchi/installation/auto_partition.py:262
+#: cnchi/installation/auto_partition.py:294
+#: cnchi/installation/auto_partition.py:307
+#: cnchi/installation/auto_partition.py:383
+#: cnchi/installation/auto_partition.py:391
+#: cnchi/installation/auto_partition.py:412
+#: cnchi/installation/auto_partition.py:805
+#: cnchi/installation/auto_partition.py:841
+#: cnchi/installation/auto_partition.py:903 cnchi/installation/process.py:176
+#: cnchi/installation/process.py:472 cnchi/installation/process.py:483
+#: cnchi/installation/process.py:494 cnchi/installation/process.py:1455
+msgid "Output: %s"
+msgstr "Salida: %s"
+
+#: cnchi/hardware/hardware.py:188
 msgid "Error importing %s from %s : %s"
-msgstr ""
+msgstr "Fallu importando %s de %s: %s"
 
-#: cnchi/hardware/hardware.py:115
+#: cnchi/hardware/hardware.py:190
 msgid "Unexpected error importing %s: %s"
+msgstr "Fallu inesperáu importando %s: %s"
+
+#: cnchi/hardware/hardware.py:196
+msgid "Cnchi will test %d drivers for %d hardware devices"
 msgstr ""
 
-#: cnchi/installation/advanced.py:259 cnchi/installation/advanced.py:578
-#: cnchi/installation/advanced.py:592
+#: cnchi/installation/advanced.py:261 cnchi/installation/advanced.py:608
+#: cnchi/installation/advanced.py:622
 msgid "free space"
 msgstr "espaciu llibre"
 
-#: cnchi/installation/advanced.py:360
+#: cnchi/installation/advanced.py:396
 msgid "Device"
 msgstr "Preséu"
 
-#: cnchi/installation/advanced.py:363
+#: cnchi/installation/advanced.py:399
 msgid "Type"
 msgstr "Triba"
 
-#: cnchi/installation/advanced.py:366
+#: cnchi/installation/advanced.py:402
 msgid "Mount point"
 msgstr "Puntu montaxe"
 
-#: cnchi/installation/advanced.py:369
+#: cnchi/installation/advanced.py:405
 msgid "Label"
 msgstr "Etiqueta"
 
-#: cnchi/installation/advanced.py:376 cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:412 cnchi/installation/advanced.py:1979
 msgid "Format"
 msgstr "Formatu"
 
-#: cnchi/installation/advanced.py:383
+#: cnchi/installation/advanced.py:419
 msgid "Size"
 msgstr "Tamañu"
 
-#: cnchi/installation/advanced.py:386
+#: cnchi/installation/advanced.py:422
 msgid "Used"
 msgstr "Usáu"
 
-#: cnchi/installation/advanced.py:389
+#: cnchi/installation/advanced.py:425
 msgid "Flags"
 msgstr "Banderes"
 
-#: cnchi/installation/advanced.py:396
+#: cnchi/installation/advanced.py:432
 msgid "SSD"
 msgstr "SSD"
 
-#: cnchi/installation/advanced.py:560
+#: cnchi/installation/advanced.py:590
 msgid "none"
 msgstr "dengún"
 
-#: cnchi/installation/advanced.py:702
+#: cnchi/installation/advanced.py:727
 msgid "Can't edit a partition with LVM filesystem type"
 msgstr "Nun pue editase una partición cola triba del sistema ficheros LVM"
 
-#: cnchi/installation/advanced.py:761
+#: cnchi/installation/advanced.py:789
 msgid "Can't use same mount point twice."
 msgstr "Nun pue usase'l mesmu puntu de montaxe dos vegaes."
 
-#: cnchi/installation/advanced.py:763
+#: cnchi/installation/advanced.py:791
 msgid "Root partition must be formatted."
 msgstr "La partición root tien de formatiase."
 
-#: cnchi/installation/advanced.py:861
+#: cnchi/installation/advanced.py:798 cnchi/installation/advanced.py:1100
+msgid "'%s' is not a valid label"
+msgstr ""
+
+#: cnchi/installation/advanced.py:813 cnchi/installation/advanced.py:1151
+msgid "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."
+msgstr ""
+
+#: cnchi/installation/advanced.py:899
 msgid "You will delete the partition %s from disk %s"
 msgstr "Desaniciarás la partición %s del discu %s"
 
-#: cnchi/installation/advanced.py:879
+#: cnchi/installation/advanced.py:917
 msgid "Unmounting %s..."
 msgstr "Desmontando %s..."
 
-#: cnchi/installation/advanced.py:1004
+#: cnchi/installation/advanced.py:1042
 msgid "Sorry, you already have {0} primary partitions created."
-msgstr ""
+msgstr "Perdón, yá tienes creaes {0} particiones primaries."
 
-#: cnchi/installation/advanced.py:1008
+#: cnchi/installation/advanced.py:1046
 msgid "Sorry, you already have {0} primary and 1 extended partitions created."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1063
+#: cnchi/installation/advanced.py:1105
 msgid "Can't use same mount point twice..."
 msgstr "Nun pue usase'l mesmu puntu de montaxe dos vegaes..."
 
-#: cnchi/installation/advanced.py:1088
+#: cnchi/installation/advanced.py:1130
 msgid "Creating a primary partition"
 msgstr "Creando una partición primaria"
 
-#: cnchi/installation/advanced.py:1099
+#: cnchi/installation/advanced.py:1141
 msgid "Creating an extended partition"
 msgstr "Creando una partición estendida"
 
-#: cnchi/installation/advanced.py:1105
+#: cnchi/installation/advanced.py:1147
 msgid "Creating a logical partition"
 msgstr "Creando una partición llóxica"
 
-#: cnchi/installation/advanced.py:1289
+#: cnchi/installation/advanced.py:1203
+msgid "Using LUKS encryption will DELETE all partition contents!"
+msgstr ""
+
+#: cnchi/installation/advanced.py:1215
+msgid "LUKS passwords do not match!"
+msgstr ""
+
+#: cnchi/installation/advanced.py:1340
 msgid "Advanced Installation Mode"
 msgstr "Mou d'instalación avanzáu"
 
-#: cnchi/installation/advanced.py:1291 cnchi/installation/automatic.py:101
+#: cnchi/installation/advanced.py:1342 cnchi/installation/automatic.py:101
 msgid "Use the device below for boot loader installation:"
 msgstr "Usar el preséu d'embaxo pa la instalación del cargador d'arranque:"
 
-#: cnchi/installation/advanced.py:1296 cnchi/installation/automatic.py:106
+#: cnchi/installation/advanced.py:1347 cnchi/installation/automatic.py:106
 msgid "Bootloader:"
 msgstr "Cargador d'arranque:"
 
-#: cnchi/installation/advanced.py:1300 cnchi/installation/automatic.py:110
+#: cnchi/installation/advanced.py:1351 cnchi/installation/automatic.py:110
 msgid "Device:"
 msgstr "Preséu:"
 
-#: cnchi/installation/advanced.py:1304
+#: cnchi/installation/advanced.py:1355
 msgid "Mount Checklist:"
 msgstr "Comprobación de montaxes:"
 
-#: cnchi/installation/advanced.py:1310
+#: cnchi/installation/advanced.py:1361
 msgid "Root"
 msgstr "Root"
 
-#: cnchi/installation/advanced.py:1314
+#: cnchi/installation/advanced.py:1365
 msgid "Boot"
 msgstr "Boot"
 
-#: cnchi/installation/advanced.py:1318
+#: cnchi/installation/advanced.py:1369
 msgid "EFI"
 msgstr "EFI"
 
-#: cnchi/installation/advanced.py:1322
+#: cnchi/installation/advanced.py:1373
 msgid "Swap"
 msgstr "Swap"
 
-#: cnchi/installation/advanced.py:1332
+#: cnchi/installation/advanced.py:1383
 msgid "Undo"
 msgstr "Desfacer"
 
-#: cnchi/installation/advanced.py:1335 cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1386 cnchi/installation/advanced.py:1979
 msgid "New"
 msgstr "Nueva"
 
-#: cnchi/installation/advanced.py:1338
+#: cnchi/installation/advanced.py:1389
 msgid "Delete"
 msgstr "Desaniciar"
 
-#: cnchi/installation/advanced.py:1341
+#: cnchi/installation/advanced.py:1392
 msgid "Edit..."
 msgstr "Editar..."
 
-#: cnchi/installation/advanced.py:1344
+#: cnchi/installation/advanced.py:1395
 msgid "New partition table"
 msgstr "Tabla de particiones nueva"
 
-#: cnchi/installation/advanced.py:1355
+#: cnchi/installation/advanced.py:1406
 msgid "_Cancel"
 msgstr "_Encaboxar"
 
-#: cnchi/installation/advanced.py:1366
+#: cnchi/installation/advanced.py:1417
 msgid "_Apply"
 msgstr "_Aplicar"
 
-#: cnchi/installation/advanced.py:1369
+#: cnchi/installation/advanced.py:1420
 msgid "Size:"
 msgstr "Tamañu:"
 
-#: cnchi/installation/advanced.py:1373
+#: cnchi/installation/advanced.py:1424
 msgid "Type:"
 msgstr "Triba:"
 
-#: cnchi/installation/advanced.py:1377
+#: cnchi/installation/advanced.py:1428
 msgid "Primary"
 msgstr "Primaria"
 
-#: cnchi/installation/advanced.py:1381
+#: cnchi/installation/advanced.py:1432
 msgid "Logical"
 msgstr "Llóxica"
 
-#: cnchi/installation/advanced.py:1385
+#: cnchi/installation/advanced.py:1436
 msgid "Extended"
 msgstr "Estendida"
 
-#: cnchi/installation/advanced.py:1389
+#: cnchi/installation/advanced.py:1440
 msgid "Beginning of this space"
 msgstr "Al entamu d'esti espaciu"
 
-#: cnchi/installation/advanced.py:1393
+#: cnchi/installation/advanced.py:1444
 msgid "End of this space"
 msgstr "A la fin d'esti espaciu"
 
-#: cnchi/installation/advanced.py:1397 cnchi/installation/advanced.py:1414
+#: cnchi/installation/advanced.py:1448 cnchi/installation/advanced.py:1465
 msgid "Use As:"
 msgstr "Usar como:"
 
-#: cnchi/installation/advanced.py:1401 cnchi/installation/advanced.py:1418
+#: cnchi/installation/advanced.py:1452 cnchi/installation/advanced.py:1469
 msgid "Mount Point:"
 msgstr "Puntu montaxe:"
 
-#: cnchi/installation/advanced.py:1405 cnchi/installation/advanced.py:1422
+#: cnchi/installation/advanced.py:1456 cnchi/installation/advanced.py:1473
 msgid "Label (optional):"
 msgstr "Etiqueta (opcional):"
 
-#: cnchi/installation/advanced.py:1409 cnchi/installation/advanced.py:1430
+#: cnchi/installation/advanced.py:1460 cnchi/installation/advanced.py:1481
 msgid "Encryption Options..."
 msgstr "Opciones de cifráu..."
 
-#: cnchi/installation/advanced.py:1426
+#: cnchi/installation/advanced.py:1477
 msgid "Format:"
 msgstr "Formatu:"
 
-#: cnchi/installation/advanced.py:1435
+#: cnchi/installation/advanced.py:1486
 msgid "Partition Table Type:"
 msgstr "Triba de tabla de particiones:"
 
-#: cnchi/installation/advanced.py:1440
+#: cnchi/installation/advanced.py:1491
 msgid "Create Partition Table"
 msgstr "Crear tabla de particiones"
 
-#: cnchi/installation/advanced.py:1443
+#: cnchi/installation/advanced.py:1494
 msgid "Use LUKS encryption:"
 msgstr "Usar cifráu LUKS:"
 
-#: cnchi/installation/advanced.py:1447
+#: cnchi/installation/advanced.py:1498
 msgid "LUKS volume name:"
 msgstr "Nome de volume LUKS:"
 
-#: cnchi/installation/advanced.py:1451 cnchi/wireless.py:70
+#: cnchi/installation/advanced.py:1502 cnchi/wireless.py:70
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: cnchi/installation/advanced.py:1455
+#: cnchi/installation/advanced.py:1506
 msgid "Confirm password:"
 msgstr "Confirmar contraseña:"
 
-#: cnchi/installation/advanced.py:1525
+#: cnchi/installation/advanced.py:1576
 msgid "Creating a new %s partition table for disk %s"
 msgstr "Creando una tabla de particiones %s nueva pal discu %s"
 
-#: cnchi/installation/advanced.py:1534
+#: cnchi/installation/advanced.py:1585
 msgid ""
 "GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
 "\n"
 "Cnchi will create this BIOS Boot Partition for you."
 msgstr "GRUB rique una partición d'arranque BIOS nos sistemes BIOS pa embeber el so ficheru core.img debío a una falta de güecu embebíu post-MBR nos discos GPT.\n\nCnchi creará esta partición d'arranque BIOS por ti."
 
-#: cnchi/installation/advanced.py:1568
+#: cnchi/installation/advanced.py:1614
 msgid "Can't create BIOS GPT Boot partition!"
 msgstr "¡Nun pue crease la partición d'arranque BIOS GPT!"
 
-#: cnchi/installation/advanced.py:1595
+#: cnchi/installation/advanced.py:1643
 msgid "Couldn't create BIOS GPT Boot partition"
 msgstr "Nun pudo crease la partición d'arranque BIOS GPT"
 
-#: cnchi/installation/advanced.py:1789
+#: cnchi/installation/advanced.py:1790
+msgid "Install now!"
+msgstr ""
+
+#: cnchi/installation/advanced.py:1865
 msgid ""
 "{0} is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} ta montáu como SWAP.\nPa siguir tien de desmontase.\nPrimi Sí pa desmontalu, o Non pa tornar\n"
 
-#: cnchi/installation/advanced.py:1793
+#: cnchi/installation/advanced.py:1869
 msgid ""
 "{0} is mounted in '{1}'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} ta montáu en '{1}'.\nPa siguir tien de desmontase.\nPrimi Sí pa desmontalu, o Non pa tornar\n"
 
-#: cnchi/installation/advanced.py:1804 cnchi/installation/advanced.py:1825
+#: cnchi/installation/advanced.py:1880 cnchi/installation/advanced.py:1901
 msgid "%s unmounted"
 msgstr "%s desmontáu"
 
-#: cnchi/installation/advanced.py:1818
+#: cnchi/installation/advanced.py:1894
 msgid "Swap partition %s unmounted"
 msgstr "Partición SWAP %s desmontada"
 
-#: cnchi/installation/advanced.py:1829
+#: cnchi/installation/advanced.py:1905
 msgid "%s shows as mounted (busy) but it has no mount point"
 msgstr "%s amuésase como montáu (ocupáu) pero nun tien dengún puntu de montaxe"
 
-#: cnchi/installation/advanced.py:1871
+#: cnchi/installation/advanced.py:1947
 msgid ""
 "Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1895
+#: cnchi/installation/advanced.py:1971
 msgid "Partition {0} will be deleted"
 msgstr "La partición {0} desaniciaráse"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Encrypt"
 msgstr "Cifrar"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Mount"
 msgstr "Montaxe"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Partition"
 msgstr "Partición"
 
-#: cnchi/installation/advanced.py:1903
+#: cnchi/installation/advanced.py:1979
 msgid "Relabel"
 msgstr "Reetiquetar"
 
-#: cnchi/installation/advanced.py:1924
+#: cnchi/installation/advanced.py:2000
 msgid "These disks will have partition actions:"
 msgstr "Estos discos tendrán les opciones de particionáu:"
 
-#: cnchi/installation/advanced.py:2024
+#: cnchi/installation/advanced.py:2100
 msgid "Finished saving changes in %s"
 msgstr "Finada la guarda de camudancies en %s"
 
-#: cnchi/installation/advanced.py:2048
+#: cnchi/installation/advanced.py:2121
 msgid "Creating new {0} filesystem in {1} labeled {2}"
 msgstr "Creando'l sistema de ficheros nuevu {0} en {1} etiquetáu como {2}"
 
-#: cnchi/installation/advanced.py:2051
+#: cnchi/installation/advanced.py:2124
 msgid "Creating new {0} filesystem in {1}"
 msgstr "Creando'l sistema de ficheros nuevu {0} en {1}"
 
-#: cnchi/installation/advanced.py:2080
+#: cnchi/installation/advanced.py:2152
+msgid "Volume name is %s"
+msgstr ""
+
+#: cnchi/installation/advanced.py:2166
 msgid "Encrypting {0}, assigning volume name {1} and formatting it..."
 msgstr "Cifrando {0}, asignándo-y el nome de volume {1} y formatiándolu..."
 
-#: cnchi/installation/advanced.py:2110
+#: cnchi/installation/advanced.py:2181
+msgid "Couldn't format LUKS device '{0}' with label '{1}' as '{2}'"
+msgstr ""
+
+#: cnchi/installation/advanced.py:2205
 msgid "Couldn't format partition '{0}' with label '{1}' as '{2}'"
 msgstr "Nun pudo formatease la partición '{0}' cola etiqueta '{1}' como '{2}'"
 
-#: cnchi/installation/advanced.py:2168 cnchi/installation/automatic.py:264
+#: cnchi/installation/advanced.py:2263 cnchi/installation/automatic.py:268
 msgid "Cnchi will not install any bootloader"
 msgstr "Cnchi nun instalará dengún cargador d'arranque"
 
-#: cnchi/installation/advanced.py:2174
+#: cnchi/installation/advanced.py:2269
 msgid "Antergos will install the bootloader {0} in device {1}"
 msgstr "Antergos instalará'l cargador d'arranque {0} en {1}"
 
-#: cnchi/installation/advanced.py:2190 cnchi/installation/automatic.py:295
+#: cnchi/installation/advanced.py:2285 cnchi/installation/automatic.py:299
 msgid "Testing mode. Cnchi will not change anything!"
 msgstr "Mou Testing. ¡Cnchi nun camudará nada!"
 
@@ -888,7 +1085,7 @@ msgstr ""
 
 #: cnchi/installation/alongside.py:148
 msgid "Cnchi recommends at least 6.5GB free to install Antergos."
-msgstr ""
+msgstr "Cnchi aconseya polo menos 6.5GB llibres pa instalar Antergos."
 
 #: cnchi/installation/alongside.py:149
 msgid ""
@@ -908,11 +1105,11 @@ msgstr ""
 
 #: cnchi/installation/alongside.py:205
 msgid "Choose the new size of your installation"
-msgstr ""
+msgstr "Escueyi'l tamañu nuevu de la to instalación"
 
 #: cnchi/installation/alongside.py:209
 msgid "Choose the partition that you want to shrink:"
-msgstr ""
+msgstr "Escueyi la particón que quies redimensionar:"
 
 #: cnchi/installation/alongside.py:212
 msgid "Antergos Alongside Installation"
@@ -928,318 +1125,272 @@ msgstr ""
 msgid "Can't find any installed OS!"
 msgstr "¡Nun pue alcontrase dengún SO instaláu!"
 
-#: cnchi/installation/ask.py:109
-msgid "Cnchi will enable the 'alongside' installation mode."
-msgstr ""
-
-#: cnchi/installation/ask.py:111
-msgid "Cnchi will NOT enable the 'alongside' installation mode."
-msgstr ""
-
-#: cnchi/installation/ask.py:125
+#: cnchi/installation/ask.py:127
 msgid "The 'alongside' installation mode does not work in UEFI systems"
 msgstr ""
 
-#: cnchi/installation/ask.py:140
+#: cnchi/installation/ask.py:141
 msgid "Windows(tm) OS detected."
 msgstr "SO Windows(tm) deteutáu."
 
-#: cnchi/installation/ask.py:143
+#: cnchi/installation/ask.py:144
 msgid "Windows(tm) OS not detected."
 msgstr "SO Windows(tm) non deteutáu."
 
-#: cnchi/installation/ask.py:146
+#: cnchi/installation/ask.py:147
 msgid "Can't detect any OS in device sda."
-msgstr ""
+msgstr "Nun pue deteutase dengún SO nel preséu sda."
 
-#: cnchi/installation/ask.py:150
+#: cnchi/installation/ask.py:151
 msgid "Unsuported disk layout for the 'alongside' installation mode"
 msgstr ""
 
-#: cnchi/installation/ask.py:195
+#: cnchi/installation/ask.py:196
 msgid " and "
 msgstr "y"
 
-#: cnchi/installation/ask.py:209
+#: cnchi/installation/ask.py:210
 msgid "Installation Type"
 msgstr "Triba d'instalación"
 
-#: cnchi/installation/ask.py:222
+#: cnchi/installation/ask.py:225
 msgid "Replace {0} with Antergos"
 msgstr "Trocar {0} con Antergos"
 
-#: cnchi/installation/ask.py:224
+#: cnchi/installation/ask.py:227
 msgid "Erase disk and install Antergos"
 msgstr "Desaniciar el discu ya instalar Antergos"
 
-#: cnchi/installation/ask.py:228
+#: cnchi/installation/ask.py:232
 msgid "Warning: This will erase ALL data on your disk."
 msgstr "Avisu: Esto desaniciará TOLOS datos nel to discu."
 
-#: cnchi/installation/ask.py:234
+#: cnchi/installation/ask.py:241
 msgid "Encrypt this installation for increased security."
 msgstr "Cifrar esta instalación pa medrar la seguridá."
 
-#: cnchi/installation/ask.py:238
+#: cnchi/installation/ask.py:249
 msgid "You will be asked to create an encryption password in the next step."
 msgstr "Entrugarásete pa crear una contraseña de cifráu nel pasu próximu."
 
-#: cnchi/installation/ask.py:243
+#: cnchi/installation/ask.py:258
 msgid "Use LVM with this installation."
 msgstr "Usa LVM con esta instalación."
 
-#: cnchi/installation/ask.py:247
+#: cnchi/installation/ask.py:266
 msgid ""
 "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
 msgstr "Esto configurará LVM y permitiráte alministrar cenciellamente particiones y crear captures."
 
-#: cnchi/installation/ask.py:252
+#: cnchi/installation/ask.py:275
 msgid "Set your Home in a different partition/volume"
 msgstr "Afitar el to direutoriu personal nuna partición/volume xebráu"
 
-#: cnchi/installation/ask.py:256
+#: cnchi/installation/ask.py:283
 msgid ""
 "This will setup you /home directory in a different partition or volume."
 msgstr "Esto configurará'l to direutoriu /home una partición o volume xebraos."
 
-#: cnchi/installation/ask.py:262
-msgid "Install Antergos alongside {0}"
+#: cnchi/installation/ask.py:306
+msgid "How would you like to proceed?"
 msgstr ""
 
-#: cnchi/installation/ask.py:267
-msgid "Installs Antergos without removing {0}"
-msgstr "Instala Antergos ensin desaniciar {0}"
-
-#: cnchi/installation/ask.py:272
-msgid "This computer has {0} installed."
-msgstr ""
-
-#: cnchi/installation/ask.py:273 cnchi/installation/ask.py:275
-msgid "What do you want to do?"
-msgstr "¿Qué quies facer?"
-
-#: cnchi/installation/ask.py:283
+#: cnchi/installation/ask.py:318
 msgid "Choose exactly where Antergos should be installed."
 msgstr "Escoyer exautamente u debería instalase Antergos."
 
-#: cnchi/installation/ask.py:286
+#: cnchi/installation/ask.py:322
 msgid "Edit partition table and choose mount points."
 msgstr "Edita la tabla de particiones y escueyi los puntos de montaxe."
 
-#: cnchi/installation/ask.py:317
+#: cnchi/installation/ask.py:356
 msgid "Antergos installation will be encrypted using LUKS"
 msgstr "La instalación d'Antergos cifraráse usando LUKS"
 
-#: cnchi/installation/ask.py:320
+#: cnchi/installation/ask.py:359
 msgid "Antergos will be installed using LVM volumes"
 msgstr "Anteros instalaráse usando volumes LVM"
 
-#: cnchi/installation/ask.py:322
+#: cnchi/installation/ask.py:361
 msgid "Antergos will be installed using a separate /home volume."
 msgstr "Antergos instalaráse usando un volume /home separtáu."
 
-#: cnchi/installation/ask.py:324
+#: cnchi/installation/ask.py:363
 msgid "Antergos will be installed using a separate /home partition."
 msgstr "Antergos instalaráse usando una partición /home separtada."
 
-#: cnchi/installation/auto_partition.py:79
+#: cnchi/installation/ask.py:381
+msgid "Ranking mirrors"
+msgstr ""
+
+#: cnchi/installation/ask.py:382
+msgid "Cnchi is still updating and optimizing your mirror lists."
+msgstr ""
+
+#: cnchi/installation/ask.py:384
+msgid "Please be patient..."
+msgstr ""
+
+#: cnchi/installation/ask.py:407
+msgid "Waiting for all external processes to finish..."
+msgstr ""
+
+#: cnchi/installation/ask.py:420
+msgid "All external processes are finished. Installation can go on"
+msgstr ""
+
+#: cnchi/installation/auto_partition.py:67
 msgid "Unmounting %s"
 msgstr "Desmontando %s"
 
-#: cnchi/installation/auto_partition.py:83
+#: cnchi/installation/auto_partition.py:71
 msgid "Unmounting %s failed. Trying lazy arg."
 msgstr "Desmontaxe de %s fallíu. Probando l'argumentu \"lazy\"."
 
-#: cnchi/installation/auto_partition.py:87
+#: cnchi/installation/auto_partition.py:75
 msgid "Unmounting %s failed."
 msgstr ""
 
-#: cnchi/installation/auto_partition.py:99
-#: cnchi/installation/auto_partition.py:105
-#: cnchi/installation/auto_partition.py:151
-#: cnchi/installation/auto_partition.py:162
-#: cnchi/installation/auto_partition.py:198
-#: cnchi/installation/auto_partition.py:221
-#: cnchi/installation/auto_partition.py:231
-#: cnchi/installation/auto_partition.py:243
-#: cnchi/installation/auto_partition.py:272
-#: cnchi/installation/auto_partition.py:300
-#: cnchi/installation/auto_partition.py:313
-#: cnchi/installation/auto_partition.py:387
-#: cnchi/installation/auto_partition.py:395
-#: cnchi/installation/auto_partition.py:416
-#: cnchi/installation/auto_partition.py:784
-#: cnchi/installation/auto_partition.py:793
-#: cnchi/installation/auto_partition.py:828
-#: cnchi/installation/auto_partition.py:885 cnchi/installation/process.py:456
-#: cnchi/installation/process.py:467 cnchi/installation/process.py:478
-#: cnchi/installation/process.py:1381
-msgid "Command %s failed"
-msgstr "Falló'l comandu %s"
-
-#: cnchi/installation/auto_partition.py:100
-#: cnchi/installation/auto_partition.py:106
-#: cnchi/installation/auto_partition.py:152
-#: cnchi/installation/auto_partition.py:163
-#: cnchi/installation/auto_partition.py:199
-#: cnchi/installation/auto_partition.py:222
-#: cnchi/installation/auto_partition.py:232
-#: cnchi/installation/auto_partition.py:244
-#: cnchi/installation/auto_partition.py:273
-#: cnchi/installation/auto_partition.py:301
-#: cnchi/installation/auto_partition.py:314
-#: cnchi/installation/auto_partition.py:388
-#: cnchi/installation/auto_partition.py:396
-#: cnchi/installation/auto_partition.py:417
-#: cnchi/installation/auto_partition.py:785
-#: cnchi/installation/auto_partition.py:794
-#: cnchi/installation/auto_partition.py:829
-#: cnchi/installation/auto_partition.py:886 cnchi/installation/process.py:171
-#: cnchi/installation/process.py:457 cnchi/installation/process.py:468
-#: cnchi/installation/process.py:479 cnchi/installation/process.py:1382
-msgid "Output: %s"
-msgstr "Salida: %s"
-
-#: cnchi/installation/auto_partition.py:150
+#: cnchi/installation/auto_partition.py:138
 msgid "Can't delete existent LVM volumes"
 msgstr "Nun puen desaniciase los volúmenes LVM esistentes"
 
-#: cnchi/installation/auto_partition.py:161
+#: cnchi/installation/auto_partition.py:149
 msgid "Can't close already opened LUKS devices"
 msgstr "Nun puen zarrase los preseos LUKS yá abiertos"
 
-#: cnchi/installation/auto_partition.py:170
+#: cnchi/installation/auto_partition.py:158
 msgid "Can't setup LUKS in device {0}. A password or a key file are needed"
-msgstr ""
+msgstr "Nun pue configurase LUKS nel preséu {0}. Necesítase una contraaseña o un ficheru de clave"
 
-#: cnchi/installation/auto_partition.py:178
+#: cnchi/installation/auto_partition.py:166
 msgid "Cnchi will setup LUKS on device %s"
 msgstr "Cnchi configurará LUKS nel preséu %s"
 
-#: cnchi/installation/auto_partition.py:196
-#: cnchi/installation/auto_partition.py:219
+#: cnchi/installation/auto_partition.py:185
+#: cnchi/installation/auto_partition.py:208
 msgid "Can't format and open the LUKS device {0}"
 msgstr "Nun pue formatiase y abrise'l preséu LUKS {0}"
 
-#: cnchi/installation/auto_partition.py:230
+#: cnchi/installation/auto_partition.py:219
 msgid "Can't wipe filesystem of device %s"
 msgstr "Nun pue llimpiase'l sistema de ficheros del preséu %s"
 
-#: cnchi/installation/auto_partition.py:242
+#: cnchi/installation/auto_partition.py:231
 msgid "Can't run dd command"
 msgstr "Nun pue executase'l comandu dd"
 
-#: cnchi/installation/auto_partition.py:270
-#: cnchi/installation/auto_partition.py:298
+#: cnchi/installation/auto_partition.py:259
+#: cnchi/installation/auto_partition.py:291
 msgid "Error creating a new partition on device {0}"
-msgstr ""
+msgstr "Fallu creando una partición nueva nel preséu {0}"
 
-#: cnchi/installation/auto_partition.py:311
+#: cnchi/installation/auto_partition.py:304
 msgid "Error creating a new partition table on device {0}"
-msgstr ""
+msgstr "Fallu creando un tabla de particiones nueva nel preséu {0}"
 
-#: cnchi/installation/auto_partition.py:350
+#: cnchi/installation/auto_partition.py:345
 msgid "Will format device %s as %s"
 msgstr "Formatiaráse'l preséu %s como %s"
 
-#: cnchi/installation/auto_partition.py:359 cnchi/installation/process.py:297
+#: cnchi/installation/auto_partition.py:354 cnchi/installation/process.py:310
 msgid "Can't activate swap in %s"
 msgstr "Nun pue activase l'intercambéu en %s"
 
-#: cnchi/installation/auto_partition.py:360
-#: cnchi/installation/auto_partition.py:666 cnchi/installation/chroot.py:123
-#: cnchi/installation/process.py:289 cnchi/installation/process.py:298
+#: cnchi/installation/auto_partition.py:355
+#: cnchi/installation/auto_partition.py:671 cnchi/installation/process.py:302
+#: cnchi/installation/process.py:311
 msgid "Command %s has failed."
 msgstr "El comandu %s falló."
 
-#: cnchi/installation/auto_partition.py:361
-#: cnchi/installation/auto_partition.py:667 cnchi/installation/chroot.py:125
-#: cnchi/installation/process.py:290 cnchi/installation/process.py:299
+#: cnchi/installation/auto_partition.py:356
+#: cnchi/installation/auto_partition.py:672 cnchi/installation/process.py:303
+#: cnchi/installation/process.py:312
 msgid "Output : %s"
 msgstr "Salida: %s"
 
-#: cnchi/installation/auto_partition.py:377
+#: cnchi/installation/auto_partition.py:372
 msgid "Unknown filesystem type {0}"
 msgstr "Triba de sistema ficheros {0} desconocida"
 
-#: cnchi/installation/auto_partition.py:385
+#: cnchi/installation/auto_partition.py:380
 msgid "Can't create filesystem {0}"
 msgstr "Nun pue crease'l sistema de ficheros {0}"
 
-#: cnchi/installation/auto_partition.py:414
+#: cnchi/installation/auto_partition.py:409
 msgid "Error trying to  mount {0} in {1}"
 msgstr "Fallu intentando montar {0} en {1}"
 
-#: cnchi/installation/auto_partition.py:430
+#: cnchi/installation/auto_partition.py:426
 msgid "Device details: %s UUID=%s LABEL=%s"
 msgstr "Detalles del preséu: %s UUID=%s ETIQUETA=%s"
 
-#: cnchi/installation/auto_partition.py:513
+#: cnchi/installation/auto_partition.py:512
 msgid "%s will be mounted as %s"
 msgstr "%s montaráse como %s"
 
-#: cnchi/installation/auto_partition.py:545
+#: cnchi/installation/auto_partition.py:548
 msgid "Device %s will have a %s filesystem"
 msgstr "El preséu %s tendrá un sistema ficheros %s"
 
-#: cnchi/installation/auto_partition.py:593
+#: cnchi/installation/auto_partition.py:602
 msgid "Total disk size: %dMiB"
 msgstr "Tamañu total del discu: %dMiB"
 
-#: cnchi/installation/auto_partition.py:595
+#: cnchi/installation/auto_partition.py:604
 msgid "EFI System Partition (ESP) size: %dMiB"
-msgstr ""
+msgstr "Tamañu de la partición del sistema EFI (ESP) : %dMiB"
 
-#: cnchi/installation/auto_partition.py:596
+#: cnchi/installation/auto_partition.py:605
 msgid "Boot partition size: %dMiB"
 msgstr "Tamañu de la partición boot: %dMiB"
 
-#: cnchi/installation/auto_partition.py:599
+#: cnchi/installation/auto_partition.py:608
 msgid "LVM physical volume size: %dMiB"
 msgstr "Tamañu del volume físicu LVM: %dMiB"
 
-#: cnchi/installation/auto_partition.py:601
+#: cnchi/installation/auto_partition.py:610
 msgid "Swap partition size: %dMiB"
 msgstr "Tamañu de la partición swap: %dMiB"
 
-#: cnchi/installation/auto_partition.py:602
+#: cnchi/installation/auto_partition.py:611
 msgid "Root partition size: %dMiB"
 msgstr "Tamañu de la partición root: %dMiB"
 
-#: cnchi/installation/auto_partition.py:605
+#: cnchi/installation/auto_partition.py:614
 msgid "Home partition size: %dMiB"
 msgstr "Tamañu de la partición home: %dMiB"
 
-#: cnchi/installation/auto_partition.py:625
+#: cnchi/installation/auto_partition.py:634
 msgid ""
 "Setup cannot detect size of your device, please use advanced installation "
 "routine for partitioning and mounting devices."
 msgstr "La configuración nun pue deteutar el tamañu del to preséu, usa por favor la rutina d'instalación avanzada pal particionáu y montaxe de preseos."
 
-#: cnchi/installation/auto_partition.py:664
+#: cnchi/installation/auto_partition.py:669
 msgid "Error informing the kernel of the partition change."
-msgstr ""
+msgstr "Fallu informando al kernel de la camudancia de la partición"
 
-#: cnchi/installation/auto_partition.py:777
+#: cnchi/installation/auto_partition.py:788
 msgid "Cnchi will setup LVM on device %s"
 msgstr "Cnchi configurará LVM nel preséu %s"
 
-#: cnchi/installation/auto_partition.py:782
+#: cnchi/installation/auto_partition.py:793
 msgid "Error creating LVM physical volume"
-msgstr ""
+msgstr "Fallu creando'l volume físicu LVM"
 
-#: cnchi/installation/auto_partition.py:791
+#: cnchi/installation/auto_partition.py:802
 msgid "Error creating LVM volume group"
-msgstr ""
+msgstr "Fallu creando'l grupu de volúmenes LVM"
 
-#: cnchi/installation/auto_partition.py:826
+#: cnchi/installation/auto_partition.py:838
 msgid "Error creating LVM logical volume"
-msgstr ""
+msgstr "Fallu creando'l volume llóxicu LVM"
 
-#: cnchi/installation/auto_partition.py:883
+#: cnchi/installation/auto_partition.py:900
 msgid "Can't copy LUKS keyfile to the installation device"
-msgstr ""
+msgstr "Nun pue copiase'l ficheru de clave LUKS al preséu d'instalación"
 
 #: cnchi/installation/automatic.py:72
 msgid "Select drive:"
@@ -1259,13 +1410,13 @@ msgstr "Esbilla la unidá que deberiemos usar pa instalar Antergos y dempués pr
 msgid "Encryption Password:"
 msgstr "Contraseña de cifráu:"
 
-#: cnchi/installation/automatic.py:89 cnchi/user_info.py:101
+#: cnchi/installation/automatic.py:89 cnchi/user_info.py:124
 msgid "Confirm your password:"
 msgstr "Confirma la to contraseña"
 
 #: cnchi/installation/automatic.py:93
 msgid "LUKS Password. Do not use special characters or accents!"
-msgstr ""
+msgstr "Contraseña LUKS. ¡Nun uses caráuteres especiales o acentos!"
 
 #: cnchi/installation/automatic.py:97
 msgid "Show password"
@@ -1277,615 +1428,734 @@ msgstr "Mou d'instalación automáticu"
 
 #: cnchi/installation/automatic.py:179
 msgid "A root LUKS password has been set"
-msgstr ""
+msgstr "Afitóse una contraseña LUKS de root"
 
 #: cnchi/installation/automatic.py:181
 msgid "Automatic install on %s"
 msgstr "Instalación automática en %s"
 
-#: cnchi/installation/automatic.py:244
+#: cnchi/installation/automatic.py:248
 msgid ""
 "Do you really want to proceed and delete all your content on your hard "
 "drive?"
 msgstr "¿De xuru que quies siguir y desaniciar tol conteníu nel to discu duru?"
 
-#: cnchi/installation/automatic.py:258
+#: cnchi/installation/automatic.py:262
 msgid "Cnchi will install Antergos on device %s"
 msgstr "Cnchi instalará Antergos nel preséu %s"
 
-#: cnchi/installation/automatic.py:270
+#: cnchi/installation/automatic.py:274
 msgid "Antergos will install the bootloader '{0}' in device '{1}'"
 msgstr "Antergos instalará'l cargador d'arranque {0} nel preséu {1}"
 
-#: cnchi/installation/bootloader.py:88
+#: cnchi/installation/bootloader.py:76
+msgid "Cnchi will install the Gummiboot loader"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:84
+msgid "Cnchi will install the Grub2 (efi) loader"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:87
+msgid "Cnchi will install the Grub2 (bios) loader"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:95
 msgid ""
 "'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope"
 " it's ok"
 msgstr ""
 
-#: cnchi/installation/bootloader.py:158
+#: cnchi/installation/bootloader.py:119
+msgid "Wrong uuid in grub.cfg, Cnchi will try to fix it."
+msgstr ""
+
+#: cnchi/installation/bootloader.py:180
 msgid "/etc/default/grub configuration completed successfully."
 msgstr "Configuración de /etc/default/grub completada con ésitu."
 
-#: cnchi/installation/bootloader.py:203
+#: cnchi/installation/bootloader.py:225
 msgid "Could not copy %s to grub.d"
 msgstr "Nun pudo copiase %s a grub.d"
 
-#: cnchi/installation/bootloader.py:212
+#: cnchi/installation/bootloader.py:234
 msgid "Installing GRUB(2) BIOS boot loader in {0}"
 msgstr "Instalando'l cargador d'arranque GRUB(2) BIOS en {0}"
 
-#: cnchi/installation/bootloader.py:242
+#: cnchi/installation/bootloader.py:255
+msgid "Command grub-install failed. Error output: %s"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:257
+msgid "Command grub-install timed out."
+msgstr ""
+
+#: cnchi/installation/bootloader.py:259
+msgid "Command grub-install failed. Unknown Error: %s"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:269 cnchi/installation/bootloader.py:375
+msgid "Running grub-mkconfig..."
+msgstr ""
+
+#: cnchi/installation/bootloader.py:275
 msgid ""
 "grub-mkconfig does not respond. Killing grub-mount and os-prober so we can "
 "continue."
 msgstr "grub-mkconfig nun respuende. Amortiando grub-mount y os-prober pa qu'asina podamos siguir."
 
-#: cnchi/installation/bootloader.py:250
+#: cnchi/installation/bootloader.py:283
 msgid "GRUB(2) BIOS has been successfully installed."
 msgstr "GRUB(2) BIOS instalóse con ésitu."
 
-#: cnchi/installation/bootloader.py:254
+#: cnchi/installation/bootloader.py:287
 msgid "ERROR installing GRUB(2) BIOS."
 msgstr "FALLU instalando GRUB(2) BIOS."
 
-#: cnchi/installation/bootloader.py:271
+#: cnchi/installation/bootloader.py:304
 msgid "Installing GRUB(2) UEFI {0} boot loader"
 msgstr "Instalando'l cargador d'arranque GRUB(2) UEFI {0}"
 
-#: cnchi/installation/bootloader.py:306
+#: cnchi/installation/bootloader.py:339
 msgid "No OEM loader found in %s. Copying Grub(2) into dir."
 msgstr "Nun s'alcontró dengún cargador OEM en %s. Copiando Grub(2) al direutoriu."
 
-#: cnchi/installation/bootloader.py:309
+#: cnchi/installation/bootloader.py:342
 msgid "Copying Grub(2) into OEM dir failed: %s"
 msgstr ""
 
-#: cnchi/installation/bootloader.py:313
+#: cnchi/installation/bootloader.py:346
 msgid "File not found."
 msgstr "Nun s'alcontró'l ficheru."
 
-#: cnchi/installation/bootloader.py:315
+#: cnchi/installation/bootloader.py:348
 msgid "File already exists."
 msgstr "El ficheru yá esiste."
 
-#: cnchi/installation/bootloader.py:325
+#: cnchi/installation/bootloader.py:358
 msgid "UEFI Shell drop-in not found at %s"
 msgstr "Nun pudo alcontrase l'UEFI Shell drop-in en %s"
 
-#: cnchi/installation/bootloader.py:329
+#: cnchi/installation/bootloader.py:362
 msgid "UEFI Shell drop-in could not be copied."
 msgstr "Nun pudo copiase l'UEFI Shell drop-in "
 
-#: cnchi/installation/bootloader.py:333
+#: cnchi/installation/bootloader.py:366
 msgid "Generating grub.cfg"
 msgstr "Xenerando grub.cfg"
 
-#: cnchi/installation/bootloader.py:347
+#: cnchi/installation/bootloader.py:381
 msgid ""
 "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
 msgstr "grub-mkconfig paez tar colgáu. Matando grub-mount y os-prober pa qu'asina podamos siguir."
 
-#: cnchi/installation/bootloader.py:365
+#: cnchi/installation/bootloader.py:394
+msgid "Path '%s' doesn't exist, when it should"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:397
 msgid "GRUB(2) UEFI install completed successfully"
 msgstr "Instalación de GRUB(2) UEFI completada con ésitu"
 
-#: cnchi/installation/bootloader.py:369
+#: cnchi/installation/bootloader.py:401
 msgid "GRUB(2) UEFI install may not have completed successfully."
 msgstr "La instalación de GRUB(2) UEFI pudo nun completase con ésitu."
 
-#: cnchi/installation/bootloader.py:381
+#: cnchi/installation/bootloader.py:413
 msgid "50mounted-tests file patched successfully"
 msgstr ""
 
-#: cnchi/installation/bootloader.py:383
+#: cnchi/installation/bootloader.py:415
 msgid "Failed to patch 50mounted-tests, file not found."
 msgstr ""
 
-#: cnchi/installation/bootloader.py:387
+#: cnchi/installation/bootloader.py:419
 msgid "Copying GRUB(2) Theme Files"
 msgstr "Copiando ficheros de tema GRUB(2)"
 
-#: cnchi/installation/bootloader.py:393
+#: cnchi/installation/bootloader.py:425
 msgid "Grub2 theme files not found"
 msgstr "Ficheros de tema Grub2 non alcontraos"
 
-#: cnchi/installation/bootloader.py:395
+#: cnchi/installation/bootloader.py:427
 msgid "Grub2 theme files already exist."
 msgstr "Yá esisten los ficheros de tema Grub2"
 
-#: cnchi/installation/bootloader.py:399
+#: cnchi/installation/bootloader.py:431
 msgid "Installing Grub2 locales."
 msgstr "Instalando locales de Grub2."
 
-#: cnchi/installation/bootloader.py:410
+#: cnchi/installation/bootloader.py:441
 msgid "Can't install GRUB(2) locale."
 msgstr "Nun pue instalase la locale GRUB(2)."
 
-#: cnchi/installation/bootloader.py:494
+#: cnchi/installation/bootloader.py:549
+msgid "Installing gummiboot bootloader..."
+msgstr ""
+
+#: cnchi/installation/bootloader.py:555
 msgid "Gummiboot install completed successfully"
 msgstr "Completóse con ésitu la instalación de Gummiboot"
 
-#: cnchi/installation/bootloader.py:498
-msgid "Gummiboot install has NOT completed successfully!"
+#: cnchi/installation/bootloader.py:558
+msgid "Command gummiboot failed. Error output: %s"
 msgstr ""
 
-#: cnchi/installation/bootloader.py:530
+#: cnchi/installation/bootloader.py:561
+msgid "Command gummiboot timed out."
+msgstr ""
+
+#: cnchi/installation/bootloader.py:564
+msgid "Command gummiboot failed. Unknown Error: %s"
+msgstr ""
+
+#: cnchi/installation/bootloader.py:596
 msgid "Can't freeze/unfreeze xfs system"
 msgstr "Nun pue conxelase/desconxelase'l sistema XFS"
 
-#: cnchi/installation/chroot.py:48
+#: cnchi/installation/chroot.py:61
 msgid "Special dirs are already mounted. Skipping."
 msgstr "Los direutorios especiales yá tán montaos. Saltando."
 
-#: cnchi/installation/chroot.py:103
+#: cnchi/installation/chroot.py:91
 msgid "Special dirs are not mounted. Skipping."
 msgstr "Los direutorios especiales nun tán montaos. Saltando."
 
-#: cnchi/installation/chroot.py:122
-msgid "Unable to umount %s"
-msgstr "Nun pue desmotase %s"
-
-#: cnchi/installation/chroot.py:152
+#: cnchi/installation/chroot.py:136
 msgid "Timeout running the command %s"
 msgstr "Tiempu escosao executándo'l comandu %s"
 
-#: cnchi/installation/chroot.py:153 cnchi/installation/chroot.py:156
+#: cnchi/installation/chroot.py:137 cnchi/installation/chroot.py:140
 msgid "Cnchi will try to continue anyways"
-msgstr ""
+msgstr "Cnchi intentará giguir de toes toes"
 
-#: cnchi/installation/firewall.py:73
+#: cnchi/installation/firewall.py:72
 msgid "Aborted"
 msgstr "Albortáu"
+
+#: cnchi/installation/lamp.py:51 cnchi/installation/lemp.py:50
+msgid "Doing Mariadb setup..."
+msgstr ""
+
+#: cnchi/installation/lamp.py:53
+msgid "Mariadb setup done. Doing Apache setup..."
+msgstr ""
+
+#: cnchi/installation/lamp.py:55
+msgid "Apache setup done. Doing PHP setup..."
+msgstr ""
+
+#: cnchi/installation/lamp.py:57
+msgid "PHP setup done."
+msgstr ""
+
+#: cnchi/installation/lemp.py:52
+msgid "Mariadb setup done. Doing Nginx setup..."
+msgstr ""
+
+#: cnchi/installation/lemp.py:54
+msgid "Nginx setup done. Doing PHP-fpm setup..."
+msgstr ""
+
+#: cnchi/installation/lemp.py:56
+msgid "PHP-fpm setup done."
+msgstr ""
 
 #: cnchi/installation/mkinitcpio.py:101
 msgid "Setting hooks and modules in mkinitcpio.conf"
 msgstr "Axustando ganchos y módulos en mkinitcpio.conf"
 
-#: cnchi/installation/process.py:99
+#: cnchi/installation/process.py:101
 msgid "Installing using the '{0}' method"
 msgstr "Instalando usando'l métodu '{0}'"
 
-#: cnchi/installation/process.py:170
+#: cnchi/installation/process.py:175
 msgid "Error running command %s"
 msgstr "Fallu executando'l comandu: %s"
 
-#: cnchi/installation/process.py:211
+#: cnchi/installation/process.py:222
 msgid "Creating partitions and their filesystems in %s"
 msgstr "Creando les particiones y los sos sistemes de ficheros en %s"
 
-#: cnchi/installation/process.py:257 cnchi/installation/process.py:282
+#: cnchi/installation/process.py:269 cnchi/installation/process.py:296
 msgid "Mounting partition {0} into {1} directory"
 msgstr "Montando partición {0} nel direutoriu {1}"
 
-#: cnchi/installation/process.py:265
+#: cnchi/installation/process.py:276
 msgid "Mounting partition {0} into {1}/boot directory"
 msgstr "Montando partición {0} nel direutoriu {1}/boot"
 
-#: cnchi/installation/process.py:288
+#: cnchi/installation/process.py:301
 msgid "Can't mount %s in %s"
 msgstr "Nun pue montase %s en %s"
 
-#: cnchi/installation/process.py:293
+#: cnchi/installation/process.py:306
 msgid "Activating swap in %s"
-msgstr ""
+msgstr "Activando l'intercambéu en %s"
 
-#: cnchi/installation/process.py:309
+#: cnchi/installation/process.py:322
 msgid "%s deleted"
 msgstr "%s desaniciáu"
 
-#: cnchi/installation/process.py:335
+#: cnchi/installation/process.py:347
 msgid "Prepare pacman..."
 msgstr ""
 
-#: cnchi/installation/process.py:337
+#: cnchi/installation/process.py:349
 msgid "Pacman ready"
 msgstr ""
 
-#: cnchi/installation/process.py:339
+#: cnchi/installation/process.py:351
 msgid "Selecting packages..."
 msgstr "Esbillando paquetes..."
 
-#: cnchi/installation/process.py:341
+#: cnchi/installation/process.py:353
 msgid "Packages selected"
 msgstr "Paquetes esbillaos"
 
-#: cnchi/installation/process.py:346
+#: cnchi/installation/process.py:358
 msgid "Removed 'v86d' package from list"
-msgstr ""
+msgstr "Desanicióse'l paquete 'v86d' del llistáu"
 
-#: cnchi/installation/process.py:348
+#: cnchi/installation/process.py:360
 msgid "Downloading packages..."
 msgstr "Baxando paquetes..."
 
-#: cnchi/installation/process.py:351 cnchi/installation/process.py:686
+#: cnchi/installation/process.py:363 cnchi/installation/process.py:704
 msgid "Installing packages..."
 msgstr "Instalando paquetes..."
 
-#: cnchi/installation/process.py:354
+#: cnchi/installation/process.py:366
 msgid "Configuring system..."
 msgstr "Configurando'l sistema..."
 
-#: cnchi/installation/process.py:366
+#: cnchi/installation/process.py:378
 msgid "Installation finished"
 msgstr "Instalación finada"
 
-#: cnchi/installation/process.py:380
+#: cnchi/installation/process.py:392
 msgid "Can't copy Cnchi log to %s"
 msgstr "Nun pue copiase'l rexistru Cnchi a %s"
 
-#: cnchi/installation/process.py:405
+#: cnchi/installation/process.py:423
 msgid "Creating a temporary pacman.conf for {0} architecture"
 msgstr "Creando un ficheru pacman.conf temporal pa la arquitectura {0}"
 
-#: cnchi/installation/process.py:433
+#: cnchi/installation/process.py:450
 msgid "Can't initialize pyalpm."
 msgstr "Nun pue aniciase pyalpm."
 
-#: cnchi/installation/process.py:439
+#: cnchi/installation/process.py:454
 msgid "Can't refresh pacman databases."
 msgstr "Nun puen refrescase les bases de datos pacman."
 
-#: cnchi/installation/process.py:455
+#: cnchi/installation/process.py:470
 msgid "Can't start haveged service"
 msgstr ""
 
-#: cnchi/installation/process.py:466
+#: cnchi/installation/process.py:481
 msgid "Error deleting old gnupg files"
-msgstr ""
+msgstr "Fallu desaniciando ficheros gnupg vieyos"
 
-#: cnchi/installation/process.py:477
+#: cnchi/installation/process.py:492
 msgid "Error regenerating gnupg files with pacman-key"
-msgstr ""
+msgstr "Fallu rexenerando los ficheros gnupg con pacman-key"
 
-#: cnchi/installation/process.py:491
+#: cnchi/installation/process.py:506
 msgid "Getting package list..."
 msgstr "Consiguiendo llista de paquetes..."
 
-#: cnchi/installation/process.py:501
-msgid "Can't retrieve remote package list, using a local file instead."
-msgstr "Nun pue recibise la llista de paquetes remota, usando nel so llugar un ficheru llocal."
+#: cnchi/installation/process.py:510
+msgid "Getting url {0}..."
+msgstr ""
 
-#: cnchi/installation/process.py:528
+#: cnchi/installation/process.py:517
+msgid "Can't retrieve remote package list, using the local file instead."
+msgstr ""
+
+#: cnchi/installation/process.py:520
+msgid "Loading {0}"
+msgstr ""
+
+#: cnchi/installation/process.py:545
 msgid "Adding '%s' desktop packages"
 msgstr "Amestando paquetes d'escritoriu '%s'"
 
-#: cnchi/installation/process.py:553
+#: cnchi/installation/process.py:570
 msgid "Selected kde language pack: %s"
 msgstr "Esbillóse'l paquete de llingua KDE: %s"
 
-#: cnchi/installation/process.py:569
+#: cnchi/installation/process.py:579
 msgid "Hardware module detected this drivers: %s"
 msgstr "El módulu de hardware deteutó estos controladores: %s"
 
-#: cnchi/installation/process.py:573
-msgid "Hardware module added these packages : %s"
-msgstr "El módulu de hardware amestó estos paquetes: %s"
+#: cnchi/installation/process.py:585
+msgid "Hardware module added these packages: %s"
+msgstr ""
 
-#: cnchi/installation/process.py:582 cnchi/installation/process.py:1257
-msgid "Can't import hardware module."
-msgstr "Nun pue importase'l módulu de hardware."
+#: cnchi/installation/process.py:591
+msgid "Running hardware drivers pre-install jobs..."
+msgstr ""
 
-#: cnchi/installation/process.py:584 cnchi/installation/process.py:1259
+#: cnchi/installation/process.py:594 cnchi/installation/process.py:1309
 msgid "Unknown error in hardware module. Output: %s"
 msgstr "Fallu desconocíu nel módulu de hardware. Salida: %s"
 
-#: cnchi/installation/process.py:587
+#: cnchi/installation/process.py:597
 msgid "Adding filesystem packages"
 msgstr "Amestando paquetes del sistema ficheros"
 
-#: cnchi/installation/process.py:610
+#: cnchi/installation/process.py:620
 msgid "Check for user desired features and add them to our installation"
 msgstr "Comprueba les carauterístiques deseyaes pol usuariu y amiéstales a la nuesa instalación"
 
-#: cnchi/installation/process.py:612
+#: cnchi/installation/process.py:622
 msgid "All features needed packages have been added"
 msgstr "Amestáronse toles carauterístiques necesaries de paquetes"
 
-#: cnchi/installation/process.py:617
+#: cnchi/installation/process.py:627
 msgid "Selecting chinese fonts."
 msgstr "Esbillando fontes chines."
 
-#: cnchi/installation/process.py:629
+#: cnchi/installation/process.py:639
 msgid "Adding '%s' bootloader packages"
 msgstr ""
 
-#: cnchi/installation/process.py:635
+#: cnchi/installation/process.py:645
 msgid "Couldn't find %s bootloader packages!"
 msgstr ""
 
-#: cnchi/installation/process.py:648
+#: cnchi/installation/process.py:665
 msgid "Adding packages for '%s' feature."
 msgstr "Amestando paquetes pa la carauterística '%s'."
 
-#: cnchi/installation/process.py:660
+#: cnchi/installation/process.py:677
 msgid "Selecting package %s for feature %s"
 msgstr "Esbillando'l paquete %s pa la carauterística %s"
 
-#: cnchi/installation/process.py:667
+#: cnchi/installation/process.py:684
 msgid "Add libreoffice language package"
 msgstr "Amestar paquete de llingua de Libreoffice"
 
-#: cnchi/installation/process.py:696
-msgid "Can't install necessary packages. Cnchi can't continue."
-msgstr "Nun puen instalase los paquetes necesarios. Cnchi nun pue siguir."
-
-#: cnchi/installation/process.py:733
+#: cnchi/installation/process.py:751
 msgid "Can't copy network configuration files"
 msgstr "Nun puen copiase los ficheros de configuración de rede"
 
-#: cnchi/installation/process.py:772 cnchi/installation/process.py:798
-#: cnchi/installation/process.py:813 cnchi/installation/process.py:870
-#: cnchi/installation/process.py:875
+#: cnchi/installation/process.py:775
+msgid "Can't get {0} partition UUID. It won't be added to fstab"
+msgstr ""
+
+#: cnchi/installation/process.py:794 cnchi/installation/process.py:820
+#: cnchi/installation/process.py:835 cnchi/installation/process.py:900
 msgid "Added to fstab : %s"
 msgstr "Amestáu a fstab: %s"
 
-#: cnchi/installation/process.py:792 cnchi/installation/process.py:808
+#: cnchi/installation/process.py:814 cnchi/installation/process.py:830
 msgid "Added to crypttab : %s"
 msgstr "Amestáu a crypttab: %s"
 
-#: cnchi/installation/process.py:883
+#: cnchi/installation/process.py:908
 msgid "fstab written."
 msgstr "fstab escritu."
 
-#: cnchi/installation/process.py:892
+#: cnchi/installation/process.py:917
 msgid "Could not copy udev rule for SSDs"
 msgstr "Nun pudo copiase la regla udev pa los SSDs"
 
-#: cnchi/installation/process.py:903
-msgid "Enabled %s service."
-msgstr "Habilitáu'l serviciu %s."
+#: cnchi/installation/process.py:930
+msgid "Service '%s' has been enabled."
+msgstr ""
 
-#: cnchi/installation/process.py:905
+#: cnchi/installation/process.py:932
 msgid "Can't find service %s"
 msgstr "Nun pue alcontrase'l serviciu %s"
 
-#: cnchi/installation/process.py:913
+#: cnchi/installation/process.py:940
 msgid "Error creating password hash for user %s"
 msgstr "Fallu creadon l'hash de la contraseña pal usuariu %s"
 
-#: cnchi/installation/process.py:919
+#: cnchi/installation/process.py:946
 msgid "Error changing password for user %s"
 msgstr "Fallu camudando la contraseña pal usuariu %s"
 
-#: cnchi/installation/process.py:941
+#: cnchi/installation/process.py:957
+msgid "Error adjusting hardware clock"
+msgstr ""
+
+#: cnchi/installation/process.py:982
 msgid "Can't find pacman configuration file"
-msgstr ""
+msgstr "Nun pue alcontrase'l ficheru de traducción pacman"
 
-#: cnchi/installation/process.py:960
+#: cnchi/installation/process.py:1001
 msgid "Can't find locale.gen file"
-msgstr ""
+msgstr "Nun pue alcontrase'l ficheru locale.gen"
 
-#: cnchi/installation/process.py:972
+#: cnchi/installation/process.py:1013
 msgid "Copying xz files from cache..."
 msgstr "Copiando ficheros xz de la cahé..."
 
-#: cnchi/installation/process.py:1009
+#: cnchi/installation/process.py:1049
 msgid "Configuring firewall..."
 msgstr "Configurando tornafueos..."
 
-#: cnchi/installation/process.py:1033
+#: cnchi/installation/process.py:1063
+msgid "Configuring LAMP..."
+msgstr ""
+
+#: cnchi/installation/process.py:1067
+msgid "Can't import LAMP module"
+msgstr ""
+
+#: cnchi/installation/process.py:1072
+msgid "Configuring LEMP..."
+msgstr ""
+
+#: cnchi/installation/process.py:1076
+msgid "Can't import LEMP module"
+msgstr ""
+
+#: cnchi/installation/process.py:1084
 msgid "Configuring LightDM desktop manager..."
-msgstr ""
+msgstr "Configurando'l xestor d'escritoriu LightDM..."
 
-#: cnchi/installation/process.py:1065
+#: cnchi/installation/process.py:1116
 msgid "LightDM display manager configuration completed."
-msgstr ""
+msgstr "Completóse la configuración del xestor de pantalles LightDM."
 
-#: cnchi/installation/process.py:1068
+#: cnchi/installation/process.py:1119
 msgid "Error while trying to configure the LightDM display manager"
-msgstr ""
+msgstr "Fallu entrín s'intentaba configurar el xestor de pantalles LightDM"
 
-#: cnchi/installation/process.py:1154
+#: cnchi/installation/process.py:1205
 msgid "Configuring your new system"
 msgstr "Configurando'l to sistema nuevu"
 
-#: cnchi/installation/process.py:1160
+#: cnchi/installation/process.py:1211
 msgid "fstab file generated."
 msgstr "ficheru fstab xeneráu."
 
-#: cnchi/installation/process.py:1165
+#: cnchi/installation/process.py:1216
 msgid "SSD udev rule copied successfully"
+msgstr "Copióse con ésitu la regla udev de SSD"
+
+#: cnchi/installation/process.py:1237
+msgid "Network configuration done."
 msgstr ""
 
-#: cnchi/installation/process.py:1181
-msgid "Cnchi will configure netctl using the %s profile"
-msgstr "Cnchi configurará netctl usando'l perfil %s"
-
-#: cnchi/installation/process.py:1188
-msgid "Can't copy network configuration profiles"
-msgstr "Nun puen copiase los perfiles de configuración de rede"
-
-#: cnchi/installation/process.py:1195
-msgid "Network configuration copied."
-msgstr "Configuración de rede copiada."
-
-#: cnchi/installation/process.py:1201
+#: cnchi/installation/process.py:1243
 msgid "Mirror list copied."
 msgstr "Llista d'espeyos copiada."
 
-#: cnchi/installation/process.py:1203
+#: cnchi/installation/process.py:1245
 msgid "Can't copy mirrorlist file"
 msgstr "Nun pue copiase'l ficheru de llista d'espeyos"
 
-#: cnchi/installation/process.py:1210
+#: cnchi/installation/process.py:1252
 msgid "Generated /etc/pacman.conf"
 msgstr "Xeneráu /etc/pacman.conf"
 
-#: cnchi/installation/process.py:1227
+#: cnchi/installation/process.py:1274
 msgid "Timezone set."
 msgstr "Fusu horariu afitáu."
 
-#: cnchi/installation/process.py:1247
+#: cnchi/installation/process.py:1296
 msgid "Sudo configuration for user %s done."
 msgstr "Fecha la configuración Sudo pal usuariu %s."
 
-#: cnchi/installation/process.py:1254
-msgid "Running post-install scripts from hardware module..."
-msgstr "Executando scripts post-instalación dende los módulos de hardware..."
+#: cnchi/installation/process.py:1306
+msgid "Running hardware drivers post-install jobs..."
+msgstr ""
 
-#: cnchi/installation/process.py:1279
+#: cnchi/installation/process.py:1328
 msgid "User %s added."
 msgstr "Amestóse l'usuariu %s."
 
-#: cnchi/installation/process.py:1294
+#: cnchi/installation/process.py:1343
 msgid "Hostname set to %s."
 msgstr "Nome d'agospiu afitáu a %s."
 
-#: cnchi/installation/process.py:1298
+#: cnchi/installation/process.py:1347
 msgid "Set the same password to root."
 msgstr "Afitar la mesma contraseña pa root."
 
-#: cnchi/installation/process.py:1304
+#: cnchi/installation/process.py:1351
 msgid "Generating locales..."
 msgstr "Xenerando locales..."
 
-#: cnchi/installation/process.py:1323
+#: cnchi/installation/process.py:1363
 msgid "Adjusting hardware clock..."
 msgstr "Axustando'l reló de rede..."
 
-#: cnchi/installation/process.py:1328
-msgid "Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"
+#: cnchi/installation/process.py:1366
+msgid "Configuring keymap..."
 msgstr ""
 
-#: cnchi/installation/process.py:1340
-msgid "10-keyboard.conf written."
+#: cnchi/installation/process.py:1373
+msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
+msgstr "Afitóse /etc/X11/xorg.conf.d/00-keyboard.conf pa xkblayout"
+
+#: cnchi/installation/process.py:1389
+msgid "00-keyboard.conf written."
+msgstr "00-keyboard.conf escritu."
+
+#: cnchi/installation/process.py:1404
+msgid "Configuring hardware..."
 msgstr ""
 
-#: cnchi/installation/process.py:1345
-msgid "Configuring hardware ..."
-msgstr "Configurando'l hardware ..."
-
-#: cnchi/installation/process.py:1353
+#: cnchi/installation/process.py:1414
 msgid "Updated Alsa mixer settings"
 msgstr ""
 
-#: cnchi/installation/process.py:1361
+#: cnchi/installation/process.py:1422
 msgid "Updated fluidsynth configuration file"
 msgstr ""
 
-#: cnchi/installation/process.py:1367
+#: cnchi/installation/process.py:1428
 msgid "Configuring System Startup..."
 msgstr "Configurando l'aniciu'l sistema..."
 
-#: cnchi/installation/process.py:1370
+#: cnchi/installation/process.py:1431
 msgid "Call Cnchi post-install script"
 msgstr "Llama al script de post-instalación Cnchi"
 
-#: cnchi/installation/process.py:1377
+#: cnchi/installation/process.py:1450
 msgid "Post install script completed successfully."
 msgstr "Script de post instalación completáu con ésitu."
 
-#: cnchi/installation/process.py:1380
+#: cnchi/installation/process.py:1453
 msgid "Error running post-install script"
 msgstr ""
 
-#: cnchi/installation/process.py:1396
+#: cnchi/installation/process.py:1469
 msgid "Encrypting user home dir..."
 msgstr "Cifrando direutoriu Home d'usuariu..."
 
-#: cnchi/installation/process.py:1398
+#: cnchi/installation/process.py:1471
 msgid "User home dir encrypted"
 msgstr "Direutoriu Home d'usuariu cifráu"
 
-#: cnchi/installation/process.py:1403
+#: cnchi/installation/process.py:1476
 msgid "Installing bootloader..."
 msgstr "Instalando'l xestor d'arranque..."
 
-#: cnchi/installation/process.py:1409
-msgid "Couldn't install boot loader: %s"
-msgstr "Nun pudo instalase'l cargador d'arranque: %s"
+#: cnchi/installation/process.py:1481
+msgid "While installing boot loader Cnchi encountered this error: %s"
+msgstr ""
 
-#: cnchi/installation/process.py:1415
+#: cnchi/installation/process.py:1487
 msgid "Copying install log to /var/log."
 msgstr "Copiando'l rexistru d'instalación a /var/log."
 
-#: cnchi/keymap.py:60
+#: cnchi/installation/systemd_networkd.py:79
+msgid "systemd-networkd configuration failed."
+msgstr ""
+
+#: cnchi/installation/systemd_networkd.py:82
+msgid "Found [%s] links and [%s] are wireless"
+msgstr ""
+
+#: cnchi/keymap.py:76
 msgid "Select Your Keyboard Layout"
 msgstr "Esbilla la to distribución de tecláu"
 
-#: cnchi/keymap.py:63
-msgid "Keyboard Layouts"
-msgstr "Distribuciones de tecláu"
+#: cnchi/keymap.py:81
+msgid ""
+"Choose your keyboard layout and variant (if applies).\n"
+"For instance, the default Slovak variant is qwertz, but you\n"
+"can manually specify qwerty, etc.\n"
+"\n"
+"You can use the entry below the keyboard to test your\n"
+"layout selection."
+msgstr ""
 
-#: cnchi/keymap.py:66
-msgid "Keyboard Variants"
-msgstr "Variantes de tecláu"
+#: cnchi/keymap.py:123
+msgid "Can't match a keymap for country code '%s'"
+msgstr ""
 
-#: cnchi/keymap.py:70
-msgid "Layouts"
-msgstr "Distribuciones"
+#: cnchi/keymap.py:164 cnchi/keymap.py:178
+msgid "Can't find value '%s' in treeview"
+msgstr ""
 
-#: cnchi/keymap.py:76
-msgid "Variants"
-msgstr "Variantes"
+#: cnchi/keymap.py:230
+msgid "Unknown layout description %s"
+msgstr ""
 
-#: cnchi/keymap.py:104
-msgid "keyboard_layout is %s"
-msgstr "keyboard_layout ye %s"
+#: cnchi/keymap.py:242
+msgid "Unknown variant description %s"
+msgstr ""
 
-#: cnchi/language.py:74
+#: cnchi/keymap.py:268
+msgid "Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})"
+msgstr ""
+
+#: cnchi/keymap.py:274
+msgid "Set keyboard to layout name '{0}' ({1})"
+msgstr ""
+
+#: cnchi/language.py:78
 msgid "Notice: The Cnchi Installer is beta software."
 msgstr "Nota: L'instalador Cnchi ye software en beta."
 
-#: cnchi/language.py:76
+#: cnchi/language.py:80
 msgid ""
-"Cnchi is pre-release beta software that is under active development.\n"
-"It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
-"setups. Please proceed with caution as data loss is possible!\n"
+"Cnchi is pre-release beta software that is under active development. It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible!\n"
 "\n"
-"If you find any bugs, please report them at http://bugs.antergos.com"
-msgstr "Cnchi ye software beta de pre llanzamientu que ta baxo desendolcu\nactivu. Nun remana afayadizamente RAID, sovolúmenes BTRFS, u otres configuraciones avanzaes.\n¡Por favor, sigui con procuru porque ye dable una perda de datos!\n\nSi alcuentres cualesquier fallu, por favor informa d'ellos a http://bugs.antergos.com"
+"If you find any bugs, please report them at {0}"
+msgstr ""
 
-#: cnchi/language.py:84
+#: cnchi/language.py:93
 msgid "Choose your language"
 msgstr "Escueyi la to llingua"
 
-#: cnchi/language.py:123
+#: cnchi/language.py:132
 msgid "Can't find translation file for the %s language"
 msgstr "Nun pue alcontrase'l ficheru de traducción pa la llingua %s"
 
-#: cnchi/location.py:70
+#: cnchi/location.py:71
 msgid ""
-"The location you select will be used to help determine the system locale.\n"
-"It should normally be the country in which you reside.\n"
-"Here is a shortlist of locations based on the language you selected."
+"The location you select will be used to help determine the system locale. It"
+" should normally be the country in which you reside. Here is a shortlist of "
+"locations based on the language you selected."
 msgstr ""
 
-#: cnchi/location.py:77
+#: cnchi/location.py:78
 msgid "Country, territory or area:"
 msgstr "País, territoriu o area:"
 
-#: cnchi/location.py:82
+#: cnchi/location.py:83
 msgid "Show all locations"
 msgstr "Amosar tolos allugamientos"
 
-#: cnchi/location.py:85
+#: cnchi/location.py:86
 msgid "Select your location"
 msgstr "Esbilla'l to allugamientu"
 
-#: cnchi/location.py:204 cnchi/location.py:212 cnchi/misc/misc.py:955
-#: cnchi/misc/misc.py:963
+#: cnchi/location.py:204 cnchi/location.py:212 cnchi/misc/misc.py:963
+#: cnchi/misc/misc.py:971
 msgid "locale changed to : %s"
 msgstr "locale camudada a: %s"
 
 #: cnchi/location.py:206 cnchi/location.py:215 cnchi/location.py:217
-#: cnchi/misc/misc.py:965 cnchi/misc/misc.py:967
+#: cnchi/misc/misc.py:973 cnchi/misc/misc.py:976
 msgid "Can't change to locale '%s'"
 msgstr "Nun pue camudase la locale a '%s'"
 
-#: cnchi/main_window.py:68
+#: cnchi/location.py:233
+msgid "Can't get country code from %s location"
+msgstr ""
+
+#: cnchi/main_window.py:73
 msgid ""
 "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "Esti instalador tien d'executase con drechos alministrativos, y nun pue siguir ensin ellos."
 
-#: cnchi/main_window.py:76
+#: cnchi/main_window.py:81
 msgid "File '%s' already exists."
 msgstr "El ficheru '%s' yá esiste."
 
-#: cnchi/main_window.py:77
+#: cnchi/main_window.py:82
 msgid ""
 "You cannot run two instances of this installer.\n"
 "\n"
@@ -1896,47 +2166,43 @@ msgid ""
 "Offending file: '{0}'"
 msgstr ""
 
-#: cnchi/main_window.py:85
+#: cnchi/main_window.py:90
 msgid "Cnchi installer version %s"
 msgstr "Versión del instalador Cnchi %s"
 
-#: cnchi/main_window.py:165
-msgid "Using Aria2 to download packages - EXPERIMENTAL"
-msgstr "Usando Aria2 pa baxar los paquetes - ESPERIMENTAL"
+#: cnchi/main_window.py:156
+msgid "Next step"
+msgstr ""
 
-#: cnchi/main_window.py:181
+#: cnchi/main_window.py:157
+msgid "Previous step"
+msgstr ""
+
+#: cnchi/main_window.py:179
+msgid "Using %s to download packages"
+msgstr ""
+
+#: cnchi/main_window.py:197
 msgid "Using '%s' file as package list"
 msgstr "Usando'l ficheru '%s' como llista de paquetes"
 
-#: cnchi/main_window.py:202
+#: cnchi/main_window.py:228
 msgid "Antergos Installer"
 msgstr "Instalador d'Antergos"
 
-#: cnchi/main_window.py:343
+#: cnchi/main_window.py:376
 msgid "Do you really want to quit the installer?"
 msgstr "¿De xuru que quies colar del instalador?"
 
-#: cnchi/main_window.py:352
+#: cnchi/main_window.py:385
 msgid "Quiting installer..."
 msgstr "Colando del instalador..."
 
-#: cnchi/mirrorlist.py:73
-msgid "Can't get the country code used to create a pacman mirrorlist"
-msgstr "Nun pue consiguise'l códigu de país usáu pa crear una llista d'espeyos pacman"
-
-#: cnchi/mirrorlist.py:87
-msgid "Couldn't generate mirrorlist for pacman based on country code: %s"
+#: cnchi/misc/keyboard_names.py:88
+msgid "Can't find %s file!"
 msgstr ""
 
-#: cnchi/mirrorlist.py:95
-msgid "Downloaded a specific mirrorlist for pacman based on %s country code"
-msgstr "Baxóse una llista d'espeyos específica pa pacman basada nel códigu de país %s"
-
-#: cnchi/mirrorlist.py:97
-msgid "Couldn't generate mirrorlist for pacman based on country code"
-msgstr "Nun pudo xenerase una llista d'espeyos pa pacman basada nel códigu país"
-
-#: cnchi/misc/misc.py:957
+#: cnchi/misc/misc.py:965
 msgid "Can't change to locale '%s' : %s"
 msgstr ""
 
@@ -1964,123 +2230,127 @@ msgstr "Contraseña fuerte"
 msgid "Passwords do not match"
 msgstr "Les contraseñes nun concasen"
 
-#: cnchi/pacman/pac.py:140
+#: cnchi/pacman/pac.py:110
+msgid "alpm init with root dir '{0}' and db path '{1}'"
+msgstr ""
+
+#: cnchi/pacman/pac.py:153
 msgid "Prepare alpm transaction..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:142
+#: cnchi/pacman/pac.py:155
 msgid "Commit alpm transaction..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:145
+#: cnchi/pacman/pac.py:158
 msgid "Can't finalize alpm transaction: %s"
-msgstr ""
+msgstr "Nun pue finase la transaición alpm: %s"
 
-#: cnchi/pacman/pac.py:149
+#: cnchi/pacman/pac.py:162
 msgid "Releasing alpm transaction..."
-msgstr ""
+msgstr "Llanzando la transaición alpm..."
 
-#: cnchi/pacman/pac.py:151
+#: cnchi/pacman/pac.py:164
 msgid "Alpm transaction done."
 msgstr ""
 
-#: cnchi/pacman/pac.py:177
+#: cnchi/pacman/pac.py:190
 msgid "Can't init alpm transaction: %s"
-msgstr ""
+msgstr "Nun pue aniciase la transaición alpm: %s"
 
-#: cnchi/pacman/pac.py:214
+#: cnchi/pacman/pac.py:227
 msgid "Target %s not found"
-msgstr ""
+msgstr "Nun s'alcontró l'oxetivu %s"
 
-#: cnchi/pacman/pac.py:221 cnchi/pacman/pac.py:304
+#: cnchi/pacman/pac.py:234 cnchi/pacman/pac.py:317
 msgid "Can't init transaction"
-msgstr ""
+msgstr "Nun pue aniciase la transaición"
 
-#: cnchi/pacman/pac.py:225
+#: cnchi/pacman/pac.py:238
 msgid "Adding package '%s' to remove transaction"
 msgstr ""
 
-#: cnchi/pacman/pac.py:233 cnchi/pacman/pac.py:250
+#: cnchi/pacman/pac.py:246 cnchi/pacman/pac.py:263
 msgid "alpm is not initialised"
-msgstr ""
+msgstr "Nun s'anició alpm"
 
-#: cnchi/pacman/pac.py:254
+#: cnchi/pacman/pac.py:267
 msgid "Package list is empty"
 msgstr "La llista de paquetes ta balera"
 
-#: cnchi/pacman/pac.py:257
+#: cnchi/pacman/pac.py:270
 msgid "Cnchi will install a list of packages like pacman -S"
 msgstr "Cnchi instalará una llista de paquetes como pacman -S"
 
-#: cnchi/pacman/pac.py:285
+#: cnchi/pacman/pac.py:298
 msgid "Can't find a package or group called '%s'"
 msgstr "Nun pue alcontrase un paquete o grupu llamáu '%s'"
 
-#: cnchi/pacman/pac.py:291
+#: cnchi/pacman/pac.py:304
 msgid "No targets found"
 msgstr "Nun s'alcontraron oxetivos"
 
-#: cnchi/pacman/pac.py:422
+#: cnchi/pacman/pac.py:435
 msgid "Checking dependencies..."
 msgstr "Comprobando dependencies..."
 
-#: cnchi/pacman/pac.py:424
+#: cnchi/pacman/pac.py:437
 msgid "Checking file conflicts..."
 msgstr "Comprobando conflictos de ficheru..."
 
-#: cnchi/pacman/pac.py:426
+#: cnchi/pacman/pac.py:439
 msgid "Resolving dependencies..."
 msgstr "Iguando dependencies..."
 
-#: cnchi/pacman/pac.py:428
+#: cnchi/pacman/pac.py:441
 msgid "Checking inter conflicts..."
 msgstr "Comprobando conflictos inter..."
 
-#: cnchi/pacman/pac.py:433
+#: cnchi/pacman/pac.py:446
 msgid "Checking integrity..."
 msgstr "Comprobando integridá..."
 
-#: cnchi/pacman/pac.py:435
+#: cnchi/pacman/pac.py:448
 msgid "Loading packages..."
 msgstr "Cargando paquetes..."
 
-#: cnchi/pacman/pac.py:437
+#: cnchi/pacman/pac.py:450
 msgid "Checking target delta's integrity..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:439
+#: cnchi/pacman/pac.py:452
 msgid "Applying deltas to packages..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:441
+#: cnchi/pacman/pac.py:454
 msgid "Applying delta patch to target package..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:443
+#: cnchi/pacman/pac.py:456
 msgid "Downloading files from the repository..."
-msgstr ""
+msgstr "Baxando ficheros del repositoriu..."
 
-#: cnchi/pacman/pac.py:445
+#: cnchi/pacman/pac.py:458
 msgid "Checking disk space..."
-msgstr ""
+msgstr "Comprobando l'espaciu en discu..."
 
-#: cnchi/pacman/pac.py:447
+#: cnchi/pacman/pac.py:460
 msgid "Checking keys in keyring..."
-msgstr ""
+msgstr "Comprobando claves nel aniellu claves..."
 
-#: cnchi/pacman/pac.py:449
+#: cnchi/pacman/pac.py:462
 msgid "Downloading missing keys into the keyring..."
-msgstr ""
+msgstr "Baxando claves que falten al aniellu claves..."
 
-#: cnchi/pacman/pac.py:488
+#: cnchi/pacman/pac.py:501
 msgid "Installing {0} ({1}/{2})"
 msgstr "Instalando {0} ({1}/{2})..."
 
-#: cnchi/pacman/pac.py:513
+#: cnchi/pacman/pac.py:526
 msgid "Updating {0} database"
 msgstr ""
 
-#: cnchi/pacman/pac.py:522
+#: cnchi/pacman/pac.py:535
 msgid "Downloading {0}..."
 msgstr "Baxando {0}..."
 
@@ -2092,29 +2362,37 @@ msgstr ""
 msgid "Installed as a dependency for another package"
 msgstr ""
 
-#: cnchi/parted3/fs_module.py:103
+#: cnchi/parted3/fs_module.py:43
+msgid "Can't get partition %s UUID"
+msgstr ""
+
+#: cnchi/parted3/fs_module.py:51
+msgid "Can't get partition %s label (or it does not have any)"
+msgstr ""
+
+#: cnchi/parted3/fs_module.py:119
 msgid "Can't label a {0} partition"
 msgstr ""
 
-#: cnchi/parted3/fs_module.py:188
-msgid "Can't verify if %s is a Solid State Drive or not"
-msgstr "Nun pue verificase si %s ye un SSD o non"
+#: cnchi/parted3/fs_module.py:154
+msgid "Unknown filesystem {0}"
+msgstr ""
 
-#: cnchi/parted3/fs_module.py:213
+#: cnchi/parted3/fs_module.py:237
 msgid "Sorry but filesystem %s can't be shrinked"
 msgstr "Perdón, pero'l sistema ficheros %s nun pue amenorgase"
 
 #: cnchi/parted3/lvm.py:81
 msgid "Can't remove logical volume {0}"
-msgstr ""
+msgstr "Nun pue desanciase'l volume llóxicu {0}"
 
 #: cnchi/parted3/lvm.py:100
 msgid "Can't remove volume group {0}"
-msgstr ""
+msgstr "Nun pue desanciase'l grupu de volúmenes {0}"
 
 #: cnchi/parted3/lvm.py:113
 msgid "Can't remove physical volume {0}"
-msgstr ""
+msgstr "Nun pue desaniciase'l volume físicu {0}"
 
 #: cnchi/parted3/partition_module.py:111
 msgid ""
@@ -2124,7 +2402,7 @@ msgstr ""
 
 #: cnchi/parted3/partition_module.py:182
 msgid "Can't delete partition {0}"
-msgstr ""
+msgstr "Nun pue desaniciase la partición {0}"
 
 #: cnchi/parted3/partition_module.py:235
 msgid "Partition is too large!"
@@ -2138,40 +2416,68 @@ msgstr ""
 msgid "Can't detect used space of NTFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición NTFS %s"
 
-#: cnchi/parted3/used_space.py:69
+#: cnchi/parted3/used_space.py:71
 msgid "Can't detect used space of EXTFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición EXTFS %s"
 
-#: cnchi/parted3/used_space.py:100
+#: cnchi/parted3/used_space.py:103
 msgid "Can't detect used space of FAT partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición FAT %s"
 
-#: cnchi/parted3/used_space.py:131
+#: cnchi/parted3/used_space.py:134
 msgid "Can't detect used space of JFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición JFS %s"
 
-#: cnchi/parted3/used_space.py:156
+#: cnchi/parted3/used_space.py:159
 msgid "Can't detect used space of REISERFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición REISERFS %s"
 
-#: cnchi/parted3/used_space.py:184
+#: cnchi/parted3/used_space.py:187
 msgid "Can't detect used space of BTRFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición BTRFS %s"
 
-#: cnchi/parted3/used_space.py:221
+#: cnchi/parted3/used_space.py:224
 msgid "Can't detect used space of XFS partition %s"
 msgstr "Nun pue deteutase l'espaciu usáu de la partición XFS %s"
 
-#: cnchi/rank_mirrors.py:66
-msgid "Can't find update mirrors script"
+#: cnchi/rank_mirrors.py:63
+msgid "Can't synchronize cached writes to persistent storage: %s"
 msgstr ""
 
-#: cnchi/rank_mirrors.py:98
-msgid "Couldn't execute auto mirror selection"
-msgstr "Nun pudo executase la esbilla d'espeyu automática"
+#: cnchi/rank_mirrors.py:82
+msgid "Update of antergos-mirrorlist package failed with error: %s"
+msgstr ""
 
-#: cnchi/rank_mirrors.py:132
-msgid "Auto mirror selection has been run successfully"
+#: cnchi/rank_mirrors.py:84
+msgid "Error copying new mirrorlist files: %s"
+msgstr ""
+
+#: cnchi/rank_mirrors.py:101
+msgid "Error running reflector on Arch mirrorlist: %s"
+msgstr ""
+
+#: cnchi/rank_mirrors.py:149
+msgid "Error running rankmirrors on Antergos mirrorlist: %s"
+msgstr ""
+
+#: cnchi/rank_mirrors.py:190
+msgid "Updating both mirrorlists (Arch and Antergos)..."
+msgstr ""
+
+#: cnchi/rank_mirrors.py:193
+msgid "Running reflector command to sort Arch mirrors..."
+msgstr ""
+
+#: cnchi/rank_mirrors.py:196
+msgid "Running rankmirrors command to sort Antergos mirrors..."
+msgstr ""
+
+#: cnchi/rank_mirrors.py:199
+msgid "Checking Arch mirrorlist against mirror status data..."
+msgstr ""
+
+#: cnchi/rank_mirrors.py:202
+msgid "Auto mirror selection has been run successfully."
 msgstr ""
 
 #: cnchi/show_message.py:55
@@ -2190,15 +2496,15 @@ msgstr "Instalador d'Antergos - Información"
 msgid "Antergos Installer - Confirmation"
 msgstr "Instalador d'Antergos - Confirmación"
 
-#: cnchi/slides.py:73
+#: cnchi/slides.py:74
 msgid "Please wait..."
 msgstr "Espera por favor..."
 
-#: cnchi/slides.py:75
+#: cnchi/slides.py:76
 msgid "Installing Antergos..."
 msgstr "Instalando Antergos..."
 
-#: cnchi/slides.py:187
+#: cnchi/slides.py:190
 msgid ""
 "IMPORTANT: There may have been a problem with the bootloader\n"
 "installation which could prevent your system from booting properly. Before\n"
@@ -2209,194 +2515,210 @@ msgid ""
 "Would you like to view the wiki page now?"
 msgstr ""
 
-#: cnchi/slides.py:200
+#: cnchi/slides.py:202
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr "¡Instalación completada!\n¿Quies reaniciar el to sistema agora?"
 
-#: cnchi/timezone.py:90
+#: cnchi/timezone.py:82
 msgid "Zone:"
 msgstr "Zona:"
 
-#: cnchi/timezone.py:94
+#: cnchi/timezone.py:86
 msgid "Region:"
 msgstr "Rexón:"
 
-#: cnchi/timezone.py:98
+#: cnchi/timezone.py:90
 msgid "Use Network Time Protocol (NTP) for clock synchronization"
-msgstr ""
+msgstr "Usar NTP pa la sincronización del reló"
 
-#: cnchi/timezone.py:101
+#: cnchi/timezone.py:93
 msgid "Select Your Timezone"
 msgstr "Esbilla'l to fusu horariu"
 
-#: cnchi/timezone.py:110
+#: cnchi/timezone.py:102
 msgid "location changed to : %s"
 msgstr "allugamientu camudáu a: %s"
 
-#: cnchi/timezone.py:189
+#: cnchi/timezone.py:181
 msgid "Can't autodetect timezone coordinates"
 msgstr "Nun puen deteutase automáticamente les coordenaes del fusu horariu"
 
-#: cnchi/timezone.py:252
-msgid "Stoping timezone threads..."
-msgstr "Parando filos del fusu horariu..."
+#: cnchi/timezone.py:284
+msgid "Can't get network status. Cnchi will try again in a moment"
+msgstr ""
 
-#: cnchi/timezone.py:287
-msgid "Can't get network status."
-msgstr "Nun pue consiguise l'estáu la rede."
+#: cnchi/timezone.py:288
+msgid "A working network connection has been detected."
+msgstr ""
 
-#: cnchi/timezone.py:298
+#: cnchi/timezone.py:297
 msgid "We have connection. Let's get our timezone"
 msgstr "Tenemos conexón. Vamos saber el to fusu horariu"
 
 #: cnchi/timezone.py:316
-msgid "Timezone (latitude {0}, longitude {1}) detected."
+msgid "Timezone (latitude %s, longitude %s) detected."
 msgstr ""
 
-#: cnchi/updater.py:68
+#: cnchi/updater.py:67
 msgid ""
 "Could not find 'update.info' file. Cnchi will not be able to update itself."
-msgstr ""
+msgstr "Nun pudo alcontrase'l ficheru 'update.info'. Cnchi nun podrá anovase por si mesmu."
 
-#: cnchi/updater.py:88
+#: cnchi/updater.py:93
 msgid "Cnchi Internet version: %s"
 msgstr "Versión n'internet de Cnchi: %s"
 
-#: cnchi/updater.py:128
+#: cnchi/updater.py:133
 msgid "New version found. Updating installer..."
 msgstr "Alcontróse un anovamientu. Anovando instalador..."
 
-#: cnchi/updater.py:131
+#: cnchi/updater.py:136
 msgid "No new version found. Updating anyways..."
 msgstr "Nun s'alcontró denguna versión nueva, Anovando de toes toes..."
 
-#: cnchi/updater.py:135
+#: cnchi/updater.py:140
 msgid "Downloading new version of Cnchi..."
-msgstr ""
+msgstr "Baxando la versión nueva de Cnchi..."
 
-#: cnchi/updater.py:139
+#: cnchi/updater.py:144
 msgid "Can't download new Cnchi version."
 msgstr "Nun pue baxase la versión nueva de Cnchi."
 
-#: cnchi/updater.py:143
+#: cnchi/updater.py:148
 msgid "Uncompressing new version..."
 msgstr "Descomprimiendo la versión nueva..."
 
-#: cnchi/updater.py:189
+#: cnchi/updater.py:192
+msgid "Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"
+msgstr ""
+
+#: cnchi/updater.py:198
+msgid "File %s is not in md5 signatures list"
+msgstr ""
+
+#: cnchi/updater.py:212
+msgid "Copying %s to %s..."
+msgstr ""
+
+#: cnchi/updater.py:218
 msgid "Can't copy %s to %s"
 msgstr "Nun pue copiase %s a %s"
 
-#: cnchi/updater.py:192
-msgid "Wrong md5. Bad download or wrong file, won't update this one"
-msgstr ""
-
-#: cnchi/user_info.py:73
+#: cnchi/user_info.py:92
 msgid "Your name:"
 msgstr "El to nome:"
 
-#: cnchi/user_info.py:77
+#: cnchi/user_info.py:96
 msgid "Your name"
 msgstr "El to nome"
 
-#: cnchi/user_info.py:81
+#: cnchi/user_info.py:100
 msgid "Your computer's name:"
 msgstr "El nome del to ordenador:"
 
-#: cnchi/user_info.py:85
+#: cnchi/user_info.py:104
+msgid "Hostname"
+msgstr ""
+
+#: cnchi/user_info.py:108
 msgid "Pick a username:"
 msgstr "Escueyi un nome d'usuariu:"
 
-#: cnchi/user_info.py:89
+#: cnchi/user_info.py:112
 msgid "Username"
 msgstr "Nome d'usuariu"
 
-#: cnchi/user_info.py:93
+#: cnchi/user_info.py:116
 msgid "Choose a password:"
 msgstr "Esbilla una contraseña:"
 
-#: cnchi/user_info.py:97
+#: cnchi/user_info.py:120
 msgid "Password"
 msgstr "Contraseña"
 
-#: cnchi/user_info.py:105
+#: cnchi/user_info.py:128
 msgid "Confirm password"
 msgstr "Confirmar contraseña"
 
-#: cnchi/user_info.py:109
+#: cnchi/user_info.py:132
 msgid "Identifies your system to other computers and devices."
 msgstr "Identifica al to sistema na rede"
 
-#: cnchi/user_info.py:115
+#: cnchi/user_info.py:138
 msgid "You must enter a name"
 msgstr "Tienes d'introducir un nome"
 
-#: cnchi/user_info.py:119
+#: cnchi/user_info.py:142
 msgid "You must enter a username"
 msgstr "Tienes d'introducir un nome d'usuariu"
 
-#: cnchi/user_info.py:123
+#: cnchi/user_info.py:146
 msgid "You must enter a password"
 msgstr "Tienes d'introducir una contraseña"
 
-#: cnchi/user_info.py:127
+#: cnchi/user_info.py:150
 msgid "Log in automatically"
 msgstr "Aniciar sesión automáticamente"
 
-#: cnchi/user_info.py:128
+#: cnchi/user_info.py:151
 msgid "Require my password to log in"
 msgstr "Riquir la mio contraseña nel aniciu sesión"
 
-#: cnchi/user_info.py:129
+#: cnchi/user_info.py:152
 msgid "Encrypt my home folder"
 msgstr "Cifrar la mio carpeta personal"
 
-#: cnchi/user_info.py:132
+#: cnchi/user_info.py:155
 msgid "show password"
 msgstr "amosar contraseña"
 
-#: cnchi/user_info.py:134
+#: cnchi/user_info.py:157
 msgid "Create Your User Account"
 msgstr "Crea la to cuenta d'usuariu"
 
-#: cnchi/user_info.py:183
+#: cnchi/user_info.py:206
 msgid "Are you sure you want to encrypt your home directory?"
 msgstr "¿De xuru que quies cifrar la to carpeta personal?"
 
-#: cnchi/user_info.py:246
+#: cnchi/user_info.py:226
+msgid "Save"
+msgstr ""
+
+#: cnchi/user_info.py:269
 msgid "Invalid characters entered"
 msgstr "Introduxéronse carauteres non válidos"
 
-#: cnchi/user_info.py:250
+#: cnchi/user_info.py:273
 msgid "Username can't contain dots"
 msgstr "El nome d'usuariu nun pue contener puntos"
 
-#: cnchi/user_info.py:254
+#: cnchi/user_info.py:277
 msgid "Too many characters"
 msgstr "Milenta carauteres"
 
-#: cnchi/welcome.py:73
-msgid "Try Antergos without making any changes to your system."
+#: cnchi/welcome.py:72
+msgid "Use Antergos without making any changes to your system."
 msgstr ""
 
-#: cnchi/welcome.py:79
+#: cnchi/welcome.py:78
 msgid "Create a permanent place for Antergos on your system."
 msgstr ""
 
-#: cnchi/welcome.py:83
+#: cnchi/welcome.py:82
 msgid "Try It"
 msgstr "Pruébalu"
 
-#: cnchi/welcome.py:89
+#: cnchi/welcome.py:88
 msgid "Install It"
 msgstr "Instálalu"
 
-#: cnchi/welcome.py:92
+#: cnchi/welcome.py:91
 msgid "Welcome to Antergos!"
 msgstr "¡Bienllegáu a Antergos!"
 
-#: cnchi/welcome.py:125
+#: cnchi/welcome.py:129
 msgid "Loading, please wait..."
 msgstr "Cargando, por favor espera..."
 
