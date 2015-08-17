@@ -309,18 +309,12 @@ class Installation(object):
         logging.debug(_("Configuring system..."))
         self.configure_system()
 
-        all_ok = True
-
         self.running = False
 
-        if all_ok is False:
-            self.error = True
-            return False
-        else:
-            # Installation finished successfully
-            self.queue_event('finished', _("Installation finished"))
-            self.error = False
-            return True
+        # Installation finished successfully
+        self.queue_event('finished', _("Installation finished"))
+        self.error = False
+        return True
 
     @staticmethod
     def copy_log():
