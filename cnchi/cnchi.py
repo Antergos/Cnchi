@@ -48,13 +48,10 @@ import info
 import updater
 
 try:
-    # from raven.handlers.logging import SentryHandler
-    # from raven import Client as RavenClient
-    # import raven.conf
-    RAVEN_AVAILABLE = True
     from bugsnag.handlers import BugsnagHandler
+    BUGSNAG_AVAILABLE = True
 except ImportError:
-    RAVEN_AVAILABLE = False
+    BUGSNAG_AVAILABLE = False
 
 # Command line options
 cmd_line = None
@@ -148,35 +145,17 @@ def setup_logging():
     if cmd_line.log_server:
         log_server = cmd_line.log_server
 
-        if log_server in ['raven', 'sentry', 'bugsnag']:
-            # Sentry logger
-            if RAVEN_AVAILABLE and log_server != 'bugsnag':
-                sentry_dsn = get_sentry_dsn()
-                if sentry_dsn:
-                    client = RavenClient(
-                        dsn=sentry_dsn,
-                        include_paths=['cnchi'],
-                        release=info.CNCHI_VERSION)
-                    sentry_handler = SentryHandler(client)
-                    raven.conf.setup_logging(sentry_handler)
-                    sentry_handler.setLevel(logging.WARNING)
-                    logging.info(_("Sending Cnchi log messages to sentry server, too (using python-raven)."))
-                else:
-                    logging.warning(
-                        "%s %s",
-                        _("Cannot read the sentry server DSN."),
-                        _("Logging to sentry will not be possible."))
-
-            elif RAVEN_AVAILABLE and log_server == 'bugsnag':
-                bugsnag_api = get_sentry_dsn()
-                if bugsnag_api:
-                    logger.addHandler(BugsnagHandler(api_key=bugsnag_api))
-                    logging.info(_("Sending Cnchi log messages to bugsnag server, too (using python-bugsnag)."))
+        if BUGSNAG_AVAILABLE and log_server == 'bugsnag':
+            # Bugsnag logger
+            bugsnag_api = get_bugsnag_api()
+            if bugsnag_api:
+                logger.addHandler(BugsnagHandler(api_key=bugsnag_api))
+                logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
             else:
                 logging.warning(
                     "%s %s",
-                    _("Cannot import python-raven."),
-                    _("Logging to sentry will not be possible."))
+                    _("Cannot read the bugsnag api key."),
+                    _("Logging to bugsnag is not possible."))
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
@@ -197,13 +176,13 @@ def setup_logging():
             logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
 
 
-def get_sentry_dsn():
+def get_bugsnag_api():
     config_path = '/etc/sentry-dsn.conf'
-    sentry_dsn = None
+    bugsnag_api = None
     if os.path.exists(config_path):
-        with open(config_path) as raven_conf:
-            sentry_dsn = raven_conf.readline().strip()
-    return sentry_dsn
+        with open(config_path) as bugsnag_conf:
+            bugsnag_api = bugsnag_conf.readline().strip()
+    return bugsnag_api
 
 
 def check_gtk_version():
