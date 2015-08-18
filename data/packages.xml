@@ -356,6 +356,7 @@
 
     <edition name="KDE4" description="KDE 4 Desktop">
       <packages>
+        <pkgname>antergos-kde-setup</pkgname>
         <pkgname>aspell-en</pkgname>
         <pkgname>breeze-kde4</pkgname>
         <pkgname>cdrdao</pkgname>
@@ -410,6 +411,7 @@
 
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
+          <pkgname>antergos-kde-setup</pkgname>
           <pkgname>aspell-en</pkgname>
           <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
