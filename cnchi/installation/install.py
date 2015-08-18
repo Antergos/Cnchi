@@ -1176,7 +1176,7 @@ class Installation(object):
 
         if self.desktop == "base":
             # Setup systemd-networkd for systems that won't use the
-            # networkmanager daemon (atm is just base install)
+            # networkmanager or connman daemons (atm it's just base install)
             # Enable systemd_networkd services
             # See: https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
             self.enable_services(["systemd-networkd", "systemd-resolved"])
