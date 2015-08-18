@@ -291,7 +291,7 @@
         <pkgname nm='true' name='connman' conflicts="networkmanager">connman</pkgname>
         <!-- <pkgname>econnman</pkgname> -->
         <pkgname>polkit-gnome</pkgname>
-        <!-- <pkgname>rage</pkgname>-->
+        <pkgname>rage</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
