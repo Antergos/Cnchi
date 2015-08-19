@@ -40,7 +40,7 @@ ICON_NAMES = {
     'firewall': 'network-server',
     'fonts': 'preferences-desktop-font',
     'graphic_drivers' : 'gnome-system',
-    'games' : '',
+    'games' : 'games',
     'lamp': 'applications-internet',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
