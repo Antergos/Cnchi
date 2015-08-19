@@ -49,6 +49,7 @@ import updater
 
 try:
     from bugsnag.handlers import BugsnagHandler
+    import bugsnag
     BUGSNAG_AVAILABLE = True
 except ImportError:
     BUGSNAG_AVAILABLE = False
@@ -149,7 +150,13 @@ def setup_logging():
             # Bugsnag logger
             bugsnag_api = get_bugsnag_api()
             if bugsnag_api:
-                logger.addHandler(BugsnagHandler(api_key=bugsnag_api))
+                bugsnag.configure(
+                    api_key=bugsnag_api,
+                    app_version=info.CNCHI_VERSION,
+                    project_root='/usr/share/cnchi/cnchi')
+                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
+                bugsnag_handler.setLevel(logging.WARNING)
+                logger.addHandler(bugsnag_handler)
                 logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
             else:
                 logging.warning(
