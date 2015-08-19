@@ -1,0 +1,60 @@
+[2015-08-19 02:09:21 -0500]  version bump                                                           Dustin Falgout  {2fe5967}
+[2015-08-19 02:08:21 -0500]  Merge remote-tracking branch 'origin/master' into HEAD                 Dustin Falgout  {f5143fe}
+[2015-08-19 02:35:38 +0200]  Fixing Enlightenment postinstall                                           karasu      {28d0af6}
+[2015-08-19 00:57:13 +0200]  Rage is in our repo ;)                                                     karasu      {6a0c730}
+[2015-08-18 21:37:18 +0200]  Use new antergos-kde-setup and set correct keyboard layout in Enlig..      karasu      {86d953e}
+[2015-08-18 14:44:26 +0200]  connman must be enabled                                                    karasu      {c616df2}
+[2015-08-18 12:34:08 +0200]  Cnchi will use bugsnag                                                     karasu      {21cdd8f}
+[2015-08-18 12:32:37 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into 0.11.x        karasu      {d568278}
+[2015-08-18 01:19:49 +0200]  Do not use sentry when testing Cnchi 0.11                                  karasu      {3f964f1}
+[2015-08-18 01:14:28 +0200]  Add enlightenment desktop                                                  karasu      {211e8f1}
+[2015-08-17 10:33:06 +0200]  Merge branch 'master' of ../cnchi-dev into split                           karasu      {0a6dc43}
+[2015-08-15 17:00:42 +0200]  Merge branch 'master' of ../cnchi-dev into split                           karasu      {f798564}
+[2015-08-14 17:44:44 +0200]  Added enlightenment icon                                                   karasu      {f49dc7c}
+[2015-08-14 16:52:36 +0200]  Prepare Cnchi to use new antergos-DE-setup packages                        karasu      {531631f}
+[2015-08-14 14:21:56 +0200]  Remove lxde (was never finished). The target should be lxqt                karasu      {2b79cdb}
+[2015-08-14 14:09:03 +0200]  Added copyright notice to set-settings                                     karasu      {d1a6b67}
+[2015-08-13 19:21:10 +0200]  Merge branch 'split' of github.com:lots0logs/cnchi-dev into split          karasu      {7530368}
+[2015-08-13 12:16:21 -0500]  Update README.md                                                       Dustin Falgout  {9c2ea2e}
+[2015-08-13 19:15:45 +0200]  Working on Enlightenment DE                                                karasu      {23a89db}
+[2015-08-13 12:14:16 -0500]  Update README.md                                                       Dustin Falgout  {a4c2d48}
+[2015-08-12 17:29:28 +0200]  This is going to be next Cnchi 0.12                                        karasu      {6950fd0}
+[2015-08-11 15:11:19 +0200]  Sort devices when showing them in summary (comming from automatic)...      karasu      {e148274}
+[2015-08-11 14:35:31 +0200]  Going back as it were                                                      karasu      {3df58bd}
+[2015-08-11 14:31:50 +0200]  Download_requests has problems when using session                          karasu      {5d3e885}
+[2015-08-11 13:57:28 +0200]  Hide features summary if no feature has been selected                      karasu      {335ff31}
+[2015-08-11 13:46:22 +0200]  wrong params                                                               karasu      {98be9d0}
+[2015-08-11 13:43:44 +0200]  Do not change button as it changes its size (do not know why). Show..      karasu      {fe4880d}
+[2015-08-11 12:45:08 +0200]  Forward button is not shown correctly                                      karasu      {be8d356}
+[2015-08-11 12:43:32 +0200]  stream=True is needed!                                                     karasu      {fd03342}
+[2015-08-11 12:14:21 +0200]  Fix warning in download_requests using session                             karasu      {953d460}
+[2015-08-11 11:41:17 +0200]  Use true/false instead of 'yes'/'no'                                       karasu      {bb46f0d}
+[2015-08-11 11:29:48 +0200]  Typo                                                                       karasu      {d56e867}
+[2015-08-11 10:15:25 +0200]  alternate_package_list fix                                                 karasu      {53e24c6}
+[2015-08-11 10:05:54 +0200]  Use misc.raised_privileges with format and install                         karasu      {179585a}
+[2015-08-11 09:50:27 +0200]  Fix text                                                                   karasu      {8e582bf}
+[2015-08-11 09:47:43 +0200]  remove trailing \n                                                         karasu      {19804ba}
+[2015-08-11 09:44:37 +0200]  Make more room in summary (get rid off the subtitle)                       karasu      {392c60a}
+[2015-08-11 09:37:59 +0200]  Added gtkgrid to summary.ui                                                karasu      {dfb125d}
+[2015-08-11 09:11:53 +0200]  Not all devices are mounted                                                karasu      {0a2502e}
+[2015-08-11 09:08:23 +0200]  Try to show mount points correctly                                         karasu      {fc1c3ca}
+[2015-08-11 08:58:38 +0200]  Fix page and fix mount message                                             karasu      {72be0bf}
+[2015-08-11 08:53:59 +0200]  add DEST_DIR variable                                                      karasu      {fd2891b}
+[2015-08-11 08:50:33 +0200]  Add log message when not using rank mirrors                                karasu      {a336771}
+[2015-08-11 08:48:14 +0200]  Missing import                                                             karasu      {8b169eb}
+[2015-08-11 08:46:23 +0200]  Added option to disable rank mirrors                                       karasu      {6f2509f}
+[2015-08-11 08:40:52 +0200]  Fix page name                                                              karasu      {44a0fce}
+[2015-08-11 08:35:47 +0200]  Fix summary testing                                                        karasu      {fb1d985}
+[2015-08-11 08:32:02 +0200]  Trying to fix summary                                                      karasu      {cacb6e9}
+[2015-08-11 08:10:41 +0200]  typo                                                                       karasu      {fafa989}
+[2015-08-11 08:08:54 +0200]  advanced and automatic give a list of changes to summary                   karasu      {3864b23}
+[2015-08-11 00:04:32 +0200]  Call summary screen before user_info screen                                karasu      {136cb04}
+[2015-08-10 21:26:58 +0200]  Need to test this method before further developing                         karasu      {01d257f}
+[2015-08-10 20:55:20 +0200]  More work done. It's a new approach xD                                     karasu      {9eab767}
+[2015-08-10 19:52:38 +0200]  Working on splitting formating and installing                              karasu      {097d0b4}
+[2015-06-23 19:21:27 -0500]  update antergos mirrorlist package before we rank the mirrors. remo..  Dustin Falgout  {92816f2}
+[2015-06-23 14:43:22 +0200]  Update packages.xml                                                        karasu      {aa253d0}
+[2015-06-14 08:49:46 -0500]  another oops :grimacing:                                               Dustin Falgout  {96c2454}
+[2015-06-14 08:44:15 -0500]  oops                                                                   Dustin Falgout  {3563986}
+[2015-06-14 08:42:57 -0500]  bin/cnchi should be executable                                         Dustin Falgout  {49b8944}
+[2015-06-14 06:10:48 -0500]  update packages.xml. fix file permissions on some  files (they were..  Dustin Falgout  {23e4a84}

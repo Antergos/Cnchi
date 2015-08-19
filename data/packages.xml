@@ -185,6 +185,9 @@
         <pkgname>libgnomeui</pkgname>
         <pkgname>muffin</pkgname>
         <pkgname>nemo</pkgname>
+        <pkgname>nemo-fileroller</pkgname>
+        <pkgname>nemo-preview</pkgname>
+        <pkgname>nemo-share</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
