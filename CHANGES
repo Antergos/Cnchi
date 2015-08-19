@@ -1,5 +1,6 @@
-[2015-08-19 02:09:21 -0500]  version bump                                                           Dustin Falgout  {2fe5967}
-[2015-08-19 02:08:21 -0500]  Merge remote-tracking branch 'origin/master' into HEAD                 Dustin Falgout  {f5143fe}
+[2015-08-19 05:37:09 -0500]  Merge remote-tracking branch 'stable/master' into 0.11.x               Dustin Falgout  {b7c34b2}
+[2015-08-19 05:25:36 -0500]  update precommit hook--don't forget to update your local copies!       Dustin Falgout  {7ea5aee}
+[2015-08-19 05:04:29 -0500]  fix filepath to bugsnag api key                                        Dustin Falgout  {63b0dbb}
 [2015-08-19 02:35:38 +0200]  Fixing Enlightenment postinstall                                           karasu      {28d0af6}
 [2015-08-19 00:57:13 +0200]  Rage is in our repo ;)                                                     karasu      {6a0c730}
 [2015-08-18 21:37:18 +0200]  Use new antergos-kde-setup and set correct keyboard layout in Enlig..      karasu      {86d953e}
@@ -52,9 +53,3 @@
 [2015-08-10 21:26:58 +0200]  Need to test this method before further developing                         karasu      {01d257f}
 [2015-08-10 20:55:20 +0200]  More work done. It's a new approach xD                                     karasu      {9eab767}
 [2015-08-10 19:52:38 +0200]  Working on splitting formating and installing                              karasu      {097d0b4}
-[2015-06-23 19:21:27 -0500]  update antergos mirrorlist package before we rank the mirrors. remo..  Dustin Falgout  {92816f2}
-[2015-06-23 14:43:22 +0200]  Update packages.xml                                                        karasu      {aa253d0}
-[2015-06-14 08:49:46 -0500]  another oops :grimacing:                                               Dustin Falgout  {96c2454}
-[2015-06-14 08:44:15 -0500]  oops                                                                   Dustin Falgout  {3563986}
-[2015-06-14 08:42:57 -0500]  bin/cnchi should be executable                                         Dustin Falgout  {49b8944}
-[2015-06-14 06:10:48 -0500]  update packages.xml. fix file permissions on some  files (they were..  Dustin Falgout  {23e4a84}
