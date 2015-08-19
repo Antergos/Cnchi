@@ -380,10 +380,11 @@ enlightenment_settings()
     E_SRC="/home/${USER_NAME}/.e/e/config/standard/e.src"
 
     ${DESTDIR}/usr/bin/eet -d ${E_CFG} config ${E_SRC}
-    sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" ${E_SRC}
+    sed -i 's/"us"/"${KEYBOARD_LAYOUT}"/' ${E_SRC}
   	if [[ "${KEYBOARD_VARIANT}" != '' ]]; then
-  			sed -i "s/'basic'/'${KEYBOARD_VARIANT}'/" ${E_SRC}
+  			sed -i 's/"basic"/"${KEYBOARD_VARIANT}"/' ${E_SRC}
   	fi
+    ${DESTDIR}/usr/bin/eet -e ${E_CFG} config ${E_SRC} 1
 
     # Set settings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings

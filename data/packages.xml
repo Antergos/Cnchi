@@ -294,7 +294,6 @@
         <pkgname>rage</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
       </packages>
     </edition>
 
