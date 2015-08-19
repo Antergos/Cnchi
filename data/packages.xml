@@ -502,6 +502,10 @@
       <pkgname>compton</pkgname>
       <pkgname>paranoid</pkgname>
     </feature>
+    <feature name="games">
+      <pkgname>steam</pkgname>
+      <pkgname>playonlinux</pkgname>
+    </feature>
     <feature name="smb">
         <pkgname lib='gtk'>gvfs-smb</pkgname>
         <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
