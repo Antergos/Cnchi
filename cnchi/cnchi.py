@@ -177,7 +177,7 @@ def setup_logging():
 
 
 def get_bugsnag_api():
-    config_path = '/etc/sentry-dsn.conf'
+    config_path = '/etc/raven.conf'
     bugsnag_api = None
     if os.path.exists(config_path):
         with open(config_path) as bugsnag_conf:
@@ -421,8 +421,8 @@ def init_cnchi():
     if not check_pyalpm_version():
         sys.exit(1)
 
-    if not cmd_line.disable_update:
-        update_cnchi()
+    # if not cmd_line.disable_update:
+        # update_cnchi()
 
     # Init PyObject Threads
     threads_init()
