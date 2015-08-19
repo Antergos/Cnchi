@@ -1,3 +1,4 @@
+[2015-08-19 05:46:58 -0500]  update readme                                                          Dustin Falgout  {f60bbdb}
 [2015-08-19 05:37:09 -0500]  Merge remote-tracking branch 'stable/master' into 0.11.x               Dustin Falgout  {b7c34b2}
 [2015-08-19 05:25:36 -0500]  update precommit hook--don't forget to update your local copies!       Dustin Falgout  {7ea5aee}
 [2015-08-19 05:04:29 -0500]  fix filepath to bugsnag api key                                        Dustin Falgout  {63b0dbb}
