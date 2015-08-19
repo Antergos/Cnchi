@@ -64,7 +64,7 @@ LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "lamp", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "games", "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
