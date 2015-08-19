@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Module to download packages """
 
@@ -47,16 +52,16 @@ from misc.misc import InstallError
 
 
 class DownloadPackages(object):
-    """ Class to download packages using Aria2 or urllib
+    """ Class to download packages using Aria2, requests (default) or urllib
         This class tries to previously download all necessary packages for
-        Antergos installation using aria2 or urllib
+        Antergos installation using aria2, requests or urllib
         Aria2 is known to use too much memory (not Aria2's fault but ours)
         so until it's fixed it it's not advised to use it """
 
     def __init__(
             self,
             package_names,
-            download_library='urllib',
+            download_library='requests',
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
@@ -79,9 +84,8 @@ class DownloadPackages(object):
         else:
             self.cache_dir = cache_dir
 
-        # Create pacman cache dir if it doesn't exist yet
-        if not os.path.exists(pacman_cache_dir):
-            os.makedirs(pacman_cache_dir)
+        # Create pacman cache dir (it's ok if it already exists)
+        os.makedirs(pacman_cache_dir, mode=0o755, exist_ok=True)
 
         # Stores last issued event for each event type
         # (to prevent repeating events)
@@ -104,24 +108,28 @@ class DownloadPackages(object):
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
-        elif download_library == "requests":
-            download = download_requests.Download(
-                pacman_cache_dir,
-                cache_dir,
-                callback_queue)
-        else:
-            if download_library != "urllib":
-                logging.warning(_("Unknown '%s' library, Cnchi will use the 'urllib' one as default"),
-                    download_library)
+        elif download_library == "urllib":
             download = download_urllib.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
+        else:
+            if download_library != "requests":
+                logging.warning(_("Unknown '%s' library, Cnchi will use the 'requests' one as default"),
+                                download_library)
+            download = download_requests.Download(
+                pacman_cache_dir,
+                cache_dir,
+                callback_queue)
 
-        all_successful = download.start(downloads)
-
-        if not all_successful:
+        if not download.start(downloads):
             self.settings.set('failed_download', True)
+            # New: When we can't download (even one package), we stop right here
+            # Pros: The user will be prompted immediately when a package fails
+            # to download
+            # Cons: We won't let alpm to try to download the package itself
+            txt = _("Can't install necessary packages. Cnchi can't continue.")
+            raise InstallError(txt)
 
     def get_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """

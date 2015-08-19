@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,38 +17,35 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Firewire driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 CLASS_NAME = "Firewire"
 CLASS_ID = ""
 VENDOR_ID = "0x1180"
-DEVICES = [('0x0832', "Firewire")]
+DEVICES = ['0x0832']
 
 
 class Firewire(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["libffado", "libraw1394"]
 
     def post_install(self, dest_dir):
         pass
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
-
-    def get_name(self):
-        return CLASS_NAME

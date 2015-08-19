@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,12 +17,18 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Check screen (detects if Antergos prerequisites are meet) """
+
 
 from gi.repository import GLib
 import subprocess
@@ -32,8 +38,6 @@ import logging
 import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
-
-from rank_mirrors import AutoRankmirrorsThread
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -52,16 +56,11 @@ class Check(GtkBaseBox):
 
         self.remove_timer = False
 
-        self.thread = None
-
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
         self.timeout_id = None
         self.prepare_best_results = None
-
-        # Boolean variable to check if reflector has been run once or not
-        self.reflector_launched = False
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -70,13 +69,6 @@ class Check(GtkBaseBox):
         else:
             self.checks_are_optional = False
 
-        '''
-        data_dir = self.settings.get('data')
-        image1 = self.ui.get_object('image1')
-        image1_path = os.path.join(data_dir, "images/antergos/antergos-for-everyone-white1.png")
-        image1.set_from_file(image1_path)
-        '''
-
     def translate_ui(self):
         """ Translates all ui elements """
         txt = _("System Check")
@@ -84,24 +76,30 @@ class Check(GtkBaseBox):
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
-        self.prepare_enough_space.props.label = txt
+        self.prepare_enough_space.set_property("label", txt)
 
         txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)
+        self.label_space.set_hexpand(False)
+        self.label_space.set_line_wrap(True)
+        self.label_space.set_max_width_chars(80)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
-        self.prepare_power_source.props.label = txt
+        self.prepare_power_source.set_property("label", txt)
 
         self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
         txt = _("is connected to the Internet")
-        self.prepare_network_connection.props.label = txt
+        self.prepare_network_connection.set_property("label", txt)
 
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
         self.prepare_best_results.set_markup(txt)
+        self.prepare_best_results.set_hexpand(False)
+        self.prepare_best_results.set_line_wrap(True)
+        self.prepare_best_results.set_max_width_chars(80)
 
     def check_all(self):
         """ Check that all requirements are meet """
@@ -185,13 +183,6 @@ class Check(GtkBaseBox):
 
         # Enable forward button
         self.forward_button.set_sensitive(True)
-
-        if not self.testing and not self.reflector_launched:
-            # Launch reflector script to determine the 10 fastest mirrors
-            self.thread = AutoRankmirrorsThread()
-            self.thread.start()
-            self.reflector_launched = True
-
         return True
 
     def prepare(self, direction):

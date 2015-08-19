@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Module to update Cnchi """
 
@@ -29,10 +34,10 @@ import hashlib
 import os
 import logging
 import shutil
+import uuid
 
 import misc.misc as misc
 import requests
-import info
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
@@ -40,7 +45,6 @@ _update_info = "/usr/share/cnchi/update.info"
 
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
-
 
 def get_md5_from_file(filename):
     with open(filename, 'rb') as myfile:
@@ -57,9 +61,9 @@ def get_md5_from_text(text):
 
 
 class Updater():
-    def __init__(self, force_update):
+    def __init__(self, local_cnchi_version, force_update):
         self.remote_version = ""
-
+        self.local_cnchi_version = local_cnchi_version
         self.md5s = {}
 
         self.force = force_update
@@ -75,7 +79,12 @@ class Updater():
                 update_info = json.loads(response)
                 self.local_files = update_info['files']
 
-        r = requests.get(_update_info_url, stream=True)
+        try:
+            r = requests.get(_update_info_url, stream=True)
+        except requests.exceptions.ConnectionError as conn_error:
+            logging.error(conn_error)
+            return
+
         if r.status_code == requests.codes.ok:
             txt = ""
             for chunk in r.iter_content(1024):
@@ -96,7 +105,7 @@ class Updater():
             return False
 
         # Version is always: x.y.z
-        local_ver = info.CNCHI_VERSION.split(".")
+        local_ver = self.local_cnchi_version.split(".")
         remote_ver = self.remote_version.split(".")
 
         local = [int(local_ver[0]), int(local_ver[1]), int(local_ver[2])]
@@ -153,41 +162,65 @@ class Updater():
     @staticmethod
     def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
-        request = download.url_open(_master_zip_url)
-
-        if request is None:
+        r = requests.get(_master_zip_url, stream=True)
+        if r.status_code == requests.codes.ok:
+            with open(zip_path, 'wb') as zip_file:
+                for data in r.iter_content(1024):
+                    if not data:
+                        break
+                    zip_file.write(data)
+            return True
+        else:
             return False
 
-        if not os.path.exists(zip_path):
-            with open(zip_path, 'wb') as zip_file:
-                (data, error) = download.url_open_read(request)
-
-                while len(data) > 0 and not error:
-                    zip_file.write(data)
-                    (data, error) = download.url_open_read(request)
-
-                if error:
-                    return False
-        return True
-
     def unzip_and_copy(self, zip_path):
-        """ Unzip (decompress) a zip file using zipfile standard module """
+        """ Unzip (decompress) a zip file using zipfile standard module
+            and copy cnchi's files to their destinations """
         import zipfile
 
         dst_dir = "/tmp"
 
+        # First check all md5 signatures
+        all_md5_ok = True
         with zipfile.ZipFile(zip_path) as zip_file:
+            # Check md5 sums
             for member in zip_file.infolist():
                 zip_file.extract(member, dst_dir)
                 full_path = os.path.join(dst_dir, member.filename)
-                dst_full_path = os.path.join("/usr/share/cnchi", full_path.split("/tmp/Cnchi-master/")[1])
-                if os.path.isfile(dst_full_path) and dst_full_path in self.md5s:
-                    if self.md5s[dst_full_path] == get_md5_from_file(full_path):
+                dst_full_path = os.path.join(
+                    "/usr/share/cnchi",
+                    full_path.split("/tmp/Cnchi-master/")[1])
+                if os.path.isfile(dst_full_path):
+                    if dst_full_path in self.md5s:
+                        if "update.info" not in dst_full_path and self.md5s[dst_full_path] != get_md5_from_file(full_path):
+                            logging.warning(
+                                _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
+                                member.filename)
+                            all_md5_ok = False
+                            break
+                    else:
+                        logging.warning(
+                            _("File %s is not in md5 signatures list"),
+                            member.filename)
+
+            if all_md5_ok:
+                # All md5 sums where ok. Let's copy all files
+                for member in zip_file.infolist():
+                    full_path = os.path.join(dst_dir, member.filename)
+                    dst_full_path = os.path.join(
+                        "/usr/share/cnchi",
+                        full_path.split("/tmp/Cnchi-master/")[1])
+                    if os.path.isfile(dst_full_path):
                         try:
                             with misc.raised_privileges():
+                                logging.debug(
+                                    _("Copying %s to %s..."),
+                                    full_path,
+                                    dst_full_path)
                                 shutil.copyfile(full_path, dst_full_path)
                         except FileNotFoundError as file_error:
-                            logging.error(_("Can't copy %s to %s"), full_path, dst_full_path)
+                            logging.error(
+                                _("Can't copy %s to %s"),
+                                full_path,
+                                dst_full_path)
                             logging.error(file_error)
-                    else:
-                        logging.warning(_("Wrong md5. Bad download or wrong file, won't update this one"))

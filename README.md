@@ -12,9 +12,9 @@ This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
-|*Cnchi Legacy*|*v0.6.53*|*Frozen*|
-|**Cnchi Stable**|**v0.8.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.9.x | Active Development|
+|*Cnchi Legacy*|*v0.8.151*|*Frozen*|
+|**Cnchi Stable**|**v0.10.x**|**Bug Fixes Only**|
+|Cnchi Next | v0.11.x | Active Development|
 
 ## Usage:
 
@@ -53,6 +53,8 @@ We manage our translations in transifex:
  - upower
  - encfs, pam_encfs
  - iso-codes
+ - clutter, clutter-gtk, clutter-gst (user info screen)
+ - cheese
  
 ## Unit tests
  - python-mock 
@@ -65,4 +67,3 @@ We manage our translations in transifex:
  - ttf-myanmar3
  - ttf-thaana-fonts
  - ttf-tlwg
-

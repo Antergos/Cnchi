@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Shows slides while installing. Also manages installing messages and progress bars """
 
@@ -159,34 +164,33 @@ class Slides(GtkBaseBox):
 
             if event[0] == 'percent':
                 self.progress_bar.set_fraction(float(event[1]))
-            elif event[0] == 'progress_bar_text':
-                self.progress_bar.set_text(event[1])
-                # self.progress_bar.set_show_text(True)
             elif event[0] == 'downloads_percent':
                 self.downloads_progress_bar.set_fraction(float(event[1]))
-            elif event[0] == 'text':
-                if event[1] == 'hide':
-                    self.progress_bar.set_show_text(False)
-                    self.progress_bar.set_text("")
-                else:
-                    self.progress_bar.set_show_text(True)
+            elif event[0] == 'progress_bar_show_text':
+                if len(event[1]) > 0:
+                    # self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
+                else:
+                    # self.progress_bar.set_show_text(False)
+                    self.progress_bar.set_text("")
+            elif event[0] == 'progress_bar':
+                if event[1] == 'hide':
+                    self.progress_bar.hide()
+                elif event[1] == 'show':
+                    self.progress_bar.show()
+            elif event[0] == 'downloads_progress_bar':
+                if event[1] == 'hide':
+                    self.downloads_progress_bar.hide()
+                elif event[1] == 'show':
+                    self.downloads_progress_bar.show()
             elif event[0] == 'pulse':
                 if event[1] == 'stop':
                     self.stop_pulse()
                 elif event[1] == 'start':
                     self.start_pulse()
-            elif event[0] == 'progress_bar':
-                if event[1] == 'hide':
-                    self.progress_bar.hide()
-            elif event[0] == 'downloads_progress_bar':
-                if event[1] == 'hide':
-                    self.downloads_progress_bar.hide()
-                if event[1] == 'show':
-                    self.downloads_progress_bar.show()
             elif event[0] == 'finished':
                 logging.info(event[1])
-                if not self.settings.get('bootloader_installation_successful'):
+                if self.settings.get('bootloader_install') and not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
                     boot_warn = _("IMPORTANT: There may have been a problem with the bootloader\n"
                                   "installation which could prevent your system from booting properly. Before\n"
@@ -197,14 +201,12 @@ class Slides(GtkBaseBox):
                     response = show.question(self.get_toplevel(), boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
-
                         misc.drop_privileges()
                         webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
 
                 install_ok = _("Installation Complete!\nDo you want to restart your system now?")
                 response = show.question(self.get_toplevel(), install_ok)
                 misc.remove_temp_files()
-                self.settings.set('stop_all_threads', True)
                 logging.shutdown()
                 if response == Gtk.ResponseType.YES:
                     self.reboot()

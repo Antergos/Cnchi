@@ -4,7 +4,7 @@
 #
 #  postinstall.sh
 #
-#  Copyright © 2013,2014 Antergos
+#  Copyright © 2013-2015 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -27,6 +27,11 @@ set_xorg()
 {
     cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
     cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
+
+    # Fix sensitivity for chromebooks
+    if lsmod | grep -q cyapa; then
+        cp /usr/share/cnchi/scripts/postinstall/50-cros-touchpad.conf ${DESTDIR}/etc/X11/xorg.conf.d/50-cros-touchpad.conf
+    fi
 }
 
 gnome_settings()
@@ -143,6 +148,9 @@ xfce_settings()
 
     echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
 
+    # Add lxpolkit to autostart apps
+    cp /etc/xdg/autostart/lxpolkit.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart
+
     # xscreensaver config
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
     cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
@@ -157,31 +165,8 @@ openbox_settings()
     mkdir -p ${DESTDIR}/usr/share/antergos/
     cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
 
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    wget -q -O /tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
-    unzip -o -qq /tmp/master.zip -d /tmp
-
-    ## Copy slim theme
-    #mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    #cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
-
-    # Copy home files
-    cp /tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0
-    cp /tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
-
-    # Copy .config files
-    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
-    cp -R /tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
-
-    # Copy /etc setup files
-    cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
-
-    # Copy oblogout icons
-    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
-    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
+    # Setup user defaults
+    chroot ${DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${USER_NAME}
 
     # Set settings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
@@ -192,9 +177,6 @@ openbox_settings()
 
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
-
-    ## Set defaults directories
-    #chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Set openbox in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc

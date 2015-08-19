@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Installation thread module. """
 
@@ -41,7 +46,7 @@ import traceback
 
 from mako.template import Template
 
-import desktop_environments as desktops
+import desktop_info
 import parted3.fs_module as fs
 import misc.misc as misc
 import pacman.pac as pac
@@ -67,6 +72,8 @@ try:
 except ImportError as err:
     logging.error(err)
 
+import hardware.hardware as hardware
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
@@ -77,8 +84,7 @@ def chroot_run(cmd):
 
 def write_file(filecontents, filename):
     """ writes a string of data to disk """
-    if not os.path.exists(os.path.dirname(filename)):
-        os.makedirs(os.path.dirname(filename))
+    os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
 
     with open(filename, "w") as fh:
         fh.write(filecontents)
@@ -133,12 +139,16 @@ class InstallationProcess(multiprocessing.Process):
         self.pacman = None
         self.vbox = "False"
 
+        # Cnchi will store here info (packages needed, post install actions, ...)
+        # for the detected hardware
+        self.hardware_install = None
+
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
         self.error = True
         self.running = False
         self.queue_event('error', txt)
-        self.callback_queue.join()
+        # self.callback_queue.join()
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
@@ -202,7 +212,7 @@ class InstallationProcess(multiprocessing.Process):
 
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
-                os.makedirs(DEST_DIR)
+                os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
         else:
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
@@ -266,8 +276,7 @@ class InstallationProcess(multiprocessing.Process):
             subprocess.check_call(['mount', root_partition, DEST_DIR])
             # We also mount the boot partition if it's needed
             boot_path = os.path.join(DEST_DIR, "boot")
-            if not os.path.exists(boot_path):
-                os.makedirs(boot_path)
+            os.makedirs(boot_path, mode=0o755, exist_ok=True)
             if "/boot" in self.mount_devices:
                 txt = _("Mounting partition {0} into {1}/boot directory")
                 txt = txt.format(boot_partition, boot_path)
@@ -288,8 +297,7 @@ class InstallationProcess(multiprocessing.Process):
                             path = path[1:]
                         mount_dir = os.path.join(DEST_DIR, path)
                         try:
-                            if not os.path.exists(mount_dir):
-                                os.makedirs(mount_dir)
+                            os.makedirs(mount_dir, mode=0o755, exist_ok=True)
                             txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
                             logging.debug(txt)
                             subprocess.check_call(['mount', mount_part, mount_dir])
@@ -325,8 +333,7 @@ class InstallationProcess(multiprocessing.Process):
             os.path.join(DEST_DIR, 'var/log')]
 
         for folder in folders:
-            if not os.path.exists(folder):
-                os.makedirs(folder)
+            os.makedirs(folder, mode=0o755, exist_ok=True)
 
         # If kernel images exists in /boot they are most likely from a failed install attempt and need
         # to be removed otherwise pyalpm will raise a fatal exception later on.
@@ -436,8 +443,7 @@ class InstallationProcess(multiprocessing.Process):
 
         for pacman_dir in dirs:
             mydir = os.path.join(DEST_DIR, pacman_dir)
-            if not os.path.exists(mydir):
-                os.makedirs(mydir)
+            os.makedirs(mydir, mode=0o755, exist_ok=True)
 
         self.prepare_pacman_keyring()
 
@@ -448,18 +454,8 @@ class InstallationProcess(multiprocessing.Process):
             self.pacman = None
             raise InstallError(_("Can't initialize pyalpm."))
 
-        # If we failed to download any packages earlier, try refreshing our mirrorlist
-        # before ALPM attempts to download them.
-        if self.settings.get('failed_download'):
-            from rank_mirrors import AutoRankmirrorsThread
-            retry = AutoRankmirrorsThread()
-            retry.start()
-            retry.join()
-
         # Refresh pacman databases
-        result = self.pacman.refresh()
-
-        if not result:
+        if not self.pacman.refresh():
             txt = _("Can't refresh pacman databases.")
             logging.error(txt)
             raise InstallError(txt)
@@ -531,7 +527,7 @@ class InstallationProcess(multiprocessing.Process):
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
 
-        lib = desktops.LIBS
+        lib = desktop_info.LIBS
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
@@ -579,29 +575,26 @@ class InstallationProcess(multiprocessing.Process):
                 logging.debug(_("Selected kde language pack: %s"), pkg)
                 self.packages.append(pkg)
 
-        # Add ntp package if user selected it in timezone screen
-        if self.settings.get('use_ntp'):
-            for child in xml_root.iter('ntp'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        # Get packages needed for detected hardware
         try:
-            import hardware.hardware as hardware
-
-            hardware_install = hardware.HardwareInstall()
-            driver_names = hardware_install.get_found_driver_names()
+            # Detect which hardware drivers are needed
+            self.hardware_install = hardware.HardwareInstall(
+                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
+            driver_names = self.hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
                 logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
-            hardware_pkgs = hardware_install.get_packages()
+
+            # Add needed hardware packages to our list
+            hardware_pkgs = self.hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
-                logging.debug(_("Hardware module added these packages : %s"), txt)
+                logging.debug(_("Hardware module added these packages: %s"), txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
+
+            # Run pre-install scripts (only catalyst does something here atm)
+            logging.debug(_("Running hardware drivers pre-install jobs..."))
+            self.hardware_install.pre_install(DEST_DIR)
         except Exception as general_error:
             logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
 
@@ -664,12 +657,15 @@ class InstallationProcess(multiprocessing.Process):
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
         desktop = self.settings.get("desktop")
-        lib = desktops.LIBS
+        lib = desktop_info.LIBS
 
         # Add necessary packages for user desired features to our install list
         for xml_features in xml_root.iter('features'):
             for xml_feature in xml_features.iter('feature'):
                 feature = xml_feature.attrib.get("name")
+                # If LEMP is selected, do not install lamp even if it's selected
+                if feature == "lamp" and self.settings.get("feature_lemp"):
+                    continue
                 if self.settings.get("feature_" + feature):
                     logging.debug(_("Adding packages for '%s' feature."), feature)
                     for pkg in xml_feature.iter('pkgname'):
@@ -776,10 +772,17 @@ class InstallationProcess(multiprocessing.Process):
         use_luks = self.settings.get("use_luks")
         use_lvm = self.settings.get("use_lvm")
 
+        # Use lsblk to be able to match LUKS UUID with mapper UUID
+        pknames = fs.get_pknames()
+
         for mount_point in self.mount_devices:
             partition_path = self.mount_devices[mount_point]
-            part_info = fs.get_info(partition_path)
-            uuid = part_info['UUID']
+            uuid = fs.get_uuid(partition_path)
+            if uuid == "":
+                logging.warning(
+                    _("Can't get {0} partition UUID. It won't be added to fstab"),
+                    partition_path)
+                continue
 
             if partition_path in self.fs_devices:
                 myfmt = self.fs_devices[partition_path]
@@ -827,17 +830,39 @@ class InstallationProcess(multiprocessing.Process):
 
             # Add all LUKS partitions from Advanced Install (except root).
             if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
-                os.chmod(crypttab_path, 0o666)
-                vol_name = partition_path[len("/dev/mapper/"):]
-                with open(crypttab_path, 'a') as crypttab_file:
-                    line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, uuid)
-                    crypttab_file.write(line)
-                    logging.debug(_("Added to crypttab : %s"), line)
-                os.chmod(crypttab_path, 0o600)
+                # As the mapper with the filesystem will have a different UUID than
+                # the partition it is encrypted in, we have to take care of this here.
+                # Then we will be able to add it to crypttab
 
-                txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
-                all_lines.append(txt)
-                logging.debug(_("Added to fstab : %s"), txt)
+                vol_name = partition_path[len("/dev/mapper/"):]
+                try:
+                    luks_partition_path = "/dev/" + pknames[vol_name]
+                except KeyError:
+                    logging.error(_("Can't find the PKNAME value of %s"), partition_path)
+                    continue
+
+                luks_uuid = fs.get_uuid(luks_partition_path)
+
+                if len(luks_uuid) > 0:
+                    # OK, add it to crypttab with the correct uuid
+                    os.chmod(crypttab_path, 0o666)
+                    with open(crypttab_path, 'a') as crypttab_file:
+                        line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
+                        crypttab_file.write(line)
+                        logging.debug(_("Added to crypttab : %s"), line)
+                    os.chmod(crypttab_path, 0o600)
+                else:
+                    logging.error(
+                        _("Can't add luks uuid to crypttab for %s partition"),
+                        luks_partition_path)
+                    continue
+
+                # Finally, the fstab line to mount the unencrypted file system
+                # if a mount point has been specified by the user
+                if len(mount_point) > 0:
+                    txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
+                    all_lines.append(txt)
+                    logging.debug(_("Added to fstab : %s"), txt)
                 continue
 
             # fstab uses vfat to mount fat16 and fat32 partitions
@@ -853,18 +878,10 @@ class InstallationProcess(multiprocessing.Process):
 
             # Create mount point on destination system if it yet doesn't exist
             full_path = os.path.join(DEST_DIR, mount_point)
-            if not os.path.exists(full_path):
-                os.makedirs(full_path)
+            os.makedirs(full_path, mode=0o755, exist_ok=True)
 
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
-
-            '''
-            is_ssd = False
-            for ssd_device in self.ssd:
-                if ssd_device in partition_path:
-                    is_ssd = True
-            '''
 
             logging.debug("Device list : {0}".format(self.ssd))
             device = re.sub("[0-9]+$", "", partition_path)
@@ -880,7 +897,7 @@ class InstallationProcess(multiprocessing.Process):
                 elif "ext3" in myfmt or "ext4" in myfmt:
                     opts = 'defaults,rw,relatime,data=ordered'
                 else:
-                    opts = "defaults,rw,relatime"
+                    opts = 'defaults,rw,relatime'
             else:
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
@@ -905,11 +922,6 @@ class InstallationProcess(multiprocessing.Process):
             all_lines.append(txt)
             logging.debug(_("Added to fstab : %s"), txt)
 
-        # Create tmpfs line in fstab
-        tmpfs = "tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0"
-        all_lines.append(tmpfs)
-        logging.debug(_("Added to fstab : %s"), tmpfs)
-
         full_text = '\n'.join(all_lines) + '\n'
 
         fstab_path = os.path.join(DEST_DIR, 'etc/fstab')
@@ -933,10 +945,12 @@ class InstallationProcess(multiprocessing.Process):
     def enable_services(services):
         """ Enables all services that are in the list 'services' """
         for name in services:
-            path = os.path.join(DEST_DIR, "usr/lib/systemd/system/{0}.service".format(name))
+            path = os.path.join(
+                DEST_DIR,
+                "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
                 chroot_run(['systemctl', '-f', 'enable', name])
-                logging.debug(_("Enabled %s service."), name)
+                logging.debug(_("Service '%s' has been enabled."), name)
             else:
                 logging.warning(_("Can't find service %s"), name)
 
@@ -960,19 +974,33 @@ class InstallationProcess(multiprocessing.Process):
     @staticmethod
     def auto_timesetting():
         """ Set hardware clock """
-        subprocess.check_call(["hwclock", "--systohc", "--utc"])
+        try:
+            subprocess.check_call(["hwclock", "--systohc", "--utc"])
+        except subprocess.CalledProcessError as process_error:
+            logging.warning(_("Error adjusting hardware clock"))
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     @staticmethod
     def update_pacman_conf():
-        """ Add Antergos repo """
+        """ Add Antergos and multilib repos """
         path = os.path.join(DEST_DIR, "etc/pacman.conf")
         if os.path.exists(path):
-            with open(path, "a") as pacman_conf:
-                pacman_conf.write("\n\n")
-                pacman_conf.write("[antergos]\n")
-                pacman_conf.write("SigLevel = PackageRequired\n")
-                pacman_conf.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+            paclines = []
+            with open(path) as f:
+                paclines = f.readlines()
+
+            if os.uname()[-1] == "x86_64":
+                for i in range(0, len(paclines)):
+                    if paclines[i] == "#[multilib]\n":
+                        paclines[i] = "[multilib]\n"
+                        paclines[i+1] = "Include = /etc/pacman.d/mirrorlist\n"
+                        break
+            paclines.append("\n")
+            paclines.append("[antergos]\n")
+            paclines.append("SigLevel = PackageRequired\n")
+            paclines.append("Include = /etc/pacman.d/antergos-mirrorlist\n")
+            with open(path, "w") as f:
+                f.write("".join(paclines))
         else:
             logging.warning(_("Can't find pacman configuration file"))
 
@@ -1007,8 +1035,7 @@ class InstallationProcess(multiprocessing.Process):
             return
         self.queue_event('info', _('Copying xz files from cache...'))
         dest_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-        if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
+        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
         self.copy_files_progress(cache_dir, dest_dir)
 
     def copy_files_progress(self, src, dst):
@@ -1053,24 +1080,35 @@ class InstallationProcess(multiprocessing.Process):
             firewall.run(["enable"])
             services.append('ufw')
 
-        if self.settings.get("feature_lts"):
-            # FIXME: Antergos doesn't boot if linux lts is selected
-            # Is something wrong with the 10_antergos file ?
-            chroot_run(["chmod", "a-x", "/etc/grub.d/10_antergos"])
-            chroot_run(["chmod", "a+x", "/etc/grub.d/10_linux"])
-            chroot_run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"])
-            chroot_run(["chmod", "a-x", "/etc/grub.d/10_linux"])
-            chroot_run(["chmod", "a+x", "/etc/grub.d/10_antergos"])
+        if self.settings.get("feature_lamp") and not self.settings.get("feature_lemp"):
+            try:
+                from installation import lamp
+                logging.debug(_("Configuring LAMP..."))
+                lamp.setup()
+                services.extend(["httpd", "mysqld"])
+            except ImportError as error:
+                logging.warning(_("Can't import LAMP module"))
+                logging.warning(error)
+        elif self.settings.get("feature_lemp"):
+            try:
+                from installation import lemp
+                logging.debug(_("Configuring LEMP..."))
+                lemp.setup()
+                services.extend(["nginx", "mysqld", "php-fpm"])
+            except ImportError as error:
+                logging.warning(_("Can't import LEMP module"))
+                logging.warning(error)
 
         self.enable_services(services)
+        # TODO: graphic driver setup (if proprietary is used)
 
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
         txt = _("Configuring LightDM desktop manager...")
         self.queue_event('info', txt)
 
-        if self.desktop in desktops.SESSIONS:
-            session = desktops.SESSIONS[self.desktop]
+        if self.desktop in desktop_info.SESSIONS:
+            session = desktop_info.SESSIONS[self.desktop]
         else:
             session = "default"
 
@@ -1203,32 +1241,20 @@ class InstallationProcess(multiprocessing.Process):
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
             self.copy_network_config()
-        elif self.network_manager == 'netctl':
-            # Copy network profile when using netctl (and not networkmanager)
-            # netctl is used in the 'base' desktop option
-            # Nowadays nearly everybody uses dhcp. If user wants to use a fixed IP the profile must be
-            # edited by himself. Maybe we could ease this process?
-            profile = 'ethernet-dhcp'
-            # if misc.is_wireless_enabled():
-            #     # TODO: We should port wifi-menu from netctl package here.
-            #     profile = 'wireless-wpa'
 
-            # TODO: Just copying the default profile is NOT an elegant solution
-            logging.debug(_("Cnchi will configure netctl using the %s profile"), profile)
-            src_path = os.path.join(DEST_DIR, 'etc/netctl/examples', profile)
-            dst_path = os.path.join(DEST_DIR, 'etc/netctl', profile)
+        if self.desktop == "base":
+            # Setup systemd-networkd for systems that won't use the
+            # networkmanager daemon (atm is just base install)
+            # Enable systemd_networkd services
+            # See: https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
+            self.enable_services(["systemd-networkd", "systemd-resolved"])
+            # Setup systemd_networkd
+            # TODO: Ask user for SSID and passphrase if a wireless link is found
+            # (should this be done here or inside systemd_networkd.setup() ?)
+            from installation import systemd_networkd
+            systemd_networkd.setup()
 
-            try:
-                shutil.copy(src_path, dst_path)
-            except FileNotFoundError:
-                logging.warning(_("Can't copy network configuration profiles"))
-            except FileExistsError:
-                pass
-            # Enable our profile
-            chroot_run(['netctl', 'enable', profile])
-            # logging.warning(_('Netctl is installed. Please edit %s to finish your network configuration.'), dst_path)
-
-        logging.debug(_("Network configuration copied."))
+        logging.debug(_("Network configuration done."))
 
         # Copy mirror list
         mirrorlist_path = os.path.join(DEST_DIR, 'etc/pacman.d/mirrorlist')
@@ -1245,16 +1271,24 @@ class InstallationProcess(multiprocessing.Process):
 
         logging.debug(_("Generated /etc/pacman.conf"))
 
-        # Enable services
+        # Enable some useful services
         services = []
         if self.desktop != "base":
+            # In base there's no desktop manager ;)
             services.append(self.desktop_manager)
-        services.extend(["ModemManager", self.network_manager, "remote-fs.target", "haveged"])
+            # In base we use systemd-networkd (setup already done above)
+            services.append(self.network_manager)
+        services.extend(["ModemManager", "haveged"])
         self.enable_services(services)
 
-        # Enable ntp service
-        if self.settings.get("use_ntp"):
-            self.enable_services(["ntpd"])
+        # Enable timesyncd service
+        if self.settings.get("use_timesyncd"):
+            timesyncd_path = os.path.join(DEST_DIR, "etc/systemd/timesyncd.conf")
+            with open(timesyncd_path, 'w') as timesyncd:
+                timesyncd.write("[Time]\n")
+                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
+                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org\n")
+            chroot_run(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
@@ -1288,16 +1322,14 @@ class InstallationProcess(multiprocessing.Process):
             logging.error(io_error)
 
         # Configure detected hardware
-        try:
-            import hardware.hardware as hardware
-
-            hardware_install = hardware.HardwareInstall()
-            logging.debug(_("Running post-install scripts from hardware module..."))
-            hardware_install.post_install(DEST_DIR)
-        except ImportError:
-            logging.warning(_("Can't import hardware module."))
-        except Exception as general_error:
-            logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
+        # NOTE: Because hardware can need extra repos, this code must run
+        # always after having called the update_pacman_conf method
+        if self.hardware_install:
+            try:
+                logging.debug(_("Running hardware drivers post-install jobs..."))
+                self.hardware_install.post_install(DEST_DIR)
+            except Exception as general_error:
+                logging.error(_("Unknown error in hardware module. Output: %s"), general_error)
 
         # Setup user
 
@@ -1338,38 +1370,34 @@ class InstallationProcess(multiprocessing.Process):
         logging.debug(_("Set the same password to root."))
 
         # Generate locales
-        keyboard_layout = self.settings.get("keyboard_layout")
-        keyboard_variant = self.settings.get("keyboard_variant")
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales..."))
-
         self.uncomment_locale_gen(locale)
-
         chroot_run(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
             locale_conf.write('LANG={0}\n'.format(locale))
             locale_conf.write('LC_COLLATE={0}\n'.format(locale))
 
-        environment_path = os.path.join(DEST_DIR, "etc/environment")
-        with open(environment_path, "w") as environment:
-            environment.write('LANG={0}\n'.format(locale))
-
-        # Set /etc/vconsole.conf
-        vconsole_conf_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        with open(vconsole_conf_path, "w") as vconsole_conf:
-            vconsole_conf.write('KEYMAP={0}\n'.format(keyboard_layout))
+        #environment_path = os.path.join(DEST_DIR, "etc/environment")
+        #with open(environment_path, "w") as environment:
+        #    environment.write('LANG={0}\n'.format(locale))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
+        self.queue_event('info', _("Configuring keymap..."))
+
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
+
         if self.desktop != "base":
-            # Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout
-            logging.debug(_("Set /etc/X11/xorg.conf.d/10-keyboard.conf for the xkblayout"))
+            # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
+            logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
             xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
             if not os.path.exists(xorg_conf_dir):
                 os.mkdir(xorg_conf_dir, 0o755)
-            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "10-keyboard.conf")
+            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
             try:
                 with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
                     xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
@@ -1378,22 +1406,31 @@ class InstallationProcess(multiprocessing.Process):
                     xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
                     xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
                     xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                    if len(keyboard_variant) > 0:
+                    if keyboard_variant and len(keyboard_variant) > 0:
                         xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                     xorg_conf_xkb.write('EndSection\n')
-                logging.debug(_("10-keyboard.conf written."))
+                logging.debug(_("00-keyboard.conf written."))
             except IOError as io_error:
-                # Do not fail if 10-keyboard.conf can't be created. Something bad must be happening, though.
+                # Do not fail if 00-keyboard.conf can't be created.
+                # Something bad must be happening, though.
                 logging.error(io_error)
 
-        # Install configs for root
-        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
+        # Set vconsole.conf for console keymap
+        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
+        with open(vconsole_path, 'w') as vconsole:
+            vconsole.write("KEYMAP={0}\n".format(keyboard_layout))
 
-        self.queue_event('info', _("Configuring hardware ..."))
+        # Install configs for root
+        cmd = ['cp', '-av', '/etc/skel/.', '/root/']
+        chroot_run(cmd)
+
+        self.queue_event('info', _("Configuring hardware..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
-            shutil.copy2('/etc/X11/xorg.conf', os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
+            shutil.copy2(
+                "/etc/X11/xorg.conf",
+                os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
 
         # Configure ALSA
         self.alsa_mixer_setup()
@@ -1415,30 +1452,35 @@ class InstallationProcess(multiprocessing.Process):
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
         logging.debug(_("Call Cnchi post-install script"))
-        # Call post-install script to execute (g,k)settings commands or install openbox defaults
-        script_path_postinstall = os.path.join(self.settings.get('cnchi'), "scripts", POSTINSTALL_SCRIPT)
+        # Call post-install script to fine tune our setup
+        script_path_postinstall = os.path.join(
+            self.settings.get('cnchi'),
+            "scripts",
+            POSTINSTALL_SCRIPT)
+        cmd = ["/usr/bin/bash",
+            script_path_postinstall,
+            username,
+            DEST_DIR,
+            self.desktop,
+            keyboard_layout]
+        if keyboard_variant:
+            cmd.append(keyboard_variant)
+        else:
+            cmd.append("")
+        cmd.append(self.vbox)
         try:
-            subprocess.check_call([
-                "/usr/bin/bash",
-                script_path_postinstall,
-                username,
-                DEST_DIR,
-                self.desktop,
-                keyboard_layout,
-                keyboard_variant,
-                self.vbox],
-                timeout=300)
+            subprocess.check_call(cmd, timeout=300)
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:
-            # Even though Post-install script call has failed we will try to continue with the installation.
+            # Even though Post-install script call has failed we will go on
             logging.error(_("Error running post-install script"))
             logging.error(_("Command %s failed"), process_error.cmd)
             logging.error(_("Output: %s"), process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 
+        # Set lightdm config including autologin if selected
         if self.desktop != "base":
-            # Set lightdm config including autologin if selected
             self.setup_display_manager()
 
         # Configure user features (firewall, libreoffice language pack, ...)
@@ -1456,7 +1498,6 @@ class InstallationProcess(multiprocessing.Process):
             try:
                 logging.debug(_("Installing bootloader..."))
                 from installation import bootloader
-
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:

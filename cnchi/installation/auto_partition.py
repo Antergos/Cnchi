@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 import os
 import subprocess
@@ -28,6 +33,8 @@ import logging
 import math
 
 from misc.misc import InstallError
+
+import parted3.fs_module as fs
 
 '''
 NOTE: Exceptions in this file
@@ -45,21 +52,6 @@ MAX_ROOT_SIZE = 30000
 
 # KDE needs 4.5 GB for its files. Need to leave extra space also.
 MIN_ROOT_SIZE = 6500
-
-
-def get_info(part):
-    """ Get partition info using blkid """
-    cmd = ['blkid', part]
-    ret = subprocess.check_output(cmd).decode().strip()
-
-    partdic = {}
-
-    for info in ret.split():
-        if '=' in info:
-            info = info.split('=')
-            partdic[info[0]] = info[1].strip('"')
-
-    return partdic
 
 
 def check_output(command):
@@ -191,6 +183,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         try:
             cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
             subprocess.check_call(cmd)
+
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
@@ -289,9 +282,13 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     else:
         start_str = "{0}MiB".format(start)
 
-    end_str = "{0}MiB".format(end)
+    # -1s means "end of disk"
+    if end == "-1s":
+        end_str = end
+    else:
+        end_str = "{0}MiB".format(end)
 
-    cmd = ['parted', '--align', 'optimal', '--script', device, 'mkpart', ptype, filesystem, start_str, end_str]
+    cmd = ['parted', '--align', 'optimal', '--script', device, '--', 'mkpart', ptype, filesystem, start_str, end_str]
 
     try:
         subprocess.check_call(cmd)
@@ -333,7 +330,7 @@ class AutoPartition(object):
         self.lvm = use_lvm
         # Make home a different partition or if using LVM, a different volume
         self.home = use_home
-        
+
         self.bootloader = bootloader.lower()
 
         # Will use these queue to show progress info to the user
@@ -400,8 +397,7 @@ class AutoPartition(object):
 
             # Create our mount directory
             path = self.dest_dir + mount_point
-            if not os.path.exists(path):
-                os.makedirs(path, mode=0o755)
+            os.makedirs(path, mode=0o755, exist_ok=True)
 
             # Mount our new filesystem
 
@@ -412,7 +408,8 @@ class AutoPartition(object):
                 mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
 
             try:
-                subprocess.check_call(["mount", "-t", fs_type, "-o", mopts, device, path])
+                cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
+                subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
                 txt = _("Error trying to  mount {0} in {1}").format(device, path)
                 logging.error(txt)
@@ -429,8 +426,8 @@ class AutoPartition(object):
                 mode = 0o755
             os.chmod(path, mode)
 
-        fs_uuid = get_info(device)['UUID']
-        fs_label = get_info(device)['LABEL']
+        fs_uuid = fs.get_uuid(device)
+        fs_label = fs.get_label(device)
         logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
 
     @property
@@ -452,7 +449,7 @@ class AutoPartition(object):
             if self.bootloader == "grub2":
                 devices['efi'] = "{0}{1}".format(device, part_num)
                 part_num += 1
-            
+
             devices['boot'] = "{0}{1}".format(device, part_num)
             part_num += 1
             devices['root'] = "{0}{1}".format(device, part_num)
@@ -535,7 +532,7 @@ class AutoPartition(object):
             fs_devices[devices['boot']] = "vfat"
         else:
             fs_devices[devices['boot']] = "ext2"
-        
+
         fs_devices[devices['swap']] = "swap"
         fs_devices[devices['root']] = "ext4"
 
@@ -584,7 +581,8 @@ class AutoPartition(object):
 
         part_sizes['swap'] = math.ceil(part_sizes['swap'])
 
-        part_sizes['root'] = disk_size - (start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap'])
+        other_than_root_size = start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap']
+        part_sizes['root'] = disk_size - other_than_root_size
 
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
@@ -636,7 +634,7 @@ class AutoPartition(object):
                 logical_block_size = int(f.read())
             with open(size_path, 'r') as f:
                 size = int(f.read())
-            disk_size = ((logical_block_size * size) / 1024) / 1024
+            disk_size = ((logical_block_size * (size - 68)) / 1024) / 1024
         else:
             txt = _("Setup cannot detect size of your device, please use advanced "
                     "installation routine for partitioning and mounting devices.")
@@ -739,7 +737,8 @@ class AutoPartition(object):
             if self.lvm:
                 # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
                 start = end
-                end = start + part_sizes['lvm_pv']
+                # end = start + part_sizes['lvm_pv']
+                end = "-1s"
                 parted_mkpart(device, "primary", start, end)
 
                 # Set lvm flag
@@ -758,11 +757,13 @@ class AutoPartition(object):
 
                 # Create an extended partition where we will put our swap partition
                 start = end
-                end = start + part_sizes['swap']
+                # end = start + part_sizes['swap']
+                end = "-1s"
                 parted_mkpart(device, "extended", start, end)
 
                 # Now create a logical swap partition
                 start += 1
+                end = "-1s"
                 parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
@@ -797,7 +798,7 @@ class AutoPartition(object):
                 txt = _("Error creating LVM physical volume")
                 logging.error(txt)
                 logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                # logging.error(_("Output: %s"), err.output)
                 raise InstallError(txt)
 
             try:
@@ -921,5 +922,6 @@ if __name__ == '__main__':
         luks_password="luks",
         use_lvm=True,
         use_home=True,
+        bootloader="grub2",
         callback_queue=None)
     auto.run()

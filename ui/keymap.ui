@@ -4,91 +4,31 @@
   <object class="GtkBox" id="keymap">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="orientation">vertical</property>
+    <property name="orientation">horizontal</property>
     <property name="spacing">10</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+    <property name="margin_start">10</property>
+    <property name="margin_end">10</property>
     <child>
-      <object class="GtkGrid" id="grid1">
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">True</property>
+
+        <property name="hexpand">True</property>
         <property name="vexpand">True</property>
+        <property name="shadow_type">in</property>
         <child>
-          <object class="GtkScrolledWindow" id="scrolledwindow1">
+          <object class="GtkTreeView" id="keymap_treeview">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_start">10</property>
-            <property name="margin_end">10</property>
-            <property name="hexpand">False</property>
-            <property name="width_request">255</property>            
-            <property name="vexpand">True</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkTreeView" id="keyboardlayout">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="headers_visible">False</property>
-                <property name="headers_clickable">False</property>
-                <signal name="cursor-changed" handler="on_keyboardlayout_cursor_changed" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treeview-selection1"/>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="scrolledwindow2">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="margin_start">10</property>
-            <property name="margin_end">10</property>
             <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="shadow_type">in</property>
-            <child>
-              <object class="GtkTreeView" id="keyboardvariant">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
-                <property name="headers_visible">False</property>
-                <property name="headers_clickable">False</property>
-                <signal name="cursor-changed" handler="on_keyboardvariant_cursor_changed" swapped="no"/>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treeview-selection2"/>
-                </child>
-              </object>
+            <property name="headers_visible">False</property>
+            <property name="headers_clickable">False</property>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection" id="treeview-selection1"/>
             </child>
           </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_layouts">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Keyboard Layouts</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label_variants">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Keyboard Variants</property>
-          </object>
-          <packing>
-            <property name="left_attach">1</property>
-            <property name="top_attach">0</property>
-          </packing>
         </child>
       </object>
       <packing>
@@ -98,72 +38,56 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box2">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="GtkEventBox" id="eventbox1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="KeyboardWidget" id="keyboard_widget">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <!--<property name="hexpand">True</property>
-            <property name="vexpand">True</property>-->
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEventBox" id="eventbox2">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">2</property>
-          </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">1</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEntry" id="keyboard_test_entry">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
-        <property name="margin_bottom">5</property>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">2</property>
-      </packing>
+    <object class="GtkBox" id="vbox">
+      <property name="visible">True</property>
+      <property name="can_focus">False</property>
+      <property name="orientation">vertical</property>
+      <property name="spacing">10</property>
+      <child>
+        <object class="GtkLabel" id="label_layouts">
+          <property name="visible">True</property>
+          <property name="can_focus">False</property>
+          <property name="label" translatable="yes">Keyboard Layouts</property>
+        </object>
+        <packing>
+          <property name="expand">True</property>
+          <property name="fill">True</property>
+          <property name="position">0</property>
+        </packing>
+      </child>
+      <child>
+        <object class="KeyboardWidget" id="keyboard_widget">
+          <property name="visible">True</property>
+          <property name="can_focus">False</property>
+          <!--<property name="margin_start">5</property>
+          <property name="margin_end">10</property>-->
+        </object>
+        <packing>
+          <property name="expand">False</property>
+          <property name="fill">False</property>
+          <property name="position">1</property>
+        </packing>
+      </child>
+      <child>
+        <object class="GtkEntry" id="keyboard_test_entry">
+          <property name="visible">True</property>
+          <property name="can_focus">True</property>
+          <!--<property name="margin_start">5</property>
+          <property name="margin_end">10</property>
+          <property name="margin_bottom">5</property>-->
+        </object>
+        <packing>
+          <property name="expand">False</property>
+          <property name="fill">True</property>
+          <property name="position">2</property>
+        </packing>
+      </child>
+    </object>
+    <packing>
+      <property name="expand">False</property>
+      <property name="fill">False</property>
+      <property name="position">1</property>
+    </packing>
     </child>
   </object>
 </interface>

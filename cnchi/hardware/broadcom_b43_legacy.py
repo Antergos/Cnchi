@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,45 +17,40 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Broadcom b43legacy driver installation """
 
-from hardware.hardware import Hardware
+import os
+
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 CLASS_NAME = "BroadcomB43Legacy"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
-
-DEVICES = [
-    ('0x4301', "BCM4301"),
-    ('0x4306', "BCM4306/2"),
-    ('0x4320', "BCM4306/2"),
-    ('0x4324', "BCM4306"),
-    ('0x4325', "BCM4306/2")]
+DEVICES = ['0x4301', '0x4306', '0x4320', '0x4324', '0x4325']
 
 
 class BroadcomB43Legacy(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     def get_packages(self):
         return ["b43-firmware-legacy"]
 
     def post_install(self, dest_dir):
-        with open("/etc/modprobe.d/blacklist", "a") as blacklist:
+        path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
+        with open(path, "w") as blacklist:
             blacklist.write("blacklist b43\n")
-
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if vendor_id == VENDOR_ID:
-            for (product, description) in DEVICES:
-                if product_id == product:
-                    return True
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
+            blacklist.write("blacklist wl\n")

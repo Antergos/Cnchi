@@ -7,7 +7,7 @@
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -19,125 +19,204 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-"""Parse the output of kbdnames-maker."""
+""" Parse base.xml """
 
-from collections import defaultdict
-import gzip
-import io
+import logging
+import os
+from gi.repository import GObject
+from collections import OrderedDict
 
-"""
-lang*layout*layout_code*layout_name
-lang*variant*layout_code*variant_code*variant_name
+try:
+    import xml.etree.cElementTree as eTree
+except ImportError as err:
+    import xml.etree.ElementTree as eTree
 
-C*layout*th*Thailand
-C*variant*th**Thailand
-C*variant*th*pat*Thailand - Pattachote
-C*variant*th*tis*Thailand - TIS-820.2538
-"""
+
+class Model(GObject.GObject):
+    def __init__(self, name, description, vendor):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.description =  description
+        self.vendor = vendor
+
+    def __repr__(self):
+        return self.description
+
+
+class Variant(GObject.GObject):
+    def __init__(self, name, short_description, description, language_list):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.short_description = short_description
+        self.description = description
+        self.language_list = language_list
+
+    def __repr__(self):
+        return self.description
+
+
+class Layout(GObject.GObject):
+    def __init__(self, name, short_description, description, language_list):
+        GObject.GObject.__init__(self)
+        self.name = name
+        self.short_description = short_description
+        self.description = description
+        self.language_list = language_list
+        self.variants = {}
+
+    def __repr__(self):
+        return self.description
+
+    def add_variant(self, variant):
+        self.variants[variant.name] = variant
+
+    def sort_variants(self):
+        self.variants = OrderedDict(sorted(self.variants.items(), key=lambda t: str(t[1])))
 
 
 class KeyboardNames():
-    def __init__(self, filename):        
-        self._current_lang = None
+    def __init__(self, filename):
         self._filename = filename
-        self._clear()
+        self._load_file()
 
     def _clear(self):
-        self.layouts = {}
-        self.variants = defaultdict(dict)
         self.models = {}
+        self.layouts = {}
 
-    def _load_file(self, lang, kbdnames):
-        for line in kbdnames:
-            line = line.rstrip("\n")
-            got_lang, element, layout_code, value = line.split("*", 3)
-                
-            if got_lang != lang:
-                continue
-
-            if element == "layout":
-                self.layouts[layout_code] = value
-            elif element == "variant":
-                variant_code, variant_name = value.split("*", 1)
-                self.variants[layout_code][variant_code] = variant_name
-            elif element == "model":
-                self.models[layout_code] = value
-
-    def load(self, lang):
-        if lang == self._current_lang:
-            # Already loaded
+    def _load_file(self):
+        if not os.path.exists(self._filename):
+            logging.error(_("Can't find %s file!"), self._filename)
             return
 
-        # Saving memory is more important than parsing time in the
-        # relatively rare case of changing languages, so we only keep data
-        # around for a single language.
         self._clear()
 
-        raw = gzip.open(self._filename)
-        try:
-            with io.TextIOWrapper(raw, encoding='utf-8') as kbdnames:
-                self._load_file(lang, kbdnames)
-        finally:
-            raw.close()
-        self._current_lang = lang
+        xml_tree = eTree.parse(self._filename)
+        xml_root = xml_tree.getroot()
 
-    '''
-    layout: layout_code : layout_name
-    variant: variant_code : variant_name
-    '''
+        for model in xml_root.iter('model'):
+            for config_item in model.iter('configItem'):
+                for item in config_item:
+                    if item.tag == "name":
+                        model_name = item.text
+                    elif item.tag == "description":
+                        model_description = item.text
+                    elif item.tag == "vendor":
+                        model_vendor = item.text
+                # Store model
+                self.models[model_name] = Model(
+                    model_name,
+                    model_description,
+                    model_vendor)
 
-    def get_layouts(self, lang):
-        self.load(lang)
+        for layout in xml_root.iter('layout'):
+            for layout_item in layout:
+                layout_language_list = []
+                if layout_item.tag == "configItem":
+                    for item in layout_item:
+                        if item.tag == "name":
+                            layout_name = item.text
+                        elif item.tag == "shortDescription":
+                            layout_short_description = item.text
+                        elif item.tag == "description":
+                            layout_description = item.text
+                        elif item.tag == "languageList":
+                            for lang in item:
+                                layout_language_list.append(lang.text)
+                    self.layouts[layout_name] = Layout(
+                        layout_name,
+                        layout_short_description,
+                        layout_description,
+                        layout_language_list)
+
+                if layout_item.tag == "variantList":
+                    for variant in layout_item:
+                        variant_language_list = []
+                        for config_item in variant:
+                            for item in config_item:
+                                if item.tag == "name":
+                                    variant_name = item.text
+                                elif item.tag == "shortDescription":
+                                    variant_short_description = item.text
+                                elif item.tag == "description":
+                                    variant_description = item.text
+                                elif item.tag == "languageList":
+                                    for lang in item:
+                                        variant_language_list.append(lang.text)
+
+                            self.layouts[layout_name].add_variant(
+                                Variant(
+                                    variant_name,
+                                    variant_short_description,
+                                    variant_description,
+                                    variant_language_list))
+
+        self.sort_layouts()
+
+    def sort_layouts(self):
+        self.layouts = OrderedDict(sorted(self.layouts.items(), key=lambda t: str(t[1])))
+        for name in self.layouts:
+            self.layouts[name].sort_variants()
+
+    def get_layout(self, name):
+        if name in self.layouts:
+            return self.layouts[name]
+        else:
+            return None
+
+    def get_layouts(self):
         return self.layouts
 
-    def get_variants(self, lang, layout_code):
-        self.load(lang)
-        try:
-            return self.variants[layout_code]
-        except KeyError:
+    def get_layout_description(self, name):
+        if name in self.layouts:
+            return str(self.layouts[name])
+        else:
             return None
 
-    def has_language(self, lang):
-        self.load(lang)
-        return bool(self.layouts)
-    
-    def has_variants(self, lang, layout_code):
-        self.load(lang)
-        return bool(self.variants[layout_code])
+    def get_layout_by_description(self, description):
+        for name in self.layouts:
+            if description == str(self.layouts[name]):
+                return self.layouts[name]
+        return None
 
-    def has_layout(self, lang, layout_code):
-        self.load(lang)
-        return layout_code in self.layouts
-    
-    def get_layout_code(self, lang, layout_name):
-        """ Returns layout code from layout name """
-        self.load(lang)
-        for code in self.layouts:
-            if self.layouts[code] == layout_name:
-                return code
+    def get_layout_name_by_description(self, description):
+        for name in self.layouts:
+            if description == str(self.layouts[name]):
+                return name
         return None
-    
-    def get_layout_name(self, lang, code):
-        """ Returns layout name from layout code """
-        self.load(lang)
+
+    def has_variants(self, name):
+        return bool(self.layouts[name].variants)
+
+    def get_variants(self, name):
+        return self.layouts[name].variants
+
+    def get_variant_description(self, name, variant_name):
         try:
-            return self.layouts[code]
-        except KeyError:
+            return str(self.layouts[name].variants[variant_name])
+        except KeyError as key_error:
             return None
-    
-    def get_variant_code(self, lang, layout_code, variant_name):
-        """ Returns variant code from layout and variant names """
-        self.load(lang)
-        for variant_code in self.variants[layout_code]:
-            if self.variants[layout_code][variant_code] == variant_name:
-                return variant_code
+
+    def get_variant_descriptions(self, name):
+        descriptions = []
+        for variant_name in self.layouts[name].variants:
+            description = str(self.layouts[name].variants[variant_name])
+            descriptions.append(description)
+        return descriptions
+
+    def get_variant_name_by_description(self, description):
+        for layout_name in self.layouts:
+            for variant_name in self.layouts[layout_name].variants:
+                if description == str(self.layouts[layout_name].variants[variant_name]):
+                    return variant_name
         return None
-    
-    def get_variant_name(self, lang, layout_code, variant_code):
-        """ Returns variant description from variant code """
-        self.load(lang)
-        try:
-            return self.variants[layout_code][variant_code]
-        except KeyError:
-            return None
-            
+
+
+if __name__ == '__main__':
+    base_xml_path = "/usr/share/cnchi/data/base.xml"
+    kbd_names = KeyboardNames(base_xml_path)
+
+    layouts = kbd_names.get_layouts()
+    for name in layouts:
+        print(name, layouts[name])
+        for variant_name in layouts[name].variants:
+            print(layouts[name], "-", layouts[name].variants[variant_name])

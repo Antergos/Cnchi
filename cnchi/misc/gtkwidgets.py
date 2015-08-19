@@ -6,7 +6,7 @@
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -411,7 +411,7 @@ class StateBox(StylizedFrame):
         hbox = Gtk.Box()
         hbox.set_spacing(10)
         self.image = Gtk.Image()
-        self.image.set_from_icon_name("yes", Gtk.IconSize.LARGE_TOOLBAR)
+        self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         self.image.set_margin_start(7)
         self.label = Gtk.Label(label=text)
         self.label.set_margin_end(15)

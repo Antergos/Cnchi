@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 from gi.repository import Gtk
 
@@ -29,6 +34,7 @@ import os
 import logging
 import sys
 import locale
+import re
 
 try:
     import xml.etree.cElementTree as eTree
@@ -171,7 +177,7 @@ class Location(GtkBaseBox):
             # Put all language codes (forced by the checkbox)
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
-        
+
         areas.sort()
 
         return areas
@@ -223,11 +229,22 @@ class Location(GtkBaseBox):
             if self.locales[mylocale] == location:
                 self.set_locale(mylocale)
         if ',' in location:
-            country = location.split(',')[1].strip()
+            country_name = location.split(',')[1].strip()
+            match = re.search('\(\w+\)', location)
+            if match:
+                country_code = match.group()[1:-1].lower()
+            else:
+                logging.error(
+                    _("Can't get country code from %s location"),
+                    location)
+                country_code = 'us'
         else:
-            country = 'USA'
-        logging.debug("Selected country: %s", country)
-        self.settings.set('country', country)
+            country_name = 'USA'
+            country_code = 'us'
+        logging.debug("Selected country name: %s", country_name)
+        logging.debug("Selected country code: %s", country_code)
+        self.settings.set('country_name', country_name)
+        self.settings.set('country_code', country_code)
         return True
 
 # When testing, no _() is available

@@ -10,7 +10,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -18,10 +18,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Keyboard widget that shows keyboard layout and variant types to the user """
 
@@ -29,7 +34,7 @@ from gi.repository import Gtk, GObject
 import cairo
 import subprocess
 import math
-
+import logging
 
 def unicode_to_string(raw):
     """ U+ , or +U+ ... to string """
@@ -81,7 +86,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         self.codes = []
 
         self.layout = "us"
-        self.variant = ""
+        self.variant = None
         self.font = "Helvetica"
 
         self.space = 6
@@ -225,8 +230,11 @@ class KeyboardWidget(Gtk.DrawingArea):
         # real_width = alloc.width
         # real_height = alloc.height
 
+        if not self.kb:
+            return
+
         width = 460
-        # height = 130
+        height = 130
 
         usable_width = width - 6
         key_w = (usable_width - 14 * self.space) / 15
@@ -238,7 +246,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         cr.set_source_rgb(0.84, 0.84, 0.84)
         cr.set_line_width(2)
 
-        cr.rectangle(0, 0, 640, 640)
+        cr.rectangle(0, 0, width, height)
         cr.stroke()
 
         cr.set_source_rgb(0.22, 0.22, 0.22)
@@ -395,15 +403,24 @@ class KeyboardWidget(Gtk.DrawingArea):
         if self.layout is None:
             return
 
-        variant_param = ""
+        cmd = [
+            "/usr/share/cnchi/scripts/ckbcomp",
+            "-model",
+            "pc106",
+            "-layout",
+            self.layout]
+
         if self.variant:
-            variant_param = "-variant {0}".format(self.variant)
+            cmd.extend(["-variant", self.variant])
 
-        cmd = "/usr/share/cnchi/scripts/ckbcomp -model pc106 -layout {0} {1} -compact".format(self.layout,
-                                                                                              variant_param)
+        cmd.append("-compact")
 
-        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
-        cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+        try:
+            #pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
+            #cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+            cfile = subprocess.check_output(cmd).decode().split('\n')
+        except subprocess.CalledProcessError as process_error:
+            logging.warning(process_error)
 
         # Clear current codes
         del self.codes[:]
@@ -426,6 +443,5 @@ class KeyboardWidget(Gtk.DrawingArea):
                 alt = ""
 
             self.codes.append((plain, shift, ctrl, alt))
-
 
 GObject.type_register(KeyboardWidget)

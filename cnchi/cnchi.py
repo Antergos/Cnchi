@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,14 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 """ Main Cnchi (Antergos Installer) module """
 
@@ -31,9 +35,10 @@ LOCALE_DIR = "/usr/share/locale"
 import os
 import sys
 import logging
+import logging.handlers
 import gettext
 import locale
-
+import uuid
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
@@ -42,11 +47,24 @@ import misc.misc as misc
 import info
 import updater
 
+try:
+    from bugsnag.handlers import BugsnagHandler
+    BUGSNAG_AVAILABLE = True
+except ImportError:
+    BUGSNAG_AVAILABLE = False
+
 # Command line options
 cmd_line = None
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.16.0"
+
+
+class ContextFilter(logging.Filter):
+    def filter(self, record):
+        uid = str(uuid.uuid1()).split("-")
+        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        return True
 
 
 class CnchiApp(Gtk.Application):
@@ -55,8 +73,8 @@ class CnchiApp(Gtk.Application):
     def __init__(self):
         """ Constructor. Call base class """
         Gtk.Application.__init__(self,
-            application_id="com.antergos.cnchi",
-            flags=Gio.ApplicationFlags.FLAGS_NONE)
+                                 application_id="com.antergos.cnchi",
+                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
@@ -99,12 +117,15 @@ def setup_logging():
 
     logger.setLevel(log_level)
 
+    context_filter = ContextFilter()
+    logger.addFilter(context_filter)
+
     # Log format
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        fmt="[%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
 
-    # Create file handler
+    # File logger
     try:
         file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
         file_handler.setLevel(log_level)
@@ -113,12 +134,55 @@ def setup_logging():
     except PermissionError as permission_error:
         print("Can't open /tmp/cnchi.log : ", permission_error)
 
+    # Stdout logger
     if cmd_line.verbose:
         # Show log messages to stdout
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(log_level)
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
+
+    if cmd_line.log_server:
+        log_server = cmd_line.log_server
+
+        if BUGSNAG_AVAILABLE and log_server == 'bugsnag':
+            # Bugsnag logger
+            bugsnag_api = get_bugsnag_api()
+            if bugsnag_api:
+                logger.addHandler(BugsnagHandler(api_key=bugsnag_api))
+                logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
+            else:
+                logging.warning(
+                    "%s %s",
+                    _("Cannot read the bugsnag api key."),
+                    _("Logging to bugsnag is not possible."))
+        else:
+            # Socket logger
+            socket_handler = logging.handlers.SocketHandler(
+                log_server,
+                logging.handlers.DEFAULT_TCP_LOGGING_PORT)
+            socket_formatter = logging.Formatter(
+                fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S")
+            socket_handler.setFormatter(socket_formatter)
+            logger.addHandler(socket_handler)
+
+            # Also add uuid filter to requests logs
+            logger_requests = logging.getLogger("requests.packages.urllib3.connectionpool")
+            logger_requests.addFilter(context_filter)
+
+            uid = str(uuid.uuid1()).split("-")
+            myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+            logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
+
+
+def get_bugsnag_api():
+    config_path = '/etc/sentry-dsn.conf'
+    bugsnag_api = None
+    if os.path.exists(config_path):
+        with open(config_path) as bugsnag_conf:
+            bugsnag_api = bugsnag_conf.readline().strip()
+    return bugsnag_api
 
 
 def check_gtk_version():
@@ -191,6 +255,10 @@ def parse_options():
         help=_("Sets Cnchi log level to 'debug'"),
         action="store_true")
     parser.add_argument(
+        "-e", "--environment",
+        help=_("Sets the Desktop Environment that will be installed"),
+        nargs='?')
+    parser.add_argument(
         "-f", "--force",
         help=_("Runs cnchi even if it detects that another instance is running"),
         action="store_true")
@@ -201,7 +269,7 @@ def parse_options():
     parser.add_argument(
         "-l", "--library",
         help=_("Choose which library to use when downloading packages."
-        " Possible options are 'urllib' (default), 'requests' and 'aria2'"),
+               " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
         nargs='?')
     parser.add_argument(
         "-n", "--no-check",
@@ -210,6 +278,11 @@ def parse_options():
     parser.add_argument(
         "-p", "--packagelist",
         help=_("Install the packages referenced by a local xml instead of the default ones"),
+        nargs='?')
+    parser.add_argument(
+        "-s", "--log-server",
+        help=_("Choose to which log server send Cnchi logs."
+               " Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
         "-t", "--testing",
@@ -252,20 +325,20 @@ def threads_init():
         # which require a workaround to get threading working properly.
         # Workaround: Force GIL creation
         import threading
-
         threading.Thread(target=lambda: None).start()
 
     # Since version 3.10.2, calling threads_init is no longer needed.
     # See: https://wiki.gnome.org/PyGObject/Threading
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
-
         # Gdk.threads_init()
 
 
 def update_cnchi():
     """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(force_update=cmd_line.update)
+    upd = updater.Updater(
+        force_update=cmd_line.update,
+        local_cnchi_version=info.CNCHI_VERSION)
 
     if upd.update():
         logging.info(_("Program updated! Restarting..."))
@@ -354,15 +427,6 @@ def init_cnchi():
     # Init PyObject Threads
     threads_init()
 
-
-'''
-def sigterm_handler(_signo, _stack_frame):
-    print(_signo)
-    print(_stack_frame)
-    misc.remove_temp_files()
-    logging.shutdown()
-    sys.exit(0)
-'''
 
 if __name__ == '__main__':
     init_cnchi()

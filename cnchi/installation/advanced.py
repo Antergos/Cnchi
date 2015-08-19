@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Installation advanced module. Custom partition screen """
 
@@ -28,8 +33,7 @@ from gi.repository import Gtk, Gdk
 import subprocess
 import os
 import logging
-
-# import blivet
+import re
 
 import misc.misc as misc
 import misc.validation as validation
@@ -485,8 +489,10 @@ class InstallationAdvanced(GtkBaseBox):
                     label = ""
                     mount_point = ""
                     formatable = True
-
-                    partition_path = "/dev/mapper/{0}-{1}".format(volume_group, logical_volume)
+                    # Fixes issue #278
+                    partition_path = "/dev/mapper/{0}-{1}".format(
+                        volume_group.replace("-","--"),
+                        logical_volume)
                     self.all_partitions.append(partition_path)
                     self.lv_partitions.append(partition_path)
 
@@ -504,9 +510,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if uid in self.stage_opts:
                         (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
 
-                    info = fs.get_info(partition_path)
-                    if 'LABEL' in info:
-                        label = info['LABEL']
+                    label = fs.get_label(partition_path)
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
@@ -633,9 +637,7 @@ class InstallationAdvanced(GtkBaseBox):
                                     used = self.used_dic[(disk_path, partition.geometry.start)]
                                 else:
                                     used = '0b'
-                            info = fs.get_info(partition_path)
-                            if 'LABEL' in info:
-                                label = info['LABEL']
+                            label = fs.get_label(partition_path)
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
@@ -795,7 +797,11 @@ class InstallationAdvanced(GtkBaseBox):
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
 
-                new_label = label_entry.get_text()
+                new_label = label_entry.get_text().replace(" ", "")
+                if len(new_label) > 0 and not new_label.isalpha():
+                    logging.warning(_("'%s' is not a valid label"), new_label)
+                    new_label = ""
+
                 new_fs = combo.get_active_text()
                 new_format = format_check.get_active()
 
@@ -806,6 +812,10 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if new_fs == 'swap':
                     new_mount = 'swap'
+
+                if os.path.exists('/sys/firmware/efi') and (new_mount == "/boot" or new_mount == "/boot/efi"):
+                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    new_fs = "fat"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
@@ -1089,7 +1099,11 @@ class InstallationAdvanced(GtkBaseBox):
         # Finally, show the create partition dialog
         response = self.create_partition_dialog.run()
         if response == Gtk.ResponseType.OK:
-            mylabel = label_entry.get_text()
+            mylabel = label_entry.get_text().replace(" ", "")
+            if len(mylabel) > 0 and not mylabel.isalpha():
+                logging.warning(_("'%s' is not a valid label"), mylabel)
+                mylabel = ""
+
             mymount = mount_combo.get_text().strip()
             if mymount in self.diskdic['mounts']:
                 show.warning(self.get_toplevel(), _("Can't use same mount point twice..."))
@@ -1137,8 +1151,11 @@ class InstallationAdvanced(GtkBaseBox):
                         logging.debug(_("Creating a logical partition"))
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
-                # Store new stage partition info in self.stage_opts
+                if os.path.exists('/sys/firmware/efi') and (mymount == "/boot" or mymount == "/boot/efi"):
+                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    myfs = "fat"
 
+                # Store new stage partition info in self.stage_opts
                 old_parts = []
                 for y in self.all_partitions:
                     for z in y:
@@ -1185,6 +1202,9 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application window they were spawned from.
         self.luks_dialog.set_transient_for(self.get_toplevel())
+
+        # Show warning message
+        show.warning(self.get_toplevel(), _("Using LUKS encryption will DELETE all partition contents!"))
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -2116,11 +2136,24 @@ class InstallationAdvanced(GtkBaseBox):
                                 pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                         if not self.testing:
                             pm.finalize_changes(partitions[partition_path].disk)
+
                     if "/dev/mapper" in partition_path:
                         pvs = lvm.get_lvm_partitions()
+                        # Remove "/dev/mapper/"
                         vgname = partition_path.split("/")[-1]
-                        vgname = vgname.split('-')[0]
-                        if mnt == '/' or mnt == '/boot':
+                        # Check that our vgname does not have a --
+                        # (- is used to diferenciate between vgname and lvname)
+                        if "--" in vgname:
+                            match = re.search('\w+--\w+', vgname)
+                            if match:
+                                vgname = match.group()
+                            else:
+                                # maybe the user has given an invalid name ¿?
+                                vgname = ""
+                        else:
+                            vgname = vgname.split('-')[0]
+                        if len(vgname) > 0 and (mnt == '/' or mnt == '/boot'):
+                            logging.debug(_("Volume name is %s"), vgname)
                             self.blvm = True
                             if noboot or mnt == '/boot':
                                 for ee in pvs[vgname]:

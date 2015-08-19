@@ -1,0 +1,31 @@
+#!/bin/bash
+if test -d /etc/httpd/conf/sites-available && test -d /etc/httpd/conf/sites-enabled  ; then
+  echo "-------------------------------"
+else
+  mkdir /etc/httpd/conf/sites-available
+  mkdir /etc/httpd/conf/sites-enabled
+fi
+
+AVAIL=/etc/httpd/conf/sites-available/$1.conf
+ENABLED=/etc/httpd/conf/sites-enabled
+SITE=`ls /etc/httpd/conf/sites-available/`
+
+if [ "$#" != "1" ]; then
+        echo "Use script: n2ensite virtual_site"
+        echo -e "\nAvailable virtual hosts:\n$SITE"
+        exit 0
+else
+  if test -e $AVAIL; then
+    sudo ln -s $AVAIL $ENABLED
+  else
+    echo -e "$AVAIL virtual host does not exist! Please create one!\n$SITE"
+    exit 0
+  fi
+
+  if test -e $ENABLED/$1.conf; then
+    echo "Success!! Now restart Apache server: sudo systemctl restart httpd"
+  else
+    echo  -e "Virtual host $AVAIL does not exist!\nPlease see avail virtual hosts:\n$SITE"
+    exit 0
+  fi
+fi

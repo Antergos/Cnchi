@@ -21,7 +21,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                 </object>
-            </child>                
+            </child>
         </object>
         <packing>
             <property name="expand">True</property>
@@ -50,15 +50,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">20</property>
-            <property name="yalign">1</property>
+            <!--<property name="yalign">1</property>-->
             <property name="use_markup">True</property>
-            <property name="justify">fill</property>
+            <!--<property name="justify">fill</property>-->
             <property name="wrap">True</property>
-              <property name="vexpand">True</property>
-              <property name="valign">3</property>
+            <!--<property name="vexpand">True</property>-->
+            <!--<property name="valign">3</property>-->
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>

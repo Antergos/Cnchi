@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,20 +17,24 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 import subprocess
 
 import os
 import logging
 import sys
-
+import queue
 import misc.misc as misc
 import show_message as show
-
 from gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
 
@@ -94,7 +98,12 @@ class Welcome(GtkBaseBox):
 
     def quit_cnchi(self):
         misc.remove_temp_files()
-        self.settings.set('stop_all_threads', True)
+        for proc in self.process_list:
+            # Wait 'timeout' seconds at most for all processes to end
+            proc.join(timeout=5)
+            if proc.is_alive():
+                proc.terminate()
+                proc.join()
         logging.shutdown()
         sys.exit(0)
 
@@ -115,7 +124,7 @@ class Welcome(GtkBaseBox):
 
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()
-        # Tell timezone thread to start searching now
+        # Tell timezone process to start searching now
         self.settings.set('timezone_start', True)
         # Simulate a forward button click
         self.forward_button.clicked()

@@ -1,0 +1,194 @@
+<!--
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  logserver.html
+#
+#  Copyright 2013-2015 Antergos
+#
+#  This file is part of Cnchi.
+#
+#  Cnchi is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  Cnchi is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Cnchi; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="refresh" content="20">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Logging Server Status Page</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="data:text/css;charset=utf-8," data-href="css/bootstrap-theme.min.css" rel="stylesheet" id="bs-theme-stylesheet">
+    <link href="/default.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+    var QueryString = function () {
+      // This function is anonymous, is executed immediately and
+      // the return value is assigned to QueryString!
+      var query_string = {};
+      var query = window.location.search.substring(1);
+      var vars = query.split("&");
+      for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+            // If first entry with this name
+        if (typeof query_string[pair[0]] === "undefined") {
+          query_string[pair[0]] = pair[1];
+            // If second entry with this name
+        } else if (typeof query_string[pair[0]] === "string") {
+          var arr = [ query_string[pair[0]], pair[1] ];
+          query_string[pair[0]] = arr;
+            // If third or later entry with this name
+        } else {
+          query_string[pair[0]].push(pair[1]);
+        }
+      }
+        return query_string;
+    } ();
+
+    function GotoPage(page) {
+      newURL = window.location.pathname + "?page=" + page;
+      if (QueryString.search != null) {
+        newURL += "&search=" + QueryString.search;
+      }
+      window.location.href = newURL;
+    }
+
+    function GotoFirstPage() {
+      GotoPage(0);
+    }
+
+    function GotoNextPage() {
+      if (QueryString.page == null) {
+        nextPage = 1;
+      }
+      else {
+        nextPage = parseInt(QueryString.page, 10) + 1;
+      }
+      if (nextPage <= %(numpages)s) {
+        GotoPage(nextPage);
+      }
+    }
+
+    function GotoPrevPage() {
+      new_page = parseInt(QueryString.page, 10) - 1;
+      if (new_page < 0) {
+        new_page = 0;
+      }
+      GotoPage(new_page);
+    }
+
+    function GotoLastPage() {
+      GotoPage(%(numpages)s-1);
+    }
+
+    function Search(text) {
+      newURL = window.location.pathname;
+
+      if (text.length > 0) {
+        newURL += "?search=" + text + "&page=0";
+      }
+      else {
+        newURL += "?page=0";
+      }
+      
+      window.location.href = newURL;
+    }
+
+    </script>
+  </head>
+  <body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+    <button type="button" class="btn btn-default btn-lg" onclick="window.location.reload();">
+      <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+    </button>
+    </div>
+      <div class="col-md-8">
+      <h1>Cnchi Logging Viewer</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <table class="table table-bordered">
+      <caption>Logging Server Status Page</caption>
+      <tr>
+        <th class="heading">Logging Server Start Time</th>
+        <td class="info">%(starttime)s</td>
+      </tr>
+      <tr>
+        <th class="heading">Logging Server Up Time</th>
+        <td class="info">%(uptime)s</td>
+      </tr>
+      <tr>
+        <th class="heading">Log Records Total</th>
+        <td class="info">%(logrecordstotal)s</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="row">
+    <table class="table table-hover">
+      <div class="col-md-8">
+        <caption>Most Recent Log Records (%(numpages)s pages)</caption>
+      </div>
+      <div class="col-md-4 input-group">
+            <input id="search_text" type="text" class="form-control" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" onclick="Search(document.getElementById('search_text').value);">Go!</button>
+            </span>
+      </div><!-- /input-group -->
+      <tr class="heading"><th>User Id</th><th>Time</th><th>Module</th><th>Level</th><th>Message</th></tr>
+      %(records)s
+    </table>
+  </div>
+
+  <div class="row">
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoFirstPage();">
+        <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoPrevPage();">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoNextPage();">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="btn btn-default" aria-label="Left Align" onclick="GotoLastPage();">
+        <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

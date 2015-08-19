@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Chroot related functions. Used in the installation process """
 
@@ -40,7 +45,7 @@ _special_dirs_mounted = False
 
 def get_special_dirs():
     """ Get special dirs to be mounted or unmounted """
-    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]    
+    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]
     efi = "/sys/firmware/efi/efivars"
     if os.path.exists(efi):
         special_dirs.append(efi)
@@ -61,15 +66,13 @@ def mount_special_dirs(dest_dir):
         msg = _("Special dirs are already mounted. Skipping.")
         logging.debug(msg)
         return
-    
+
     special_dirs = []
     special_dirs = get_special_dirs()
 
     for special_dir in special_dirs:
         mountpoint = os.path.join(dest_dir, special_dir[1:])
-        if not os.path.exists(mountpoint):
-            logging.debug("Making directory '{0}'".format(mountpoint))
-            os.makedirs(mountpoint)
+        os.makedirs(mountpoint, mode=0o755, exist_ok=True)
         os.chmod(mountpoint, 0o755)
         cmd = ["mount", "--bind", special_dir, mountpoint]
         logging.debug("Mounting special dir '{0}' to {1}".format(special_dir, mountpoint))
@@ -100,7 +103,7 @@ def umount_special_dirs(dest_dir):
     for special_dir in reversed(special_dirs):
         mountpoint = os.path.join(dest_dir, special_dir[1:])
         logging.debug("Unmounting special dir '{0}'".format(mountpoint))
-        try:            
+        try:
             subprocess.check_call(["umount", mountpoint])
         except subprocess.CalledProcessError:
             logging.debug("Can't unmount. Try -l to force it.")
@@ -137,6 +140,6 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
             proc.communicate()
         logging.error(_("Timeout running the command %s"), timeout_error.cmd)
         logging.error(_("Cnchi will try to continue anyways"))
-    except OSError as os_error:
-        logging.error(_("Error running command: %s"), os_error.strerror)
+    except (subprocess.CalledProcessError, OSError) as err:
+        logging.error(_("Error running command: %s"), err)
         logging.error(_("Cnchi will try to continue anyways"))

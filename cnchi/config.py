@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,14 +17,19 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Configuration module for Cnchi """
 
-from multiprocessing import Queue
+import multiprocessing
 
 
 class Settings(object):
@@ -34,7 +39,7 @@ class Settings(object):
         """ Initialize default configuration """
 
         # Creates a one element size queue
-        self.settings = Queue(1)
+        self.settings = multiprocessing.Queue(1)
 
         self.settings.put({
             'auto_device': '/dev/sda',
@@ -45,11 +50,13 @@ class Settings(object):
             'btrfs': False,
             'cache': '',
             'cnchi': '/usr/share/cnchi/',
-            'installer_thread_call': {},
+            'country_name': '',
+            'country_code': '',
             'data': '/usr/share/cnchi/data/',
             'desktop': 'gnome',
+            'desktop_ask': True,
             'desktops': [],
-            'download_library': 'urllib',
+            'download_library': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
@@ -60,6 +67,8 @@ class Settings(object):
             'feature_firefox': False,
             'feature_firewall': False,
             'feature_fonts': False,
+            'feature_lamp': False,
+            'feature_lemp': False,
             'feature_lts': False,
             'feature_office': False,
             'feature_smb': False,
@@ -83,7 +92,7 @@ class Settings(object):
             'rankmirrors_done': False,
             'require_password': True,
             'ruuid': '',
-            'stop_all_threads': False,
+            'sentry_dsn': '',
             'third_party_software': False,
             'timezone_human_zone': '',
             'timezone_country': '',
@@ -100,7 +109,7 @@ class Settings(object):
             'use_luks': False,
             'use_luks_in_root': False,
             'use_lvm': False,
-            'use_ntp': True,
+            'use_timesyncd': True,
             'user_info_done': False,
             'username': '',
             'z_hidden': False})

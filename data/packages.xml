@@ -2,553 +2,561 @@
 <!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
 <cnchi>
-    <editions>
-        <edition name="common" description="Packages common to all DE and base">
-            <packages>
-                <pkgname>alsa-utils</pkgname>
-                <pkgname>antergos-keyring</pkgname>
-                <pkgname>antergos-mirrorlist</pkgname>
-                <pkgname>b43-fwcutter</pkgname>
-                <pkgname>base</pkgname>
-                <!-- Group -->
-                <pkgname>base-devel</pkgname>
-                <!-- Group -->
-                <pkgname>bash-completion</pkgname>
-                <pkgname>crda</pkgname>
-                <pkgname>bind-tools</pkgname>
-                <pkgname>dosfstools</pkgname>
-                <pkgname>haveged</pkgname>
-                <pkgname>gzip</pkgname>
-                <pkgname>ipw2100-fw</pkgname>
-                <pkgname>ipw2200-fw</pkgname>
-                <pkgname>modemmanager</pkgname>
-                <pkgname>net-tools</pkgname>
-                <pkgname>ntfs-3g</pkgname>
-                <pkgname>openssh</pkgname>
-                <pkgname>pkgfile</pkgname>
-                <pkgname>sudo</pkgname>
-                <pkgname>tar</pkgname>
-                <pkgname>transmission-cli</pkgname>
-                <pkgname>unzip</pkgname>
-                <pkgname>unrar</pkgname>
-                <pkgname>usb_modeswitch</pkgname>
-                <pkgname>wget</pkgname>
-                <pkgname>whois</pkgname>
-                <pkgname>wireless_tools</pkgname>
-                <pkgname>wpa_actiond</pkgname>
-                <pkgname>zd1211-firmware</pkgname>
-            </packages>
-        </edition>
+  <editions>
+    <edition name="common" description="Packages common to all DE and base">
+      <packages>
+        <pkgname>alsa-utils</pkgname>
+        <pkgname>antergos-keyring</pkgname>
+        <pkgname>antergos-mirrorlist</pkgname>
+        <pkgname>b43-fwcutter</pkgname>
+        <pkgname>base</pkgname> <!-- Group -->
+        <pkgname>base-devel</pkgname> <!-- Group -->
+        <pkgname>bash-completion</pkgname>
+        <pkgname>crda</pkgname>
+        <pkgname>bind-tools</pkgname>
+        <pkgname>dosfstools</pkgname>
+        <pkgname>haveged</pkgname>
+        <pkgname>gzip</pkgname>
+        <pkgname>ipw2100-fw</pkgname>
+        <pkgname>ipw2200-fw</pkgname>
+        <pkgname>modemmanager</pkgname>
+        <pkgname>net-tools</pkgname>
+        <pkgname>ntfs-3g</pkgname>
+        <pkgname>openssh</pkgname>
+        <pkgname>pkgfile</pkgname>
+        <pkgname>sudo</pkgname>
+        <pkgname>tar</pkgname>
+        <pkgname>transmission-cli</pkgname>
+        <pkgname>unzip</pkgname>
+        <pkgname>unrar</pkgname>
+        <pkgname>usb_modeswitch</pkgname>
+        <pkgname>wget</pkgname>
+        <pkgname>whois</pkgname>
+        <pkgname>wireless_tools</pkgname>
+        <pkgname>wpa_actiond</pkgname>
+        <pkgname>zd1211-firmware</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="graphic" description="Common to all graphic desktops">
-            <packages>
-                <pkgname>accountsservice</pkgname>
-                <pkgname>antergos-wallpapers</pkgname>
-                <!--<pkgname>antergos-welcome</pkgname> -->
-                <pkgname>chromium</pkgname>
-                <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
-                <pkgname>gst-libav</pkgname>
-                <pkgname>gst-plugins-bad</pkgname>
-                <pkgname>gst-plugins-base</pkgname>
-                <pkgname>gst-plugins-good</pkgname>
-                <pkgname>gst-plugins-ugly</pkgname>
-                <pkgname>gstreamer-vaapi</pkgname>
-                <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
-                <pkgname>libdvdcss</pkgname>
-                <pkgname>libreoffice-installer</pkgname>
-                <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-                <pkgname>lightdm-webkit-theme-antergos</pkgname>
-                <pkgname>mesa</pkgname>
-                <pkgname>mesa-vdpau</pkgname>
-                <pkgname>numix-frost-themes</pkgname>
-                <pkgname>numix-icon-theme</pkgname>
-                <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
-                <pkgname>pamac</pkgname>
-                <pkgname>pavucontrol</pkgname>
-                <!-- <pkgname>python-simplejson</pkgname>  Needed by Antergos Welcome screen -->
-                <pkgname>pulseaudio-alsa</pkgname>
-                <pkgname>ttf-bitstream-vera</pkgname>
-                <pkgname>ttf-dejavu</pkgname>
-                <pkgname>ttf-liberation</pkgname>
-                <pkgname>upower</pkgname>
-                <pkgname>xf86-input-synaptics</pkgname>
-                <pkgname>xf86-video-fbdev</pkgname>
-                <pkgname>xf86-video-vesa</pkgname>
-                <pkgname>xorg-apps</pkgname>
-                <pkgname>xorg-fonts</pkgname>
-                <pkgname>xorg-server</pkgname>
-                <pkgname>xorg-server-utils</pkgname>
-                <pkgname>xorg-xinit</pkgname>
-                <pkgname>xorg-xkill</pkgname>
-            </packages>
-        </edition>
+    <edition name="graphic" description="Common to all graphic desktops">
+      <packages>
+        <pkgname>accountsservice</pkgname>
+        <pkgname>antergos-wallpapers</pkgname>
+        <!--<pkgname>antergos-welcome</pkgname> -->
+        <pkgname>chromium</pkgname>
+        <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
+        <pkgname>gst-libav</pkgname>
+        <pkgname>gst-plugins-bad</pkgname>
+        <pkgname>gst-plugins-base</pkgname>
+        <pkgname>gst-plugins-good</pkgname>
+        <pkgname>gst-plugins-ugly</pkgname>
+        <pkgname>gstreamer-vaapi</pkgname>
+        <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
+        <pkgname>libdvdcss</pkgname>
+        <pkgname>libreoffice-installer</pkgname>
+        <pkgname dm='true' name='lightdm'>lightdm</pkgname>
+        <pkgname>lightdm-webkit-theme-antergos</pkgname>
+        <pkgname>mesa</pkgname>
+        <pkgname>mesa-vdpau</pkgname>
+        <pkgname>numix-frost-themes</pkgname>
+        <pkgname>numix-icon-theme</pkgname>
+        <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
+        <pkgname>pamac</pkgname>
+        <pkgname>pavucontrol</pkgname>
+        <!-- <pkgname>python-simplejson</pkgname>  Needed by Antergos Welcome screen -->
+        <pkgname>pulseaudio</pkgname>
+        <pkgname>pulseaudio-alsa</pkgname>
+        <pkgname>ttf-bitstream-vera</pkgname>
+        <pkgname>ttf-dejavu</pkgname>
+        <pkgname>ttf-liberation</pkgname>
+        <pkgname>upower</pkgname>
+        <pkgname>xf86-input-synaptics</pkgname>
+        <pkgname>xf86-video-fbdev</pkgname>
+        <pkgname>xf86-video-vesa</pkgname>
+        <pkgname>xorg-apps</pkgname>
+        <pkgname>xorg-fonts</pkgname>
+        <pkgname>xorg-server</pkgname>
+        <pkgname>xorg-server-utils</pkgname>
+        <pkgname>xorg-xinit</pkgname>
+        <pkgname>xorg-xkill</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="base" description="Without X">
-            <packages>
-                <pkgname nm='true' name='netctl'>netctl</pkgname>
-                <pkgname>cabextract</pkgname>
-                <pkgname>bzip2</pkgname>
-                <pkgname>sharutils</pkgname>
-                <pkgname>unace</pkgname>
-                <pkgname>uudeview</pkgname>
-                <pkgname>xz</pkgname>
-                <pkgname>zip</pkgname>
-            </packages>
-        </edition>
+    <edition name="base" description="Without X">
+      <packages>
+        <pkgname>cabextract</pkgname>
+        <pkgname>bzip2</pkgname>
+        <pkgname>dialog</pkgname>
+        <pkgname>rsync</pkgname>
+        <pkgname>sharutils</pkgname>
+        <pkgname>unace</pkgname>
+        <pkgname>uudeview</pkgname>
+        <pkgname>xz</pkgname>
+        <pkgname>zip</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="Gnome" description="Gnome Desktop">
-            <packages>
-                <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>baobab</pkgname>
-                <pkgname>bijiben</pkgname>
-                <pkgname>brasero</pkgname>
-                <pkgname>cdrkit</pkgname>
-                <pkgname>evince</pkgname>
-                <pkgname>eog</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>gedit</pkgname>
-                <pkgname>gnome-backgrounds</pkgname>
-                <pkgname>gnome-calculator</pkgname>
-                <pkgname>gnome-calendar</pkgname>
-                <pkgname>gnome-contacts</pkgname>
-                <pkgname>gnome-control-center</pkgname>
-                <pkgname>gnome-documents</pkgname>
-                <pkgname>gnome-disk-utility</pkgname>
-                <pkgname>gnome-font-viewer</pkgname>
-                <pkgname>gnome-keyring</pkgname>
-                <pkgname>gnome-logs</pkgname>
-                <pkgname>gnome-maps</pkgname>
-                <pkgname>gnome-music</pkgname>
-                <pkgname>gnome-photos</pkgname>
-                <pkgname>gnome-screenshot</pkgname>
-                <pkgname>gnome-shell</pkgname>
-                <pkgname>gnome-shell-extensions</pkgname>
-                <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
-                <pkgname>gnome-shell-extension-status-menu-buttons</pkgname>
-                <pkgname>gnome-sound-recorder</pkgname>
-                <pkgname>gnome-system-monitor</pkgname>
-                <pkgname>gnome-terminal</pkgname>
-                <pkgname>gnome-themes-standard</pkgname>
-                <pkgname>gnome-tweak-tool</pkgname>
-                <pkgname>gnome-weather</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
-                <pkgname>nautilus</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>orca</pkgname>
-                <pkgname>pidgin</pkgname>
-                <pkgname>seahorse</pkgname>
-                <pkgname>totem</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xscreensaver</pkgname>
-            </packages>
-        </edition>
+    <edition name="Gnome" description="Gnome Desktop">
+      <packages>
+        <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>baobab</pkgname>  <!-- Disk usage -->
+        <pkgname>bijiben</pkgname> <!-- notes app -->
+        <pkgname>brasero</pkgname>
+        <pkgname>cdrkit</pkgname>
+        <pkgname>evince</pkgname>
+        <pkgname>eog</pkgname>
+        <pkgname>file-roller</pkgname>
+        <pkgname>gedit</pkgname>
+        <pkgname>gnome-backgrounds</pkgname>
+        <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-calendar</pkgname>
+        <pkgname>gnome-contacts</pkgname>
+        <pkgname>gnome-control-center</pkgname>
+        <pkgname>gnome-documents</pkgname>
+        <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-font-viewer</pkgname>
+        <pkgname>gnome-keyring</pkgname>
+        <pkgname>gnome-logs</pkgname>
+        <pkgname>gnome-maps</pkgname>
+        <pkgname>gnome-music</pkgname>
+        <pkgname>gnome-photos</pkgname>
+        <pkgname>gnome-screenshot</pkgname>
+        <pkgname>gnome-shell</pkgname>
+        <pkgname>gnome-shell-extensions</pkgname>
+        <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
+        <pkgname>gnome-shell-extension-status-menu-buttons</pkgname>
+        <pkgname>gnome-sound-recorder</pkgname>
+        <pkgname>gnome-system-monitor</pkgname>
+        <pkgname>gnome-terminal</pkgname>
+        <pkgname>gnome-themes-standard</pkgname>
+        <pkgname>gnome-tweak-tool</pkgname>
+        <pkgname>gnome-weather</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname>hicolor-icon-theme</pkgname>
+        <pkgname>libgnomeui</pkgname>
+        <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
+        <pkgname>nautilus</pkgname>
+        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>orca</pkgname>
+        <pkgname>pidgin</pkgname>
+        <pkgname>seahorse</pkgname>
+        <pkgname>totem</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xscreensaver</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="Cinnamon" description="Cinnamon desktop">
-            <packages>
-                <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>baobab</pkgname>
-                <pkgname>bijiben</pkgname>
-                <pkgname>brasero</pkgname>
-                <pkgname>cdrkit</pkgname>
-                <pkgname>cinnamon</pkgname>
-                <pkgname>cinnamon-control-center</pkgname>
-                <pkgname>cinnamon-desktop</pkgname>
-                <pkgname>cinnamon-menus</pkgname>
-                <pkgname>cinnamon-session</pkgname>
-                <pkgname>cinnamon-settings-daemon</pkgname>
-                <pkgname>cinnamon-screensaver</pkgname>
-                <pkgname>cinnamon-theme-nadia</pkgname>
-                <pkgname>cjs</pkgname>
-                <pkgname>eog</pkgname>
-                <pkgname>evince</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>gedit</pkgname>
-                <pkgname>gnome-calculator</pkgname>
-                <pkgname>gnome-common</pkgname>
-                <pkgname>gnome-disk-utility</pkgname>
-                <pkgname>gnome-keyring</pkgname>
-                <pkgname>gnome-music</pkgname>
-                <pkgname>gnome-photos</pkgname>
-                <pkgname>gnome-screenshot</pkgname>
-                <pkgname>gnome-system-monitor</pkgname>
-                <pkgname>gnome-terminal</pkgname>
-                <pkgname>gnome-themes-standard</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
-                <pkgname>muffin</pkgname>
-                <pkgname>nemo</pkgname>
-                <pkgname>nemo-fileroller</pkgname>
-                <pkgname>nemo-preview</pkgname>
-                <!--<pkgname>nemo-seahorse</pkgname>-->
-                <pkgname>nemo-share</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
-                <pkgname>totem</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>zukitwo-themes</pkgname>
-            </packages>
-        </edition>
+    <edition name="Cinnamon" description="Cinnamon desktop">
+      <packages>
+        <pkgname>antergos-gnome-defaults-list</pkgname>
+        <pkgname>baobab</pkgname>  <!-- Disk usage -->
+        <pkgname>bijiben</pkgname> <!-- notes app -->
+        <pkgname>brasero</pkgname>
+        <pkgname>cdrkit</pkgname>
+        <pkgname>cinnamon</pkgname>
+        <pkgname>cinnamon-control-center</pkgname>
+        <pkgname>cinnamon-desktop</pkgname>
+        <pkgname>cinnamon-menus</pkgname>
+        <pkgname>cinnamon-session</pkgname>
+        <pkgname>cinnamon-settings-daemon</pkgname>
+        <pkgname>cinnamon-screensaver</pkgname>
+        <pkgname>cinnamon-theme-nadia</pkgname>
+        <pkgname>cjs</pkgname>
+        <pkgname>eog</pkgname>
+        <pkgname>evince</pkgname>
+        <pkgname>file-roller</pkgname>
+        <pkgname>gedit</pkgname>
+        <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-common</pkgname>
+        <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-keyring</pkgname>
+        <pkgname>gnome-music</pkgname>
+        <pkgname>gnome-photos</pkgname>
+        <pkgname>gnome-screenshot</pkgname>
+        <pkgname>gnome-system-monitor</pkgname>
+        <pkgname>gnome-terminal</pkgname>
+        <pkgname>gnome-themes-standard</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname>hicolor-icon-theme</pkgname>
+        <pkgname>libgnomeui</pkgname>
+        <pkgname>muffin</pkgname>
+        <pkgname>nemo</pkgname>
+        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>pidgin</pkgname>
+        <pkgname>totem</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>zukitwo-themes</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="XFCE" description="XFCE Desktop">
-            <packages>
-                <pkgname>cdrkit</pkgname>
-                <pkgname>evince</pkgname>
-                <pkgname>gamin</pkgname>
-                <pkgname>gnome-calculator</pkgname>
-                <pkgname>gnome-disk-utility</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
-                <pkgname>mousepad</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>parole</pkgname>
-                <pkgname>pidgin</pkgname>
-                <pkgname>polkit-gnome</pkgname>
-                <pkgname>pragha</pkgname>
-                <pkgname>ristretto</pkgname>
-                <pkgname>thunar-archive-plugin</pkgname>
-                <pkgname>thunar-volman</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>tumbler</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xfce4</pkgname>
-                <pkgname>xfburn</pkgname>
-                <pkgname>xfce4-battery-plugin</pkgname>
-                <pkgname>xfce4-datetime-plugin</pkgname>
-                <pkgname>xfce4-notifyd</pkgname>
-                <pkgname>xfce4-screenshooter</pkgname>
-                <pkgname>xfce4-taskmanager</pkgname>
-                <pkgname>xscreensaver</pkgname>
-            </packages>
-        </edition>
+    <edition name="XFCE" description="XFCE Desktop">
+      <packages>
+        <pkgname>cdrkit</pkgname>
+        <pkgname>evince</pkgname>
+        <pkgname>gamin</pkgname>
+        <pkgname>gnome-calculator</pkgname>
+        <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-keyring</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
+        <pkgname>mousepad</pkgname>
+        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>parole</pkgname>
+        <pkgname>pidgin</pkgname>
+        <pkgname>polkit-gnome</pkgname>
+        <pkgname>pragha</pkgname>
+        <pkgname>ristretto</pkgname>
+        <pkgname>thunar-archive-plugin</pkgname>
+        <pkgname>thunar-volman</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>tumbler</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xfce4</pkgname>
+        <pkgname>xfburn</pkgname>
+        <pkgname>xfce4-battery-plugin</pkgname>
+        <pkgname>xfce4-datetime-plugin</pkgname>
+        <pkgname>xfce4-notifyd</pkgname>
+        <pkgname>xfce4-screenshooter</pkgname>
+        <pkgname>xfce4-taskmanager</pkgname>
+        <pkgname>xscreensaver</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="lxde" description="LXDE Desktop">
-            <packages>
-                <pkgname>evince</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>galculator</pkgname>
-                <pkgname>leafpad</pkgname>
-                <pkgname>lxde</pkgname>
-                <pkgname>pragha</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>gnome-mplayer</pkgname>
-            </packages>
-        </edition>
+    <edition name="lxqt" description="LXQT Desktop">
+      <packages>
+      <pkgname>lxqt-about</pkgname>
+      <pkgname>lxqt-config</pkgname>
+      <pkgname>lxqt-notificationd</pkgname>
+      <pkgname>lxqt-openssh-askpass</pkgname>
+      <pkgname>lxqt-panel</pkgname>
+      <pkgname>lxqt-policykit</pkgname>
+      <pkgname>lxqt-powermanagement</pkgname>
+      <pkgname>lxqt-qtplugin</pkgname>
+      <pkgname>lxqt-runner</pkgname>
+      <pkgname>lxqt-session</pkgname>
+      <pkgname>openbox</pkgname>
+      <pkgname>pacmanfm-qt</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="lxqt" description="LXQT Desktop">
-            <packages>
-                <!-- TODO -->
-            </packages>
-        </edition>
+    <edition name="Mate" description="MATE Desktop">
+      <packages>
+        <pkgname>atril</pkgname>
+        <pkgname>caja</pkgname>
+        <pkgname>caja-gksu</pkgname>
+        <pkgname>caja-open-terminal</pkgname>
+        <pkgname>cdrkit</pkgname>
+        <pkgname>engrampa</pkgname>
+        <pkgname>eom</pkgname>
+        <pkgname>galculator-gtk2</pkgname>
+        <pkgname>gksu</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname>mate</pkgname> <!-- Group -->
+        <pkgname>mate-applets</pkgname>
+        <pkgname>mate-media-pulseaudio</pkgname>
+        <pkgname>mate-mint-menu</pkgname>
+        <pkgname>mate-power-manager</pkgname>
+        <pkgname>mate-screensaver</pkgname>
+        <pkgname>mate-system-monitor</pkgname>
+        <pkgname>mate-terminal</pkgname>
+        <pkgname>mate-utils</pkgname>
+        <pkgname>mozo</pkgname>
+        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>pidgin</pkgname>
+        <pkgname>pluma</pkgname>
+        <pkgname>pragha</pkgname>
+        <pkgname>totem</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xfburn</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="Mate" description="MATE Desktop">
-            <packages>
-                <pkgname>atril</pkgname>
-                <pkgname>caja</pkgname>
-                <pkgname>caja-gksu</pkgname>
-                <pkgname>caja-image-converter</pkgname>
-                <pkgname>caja-open-terminal</pkgname>
-                <pkgname>caja-share</pkgname>
-                <pkgname>caja-sendto</pkgname>
-                <pkgname>cdrkit</pkgname>
-                <pkgname>engrampa</pkgname>
-                <pkgname>eom</pkgname>
-                <pkgname>galculator-gtk2</pkgname>
-                <pkgname>gksu</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>mate</pkgname> <!-- Group -->
-                <pkgname>mate-accountsdialog</pkgname>
-                <pkgname>mate-applets</pkgname>
-                <pkgname>mate-disk-utility</pkgname>
-                <pkgname>mate-media</pkgname>
-                <pkgname>mate-mint-menu</pkgname>
-                <pkgname>mate-power-manager</pkgname>
-                <pkgname>mate-screensaver</pkgname>
-                <pkgname>mate-system-monitor</pkgname>
-                <pkgname>mate-terminal</pkgname>
-                <pkgname>mate-user-share</pkgname>
-                <pkgname>mate-utils</pkgname>
-                <pkgname>mozo</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
-                <pkgname>pluma</pkgname>
-                <pkgname>pragha</pkgname>
-                <pkgname>totem</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xfburn</pkgname>
-            </packages>
-        </edition>
+    <edition name="Enlightenment" description="Enlightenment Desktop">
+      <packages>
+        <pkgname>enlightenment</pkgname>
+        <pkgname>gksu</pkgname>
+        <pkgname>gtk-theme-e17gtk</pkgname>
+        <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
+        <pkgname>polkit-gnome</pkgname>
+        <pkgname>pragha</pkgname>
+        <pkgname>terminology</pkgname> <!-- terminal emulator -->
+        <pkgname>xdg-user-dirs-gtk</pkgname>
+        <pkgname>xfburn</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="Enlightenment" description="Enlightenment Desktop">
-            <packages>
-                <pkgname>enlightenment</pkgname>
-                <pkgname>gksu</pkgname>
-                <pkgname>gtk-theme-e17gtk</pkgname>
-                <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
-                <pkgname>polkit-gnome</pkgname>
-                <pkgname>pragha</pkgname>
-                <pkgname>terminology</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xfburn</pkgname>
-            </packages>
-        </edition>
+    <edition name="openbox" description="Openbox Window Manager">
+      <packages>
+        <pkgname>antergos-openbox-setup</pkgname>
+        <pkgname>arandr</pkgname>
+        <pkgname>conky</pkgname>
+        <pkgname>cdrkit</pkgname>
+        <pkgname>file-roller</pkgname>
+        <pkgname>ffmpegthumbnailer</pkgname>
+        <pkgname>galculator</pkgname>
+        <pkgname>gmrun</pkgname>
+        <pkgname>gnome-disk-utility</pkgname>
+        <pkgname>gnome-mplayer</pkgname>
+        <pkgname>gpicview</pkgname>
+        <pkgname>gsimplecal</pkgname>
+        <pkgname>gvfs-mtp</pkgname>
+        <pkgname>leafpad</pkgname>
+        <pkgname>light-locker</pkgname>
+        <pkgname>light-locker-settings</pkgname>
+        <pkgname>lxappearance-obconf</pkgname>
+        <pkgname>lxinput</pkgname>
+        <pkgname>lxmenu-data</pkgname>
+        <pkgname>lxtask</pkgname>
+        <pkgname>lxsession</pkgname>
+        <pkgname>lxterminal</pkgname>
+        <pkgname>nitrogen</pkgname>
+        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+        <pkgname>networkmanager-openvpn</pkgname>
+        <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>obconf</pkgname>
+        <pkgname>oblogout</pkgname>
+        <pkgname>obmenu</pkgname>
+        <pkgname>openbox</pkgname>
+        <pkgname>openbox-menu</pkgname>
+        <pkgname>parcellite</pkgname>
+        <pkgname>pidgin</pkgname>
+        <pkgname>plank</pkgname>
+        <pkgname>plank-config</pkgname>
+        <pkgname>plank-theme-numix</pkgname>
+        <pkgname>polkit-gnome</pkgname>
+        <pkgname>pragha</pkgname>
+        <pkgname>python2-xdg</pkgname>
+        <pkgname>scrot</pkgname>
+        <pkgname>tint2</pkgname>
+        <pkgname>thunar</pkgname>
+        <pkgname>thunar-archive-plugin</pkgname>
+        <pkgname>thunar-volman</pkgname>
+        <pkgname>transmission-gtk</pkgname>
+        <pkgname>udiskie</pkgname>
+        <pkgname>volumeicon</pkgname>
+        <pkgname>xfburn</pkgname>
+        <pkgname>xfce4-notifyd</pkgname>
+        <pkgname>xscreensaver</pkgname>
+        <pkgname>waldorf-ui-theme</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="openbox" description="Openbox Window Manager">
-            <packages>
-                <pkgname>arandr</pkgname>
-                <pkgname>conky</pkgname>
-                <pkgname>cdrkit</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>ffmpegthumbnailer</pkgname>
-                <pkgname>galculator</pkgname>
-                <pkgname>gmrun</pkgname>
-                <pkgname>gnome-disk-utility</pkgname>
-                <pkgname>gnome-mplayer</pkgname>
-                <pkgname>gpicview</pkgname>
-                <pkgname>gsimplecal</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>leafpad</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
-                <pkgname>lxappearance-obconf</pkgname>
-                <pkgname>lxinput</pkgname>
-                <pkgname>lxmenu-data</pkgname>
-                <pkgname>lxtask</pkgname>
-                <pkgname>lxsession</pkgname>
-                <pkgname>lxterminal</pkgname>
-                <pkgname>nitrogen</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>obconf</pkgname>
-                <pkgname>oblogout</pkgname>
-                <pkgname>obmenu</pkgname>
-                <pkgname>openbox</pkgname>
-                <pkgname>openbox-menu</pkgname>
-                <pkgname>parcellite</pkgname>
-                <pkgname>pcmanfm</pkgname>
-                <pkgname>pidgin</pkgname>
-                <pkgname>plank</pkgname>
-                <pkgname>plank-config</pkgname>
-                <pkgname>plank-theme-numix</pkgname>
-                <pkgname>polkit-gnome</pkgname>
-                <pkgname>pragha</pkgname>
-                <pkgname>python2-xdg</pkgname>
-                <pkgname>scrot</pkgname>
-                <pkgname>tint2</pkgname>
-                <pkgname>transmission-gtk</pkgname>
-                <pkgname>udiskie</pkgname>
-                <pkgname>volumeicon</pkgname>
-                <pkgname>xfburn</pkgname>
-                <pkgname>xfce4-notifyd</pkgname>
-                <pkgname>xscreensaver</pkgname>
-            </packages>
-        </edition>
+    <edition name="KDE4" description="KDE 4 Desktop">
+      <packages>
+        <pkgname>aspell-en</pkgname>
+        <pkgname>breeze-kde4</pkgname>
+        <pkgname>cdrdao</pkgname>
+        <pkgname>clementine</pkgname>
+        <pkgname>dvd+rw-tools</pkgname>
+        <pkgname>grub2-editor</pkgname>
+        <pkgname>k3b</pkgname>
+        <pkgname>kde-gtk-config</pkgname>
+        <pkgname>kdeadmin-kuser</pkgname>
+        <pkgname>kdeartwork-desktopthemes</pkgname>
+        <pkgname>kdeartwork-iconthemes</pkgname>
+        <pkgname>kdeartwork-kscreensaver</pkgname>
+        <pkgname>kdeartwork-styles</pkgname>
+        <pkgname>kdebase-dolphin</pkgname>
+        <pkgname>kdebase-kdepasswd</pkgname>
+        <pkgname>kdebase-kdialog</pkgname>
+        <pkgname>kdebase-kfind</pkgname>
+        <pkgname>konsole</pkgname>
+        <pkgname>kdebase-plasma</pkgname>
+        <pkgname>gwenview</pkgname>
+        <pkgname>kdegraphics-ksnapshot</pkgname>
+        <pkgname>kdegraphics-okular</pkgname>
+        <pkgname>kdegraphics-thumbnailers</pkgname>
+        <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
+        <pkgname>kdemultimedia-kmix</pkgname>
+        <pkgname>kdenetwork-filesharing</pkgname>
+        <pkgname>kdenetwork-kopete</pkgname>
+        <pkgname>kde-servicemenus-rootactions</pkgname>
+        <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
+        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+        <pkgname>kdesdk-dolphin-plugins</pkgname>
+        <pkgname>kate</pkgname>
+        <pkgname>kcalc</pkgname>
+        <pkgname>kdesudo</pkgname>
+        <pkgname>kdeutils-ark</pkgname>
+        <pkgname>kdeutils-kwalletmanager</pkgname>
+        <pkgname>kdeutils-sweeper</pkgname>
+        <pkgname>kfaenza-icon-theme</pkgname>
+        <pkgname>kipi-plugins</pkgname>
+        <pkgname>kwebkitpart</pkgname>
+        <pkgname>numix-icon-theme-square-kde</pkgname>
+        <pkgname>qtcurve-kde4</pkgname>
+        <pkgname>qtcurve-qt4</pkgname>
+        <pkgname>qtcurve-qt5</pkgname>
+        <pkgname>qtcurve-gtk2</pkgname>
+        <pkgname>qtcurve-utils</pkgname>
+        <pkgname>transmission-qt</pkgname>
+        <pkgname>vlc</pkgname>
+        <pkgname>xdg-user-dirs</pkgname>
+      </packages>
+    </edition>
 
-        <edition name="KDE4" description="KDE 4 Desktop">
-            <packages>
-                <pkgname>aspell-en</pkgname>
-                <pkgname>breeze-kde4</pkgname>
-                <pkgname>cdrdao</pkgname>
-                <pkgname>clementine</pkgname>
-                <pkgname>dvd+rw-tools</pkgname>
-                <pkgname>grub2-editor</pkgname>
-                <pkgname>k3b</pkgname>
-                <pkgname>kde-gtk-config</pkgname>
-                <pkgname>kdeadmin-kuser</pkgname>
-                <pkgname>kdeartwork-desktopthemes</pkgname>
-                <pkgname>kdeartwork-iconthemes</pkgname>
-                <pkgname>kdeartwork-kscreensaver</pkgname>
-                <pkgname>kdeartwork-styles</pkgname>
-                <pkgname>kdebase-dolphin</pkgname>
-                <pkgname>kdebase-kdepasswd</pkgname>
-                <pkgname>kdebase-kdialog</pkgname>
-                <pkgname>kdebase-kfind</pkgname>
-                <pkgname>konsole</pkgname>
-                <pkgname>kdebase-plasma</pkgname>
-                <pkgname>gwenview</pkgname>
-                <pkgname>kdegraphics-ksnapshot</pkgname>
-                <pkgname>kdegraphics-okular</pkgname>
-                <pkgname>kdegraphics-thumbnailers</pkgname>
-                <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-                <pkgname>kdemultimedia-kmix</pkgname>
-                <pkgname>kdenetwork-filesharing</pkgname>
-                <pkgname>kdenetwork-kopete</pkgname>
-                <pkgname>kde-servicemenus-rootactions</pkgname>
-                <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
-                <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
-                <pkgname>kdesdk-dolphin-plugins</pkgname>
-                <pkgname>kate</pkgname>
-                <pkgname>kcalc</pkgname>
-                <pkgname>kdesudo</pkgname>
-                <pkgname>kdeutils-ark</pkgname>
-                <pkgname>kdeutils-kwalletmanager</pkgname>
-                <pkgname>kdeutils-sweeper</pkgname>
-                <pkgname>kfaenza-icon-theme</pkgname>
-                <pkgname>kipi-plugins</pkgname>
-                <pkgname>kwebkitpart</pkgname>
-                <pkgname>numix-icon-theme-square-kde</pkgname>
-                <pkgname>qtcurve-kde4</pkgname>
-                <pkgname>qtcurve-qt4</pkgname>
-                <pkgname>qtcurve-qt5</pkgname>
-                <pkgname>qtcurve-gtk2</pkgname>
-                <pkgname>qtcurve-utils</pkgname>
-                <pkgname>transmission-qt</pkgname>
-                <pkgname>vlc</pkgname>
-                <pkgname>xdg-user-dirs</pkgname>
-            </packages>
-        </edition>
+    <edition name="plasma5" description="KDE Desktop - Plasma 5">
+        <packages>
+          <pkgname>aspell-en</pkgname>
+          <pkgname>breeze-kde4</pkgname>
+          <pkgname>cdrdao</pkgname>
+          <pkgname>clementine</pkgname>
+          <pkgname>dvd+rw-tools</pkgname>
+          <pkgname>grub2-editor</pkgname>
+          <pkgname>k3b</pkgname>
+          <pkgname>gwenview</pkgname>
+          <pkgname>kdegraphics-ksnapshot</pkgname>
+          <pkgname>kdegraphics-okular</pkgname>
+          <pkgname>kdegraphics-thumbnailers</pkgname>
+          <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
+          <pkgname>kmix</pkgname>
+          <pkgname>kdenetwork-filesharing</pkgname>
+          <pkgname>kdenetwork-kopete</pkgname>
+          <pkgname>kate</pkgname>
+          <pkgname>kdesudo</pkgname>
+          <pkgname>kdeutils-ark</pkgname>
+          <pkgname>kcalc</pkgname>
+          <pkgname>kdeutils-kwalletmanager</pkgname>
+          <pkgname>kdeutils-sweeper</pkgname>
+          <pkgname>kf5</pkgname>
+          <pkgname>kf5-aids</pkgname>
+          <pkgname>kfaenza-icon-theme</pkgname>
+          <pkgname>kinfocenter</pkgname>
+          <pkgname>konsole</pkgname>
+          <pkgname>kwrited</pkgname>
+          <pkgname>numix-icon-theme-square-kde</pkgname>
+          <pkgname>pcmanfm-qt</pkgname> <!--Change to Dolphin on August 28-->
+          <pkgname>plasma</pkgname><!--plasma group-->
+          <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
+          <pkgname>transmission-qt</pkgname>
+          <pkgname>vlc</pkgname>
+          <pkgname>xdg-user-dirs</pkgname>
+        </packages>
+      </edition>
+  </editions>
 
-        <edition name="plasma5" description="KDE Desktop - Plasma 5">
-            <packages>
-                <pkgname>aspell-en</pkgname>
-                <pkgname>breeze-kde4</pkgname>
-                <pkgname>cdrdao</pkgname>
-                <pkgname>clementine</pkgname>
-                <pkgname>dvd+rw-tools</pkgname>
-                <pkgname>grub2-editor</pkgname>
-                <pkgname>k3b</pkgname>
-                <pkgname>gwenview</pkgname>
-                <pkgname>kdegraphics-ksnapshot</pkgname>
-                <pkgname>kdegraphics-okular</pkgname>
-                <pkgname>kdegraphics-thumbnailers</pkgname>
-                <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-                <pkgname>kmix</pkgname>
-                <pkgname>kdenetwork-filesharing</pkgname>
-                <pkgname>kdenetwork-kopete</pkgname>
-                <pkgname>kate</pkgname>
-                <pkgname>kdesudo</pkgname>
-                <pkgname>kdeutils-ark</pkgname>
-                <pkgname>kcalc</pkgname>
-                <pkgname>kdeutils-kwalletmanager</pkgname>
-                <pkgname>kdeutils-sweeper</pkgname>
-                <pkgname>kf5</pkgname>
-                <pkgname>kf5-aids</pkgname>
-                <pkgname>kfaenza-icon-theme</pkgname>
-                <pkgname>kinfocenter</pkgname>
-                <pkgname>konsole</pkgname>
-                <pkgname>kwrited</pkgname>
-                <pkgname>numix-icon-theme-square-kde</pkgname>
-                <pkgname>pcmanfm-qt</pkgname> <!--Change to Dolphin on August 28-->
-                <pkgname>plasma</pkgname> <!--plasma group-->
-                <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
-                <pkgname>transmission-qt</pkgname>
-                <pkgname>vlc</pkgname>
-                <pkgname>xdg-user-dirs</pkgname>
-            </packages>
-        </edition>
-    </editions>
+  <!-- User desired features -->
+  <features>
+    <feature name="aur">
+      <pkgname>yaourt</pkgname>
+      <pkgname>cmake</pkgname>
+      <pkgname>git</pkgname>
+      <pkgname>bzr</pkgname>
+    </feature>
+    <feature name="bluetooth">
+      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
+      <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
+      <pkgname>bluez-utils</pkgname>
+      <pkgname lib='gtk'>gnome-bluetooth</pkgname>
+    </feature>
+    <feature name="cups">
+      <pkgname>cups</pkgname>
+      <pkgname>cups-pk-helper</pkgname>
+      <!--<pkgname>foomatic-db-nonfree</pkgname>-->
+      <pkgname>gsfonts</pkgname>
+      <!--<pkgname>gutenprint</pkgname>-->
+      <pkgname>hplip</pkgname>
+      <pkgname lib='qt'>print-manager</pkgname>
+      <pkgname lib='gtk'>system-config-printer</pkgname>
+      <pkgname>splix</pkgname>
+    </feature>
+    <feature name="firefox">
+        <pkgname conflicts="chromium">firefox</pkgname>
+    </feature>
+    <feature name="firewall">
+      <pkgname lib='gtk'>gufw</pkgname>
+      <!--<pkgname lib='qt'>kcm-ufw</pkgname>-->
+      <pkgname>ufw</pkgname>
+    </feature>
+    <feature name="fonts">
+      <pkgname>ttf-freefont</pkgname>
+      <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
+    </feature>
+    <feature name="lts">
+        <pkgname>linux-lts</pkgname>
+    </feature>
+    <feature name="office">
+      <!-- There're now two libreoffice branches, fresh and still
+      Fresh is a LibreOffice branch which contains new features and program enhancements
+      while still is more stable and only gets bug fixes. -->
+      <pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
+      <pkgname>hunspell-en</pkgname>
+    </feature>
+    <feature name="visual">
+      <pkgname>compton</pkgname>
+      <pkgname>paranoid</pkgname>
+    </feature>
+    <feature name="smb">
+        <pkgname lib='gtk'>gvfs-smb</pkgname>
+        <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
+	      <pkgname>python-pysmbc</pkgname>
+    </feature>
+    <feature name="lamp">
+      <pkgname>apache</pkgname>
+      <pkgname>php</pkgname>
+      <pkgname>php-apache</pkgname>
+      <pkgname>mariadb</pkgname>
+      <pkgname>phpmyadmin</pkgname>
+      <pkgname>php-mcrypt</pkgname>
+    </feature>
+    <feature name="lemp">
+      <pkgname>nginx</pkgname>
+      <pkgname>php-fpm</pkgname>
+      <pkgname>mariadb</pkgname>
+      <pkgname>phpmyadmin</pkgname>
+      <pkgname>php-mcrypt</pkgname>
+    </feature>
+  </features>
 
-    <!-- User desired features -->
-    <features>
-        <feature name="aur">
-            <pkgname>yaourt</pkgname>
-            <pkgname>cmake</pkgname>
-            <pkgname>git</pkgname>
-            <pkgname>bzr</pkgname>
-        </feature>
-        <feature name="bluetooth">
-            <pkgname lib='qt'>bluedevil4</pkgname> <!--kde4-->
-            <pkgname lib='qt' qt5="True">bluedevil</pkgname> <!--kde5 (plasma)-->
-            <pkgname>bluez-utils</pkgname>
-            <pkgname lib='gtk'>gnome-bluetooth</pkgname>
-        </feature>
-        <feature name="cups">
-            <pkgname>cups</pkgname>
-            <pkgname>cups-pk-helper</pkgname>
-            <pkgname>gsfonts</pkgname>
-            <pkgname>hplip</pkgname>
-            <pkgname lib='qt'>print-manager</pkgname>
-            <pkgname lib='gtk'>system-config-printer</pkgname>
-            <pkgname>splix</pkgname>
-        </feature>
-        <feature name="firefox">
-            <pkgname conflicts="chromium">firefox</pkgname>
-        </feature>
-        <feature name="firewall">
-            <pkgname lib='gtk'>gufw</pkgname>
-            <pkgname lib='qt' qt5="False">kcm-ufw</pkgname>
-            <pkgname>ufw</pkgname>
-        </feature>
-        <feature name="fonts">
-            <pkgname>ttf-freefont</pkgname>
-            <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
-        </feature>
-        <feature name="lts">
-            <pkgname>linux-lts</pkgname>
-        </feature>
-        <feature name="office">
-            <!-- There're now two libreoffice branches, fresh and still
-            Fresh is a LibreOffice branch which contains new features and program enhancements
-            while still is more stable and only gets bug fixes. -->
-            <pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
-            <pkgname>hunspell-en</pkgname>
-        </feature>
-        <feature name="visual">
-            <pkgname>compton</pkgname>
-            <pkgname>paranoid</pkgname>
-        </feature>
-        <feature name="smb">
-            <pkgname lib='gtk'>gvfs-smb</pkgname>
-            <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
-        </feature>
-    </features>
+  <net>
+    <broadcom>
+      <pkgname>broadcom-wl</pkgname>
+    </broadcom>
+  </net>
 
-    <net>
-        <broadcom>
-            <pkgname>broadcom-wl</pkgname>
-        </broadcom>
-    </net>
+  <filesystems>
+    <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
+    <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
+    <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
+    <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
+    <pkgname>e2fsprogs</pkgname>        <!-- Ext2/3/4 filesystem utilities -->
+    <pkgname>f2fs-tools</pkgname>       <!-- for Flash-Friendly File System -->
+    <pkgname>jfsutils</pkgname>         <!-- for jfs partitions -->
+    <pkgname>nfs-utils</pkgname>        <!-- for Network File Systems (NFS)-->
+    <pkgname>nilfs-utils</pkgname>      <!-- for nilfs2 support -->
+    <pkgname>ntfs-3g</pkgname>          <!-- for NTFS support -->
+    <pkgname>reiserfsprogs</pkgname>    <!-- for reiser partitions -->
+    <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
+  </filesystems>
 
-    <filesystems>
-        <pkgname>btrfs-progs</pkgname> <!-- for btrfs partitions -->
-        <pkgname>dmraid</pkgname> <!-- Device mapper RAID interface -->
-        <pkgname>dosfstools</pkgname> <!-- for FAT16 and FAT32 partitions -->
-        <pkgname>exfat-utils</pkgname> <!-- for exFAT partitions -->
-        <pkgname>e2fsprogs</pkgname> <!-- Ext2/3/4 filesystem utilities -->
-        <pkgname>f2fs-tools</pkgname> <!-- for Flash-Friendly File System -->
-        <pkgname>jfsutils</pkgname> <!-- for jfs partitions -->
-        <pkgname>nfs-utils</pkgname> <!-- for Network File Systems (NFS)-->
-        <pkgname>nilfs-utils</pkgname> <!-- for nilfs2 support -->
-        <pkgname>ntfs-3g</pkgname> <!-- for NTFS support -->
-        <pkgname>reiserfsprogs</pkgname> <!-- for reiser partitions -->
-        <pkgname>xfsprogs</pkgname> <!-- for xfs partitions -->
-    </filesystems>
+  <locale_fonts>
+    <chinese>
+      <pkgname>opendesktop-fonts</pkgname>
+    </chinese>
+  </locale_fonts>
 
-    <locale_fonts>
-        <chinese>
-            <pkgname>opendesktop-fonts</pkgname>
-        </chinese>
-    </locale_fonts>
-
-    <ntp>
-        <pkgname>ntp</pkgname>
-    </ntp>
-
-    <bootloaders>
-        <bootloader name="grub2">
-            <pkgname>grub</pkgname>
-            <pkgname>os-prober</pkgname>
-        </bootloader>
-        <bootloader name="gummiboot">
-            <pkgname>gummiboot</pkgname>
-        </bootloader>
-    </bootloaders>
+  <bootloaders>
+    <bootloader name="grub2">
+      <pkgname>grub</pkgname>
+      <pkgname>os-prober</pkgname>
+      <pkgname>grub2-theme-antergos</pkgname>
+    </bootloader>
+    <bootloader name="gummiboot">
+      <pkgname>gummiboot</pkgname>
+    </bootloader>
+  </bootloaders>
 
 </cnchi>

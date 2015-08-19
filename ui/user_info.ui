@@ -4,9 +4,10 @@
   <object class="GtkGrid" id="user_info">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">baseline</property>
+    <property name="halign">center</property>
     <property name="valign">center</property>
-    <property name="margin_start">140</property>
+    <!--<property name="margin_start">140</property>-->
+    <property name="margin_start">10</property>
     <property name="margin_end">20</property>
     <property name="margin_top">10</property>
     <property name="margin_bottom">10</property>
@@ -85,7 +86,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <!--<property name="xalign">0</property>-->
             <property name="halign">start</property>
             <property name="draw_indicator">True</property>
             <property name="group">login_pass</property>
@@ -103,7 +103,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <!--<property name="xalign">0</property>-->
             <property name="halign">start</property>
             <property name="active">True</property>
             <property name="draw_indicator">True</property>
@@ -120,7 +119,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
-            <!--<property name="xalign">0</property>-->
             <property name="halign">start</property>
             <property name="draw_indicator">True</property>
             <property name="margin_start">20</property>
@@ -214,7 +212,6 @@
         <child>
           <object class="GtkImage" id="password_ok">
             <property name="can_focus">False</property>
-            <!--<property name="stock">gtk-yes</property>-->
           </object>
           <packing>
             <property name="expand">False</property>
@@ -271,7 +268,6 @@
         <child>
           <object class="GtkImage" id="fullname_ok">
             <property name="can_focus">False</property>
-            <!--<property name="stock">gtk-yes</property>-->
           </object>
           <packing>
             <property name="expand">False</property>
@@ -315,7 +311,6 @@
         <child>
           <object class="GtkImage" id="username_ok">
             <property name="can_focus">False</property>
-            <!--<property name="stock">gtk-yes</property>-->
           </object>
           <packing>
             <property name="expand">False</property>
@@ -393,7 +388,6 @@
             <child>
               <object class="GtkImage" id="hostname_ok">
                 <property name="can_focus">False</property>
-                <!--<property name="stock">gtk-yes</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -467,7 +461,6 @@
         <property name="receives_default">False</property>
         <property name="valign">start</property>
         <property name="halign">start</property>
-        <!--<property name="xalign">0</property>-->
         <property name="draw_indicator">True</property>
         <signal name="toggled" handler="on_checkbutton_show_password_toggled" swapped="no"/>
       </object>

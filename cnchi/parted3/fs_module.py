@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Functions to work with file systems """
 
@@ -35,6 +40,21 @@ NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
+def get_uuid(part):
+    info = get_info(part)
+    if "UUID" in info.keys():
+        return info['UUID']
+    else:
+        logging.error(_("Can't get partition %s UUID"), part)
+        return ""
+
+def get_label(part):
+    info = get_info(part)
+    if "LABEL" in info.keys():
+        return info['LABEL']
+    else:
+        logging.warning(_("Can't get partition %s label (or it does not have any)"), part)
+        return ""
 
 @misc.raise_privileges
 def get_info(part):
@@ -69,6 +89,35 @@ def get_type(part):
             logging.warning(err)
             ret = ''
     return ret
+
+
+def get_pknames():
+    """ PKNAME: internal parent kernel device name """
+    pknames = {}
+    info = None
+    try:
+        cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
+        info = subprocess.check_output(cmd).decode().strip().split('\n')
+    except subprocess.CalledProcessError as err:
+        logging.warning(err)
+
+    if info:
+        # skip header
+        info = info[1:]
+        skip_list = ["disk", "rom", "loop", "arch_root-image"]
+        for line in info:
+            skip_line = False
+            for skip in skip_list:
+                if skip in line:
+                    skip_line = True
+                    break
+            if not skip_line:
+                line = line.split()
+                try:
+                    pknames[line[0]] = line[1]
+                except IndexError as err:
+                    pass
+    return pknames
 
 
 @misc.raise_privileges

@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,14 +17,22 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Nouveau (Nvidia) driver installation """
 
-from hardware.hardware import Hardware
+try:
+    from hardware.hardware import Hardware
+except ImportError:
+    from hardware import Hardware
 
 import os
 
@@ -33,10 +41,14 @@ CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 DEVICES = []
 
+# Give this driver more priority so it is chosen instead of
+# nvidia or nvidia-340xx or nvidia-304xx
+PRIORITY = 3
+
 
 class Nouveau(Hardware):
     def __init__(self):
-        Hardware.__init__(self)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     def get_packages(self):
         pkgs = ["xf86-video-nouveau"]
@@ -49,11 +61,6 @@ class Nouveau(Hardware):
         with open(path, 'w') as modprobe:
             modprobe.write("options nouveau modeset=1\n")
 
-    def check_device(self, class_id, vendor_id, product_id):
-        """ Checks if the driver supports this device """
-        if class_id == CLASS_ID and vendor_id == VENDOR_ID:
-            return True
-        return False
-
-    def get_name(self):
-        return CLASS_NAME
+        # path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-nvidia.conf")
+        # with open(path, "w") as blacklist:
+        #    blacklist.write("blacklist nvidia\n")

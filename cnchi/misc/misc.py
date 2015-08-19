@@ -6,7 +6,7 @@
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -856,18 +856,16 @@ def get_nm_state():
 
 
 def has_connection():
-    # In a Virtualbox VM this returns true even when the host OS has no connection
-    # karasu: But the ip idea is not good too. It fails under too many circumstances
-    # (in this case is better a false positive than a false negative)
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-        return True
-
     try:
-        url = 'http://74.125.228.100'
+        url = 'http://130.206.13.20'
         urllib.request.urlopen(url, timeout=5)
         return True
-    except (OSError, timeout, urllib.error.URLError) as err:
-        logging.warning(err)
+    except (OSError, timeout, urllib.error.URLError) as url_err:
+        logging.warning(url_err)
+        # We can connect to that IP, let's ask NetworkManager
+        # In a Virtualbox VM this returns true even when the host OS has no connection
+        if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+            return True
         return False
 
 
@@ -1030,6 +1028,10 @@ def is_partition_extended(partition):
     """ Check if a partition is of extended type """
 
     if "/dev/mapper" in partition:
+        return False
+
+    # In automatic LVM volume is called AntergosVG
+    if "/dev/AntergosVG" in partition:
         return False
 
     if "/dev/" in partition:

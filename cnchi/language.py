@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 from gi.repository import Gtk
 import gettext
@@ -37,6 +42,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 import misc.i18n as i18n
 
+from rank_mirrors import AutoRankmirrorsProcess
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -59,6 +65,9 @@ class Language(GtkBaseBox):
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
+        # Boolean variable to check if rank_mirrors has already been run
+        self.rank_mirrors_launched = False
+
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
@@ -73,13 +82,18 @@ class Language(GtkBaseBox):
         """ Translates all ui elements """
         txt_bold = _("Notice: The Cnchi Installer is beta software.")
         # FIXME: Can't use an a html tag in the label. Causes an accessible GTK Assertion
-        txt = _("Cnchi is pre-release beta software that is under active development.\n"
-                "It does not yet properly handle RAID, btrfs subvolumes, or other advanced\n"
+        txt = _("Cnchi is pre-release beta software that is under active development. "
+                "It does not yet properly handle RAID, btrfs subvolumes, or other advanced "
                 "setups. Please proceed with caution as data loss is possible!\n\n"
-                "If you find any bugs, please report them at http://bugs.antergos.com")
+                "If you find any bugs, please report them at {0}")
+        txt = txt.format("<a href='http://bugs.antergos.com'>bugs.antergos.com</a>")
         txt_markup = "<span weight='bold'>{0}</span>\n\n{1}".format(txt_bold, txt)
         label = self.ui.get_object("welcome_label")
         label.set_markup(txt_markup)
+
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(50)
 
         txt = _("Choose your language")
         self.header.set_subtitle(txt)
@@ -139,7 +153,6 @@ class Language(GtkBaseBox):
                     lang = label.get_text()
 
         current_language, sorted_choices, display_map = i18n.get_languages(self.language_list)
-
         if len(lang) > 0:
             self.settings.set("language_name", display_map[lang][0])
             self.settings.set("language_code", display_map[lang][1])
@@ -151,6 +164,15 @@ class Language(GtkBaseBox):
         # Enable forward button
         self.forward_button.set_sensitive(True)
         self.show_all()
+
+        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
+        if not self.testing and not self.rank_mirrors_launched:
+            proc = AutoRankmirrorsProcess()
+            proc.daemon = True
+            proc.name = "rankmirrors"
+            proc.start()
+            self.process_list.append(proc)
+            self.rank_mirrors_launched = True
 
 # When testing, no _() is available
 try:

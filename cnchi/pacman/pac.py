@@ -11,7 +11,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -19,10 +19,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Module interface to pyalpm """
 
@@ -30,18 +35,26 @@ import sys
 import math
 import logging
 import os
+import queue
 
 try:
     import pacman.alpm_events as alpm
     import pacman.pkginfo as pkginfo
     import pacman.pacman_conf as config
 except ImportError as err:
-    # logging.error(err)
-    pass
+    try:
+        import cnchi.pacman.alpm_events as alpm
+        import cnchi.pacman.pkginfo as pkginfo
+        import cnchi.pacman.pacman_conf as config
+        import gettext
+        _ = gettext.gettext
+    except ImportError as err:
+        logging.error(err)
 
 try:
     import pyalpm
 except ImportError as err:
+    # This is already logged elsewhere
     # logging.error(err)
     pass
 
@@ -97,7 +110,12 @@ class Pac(object):
             db_path = _DEFAULT_DB_PATH
 
         self.handle = pyalpm.Handle(root_dir, db_path)
-        
+
+        logging.debug(
+            _("alpm init with root dir '{0}' and db path '{1}'").format(
+                root_dir,
+                db_path))
+
         if self.handle is None:
             raise pyalpm.error
 
@@ -316,7 +334,7 @@ class Pac(object):
 
     @staticmethod
     def find_sync_package(pkgname, syncdbs):
-        """ Finds a package name in a list of DBs 
+        """ Finds a package name in a list of DBs
         :rtype : tuple (True/False, package or error message)
         """
         for db in syncdbs.values():
@@ -370,7 +388,7 @@ class Pac(object):
         if event_type == "percent":
             # Limit percent to two decimal
             event_text = "{0:.2f}".format(event_text)
-        
+
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:
                 # Do not enqueue the same event twice

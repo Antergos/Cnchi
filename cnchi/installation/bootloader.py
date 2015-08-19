@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Bootloader installation """
 
@@ -52,15 +57,19 @@ class Bootloader(object):
         self.mount_devices = mount_devices
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
-        self.root_uuid = fs.get_info(self.root_device)['UUID']
+
+        self.root_uuid = fs.get_uuid(self.root_device)
 
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_info(swap_partition)['UUID']
+            self.swap_uuid = fs.get_uuid(swap_partition)
 
         if "/boot" in self.mount_devices:
             boot_device = self.mount_devices["/boot"]
-            self.boot_uuid = fs.get_info(boot_device)['UUID']
+        else:
+            # No dedicated /boot partition
+            boot_device = self.mount_devices["/"]
+        self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
         """ Installs the bootloader """
@@ -146,6 +155,10 @@ class Bootloader(object):
         self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
 
         if self.settings.get('use_luks'):
+            # Should fix issue #352
+            # GRUB_ENABLE_CRYPTODISK=1
+            self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
+
             # Let GRUB automatically add the kernel parameters for root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
@@ -157,7 +170,7 @@ class Bootloader(object):
                 # Special case, in advanced when using luks in root device, we store it in luks_root_device
                 root_device = self.settings.get('luks_root_device')
 
-            root_uuid = fs.get_info(root_device)['UUID']
+            root_uuid = fs.get_uuid(root_device)
 
             logging.debug("Root device: %s", root_device)
 
@@ -209,8 +222,7 @@ class Bootloader(object):
         script_dir = os.path.join(self.settings.get("cnchi"), "scripts")
         script = "10_antergos"
 
-        if not os.path.exists(grub_d_dir):
-            os.makedirs(grub_d_dir)
+        os.makedirs(grub_d_dir, mode=0o755, exist_ok=True)
 
         script_path = os.path.join(script_dir, script)
         if os.path.exists(script_path):
@@ -255,8 +267,6 @@ class Bootloader(object):
             logging.error(_('Command grub-install failed. Unknown Error: %s'), general_error)
 
         self.install_grub2_locales()
-
-        self.copy_grub2_theme_files()
 
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
@@ -321,8 +331,6 @@ class Bootloader(object):
 
         self.install_grub2_locales()
 
-        self.copy_grub2_theme_files()
-
         # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
         grub_defaults = [os.path.join(self.dest_dir, "boot/efi/EFI/BOOT", "BOOT{0}.efi".format(spec_uefi_arch_caps)),
                          os.path.join(self.dest_dir, "boot/efi/EFI/Microsoft/Boot", 'bootmgfw.efi')]
@@ -334,7 +342,7 @@ class Bootloader(object):
             if not os.path.exists(path):
                 msg = _("No OEM loader found in %s. Copying Grub(2) into dir.")
                 logging.info(msg, path)
-                os.makedirs(path)
+                os.makedirs(path, mode=0o755)
                 msg_failed = _("Copying Grub(2) into OEM dir failed: %s")
                 try:
                     shutil.copy(grub_path, grub_default)
@@ -344,19 +352,6 @@ class Bootloader(object):
                     logging.warning(msg_failed, _("File already exists."))
                 except Exception as general_error:
                     logging.warning(msg_failed, general_error)
-
-        # Copy uefi shell if none exists in /boot/efi/EFI
-        shell_src = "/usr/share/cnchi/grub2-theme/shellx64_v2.efi"
-        shell_dst = os.path.join(self.dest_dir, "boot/efi/EFI/")
-        try:
-            shutil.copy2(shell_src, shell_dst)
-        except FileNotFoundError:
-            logging.warning(_("UEFI Shell drop-in not found at %s"), shell_src)
-        except FileExistsError:
-            pass
-        except Exception as general_error:
-            logging.warning(_("UEFI Shell drop-in could not be copied."))
-            logging.warning(general_error)
 
         # Run grub-mkconfig last
         logging.info(_("Generating grub.cfg"))
@@ -410,25 +405,12 @@ class Bootloader(object):
         else:
             logging.warning(_("Failed to patch 50mounted-tests, file not found."))
 
-    def copy_grub2_theme_files(self):
-        """ Copy grub2 theme files to /boot """
-        logging.info(_("Copying GRUB(2) Theme Files"))
-        theme_dir_src = "/usr/share/cnchi/grub2-theme/Antergos-Default"
-        theme_dir_dst = os.path.join(self.dest_dir, "boot/grub/themes/Antergos-Default")
-        try:
-            shutil.copytree(theme_dir_src, theme_dir_dst)
-        except FileNotFoundError:
-            logging.warning(_("Grub2 theme files not found"))
-        except FileExistsError:
-            logging.warning(_("Grub2 theme files already exist."))
-
     def install_grub2_locales(self):
         """ Install Grub2 locales """
         logging.info(_("Installing Grub2 locales."))
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
-        if not os.path.exists(dest_locale_dir):
-            os.makedirs(dest_locale_dir)
+        os.makedirs(dest_locale_dir, mode=0o755, exist_ok=True)
 
         grub_mo = os.path.join(self.dest_dir, "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
 
@@ -444,7 +426,7 @@ class Bootloader(object):
         """ Install Gummiboot bootloader to the EFI System Partition """
         # Setup bootloader menu
         menu_dir = os.path.join(self.dest_dir, "boot/loader")
-        os.makedirs(menu_dir)
+        os.makedirs(menu_dir, mode=0o755, exist_ok=True)
         menu_path = os.path.join(menu_dir, "loader.conf")
         with open(menu_path, 'w') as menu_file:
             menu_file.write("default antergos")
@@ -479,8 +461,7 @@ class Bootloader(object):
                 conf['lts_fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
-            luks_root_volume_device = "/dev/mapper/{0}".format(luks_root_volume)
-            luks_root_volume_uuid = fs.get_info(luks_root_volume_device)['UUID']
+            luks_root_volume_uuid = fs.get_uuid("/dev/mapper/{0}".format(luks_root_volume))
 
             # In automatic mode, root_device is in self.mount_devices, as it should be
             root_device = self.root_device
@@ -488,7 +469,7 @@ class Bootloader(object):
             if self.method == "advanced" and self.settings.get('use_luks_in_root'):
                 root_device = self.settings.get('luks_root_device')
 
-            root_uuid = fs.get_info(root_device)['UUID']
+            root_uuid = fs.get_uuid(root_device)
 
             key = ""
             if self.settings.get("luks_root_password") == "":
@@ -520,7 +501,7 @@ class Bootloader(object):
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
-        os.makedirs(entries_dir)
+        os.makedirs(entries_dir, mode=0o755, exist_ok=True)
 
         entry_path = os.path.join(entries_dir, "antergos.conf")
         with open(entry_path, 'w') as entry_file:

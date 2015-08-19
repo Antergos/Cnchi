@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Main Cnchi Window """
 
@@ -30,13 +35,14 @@ import os
 import sys
 import multiprocessing
 import logging
-
+import queue
 import config
 import welcome
 import language
 import location
 import check
 import desktop
+import desktop_info
 import features
 import keymap
 import timezone
@@ -45,7 +51,6 @@ import slides
 import misc.misc as misc
 import info
 import show_message as show
-import desktop_environments as desktops
 
 from installation import ask as installation_ask
 from installation import automatic as installation_automatic
@@ -115,9 +120,16 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Set enabled desktops
         if self.settings.get('z_hidden'):
-            self.settings.set("desktops", desktops.DESKTOPS_DEV)
+            self.settings.set("desktops", desktop_info.DESKTOPS_DEV)
         else:
-            self.settings.set("desktops", desktops.DESKTOPS)
+            self.settings.set("desktops", desktop_info.DESKTOPS)
+
+        if cmd_line.environment:
+            desktop = cmd_line.environment.lower()
+            if desktop in desktop_info.DESKTOPS:
+                self.settings.set('desktop', desktop)
+                self.settings.set('desktop_ask', False)
+                logging.debug("Cnchi will install the %s desktop environment", desktop)
 
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
@@ -159,14 +171,17 @@ class MainWindow(Gtk.ApplicationWindow):
         # to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
+        # This list will have all processes (rankmirrors, autotimezone...)
+        self.process_list = []
+
         # Save in config which download method we have to use
         if cmd_line.library:
             self.settings.set("download_library", cmd_line.library)
         else:
-            # Use urllib by default
-            self.settings.set("download_library", 'urllib')
-        logging.info(
-            _("Using %s to download packages"),
+            # Use requests by default
+            self.settings.set("download_library", 'requests')
+
+        logging.info(_("Using %s to download packages"),
             self.settings.get("download_library"))
 
         self.set_titlebar(self.header)
@@ -180,6 +195,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
+        self.params['process_list'] = self.process_list
 
         if cmd_line.packagelist:
             self.params['alternate_package_list'] = cmd_line.packagelist
@@ -273,12 +289,18 @@ class MainWindow(Gtk.ApplicationWindow):
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["language"] = language.Language(self.params)
-        self.pages["location"] = location.Location(self.params)
         self.pages["check"] = check.Check(self.params)
-        self.pages["desktop"] = desktop.DesktopAsk(self.params)
-        self.pages["features"] = features.Features(self.params)
-        self.pages["keymap"] = keymap.Keymap(self.params)
+        self.pages["location"] = location.Location(self.params)
         self.pages["timezone"] = timezone.Timezone(self.params)
+
+        if self.settings.get('desktop_ask'):
+            self.pages["keymap"] = keymap.Keymap(self.params)
+            self.pages["desktop"] = desktop.DesktopAsk(self.params)
+            self.pages["features"] = features.Features(self.params)
+        else:
+            self.pages["keymap"] = keymap.Keymap(self.params, next_page='features')
+            self.pages["features"] = features.Features(self.params, prev_page='keymap')
+
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
 
@@ -338,7 +360,7 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.height_inc = 0
 
         hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE | Gdk.WindowHints.RESIZE_INC
-        
+
         self.set_geometry_hints(None, geom, hints)
 
     def check_escape(self, widget, event, data=None):
@@ -366,7 +388,10 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files()
             logging.info(_("Quiting installer..."))
-            self.settings.set('stop_all_threads', True)
+            for proc in self.process_list:
+                if proc.is_alive():
+                    proc.terminate()
+                    proc.join()
             logging.shutdown()
         except KeyboardInterrupt:
             pass

@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,15 +17,21 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Asks which type of installation the user wants to perform """
 
 import os
 import sys
+import queue
 
 # When testing, no _() is available
 try:
@@ -216,6 +222,8 @@ class InstallationAsk(GtkBaseBox):
 
         oses_str = self.get_os_list_str()
 
+        max_width_chars = 80
+
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
         if len(oses_str) > 0:
@@ -229,41 +237,61 @@ class InstallationAsk(GtkBaseBox):
         txt = _("Warning: This will erase ALL data on your disk.")
         #txt = description_style.format(txt)
         label.set_text(txt)
-        label.set_line_wrap(True)
         label.set_name("automatic_desc")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("encrypt_checkbutton")
         txt = _("Encrypt this installation for increased security.")
         button.set_label(txt)
         button.set_name("enc_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the next step.")
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("enc_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("lvm_checkbutton")
         txt = _("Use LVM with this installation.")
         button.set_label(txt)
         button.set_name("lvm_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("lvm_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
         button = self.ui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
         button.set_label(txt)
         button.set_name("home_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("home_label")
         txt = _("This will setup you /home directory in a different partition or volume.")
         #txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
         # Alongside Install (For now, only works with Windows)
         # if len(oses_str) > 0:
@@ -286,6 +314,9 @@ class InstallationAsk(GtkBaseBox):
         #intro_txt = bold_style.format(intro_txt)
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
+        intro_label.set_hexpand(False)
+        intro_label.set_line_wrap(True)
+        intro_label.set_max_width_chars(max_width_chars)
 
         # Advanced Install
         radio = self.ui.get_object("advanced_radiobutton")
@@ -296,8 +327,10 @@ class InstallationAsk(GtkBaseBox):
         txt = _("Edit partition table and choose mount points.")
         #txt = description_style.format(txt)
         label.set_text(txt)
-        label.set_line_wrap(True)
         label.set_name("adv_desc_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
 
     def store_values(self):
         """ Store selected values """
@@ -340,6 +373,60 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('partition_mode', 'advanced')
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
+
+        # Check if there are still processes running...
+        must_wait = False
+        for proc in self.process_list:
+            if proc.is_alive():
+                must_wait = True
+                break
+
+        if must_wait:
+            from gi.repository import Gtk
+            txt1 = _("Ranking mirrors")
+            txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
+            txt2 += "\n\n"
+            txt2 += _("Please be patient...")
+            txt1 = "<big>{0}</big>".format(txt1)
+            txt2 = "<i>{0}</i>".format(txt2)
+            wait_ui = Gtk.Builder()
+            ui_file = os.path.join(self.ui_dir, "wait.ui")
+            wait_ui.add_from_file(ui_file)
+            lbl1 = wait_ui.get_object("label1")
+            lbl1.set_markup(txt1)
+            lbl2 = wait_ui.get_object("label2")
+            lbl2.set_markup(txt2)
+            progress_bar = wait_ui.get_object("progressbar")
+            wait_window = wait_ui.get_object("wait_window")
+            wait_window.set_modal(True)
+            wait_window.set_transient_for(self.get_toplevel())
+            wait_window.set_default_size(320, 240)
+            wait_window.set_position(Gtk.WindowPosition.CENTER)
+            wait_window.show_all()
+
+            ask_box = self.ui.get_object("ask")
+            if ask_box:
+                ask_box.set_sensitive(False)
+
+            import time
+            logging.debug(_("Waiting for all external processes to finish..."))
+            while must_wait:
+                must_wait = False
+                for proc in self.process_list:
+                    # This waits until process finishes, no matter the time.
+                    if proc.is_alive():
+                        must_wait = True
+                # Just wait...
+                time.sleep(0.1)
+                # Update our progressbar dialog
+                progress_bar.pulse()
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+            logging.debug(_("All external processes are finished. Installation can go on"))
+            wait_window.hide()
+
+            if ask_box:
+                ask_box.set_sensitive(True)
 
         return True
 

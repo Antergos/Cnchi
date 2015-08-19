@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Module to download packages using requests library """
 
@@ -30,11 +35,21 @@ import queue
 import shutil
 import requests
 import time
+import hashlib
+
+def get_md5(file_name):
+    """ Gets md5 hash from a file """
+    md5_hash = hashlib.md5()
+    with open(file_name, "rb") as myfile:
+        for line in myfile:
+            md5_hash.update(line)
+    return md5_hash.hexdigest()
+
 
 class Download(object):
-    """ Class to download packages using urllib
+    """ Class to download packages using requests
         This class tries to previously download all necessary packages for
-        Antergos installation using urllib """
+        Antergos installation using requests """
 
     def __init__(self, pacman_cache_dir, cache_dir, callback_queue):
         """ Initialize Download class. Gets default configuration """
@@ -50,7 +65,6 @@ class Download(object):
 
         downloaded = 0
         total_downloads = len(downloads)
-        all_successful = True
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
@@ -60,17 +74,18 @@ class Download(object):
 
             self.queue_event('percent', '0')
 
-            txt = _("Downloading {0} {1} ({2}/{3})...")
-            txt = txt.format(element['identity'], element['version'], downloaded + 1, total_downloads)
+            txt = _("Downloading {0} {1} ({2}/{3})...").format(
+                element['identity'],
+                element['version'],
+                downloaded + 1,
+                total_downloads)
             self.queue_event('info', txt)
 
             try:
                 total_length = int(element['size'])
             except TypeError:
-                # We will get the total length from the requests GET
+                # No problem, we will get the total length from the requests GET
                 pass
-                # logging.warning(_("Metalink for package %s has no size info"), element['identity'])
-                # total_length = 0
 
             # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
             if self.cache_dir:
@@ -83,39 +98,96 @@ class Download(object):
             needs_to_download = True
 
             if os.path.exists(dst_path):
-                # File already exists (previous install?) do not download
-                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
-                needs_to_download = False
-                downloaded += 1
-            elif self.cache_dir and os.path.exists(dst_cache_path):
-                # We're lucky, the package is already downloaded in the cache the user has given us
-                # let's copy it to our destination
-                logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
-                try:
-                    shutil.copy(dst_cache_path, dst_path)
+                # File already exists (previous install?)
+                # We check the file md5 hash
+                md5 = get_md5(dst_path)
+                if element['hash'] is not None and element['hash'] != md5:
+                    logging.warning(
+                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                        element['hash'],
+                        md5,
+                        element['filename'])
+                    # Wrong hash. Force to download it
+                    logging.warning(_("Cnchi will download it"))
+                    needs_to_download = True
+                else:
+                    # Hash ok (or can't be checked). Do not download it
+                    logging.warning(
+                        _("File %s already exists, Cnchi will not overwrite it"),
+                        element['filename'])
                     needs_to_download = False
                     downloaded += 1
-                except OSError as os_error:
-                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"), dst_cache_path, dst_path)
-                    logging.error(os_error)
+            elif os.path.exists(dst_cache_path):
+                # We're lucky, the package is already downloaded
+                # in the cache the user has given us
+
+                # We check the file md5 hash
+                md5 = get_md5(dst_cache_path)
+                if element['hash'] is not None and element['hash'] != md5:
+                    logging.warning(
+                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                        element['hash'],
+                        md5,
+                        element['filename'])
+                    logging.warning(_("Cnchi will download it"))
+                    # Wrong hash. Force to download it
                     needs_to_download = True
+                else:
+                    # let's copy it to our destination
+                    logging.debug(_('%s found in suplied pkg cache. Copying...'), element['filename'])
+                    try:
+                        shutil.copy(dst_cache_path, dst_path)
+                        needs_to_download = False
+                        downloaded += 1
+                    except OSError as os_error:
+                        logging.warning(
+                            _("Error copying %s to %s."),
+                            dst_cache_path,
+                            dst_path)
+                        logging.warning(_("Cnchi will download it"))
+                        logging.error(os_error)
+                        needs_to_download = True
 
             if needs_to_download:
                 # Let's download our filename using url
                 for url in element['urls']:
+                    if url is None:
+                        # Something bad has happened
+                        logging.warning(
+                            _("Package %s v%s has an empty url for this mirror"),
+                            element['identity'],
+                            element['version'])
+                        continue
                     # msg = _("Downloading file from url {0}").format(url)
                     # logging.debug(msg)
                     percent = 0
                     completed_length = 0
                     start = time.clock()
-                    r = requests.get(url, stream=True)
-                    total_length = int(r.headers.get('content-length'))
+                    try:
+                        r = requests.get(url, stream=True)
+                    except requests.exceptions.ConnectionError as connection_error:
+                        logging.warning(_("Can't download {0}").format(url))
+                        logging.warning(connection_error)
+                        logging.warning(_("Cnchi will try another mirror."))
+                        continue
+
                     if r.status_code == requests.codes.ok:
+                        # Get total file length
+                        try:
+                            total_length = int(r.headers.get('content-length'))
+                        except TypeError:
+                            total_length = 0
+                            logging.warning(
+                                _("Metalink for package %s has no size info"),
+                                element['identity'])
+
+                        md5_hash = hashlib.md5()
                         with open(dst_path, 'wb') as xz_file:
                             for data in r.iter_content(1024):
                                 if not data:
                                     break
                                 xz_file.write(data)
+                                md5_hash.update(data)
                                 completed_length += len(data)
                                 old_percent = percent
                                 if total_length > 0:
@@ -125,32 +197,51 @@ class Download(object):
                                 if old_percent != percent:
                                     self.queue_event('percent', percent)
 
-                                progress_text = "{0} {1} bps".format(percent, completed_length // (time.clock() - start))
-                                self.queue_event('progress_bar_text', progress_text)
+                                bps = (completed_length // (time.clock() - start)) / 1024
+                                if bps > 1024:
+                                    Mbps = bps / 1024
+                                    progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
+                                else:
+                                    progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
+                                self.queue_event('progress_bar_show_text', progress_text)
 
-                            download_error = False
-                            downloaded += 1
-                            break
+                            md5 = md5_hash.hexdigest()
+
+                            if element['hash'] is not None and element['hash'] != md5:
+                                logging.warning(
+                                    _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                                    element['hash'],
+                                    md5,
+                                    element['filename'])
+                                logging.warning(_("Cnchi will try another mirror."))
+                                # Force to download it again
+                                download_error = True
+                            else:
+                                download_error = False
+                                downloaded += 1
+                                # Get out of the for loop, as we managed
+                                # to download the package
+                                break
                     else:
                         download_error = True
-                        msg = _("Can't download {0}, Cnchi will try another mirror.").format(url)
-                        # completed_length = 0
-                        logging.warning(msg)
+                        logging.warning(_("Can't download {0}").format(url))
+                        logging.warning(_("Cnchi will try another mirror."))
 
                 if download_error:
                     # None of the mirror urls works.
-                    # This is not a total disaster, maybe alpm will be able
-                    # to download it for us later in pac.py
-                    msg = _("Can't download {0}, even after trying all available mirrors")
-                    msg = msg.format(element['filename'])
-                    all_successful = False
+                    # Stop right here, so the user does not have to wait
+                    # to download the other packages.
+                    msg = _("Can't download {0}, even after trying all available mirrors").format(element['filename'])
                     logging.error(msg)
+                    return False
+
+            self.queue_event('progress_bar_show_text', '')
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
 
         self.queue_event('downloads_progress_bar', 'hide')
-        return all_successful
+        return True
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """

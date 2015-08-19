@@ -9,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -17,10 +17,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 from gi.repository import Gtk
 
@@ -41,6 +46,7 @@ class GtkBaseBox(Gtk.Box):
         self.settings = params['settings']
         self.testing = params['testing']
         self.ui_dir = params['ui_dir']
+        self.process_list = params['process_list']
 
         self.prev_page = prev_page
         self.next_page = next_page
@@ -55,7 +61,7 @@ class GtkBaseBox(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
         self.ui.add_from_file(self.ui_file)
-        
+
         # Connect UI signals
         self.ui.connect_signals(child)
 

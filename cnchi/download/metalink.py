@@ -10,7 +10,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -18,10 +18,15 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+
 
 """ Operations with metalinks """
 
@@ -43,7 +48,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as eTree
 
-MAX_URLS = 5
+MAX_URLS = 10
 
 
 def get_info(metalink):
@@ -238,7 +243,7 @@ class PkgSet(object):
         return self
 
     def __or__(self, other):
-        copy = PkgSet(self.pkgs.values())
+        copy = PkgSet(list(self.pkgs.values()))
         return copy.__ior__(other)
 
     def __ior__(self, other):
@@ -367,7 +372,7 @@ def build_download_queue(alpm, args=None):
     found |= set(other.pkgs)
     not_found = requested - found
     if pargs.needed:
-        other = PkgSet(check_cache(conf, other))
+        other = PkgSet(list(check_cache(conf, other)))
 
     download_queue = DownloadQueue()
 
@@ -462,7 +467,7 @@ if __name__ == '__main__':
 
     import gc
     import pprint
-    import pacman.pac as pac
+    import cnchi.pacman.pac as pac
 
     try:
         pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)
