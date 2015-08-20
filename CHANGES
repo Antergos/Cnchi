@@ -1,3 +1,4 @@
+[2015-08-19 21:30:28 -0500]  forgot one of the nvidia modules (cherry-picked from cnchi-dev)        Dustin Falgout  {0390171}
 [2015-08-19 14:37:00 -0500]  fix bugsnag handler (cherry picked from commit e218c59)                Dustin Falgout  {565f034}
 [2015-08-19 06:15:42 -0500]  remove `libgl` from nvidia packages as it appears that it does not ..  Dustin Falgout  {f19a0e1}
 [2015-08-19 05:25:36 -0500]  update precommit hook--don't forget to update your local copies!       Dustin Falgout  {7ea5aee}
