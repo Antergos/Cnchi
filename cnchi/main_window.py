@@ -326,7 +326,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ When we get to user_info page we can't go back
         therefore we can delete all previous pages for good """
         # FIXME: As there are more references, this does nothing
-        if self.current_page == self.pages["user_info"]:
+        try:
             del self.pages["welcome"]
             del self.pages["language"]
             del self.pages["location"]
@@ -340,6 +340,8 @@ class MainWindow(Gtk.ApplicationWindow):
             if self.pages["installation_alongside"] is not None:
                 del self.pages["installation_alongside"]
             del self.pages["installation_advanced"]
+        except KeyError as key_error:
+            pass
 
     def set_geometry(self):
         """ Sets Cnchi window geometry """
@@ -427,8 +429,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.current_page = self.pages[next_page]
 
                 if self.current_page is not None:
-                    if next_page == "user_info":
-                        self.del_pages()
+                    # if next_page == "user_info":
+                    #    self.del_pages()
                     self.current_page.prepare('forwards')
                     self.main_box.add(self.current_page)
                     if self.current_page.get_prev_page() is not None:
