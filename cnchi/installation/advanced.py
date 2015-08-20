@@ -2271,7 +2271,7 @@ class InstallationAdvanced(GtkBaseBox):
         checkbox = self.ui.get_object("bootloader_device_check")
         if checkbox.get_active() is False:
             self.settings.set('bootloader_install', False)
-            logging.warning(_("Cnchi will not install any bootloader"))
+            logging.debug(_("Cnchi will not install any bootloader"))
         else:
             self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
