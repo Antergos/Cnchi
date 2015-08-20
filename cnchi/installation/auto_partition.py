@@ -69,7 +69,7 @@ def printk(enable):
 
 
 def unmount(directory):
-    logging.warning(_("Unmounting %s"), directory)
+    logging.debug(_("Unmounting %s"), directory)
     try:
         subprocess.call(["umount", directory])
     except subprocess.CalledProcessError:
