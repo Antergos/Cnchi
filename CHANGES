@@ -1,3 +1,4 @@
+[2015-08-19 14:35:05 -0500]  fix bugsnag handler                                                    Dustin Falgout  {e218c59}
 [2015-08-19 06:15:42 -0500]  remove `libgl` from nvidia packages as it appears that it does not ..  Dustin Falgout  {5d957b8}
 [2015-08-19 05:46:58 -0500]  update readme                                                          Dustin Falgout  {f60bbdb}
 [2015-08-19 05:37:09 -0500]  Merge remote-tracking branch 'stable/master' into 0.11.x               Dustin Falgout  {b7c34b2}
