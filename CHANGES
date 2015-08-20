@@ -1,3 +1,9 @@
+[2015-08-20 10:35:32 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {2b055f0}
+[2015-08-20 10:23:23 +0200]  Fix MATE (no mate-meda-pulseaudio package anymore, just mate-media)        karasu      {2c99384}
+[2015-08-20 10:03:43 +0200]  Typo                                                                       karasu      {d446aee}
+[2015-08-20 09:59:58 +0200]  Catch finalize_changes error (advanced)                                    karasu      {410a8be}
+[2015-08-20 09:19:09 +0200]  Do not issue the same warning three times in auto_partition                karasu      {888b57c}
+[2015-08-20 09:07:47 +0200]  Use extend as objects_selected is a list in hardware module                karasu      {8bca69b}
 [2015-08-20 07:08:46 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {d94eb37}
 [2015-08-20 07:05:31 +0200]  Do not call del_pages (it does nothing anyway)                             karasu      {bb82556}
 [2015-08-20 06:29:32 +0200]  Merge branch 'master' of cnchi-stable                                      karasu      {f5c7201}
