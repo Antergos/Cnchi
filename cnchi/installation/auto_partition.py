@@ -140,9 +140,7 @@ def unmount_all(dest_dir):
                 pvolume = pvolume.strip(" ")
                 subprocess.check_call(["pvremove", "-f", pvolume])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't delete existent LVM volumes"))
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning(_("Can't delete existent LVM volumes, command %s failed. Output: %s"), err.cmd, err.output)
 
     # Close LUKS devices (they may have been left open because of a previous failed installation)
     try:
@@ -151,9 +149,7 @@ def unmount_all(dest_dir):
         if os.path.exists("/dev/mapper/cryptAntergosHome"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't close already opened LUKS devices"))
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning(_("Can't close already opened LUKS devices, command %s failed. Output: %s"), err.cmd, err.output)
 
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
