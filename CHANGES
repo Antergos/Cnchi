@@ -1,3 +1,5 @@
+[2015-08-20 11:13:13 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {6b4db62}
+[2015-08-20 11:00:19 +0200]  Do not issue a warning if user doesn't want to install a bootloader        karasu      {bd19eb7}
 [2015-08-20 10:35:32 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {2b055f0}
 [2015-08-20 10:23:23 +0200]  Fix MATE (no mate-meda-pulseaudio package anymore, just mate-media)        karasu      {2c99384}
 [2015-08-20 10:03:43 +0200]  Typo                                                                       karasu      {d446aee}
