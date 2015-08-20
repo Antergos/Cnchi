@@ -261,7 +261,7 @@ class HardwareInstall(object):
                             self.objects_used.append(driver)
                             break
                 else:
-                    self.objects_used.append(objects_selected)
+                    self.objects_used.extend(objects_selected)
             else:
                 # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(drivers_available[0])
