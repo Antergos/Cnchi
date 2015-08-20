@@ -2100,7 +2100,7 @@ class InstallationAdvanced(GtkBaseBox):
                 (disk, result) = self.disks[disk_path]
                 # Only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
-                    self.finalize_changes(disk):
+                    self.finalize_changes(disk)
                 # Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
 
