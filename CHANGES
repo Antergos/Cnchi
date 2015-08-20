@@ -1,3 +1,4 @@
+[2015-08-20 10:03:43 +0200]  Typo                                                                       karasu      {d446aee}
 [2015-08-20 09:59:58 +0200]  Catch finalize_changes error (advanced)                                    karasu      {410a8be}
 [2015-08-20 09:19:09 +0200]  Do not issue the same warning three times in auto_partition                karasu      {888b57c}
 [2015-08-20 09:07:47 +0200]  Use extend as objects_selected is a list in hardware module                karasu      {8bca69b}
