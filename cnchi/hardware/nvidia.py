@@ -100,7 +100,7 @@ class Nvidia(Hardware):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     def get_packages(self):
-        pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau", "libcl"]
+        pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
         return pkgs
