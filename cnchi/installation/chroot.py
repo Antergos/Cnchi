@@ -73,7 +73,7 @@ def mount_special_dirs(dest_dir):
     for special_dir in special_dirs:
         mountpoint = os.path.join(dest_dir, special_dir[1:])
         os.makedirs(mountpoint, mode=0o755, exist_ok=True)
-        os.chmod(mountpoint, 0o755)
+        # os.chmod(mountpoint, 0o755)
         cmd = ["mount", "--bind", special_dir, mountpoint]
         logging.debug("Mounting special dir '{0}' to {1}".format(special_dir, mountpoint))
         try:
