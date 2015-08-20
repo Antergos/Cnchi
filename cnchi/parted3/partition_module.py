@@ -301,9 +301,8 @@ def get_used_space_from_path(path):
         used_space = lines[1].split()[2]
     except subprocess.CalledProcessError as process_error:
         used_space = 0
-        txt = _("Can't detect used space from {0}").format(path)
+        txt = _("Can't detect used space from {0}: {1}").format(path, process_error)
         logging.error(txt)
-        logging.error(process_error)
         debug_txt = "{0}\n{1}".format(txt, process_error)
         show.error(None, debug_txt)
 
@@ -351,8 +350,11 @@ def get_flag(part, flag):
 
 @misc.raise_privileges
 def finalize_changes(diskob):
-    diskob.commit()
-
+    try:
+        diskob.commit()
+    except parted._ped.IOException as io_error:
+        logging.error(str(io_error))
+        raise IOError(str(io_error))
 
 def order_partitions(partdic):
     """ Pass the result of get_partitions here and it will return list

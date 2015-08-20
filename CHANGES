@@ -1,3 +1,4 @@
+[2015-08-20 09:19:09 +0200]  Do not issue the same warning three times in auto_partition                karasu      {888b57c}
 [2015-08-20 09:07:47 +0200]  Use extend as objects_selected is a list in hardware module                karasu      {8bca69b}
 [2015-08-20 07:05:31 +0200]  Do not call del_pages (it does nothing anyway)                             karasu      {bb82556}
 [2015-08-20 06:19:50 +0200]  Remove extra chmod (makedirs already sets permissions)                     karasu      {2e9530a}
