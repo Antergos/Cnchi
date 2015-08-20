@@ -1,3 +1,4 @@
+[2015-08-20 14:20:56 +0200]  Forgot if check                                                            karasu      {af2762d}
 [2015-08-20 14:19:06 +0200]  Disable graphics_feature until conflict between lib32-nvidia-libgl ..      karasu      {f61c544}
 [2015-08-20 11:17:06 +0200]  Unmounting should not issue a warning                                      karasu      {8599e2a}
 [2015-08-20 11:00:19 +0200]  Do not issue a warning if user doesn't want to install a bootloader        karasu      {bd19eb7}
