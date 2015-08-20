@@ -2033,8 +2033,7 @@ class InstallationAdvanced(GtkBaseBox):
                 (disk, result) = self.disks[disk_path]
                 # Only commit changes to disks we've changed!
                 if disk_path in self.disks_changed:
-                    pm.finalize_changes(disk)
-                    logging.info(_("Finished saving changes in %s"), disk_path)
+                    self.finalize_changes(disk)
                 # Now that partitions are created, set fs and label
                 partitions.update(pm.get_partitions(disk))
 
@@ -2068,7 +2067,7 @@ class InstallationAdvanced(GtkBaseBox):
                             if self.bootloader_device or self.bootloader_device is not None:
                                 pm.set_flag(pm.PED_PARTITION_BOOT, partitions[partition_path])
                         if not self.testing:
-                            pm.finalize_changes(partitions[partition_path].disk)
+                            self.finalize_changes(partitions[partition_path].disk)
 
                     if "/dev/mapper" in partition_path:
                         pvs = lvm.get_lvm_partitions()
@@ -2095,7 +2094,7 @@ class InstallationAdvanced(GtkBaseBox):
                                         if self.bootloader_device or self.bootloader_device is not None:
                                             pm.set_flag(pm.PED_PARTITION_BOOT, partitions[ee])
                                     if not self.testing:
-                                        pm.finalize_changes(partitions[ee].disk)
+                                        self.finalize_changes(partitions[ee].disk)
 
                     if uid in self.luks_options:
                         (use_luks, vol_name, password) = self.luks_options[uid]
@@ -2153,6 +2152,14 @@ class InstallationAdvanced(GtkBaseBox):
                                     # Catch all exceptions because not being able to label
                                     # a partition shouldn't be fatal
                                     logging.error(label_error)
+
+    def finalize_changes(self, disk):
+        try:
+            pm.finalize_changes(disk)
+            logging.info(_("Saved changes to disk"))
+        except IOError as io_error:
+            msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
+            show.error(self.get_toplevel(), msg)
 
     def run_install(self):
         """ Start installation process """
