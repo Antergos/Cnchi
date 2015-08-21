@@ -1,3 +1,4 @@
+[2015-08-20 14:39:59 +0200]  Use fat as fat32                                                           karasu      {3c2cf84}
 [2015-08-20 11:17:50 +0200]  unmounting should not issue a warning                                      karasu      {7bb6db8}
 [2015-08-20 11:13:13 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {6b4db62}
 [2015-08-20 11:00:19 +0200]  Do not issue a warning if user doesn't want to install a bootloader        karasu      {bd19eb7}

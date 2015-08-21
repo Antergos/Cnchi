@@ -733,7 +733,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Can't edit a partition that uses a LVM filesystem type
         if "lvm2" in row[COL_FS].lower():
-            logging.warning(_("Can't edit a partition with LVM filesystem type"))
+            logging.warning("Can't edit a partition with a LVM filesystem type")
             return
 
         # Fill partition dialog with correct data
@@ -804,7 +804,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 new_label = label_entry.get_text().replace(" ", "")
                 if len(new_label) > 0 and not new_label.isalpha():
-                    logging.warning(_("'%s' is not a valid label"), new_label)
+                    logging.debug("'%s' is not a valid label. Therefore, Cnchi will set no label at all", new_label)
                     new_label = ""
 
                 new_fs = combo.get_active_text()
@@ -819,7 +819,7 @@ class InstallationAdvanced(GtkBaseBox):
                     new_mount = 'swap'
 
                 if os.path.exists('/sys/firmware/efi') and (new_mount == "/boot" or new_mount == "/boot/efi"):
-                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    logging.debug("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
                     new_fs = "fat"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
@@ -905,7 +905,7 @@ class InstallationAdvanced(GtkBaseBox):
         disk_path = self.get_disk_path_from_selection(model, tree_iter)
         self.disks_changed.append(disk_path)
 
-        logging.info(_("You will delete the partition %s from disk %s"), partition_path, disk_path)
+        logging.info("You will delete the partition %s from disk %s", partition_path, disk_path)
 
         # Be sure to just call get_devices once
         if self.disks is None:
@@ -923,7 +923,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Before delete the partition, check if it's already mounted
         if pm.check_mounted(part):
             # We unmount the partition. Should we ask first?
-            logging.info(_("Unmounting %s..."), part.path)
+            logging.info("Unmounting %s...", part.path)
             try:
                 subprocess.Popen(['umount', part.path], stdout=subprocess.PIPE)
             except subprocess.CalledProcessError as process_error:
@@ -1108,7 +1108,7 @@ class InstallationAdvanced(GtkBaseBox):
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text().replace(" ", "")
             if len(mylabel) > 0 and not mylabel.isalpha():
-                logging.warning(_("'%s' is not a valid label"), mylabel)
+                logging.warning("'%s' is not a valid label. Therefore, Cnchi will set no label at all", mylabel)
                 mylabel = ""
 
             mymount = mount_combo.get_text().strip()
@@ -1138,7 +1138,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # User wants to create an extended, logical or primary partition
 
                 if radio["primary"].get_active():
-                    logging.debug(_("Creating a primary partition"))
+                    logging.debug("Creating a primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif radio["extended"].get_active():
                     # Not mounting extended partitions.
@@ -1149,17 +1149,17 @@ class InstallationAdvanced(GtkBaseBox):
                     mylabel = ''
                     myfs = 'extended'
                     formatme = False
-                    logging.debug(_("Creating an extended partition"))
+                    logging.debug("Creating an extended partition")
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif radio["logical"].get_active():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
-                        logging.debug(_("Creating a logical partition"))
+                        logging.debug("Creating a logical partition")
                         pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
 
                 if os.path.exists('/sys/firmware/efi') and (mymount == "/boot" or mymount == "/boot/efi"):
-                    logging.warning(_("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."))
+                    logging.info("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
                     myfs = "fat"
 
                 # Store new stage partition info in self.stage_opts
@@ -1584,7 +1584,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if "GPT" in line:
                     ptype = 'gpt'
 
-                logging.info(_("Creating a new %s partition table for disk %s"), ptype, disk_path)
+                logging.info("Creating a new %s partition table for disk %s", ptype, disk_path)
 
                 new_disk = pm.make_new_disk(disk_path, ptype)
                 self.disks[disk_path] = (new_disk, pm.OK)
@@ -1622,9 +1622,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Get how many primary partitions are already created on disk
         if p is None or disk.primaryPartitionCount > 0:
             # BIOS GPT Boot partition must be the first one on the disk
-            txt = _("Can't create BIOS GPT Boot partition!")
+            txt = "Can't create BIOS GPT Boot partition!"
             logging.error(txt)
-            show.error(self.get_toplevel(), txt)
+            show.error(self.get_toplevel(), _(txt))
             return
 
         # max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
@@ -1651,9 +1651,9 @@ class InstallationAdvanced(GtkBaseBox):
         res, myerr = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
 
         if res:
-            txt = _("Couldn't create BIOS GPT Boot partition")
+            txt = "Couldn't create BIOS GPT Boot partition: {0}".format(myerr)
             logging.error(txt)
-            logging.error(myerr)
+            txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(myerr)
             show.error(self.get_toplevel(), txt)
 
         # Store stage partition info in self.stage_opts
@@ -1896,9 +1896,9 @@ class InstallationAdvanced(GtkBaseBox):
                                     try:
                                         cmd = ['umount', '-l', partition_path]
                                         subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                        logging.debug(_("%s unmounted"), mount_point)
+                                        logging.debug("%s unmounted", mount_point)
                                     except subprocess.CalledProcessError as process_error:
-                                        logging.error(process_error)
+                                        logging.error("Command %s failed: %s", " ".join(cmd), process_error)
                                 elif mounted:
                                     response = show.question(self.get_toplevel(), msg)
                                     if response != Gtk.ResponseType.YES:
@@ -1910,19 +1910,20 @@ class InstallationAdvanced(GtkBaseBox):
                                             try:
                                                 cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
                                                 subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                                logging.debug(_("Swap partition %s unmounted"), partition_path)
+                                                logging.debug("Swap partition %s unmounted", partition_path)
                                             except subprocess.CalledProcessError as process_error:
-                                                logging.error(process_error)
+                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
                                         else:
                                             try:
                                                 cmd = ['umount', partition_path]
                                                 subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                                logging.debug(_("%s unmounted"), mount_point)
+                                                logging.debug("%s unmounted", mount_point)
                                             except subprocess.CalledProcessError as process_error:
-                                                logging.error(process_error)
+                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
                                 else:
-                                    msg = _("%s shows as mounted (busy) but it has no mount point")
-                                    logging.warning(msg, partition_path)
+                                    logging.warning(
+                                        "%s shows as mounted (busy) but it has no mount point",
+                                        partition_path)
 
                         (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
 
@@ -1998,19 +1999,19 @@ class InstallationAdvanced(GtkBaseBox):
         checkbox = self.ui.get_object("bootloader_device_check")
         if checkbox.get_active() is False:
             self.settings.set('bootloader_install', False)
-            logging.debug(_("Cnchi will not install any bootloader"))
+            logging.info("Cnchi will not install any bootloader")
         else:
             self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = "Antergos will install the bootloader {0} in device {1}"
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
     def run_format(self):
         """ Create staged partitions """
-        logging.debug(_("Creating partitions and their filesystems..."))
+        logging.debug("Creating partitions and their filesystems...")
 
         # Sometimes a swap partition can still be active at this point
         try:
@@ -2021,7 +2022,7 @@ class InstallationAdvanced(GtkBaseBox):
                     cmd = ['sh', '-c', 'swapoff {0}'.format(name)]
                     subprocess.Popen(cmd, stdout=subprocess.PIPE)
         except subprocess.CalledProcessError as process_error:
-            logging.error(process_error)
+            logging.error("Error running command %s: %s", " ".join(cmd), process_error)
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap
@@ -2053,11 +2054,9 @@ class InstallationAdvanced(GtkBaseBox):
                     if fisy == "extended" or fisy == "bios-gpt-boot":
                         continue
                     if len(lbl) > 0:
-                        txt = _("Creating new {0} filesystem in {1} labeled {2}")
-                        txt = txt.format(fisy, partition_path, lbl)
+                        txt = "Creating new {0} filesystem in {1} labeled {2}".format(fisy, partition_path, lbl)
                     else:
-                        txt = _("Creating new {0} filesystem in {1}")
-                        txt = txt.format(fisy, partition_path)
+                        txt = "Creating new {0} filesystem in {1}".format(fisy, partition_path)
 
                     logging.info(txt)
 
@@ -2084,7 +2083,7 @@ class InstallationAdvanced(GtkBaseBox):
                         else:
                             vgname = vgname.split('-')[0]
                         if len(vgname) > 0 and (mnt == '/' or mnt == '/boot'):
-                            logging.debug(_("Volume name is %s"), vgname)
+                            logging.debug("Volume name is %s", vgname)
                             self.blvm = True
                             if noboot or mnt == '/boot':
                                 for ee in pvs[vgname]:
@@ -2098,8 +2097,7 @@ class InstallationAdvanced(GtkBaseBox):
                     if uid in self.luks_options:
                         (use_luks, vol_name, password) = self.luks_options[uid]
                         if use_luks and len(vol_name) > 0 and len(password) > 0:
-                            txt = _("Encrypting {0}, assigning volume name {1} and formatting it...")
-                            txt = txt.format(partition_path, vol_name)
+                            txt = "Encrypting {0}, assigning volume name {1} and formatting it...".format(partition_path, vol_name)
                             logging.info(txt)
                             if not self.testing:
                                 with misc.raised_privileges():
@@ -2113,10 +2111,9 @@ class InstallationAdvanced(GtkBaseBox):
                                 if not error:
                                     logging.info(msg)
                                 else:
-                                    txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}'")
-                                    txt = txt.format(luks_device, lbl, fisy)
+                                    txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}".format(luks_device, lbl, fisy, msg)
                                     logging.error(txt)
-                                    logging.error(msg)
+                                    txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(luks_device, lbl, fisy, msg)
                                     show.error(self.get_toplevel(), txt)
 
                                 # Do not format (already done)
@@ -2137,10 +2134,9 @@ class InstallationAdvanced(GtkBaseBox):
                             if not error:
                                 logging.info(msg)
                             else:
-                                txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}'")
-                                txt = txt.format(partition_path, lbl, fisy)
+                                txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}".format(partition_path, lbl, fisy, msg)
                                 logging.error(txt)
-                                logging.error(msg)
+                                txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(partition_path, lbl, fisy, msg)
                                 show.error(self.get_toplevel(), txt)
                     elif partition_path in self.orig_label_dic:
                         if self.orig_label_dic[partition_path] != lbl:
@@ -2155,8 +2151,10 @@ class InstallationAdvanced(GtkBaseBox):
     def finalize_changes(self, disk):
         try:
             pm.finalize_changes(disk)
-            logging.info(_("Saved changes to disk"))
+            logging.info("Saved changes to disk")
         except IOError as io_error:
+            msg = "Cannot commit your changes to disk: {0}".format(str(io_error))
+            logging.error(msg)
             msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
             show.error(self.get_toplevel(), msg)
 
@@ -2210,7 +2208,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.blvm)
             self.installation.start()
         else:
-            logging.warning(_("Testing mode. Cnchi will not change anything!"))
+            logging.info("Testing mode. Cnchi will not change anything!")
 
 # When testing, no _() is available
 try:

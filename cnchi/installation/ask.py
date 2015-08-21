@@ -112,9 +112,9 @@ class InstallationAsk(GtkBaseBox):
         self.settings.set('enable_alongside', enable_alongside)
         '''
         if enable_alongside:
-            msg = _("Cnchi will enable the 'alongside' installation mode.")
+            msg = "Cnchi will enable the 'alongside' installation mode."
         else:
-            msg = _("Cnchi will NOT enable the 'alongside' installation mode.")
+            msg = "Cnchi will NOT enable the 'alongside' installation mode."
         logging.debug(msg)
         '''
 
@@ -129,7 +129,7 @@ class InstallationAsk(GtkBaseBox):
 
         # FIXME: Alongside does not work in UEFI systems
         if os.path.exists("/sys/firmware/efi"):
-            msg = _("The 'alongside' installation mode does not work in UEFI systems")
+            msg = "The 'alongside' installation mode does not work in UEFI systems"
             logging.debug(msg)
             enable_alongside = False
         else:
@@ -143,17 +143,17 @@ class InstallationAsk(GtkBaseBox):
             if len(self.other_oses) > 0:
                 for detected_os in self.other_oses:
                     if "windows" in detected_os.lower():
-                        logging.debug(_("Windows(tm) OS detected."))
+                        logging.debug("Windows(tm) OS detected.")
                         enable_alongside = True
                 if not enable_alongside:
-                    logging.debug(_("Windows(tm) OS not detected."))
+                    logging.debug("Windows(tm) OS not detected.")
                     enable_alongside = False
             else:
-                logging.debug(_("Can't detect any OS in device sda."))
+                logging.debug("Can't detect any OS in device sda.")
                 enable_alongside = False
 
             if not check_alongside_disk_layout():
-                logging.debug(_("Unsuported disk layout for the 'alongside' installation mode"))
+                logging.debug("Unsuported disk layout for the 'alongside' installation mode")
                 enable_alongside = False
 
         return enable_alongside
@@ -358,14 +358,14 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_home', False)
 
         if self.settings.get('use_luks'):
-            logging.info(_("Antergos installation will be encrypted using LUKS"))
+            logging.info("Antergos installation will be encrypted using LUKS")
 
         if self.settings.get('use_lvm'):
-            logging.info(_("Antergos will be installed using LVM volumes"))
+            logging.info("Antergos will be installed using LVM volumes")
             if self.settings.get('use_home'):
-                logging.info(_("Antergos will be installed using a separate /home volume."))
+                logging.info("Antergos will be installed using a separate /home volume.")
         elif self.settings.get('use_home'):
-            logging.info(_("Antergos will be installed using a separate /home partition."))
+            logging.info("Antergos will be installed using a separate /home partition.")
 
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
@@ -409,7 +409,7 @@ class InstallationAsk(GtkBaseBox):
                 ask_box.set_sensitive(False)
 
             import time
-            logging.debug(_("Waiting for all external processes to finish..."))
+            logging.debug("Waiting for all external processes to finish...")
             while must_wait:
                 must_wait = False
                 for proc in self.process_list:
@@ -422,7 +422,7 @@ class InstallationAsk(GtkBaseBox):
                 progress_bar.pulse()
                 while Gtk.events_pending():
                     Gtk.main_iteration()
-            logging.debug(_("All external processes are finished. Installation can go on"))
+            logging.debug("All external processes are finished. Installation can go on")
             wait_window.hide()
 
             if ask_box:

@@ -177,9 +177,9 @@ class Check(GtkBaseBox):
         # Remove timer
         self.remove_timer = True
 
-        logging.info(_("We have Internet connection."))
-        logging.info(_("We're connected to a power source."))
-        logging.info(_("We have enough disk space."))
+        logging.info("We have Internet connection.")
+        logging.info("We're connected to a power source.")
+        logging.info("We have enough disk space.")
 
         # Enable forward button
         self.forward_button.set_sensitive(True)

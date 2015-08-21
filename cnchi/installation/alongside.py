@@ -72,7 +72,8 @@ def get_partition_size_info(partition_path, human=False):
     try:
         if not already_mounted:
             tmp_dir = tempfile.mkdtemp()
-            subprocess.call(["mount", partition_path, tmp_dir])
+            cmd = ["mount", partition_path, tmp_dir]
+            subprocess.call(cmd)
         if human:
             cmd = ['df', '-h', partition_path]
         else:
@@ -81,7 +82,8 @@ def get_partition_size_info(partition_path, human=False):
         if not already_mounted:
             subprocess.call(['umount', '-l', tmp_dir])
     except subprocess.CalledProcessError as process_error:
-        logging.error(process_error)
+        txt = "Error running command %s: %s".format(" ".join(cmd), process_error)
+        logging.error(txt)
         return
 
     if os.path.exists(tmp_dir):
@@ -139,11 +141,10 @@ class InstallationAlongside(GtkBaseBox):
 
         if new_device is None:
             # No device is available
-            logging.warning(_("There are no primary partitions available"))
+            logging.error("There are no primary partitions available")
             return
 
-        txt = _("Will shrink device {0} and create new device {1}")
-        txt = txt.format(device_to_shrink, new_device)
+        txt = "Will shrink device {0} and create new device {1}".format(device_to_shrink, new_device)
         logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
@@ -265,7 +266,7 @@ class InstallationAlongside(GtkBaseBox):
             self.choose_partition_label.hide()
             self.choose_partition_combo.hide()
         else:
-            logging.warning(_("Can't find any installed OS!"))
+            logging.warning("Can't find any installed OS")
 
     def store_values(self):
         self.start_installation()
@@ -295,30 +296,30 @@ class InstallationAlongside(GtkBaseBox):
         # First, shrink filesystem
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
-            txt = _("Filesystem on {0} shrunk.").format(partition_path)
+            txt = "Filesystem on {0} shrunk.".format(partition_path)
             txt = txt + "\n"
-            txt = txt + _("Will recreate partition now on device {0} partition {1}").format(device_path, partition_path)
+            txt = txt + "Will recreate partition now on device {0} partition {1}".format(device_path, partition_path)
             logging.debug(txt)
             # Destroy original partition and create a new resized one
             res = pm.split_partition(device_path, partition_path, new_size)
         else:
-            txt = _("Can't shrink {0}({1}) filesystem").format(otherOS, fs_type)
+            txt = "Can't shrink {0}({1}) filesystem".format(otherOS, fs_type)
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
             return
 
         # res is either False or a parted.Geometry for the new free space
         if res is None:
-            txt = _("Can't shrink {0}({1}) partition").format(otherOS, fs_type)
+            txt = "Can't shrink {0}({1}) partition".format(otherOS, fs_type)
             logging.error(txt)
             show.error(self.get_toplevel(), txt)
-            txt = _("*** FILESYSTEM IN UNSAFE STATE ***")
+            txt = "*** FILESYSTEM IN UNSAFE STATE ***"
             txt = txt + "\n"
-            txt = txt + _("Filesystem shrink succeeded but partition shrink failed.")
+            txt = txt + "Filesystem shrink succeeded but partition shrink failed."
             logging.error(txt)
             return
 
-        txt = _("Partition {0} shrink complete").format(partition_path)
+        txt = "Partition {0} shrink complete".format(partition_path)
         logging.debug(txt)
 
         devices = pm.get_devices()
@@ -335,8 +336,8 @@ class InstallationAlongside(GtkBaseBox):
         if res.getLength('MB') < MIN_ROOT_SIZE + 1:
             if mem < 2048:
                 # Less than 2GB RAM and no swap? No way.
+                logging.error("Cannot create new swap partition. Not enough free space")
                 txt = _("Cannot create new swap partition. Not enough free space")
-                logging.error(txt)
                 show.error(self.get_toplevel(), txt)
                 return
             else:
@@ -345,8 +346,8 @@ class InstallationAlongside(GtkBaseBox):
         if no_swap:
             npart = pm.create_partition(device_path, 0, res)
             if npart is None:
+                logging.error("Cannot create new partition.")
                 txt = _("Cannot create new partition.")
-                logging.error(txt)
                 show.error(self.get_toplevel(), txt)
                 return
             pm.finalize_changes(disk)
@@ -381,8 +382,8 @@ class InstallationAlongside(GtkBaseBox):
             logging.debug("create_partition %s", my_geometry)
             swappart = pm.create_partition(disk, 0, my_geometry)
             if swappart is None:
+                logging.error("Cannot create new swap partition.")
                 txt = _("Cannot create new swap partition.")
-                logging.error(txt)
                 show.error(self.get_toplevel(), txt)
                 return
 
@@ -393,8 +394,8 @@ class InstallationAlongside(GtkBaseBox):
             logging.debug("create_partition %s", my_geometry)
             npart = pm.create_partition(disk, 0, my_geometry)
             if npart is None:
+                logging.error("Cannot create new partition.")
                 txt = _("Cannot create new partition.")
-                logging.error(txt)
                 show.error(self.get_toplevel(), txt)
                 return
 
@@ -415,11 +416,11 @@ class InstallationAlongside(GtkBaseBox):
         if self.settings.get('bootloader_install'):
             self.settings.set('bootloader', "grub2")
             self.settings.set('bootloader_device', device_path)
-            msg = _("Antergos will install the bootloader {0} in device {1}")
+            msg = "Antergos will install the bootloader {0} in device {1}"
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
         else:
-            logging.info(_("Cnchi will not install any bootloader"))
+            logging.info("Cnchi will not install any bootloader")
 
         if not self.testing:
             self.process = installation_process.InstallationProcess(
@@ -430,7 +431,7 @@ class InstallationAlongside(GtkBaseBox):
 
             self.process.start()
         else:
-            logging.warning(_("Testing mode. Cnchi will not change anything!"))
+            logging.info("Testing mode. Cnchi will not change anything!")
         '''
 
 if __name__ == '__main__':

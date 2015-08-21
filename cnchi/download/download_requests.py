@@ -102,18 +102,17 @@ class Download(object):
                 # We check the file md5 hash
                 md5 = get_md5(dst_path)
                 if element['hash'] is not None and element['hash'] != md5:
-                    logging.warning(
-                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                    logging.debug(
+                        "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will download it",
                         element['hash'],
                         md5,
                         element['filename'])
                     # Wrong hash. Force to download it
-                    logging.warning(_("Cnchi will download it"))
                     needs_to_download = True
                 else:
                     # Hash ok (or can't be checked). Do not download it
-                    logging.warning(
-                        _("File %s already exists, Cnchi will not overwrite it"),
+                    logging.debug(
+                        "File %s already exists, Cnchi will not overwrite it",
                         element['filename'])
                     needs_to_download = False
                     downloaded += 1
@@ -124,28 +123,26 @@ class Download(object):
                 # We check the file md5 hash
                 md5 = get_md5(dst_cache_path)
                 if element['hash'] is not None and element['hash'] != md5:
-                    logging.warning(
-                        _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                    logging.debug(
+                        "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will download it",
                         element['hash'],
                         md5,
                         element['filename'])
-                    logging.warning(_("Cnchi will download it"))
                     # Wrong hash. Force to download it
                     needs_to_download = True
                 else:
                     # let's copy it to our destination
-                    logging.debug(_('%s found in suplied pkg cache. Copying...'), element['filename'])
+                    logging.debug("%s found in suplied pkg cache. Copying...", element['filename'])
                     try:
                         shutil.copy(dst_cache_path, dst_path)
                         needs_to_download = False
                         downloaded += 1
                     except OSError as os_error:
-                        logging.warning(
-                            _("Error copying %s to %s."),
+                        logging.debug(
+                            "Error copying %s to %s, so Cnchi will download it",
                             dst_cache_path,
                             dst_path)
-                        logging.warning(_("Cnchi will download it"))
-                        logging.error(os_error)
+                        logging.debug(os_error)
                         needs_to_download = True
 
             if needs_to_download:
@@ -154,7 +151,7 @@ class Download(object):
                     if url is None:
                         # Something bad has happened
                         logging.warning(
-                            _("Package %s v%s has an empty url for this mirror"),
+                            "Package %s v%s has an empty url for this mirror",
                             element['identity'],
                             element['version'])
                         continue
@@ -166,9 +163,8 @@ class Download(object):
                     try:
                         r = requests.get(url, stream=True)
                     except requests.exceptions.ConnectionError as connection_error:
-                        logging.warning(_("Can't download {0}").format(url))
-                        logging.warning(connection_error)
-                        logging.warning(_("Cnchi will try another mirror."))
+                        msg = "Can't download {0} ({1}), Cnchi will try another mirror.".format(url, connection_error)
+                        logging.debug(msg)
                         continue
 
                     if r.status_code == requests.codes.ok:
@@ -178,7 +174,7 @@ class Download(object):
                         except TypeError:
                             total_length = 0
                             logging.warning(
-                                _("Metalink for package %s has no size info"),
+                                "Metalink for package %s has no size info",
                                 element['identity'])
 
                         md5_hash = hashlib.md5()
@@ -209,11 +205,10 @@ class Download(object):
 
                             if element['hash'] is not None and element['hash'] != md5:
                                 logging.warning(
-                                    _("MD5 hash (url:%s, file:%s) of file %s do not match!"),
+                                    "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will try another mirror.",
                                     element['hash'],
                                     md5,
                                     element['filename'])
-                                logging.warning(_("Cnchi will try another mirror."))
                                 # Force to download it again
                                 download_error = True
                             else:
@@ -224,14 +219,14 @@ class Download(object):
                                 break
                     else:
                         download_error = True
-                        logging.warning(_("Can't download {0}").format(url))
-                        logging.warning(_("Cnchi will try another mirror."))
+                        msg = "Can't download {0}, Cnchi will try another mirror.".format(url)
+                        logging.debug(msg)
 
                 if download_error:
                     # None of the mirror urls works.
                     # Stop right here, so the user does not have to wait
                     # to download the other packages.
-                    msg = _("Can't download {0}, even after trying all available mirrors").format(element['filename'])
+                    msg = "Can't download {0}, even after trying all available mirrors".format(element['filename'])
                     logging.error(msg)
                     return False
 

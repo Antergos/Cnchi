@@ -102,7 +102,7 @@ def _hexdump8081(partition):
         hexdump = subprocess.check_output(cmd).decode()
         return hexdump
     except subprocess.CalledProcessError as process_error:
-        logging.warning(_("Error calling hexdump command: %s"), process_error)
+        logging.warning("Error calling hexdump command: %s", process_error)
         return ""
 
 
@@ -135,7 +135,7 @@ def _get_partition_info(partition):
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
     elif len(bytes80_to_81) > 0:
-        logging.debug(_("Unknown partition id %s"), bytes80_to_81)
+        logging.debug("Unknown partition id %s", bytes80_to_81)
     return _("unknown")
 
 

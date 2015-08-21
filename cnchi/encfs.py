@@ -105,9 +105,9 @@ def setup(username, dest_dir, password):
         backup_conf_files(dest_dir)
         setup_conf_files(dest_dir)
     except Exception as general_error:
-        logging.error(_("Can't create and modify encfs configuration files."))
+        logging.error("Can't create and modify encfs configuration files.")
         logging.error(general_error)
-        logging.error(_("Home directory won't be encrypted."))
+        logging.error("Home directory won't be encrypted.")
         return False
 
     # Move user home dir out of the way

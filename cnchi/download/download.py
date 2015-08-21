@@ -101,7 +101,7 @@ class DownloadPackages(object):
         if downloads is None:
             raise InstallError(_("Can't create download package list. Check log output for details"))
 
-        logging.debug(_("Using %s library to download packages"), download_library)
+        logging.debug("Using %s module to download packages", download_library)
 
         if download_library == "aria2":
             download = download_aria2.Download(
@@ -115,8 +115,7 @@ class DownloadPackages(object):
                 callback_queue)
         else:
             if download_library != "requests":
-                logging.warning(_("Unknown '%s' library, Cnchi will use the 'requests' one as default"),
-                                download_library)
+                logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", download_library)
             download = download_requests.Download(
                 pacman_cache_dir,
                 cache_dir,
@@ -147,14 +146,14 @@ class DownloadPackages(object):
             if pacman is None:
                 return None
         except Exception as err:
-            logging.error(_("Can't initialize pyalpm: %s"), err)
+            logging.error("Can't initialize pyalpm: %s", err)
             return None
 
         try:
             for package_name in package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink is None:
-                    logging.error(_("Error creating metalink for package %s. Installation will stop"), package_name)
+                    logging.error("Error creating metalink for package %s. Installation will stop", package_name)
                     return None
 
                 # Get metalink info
@@ -170,14 +169,14 @@ class DownloadPackages(object):
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
         except Exception as err:
-            logging.error(_("Can't create download set: %s"), err)
+            logging.error("Can't create download set: %s", err)
             return None
 
         try:
             pacman.release()
             del pacman
         except Exception as err:
-            logging.error(_("Can't release pyalpm: %s"), err)
+            logging.error("Can't release pyalpm: %s", err)
 
         # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")

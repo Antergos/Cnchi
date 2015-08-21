@@ -80,7 +80,7 @@ class Download(object):
         self.aria2.run()
 
         if self.aria2.rpc_uid is None:
-            logging.warning(_("Aria2 is not running."))
+            logging.warning("Aria2 is not running.")
             return
 
         downloaded = 0
@@ -109,7 +109,7 @@ class Download(object):
 
                 if os.path.exists(dst_path):
                     # File already exists (previous install?) do not download
-                    logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
+                    logging.debug("File %s already exists, Cnchi will not overwrite it", element['filename'])
                     downloaded += 1
                 elif self.cache_dir and os.path.exists(src_cache_path):
                     # We're lucky, the package is already downloaded in the cache the user has given us

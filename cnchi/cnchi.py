@@ -82,7 +82,7 @@ class CnchiApp(Gtk.Application):
         try:
             import main_window
         except ImportError as err:
-            msg = _("Can't create Cnchi main window: {0}").format(err)
+            msg = "Cannot create Cnchi main window: {0}".format(err)
             logging.error(msg)
             sys.exit(1)
 
@@ -157,12 +157,9 @@ def setup_logging():
                 bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
                 bugsnag_handler.setLevel(logging.WARNING)
                 logger.addHandler(bugsnag_handler)
-                logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
+                logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
             else:
-                logging.warning(
-                    "%s %s",
-                    _("Cannot read the bugsnag api key."),
-                    _("Logging to bugsnag is not possible."))
+                logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
@@ -180,7 +177,7 @@ def setup_logging():
 
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-            logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
+            logging.info("Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
 
 
 def get_bugsnag_api():
@@ -235,7 +232,7 @@ def check_pyalpm_version():
     try:
         import pyalpm
 
-        txt = _("Using pyalpm v{0} as interface to libalpm v{1}")
+        txt = "Using pyalpm v{0} as interface to libalpm v{1}"
         txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
         logging.info(txt)
     except (NameError, ImportError) as err:
@@ -352,7 +349,7 @@ def update_cnchi():
         local_cnchi_version=info.CNCHI_VERSION)
 
     if upd.update():
-        logging.info(_("Program updated! Restarting..."))
+        logging.info("Program updated! Restarting...")
         misc.remove_temp_files()
         if cmd_line.update:
             # Remove -u and --update options from new call

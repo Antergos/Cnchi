@@ -69,15 +69,15 @@ def printk(enable):
 
 
 def unmount(directory):
-    logging.debug(_("Unmounting %s"), directory)
+    logging.debug("Unmounting %s", directory)
     try:
         subprocess.call(["umount", directory])
     except subprocess.CalledProcessError:
-        logging.warning(_("Unmounting %s failed. Trying lazy arg."), directory)
+        logging.debug("Unmounting %s failed. Trying lazy arg.", directory)
         try:
             subprocess.call(["umount", "-l", directory])
-        except subprocess.CalledProcessError:
-            logging.warning(_("Unmounting %s failed."), directory)
+        except subprocess.CalledProcessError as process_error:
+            logging.warning("Unmounting %s failed: %s", directory, process_error)
 
 
 def unmount_all(dest_dir):
@@ -89,14 +89,12 @@ def unmount_all(dest_dir):
             if "/dev/zram" not in name:
                 subprocess.check_call(["swapoff", name])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning("Command %s failed: %s", err.cmd, err.output)
 
     try:
         mount_result = subprocess.check_output("mount").decode().split("\n")
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning("Command %s failed: %s", err.cmd, err.output)
         return
 
     # Umount all devices mounted inside dest_dir (if any)
@@ -140,7 +138,7 @@ def unmount_all(dest_dir):
                 pvolume = pvolume.strip(" ")
                 subprocess.check_call(["pvremove", "-f", pvolume])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't delete existent LVM volumes, command %s failed. Output: %s"), err.cmd, err.output)
+        logging.warning("Can't delete existent LVM volumes, command %s failed: %s", err.cmd, err.output)
 
     # Close LUKS devices (they may have been left open because of a previous failed installation)
     try:
@@ -149,22 +147,21 @@ def unmount_all(dest_dir):
         if os.path.exists("/dev/mapper/cryptAntergosHome"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't close already opened LUKS devices, command %s failed. Output: %s"), err.cmd, err.output)
+        logging.warning("Can't close already opened LUKS devices, command %s failed: %s", err.cmd, err.output)
 
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
     if (luks_pass is None or luks_pass == "") and luks_key is None:
-        txt = _("Can't setup LUKS in device {0}. A password or a key file are needed")
-        txt = txt.format(luks_device)
+        txt = "Can't setup LUKS in device {0}. A password or a key file are needed".format(luks_device)
         logging.error(txt)
         return
 
     # For now, we we'll use the same password for root and /home
     # If instead user wants to use a key file, we'll have two different key files.
 
-    logging.debug(_("Cnchi will setup LUKS on device %s"), luks_device)
+    logging.debug("Cnchi will setup LUKS on device %s", luks_device)
 
     # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
     # For 512 bit key length the header is 2MiB
@@ -183,10 +180,9 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
-            txt = _("Can't format and open the LUKS device {0}").format(luks_device)
+            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(luks_device, err.cmd, err.output)
             logging.error(txt)
-            logging.error(_("Command %s failed"), err.cmd)
-            logging.error(_("Output: %s"), err.output)
+            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(luks_device, err.cmd, err.output)
             raise InstallError(txt)
 
     else:
@@ -206,10 +202,9 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             proc.communicate(input=luks_pass_bytes)
         except subprocess.CalledProcessError as err:
-            txt = _("Can't format and open the LUKS device {0}").format(luks_device)
+            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(luks_device, err.cmd, err.output)
             logging.error(txt)
-            logging.error(_("Command %s failed"), err.cmd)
-            logging.error(_("Output: %s"), err.output)
+            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(luks_device, err.cmd, err.output)
             raise InstallError(txt)
 
 
@@ -217,9 +212,7 @@ def wipefs(device):
     try:
         subprocess.check_call(["wipefs", "-a", device])
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't wipe filesystem of device %s"), device)
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning("Cannot wipe the filesystem of device %s. Command %s has failed: %s", device, err.cmd, err.output)
 
 
 def dd(input_device, output_device, bs=512, count=2048):
@@ -229,9 +222,7 @@ def dd(input_device, output_device, bs=512, count=2048):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        logging.warning(_("Can't run dd command"))
-        logging.warning(_("Command %s failed"), err.cmd)
-        logging.warning(_("Output: %s"), err.output)
+        logging.warning("Command %s failed: %s", err.cmd, err.output)
 
 
 def sgdisk(command, device):
@@ -257,10 +248,9 @@ def sgdisk_new(device, part_num, label, size, hex_code):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        txt = _("Error creating a new partition on device {0}").format(device)
+        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}".format(device, err.cmd, err.output)
         logging.error(txt)
-        logging.error(_("Command %s failed"), err.cmd)
-        logging.error(_("Output: %s"), err.output)
+        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}").format(device, err.cmd, err.output)
         raise InstallError(txt)
 
 
@@ -289,10 +279,9 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        txt = _("Error creating a new partition on device {0}").format(device)
+        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}".format(device, err.cmd, err.output)
         logging.error(txt)
-        logging.error(_("Command %s failed"), err.cmd)
-        logging.error(_("Output: %s"), err.output)
+        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}").format(device, err.cmd, err.output)
         raise InstallError(txt)
 
 

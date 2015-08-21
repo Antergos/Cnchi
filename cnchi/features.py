@@ -119,7 +119,7 @@ class Features(GtkBaseBox):
             if feature in features_info.ICON_NAMES:
                 icon_name = features_info.ICON_NAMES[feature]
             else:
-                logging.warning(_("No icon found for feature %s"), feature)
+                logging.debug("No icon found for feature %s", feature)
                 icon_name = "missing"
 
             object_name = "image_" + feature
@@ -251,7 +251,7 @@ class Features(GtkBaseBox):
             is_active = row[COL_SWITCH].get_active()
             self.settings.set("feature_" + feature, is_active)
             if is_active:
-                logging.debug(_("Selected '%s' feature to install"), feature)
+                logging.debug("Feature '%s' has been selected", feature)
 
         # Show ufw info message if ufw is selected (show it only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:

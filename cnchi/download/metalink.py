@@ -112,20 +112,20 @@ def create(alpm, package_name, pacman_conf_file):
     try:
         download_queue, not_found, missing_deps = build_download_queue(alpm, args=options)
     except Exception as build_error:
-        msg = _("Unable to create download queue for package {0}").format(package_name)
+        msg = "Unable to create download queue for package {0}".format(package_name)
         logging.error(msg)
         logging.exception(build_error)
         return None
 
     if not_found:
-        msg = _("Can't find these packages: ")
+        msg = "Can't find these packages: "
         for pkg_not_found in sorted(not_found):
             msg = msg + pkg_not_found + " "
         logging.error(msg)
         return None
 
     if missing_deps:
-        msg = _("Can't resolve these dependencies: ")
+        msg = "Can't resolve these dependencies: "
         for missing in sorted(missing_deps):
             msg = msg + missing + " "
         logging.error(msg)
@@ -317,7 +317,7 @@ def build_download_queue(alpm, args=None):
         conf_file = pargs.conf
         alpm = pac.Pac(conf_path=conf_file, callback_queue=None)
     except Exception as err:
-        logging.error(_("Can't initialize pyalpm: %s"), err)
+        logging.error("Can't initialize pyalpm: %s", err)
         return None, None, None
     '''
 
@@ -485,4 +485,4 @@ if __name__ == '__main__':
         del pacman
 
     except Exception as err:
-        logging.error(_("Can't initialize pyalpm: %s"), err)
+        logging.error("Can't initialize pyalpm: %s", err)

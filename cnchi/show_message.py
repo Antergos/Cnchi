@@ -31,8 +31,7 @@ from gi.repository import Gtk
 
 import sys
 import os
-import logging
-# import multiprocessing
+import multiprocessing
 
 _show_event_queue_messages = True
 
@@ -51,7 +50,6 @@ def fatal_error(parent, my_message):
 
 def error(parent, my_message):
     my_message = str(my_message)
-    logging.error(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
@@ -65,7 +63,6 @@ def error(parent, my_message):
 
 def warning(parent, my_message):
     my_message = str(my_message)
-    logging.warning(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
@@ -79,7 +76,6 @@ def warning(parent, my_message):
 
 def message(parent, my_message):
     my_message = str(my_message)
-    logging.info(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,
@@ -93,7 +89,6 @@ def message(parent, my_message):
 
 def question(parent, my_message):
     my_message = str(my_message)
-    logging.info(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
                                    destroy_with_parent=True,

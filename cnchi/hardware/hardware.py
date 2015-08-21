@@ -122,7 +122,7 @@ class Hardware(object):
             out = proc.communicate()[0]
             logging.debug(out.decode())
         except OSError as err:
-            logging.error(_("Error running command: %s"), err.strerror)
+            logging.error("Error running command: %s", err.strerror)
 
     def __str__(self):
         return "class name: {0}, class id: {1}, vendor id: {2}, product id: {3}".format(
@@ -141,12 +141,14 @@ class Hardware(object):
                 self.class_name]
             try:
                 subprocess.check_call(cmd, timeout=300)
-                logging.debug(_("%s completed successfully."), script_path)
+                logging.debug("Script '%s' completed successfully.", script_path)
             except subprocess.CalledProcessError as process_error:
                 # Even though Post-install script call has failed we will try to continue with the installation.
-                logging.error(_("Error running %s script"), script_path)
-                logging.error(_("Command %s failed"), process_error.cmd)
-                logging.error(_("Output: %s"), process_error.output)
+                logging.error(
+                    "Error running %s script, command %s failed. Output %s",
+                    script_path,
+                    process_error.cmd,
+                    process_error.output)
             except subprocess.TimeoutExpired as timeout_error:
                 logging.error(timeout_error)
 
@@ -190,15 +192,15 @@ class HardwareInstall(object):
                     obj = getattr(__import__(package, fromlist=[class_name]), class_name)()
                     self.all_objects.append(obj)
                 except ImportError as err:
-                    logging.error(_("Error importing %s from %s : %s"), name, package, err)
+                    logging.error("Error importing %s from %s : %s", name, package, err)
                 except Exception as err:
-                    logging.error(_("Unexpected error importing %s: %s"), package, err)
+                    logging.error("Unexpected error importing %s: %s", package, err)
 
         # Detect devices
         devices = self.get_devices()
 
         logging.debug(
-            _("Cnchi will test %d drivers for %d hardware devices"),
+            "Cnchi will test %d drivers for %d hardware devices",
             len(self.all_objects),
             len(devices))
 
