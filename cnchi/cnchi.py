@@ -86,8 +86,11 @@ class ContextFilter(Singleton):
         super().__init__()
         if not self.install_id:
             info = self.get_install_id()
-            self.install_id = info['id']
-            self.install_ip = info['ip']
+            try:
+                self.install_id = info['id']
+                self.install_ip = info['ip']
+            except TypeError:
+                pass
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")

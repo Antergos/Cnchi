@@ -1,3 +1,4 @@
+[2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging (cherry p..  Dustin Falgout  {f465e15}
 [2015-08-20 14:37:35 +0200]  Use fat as fat32                                                           karasu      {9b37dc4}
 [2015-08-20 14:20:56 +0200]  Forgot if check                                                            karasu      {af2762d}
 [2015-08-20 14:19:06 +0200]  Disable graphics_feature until conflict between lib32-nvidia-libgl ..      karasu      {f61c544}
