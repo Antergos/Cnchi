@@ -1,3 +1,4 @@
+[2015-08-22 01:23:27 -0500]  add try/except just in case (cherry picked from commit fb6ba18)        Dustin Falgout  {81913b5}
 [2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging (cherry p..  Dustin Falgout  {f465e15}
 [2015-08-20 14:37:35 +0200]  Use fat as fat32                                                           karasu      {9b37dc4}
 [2015-08-20 14:20:56 +0200]  Forgot if check                                                            karasu      {af2762d}
