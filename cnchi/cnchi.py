@@ -479,7 +479,6 @@ def init_cnchi():
 
     # if not cmd_line.disable_update:
         # update_cnchi()
-    logging.warning('THIS IS A WARNING MESSAGE FOR TESTING')
 
     # Init PyObject Threads
     threads_init()
