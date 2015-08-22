@@ -40,6 +40,8 @@ import gettext
 import locale
 import uuid
 import gi
+import requests
+import json
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
@@ -61,11 +63,51 @@ cmd_line = None
 GTK_VERSION_NEEDED = "3.16.0"
 
 
-class ContextFilter(logging.Filter):
+class Singleton(logging.Filter):
+    """
+
+    :param args:
+    :param kwargs:
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(Singleton, self).__init__()
+        globals()[self.__class__.__name__] = self
+
+    def __call__(self):
+        return self
+
+
+class ContextFilter(Singleton):
+    install_id = None
+    install_ip = None
+
+    def __init__(self):
+        super().__init__()
+        if not self.install_id:
+            info = self.get_install_id()
+            self.install_id = info['id']
+            self.install_ip = info['ip']
+
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
         record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
+        record.install_id = self.install_id
+        record.install_ip = self.install_ip
         return True
+
+    @staticmethod
+    def get_install_id():
+        url = 'http://build.antergos.com/hook?cnchi=bKjW8GU48cQw'
+        install_info = None
+        try:
+            r = requests.get(url)
+            install_info = json.loads(r.json())
+            logging.debug(install_info)
+        except ValueError as err:
+            logging.warning(err)
+
+        return install_info
 
 
 class CnchiApp(Gtk.Application):
@@ -123,7 +165,7 @@ def setup_logging():
 
     # Log format
     formatter = logging.Formatter(
-        fmt="[%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
+        fmt="%(asctime)s [%(levelname)s] - %(filename)s : %(lineno)d : %(funcName)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S")
 
     # File logger
@@ -154,8 +196,11 @@ def setup_logging():
                     api_key=bugsnag_api,
                     app_version=info.CNCHI_VERSION,
                     project_root='/usr/share/cnchi/cnchi')
-                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
+                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api,
+                                                 extra_fields={'INSTALL': ['install_id', 'install_ip']})
                 bugsnag_handler.setLevel(logging.WARNING)
+                bugsnag_handler.setFormatter(formatter)
+                bugsnag_handler.addFilter(context_filter)
                 logger.addHandler(bugsnag_handler)
                 logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
             else:
@@ -430,6 +475,7 @@ def init_cnchi():
 
     # if not cmd_line.disable_update:
         # update_cnchi()
+    logging.warning('THIS IS A WARNING MESSAGE FOR TESTING')
 
     # Init PyObject Threads
     threads_init()
