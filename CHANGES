@@ -1,3 +1,4 @@
+[2015-08-22 02:30:32 -0500]  oops :grimacing:                                                       Dustin Falgout  {928303f}
 [2015-08-22 01:23:27 -0500]  add try/except just in case                                            Dustin Falgout  {fb6ba18}
 [2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging              Dustin Falgout  {ef00305}
 [2015-08-21 13:29:32 +0200]  Fighting with issue #378, a lot of changes are needed! :grin:              karasu      {45a1d7a}

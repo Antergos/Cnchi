@@ -63,6 +63,7 @@ cmd_line = None
 GTK_VERSION_NEEDED = "3.16.0"
 
 
+# TODO: Find a proper place for these classes
 class Singleton(logging.Filter):
     """
 
@@ -87,16 +88,16 @@ class ContextFilter(Singleton):
         if not self.install_id:
             info = self.get_install_id()
             try:
-                self.install_id = info['id']
-                self.install_ip = info['ip']
+                self.id = info['ip']
+                self.install = info['id']
             except TypeError:
                 pass
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
         record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        record.install_id = self.install_id
-        record.install_ip = self.install_ip
+        record.id = self.id
+        record.install = self.install
         return True
 
     @staticmethod
@@ -200,7 +201,7 @@ def setup_logging():
                     app_version=info.CNCHI_VERSION,
                     project_root='/usr/share/cnchi/cnchi')
                 bugsnag_handler = BugsnagHandler(api_key=bugsnag_api,
-                                                 extra_fields={'INSTALL': ['install_id', 'install_ip']})
+                                                 extra_fields={'user': ['id', 'install']})
                 bugsnag_handler.setLevel(logging.WARNING)
                 bugsnag_handler.setFormatter(formatter)
                 bugsnag_handler.addFilter(context_filter)
