@@ -1,3 +1,4 @@
+[2015-08-22 09:02:39 -0500]  change the field names so its easier to filter in bugsnag dashboard    Dustin Falgout  {b6b88c4}
 [2015-08-22 02:30:32 -0500]  oops :grimacing:                                                       Dustin Falgout  {928303f}
 [2015-08-22 01:23:27 -0500]  add try/except just in case                                            Dustin Falgout  {fb6ba18}
 [2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging              Dustin Falgout  {ef00305}

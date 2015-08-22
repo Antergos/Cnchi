@@ -29,7 +29,7 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.11.28"
+CNCHI_VERSION = "0.11.29"
 CNCHI_WEBSITE = "http://www.antergos.com"
 
 if __name__ == '__main__':

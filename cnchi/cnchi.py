@@ -80,12 +80,12 @@ class Singleton(logging.Filter):
 
 
 class ContextFilter(Singleton):
-    install_id = None
-    install_ip = None
+    id = None
+    install = None
 
     def __init__(self):
         super().__init__()
-        if not self.install_id:
+        if not self.install:
             info = self.get_install_id()
             try:
                 self.id = info['ip']
