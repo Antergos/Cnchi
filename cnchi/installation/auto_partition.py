@@ -291,10 +291,9 @@ def parted_mktable(device, table_type="msdos"):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        txt = _("Error creating a new partition table on device {0}").format(device)
+        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}").format(device, err.cmd, err.output)
         logging.error(txt)
-        logging.error(_("Command %s failed"), err.cmd)
-        logging.error(_("Output: %s"), err.output)
+        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}").format(device, err.cmd, err.output)
         raise InstallError(txt)
 
 
@@ -332,7 +331,7 @@ class AutoPartition(object):
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
-        logging.debug(_("Will format device %s as %s"), device, fs_type)
+        logging.debug("Will format device %s as %s", device, fs_type)
         if fs_type == "swap":
             try:
                 swap_devices = check_output("swapon -s")
@@ -341,9 +340,8 @@ class AutoPartition(object):
                 subprocess.check_call(["mkswap", "-L", label_name, device])
                 subprocess.check_call(["swapon", device])
             except subprocess.CalledProcessError as err:
-                logging.warning(_("Can't activate swap in %s"), device)
-                logging.warning(_("Command %s has failed."), err.cmd)
-                logging.warning(_("Output : %s"), err.output)
+                txt = "Can't activate swap in {0}. Command {1} has failed: {2}".format(device, err.cmd, err.output)
+                logging.warning(txt)
         else:
             mkfs = {"xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
                     "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
@@ -367,18 +365,17 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = _("Can't create filesystem {0}").format(fs_type)
+                txt = "Can't create filesystem {0}. Command {1} failed: {2}".format(fs_type, err.cmd, err.output)
                 logging.error(txt)
-                logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                txt = _("Can't create filesystem {0}. Command {1} failed: {2}").format(fs_type, err.cmd, err.output)
                 raise InstallError(txt)
 
             # Flush filesystem buffers
             try:
                 subprocess.check_call(["sync"])
             except subprocess.CalledProcessError as err:
-                logging.warning(_("Command %s failed"), err.cmd)
-                logging.warning(_("Output: %s"), err.output)
+                txt = "Command {0} failed: {1}".format(err.cmd, err.output)
+                logging.warning(txt)
 
             # Create our mount directory
             path = self.dest_dir + mount_point
@@ -396,10 +393,9 @@ class AutoPartition(object):
                 cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
-                txt = _("Error trying to  mount {0} in {1}").format(device, path)
+                txt = "Error trying to mount {0} in {1}. Command {2} failed: {3}".format(device, path, err.cmd, err.output)
                 logging.error(txt)
-                logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                txt = _("Error trying to mount {0} in {1}. Command {2} failed: {3}").format(device, path, err.cmd, err.output)
                 raise InstallError(txt)
 
             # Change permission of base directories to avoid btrfs issues
@@ -413,7 +409,7 @@ class AutoPartition(object):
 
         fs_uuid = fs.get_uuid(device)
         fs_label = fs.get_label(device)
-        logging.debug(_("Device details: %s UUID=%s LABEL=%s"), device, fs_uuid, fs_label)
+        logging.debug("Device details: %s UUID=%s LABEL=%s", device, fs_uuid, fs_label)
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
@@ -498,7 +494,7 @@ class AutoPartition(object):
         mount_devices['swap'] = devices['swap']
 
         for mount_device in mount_devices:
-            logging.debug(_("%s will be mounted as %s"), mount_devices[mount_device], mount_device)
+            logging.debug("%s will be mounted as %s", mount_devices[mount_device], mount_device)
 
         return mount_devices
 
@@ -534,7 +530,7 @@ class AutoPartition(object):
                     fs_devices[devices['luks2']] = "ext4"
 
         for device in fs_devices:
-            logging.debug(_("Device %s will have a %s filesystem"), device, fs_devices[device])
+            logging.debug("Device %s will have a %s filesystem", device, fs_devices[device])
 
         return fs_devices
 
@@ -588,19 +584,19 @@ class AutoPartition(object):
         return part_sizes
 
     def log_part_sizes(self, part_sizes):
-        logging.debug(_("Total disk size: %dMiB"), part_sizes['disk'])
+        logging.debug("Total disk size: %dMiB", part_sizes['disk'])
         if self.GPT and self.bootloader == "grub2":
-            logging.debug(_("EFI System Partition (ESP) size: %dMiB"), part_sizes['efi'])
-        logging.debug(_("Boot partition size: %dMiB"), part_sizes['boot'])
+            logging.debug("EFI System Partition (ESP) size: %dMiB", part_sizes['efi'])
+        logging.debug("Boot partition size: %dMiB", part_sizes['boot'])
 
         if self.lvm:
-            logging.debug(_("LVM physical volume size: %dMiB"), part_sizes['lvm_pv'])
+            logging.debug("LVM physical volume size: %dMiB", part_sizes['lvm_pv'])
 
-        logging.debug(_("Swap partition size: %dMiB"), part_sizes['swap'])
-        logging.debug(_("Root partition size: %dMiB"), part_sizes['root'])
+        logging.debug("Swap partition size: %dMiB", part_sizes['swap'])
+        logging.debug("Root partition size: %dMiB", part_sizes['root'])
 
         if self.home:
-            logging.debug(_("Home partition size: %dMiB"), part_sizes['home'])
+            logging.debug("Home partition size: %dMiB", part_sizes['home'])
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
@@ -620,9 +616,9 @@ class AutoPartition(object):
                 size = int(f.read())
             disk_size = ((logical_block_size * (size - 68)) / 1024) / 1024
         else:
+            logging.error("Cannot detect %s device size", device)
             txt = _("Setup cannot detect size of your device, please use advanced "
                     "installation routine for partitioning and mounting devices.")
-            logging.error(txt)
             raise InstallError(txt)
 
         start_part_sizes = 1
@@ -655,10 +651,9 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(["partprobe", device])
             except subprocess.CalledProcessError as err:
-                txt = _("Error informing the kernel of the partition change.")
+                txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.error(txt)
-                logging.error(_("Command %s has failed."), err.cmd)
-                logging.error(_("Output : %s"), err.output)
+                txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
                 raise InstallError(txt)
 
             part_num = 1
@@ -774,24 +769,22 @@ class AutoPartition(object):
                 setup_luks(devices['luks2'], "cryptAntergosHome", self.luks_password, key_files[1])
 
         if self.lvm:
-            logging.debug(_("Cnchi will setup LVM on device %s"), devices['lvm'])
+            logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])
 
             try:
                 subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                txt = _("Error creating LVM physical volume")
+                txt = "Error creating LVM physical volume in device {0}. Command {1} failed: {2}".format(devices['lvm'], err.cmd, err.output)
                 logging.error(txt)
-                logging.error(_("Command %s failed"), err.cmd)
-                # logging.error(_("Output: %s"), err.output)
+                txt = _("Error creating LVM physical volume in device {0}. Command {1} failed: {2}").format(devices['lvm'], err.cmd, err.output)
                 raise InstallError(txt)
 
             try:
                 subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                txt = _("Error creating LVM volume group")
+                txt = "Error creating LVM volume group in device {0}. Command {1} failed: {2}".format(devices['lvm'], err.cmd, err.Output)
                 logging.error(txt)
-                logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                txt = _("Error creating LVM volume group in device {0}. Command {1} failed: {2}").format(devices['lvm'], err.cmd, err.Output)
                 raise InstallError(txt)
 
             # Fix issue 180
@@ -824,10 +817,9 @@ class AutoPartition(object):
                     cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
                     subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
-                txt = _("Error creating LVM logical volume")
+                txt = "Error creating LVM logical volume. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.error(txt)
-                logging.error(_("Command %s failed"), err.cmd)
-                logging.error(_("Output: %s"), err.output)
+                txt = _("Error creating LVM logical volume. Command {0} failed: {1}").format(err.cmd, err.output)
                 raise InstallError(txt)
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
@@ -886,10 +878,8 @@ class AutoPartition(object):
                     os.makedirs(luks_dir, mode=0o755, exist_ok=True)
                     subprocess.check_call(['mv', key_files[1], luks_dir])
             except subprocess.CalledProcessError as err:
-                txt = _("Can't copy LUKS keyfile to the installation device")
+                txt = "Can't copy LUKS keyfile to the installation device. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.warning(txt)
-                logging.warning(_("Command %s failed"), err.cmd)
-                logging.warning(_("Output: %s"), err.output)
 
 
 if __name__ == '__main__':

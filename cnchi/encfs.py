@@ -132,7 +132,7 @@ def setup(username, dest_dir, password):
                               stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()
         if p2.poll() != 0:
-            logging.error(_("Can't run encfs. Bad password?"))
+            logging.error("Can't run encfs. Bad password?")
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)
 

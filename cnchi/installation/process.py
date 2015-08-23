@@ -54,13 +54,14 @@ class Process(multiprocessing.Process):
                 self.install_screen.run_format()
                 self.install_screen.run_install()
         except subprocess.CalledProcessError as process_error:
+            txt = "Error running command {0}: {1}".format(process_error.cmd, process_error.output)
+            logging.error(txt)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
-            logging.error(_("Error running command %s"), process_error.cmd)
-            logging.error(_("Output: %s"), process_error.output)
             for line in trace:
-                logging.error(line)
-            self.queue_fatal_event(process_error.output)
+                logging.error(line.rstrip())
+            txt = _("Error running command {0}: {1}").format(process_error.cmd, process_error.output)
+            self.queue_fatal_event(txt)
         except (misc.InstallError,
                 pyalpm.error,
                 KeyboardInterrupt,
@@ -68,11 +69,11 @@ class Process(multiprocessing.Process):
                 AttributeError,
                 OSError,
                 IOError) as install_error:
+            logging.error(install_error)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
-            logging.error(install_error)
             for line in trace:
-                logging.error(line)
+                logging.error(line.rstrip())
             self.queue_fatal_event(install_error)
 
     def queue_fatal_event(self, txt):
