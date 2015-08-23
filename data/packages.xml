@@ -372,7 +372,7 @@
         <pkgname>kdeartwork-iconthemes</pkgname>
         <pkgname>kdeartwork-kscreensaver</pkgname>
         <pkgname>kdeartwork-styles</pkgname>
-        <pkgname>kdebase-dolphin</pkgname>
+        <pkgname>dolphin</pkgname>
         <pkgname>kdebase-kdepasswd</pkgname>
         <pkgname>kdebase-kdialog</pkgname>
         <pkgname>kdebase-kfind</pkgname>
@@ -393,8 +393,8 @@
         <pkgname>kate</pkgname>
         <pkgname>kcalc</pkgname>
         <pkgname>kdesudo</pkgname>
-        <pkgname>kdeutils-ark</pkgname>
-        <pkgname>kdeutils-kwalletmanager</pkgname>
+        <pkgname>ark</pkgname>
+        <pkgname>kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
@@ -430,9 +430,9 @@
           <pkgname>kdenetwork-kopete</pkgname>
           <pkgname>kate</pkgname>
           <pkgname>kdesudo</pkgname>
-          <pkgname>kdeutils-ark</pkgname>
+          <pkgname>ark</pkgname>
           <pkgname>kcalc</pkgname>
-          <pkgname>kdeutils-kwalletmanager</pkgname>
+          <pkgname>kwalletmanager</pkgname>
           <pkgname>kdeutils-sweeper</pkgname>
           <pkgname>kf5</pkgname>
           <pkgname>kf5-aids</pkgname>
