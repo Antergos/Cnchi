@@ -1,3 +1,5 @@
+[2015-08-23 05:21:36 -0500]  fix packages.xml url. add release_stage global variable. (cherry-pi..  Dustin Falgout  {b54a994}
+[2015-08-22 12:10:32 -0500]  fix bug I introduced in the last commit :grimacing: (cherry picked ..  Dustin Falgout  {9d8bf98}
 [2015-08-22 09:04:03 -0500]  change the field names so its easier to filter in bugsnag dashboard..  Dustin Falgout  {c92eb3d}
 [2015-08-22 02:29:08 -0500]  oops :grimacing:                                                       Dustin Falgout  {dd57eff}
 [2015-08-22 01:23:27 -0500]  add try/except just in case (cherry picked from commit fb6ba18)        Dustin Falgout  {81913b5}
