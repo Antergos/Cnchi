@@ -443,15 +443,17 @@ class Installation(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION[:3])
+                url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION.rsplit('.')[-2])
                 logging.debug(_("Getting url {0}...").format(url))
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
-                logging.warning(url_error)
-                logging.debug(_("Can't retrieve remote package list, using the local file instead."))
+                if "production" == info.CNCHI_RELEASE_STAGE:
+                    logging.warning("Can't retrieve remote package list, using the local file instead. Error Msg: %s", url_error)
+                else:
+                    logging.debug("Can't retrieve remote package list, using the local file instead. Error Msg: %s", url_error)
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
                 logging.debug(_("Loading {0}").format(packages_xml))

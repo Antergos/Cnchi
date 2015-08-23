@@ -199,7 +199,8 @@ def setup_logging():
                 bugsnag.configure(
                     api_key=bugsnag_api,
                     app_version=info.CNCHI_VERSION,
-                    project_root='/usr/share/cnchi/cnchi')
+                    project_root='/usr/share/cnchi/cnchi',
+                    release_stage=info.CNCHI_RELEASE_STAGE)
                 bugsnag_handler = BugsnagHandler(api_key=bugsnag_api,
                                                  extra_fields={'user': ['id', 'install']})
                 bugsnag_handler.setLevel(logging.WARNING)
