@@ -229,18 +229,18 @@ class Pac(object):
         for pkg_name in pkg_names:
             pkg = db.get_pkg(pkg_name)
             if pkg is None:
-                logging.error(_("Target %s not found"), pkg_name)
+                logging.error("Target %s not found", pkg_name)
                 return False
             targets.append(pkg)
 
         transaction = self.init_transaction(options)
 
         if transaction is None:
-            logging.error(_("Can't init transaction"))
+            logging.error("Can't init transaction")
             return False
 
         for pkg in targets:
-            logging.debug(_("Adding package '%s' to remove transaction"), pkg.name)
+            logging.debug("Adding package '%s' to remove transaction", pkg.name)
             transaction.remove_pkg(pkg)
 
         return self.finalize_transaction(transaction)
@@ -248,7 +248,7 @@ class Pac(object):
     def refresh(self):
         """ Sync databases like pacman -Sy """
         if self.handle is None:
-            logging.error(_("alpm is not initialised"))
+            logging.error("alpm is not initialised")
             raise pyalpm.error
 
         force = True
@@ -265,14 +265,14 @@ class Pac(object):
     def install(self, pkgs, conflicts=[], options={}):
         """ Install a list of packages like pacman -S """
         if self.handle is None:
-            logging.error(_("alpm is not initialised"))
+            logging.error("alpm is not initialised")
             raise pyalpm.error
 
         if len(pkgs) == 0:
-            logging.error(_("Package list is empty"))
+            logging.error("Package list is empty")
             raise pyalpm.error
 
-        logging.debug(_("Cnchi will install a list of packages like pacman -S"))
+        logging.debug("Cnchi will install a list of packages like pacman -S")
 
         # Discard duplicates
         pkgs = list(set(pkgs))
@@ -300,13 +300,13 @@ class Pac(object):
                 else:
                     # No, it wasn't neither a package nor a group. As we don't know if
                     # this error is fatal or not, we'll register it and we'll allow to continue.
-                    logging.error(_("Can't find a package or group called '%s'"), name)
+                    logging.error("Can't find a package or group called '%s'", name)
 
         # Discard duplicates
         targets = list(set(targets))
 
         if len(targets) == 0:
-            logging.error(_("No targets found"))
+            logging.error("No targets found")
             return False
 
         num_targets = len(targets)

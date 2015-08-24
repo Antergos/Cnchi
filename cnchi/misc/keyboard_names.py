@@ -85,7 +85,7 @@ class KeyboardNames():
 
     def _load_file(self):
         if not os.path.exists(self._filename):
-            logging.error(_("Can't find %s file!"), self._filename)
+            logging.error("Can't find %s file!", self._filename)
             return
 
         self._clear()

@@ -772,7 +772,7 @@ class Installation(object):
                 try:
                     luks_partition_path = "/dev/" + pknames[vol_name]
                 except KeyError:
-                    logging.error(_("Can't find the PKNAME value of %s"), partition_path)
+                    logging.error("Can't find the PKNAME value of %s", partition_path)
                     continue
 
                 luks_uuid = fs.get_uuid(luks_partition_path)
@@ -1250,7 +1250,7 @@ class Installation(object):
             with open(sudoers_path, "w") as sudoers:
                 sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
             os.chmod(sudoers_path, 0o440)
-            logging.debug(_("Sudo configuration for user %s done."), username)
+            logging.debug("Sudo configuration for user %s done.", username)
         except IOError as io_error:
             # Do not fail if can't write 10-installer file. Something bad must be happening, though.
             logging.error(io_error)
@@ -1260,10 +1260,10 @@ class Installation(object):
         # always after having called the update_pacman_conf method
         if self.hardware_install:
             try:
-                logging.debug(_("Running hardware drivers post-install jobs..."))
+                logging.debug("Running hardware drivers post-install jobs...")
                 self.hardware_install.post_install(DEST_DIR)
             except Exception as general_error:
-                logging.error(_("Unknown error in hardware module. Output: %s"), general_error)
+                logging.error("Unknown error in hardware module. Output: %s", general_error)
 
         # Setup user
 
@@ -1407,9 +1407,7 @@ class Installation(object):
             logging.debug(_("Post install script completed successfully."))
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
-            logging.error(_("Error running post-install script"))
-            logging.error(_("Command %s failed"), process_error.cmd)
-            logging.error(_("Output: %s"), process_error.output)
+            logging.error("Error running post-install script, command %s failed: %s"), process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 

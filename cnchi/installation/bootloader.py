@@ -260,11 +260,11 @@ class Bootloader(object):
         try:
             chroot.run(grub_install, self.dest_dir)
         except subprocess.CalledProcessError as process_error:
-            logging.error(_('Command grub-install failed. Error output: %s'), process_error.output)
+            logging.error('Command grub-install failed. Error output: %s', process_error.output)
         except subprocess.TimeoutExpired:
-            logging.error(_('Command grub-install timed out.'))
+            logging.error('Command grub-install timed out.')
         except Exception as general_error:
-            logging.error(_('Command grub-install failed. Unknown Error: %s'), general_error)
+            logging.error('Command grub-install failed. Unknown Error: %s', general_error)
 
         self.install_grub2_locales()
 
@@ -531,16 +531,16 @@ class Bootloader(object):
             cmd = ['gummiboot', '--path=/boot', 'install']
             chroot.run(cmd, self.dest_dir, 300)
             chroot.umount_special_dirs(self.dest_dir)
-            logging.info(_("Gummiboot install completed successfully"))
+            logging.info("Gummiboot install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
-            logging.error(_('Command gummiboot failed. Error output: %s'), process_error.output)
+            logging.error('Command gummiboot failed. Error output: %s', process_error.output)
             self.settings.set('bootloader_installation_successful', False)
         except subprocess.TimeoutExpired:
-            logging.error(_('Command gummiboot timed out.'))
+            logging.error('Command gummiboot timed out.')
             self.settings.set('bootloader_installation_successful', False)
         except Exception as general_error:
-            logging.error(_('Command gummiboot failed. Unknown Error: %s'), general_error)
+            logging.error('Command gummiboot failed. Unknown Error: %s', general_error)
             self.settings.set('bootloader_installation_successful', False)
 
     def freeze_unfreeze_xfs(self):
