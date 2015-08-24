@@ -389,7 +389,7 @@
         <pkgname>kde-servicemenus-rootactions</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
-        <pkgname>kdesdk-dolphin-plugins</pkgname>
+        <pkgname>dolphin-plugins</pkgname>
         <pkgname>kate</pkgname>
         <pkgname>kcalc</pkgname>
         <pkgname>kdesudo</pkgname>
