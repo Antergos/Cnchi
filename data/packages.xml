@@ -168,6 +168,7 @@
         <pkgname>cjs</pkgname>
         <pkgname>eog</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>file-roller</pkgname>
         <pkgname>gedit</pkgname>
         <pkgname>gnome-calculator</pkgname>
