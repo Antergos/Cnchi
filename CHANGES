@@ -1,3 +1,4 @@
+[2015-08-24 21:37:33 +0200]  More logging changes                                                       karasu      {ae06fd0}
 [2015-08-23 23:49:19 +0200]  More logging changes                                                       karasu      {e4e38f0}
 [2015-08-23 05:11:32 -0500]  fix packages.xml url. add release_stage global variable.               Dustin Falgout  {b13a5a8}
 [2015-08-22 12:09:50 -0500]  fix bug I introduced in the last commit :grimacing:                    Dustin Falgout  {7addaac}

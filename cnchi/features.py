@@ -105,10 +105,13 @@ class Features(GtkBaseBox):
         self.listbox_rows = {}
 
         # Only add graphic-driver feature if an AMD or Nvidia is detected
+        # FIXME: Conflict between lib32-nvidia-libgl and lib32-mesa-libgl
+        #if "graphic_drivers" in self.features:
+        #    if not self.amd_detected() and not self.nvidia_detected():
+        #        logging.debug("Neither nvidia nor amd have been detected. Removing proprietary graphic driver feature")
+        #        self.features.remove("graphic_drivers")
         if "graphic_drivers" in self.features:
-            if not self.amd_detected() and not self.nvidia_detected():
-                logging.debug("Neither nvidia nor amd have been detected. Removing proprietary graphic driver feature")
-                self.features.remove("graphic_drivers")
+            self.features.remove("graphic_drivers")
 
         for feature in self.features:
             box = Gtk.Box(spacing=20)
