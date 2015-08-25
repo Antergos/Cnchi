@@ -242,6 +242,10 @@ class Features(GtkBaseBox):
         if 'cups' in self.features:
             row = self.listbox_rows['cups']
             row[COL_SWITCH].set_active(True)
+            
+        # if 'games' in self.features:
+        #    row = self.listbox_rows['games']
+        #    row[COL_SWITCH].set_active(True)
 
         if 'visual' in self.features:
             row = self.listbox_rows['visual']

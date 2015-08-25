@@ -40,6 +40,7 @@ ICON_NAMES = {
     'firewall': 'network-server',
     'fonts': 'preferences-desktop-font',
     'graphic_drivers' : 'gnome-system',
+    'games' : 'games',
     'lamp': 'applications-internet',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
@@ -55,6 +56,7 @@ TITLES = {
     'bluetooth': _("Bluetooth Support"),
     'fonts': _("Extra Truetype Fonts"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
+    'games': _("Steam + PlayonLinux"),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
     'cups': _("Printing Support"),
     'office': _("LibreOffice"),
@@ -67,16 +69,17 @@ TITLES = {
 DESCRIPTIONS = {
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
-    'fonts': _("Installation of extra TrueType fonts"),
+    'fonts': _("Installation of extra TrueType fonts."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver"),
-    'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup"),
+    'games': _("Installs Steam and Playonlinux to support gaming enthusiasts."),
+    'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
     'cups': _("Installation of printer drivers and management tools."),
     'office': _("Open source office suite. Supports editing MS Office files."),
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
     'lts': _("Long term support (LTS) Linux kernel and modules."),
-    'firefox': _("A popular open-source graphical web browser from Mozilla"),
-    'smb': _("SMB provides shared access to files and printers")}
+    'firefox': _("A popular open-source graphical web browser from Mozilla."),
+    'smb': _("SMB provides shared access to files and printers.")}
 
 TOOLTIPS = {
     'aur': _("Use yaourt to install AUR packages.\n"
@@ -86,16 +89,20 @@ TOOLTIPS = {
     'bluetooth': _("Bluetooth is a standard for the short-range wireless\n"
                     "interconnection of cellular phones, computers, and\n"
                     "other electronic devices. In Linux, the canonical\n"
-                    "implementation of the Bluetooth protocol stack is BlueZ"),
+                    "implementation of the Bluetooth protocol stack is BlueZ."),
     'fonts':_("TrueType is an outline font standard developed by\n"
                 "Apple and Microsoft in the late 1980s as a competitor\n"
                 "to Adobe's Type 1 fonts used in PostScript. It has\n"
                 "become the most common format for fonts on both the\n"
                 "Mac OS and Microsoft Windows operating systems."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver"),
+    'games': _("Steam is one of the most popular gaming clients that supports\n"
+                    "linux in technology and gaming, while PlayOnLinux\n"
+                    "is a very easy manager to setting up games to play\n"
+                    "through wine, instead of doing it manually."),
     'lamp': _("This option installs a web server (you can choose\n"
                 "Apache or Nginx) plus a database server (Mariadb)\n"
-                "and PHP"),
+                "and PHP."),
     'cups': _("CUPS is the standards-based, open source printing\n"
                 "system developed by Apple Inc. for OS® X and other\n"
                 "UNIX®-like operating systems."),

@@ -64,21 +64,21 @@ LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "lamp", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "games", "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "graphic_drivers", "smb"],
-    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
+    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "graphic_drivers", "games", "smb"],
+    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
     'base' : ["aur", "cups", "fonts", "lamp", "lts"],
-    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb", "visual"],
-    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"]}
+    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb", "visual"],
+    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"],
+    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "games", "lts", "office", "smb"]}
 
 # Session names for lightDM setup
 SESSIONS = {
