@@ -1108,7 +1108,7 @@ class InstallationAdvanced(GtkBaseBox):
         if response == Gtk.ResponseType.OK:
             mylabel = label_entry.get_text().replace(" ", "")
             if len(mylabel) > 0 and not mylabel.isalpha():
-                logging.warning("'%s' is not a valid label. Therefore, Cnchi will set no label at all", mylabel)
+                logging.warning("%s is not a valid label. Cnchi will set no label at all", mylabel)
                 mylabel = ""
 
             mymount = mount_combo.get_text().strip()

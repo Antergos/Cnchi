@@ -111,10 +111,7 @@ class Pac(object):
 
         self.handle = pyalpm.Handle(root_dir, db_path)
 
-        logging.debug(
-            _("alpm init with root dir '{0}' and db path '{1}'").format(
-                root_dir,
-                db_path))
+        logging.debug("alpm init with root dir '{0}' and db path '{1}').format(root_dir, db_path))
 
         if self.handle is None:
             raise pyalpm.error
@@ -192,8 +189,7 @@ class Pac(object):
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         except pyalpm.error as pyalpm_error:
-            msg = _("Can't init alpm transaction: %s")
-            logging.error(msg, pyalpm_error)
+            logging.error("Can't init alpm transaction: %s", pyalpm_error)
         finally:
             return transaction
 
@@ -272,8 +268,6 @@ class Pac(object):
             logging.error("Package list is empty")
             raise pyalpm.error
 
-        logging.debug("Cnchi will install a list of packages like pacman -S")
-
         # Discard duplicates
         pkgs = list(set(pkgs))
 
@@ -325,7 +319,6 @@ class Pac(object):
         for i in range(0, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
-                # logging.debug("Adding package '%s' to install transaction", pkg.name)
                 transaction.add_pkg(pkg)
             else:
                 logging.warning(pkg)
@@ -490,13 +483,12 @@ class Pac(object):
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
-            # I get pyalpm errors here. Why?
+            # I get pyalpm errors here. Why? I think it's because they're not fatal
             # Check against error 0 as it is not an error :p
-            # There are a lot of "extracting" messages (not very useful). I do not show them.
+            # There are a lot of "extracting" messages (not very useful), so we do not log them.
 
-            # TODO: Check that we don't show normal debug messages as errors (or viceversa)
             if " error " in line and "error 0" not in line:
-                logging.error(line)
+                logging.debug(line)
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
 
@@ -551,7 +543,6 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
-                # logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('percent', progress)
 
