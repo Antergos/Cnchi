@@ -365,7 +365,7 @@ class InstallationAutomatic(GtkBaseBox):
 
             self.installation.start()
         else:
-            logging.debug("Testing mode, not changing anything"))
+            logging.debug("Testing mode, not changing anything")
 
 # When testing, no _() is available
 try:
