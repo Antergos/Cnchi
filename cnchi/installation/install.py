@@ -343,7 +343,7 @@ class Installation(object):
         else:
             download_library = 'urllib'
 
-        download.DownloadPackages(
+        download = download.DownloadPackages(
             self.packages,
             download_library,
             pacman_conf_file,
@@ -351,6 +351,8 @@ class Installation(object):
             cache_dir,
             self.callback_queue,
             self.settings)
+        download.start()
+
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """

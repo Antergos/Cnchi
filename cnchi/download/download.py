@@ -61,7 +61,7 @@ class DownloadPackages(object):
     def __init__(
             self,
             package_names,
-            download_library='requests',
+            download_module='requests',
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
@@ -90,55 +90,59 @@ class DownloadPackages(object):
         # Stores last issued event for each event type
         # (to prevent repeating events)
         self.last_event = {}
-
         self.callback_queue = callback_queue
-
         self.settings = settings
+        self.download_module = download_module
 
+        self.downloads_list = None
+
+    def start(self):
         # Create downloads list from package list
-        downloads = self.get_downloads_list(package_names)
+        if self.downloads_list is None:
+            self.create_downloads_list(package_names)
 
-        if downloads is None:
+        if self.downloads_list is None:
+            # Still none? Error
             txt = _("Can't create download package list. Check log output for details")
             raise InstallError(txt)
 
-        logging.debug("Using %s module to download packages", download_library)
+        logging.debug("Using %s module to download packages", self.download_module)
 
-        if download_library == "aria2":
+        if self.download_module == "aria2":
             download = download_aria2.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
-        elif download_library == "urllib":
+        elif self.download_module == "urllib":
             download = download_urllib.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
         else:
-            if download_library != "requests":
-                logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", download_library)
+            if self.download_module != "requests":
+                logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", self.download_module)
             download = download_requests.Download(
                 pacman_cache_dir,
                 cache_dir,
                 callback_queue)
 
-        if not download.start(downloads):
+        if not download.start(self.downloads_list):
             self.settings.set('failed_download', True)
             # New: When we can't download (even one package), we stop right here
             # Pros: The user will be prompted immediately when a package fails
             # to download
             # Cons: We won't let alpm to try to download the package itself
-            txt = _("Can't install necessary packages. Cnchi can't continue.")
+            txt = _("Can't download needed packages. Cnchi can't continue.")
             raise InstallError(txt)
 
-    def get_downloads_list(self, package_names):
+    def create_downloads_list(self, package_names):
         """ Creates a downloads list from the package list """
         self.queue_event('percent', '0')
         self.queue_event('info', _('Creating the list of packages to download...'))
         processed_packages = 0
         total_packages = len(package_names)
 
-        downloads = {}
+        self.downloads_list = {}
 
         try:
             pacman = pac.Pac(
@@ -148,22 +152,24 @@ class DownloadPackages(object):
                 return None
         except Exception as err:
             logging.error("Can't initialize pyalpm: %s", err)
-            return None
+            self.downloads_list = None
+            return
 
         try:
             for package_name in package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink is None:
                     logging.error("Error creating metalink for package %s. Installation will stop", package_name)
-                    return None
+                    txt = _("Error creating metalink for package {0}. Installation will stop").format(package_name)
+                    raise InstallError(txt)
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
 
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
-                    if key not in downloads:
-                        downloads[key] = metalink_info[key]
+                    if key not in self.downloads_list:
+                        self.downloads_list[key] = metalink_info[key]
 
                 # Show progress to the user
                 processed_packages += 1
@@ -171,18 +177,19 @@ class DownloadPackages(object):
                 self.queue_event('percent', str(percent))
         except Exception as err:
             logging.error("Can't create download set: %s", err)
-            return None
+            self.downloads_list = None
+            return
 
         try:
             pacman.release()
             del pacman
         except Exception as err:
             logging.error("Can't release pyalpm: %s", err)
+            self.downloads_list = None
+            return
 
         # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")
-
-        return downloads
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
@@ -224,14 +231,6 @@ if __name__ == '__main__':
 
     DownloadPackages(
         package_names=["gnome-sudoku"],
-        download_library="urllib",
+        download_module="urllib",
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
-
-    '''
-    DownloadPackages(
-        package_names=["kde"],
-        use_aria2=False,
-        cache_dir="",
-        pacman_cache_dir="/tmp/pkg")
-    '''
