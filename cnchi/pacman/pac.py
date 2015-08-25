@@ -155,18 +155,18 @@ class Pac(object):
         """ Commit a transaction """
         all_ok = True
         try:
-            logging.debug(_("Prepare alpm transaction..."))
+            logging.debug("Prepare alpm transaction...")
             transaction.prepare()
-            logging.debug(_("Commit alpm transaction..."))
+            logging.debug("Commit alpm transaction...")
             transaction.commit()
         except pyalpm.error as pyalpm_error:
             msg = _("Can't finalize alpm transaction: %s")
             logging.error(msg, pyalpm_error)
             all_ok = False
         finally:
-            logging.debug(_("Releasing alpm transaction..."))
+            logging.debug("Releasing alpm transaction...")
             transaction.release()
-            logging.debug(_("Alpm transaction done."))
+            logging.debug("Alpm transaction done.")
             return all_ok
 
     def init_transaction(self, options=None):
@@ -325,7 +325,7 @@ class Pac(object):
         for i in range(0, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
-                # logging.debug(_("Adding package '%s' to install transaction"), pkg.name)
+                # logging.debug("Adding package '%s' to install transaction", pkg.name)
                 transaction.add_pkg(pkg)
             else:
                 logging.warning(pkg)

@@ -103,7 +103,7 @@ def run(dest_dir, settings, mount_devices, blvm):
 
 def set_hooks_and_modules(dest_dir, hooks, modules):
     """ Set up mkinitcpio.conf """
-    logging.debug(_("Setting hooks and modules in mkinitcpio.conf"))
+    logging.debug("Setting hooks and modules in mkinitcpio.conf")
     logging.debug('HOOKS="%s"', ' '.join(hooks))
     logging.debug('MODULES="%s"', ' '.join(modules))
 

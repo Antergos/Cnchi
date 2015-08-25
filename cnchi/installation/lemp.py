@@ -52,13 +52,13 @@ def chroot_run(cmd):
 
 def setup():
     try:
-        logging.debug(_("Doing Mariadb setup..."))
+        logging.debug("Doing Mariadb setup...")
         mariadb_setup()
-        logging.debug(_("Mariadb setup done. Doing Nginx setup..."))
+        logging.debug("Mariadb setup done. Doing Nginx setup...")
         nginx_setup()
-        logging.debug(_("Nginx setup done. Doing PHP-fpm setup..."))
+        logging.debug("Nginx setup done. Doing PHP-fpm setup...")
         php_setup()
-        logging.debug(_("PHP-fpm setup done."))
+        logging.debug("PHP-fpm setup done.")
     except (FileExistsError, OSError) as io_error:
         logging.error(io_error)
 

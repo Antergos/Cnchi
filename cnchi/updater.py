@@ -142,15 +142,15 @@ class Updater():
             update_cnchi = True
 
         if update_cnchi:
-            logging.debug(_("Downloading new version of Cnchi..."))
+            logging.debug("Downloading Cnchi %s...", self.remote_version)
             zip_path = "/tmp/cnchi-{0}.zip".format(self.remote_version)
             res = self.download_master_zip(zip_path)
             if not res:
-                logging.error("Can't download new Cnchi version.")
+                logging.error("Error downloading new version.")
                 return False
 
             # master.zip file is downloaded, we must unzip it
-            logging.debug(_("Uncompressing new version..."))
+            logging.debug("Uncompressing new version...")
             try:
                 self.unzip_and_copy(zip_path)
             except Exception as err:

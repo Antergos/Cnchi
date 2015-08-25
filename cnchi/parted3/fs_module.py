@@ -53,7 +53,7 @@ def get_label(part):
     if "LABEL" in info.keys():
         return info['LABEL']
     else:
-        logging.debug(_("Can't get partition %s label (or it does not have any)"), part)
+        logging.debug("Can't get partition %s label (or it does not have any)", part)
         return ""
 
 @misc.raise_privileges
