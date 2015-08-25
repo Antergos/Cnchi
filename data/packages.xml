@@ -489,6 +489,10 @@
       <pkgname>ttf-freefont</pkgname>
       <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
     </feature>
+    <feature name="games">
+      <pkgname>steam</pkgname>
+      <pkgname>playonlinux</pkgname>
+    </feature>
     <feature name="lts">
         <pkgname>linux-lts</pkgname>
     </feature>

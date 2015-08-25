@@ -68,6 +68,7 @@ class Settings(object):
             'feature_firefox': False,
             'feature_firewall': False,
             'feature_fonts': False,
+            'feature_games': False,
             'feature_lamp': False,
             'feature_lemp': False,
             'feature_lts': False,

@@ -234,11 +234,6 @@ class Features(GtkBaseBox):
             except subprocess.CalledProcessError as process_error:
                 logging.warning("Error checking bluetooth presence. Command %s failed: %s", process_error.cmd, process_error.output)
 
-        # I do not think firewall should be enabled by default (karasu)
-        # if 'firewall' in self.features:
-        #    row = self.listbox_rows['firewall']
-        #    row[COL_SWITCH].set_active(True)
-
         if 'cups' in self.features:
             row = self.listbox_rows['cups']
             row[COL_SWITCH].set_active(True)
