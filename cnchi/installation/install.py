@@ -1195,7 +1195,7 @@ class Installation(object):
         # Add Antergos repo to /etc/pacman.conf
         self.update_pacman_conf()
 
-        logging.debug("pacman.conf has been created successfully"))
+        logging.debug("pacman.conf has been created successfully")
 
         # Enable some useful services
         services = []
