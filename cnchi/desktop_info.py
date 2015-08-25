@@ -49,7 +49,7 @@ DIALOG - Size appropriate for dialogs (48px )
 # Descriptive names
 NAMES = {
     'base': "Base",
-    'gnome': "Gnome",
+    'gnome': "GNOME",
     'cinnamon': "Cinnamon",
     'xfce': "Xfce",
     'openbox': "Openbox",
@@ -97,7 +97,7 @@ def _(message):
 
 
 DESCRIPTIONS = {
-    'gnome': _("Gnome 3 is an easy and elegant way to use your "
+    'gnome': _("GNOME 3 is an easy and elegant way to use your "
                "computer. It features the Activities Overview which "
                "is an easy way to access all your basic tasks. GNOME 3 is "
                "the default desktop in Antergos."),

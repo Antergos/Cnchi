@@ -1,3 +1,4 @@
+[2015-08-25 17:42:57 +0200]  More logging fixes                                                         karasu      {3b29200}
 [2015-08-25 14:34:10 +0200]  Another BIG typo in download.py                                            karasu      {775f051}
 [2015-08-25 14:26:22 +0200]  Fix package_names error in download.py                                     karasu      {a918a3a}
 [2015-08-25 13:54:56 +0200]  Can't log messages in ContextFilter                                        karasu      {2a8e787}
