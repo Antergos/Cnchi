@@ -91,7 +91,7 @@ class MainWindow(Gtk.ApplicationWindow):
             show.error(self, msg)
             sys.exit(1)
 
-        logging.info(_("Cnchi installer version %s"), info.CNCHI_VERSION)
+        logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
         self.settings = config.Settings()
         self.ui_dir = self.settings.get('ui')
@@ -180,12 +180,11 @@ class MainWindow(Gtk.ApplicationWindow):
             # Use requests by default
             self.settings.set("download_library", 'requests')
 
-        logging.info(_("Using %s to download packages"),
-            self.settings.get("download_library"))
+        logging.info("Using %s to download packages", self.settings.get("download_library"))
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
-            logging.info(_("Using '%s' file as package list"), self.settings.get('alternate_package_list'))
+            logging.info("Using '%s' file as package list", self.settings.get('alternate_package_list'))
 
         self.set_titlebar(self.header)
 
@@ -388,7 +387,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Quit Cnchi """
         try:
             misc.remove_temp_files()
-            logging.info(_("Quiting installer..."))
+            logging.info("Quiting installer...")
             for proc in self.process_list:
                 if proc.is_alive():
                     proc.terminate()

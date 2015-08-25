@@ -79,9 +79,8 @@ def mount_special_dirs(dest_dir):
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Unable to mount {0}".format(mountpoint)))
-            logging.warning(_("Command {0} has failed.".format(process_error.cmd)))
-            logging.warning(_("Output : {0}".format(process_error.output)))
+            txt = "Unable to mount {0}, command {1} failed: {2}".format(mountpoint, process_error.cmd, process_error.output)
+            logging.warning(txt)
 
     _special_dirs_mounted = True
 
@@ -106,13 +105,12 @@ def umount_special_dirs(dest_dir):
         try:
             subprocess.check_call(["umount", mountpoint])
         except subprocess.CalledProcessError:
-            logging.debug("Can't unmount. Try -l to force it.")
+            logging.debug("Can't unmount. Trying -l to force it.")
             try:
                 subprocess.check_call(["umount", "-l", mountpoint])
             except subprocess.CalledProcessError as process_error:
-                logging.warning(_("Unable to umount {0}".format(mountpoint)))
-                logging.warning(_("Command {0} has failed.".format(process_error.cmd)))
-                logging.warning(_("Output : {0}".format(process_error.output)))
+                txt = "Unable to unmount {0}, command {1} failed: {2}".format(mountpoint, process_error.cmd, process_error.output)
+                logging.warning(txt)
 
     _special_dirs_mounted = False
 

@@ -104,7 +104,7 @@ class Timezone(GtkBaseBox):
             self.forward_button.set_sensitive(False)
         else:
             self.timezone = tz_location.get_property('zone')
-            logging.info(_("location changed to : %s"), self.timezone)
+            logging.info("Location changed to : %s", self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
 
@@ -286,7 +286,7 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
         # Wait until there is an Internet connection available
         if not misc.has_connection():
-            logging.warning(_("Can't get network status. Cnchi will try again in a moment"))
+            logging.warning("Can't get network status. Cnchi will try again in a moment")
             while not misc.has_connection():
                 time.sleep(4)  # Wait 4 seconds and try again
 

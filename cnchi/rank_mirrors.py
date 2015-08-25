@@ -70,7 +70,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             try:
                 subprocess.check_call(['sync'])
             except subprocess.CalledProcessError as why:
-                logging.warning(_("Can't synchronize cached writes to persistent storage: %s"), why)
+                logging.warning("Can't synchronize cached writes to persistent storage: %s", why)
 
     def update_mirrorlist(self):
         """ Make sure we have the latest antergos-mirrorlist files """

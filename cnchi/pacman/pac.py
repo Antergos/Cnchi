@@ -319,7 +319,7 @@ class Pac(object):
         transaction = self.init_transaction(options)
 
         if transaction is None:
-            logging.error(_("Can't init transaction"))
+            logging.error("Can't initialize alpm transaction")
             return False
 
         for i in range(0, num_targets):

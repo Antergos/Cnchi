@@ -99,7 +99,8 @@ class DownloadPackages(object):
         downloads = self.get_downloads_list(package_names)
 
         if downloads is None:
-            raise InstallError(_("Can't create download package list. Check log output for details"))
+            txt = _("Can't create download package list. Check log output for details")
+            raise InstallError(txt)
 
         logging.debug("Using %s module to download packages", download_library)
 

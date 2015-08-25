@@ -195,7 +195,7 @@ class InstallationAutomatic(GtkBaseBox):
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_root_password', luks_password)
         if luks_password != "":
-            logging.debug(_("A root LUKS password has been set"))
+            logging.debug("A root LUKS password has been set")
 
         self.set_bootloader()
 
@@ -311,7 +311,7 @@ class InstallationAutomatic(GtkBaseBox):
         return change_list
 
     def run_format(self):
-        logging.debug(_("Creating partitions and their filesystems in %s"), self.auto_device)
+        logging.debug("Creating partitions and their filesystems in %s", self.auto_device)
 
         # If no key password is given a key file is generated and stored in /boot
         # (see auto_partition.py)
@@ -337,7 +337,7 @@ class InstallationAutomatic(GtkBaseBox):
         checkbox = self.ui.get_object("bootloader_device_check")
         if not checkbox.get_active():
             self.settings.set('bootloader_install', False)
-            logging.warning(_("Cnchi will not install any bootloader"))
+            logging.debug("Cnchi will not install any bootloader")
         else:
             self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
@@ -365,7 +365,7 @@ class InstallationAutomatic(GtkBaseBox):
 
             self.installation.start()
         else:
-            logging.warning(_("Testing mode. Cnchi will not change anything!"))
+            logging.debug("Testing mode, not changing anything"))
 
 # When testing, no _() is available
 try:

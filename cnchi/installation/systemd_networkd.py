@@ -80,11 +80,10 @@ def setup(ssid=None, passphrase=None):
                     links.append(link)
                     links_wireless.append(link)
     except subprocess.CalledProcessError as process_error:
-        logging.warning(process_error)
-        logging.warning(_("systemd-networkd configuration failed."))
+        logging.warning("systemd-networkd configuration failed: %s", process_error)
         return
 
-    logging.debug(_("Found [%s] links and [%s] are wireless"), " ".join(links), " ".join(links_wireless))
+    logging.debug("Found [%s] links and [%s] are wireless", " ".join(links), " ".join(links_wireless))
 
     # Setup DHCP by default for all interfaces found
     for link in links:

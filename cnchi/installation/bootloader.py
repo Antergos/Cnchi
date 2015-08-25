@@ -81,7 +81,7 @@ class Bootloader(object):
         if bootloader == "grub2":
             self.install_grub()
         elif bootloader == "gummiboot":
-            logging.debug(_("Cnchi will install the Gummiboot loader"))
+            logging.debug("Cnchi will install the Gummiboot loader")
             self.install_gummiboot()
 
     def install_grub(self):
@@ -89,10 +89,10 @@ class Bootloader(object):
         self.prepare_grub_d()
 
         if os.path.exists('/sys/firmware/efi'):
-            logging.debug(_("Cnchi will install the Grub2 (efi) loader"))
+            logging.debug("Cnchi will install the Grub2 (efi) loader")
             self.install_grub2_efi()
         else:
-            logging.debug(_("Cnchi will install the Grub2 (bios) loader"))
+            logging.debug("Cnchi will install the Grub2 (bios) loader")
             self.install_grub2_bios()
 
         self.check_root_uuid_in_grub()
@@ -100,7 +100,7 @@ class Bootloader(object):
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
         if len(self.root_uuid) == 0:
-            logging.warning(_("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok"))
+            logging.warning("'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope it's ok")
             return
 
         ruuid_str = 'root=UUID={0}'.format(self.root_uuid)
@@ -124,7 +124,7 @@ class Bootloader(object):
         if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
             if entry:
-                logging.debug(_("Wrong uuid in grub.cfg, Cnchi will try to fix it."))
+                logging.debug("Wrong uuid in grub.cfg, Cnchi will try to fix it.")
                 new_entry = re.sub("linux\t/vmlinuz.*quiet\n", boot_command, entry.group())
                 parse = parse.replace(entry.group(), new_entry)
 
@@ -185,7 +185,7 @@ class Bootloader(object):
             # Store grub line in /etc/default/grub file
             self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
 
-        logging.debug(_("/etc/default/grub configuration completed successfully."))
+        logging.debug("Grub configuration completed successfully.")
 
     def set_grub_option(self, option, cmd):
         """ Changes a grub setup option in /etc/default/grub """
@@ -230,7 +230,7 @@ class Bootloader(object):
                 shutil.copy2(script_path, grub_d_dir)
                 os.chmod(os.path.join(grub_d_dir, script), 0o755)
             except FileNotFoundError:
-                logging.debug(_("Could not copy %s to grub.d"), script)
+                logging.debug("Could not copy %s to grub.d", script)
             except FileExistsError:
                 pass
         else:
@@ -272,7 +272,7 @@ class Bootloader(object):
         self.apply_osprober_patch()
 
         # Run grub-mkconfig last
-        logging.debug(_("Running grub-mkconfig..."))
+        logging.debug("Running grub-mkconfig...")
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
@@ -354,7 +354,7 @@ class Bootloader(object):
                     logging.warning(msg_failed, general_error)
 
         # Run grub-mkconfig last
-        logging.info(_("Generating grub.cfg"))
+        logging.debug("Generating grub.cfg")
 
         # /dev and others need to be mounted (binded).
         # We call mount_special_dirs here just to be sure
@@ -363,7 +363,7 @@ class Bootloader(object):
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
 
-        logging.debug(_("Running grub-mkconfig..."))
+        logging.debug("Running grub-mkconfig...")
         locale = self.settings.get("locale")
         try:
             cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
@@ -382,15 +382,13 @@ class Bootloader(object):
         for path in paths:
             if not os.path.exists(path):
                 exists = False
-                logging.debug(_("Path '%s' doesn't exist, when it should"), path)
+                logging.debug("Path '%s' doesn't exist, when it should", path)
 
         if exists:
-            txt = _("GRUB(2) UEFI install completed successfully")
-            logging.info(txt)
+            logging.info("GRUB(2) UEFI install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         else:
-            txt = _("GRUB(2) UEFI install may not have completed successfully.")
-            logging.warning(txt)
+            logging.warning("GRUB(2) UEFI install may not have completed successfully.")
             self.settings.set('bootloader_installation_successful', False)
 
     def apply_osprober_patch(self):
@@ -401,13 +399,13 @@ class Bootloader(object):
                 text = osp.read().replace("umount", "umount -l")
             with open(osp_path, 'w') as osp:
                 osp.write(text)
-            logging.debug(_("50mounted-tests file patched successfully"))
+            logging.debug("50mounted-tests file patched successfully")
         else:
-            logging.warning(_("Failed to patch 50mounted-tests, file not found."))
+            logging.warning("Failed to patch 50mounted-tests, file not found.")
 
     def install_grub2_locales(self):
         """ Install Grub2 locales """
-        logging.info(_("Installing Grub2 locales."))
+        logging.debug("Installing Grub2 locales.")
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
 
         os.makedirs(dest_locale_dir, mode=0o755, exist_ok=True)
@@ -417,7 +415,7 @@ class Bootloader(object):
         try:
             shutil.copy2(grub_mo, os.path.join(dest_locale_dir, "en.mo"))
         except FileNotFoundError:
-            logging.warning(_("Can't install GRUB(2) locale."))
+            logging.warning("Can't install GRUB(2) locale.")
         except FileExistsError:
             # Ignore if already exists
             pass
@@ -525,7 +523,7 @@ class Bootloader(object):
                     entry_file.write(line)
 
         # Install bootloader
-        logging.debug(_("Installing gummiboot bootloader..."))
+        logging.debug("Installing gummiboot bootloader...")
         try:
             chroot.mount_special_dirs(self.dest_dir)
             cmd = ['gummiboot', '--path=/boot', 'install']
@@ -572,5 +570,5 @@ class Bootloader(object):
                 subprocess.check_call(["xfs_freeze", "-f", self.dest_dir])
                 subprocess.check_call(["xfs_freeze", "-u", self.dest_dir])
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Can't freeze/unfreeze xfs system"))
+            logging.warning("Can't freeze/unfreeze xfs system")
             logging.warning(process_error)

@@ -45,7 +45,7 @@ def get_uuid(part):
     if "UUID" in info.keys():
         return info['UUID']
     else:
-        logging.error(_("Can't get partition %s UUID"), part)
+        logging.error("Can't get partition %s UUID", part)
         return ""
 
 def get_label(part):
@@ -244,7 +244,8 @@ def is_ssd(disk_path):
     filename = os.path.join("/sys/block", disk_name, "queue/rotational")
     if not os.path.exists(filename):
         # Should not happen unless sysfs changes, but better safe than sorry
-        logging.warning(_("Can't verify if {0} is a Solid State Drive or not".format(disk_path)))
+        txt = "Cannot verify if {0} is a Solid State Drive or not".format(disk_path)
+        logging.warning(txt)
         return False
     with open(filename) as f:
         return f.read() == "0\n"
@@ -271,7 +272,7 @@ def resize(part, fs_type, new_size_in_mb):
     elif 'ext' in fs_type:
         res = resize_ext(part, new_size_in_mb)
     else:
-        logging.error(_("Sorry but filesystem %s can't be shrinked"), fs_type)
+        logging.error("Filesystem %s can't be shrinked", fs_type)
 
     return res
 

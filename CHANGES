@@ -1,14 +1,34 @@
+[2015-08-25 00:27:03 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {4ede3bd}
+[2015-08-25 00:24:22 +0200]  Merge pull request #383 from Wyn10/patch-4                                 karasu      {efad87a}
+[2015-08-24 22:26:01 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {0ede370}
 [2015-08-24 21:37:33 +0200]  More logging changes                                                       karasu      {ae06fd0}
+[2015-08-24 13:52:43 -0400]  Update packages.xml                                                          Wyn       {5059309}
+[2015-08-23 18:18:52 -0500]  Merge pull request #381 from Wyn10/patch-2                             Dustin Falgout  {83c46f5}
+[2015-08-23 18:18:21 -0500]  Merge pull request #382 from Wyn10/patch-3                             Dustin Falgout  {0f71a0c}
 [2015-08-23 23:49:19 +0200]  More logging changes                                                       karasu      {e4e38f0}
+[2015-08-23 16:43:24 -0400]  Update packages.xml                                                          Wyn       {6dd181e}
+[2015-08-23 16:42:13 -0400]  Update packages.xml                                                          Wyn       {6e3e0d2}
+[2015-08-23 16:36:01 -0400]  Update packages.xml                                                          Wyn       {07d71af}
+[2015-08-23 05:29:59 -0500]  fix erroneous version bumps                                            Dustin Falgout  {d8e9dbb}
+[2015-08-23 05:21:36 -0500]  fix packages.xml url. add release_stage global variable. (cherry-pi..  Dustin Falgout  {32f91c7}
 [2015-08-23 05:11:32 -0500]  fix packages.xml url. add release_stage global variable.               Dustin Falgout  {b13a5a8}
+[2015-08-22 12:10:32 -0500]  fix bug I introduced in the last commit :grimacing: (cherry picked ..  Dustin Falgout  {9d8bf98}
 [2015-08-22 12:09:50 -0500]  fix bug I introduced in the last commit :grimacing:                    Dustin Falgout  {7addaac}
+[2015-08-22 09:04:03 -0500]  change the field names so its easier to filter in bugsnag dashboard..  Dustin Falgout  {c92eb3d}
 [2015-08-22 09:02:39 -0500]  change the field names so its easier to filter in bugsnag dashboard    Dustin Falgout  {b6b88c4}
 [2015-08-22 02:30:32 -0500]  oops :grimacing:                                                       Dustin Falgout  {928303f}
+[2015-08-22 02:29:08 -0500]  oops :grimacing:                                                       Dustin Falgout  {dd57eff}
+[2015-08-22 01:23:27 -0500]  add try/except just in case (cherry picked from commit fb6ba18)        Dustin Falgout  {81913b5}
+[2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging (cherry p..  Dustin Falgout  {f465e15}
 [2015-08-22 01:23:27 -0500]  add try/except just in case                                            Dustin Falgout  {fb6ba18}
 [2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging              Dustin Falgout  {ef00305}
 [2015-08-21 13:29:32 +0200]  Fighting with issue #378, a lot of changes are needed! :grin:              karasu      {45a1d7a}
 [2015-08-20 14:39:59 +0200]  Use fat as fat32                                                           karasu      {3c2cf84}
+[2015-08-20 14:37:35 +0200]  Use fat as fat32                                                           karasu      {9b37dc4}
+[2015-08-20 14:20:56 +0200]  Forgot if check                                                            karasu      {af2762d}
+[2015-08-20 14:19:06 +0200]  Disable graphics_feature until conflict between lib32-nvidia-libgl ..      karasu      {f61c544}
 [2015-08-20 11:17:50 +0200]  unmounting should not issue a warning                                      karasu      {7bb6db8}
+[2015-08-20 11:17:06 +0200]  Unmounting should not issue a warning                                      karasu      {8599e2a}
 [2015-08-20 11:13:13 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {6b4db62}
 [2015-08-20 11:00:19 +0200]  Do not issue a warning if user doesn't want to install a bootloader        karasu      {bd19eb7}
 [2015-08-20 10:35:32 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {2b055f0}

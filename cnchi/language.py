@@ -135,7 +135,7 @@ class Language(GtkBaseBox):
             lang.install()
             self.translate_ui()
         except IOError:
-            logging.warning(_("Can't find translation file for the %s language"), locale_code)
+            logging.warning("Can't find translation file for the %s language", locale_code)
 
     def select_default_row(self, language):
         for listbox_row in self.listbox.get_children():
@@ -175,7 +175,7 @@ class Language(GtkBaseBox):
             self.process_list.append(proc)
             self.rank_mirrors_launched = True
         else:
-            logging.warning(_("Not running rank mirrors. This is discouraged."))
+            logging.debug("Not running rank mirrors. This is discouraged.")
 
 # When testing, no _() is available
 try:

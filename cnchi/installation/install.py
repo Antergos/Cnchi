@@ -241,18 +241,16 @@ class Installation(object):
                             subprocess.check_call(['mount', mount_part, mount_dir])
                         except subprocess.CalledProcessError as process_error:
                             # We will continue as root and boot are already mounted
-                            logging.warning(_("Can't mount %s in %s"), mount_part, mount_dir)
-                            logging.warning(_("Command %s has failed."), process_error.cmd)
-                            logging.warning(_("Output : %s"), process_error.output)
+                            txt = "Unable to mount {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                            logging.warning(txt)
                     elif mount_part == swap_partition:
                         try:
-                            logging.debug(_("Activating swap in %s"), mount_part)
+                            logging.debug("Activating swap in %s", mount_part)
                             subprocess.check_call(['swapon', swap_partition])
                         except subprocess.CalledProcessError as process_error:
                             # We can continue even if no swap is on
-                            logging.warning(_("Can't activate swap in %s"), mount_part)
-                            logging.warning(_("Command %s has failed."), process_error.cmd)
-                            logging.warning(_("Output : %s"), process_error.output)
+                            txt = "Unable to activate swap {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                            logging.warning(txt)
 
         # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
@@ -262,7 +260,7 @@ class Installation(object):
         if os.path.exists(db_lock):
             with misc.raised_privileges():
                 os.remove(db_lock)
-            logging.debug(_("%s deleted"), db_lock)
+            logging.debug("%s deleted", db_lock)
 
         # Create some needed folders
         folders = [
@@ -287,26 +285,26 @@ class Installation(object):
             if os.path.exists(img):
                 os.remove(img)
 
-        logging.debug(_("Prepare pacman..."))
+        logging.debug("Prepare pacman...")
         self.prepare_pacman()
-        logging.debug(_("Pacman ready"))
+        logging.debug("Pacman ready")
 
-        logging.debug(_("Selecting packages..."))
+        logging.debug("Selecting packages...")
         self.select_packages()
-        logging.debug(_("Packages selected"))
+        logging.debug("Packages selected")
 
         # Fix bug #263 (v86d moved from [extra] to AUR)
         if "v86d" in self.packages:
             self.packages.remove("v86d")
-            logging.debug(_("Removed 'v86d' package from list"))
+            logging.debug("Removed 'v86d' package from list")
 
-        logging.debug(_("Downloading packages..."))
+        logging.debug("Downloading packages...")
         self.download_packages()
 
-        logging.debug(_("Installing packages..."))
+        logging.debug("Installing packages...")
         self.install_packages()
 
-        logging.debug(_("Configuring system..."))
+        logging.debug("Configuring system...")
         self.configure_system()
 
         self.running = False
@@ -326,7 +324,7 @@ class Installation(object):
             shutil.copy("/tmp/cnchi.log", dst)
             shutil.copy("/tmp/postinstall.log", pidst)
         except FileNotFoundError:
-            logging.warning(_("Can't copy Cnchi log to %s"), dst)
+            logging.warning("Can't copy Cnchi log to %s", dst)
         except FileExistsError:
             pass
 
@@ -384,7 +382,8 @@ class Installation(object):
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception:
             self.pacman = None
-            raise InstallError(_("Can't initialize pyalpm."))
+            txt = _("Can't initialize pyalpm.")
+            raise InstallError(txt)
 
         # Refresh pacman databases
         if not self.pacman.refresh():
@@ -404,9 +403,8 @@ class Installation(object):
             cmd = ["systemctl", "start", "haveged"]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Can't start haveged service"))
-            logging.warning(_("Command %s failed"), process_error.cmd)
-            logging.warning(_("Output: %s"), process_error.output)
+            txt = "Can't start haveged service, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.warning(txt)
 
         # Delete old gnupg files
         dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
@@ -415,9 +413,8 @@ class Installation(object):
             subprocess.check_call(cmd)
             os.mkdir(dest_path)
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Error deleting old gnupg files"))
-            logging.warning(_("Command %s failed"), process_error.cmd)
-            logging.warning(_("Output: %s"), process_error.output)
+            txt = "Error deleting old gnupg files, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.warning(txt)
 
         # Tell pacman-key to regenerate gnupg files
         try:
@@ -426,9 +423,8 @@ class Installation(object):
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Error regenerating gnupg files with pacman-key"))
-            logging.warning(_("Command %s failed"), process_error.cmd)
-            logging.warning(_("Output: %s"), process_error.output)
+            txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.warning(txt)
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -444,7 +440,7 @@ class Installation(object):
 
             try:
                 url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION.rsplit('.')[-2])
-                logging.debug(_("Getting url {0}...").format(url))
+                logging.debug("Getting url %s...", url)
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
@@ -456,7 +452,7 @@ class Installation(object):
                     logging.debug("Can't retrieve remote package list, using the local file instead. Error Msg: %s", url_error)
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
-                logging.debug(_("Loading {0}").format(packages_xml))
+                logging.debug("Loading %s", packages_xml)
 
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
@@ -481,7 +477,7 @@ class Installation(object):
                             self.packages.append(pkg.text)
                 # Add specific desktop packages
                 if name == self.desktop:
-                    logging.debug(_("Adding '%s' desktop packages"), self.desktop)
+                    logging.debug("Adding %s desktop packages", self.desktop)
                     for pkg in edition.iter('pkgname'):
                         # If package is Network Manager, save the name to activate the correct service later
                         if pkg.attrib.get('nm'):
@@ -506,7 +502,7 @@ class Installation(object):
                 lang_code = self.settings.get('language_code')
                 pkg = base_name + lang_code
             if len(pkg) > 0:
-                logging.debug(_("Selected kde language pack: %s"), pkg)
+                logging.debug("Selected kde language pack: %s", pkg)
                 self.packages.append(pkg)
 
         try:
@@ -515,25 +511,25 @@ class Installation(object):
                 use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
             driver_names = self.hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
-                logging.debug(_("Hardware module detected this drivers: %s"), driver_names)
+                logging.debug("Hardware module detected these drivers: %s", driver_names)
 
             # Add needed hardware packages to our list
             hardware_pkgs = self.hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
-                logging.debug(_("Hardware module added these packages: %s"), txt)
+                logging.debug("Hardware module added these packages: %s", txt)
                 if 'virtualbox-guest-utils' in hardware_pkgs:
                     self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
 
             # Run pre-install scripts (only catalyst does something here atm)
-            logging.debug(_("Running hardware drivers pre-install jobs..."))
+            logging.debug("Running hardware drivers pre-install jobs...")
             self.hardware_install.pre_install(DEST_DIR)
         except Exception as general_error:
-            logging.warning(_("Unknown error in hardware module. Output: %s"), general_error)
+            logging.warning("Unknown error in hardware module. Output: %s", general_error)
 
         # Add filesystem packages
-        logging.debug(_("Adding filesystem packages"))
+        logging.debug("Adding filesystem packages")
 
         cmd = ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]
         fs_types = subprocess.check_output(cmd).decode()
@@ -556,14 +552,14 @@ class Installation(object):
                         self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
-        logging.debug(_("Check for user desired features and add them to our installation"))
+        logging.debug("Check for user desired features and add them to our installation")
         self.add_features_packages(xml_root)
-        logging.debug(_("All features needed packages have been added"))
+        logging.debug("All features needed packages have been added")
 
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
-            logging.debug(_("Selecting chinese fonts."))
+            logging.debug("Selecting chinese fonts.")
             for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.packages.append(pkg.text)
@@ -601,7 +597,7 @@ class Installation(object):
                 if feature == "lamp" and self.settings.get("feature_lemp"):
                     continue
                 if self.settings.get("feature_" + feature):
-                    logging.debug(_("Adding packages for '%s' feature."), feature)
+                    logging.debug("Adding packages for '%s' feature.", feature)
                     for pkg in xml_feature.iter('pkgname'):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
@@ -613,14 +609,14 @@ class Installation(object):
                             elif self.desktop != "plasma5" and qt5 == "True":
                                 continue
                             else:
-                                logging.debug(_("Selecting package %s for feature %s"), pkg.text, feature)
+                                logging.debug("Selecting package %s for feature %s", pkg.text, feature)
                                 self.packages.append(pkg.text)
                         if pkg.attrib.get('conflicts'):
                             self.conflicts.append(pkg.attrib.get('conflicts'))
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            logging.debug(_("Add libreoffice language package"))
+            logging.debug("Add libreoffice language package")
             pkg = ""
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
@@ -640,7 +636,7 @@ class Installation(object):
 
     def install_packages(self):
         """ Start pacman installation of packages """
-        logging.debug(_("Installing packages..."))
+        logging.debug("Installing packages...")
 
         pacman_options = {}
 
@@ -687,7 +683,7 @@ class Installation(object):
                 try:
                     shutil.copy(source_network, target_network)
                 except FileNotFoundError:
-                    logging.warning(_("Can't copy network configuration files"))
+                    logging.warning("Can't copy network configuration files, file %s not found", source_network)
                 except FileExistsError:
                     pass
 
@@ -733,7 +729,7 @@ class Installation(object):
                     opts = "defaults"
                 txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
                 all_lines.append(txt)
-                logging.debug(_("Added to fstab : %s"), txt)
+                logging.debug("Added %s to fstab", txt)
                 continue
 
             crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
@@ -753,13 +749,13 @@ class Installation(object):
                 with open(crypttab_path, 'a') as crypttab_file:
                     line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(uuid, home_keyfile)
                     crypttab_file.write(line)
-                    logging.debug(_("Added to crypttab : %s"), line)
+                    logging.debug("Added %s to crypttab", line)
                 os.chmod(crypttab_path, 0o600)
 
                 # Add line to fstab
                 txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(mount_point, myfmt)
                 all_lines.append(txt)
-                logging.debug(_("Added to fstab : %s"), txt)
+                logging.debug("Added %s to fstab", txt)
                 continue
 
             # Add all LUKS partitions from Advanced Install (except root).
@@ -783,12 +779,10 @@ class Installation(object):
                     with open(crypttab_path, 'a') as crypttab_file:
                         line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
                         crypttab_file.write(line)
-                        logging.debug(_("Added to crypttab : %s"), line)
+                        logging.debug("Added %s to crypttab", line)
                     os.chmod(crypttab_path, 0o600)
                 else:
-                    logging.error(
-                        _("Can't add luks uuid to crypttab for %s partition"),
-                        luks_partition_path)
+                    logging.error("Can't add luks uuid to crypttab for %s partition", luks_partition_path)
                     continue
 
                 # Finally, the fstab line to mount the unencrypted file system
@@ -796,7 +790,7 @@ class Installation(object):
                 if len(mount_point) > 0:
                     txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
                     all_lines.append(txt)
-                    logging.debug(_("Added to fstab : %s"), txt)
+                    logging.debug("Added %s to fstab", txt)
                 continue
 
             # fstab uses vfat to mount fat16 and fat32 partitions
@@ -854,7 +848,7 @@ class Installation(object):
 
             txt = "UUID={0} {1} {2} {3} 0 {4}".format(uuid, mount_point, myfmt, opts, chk)
             all_lines.append(txt)
-            logging.debug(_("Added to fstab : %s"), txt)
+            logging.debug("Added %s to fstab", txt)
 
         full_text = '\n'.join(all_lines) + '\n'
 
@@ -862,7 +856,7 @@ class Installation(object):
         with open(fstab_path, 'w') as fstab_file:
             fstab_file.write(full_text)
 
-        logging.debug(_("fstab written."))
+        logging.debug("fstab written.")
 
     def set_scheduler(self):
         rule_src = os.path.join(self.settings.get('cnchi'), 'scripts/60-schedulers.rules')
@@ -871,7 +865,7 @@ class Installation(object):
             shutil.copy2(rule_src, rule_dst)
             os.chmod(rule_dst, 0o755)
         except FileNotFoundError:
-            logging.debug(_("Could not copy udev rule for SSDs"))
+            logging.warning("Cannot copy udev rule for SSDs, file %s not found.", rule_src)
         except FileExistsError:
             pass
 
@@ -884,9 +878,9 @@ class Installation(object):
                 "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
                 chroot_run(['systemctl', '-f', 'enable', name])
-                logging.debug(_("Service '%s' has been enabled."), name)
+                logging.debug("Service '%s' has been enabled.", name)
             else:
-                logging.warning(_("Can't find service %s"), name)
+                logging.warning("Can't find service %s", name)
 
     @staticmethod
     def change_user_password(user, new_password):
@@ -894,13 +888,13 @@ class Installation(object):
         try:
             shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
         except:
-            logging.warning(_("Error creating password hash for user %s"), user)
+            logging.warning("Error creating password hash for user %s", user)
             return False
 
         try:
             chroot_run(['usermod', '-p', shadow_password, user])
         except:
-            logging.warning(_("Error changing password for user %s"), user)
+            logging.warning("Error changing password for user %s", user)
             return False
 
         return True
@@ -911,7 +905,8 @@ class Installation(object):
         try:
             subprocess.check_call(["hwclock", "--systohc", "--utc"])
         except subprocess.CalledProcessError as process_error:
-            logging.warning(_("Error adjusting hardware clock"))
+            txt = "Error adjusting hardware clock, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.warning(txt)
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     @staticmethod
@@ -936,7 +931,7 @@ class Installation(object):
             with open(path, "w") as f:
                 f.write("".join(paclines))
         else:
-            logging.warning(_("Can't find pacman configuration file"))
+            logging.warning("Can't find pacman configuration file")
 
     @staticmethod
     def uncomment_locale_gen(locale):
@@ -955,7 +950,7 @@ class Installation(object):
                         line = line[1:]
                     gen.write(line)
         else:
-            logging.warning(_("Can't find locale.gen file"))
+            logging.error("Can't find locale.gen file")
 
     @staticmethod
     def check_output(command):
@@ -990,9 +985,6 @@ class Installation(object):
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
-        # if self.settings.get("feature_aur"):
-        #    logging.debug(_("Configuring AUR..."))
-
         services = []
 
         if self.settings.get("feature_bluetooth"):
@@ -1003,7 +995,7 @@ class Installation(object):
             services.append('avahi-daemon')
 
         if self.settings.get("feature_firewall"):
-            logging.debug(_("Configuring firewall..."))
+            logging.debug("Configuring firewall...")
             # Set firewall rules
             firewall.run(["default", "deny"])
             toallow = misc.get_network()
@@ -1017,24 +1009,21 @@ class Installation(object):
         if self.settings.get("feature_lamp") and not self.settings.get("feature_lemp"):
             try:
                 from installation import lamp
-                logging.debug(_("Configuring LAMP..."))
+                logging.debug("Configuring LAMP...")
                 lamp.setup()
                 services.extend(["httpd", "mysqld"])
-            except ImportError as error:
-                logging.warning(_("Can't import LAMP module"))
-                logging.warning(error)
+            except ImportError as import_error:
+                logging.warning("Unable to import LAMP module: %s", str(import_error))
         elif self.settings.get("feature_lemp"):
             try:
                 from installation import lemp
-                logging.debug(_("Configuring LEMP..."))
+                logging.debug("Configuring LEMP...")
                 lemp.setup()
                 services.extend(["nginx", "mysqld", "php-fpm"])
-            except ImportError as error:
-                logging.warning(_("Can't import LEMP module"))
-                logging.warning(error)
+            except ImportError as import_error:
+                logging.warning("Unable to import LEMP module: %s", str(import_error))
 
         self.enable_services(services)
-        # TODO: graphic driver setup (if proprietary is used)
 
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
@@ -1165,12 +1154,12 @@ class Installation(object):
         chroot.mount_special_dirs(DEST_DIR)
 
         self.auto_fstab()
-        logging.debug(_("fstab file generated."))
+        logging.debug("fstab file generated.")
 
         # If SSD was detected copy udev rule for deadline scheduler
         if self.ssd:
             self.set_scheduler()
-            logging.debug(_("SSD udev rule copied successfully"))
+            logging.debug("SSD udev rule copied successfully")
 
         # Copy configured networks in Live medium to target system
         if self.network_manager == 'NetworkManager':
@@ -1188,22 +1177,23 @@ class Installation(object):
             from installation import systemd_networkd
             systemd_networkd.setup()
 
-        logging.debug(_("Network configuration done."))
+        logging.debug("Network configuration done.")
 
         # Copy mirror list
-        mirrorlist_path = os.path.join(DEST_DIR, 'etc/pacman.d/mirrorlist')
+        mirrorlist_src_path = '/etc/pacman.d/mirrorlist'
+        mirrorlist_dst_path = os.path.join(DEST_DIR, 'etc/pacman.d/mirrorlist')
         try:
-            shutil.copy2('/etc/pacman.d/mirrorlist', mirrorlist_path)
-            logging.debug(_("Mirror list copied."))
+            shutil.copy2(mirrorlist_src_path, mirrorlist_dst_path)
+            logging.debug("Mirror list copied.")
         except FileNotFoundError:
-            logging.warning(_("Can't copy mirrorlist file"))
+            logging.error("Can't copy mirrorlist file. File %s not found", mirrorlist_src_path))
         except FileExistsError:
-            pass
+            logging.warning("File %s already exists.", mirrorlist_dst_path)
 
         # Add Antergos repo to /etc/pacman.conf
         self.update_pacman_conf()
 
-        logging.debug(_("Generated /etc/pacman.conf"))
+        logging.debug("pacman.conf has been created successfully"))
 
         # Enable some useful services
         services = []
@@ -1227,8 +1217,7 @@ class Installation(object):
         # Set timezone
         zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         chroot_run(['ln', '-s', zoneinfo_path, "/etc/localtime"])
-
-        logging.debug(_("Timezone set."))
+        logging.debug("Timezone set.")
 
         # Wait FOREVER until the user sets his params
         # FIXME: We can wait here forever!
@@ -1282,7 +1271,7 @@ class Installation(object):
 
         cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
         chroot_run(cmd)
-        logging.debug(_("User %s added."), username)
+        logging.debug("User %s added.", username)
 
         self.change_user_password(username, password)
 
@@ -1297,11 +1286,11 @@ class Installation(object):
             with open(hostname_path, "w") as hostname_file:
                 hostname_file.write(hostname)
 
-        logging.debug(_("Hostname set to %s."), hostname)
+        logging.debug("Hostname set to %s", hostname)
 
         # User password is the root password
         self.change_user_password('root', password)
-        logging.debug(_("Set the same password to root."))
+        logging.debug("Set the same password to root.")
 
         # Generate locales
         locale = self.settings.get("locale")
@@ -1327,7 +1316,7 @@ class Installation(object):
 
         if self.desktop != "base":
             # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
-            logging.debug(_("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"))
+            logging.debug("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")
             xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
             if not os.path.exists(xorg_conf_dir):
                 os.mkdir(xorg_conf_dir, 0o755)
@@ -1343,7 +1332,7 @@ class Installation(object):
                     if keyboard_variant and len(keyboard_variant) > 0:
                         xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
                     xorg_conf_xkb.write('EndSection\n')
-                logging.debug(_("00-keyboard.conf written."))
+                logging.debug("00-keyboard.conf written.")
             except IOError as io_error:
                 # Do not fail if 00-keyboard.conf can't be created.
                 # Something bad must be happening, though.
@@ -1368,7 +1357,7 @@ class Installation(object):
 
         # Configure ALSA
         self.alsa_mixer_setup()
-        logging.debug(_("Updated Alsa mixer settings"))
+        logging.debug("Updated Alsa mixer settings")
 
         # Set pulse
         if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
@@ -1376,7 +1365,7 @@ class Installation(object):
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
-        logging.debug(_("Updated fluidsynth configuration file"))
+        logging.debug("Updated fluidsynth configuration file")
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1385,7 +1374,7 @@ class Installation(object):
         self.queue_event('info', _("Configuring System Startup..."))
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
-        logging.debug(_("Call Cnchi post-install script"))
+        logging.debug("Running Cnchi post-install script")
         # Call post-install script to fine tune our setup
         script_path_postinstall = os.path.join(
             self.settings.get('cnchi'),
@@ -1404,7 +1393,7 @@ class Installation(object):
         cmd.append(self.vbox)
         try:
             subprocess.check_call(cmd, timeout=300)
-            logging.debug(_("Post install script completed successfully."))
+            logging.debug("Post install script completed successfully.")
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
             logging.error("Error running post-install script, command %s failed: %s"), process_error.cmd, process_error.output)
@@ -1421,25 +1410,25 @@ class Installation(object):
         # Encrypt user's home directory if requested
         # FIXME: This is not working atm
         if self.settings.get('encrypt_home'):
-            logging.debug(_("Encrypting user home dir..."))
+            logging.debug("Encrypting user home dir...")
             encfs.setup(username, DEST_DIR)
-            logging.debug(_("User home dir encrypted"))
+            logging.debug("User home dir encrypted")
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
-                logging.debug(_("Installing bootloader..."))
+                logging.debug("Installing bootloader...")
                 from installation import bootloader
                 boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:
-                logging.warning(_("While installing boot loader Cnchi encountered this error: %s"), general_error)
+                logging.warning("While installing boot loader Cnchi encountered this error: %s", general_error)
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
         chroot.umount_special_dirs(DEST_DIR)
 
         # Copy installer log to the new installation (just in case something goes wrong)
-        logging.debug(_("Copying install log to /var/log."))
+        logging.debug("Copying install log to /var/log.")
         self.copy_log()
 
         self.queue_event('pulse', 'stop')

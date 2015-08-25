@@ -69,7 +69,7 @@ class Updater():
         self.force = force_update
 
         if not os.path.exists(_update_info):
-            logging.warning(_("Could not find 'update.info' file. Cnchi will not be able to update itself."))
+            logging.warning("Cannot not find %s file. Cnchi will not be able to update itself.", _update_info)
             return
 
         # Get local info (local update.info)
@@ -95,7 +95,7 @@ class Updater():
                 self.remote_version = update_info['version']
                 for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
-                logging.info(_("Cnchi Internet version: %s"), self.remote_version)
+                logging.info("Internet version: %s", self.remote_version)
                 self.force = force_update
 
     def is_remote_version_newer(self):
@@ -135,10 +135,10 @@ class Updater():
         update_cnchi = False
 
         if self.is_remote_version_newer():
-            logging.info(_("New version found. Updating installer..."))
+            logging.info("New version found. Updating installer...")
             update_cnchi = True
         elif self.force:
-            logging.info(_("No new version found. Updating anyways..."))
+            logging.info("No new version found. Updating anyways...")
             update_cnchi = True
 
         if update_cnchi:
@@ -146,7 +146,7 @@ class Updater():
             zip_path = "/tmp/cnchi-{0}.zip".format(self.remote_version)
             res = self.download_master_zip(zip_path)
             if not res:
-                logging.error(_("Can't download new Cnchi version."))
+                logging.error("Can't download new Cnchi version.")
                 return False
 
             # master.zip file is downloaded, we must unzip it

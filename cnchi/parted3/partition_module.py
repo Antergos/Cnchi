@@ -109,7 +109,7 @@ def get_devices():
                 disk_obj = parted.Disk(dev)
                 result = OK
             except parted.DiskLabelException:
-                # logging.warning(_('Unrecognised disk label in device %s.'), dev.path)
+                # logging.warning('Unrecognised disk label in device %s.', dev.path)
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as general_error:
                 logging.error(general_error)

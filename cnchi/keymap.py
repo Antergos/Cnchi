@@ -169,7 +169,7 @@ class Keymap(GtkBaseBox):
                 tree_iter = tree_model.iter_next(tree_iter)
 
         if not found:
-            logging.warning(_("Can't find value '%s' in treeview"), value0)
+            logging.warning("Cannot find value '%s' in treeview", value0)
             return
 
         if value1 and tree_iter and tree_model.iter_has_child(tree_iter):
@@ -183,7 +183,7 @@ class Keymap(GtkBaseBox):
                 else:
                     child_iter = tree_model.iter_next(child_iter)
             if not found:
-                logging.warning(_("Can't find value '%s' in treeview"), value1)
+                logging.warning("Cannot find value '%s' in treeview", value1)
 
         if path:
             treeview.set_cursor(path)
@@ -235,7 +235,7 @@ class Keymap(GtkBaseBox):
         layout_name = self.kbd_names.get_layout_name_by_description(layout_description)
 
         if not layout_name:
-            logging.warning(_("Unknown layout description %s"), layout_description)
+            logging.warning("Unknown layout description: %s", layout_description)
             return
 
         self.keyboard_layout['code'] = layout_name
@@ -247,7 +247,7 @@ class Keymap(GtkBaseBox):
                 self.keyboard_variant['code'] = variant_name
                 self.keyboard_variant['description'] = variant_description
             else:
-                logging.warning(_("Unknown variant description %s"), variant_description)
+                logging.warning("Unknown variant description: %s", variant_description)
 
         # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
