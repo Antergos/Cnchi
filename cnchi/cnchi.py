@@ -107,9 +107,10 @@ class ContextFilter(Singleton):
         try:
             r = requests.get(url)
             install_info = json.loads(r.json())
-            logging.debug(install_info)
+            #logging.debug(install_info)
         except ValueError as err:
-            logging.warning(err)
+            #logging.warning(err)
+            pass
 
         return install_info
 
@@ -169,7 +170,7 @@ def setup_logging():
 
     # Log format
     formatter = logging.Formatter(
-        fmt="%(asctime)s [%(levelname)s] - %(filename)s : %(lineno)d : %(funcName)s | %(message)s",
+        fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S")
 
     # File logger
@@ -215,9 +216,7 @@ def setup_logging():
             socket_handler = logging.handlers.SocketHandler(
                 log_server,
                 logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-            socket_formatter = logging.Formatter(
-                fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S")
+            socket_formatter = logging.Formatter(formatter)
             socket_handler.setFormatter(socket_formatter)
             logger.addHandler(socket_handler)
 
