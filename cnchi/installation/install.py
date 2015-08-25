@@ -1188,7 +1188,7 @@ class Installation(object):
             shutil.copy2(mirrorlist_src_path, mirrorlist_dst_path)
             logging.debug("Mirror list copied.")
         except FileNotFoundError:
-            logging.error("Can't copy mirrorlist file. File %s not found", mirrorlist_src_path))
+            logging.error("Can't copy mirrorlist file. File %s not found", mirrorlist_src_path)
         except FileExistsError:
             logging.warning("File %s already exists.", mirrorlist_dst_path)
 
