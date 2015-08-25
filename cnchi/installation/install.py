@@ -1398,7 +1398,7 @@ class Installation(object):
             logging.debug("Post install script completed successfully.")
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
-            logging.error("Error running post-install script, command %s failed: %s"), process_error.cmd, process_error.output)
+            logging.error("Error running post-install script, command %s failed: %s", process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 
