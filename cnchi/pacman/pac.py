@@ -111,7 +111,7 @@ class Pac(object):
 
         self.handle = pyalpm.Handle(root_dir, db_path)
 
-        logging.debug("alpm init with root dir '{0}' and db path '{1}').format(root_dir, db_path))
+        logging.debug("ALPM initialised with root dir %s and db path %s", root_dir, db_path)
 
         if self.handle is None:
             raise pyalpm.error
