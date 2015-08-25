@@ -45,6 +45,7 @@
         <!--<pkgname>antergos-welcome</pkgname> -->
         <pkgname>chromium</pkgname>
         <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
+        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -308,7 +309,6 @@
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>file-roller</pkgname>
-        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
