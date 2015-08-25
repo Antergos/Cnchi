@@ -94,12 +94,13 @@ class DownloadPackages(object):
         self.callback_queue = callback_queue
         self.settings = settings
         self.download_module = download_module
+        self.package_names = package_names
         self.downloads_list = None
 
     def start(self):
         # Create downloads list from package list
         if self.downloads_list is None:
-            self.create_downloads_list(package_names)
+            self.create_downloads_list()
 
         if self.downloads_list is None:
             # Still none? Error
@@ -135,8 +136,12 @@ class DownloadPackages(object):
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise InstallError(txt)
 
-    def create_downloads_list(self, package_names):
+    def create_downloads_list(self, package_names=None):
         """ Creates a downloads list from the package list """
+
+        if not package_names:
+            package_names = self.package_names
+
         self.queue_event('percent', '0')
         self.queue_event('info', _('Creating the list of packages to download...'))
         processed_packages = 0
@@ -229,8 +234,9 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    DownloadPackages(
+    dp = DownloadPackages(
         package_names=["gnome-sudoku"],
         download_module="urllib",
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
+    dp.start()
