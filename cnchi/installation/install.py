@@ -338,20 +338,20 @@ class Installation(object):
         else:
             cache_dir = '/var/cache/pacman/pkg'
 
-        if self.settings.get("download_library"):
-            download_library = self.settings.get("download_library")
+        if self.settings.get("download_module"):
+            download_module = self.settings.get("download_module")
         else:
-            download_library = 'urllib'
+            download_module = 'requests'
 
-        download = download.DownloadPackages(
+        download_packages = download.DownloadPackages(
             self.packages,
-            download_library,
+            download_module,
             pacman_conf_file,
             pacman_cache_dir,
             cache_dir,
             self.callback_queue,
             self.settings)
-        download.start()
+        download_packages.start()
 
 
     def create_pacman_conf_file(self):

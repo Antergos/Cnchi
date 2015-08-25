@@ -90,10 +90,10 @@ class DownloadPackages(object):
         # Stores last issued event for each event type
         # (to prevent repeating events)
         self.last_event = {}
+
         self.callback_queue = callback_queue
         self.settings = settings
         self.download_module = download_module
-
         self.downloads_list = None
 
     def start(self):

@@ -174,13 +174,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.process_list = []
 
         # Save in config which download method we have to use
-        if cmd_line.library:
-            self.settings.set("download_library", cmd_line.library)
+        if cmd_line.download_module:
+            self.settings.set("download_module", cmd_line.download_module)
         else:
             # Use requests by default
-            self.settings.set("download_library", 'requests')
+            self.settings.set("download_module", 'requests')
 
-        logging.info("Using %s to download packages", self.settings.get("download_library"))
+        logging.info("Using %s to download packages", self.settings.get("download_module"))
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)

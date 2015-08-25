@@ -36,6 +36,7 @@ import logging
 import sys
 import misc.misc as misc
 import pyalpm
+from download import download
 
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
@@ -43,13 +44,26 @@ class Process(multiprocessing.Process):
     def __init__(self, install_screen, callback_queue):
         """ Initialize process class """
         multiprocessing.Process.__init__(self)
-
         self.callback_queue = callback_queue
         self.install_screen = install_screen
 
+    def create_downloads_list(self, package_list):
+        #download_packages = download.DownloadPackages(package_list)
+        #download_packages.create_downloads_list()
+        pass
+
     def run(self):
         """ Calls run_format and run_install and takes care of exceptions """
+
         try:
+            # Before formatting, let's try to calculate package download list
+            # this way, if something fails (a missing package, mostly) we have
+            # not formatted anything yet.
+            # TODO: package list is created in install.py. We need to break that
+            # file so select_packages() can be run BEFORE formatting (it could be
+            # run here in process.py)
+            #self.create_downloads_list()
+
             with misc.raised_privileges():
                 self.install_screen.run_format()
                 self.install_screen.run_install()

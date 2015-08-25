@@ -57,7 +57,7 @@ class Settings(object):
             'desktop': 'gnome',
             'desktop_ask': True,
             'desktops': [],
-            'download_library': 'requests',
+            'download_module': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
