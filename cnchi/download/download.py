@@ -111,21 +111,21 @@ class DownloadPackages(object):
 
         if self.download_module == "aria2":
             download = download_aria2.Download(
-                pacman_cache_dir,
-                cache_dir,
-                callback_queue)
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
         elif self.download_module == "urllib":
             download = download_urllib.Download(
-                pacman_cache_dir,
-                cache_dir,
-                callback_queue)
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
         else:
             if self.download_module != "requests":
                 logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", self.download_module)
             download = download_requests.Download(
-                pacman_cache_dir,
-                cache_dir,
-                callback_queue)
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
 
         if not download.start(self.downloads_list):
             self.settings.set('failed_download', True)
