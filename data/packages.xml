@@ -461,10 +461,12 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
-      <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
+      <pkgname desktops='cinnamon'>blueberry</pkgname>
+      <pkgname lib='qt' desktops='kde4,lxqt'>bluedevil4</pkgname>
+      <pkgname lib='qt' desktops='plasma5'>bluedevil</pkgname>
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
+      <pkgname>pulseaudio-bluetooth</pkgname>
     </feature>
     <feature name="cups">
       <pkgname>cups</pkgname>

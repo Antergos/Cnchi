@@ -532,26 +532,9 @@ class Installation(object):
 
         # Add filesystem packages
         logging.debug("Adding filesystem packages")
-
-        cmd = ["blkid", "-c", "/dev/null", "-o", "value", "-s", "TYPE"]
-        fs_types = subprocess.check_output(cmd).decode()
-
-        fs_lib = (
-            'btrfs', 'ext', 'ext2', 'ext3', 'ext4', 'fat', 'fat16', 'fat32', 'vfat',
-            'f2fs', 'jfs', 'nfs', 'nilfs2', 'ntfs', 'reiserfs', 'xfs')
-
-        for fs_index in self.fs_devices:
-            fs_types = fs_types + self.fs_devices[fs_index]
-
-        for fsys in fs_lib:
-            if fsys in fs_types:
-                if fsys == 'ext2' or fsys == 'ext3' or fsys == 'ext4':
-                    fsys = 'ext'
-                if fsys == 'fat16' or fsys == 'fat32':
-                    fsys = 'vfat'
-                for child in xml_root.iter(fsys):
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+        for child in xml_root.iter("filesystems"):
+            for pkg in child.iter('pkgname'):
+                self.packages.append(pkg.text)
 
         # Check for user desired features and add them to our installation
         logging.debug("Check for user desired features and add them to our installation")
@@ -588,8 +571,6 @@ class Installation(object):
 
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
-        desktop = self.settings.get("desktop")
-        lib = desktop_info.LIBS
 
         # Add necessary packages for user desired features to our install list
         for xml_features in xml_root.iter('features'):
@@ -603,23 +584,27 @@ class Installation(object):
                     for pkg in xml_feature.iter('pkgname'):
                         # If it's a specific gtk or qt package we have to check it
                         # against our chosen desktop.
-                        plib = pkg.attrib.get('lib')
-                        qt5 = pkg.attrib.get('qt5')
-                        if plib is None or (plib is not None and desktop in lib[plib]):
-                            if self.desktop == "plasma5" and pkg.text == "bluedevil4":
-                                continue
-                            elif self.desktop != "plasma5" and qt5 == "True":
-                                continue
-                            else:
-                                logging.debug("Selecting package %s for feature %s", pkg.text, feature)
-                                self.packages.append(pkg.text)
-                        if pkg.attrib.get('conflicts'):
-                            self.conflicts.append(pkg.attrib.get('conflicts'))
+
+                        lib = pkg.attrib.get('lib')
+                        if lib is not None and not self.desktop in desktop_info.LIBS[lib]:
+                            # Wrong lib (gtk/qt), so don't add it
+                            continue
+
+                        desktops = pkg.attrib.get('desktops')
+                        if desktops is not None and not self.desktop in desktops:
+                            # Wrong desktop, so don't add it
+                            continue
+
+                        logging.debug("Selecting package %s for feature %s", pkg.text, feature)
+                        self.packages.append(pkg.text)
+
+                        conflicts = pkg.attrib.get('conflicts')
+                        if conflicts:
+                            self.conflicts.append(conflicts)
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
             logging.debug("Add libreoffice language package")
-            pkg = ""
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
                 # There're some English variants available but not all of them.
@@ -628,12 +613,35 @@ class Installation(object):
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
                     pkg = "libreoffice-fresh-{0}".format(locale)
+                    self.packages.append(pkg)
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
                 pkg = "libreoffice-fresh-{0}".format(lang_code)
-            if pkg != "":
+                self.packages.append(pkg)
+
+        # Add firefox language package
+        if self.settings.get('feature_firefox'):
+            # Firefox is available in these languages
+            lang_codes = [
+                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
+                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
+                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
+                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
+                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
+                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt',
+                'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
+                'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
+                'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
+                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
+
+            logging.debug("Add libreoffice language package")
+            lang_name = self.settings.get("language_name").lower()
+            lang_code = self.settings.get('language_code')
+            lang_code = lang_code.replace('_', '-')
+            if lang_code in lang_codes:
+                pkg = "firefox-i18n-{0}".format(lang_code)
                 self.packages.append(pkg)
 
     def install_packages(self):
