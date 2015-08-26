@@ -450,9 +450,9 @@ class Installation(object):
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
                 if "production" == info.CNCHI_RELEASE_STAGE:
-                    logging.warning("Can't retrieve remote package list, using the local file instead. Error Msg: %s", url_error)
+                    logging.warning("%s. Can't retrieve remote package list, using the local file instead.", url_error)
                 else:
-                    logging.debug("Can't retrieve remote package list, using the local file instead. Error Msg: %s", url_error)
+                    logging.debug("%s. Can't retrieve remote package list, using the local file instead.", url_error)
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
                 logging.debug("Loading %s", packages_xml)
