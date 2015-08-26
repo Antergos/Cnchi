@@ -576,9 +576,20 @@ class Installation(object):
         for xml_features in xml_root.iter('features'):
             for xml_feature in xml_features.iter('feature'):
                 feature = xml_feature.attrib.get("name")
+
                 # If LEMP is selected, do not install lamp even if it's selected
                 if feature == "lamp" and self.settings.get("feature_lemp"):
                     continue
+
+                # If firefox feature is selected, remove it from conflicts list,
+                # as it takes preference over other web browsers (chromium)
+                if feature == "firefox" and self.settings.get("feature_firefox"):
+                    for pkg in xml_feature.iter('pkgname'):
+                        pkg_name = pkg.text
+                        if pkg_name in self.conflicts:
+                            self.conflicts.remove(pkg_name)
+
+                # Add packages from each feature
                 if self.settings.get("feature_" + feature):
                     logging.debug("Adding packages for '%s' feature.", feature)
                     for pkg in xml_feature.iter('pkgname'):
