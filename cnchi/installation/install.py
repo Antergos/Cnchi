@@ -177,21 +177,21 @@ class Installation(object):
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
-        else:
-            # If we're recovering from a failed/stoped install, there'll be
-            # some mounted directories. Try to unmount them first.
-            # We use unmount_all from auto_partition to do this.
-            auto_partition.unmount_all(DEST_DIR)
-
-        # Create the directory where we will mount our new root partition
-        if not os.path.exists(DEST_DIR):
-            os.mkdir(DEST_DIR)
 
         if self.method == 'alongside' or self.method == 'advanced':
+
+            if os.path.exists(DEST_DIR):
+                # If we're recovering from a failed/stoped install, there'll be
+                # some mounted directories. Try to unmount them first.
+                # We use unmount_all from auto_partition to do this.
+                # Not doing this in automatic mode as AutoPartition class mounts
+                # the root and boot devices itself.
+                auto_partition.unmount_all(DEST_DIR)
+
+
+            # NOTE: Advanced method formats root by default in advanced.py
+
             root_partition = self.mount_devices["/"]
-
-            # NOTE: Advanced method formats root by default in installation_advanced
-
             # if root_partition in self.fs_devices:
             #     root_fs = self.fs_devices[root_partition]
             # else:
@@ -208,7 +208,8 @@ class Installation(object):
                 swap_partition = ""
 
             # Mount root and boot partitions (only if it's needed)
-            # Not doing this in automatic mode as AutoPartition class mounts the root and boot devices itself.
+            # Not doing this in automatic mode as AutoPartition class mounts
+            # the root and boot devices itself.
             txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
             logging.debug(txt)
             subprocess.check_call(['mount', root_partition, DEST_DIR])

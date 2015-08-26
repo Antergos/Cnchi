@@ -256,8 +256,12 @@ def sgdisk_new(device, part_num, label, size, hex_code):
 
 def parted_set(device, number, flag, state):
     """ Helper function to call set parted command """
-    cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
-    subprocess.check_call(cmd)
+    try:
+        cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as err:
+        txt = "Error setting flag {0} on device {1}. Command {2} has failed: {3}".format(flag, device, err.cmd, err.output)
+        logging.error(txt)
 
 
 def parted_mkpart(device, ptype, start, end, filesystem=""):
@@ -448,16 +452,16 @@ class AutoPartition(object):
         if self.luks:
             if self.lvm:
                 # LUKS and LVM
-                devices['luks'] = devices['root']
+                devices['luks_root'] = devices['root']
                 devices['lvm'] = "/dev/mapper/cryptAntergos"
             else:
                 # LUKS and no LVM
-                devices['luks'] = devices['root']
+                devices['luks_root'] = devices['root']
                 devices['root'] = "/dev/mapper/cryptAntergos"
                 if self.home:
                     # In this case we'll have two LUKS devices, one for root
                     # and the other one for /home
-                    devices['luks2'] = devices['home']
+                    devices['luks_home'] = devices['home']
                     devices['home'] = "/dev/mapper/cryptAntergosHome"
         elif self.lvm:
             # No LUKS but using LVM
@@ -487,14 +491,14 @@ class AutoPartition(object):
             mount_devices['/home'] = devices['home']
 
         if self.luks:
-            mount_devices['/'] = devices['luks']
+            mount_devices['/'] = devices['luks_root']
             if self.home and not self.lvm:
-                mount_devices['/home'] = devices['luks2']
+                mount_devices['/home'] = devices['luks_home']
 
         mount_devices['swap'] = devices['swap']
 
         for mount_device in mount_devices:
-            logging.debug("%s will be mounted as %s", mount_devices[mount_device], mount_device)
+            logging.debug("%s assigned to be mounted in %s", mount_devices[mount_device], mount_device)
 
         return mount_devices
 
@@ -520,14 +524,14 @@ class AutoPartition(object):
             fs_devices[devices['home']] = "ext4"
 
         if self.luks:
-            fs_devices[devices['luks']] = "ext4"
+            fs_devices[devices['luks_root']] = "ext4"
             if self.home:
                 if self.lvm:
                     # luks, lvm, home
                     fs_devices[devices['home']] = "ext4"
                 else:
                     # luks, home
-                    fs_devices[devices['luks2']] = "ext4"
+                    fs_devices[devices['luks_home']] = "ext4"
 
         for device in fs_devices:
             logging.debug("Device %s will have a %s filesystem", device, fs_devices[device])
@@ -764,9 +768,9 @@ class AutoPartition(object):
         logging.debug("Swap: %s", devices['swap'])
 
         if self.luks:
-            setup_luks(devices['luks'], "cryptAntergos", self.luks_password, key_files[0])
+            setup_luks(devices['luks_root'], "cryptAntergos", self.luks_password, key_files[0])
             if self.home and not self.lvm:
-                setup_luks(devices['luks2'], "cryptAntergosHome", self.luks_password, key_files[1])
+                setup_luks(devices['luks_home'], "cryptAntergosHome", self.luks_password, key_files[1])
 
         if self.lvm:
             logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])

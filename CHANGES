@@ -1,3 +1,4 @@
+[2015-08-26 08:41:10 +0200]  If firefox is selected it takes precedence over chromium                   karasu      {eeb2bff}
 [2015-08-26 08:25:41 +0200]  Added firefox language package. Added "desktops" field to packages...      karasu      {e0af7a0}
 [2015-08-25 18:06:13 +0200]  Fix typo                                                                   karasu      {ae5a277}
 [2015-08-25 18:04:36 +0200]  Add game support feature                                                   karasu      {97d3d53}

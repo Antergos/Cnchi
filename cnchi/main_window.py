@@ -82,7 +82,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Check if we're already running
         tmp_running = "/tmp/.setup-running"
         if os.path.exists(tmp_running):
-            logging.error("File '%s' already exists.", tmp_running)
+            logging.info("File '%s' already exists.", tmp_running)
             msg = _("You cannot run two instances of this installer.\n\n"
                     "If you are sure that the installer is not already running\n"
                     "you can run this installer using the --force option\n"

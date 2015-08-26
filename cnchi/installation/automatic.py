@@ -332,7 +332,6 @@ class InstallationAutomatic(GtkBaseBox):
         self.mount_devices = auto.get_mount_devices()
         self.fs_devices = auto.get_fs_devices()
 
-
     def set_bootloader(self):
         checkbox = self.ui.get_object("bootloader_device_check")
         if not checkbox.get_active():

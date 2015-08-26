@@ -2146,7 +2146,7 @@ class InstallationAdvanced(GtkBaseBox):
                                 except Exception as label_error:
                                     # Catch all exceptions because not being able to label
                                     # a partition shouldn't be fatal
-                                    logging.error(label_error)
+                                    logging.warning(label_error)
 
     def finalize_changes(self, disk):
         try:
