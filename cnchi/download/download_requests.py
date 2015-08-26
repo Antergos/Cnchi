@@ -150,7 +150,7 @@ class Download(object):
                 for url in element['urls']:
                     if url is None:
                         # Something bad has happened
-                        logging.warning(
+                        logging.debug(
                             "Package %s v%s has an empty url for this mirror",
                             element['identity'],
                             element['version'])
@@ -173,7 +173,7 @@ class Download(object):
                             total_length = int(r.headers.get('content-length'))
                         except TypeError:
                             total_length = 0
-                            logging.warning(
+                            logging.debug(
                                 "Metalink for package %s has no size info",
                                 element['identity'])
 
@@ -204,7 +204,7 @@ class Download(object):
                             md5 = md5_hash.hexdigest()
 
                             if element['hash'] is not None and element['hash'] != md5:
-                                logging.warning(
+                                logging.debug(
                                     "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will try another mirror.",
                                     element['hash'],
                                     md5,

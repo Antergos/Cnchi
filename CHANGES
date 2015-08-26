@@ -1,3 +1,4 @@
+[2015-08-26 13:20:17 +0200]  Give full path to lspci                                                    karasu      {32233c7}
 [2015-08-26 13:16:52 +0200]  better control if lsusb does not work in hardware module                   karasu      {0fd004d}
 [2015-08-26 11:32:38 +0200]  Add ffmpegthumbnailer to all desktops                                      karasu      {b95426c}
 [2015-08-26 11:15:41 +0200]  Fixes #391                                                                 karasu      {fe000c4}
