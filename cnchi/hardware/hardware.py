@@ -277,7 +277,7 @@ class HardwareInstall(object):
         devices = []
 
         # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 class_id = line.split()[1].rstrip(":")
