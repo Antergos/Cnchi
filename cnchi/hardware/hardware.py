@@ -196,8 +196,13 @@ class HardwareInstall(object):
                 except Exception as err:
                     logging.error("Unexpected error importing %s: %s", package, err)
 
-        # Detect devices
-        devices = self.get_devices()
+        try:
+            # Detect devices
+            devices = self.get_devices()
+        except subprocess.CalledProcessError as process_error:
+            txt = "Unable scan devices, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.error(txt)
+            return
 
         logging.debug(
             "Cnchi will test %d drivers for %d hardware devices",
@@ -280,7 +285,7 @@ class HardwareInstall(object):
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
-        lines = subprocess.check_output(["lsusb"]).decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lsusb"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")

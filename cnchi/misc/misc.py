@@ -1043,7 +1043,7 @@ def is_partition_extended(partition):
     try:
         num = int(num)
     except ValueError as err:
-        logging.warning(err)
+        logging.error(err)
         return False
 
     if num > 4:

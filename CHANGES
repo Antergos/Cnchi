@@ -1,3 +1,4 @@
+[2015-08-26 11:32:38 +0200]  Add ffmpegthumbnailer to all desktops                                      karasu      {b95426c}
 [2015-08-26 11:15:41 +0200]  Fixes #391                                                                 karasu      {fe000c4}
 [2015-08-26 08:41:10 +0200]  If firefox is selected it takes precedence over chromium                   karasu      {eeb2bff}
 [2015-08-26 08:25:41 +0200]  Added firefox language package. Added "desktops" field to packages...      karasu      {e0af7a0}
