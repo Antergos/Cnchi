@@ -480,8 +480,8 @@
       <pkgname>splix</pkgname>
     </feature>
     <feature name="firefox">
-        <pkgname conflicts="chromium">firefox</pkgname>
-        <pkgname conflicts="chromium">flashplugin</pkgname>
+        <pkgname conflicts="chromium, chromium-pepper-flash">firefox</pkgname>
+        <pkgname conflicts="chromium, chromium-pepper-flash">flashplugin</pkgname>
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>

@@ -485,8 +485,14 @@ class Installation(object):
                         # If package is Network Manager, save the name to activate the correct service later
                         if pkg.attrib.get('nm'):
                             self.network_manager = pkg.attrib.get('name')
-                        if pkg.attrib.get('conflicts'):
-                            self.conflicts.append(pkg.attrib.get('conflicts'))
+                        conflicts = pkg.attrib.get('conflicts')
+                        if conflicts:
+                            if ',' in conflicts:
+                                conflicts = conflicts.split(',')
+                                for conflict in conflicts:
+                                    self.conflicts.append(conflict.rstrip())
+                            else:
+                                self.conflicts.append(conflicts)
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
@@ -568,7 +574,16 @@ class Installation(object):
 
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
+        self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
+
+        # Remove any package from self.packages that is already in self.conflicts
+        for pkg in self.packages:
+            if pkg in self.conflicts:
+                self.packages.remove(pkg)
+
         logging.debug(self.packages)
+        logging.debug(self.conflicts)
+
 
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
@@ -612,7 +627,13 @@ class Installation(object):
 
                         conflicts = pkg.attrib.get('conflicts')
                         if conflicts:
-                            self.conflicts.append(conflicts)
+                            if ',' in conflicts:
+                                conflicts = conflicts.split(',')
+                                for conflict in conflicts:
+                                    self.conflicts.append(conflict.rstrip())
+                            else:
+                                self.conflicts.append(conflicts)
+
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
