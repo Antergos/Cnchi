@@ -465,10 +465,12 @@ class Installation(object):
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
                 name = edition.attrib.get("name").lower()
+
                 # Add common packages to all desktops (including base)
                 if name == "common":
                     for pkg in edition.iter('pkgname'):
                         self.packages.append(pkg.text)
+
                 # Add common graphical packages
                 if name == "graphic" and self.desktop != "base":
                     for pkg in edition.iter('pkgname'):
@@ -478,6 +480,7 @@ class Installation(object):
                         plib = pkg.attrib.get('lib')
                         if plib is None or (plib is not None and self.desktop in lib[plib]):
                             self.packages.append(pkg.text)
+
                 # Add specific desktop packages
                 if name == self.desktop:
                     logging.debug("Adding %s desktop packages", self.desktop)
@@ -485,14 +488,9 @@ class Installation(object):
                         # If package is Network Manager, save the name to activate the correct service later
                         if pkg.attrib.get('nm'):
                             self.network_manager = pkg.attrib.get('name')
-                        conflicts = pkg.attrib.get('conflicts')
-                        if conflicts:
-                            if ',' in conflicts:
-                                conflicts = conflicts.split(',')
-                                for conflict in conflicts:
-                                    self.conflicts.append(conflict.rstrip())
-                            else:
-                                self.conflicts.append(conflicts)
+                        # Stores conflicts packages in self.conflicts
+                        self.get_conflicts(pkg.attrib.get('conflicts'))
+                        # Finally, adds package name to our packages list
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
@@ -543,11 +541,6 @@ class Installation(object):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
-        # Check for user desired features and add them to our installation
-        logging.debug("Check for user desired features and add them to our installation")
-        self.add_features_packages(xml_root)
-        logging.debug("All features needed packages have been added")
-
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code == "zh_TW" or lang_code == "zh_CN":
@@ -572,6 +565,11 @@ class Installation(object):
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
 
+        # Check for user desired features and add them to our installation
+        logging.debug("Check for user desired features and add them to our installation")
+        self.add_features_packages(xml_root)
+        logging.debug("All features needed packages have been added")
+
         # Remove duplicates
         self.packages = list(set(self.packages))
         self.conflicts = list(set(self.conflicts))
@@ -589,6 +587,17 @@ class Installation(object):
         logging.debug("Conflicts list:", self.conflicts)
 
 
+    def get_conflicts(self, conflicts):
+        if conflicts:
+            if ',' in conflicts:
+                conflicts = conflicts.split(',')
+                for conflict in conflicts:
+                    conflict = conflict.rstrip()
+                    if conflict not in self.conflicts:
+                        self.conflicts.append(conflict
+            else:
+                self.conflicts.append(conflict.rstrip())
+
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
 
@@ -600,14 +609,6 @@ class Installation(object):
                 # If LEMP is selected, do not install lamp even if it's selected
                 if feature == "lamp" and self.settings.get("feature_lemp"):
                     continue
-
-                # If firefox feature is selected, remove it from conflicts list,
-                # as it takes preference over other web browsers (chromium)
-                if feature == "firefox" and self.settings.get("feature_firefox"):
-                    for pkg in xml_feature.iter('pkgname'):
-                        pkg_name = pkg.text
-                        if pkg_name in self.conflicts:
-                            self.conflicts.remove(pkg_name)
 
                 # Add packages from each feature
                 if self.settings.get("feature_" + feature):
@@ -626,17 +627,11 @@ class Installation(object):
                             # Wrong desktop, so don't add it
                             continue
 
+                        self.get_conflicts(pkg.attrib.get('conflicts'))
+
                         logging.debug("Selecting package %s for feature %s", pkg.text, feature)
                         self.packages.append(pkg.text)
 
-                        conflicts = pkg.attrib.get('conflicts')
-                        if conflicts:
-                            if ',' in conflicts:
-                                conflicts = conflicts.split(',')
-                                for conflict in conflicts:
-                                    self.conflicts.append(conflict.rstrip())
-                            else:
-                                self.conflicts.append(conflicts)
 
 
         # Add libreoffice language package

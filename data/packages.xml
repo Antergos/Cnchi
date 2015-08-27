@@ -43,8 +43,8 @@
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
         <!--<pkgname>antergos-welcome</pkgname> -->
-        <pkgname conflicts="firefox">chromium</pkgname>
-        <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
+        <pkgname>chromium</pkgname>
+        <pkgname>chromium-pepper-flash</pkgname>
         <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
@@ -480,8 +480,8 @@
       <pkgname>splix</pkgname>
     </feature>
     <feature name="firefox">
-        <pkgname conflicts="chromium, chromium-pepper-flash">firefox</pkgname>
-        <pkgname conflicts="chromium, chromium-pepper-flash">flashplugin</pkgname>
+        <pkgname conflicts="chromium,chromium-pepper-flash">firefox</pkgname>
+        <pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>
