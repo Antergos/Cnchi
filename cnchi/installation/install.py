@@ -594,7 +594,7 @@ class Installation(object):
                 for conflict in conflicts:
                     conflict = conflict.rstrip()
                     if conflict not in self.conflicts:
-                        self.conflicts.append(conflict
+                        self.conflicts.append(conflict)
             else:
                 self.conflicts.append(conflict.rstrip())
 
