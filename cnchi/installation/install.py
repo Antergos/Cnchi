@@ -572,6 +572,10 @@ class Installation(object):
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
 
+        # Remove duplicates
+        self.packages = list(set(self.packages))
+        self.conflicts = list(set(self.conflicts))
+
         # Check the list of packages for empty strings and remove any that we find.
         self.packages = [pkg for pkg in self.packages if pkg != '']
         self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
@@ -582,7 +586,7 @@ class Installation(object):
                 self.packages.remove(pkg)
 
         logging.debug(self.packages)
-        logging.debug(self.conflicts)
+        logging.debug("Conflicts list:", self.conflicts)
 
 
     def add_features_packages(self, xml_root):
