@@ -633,7 +633,6 @@ class Installation(object):
                         self.packages.append(pkg.text)
 
 
-
         # Add libreoffice language package
         if self.settings.get('feature_office'):
             logging.debug("Add libreoffice language package")

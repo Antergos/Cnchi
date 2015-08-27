@@ -1,3 +1,4 @@
+[2015-08-27 13:58:07 +0200]  chromium-pepper-flash is installed no matter what ¿?                       karasu      {65bfc07}
 [2015-08-27 13:33:07 +0200]  Remove duplicates in conflicts list                                        karasu      {bbee8b6}
 [2015-08-27 12:54:08 +0200]  Trying to fix installation of chromium-pepper-flash                        karasu      {d35da27}
 [2015-08-26 19:21:46 +0200]  Fix warning message (imho it looks better this way)                        karasu      {eeeaab2}
