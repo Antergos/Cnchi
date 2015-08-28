@@ -419,6 +419,8 @@
           <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
+          <pkgname>dolphin</pkgname>
+          <pkgname>dolphin-plugins</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
           <pkgname>grub2-editor</pkgname>
           <pkgname>k3b</pkgname>
@@ -444,7 +446,6 @@
           <pkgname>kwrited</pkgname>
           <pkgname>nm-connection-editor</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
-          <pkgname>pcmanfm-qt</pkgname> <!--Change to Dolphin on August 28-->
           <pkgname>plasma</pkgname><!--plasma group-->
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
           <pkgname>transmission-qt</pkgname>
