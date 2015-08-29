@@ -1073,6 +1073,16 @@ def get_partitions():
     return partitions_list
 
 
+def check_pid(pid):
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    else:
+        return True
+
+
 class InstallError(Exception):
     """ Exception class called upon an installer error """
 

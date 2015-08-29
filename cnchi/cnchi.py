@@ -46,6 +46,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
 import misc.misc as misc
+import show_message as show
 import info
 import updater
 
@@ -108,9 +109,9 @@ class ContextFilter(Singleton):
             r = requests.get(url)
             install_info = json.loads(r.json())
             #logging.debug(install_info)
-        except ValueError as err:
+        except (OSError, ValueError) as err:
             #logging.warning(err)
-            pass
+            print(err)
 
         return install_info
 
@@ -123,6 +124,7 @@ class CnchiApp(Gtk.Application):
         Gtk.Application.__init__(self,
                                  application_id="com.antergos.cnchi",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.TMP_RUNNING = "/tmp/.setup-running"
 
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
@@ -133,9 +135,29 @@ class CnchiApp(Gtk.Application):
             logging.error(msg)
             sys.exit(1)
 
+        # Check if we have administrative privileges
+        if os.getuid() != 0:
+            msg = _('This installer must be run with administrative privileges, '
+                    'and cannot continue without them.')
+            show.error(None, msg)
+            return
+
+        # Check if we're already running
+        if self.already_running():
+            msg = _("You cannot run two instances of this installer.\n\n"
+                    "If you are sure that the installer is not already running\n"
+                    "you can run this installer using the --force option\n"
+                    "or you can manually delete the offending file.\n\n"
+                    "Offending file: '{0}'").format(self.TMP_RUNNING)
+            show.error(None, msg)
+            return
+
         window = main_window.MainWindow(self, cmd_line)
         self.add_window(window)
         window.show()
+
+        with open(self.TMP_RUNNING, "w") as tmp_file:
+            tmp_file.write("Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid()))
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()
@@ -150,6 +172,32 @@ class CnchiApp(Gtk.Application):
         # menu.append("About", "win.about")
         # menu.append("Quit", "app.quit")
         # self.set_app_menu(menu)
+
+    def already_running(self):
+        """ Check if we're already running """
+        if os.path.exists(self.TMP_RUNNING):
+            logging.debug("File %s already exists.", self.TMP_RUNNING)
+            with open(self.TMP_RUNNING) as setup:
+                lines = setup.readlines()
+            if len(lines) >= 2:
+                try:
+                    pid = int(lines[1].strip('\n'))
+                except ValueError as err:
+                    logging.debug(err)
+                    logging.debug("Cannot read PID value.")
+                    return True
+            else:
+                logging.debug("Cannot read PID value.")
+                return True
+
+            if misc.check_pid(pid):
+                logging.info("Cnchi with pid '%d' already running.", pid)
+                return True
+            else:
+                # Cnchi with pid 'pid' is no longer running, we can safely
+                # remove the offending file and continue.
+                os.remove(self.TMP_RUNNING)
+        return False
 
 
 def setup_logging():

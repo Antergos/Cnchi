@@ -72,24 +72,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.MAIN_WINDOW_WIDTH = 875
         self.MAIN_WINDOW_HEIGHT = 550
-        # Check if we have administrative privileges
-        if os.getuid() != 0:
-            msg = _('This installer must be run with administrative privileges, '
-                    'and cannot continue without them.')
-            show.error(self, msg)
-            sys.exit(1)
-
-        # Check if we're already running
-        tmp_running = "/tmp/.setup-running"
-        if os.path.exists(tmp_running):
-            logging.info("File '%s' already exists.", tmp_running)
-            msg = _("You cannot run two instances of this installer.\n\n"
-                    "If you are sure that the installer is not already running\n"
-                    "you can run this installer using the --force option\n"
-                    "or you can manually delete the offending file.\n\n"
-                    "Offending file: '{0}'").format(tmp_running)
-            show.error(self, msg)
-            sys.exit(1)
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -277,9 +259,6 @@ class MainWindow(Gtk.ApplicationWindow):
         if not os.path.exists('/home/antergos/.config/openbox'):
             # Hide progress bar
             self.progressbar.hide()
-
-        with open(tmp_running, "w") as tmp_file:
-            tmp_file.write("Cnchi {0}\n".format(1234))
 
         misc.gtk_refresh()
 
