@@ -329,6 +329,7 @@
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
+        <pkgname>mousepad</pkgname>
         <pkgname>obconf</pkgname>
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
