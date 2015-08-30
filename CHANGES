@@ -1,3 +1,4 @@
+[2015-08-30 03:34:08 +0200]  Fix logging in select_packages                                             karasu      {7964c4f}
 [2015-08-30 03:23:06 +0200]  Need root permisions to update pacman databases                            karasu      {19920a7}
 [2015-08-30 03:19:37 +0200]  Fix refresh_pacman_databases                                               karasu      {dcb8028}
 [2015-08-30 03:12:54 +0200]  BROKEN version. I'm in the middle of something... (get package list..      karasu      {6b873f1}
