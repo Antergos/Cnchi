@@ -1,4 +1,19 @@
-[2015-08-23 05:21:36 -0500]  fix packages.xml url. add release_stage global variable. (cherry-pi..  Dustin Falgout  {b54a994}
+[2015-08-30 13:44:29 +0200]  Merge pull request #395 from Wyn10/patch-3                                 karasu      {29afca5}
+[2015-08-28 23:13:57 -0400]  Update packages.xml                                                          Wyn       {3b4943f}
+[2015-08-29 00:13:33 +0200]  Merge pull request #392 from Wyn10/patch-6                                 karasu      {a012c26}
+[2015-08-28 14:21:21 -0400]  Update packages.xml                                                          Wyn       {a4f0363}
+[2015-08-24 20:44:04 -0500]  Merge pull request #388 from Wyn10/patch-5                             Dustin Falgout  {bdcf21a}
+[2015-08-24 19:20:09 -0400]  Update packages.xml                                                          Wyn       {e947b08}
+[2015-08-24 18:29:48 -0400]  Update packages.xml                                                          Wyn       {ead1790}
+[2015-08-25 00:24:22 +0200]  Merge pull request #383 from Wyn10/patch-4                                 karasu      {efad87a}
+[2015-08-24 13:52:43 -0400]  Update packages.xml                                                          Wyn       {5059309}
+[2015-08-23 18:18:52 -0500]  Merge pull request #381 from Wyn10/patch-2                             Dustin Falgout  {83c46f5}
+[2015-08-23 18:18:21 -0500]  Merge pull request #382 from Wyn10/patch-3                             Dustin Falgout  {0f71a0c}
+[2015-08-23 16:43:24 -0400]  Update packages.xml                                                          Wyn       {6dd181e}
+[2015-08-23 16:42:13 -0400]  Update packages.xml                                                          Wyn       {6e3e0d2}
+[2015-08-23 16:36:01 -0400]  Update packages.xml                                                          Wyn       {07d71af}
+[2015-08-23 05:29:59 -0500]  fix erroneous version bumps                                            Dustin Falgout  {d8e9dbb}
+[2015-08-23 05:21:36 -0500]  fix packages.xml url. add release_stage global variable. (cherry-pi..  Dustin Falgout  {32f91c7}
 [2015-08-22 12:10:32 -0500]  fix bug I introduced in the last commit :grimacing: (cherry picked ..  Dustin Falgout  {9d8bf98}
 [2015-08-22 09:04:03 -0500]  change the field names so its easier to filter in bugsnag dashboard..  Dustin Falgout  {c92eb3d}
 [2015-08-22 02:29:08 -0500]  oops :grimacing:                                                       Dustin Falgout  {dd57eff}
