@@ -82,13 +82,14 @@ def write_file(filecontents, filename):
 class Installation(object):
     """ Installation process thread class """
 
-    def __init__(self, settings, callback_queue, packages, mount_devices,
-                 fs_devices, ssd=None, blvm=False):
+    def __init__(self, settings, callback_queue, packages, metalinks,
+                 mount_devices, fs_devices, ssd=None, blvm=False):
         """ Initialize installation class """
 
         self.settings = settings
         self.callback_queue = callback_queue
         self.packages = packages
+        self.metalinks = metalinks
 
         self.method = self.settings.get('partition_mode')
         msg = _("Installing using the '{0}' method").format(self.method)
@@ -107,12 +108,9 @@ class Installation(object):
 
         self.mount_devices = mount_devices
 
-        # Set defaults
         self.desktop_manager = 'lightdm'
+        # Set defaults
         self.network_manager = 'NetworkManager'
-
-        # Packages to be removed
-        self.conflicts = []
 
         self.fs_devices = fs_devices
 
@@ -328,7 +326,10 @@ class Installation(object):
             cache_dir,
             self.callback_queue,
             self.settings)
-        download_packages.start()
+        # Metalinks have already been calculated before,
+        # When downloadpackages class has been called in process.py to test
+        # that Cnchi was able to create it before partitioning/formatting
+        download_packages.start(self.metalinks)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
@@ -406,14 +407,9 @@ class Installation(object):
 
     def install_packages(self):
         """ Start pacman installation of packages """
+
         logging.debug("Installing packages...")
-
-        pacman_options = {}
-
-        result = self.pacman.install(
-            pkgs=self.packages,
-            conflicts=self.conflicts,
-            options=pacman_options)
+        result = self.pacman.install(pkgs=self.packages)
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")

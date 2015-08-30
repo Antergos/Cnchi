@@ -2166,7 +2166,7 @@ class InstallationAdvanced(GtkBaseBox):
             msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
             show.error(self.get_toplevel(), msg)
 
-    def run_install(self, packages):
+    def run_install(self, packages, metalinks):
         """ Start installation process """
 
         # Fill fs_devices and mount_devices dicts that are going to be used by the installation
@@ -2211,6 +2211,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.settings,
                 self.callback_queue,
                 packages,
+                metalinks,
                 self.mount_devices,
                 self.fs_devices,
                 self.ssd,

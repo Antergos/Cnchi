@@ -95,15 +95,20 @@ class DownloadPackages(object):
         self.settings = settings
         self.download_module = download_module
         self.package_names = package_names
-        self.downloads_list = None
 
-    def start(self):
+        # List of packages' metalinks
+        self.metalinks = None
+
+    def start(self, metalinks=None):
+        if metalinks:
+            self.metalinks = metalinks
+
         # Create downloads list from package list
-        if self.downloads_list is None:
-            self.create_downloads_list()
+        if self.metalinks is None:
+            self.create_metalinks_list()
 
-        if self.downloads_list is None:
-            # Still none? Error
+        if self.metalinks is None:
+            # Still None? Error!
             txt = _("Can't create download package list. Check log output for details")
             raise InstallError(txt)
 
@@ -127,7 +132,7 @@ class DownloadPackages(object):
                 self.cache_dir,
                 self.callback_queue)
 
-        if not download.start(self.downloads_list):
+        if not download.start(self.metalinks):
             self.settings.set('failed_download', True)
             # New: When we can't download (even one package), we stop right here
             # Pros: The user will be prompted immediately when a package fails
@@ -136,18 +141,15 @@ class DownloadPackages(object):
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise InstallError(txt)
 
-    def create_downloads_list(self, package_names=None):
-        """ Creates a downloads list from the package list """
-
-        if not package_names:
-            package_names = self.package_names
+    def create_metalinks_list(self):
+        """ Creates a downloads list (metalinks) from the package list """
 
         self.queue_event('percent', '0')
         self.queue_event('info', _('Creating the list of packages to download...'))
         processed_packages = 0
-        total_packages = len(package_names)
+        total_packages = len(self.package_names)
 
-        self.downloads_list = {}
+        self.metalinks = {}
 
         try:
             pacman = pac.Pac(
@@ -157,11 +159,11 @@ class DownloadPackages(object):
                 return None
         except Exception as err:
             logging.error("Can't initialize pyalpm: %s", err)
-            self.downloads_list = None
+            self.metalinks = None
             return
 
         try:
-            for package_name in package_names:
+            for package_name in self.package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink is None:
                     logging.error("Error creating metalink for package %s. Installation will stop", package_name)
@@ -173,8 +175,8 @@ class DownloadPackages(object):
 
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
-                    if key not in self.downloads_list:
-                        self.downloads_list[key] = metalink_info[key]
+                    if key not in self.metalinks:
+                        self.metalinks[key] = metalink_info[key]
 
                 # Show progress to the user
                 processed_packages += 1
@@ -182,7 +184,7 @@ class DownloadPackages(object):
                 self.queue_event('percent', str(percent))
         except Exception as err:
             logging.error("Can't create download set: %s", err)
-            self.downloads_list = None
+            self.metalinks = None
             return
 
         try:
@@ -190,7 +192,7 @@ class DownloadPackages(object):
             del pacman
         except Exception as err:
             logging.error("Can't release pyalpm: %s", err)
-            self.downloads_list = None
+            self.metalinks = None
             return
 
         # Overwrite last event (to clean up the last message)

@@ -51,29 +51,34 @@ class Process(multiprocessing.Process):
         self.callback_queue = callback_queue
         self.install_screen = install_screen
 
-    def create_downloads_list(self, package_list):
-        # download_packages = download.DownloadPackages(package_list)
-        # download_packages.create_downloads_list()
-        pass
-
     def run(self):
-        """ Calls run_format and run_install and takes care of exceptions """
+        """ Calculates download package list and then calls run_format and
+        run_install. Takes care of the exceptions, too. """
 
         try:
             # Before formatting, let's try to calculate package download list
             # this way, if something fails (a missing package, mostly) we have
             # not formatted anything yet.
-            # TODO: package list is created in install.py. We need to break that
-            # file so select_packages() can be run BEFORE formatting (it could be
-            # run here in process.py)
-            # self.create_downloads_list()
 
             pkg = pack.SelectPackages(self.settings, self.callback_queue)
             pkg.create_package_list()
 
+            if len(pkg.packages) == 0:
+                txt = _("Cannot create package list. Check log output for details.")
+                raise misc.InstallError(txt)
+
+            down = download.DownloadPackages(pkg.packages)
+            down.create_metalinks_list()
+
+            if len(down.metalinks) == 0:
+                txt = _("Cannot create download package list. Check log output for details.")
+                raise misc.InstallError(txt)
+
+            # try except if pkg.packages is empty or down.metalinks is empty
+
             with misc.raised_privileges():
                 self.install_screen.run_format()
-                self.install_screen.run_install(pkg.packages)
+                self.install_screen.run_install(pkg.packages, down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(process_error.cmd, process_error.output)
             logging.error(txt)

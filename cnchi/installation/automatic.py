@@ -345,7 +345,7 @@ class InstallationAutomatic(GtkBaseBox):
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
-    def run_install(self, packages):
+    def run_install(self, packages, metalinks):
         txt = _("Cnchi will install Antergos on device %s")
         logging.info(txt, self.auto_device)
 
@@ -358,6 +358,7 @@ class InstallationAutomatic(GtkBaseBox):
                 self.settings,
                 self.callback_queue,
                 packages,
+                metalinks,
                 self.mount_devices,
                 self.fs_devices,
                 ssd)

@@ -138,9 +138,18 @@ class SelectPackages(object):
 
         # Refresh pacman databases
         if not pacman.refresh():
+            logging.error("Can't refresh pacman databases.")
             txt = _("Can't refresh pacman databases.")
-            logging.error(txt)
             raise InstallError(txt)
+
+        try:
+            pacman.release()
+            del pacman
+        except Exception as err:
+            logging.error("Can't release pyalpm: %s", err)
+            txt = _("Can't release pyalpm: {0}").format(err)
+            raise InstallError()
+
 
     def select_packages(self):
         """ Get package list from the Internet """
