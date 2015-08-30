@@ -48,7 +48,7 @@ import download.download_urllib as download_urllib
 import download.download_aria2 as download_aria2
 import download.download_requests as download_requests
 
-from misc.misc import InstallError
+import misc.misc as misc
 
 
 class DownloadPackages(object):
@@ -111,7 +111,7 @@ class DownloadPackages(object):
         if self.metalinks is None:
             # Still None? Error!
             txt = _("Can't create download package list. Check log output for details")
-            raise InstallError(txt)
+            raise misc.InstallError(txt)
 
         logging.debug("Using %s module to download packages", self.download_module)
 
@@ -140,7 +140,7 @@ class DownloadPackages(object):
             # to download
             # Cons: We won't let alpm to try to download the package itself
             txt = _("Can't download needed packages. Cnchi can't continue.")
-            raise InstallError(txt)
+            raise misc.InstallError(txt)
 
     @misc.raise_privileges
     def create_metalinks_list(self):
@@ -170,7 +170,7 @@ class DownloadPackages(object):
                 if metalink is None:
                     logging.error("Error creating metalink for package %s. Installation will stop", package_name)
                     txt = _("Error creating metalink for package {0}. Installation will stop").format(package_name)
-                    raise InstallError(txt)
+                    raise misc.InstallError(txt)
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
