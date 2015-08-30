@@ -144,6 +144,7 @@ class SelectPackages(object):
             self.packages.remove("v86d")
             logging.debug("Removed 'v86d' package from list")
 
+    @misc.raise_privileges
     def refresh_pacman_databases(self):
         # Init pyalpm
         try:
