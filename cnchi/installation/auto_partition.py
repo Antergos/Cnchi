@@ -180,9 +180,11 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
-            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(luks_device, err.cmd, err.output)
+            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(
+                luks_device, err.cmd, err.output)
             logging.error(txt)
-            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(luks_device, err.cmd, err.output)
+            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(
+                luks_device, err.cmd, err.output)
             raise InstallError(txt)
 
     else:
@@ -202,9 +204,11 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             proc.communicate(input=luks_pass_bytes)
         except subprocess.CalledProcessError as err:
-            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(luks_device, err.cmd, err.output)
+            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(
+                luks_device, err.cmd, err.output)
             logging.error(txt)
-            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(luks_device, err.cmd, err.output)
+            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(
+                luks_device, err.cmd, err.output)
             raise InstallError(txt)
 
 
@@ -212,7 +216,8 @@ def wipefs(device):
     try:
         subprocess.check_call(["wipefs", "-a", device])
     except subprocess.CalledProcessError as err:
-        logging.warning("Cannot wipe the filesystem of device %s. Command %s has failed: %s", device, err.cmd, err.output)
+        logging.warning("Cannot wipe the filesystem of device %s. Command %s has failed: %s",
+                        device, err.cmd, err.output)
 
 
 def dd(input_device, output_device, bs=512, count=2048):
@@ -778,17 +783,21 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(["pvcreate", "-f", "-y", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                txt = "Error creating LVM physical volume in device {0}. Command {1} failed: {2}".format(devices['lvm'], err.cmd, err.output)
+                txt = "Error creating LVM physical volume in device {0}. Command {1} failed: {2}".format(
+                    devices['lvm'], err.cmd, err.output)
                 logging.error(txt)
-                txt = _("Error creating LVM physical volume in device {0}. Command {1} failed: {2}").format(devices['lvm'], err.cmd, err.output)
+                txt = _("Error creating LVM physical volume in device {0}. Command {1} failed: {2}").format(
+                    devices['lvm'], err.cmd, err.output)
                 raise InstallError(txt)
 
             try:
                 subprocess.check_call(["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']])
             except subprocess.CalledProcessError as err:
-                txt = "Error creating LVM volume group in device {0}. Command {1} failed: {2}".format(devices['lvm'], err.cmd, err.Output)
+                txt = "Error creating LVM volume group in device {0}. Command {1} failed: {2}".format(
+                    devices['lvm'], err.cmd, err.Output)
                 logging.error(txt)
-                txt = _("Error creating LVM volume group in device {0}. Command {1} failed: {2}").format(devices['lvm'], err.cmd, err.Output)
+                txt = _("Error creating LVM volume group in device {0}. Command {1} failed: {2}").format(
+                    devices['lvm'], err.cmd, err.Output)
                 raise InstallError(txt)
 
             # Fix issue 180

@@ -356,6 +356,7 @@ def finalize_changes(diskob):
         logging.error(str(io_error))
         raise IOError(str(io_error))
 
+
 def order_partitions(partdic):
     """ Pass the result of get_partitions here and it will return list
         of partitions in order as they are on disk """

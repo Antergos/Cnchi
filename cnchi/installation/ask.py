@@ -235,7 +235,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("automatic_description")
         txt = _("Warning: This will erase ALL data on your disk.")
-        #txt = description_style.format(txt)
+        # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("automatic_desc")
         label.set_hexpand(False)
@@ -252,7 +252,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the next step.")
-        #txt = description_style.format(txt)
+        # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("enc_label")
         label.set_hexpand(False)
@@ -269,7 +269,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
-        #txt = description_style.format(txt)
+        # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("lvm_label")
         label.set_hexpand(False)
@@ -286,7 +286,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("home_label")
         txt = _("This will setup you /home directory in a different partition or volume.")
-        #txt = description_style.format(txt)
+        # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
         label.set_hexpand(False)
@@ -311,7 +311,7 @@ class InstallationAsk(GtkBaseBox):
         intro_txt = _("How would you like to proceed?")
 
         intro_label = self.ui.get_object("introduction")
-        #intro_txt = bold_style.format(intro_txt)
+        # intro_txt = bold_style.format(intro_txt)
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
         intro_label.set_hexpand(False)
@@ -325,7 +325,7 @@ class InstallationAsk(GtkBaseBox):
 
         label = self.ui.get_object("advanced_description")
         txt = _("Edit partition table and choose mount points.")
-        #txt = description_style.format(txt)
+        # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("adv_desc_label")
         label.set_hexpand(False)

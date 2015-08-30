@@ -66,6 +66,7 @@ class Download(object):
 
         downloaded = 0
         total_downloads = len(downloads)
+        download_error = False
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
@@ -196,8 +197,8 @@ class Download(object):
 
                                 bps = (completed_length // (time.clock() - start)) / 1024
                                 if bps > 1024:
-                                    Mbps = bps / 1024
-                                    progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
+                                    mbps = bps / 1024
+                                    progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), mbps)
                                 else:
                                     progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
                                 self.queue_event('progress_bar_show_text', progress_text)

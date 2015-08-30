@@ -37,7 +37,7 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "Catalyst_legacy"
+CLASS_NAME = "CatalystLegacy"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x1002"
 PRIORITY = 0
@@ -98,7 +98,7 @@ DEVICES = [
     "0x6788", "0x678A", "0x68F2", "0x95CD", "0x95CE", "0x95CF"]
 
 
-class Catalyst_legacy(Hardware):
+class CatalystLegacy(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 

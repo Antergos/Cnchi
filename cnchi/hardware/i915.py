@@ -36,13 +36,13 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "i915"
+CLASS_NAME = "Intel915"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x8086"
 DEVICES = []
 
 
-class i915(Hardware):
+class Intel915(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 

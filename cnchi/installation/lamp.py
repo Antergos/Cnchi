@@ -165,9 +165,9 @@ def php_setup():
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf
     # Not necessary, a2ensite does this for us
-    #source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
-    #link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
-    #os.symlink(source, link_name)
+    # source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
+    # link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
+    # os.symlink(source, link_name)
 
 
 if __name__ == '__main__':

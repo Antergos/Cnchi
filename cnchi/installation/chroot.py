@@ -110,7 +110,8 @@ def umount_special_dirs(dest_dir):
             try:
                 subprocess.check_call(["umount", "-l", mountpoint])
             except subprocess.CalledProcessError as process_error:
-                txt = "Unable to unmount {0}, command {1} failed: {2}".format(mountpoint, process_error.cmd, process_error.output)
+                txt = "Unable to unmount {0}, command {1} failed: {2}".format(
+                    mountpoint, process_error.cmd, process_error.output)
                 logging.warning(txt)
 
     _special_dirs_mounted = False
@@ -138,7 +139,7 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
             proc.kill()
             proc.communicate()
         logging.error("Timeout running the command %s", timeout_error.cmd)
-    except subprocess.CalledProcessError as err:
-        logging.error("Error running command %s: %s", err.cmd, err.output)
-    except OSError as err:
-        logging.error("Error running command %s: %s", " ".join(full_cmd), err)
+    except subprocess.CalledProcessError as process_error:
+        logging.error("Error running command %s: %s", process_error.cmd, process_error.output)
+    except OSError as os_error:
+        logging.error("Error running command %s: %s", " ".join(full_cmd), os_error)

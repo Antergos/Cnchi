@@ -4,7 +4,7 @@
 #  rank_mirrors.py
 #
 #  Copyright © 2013-2015 Antergos
-#  Copyright © 2012, 2013  Xyne
+#  Copyright © 2012, 2013 Xyne
 #
 #  This file is part of Cnchi.
 #
@@ -155,7 +155,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     with urllib.request.urlopen(req, None, 5) as f:
                         size = len(f.read())
                         dt = time.time() - t0
-                        rate = size / (dt)
+                        rate = size / dt
                 except (OSError, urllib.error.HTTPError, http.client.HTTPException):
                     pass
                 q_out.put((url, rate, dt))

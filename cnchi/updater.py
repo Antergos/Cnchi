@@ -61,7 +61,7 @@ def get_md5_from_text(text):
     return md5.hexdigest()
 
 
-class Updater():
+class Updater(object):
     def __init__(self, local_cnchi_version, force_update):
         self.remote_version = ""
         self.local_cnchi_version = local_cnchi_version

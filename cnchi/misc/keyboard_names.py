@@ -74,7 +74,7 @@ class Layout(GObject.GObject):
         self.variants = OrderedDict(sorted(self.variants.items(), key=lambda t: str(t[1])))
 
 
-class KeyboardNames():
+class KeyboardNames(object):
     def __init__(self, filename):
         self.layouts = None
         self._filename = filename
@@ -96,6 +96,9 @@ class KeyboardNames():
 
         for model in xml_root.iter('model'):
             for config_item in model.iter('configItem'):
+                model_name = ""
+                model_description = ""
+                model_vendor = ""
                 for item in config_item:
                     if item.tag == "name":
                         model_name = item.text

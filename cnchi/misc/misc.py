@@ -844,6 +844,7 @@ def is_wireless_enabled():
 
 
 def get_nm_state():
+    state = False
     try:
         bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')

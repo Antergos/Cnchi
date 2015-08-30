@@ -36,7 +36,7 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "Nvidia_304xx"
+CLASS_NAME = "Nvidia304xx"
 CLASS_ID = "0x0300"
 VENDOR_ID = "0x10de"
 PRIORITY = 0
@@ -129,7 +129,7 @@ DEVICES = [
     "0x124d", "0x1251"]
 
 
-class Nvidia_304xx(Hardware):
+class Nvidia304xx(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 

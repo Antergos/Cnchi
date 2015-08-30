@@ -1719,10 +1719,11 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         # Get check part labels
-        label_names = {"/" : "root_part",
-            "/boot" : "boot_part",
-            "/boot/efi" : "boot_efi_part",
-            "swap" : "swap_part"}
+        label_names = {
+            "/": "root_part",
+            "/boot": "boot_part",
+            "/boot/efi": "boot_efi_part",
+            "swap" :"swap_part"}
 
         part_label = {}
         for check_part in check_parts:
@@ -2016,8 +2017,8 @@ class InstallationAdvanced(GtkBaseBox):
         logging.debug("Creating partitions and their filesystems...")
 
         # Sometimes a swap partition can still be active at this point
+        cmd = ["swapon", "--show=NAME", "--noheadings"]
         try:
-            cmd = ["swapon", "--show=NAME", "--noheadings"]
             swaps = subprocess.check_output(cmd).decode().split("\n")
             for name in filter(None, swaps):
                 if "/dev/zram" not in name:
@@ -2099,7 +2100,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if uid in self.luks_options:
                         (use_luks, vol_name, password) = self.luks_options[uid]
                         if use_luks and len(vol_name) > 0 and len(password) > 0:
-                            txt = "Encrypting {0}, assigning volume name {1} and formatting it...".format(partition_path, vol_name)
+                            txt = "Encrypting {0}, assigning volume name {1} and formatting it...".format(
+                                partition_path, vol_name)
                             logging.info(txt)
                             if not self.testing:
                                 with misc.raised_privileges():
@@ -2113,9 +2115,11 @@ class InstallationAdvanced(GtkBaseBox):
                                 if not error:
                                     logging.info(msg)
                                 else:
-                                    txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}".format(luks_device, lbl, fisy, msg)
+                                    txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}".format(
+                                        luks_device, lbl, fisy, msg)
                                     logging.error(txt)
-                                    txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(luks_device, lbl, fisy, msg)
+                                    txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(
+                                        luks_device, lbl, fisy, msg)
                                     show.error(self.get_toplevel(), txt)
 
                                 # Do not format (already done)
@@ -2136,9 +2140,11 @@ class InstallationAdvanced(GtkBaseBox):
                             if not error:
                                 logging.info(msg)
                             else:
-                                txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}".format(partition_path, lbl, fisy, msg)
+                                txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}".format(
+                                    partition_path, lbl, fisy, msg)
                                 logging.error(txt)
-                                txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(partition_path, lbl, fisy, msg)
+                                txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(
+                                    partition_path, lbl, fisy, msg)
                                 show.error(self.get_toplevel(), txt)
                     elif partition_path in self.orig_label_dic:
                         if self.orig_label_dic[partition_path] != lbl:

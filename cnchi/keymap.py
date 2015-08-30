@@ -130,8 +130,8 @@ class Keymap(GtkBaseBox):
                 logging.debug(
                     _("Can't match a keymap for country code '%s'"),
                     country_code)
-                self.keyboard_layout = { 'code': None, 'description': None }
-                self.keyboard_variant  = { 'code': None, 'description': None }
+                self.keyboard_layout = {'code': None, 'description': None}
+                self.keyboard_variant = {'code': None, 'description': None}
 
         self.prepare_called = True
         self.show_all()
@@ -215,7 +215,7 @@ class Keymap(GtkBaseBox):
 
         return layout, variant
 
-    def on_keymap_row_activated(self, treeview, iter, path):
+    def on_keymap_row_activated(self, treeview, iterator, path):
         """ Set selected keymap """
         self.forward_button.set_sensitive(True)
         self.store_values()
@@ -224,8 +224,8 @@ class Keymap(GtkBaseBox):
     def store_values(self):
         """ Store selected values """
 
-        self.keyboard_layout  = { 'code': None, 'description': None }
-        self.keyboard_variant  = { 'code': None, 'description': None }
+        self.keyboard_layout = {'code': None, 'description': None}
+        self.keyboard_variant = {'code': None, 'description': None}
 
         # Read selected value from treeview
         (layout_description, variant_description) = self.get_selected_in_treeview(self.keymap_treeview)

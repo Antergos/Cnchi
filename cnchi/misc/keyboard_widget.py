@@ -417,11 +417,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            #pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
-            #cfile = pipe.communicate()[0].decode("utf-8").split('\n')
+            # pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
+            # cfile = pipe.communicate()[0].decode("utf-8").split('\n')
             cfile = subprocess.check_output(cmd).decode().split('\n')
         except subprocess.CalledProcessError as process_error:
-            logging.warning(process_error)
+            logging.error(process_error)
+            return
 
         # Clear current codes
         del self.codes[:]

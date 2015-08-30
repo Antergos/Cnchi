@@ -24,19 +24,20 @@
 
 
 class Action(object):
-    def __init__(self, action_type, path_or_info, relabel=False, format=False, mount_point="", encrypt=False):
+    def __init__(self, action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
         """ Init fields """
 
         # action_type can be "create", "modify" , "delete", "info"
         self.action_type = action_type
         self.path = path_or_info
         self.relabel = relabel
-        self.format = format
+        self.format = fs_format
         self.mount_point = mount_point
         self.encrypt = encrypt
         self.info_txt = path_or_info
 
     def __str__(self):
+        txt = ""
         if self.action_type == "delete":
             txt = _("Device {0} will be deleted!").format(self.path)
         elif self.action_type == "info":

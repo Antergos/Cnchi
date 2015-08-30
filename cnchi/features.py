@@ -233,7 +233,8 @@ class Features(GtkBaseBox):
                     row = self.listbox_rows['bluetooth']
                     row[COL_SWITCH].set_active(True)
             except subprocess.CalledProcessError as process_error:
-                logging.warning("Error checking bluetooth presence. Command %s failed: %s", process_error.cmd, process_error.output)
+                logging.warning("Error checking bluetooth presence. Command %s failed: %s",
+                                process_error.cmd, process_error.output)
 
         if 'cups' in self.features:
             row = self.listbox_rows['cups']

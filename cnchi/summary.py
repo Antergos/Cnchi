@@ -161,7 +161,6 @@ class Summary(GtkBaseBox):
             label = self.ui.get_object("features_label")
             label.hide()
 
-
     def store_values(self):
         response = show.question(
             self.get_toplevel(),

@@ -36,7 +36,7 @@ try:
 except ImportError:
     from hardware import Hardware
 
-CLASS_NAME = "Broadcom_b43"
+CLASS_NAME = "BroadcomB43"
 CLASS_ID = "0x0200"
 VENDOR_ID = "0x14e4"
 
@@ -50,7 +50,7 @@ DEVICES = [
 PRIORITY = 1
 
 
-class Broadcom_b43(Hardware):
+class BroadcomB43(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 

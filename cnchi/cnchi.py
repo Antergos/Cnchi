@@ -108,9 +108,9 @@ class ContextFilter(Singleton):
         try:
             r = requests.get(url)
             install_info = json.loads(r.json())
-            #logging.debug(install_info)
+            # logging.debug(install_info)
         except (OSError, ValueError) as err:
-            #logging.warning(err)
+            # logging.warning(err)
             print(err)
 
         return install_info

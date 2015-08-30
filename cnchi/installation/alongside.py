@@ -70,6 +70,7 @@ def get_partition_size_info(partition_path, human=False):
     tmp_dir = ""
 
     try:
+        cmd = []
         if not already_mounted:
             tmp_dir = tempfile.mkdtemp()
             cmd = ["mount", partition_path, tmp_dir]
