@@ -277,15 +277,6 @@ class Installation(object):
         self.prepare_pacman()
         logging.debug("Pacman ready")
 
-        logging.debug("Selecting packages...")
-        self.select_packages()
-        logging.debug("Packages selected")
-
-        # Fix bug #263 (v86d moved from [extra] to AUR)
-        if "v86d" in self.packages:
-            self.packages.remove("v86d")
-            logging.debug("Removed 'v86d' package from list")
-
         logging.debug("Downloading packages...")
         self.download_packages()
 
