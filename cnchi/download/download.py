@@ -142,6 +142,7 @@ class DownloadPackages(object):
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise InstallError(txt)
 
+    @misc.raise_privileges
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
 

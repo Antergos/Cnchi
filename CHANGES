@@ -1,3 +1,4 @@
+[2015-08-30 20:23:48 +0200]  There's an error when initialising alpm for the second time.               karasu      {28de19b}
 [2015-08-30 20:14:31 +0200]  Do not use /install before partitioning when trying to create metal..      karasu      {183b8b1}
 [2015-08-30 20:07:14 +0200]  Calculates metalinks list before partitioning                              karasu      {4cf1e77}
 [2015-08-30 17:44:21 +0200]  More code cleaning                                                         karasu      {89f6ca8}
