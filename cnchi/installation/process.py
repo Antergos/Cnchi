@@ -38,12 +38,15 @@ import misc.misc as misc
 import pyalpm
 from download import download
 
+from installation import select_packages as pack
+
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
 
-    def __init__(self, install_screen, callback_queue):
+    def __init__(self, install_screen, settings, callback_queue):
         """ Initialize process class """
         multiprocessing.Process.__init__(self)
+        self.settings = settings
         self.callback_queue = callback_queue
         self.install_screen = install_screen
 
@@ -64,9 +67,12 @@ class Process(multiprocessing.Process):
             # run here in process.py)
             #self.create_downloads_list()
 
+            pkg = pack.SelectPackages(self.settings, self.callback_queue)
+            pkg.create_package_list()
+
             with misc.raised_privileges():
                 self.install_screen.run_format()
-                self.install_screen.run_install()
+                self.install_screen.run_install(pkg.packages)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(process_error.cmd, process_error.output)
             logging.error(txt)

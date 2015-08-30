@@ -1,3 +1,4 @@
+[2015-08-29 09:18:32 +0200]  Cnchi was closing both instances when another one was detected. Als..      karasu      {25577d4}
 [2015-08-28 20:59:20 +0200]  It's dolphin now.                                                          karasu      {3841dc6}
 [2015-08-28 11:32:26 +0200]  Add nm-connection-editor to KDE (just)                                     karasu      {3fc6ff7}
 [2015-08-27 14:00:05 +0200]  Fix typo                                                                   karasu      {e192854}

@@ -169,7 +169,7 @@ class Summary(GtkBaseBox):
         if response != Gtk.ResponseType.YES:
             return False
         install_screen = self.get_install_screen()
-        self.process = Process(install_screen, self.callback_queue)
+        self.process = Process(install_screen, self.settings, self.callback_queue)
         self.process.start()
         return True
 

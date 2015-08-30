@@ -86,18 +86,18 @@ def write_file(filecontents, filename):
 class Installation(object):
     """ Installation process thread class """
 
-    def __init__(self, settings, callback_queue, mount_devices,
+    def __init__(self, settings, callback_queue, packages, mount_devices,
                  fs_devices, ssd=None, blvm=False):
         """ Initialize installation class """
 
-        self.callback_queue = callback_queue
         self.settings = settings
+        self.callback_queue = callback_queue
+        self.packages = packages
+
         self.method = self.settings.get('partition_mode')
         msg = _("Installing using the '{0}' method").format(self.method)
         self.queue_event('info', msg)
-        self.alternate_package_list = self.settings.get('alternate_package_list')
 
-        # Check desktop selected to load packages needed
         self.desktop = self.settings.get('desktop')
 
         # This flag tells us if there is a lvm partition (from advanced install)
@@ -123,10 +123,8 @@ class Installation(object):
         self.running = True
         self.error = False
 
-        # Initialize some vars that are correctly initialized elsewhere
-        # (pylint complains if we don't do it here)
         self.auto_device = ""
-        self.packages = []
+        self.packages = packages
         self.pacman = None
         self.vbox = "False"
 
@@ -151,107 +149,96 @@ class Installation(object):
         else:
             print("{0}: {1}".format(event_type, event_text))
 
-    def wait_for_empty_queue(self, timeout):
-        if self.callback_queue is not None:
-            tries = 0
-            if timeout < 1:
-                timeout = 1
-            while tries < timeout and not self.callback_queue.empty():
-                time.sleep(1)
-                tries += 1
+    def mount_partitions(self):
+        """ Do not call this in automatic mode as AutoPartition class mounts
+        the root and boot devices itself. """
+
+        if os.path.exists(DEST_DIR):
+            # If we're recovering from a failed/stoped install, there'll be
+            # some mounted directories. Try to unmount them first.
+            # We use unmount_all from auto_partition to do this.
+            auto_partition.unmount_all(DEST_DIR)
+
+        # NOTE: Advanced method formats root by default in advanced.py
+        root_partition = self.mount_devices["/"]
+
+        # Boot partition
+        if "/boot" in self.mount_devices:
+            boot_partition = self.mount_devices["/boot"]
+        else:
+            boot_partition = ""
+
+        # Swap partition
+        if "swap" in self.mount_devices:
+            swap_partition = self.mount_devices["swap"]
+        else:
+            swap_partition = ""
+
+        # Mount root and boot partitions (only if it's needed)
+        # Not doing this in automatic mode as AutoPartition class mounts
+        # the root and boot devices itself.
+        txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
+        logging.debug(txt)
+        subprocess.check_call(['mount', root_partition, DEST_DIR])
+        # We also mount the boot partition if it's needed
+        boot_path = os.path.join(DEST_DIR, "boot")
+        os.makedirs(boot_path, mode=0o755, exist_ok=True)
+        if "/boot" in self.mount_devices:
+            txt = _("Mounting partition {0} into {1}/boot directory")
+            txt = txt.format(boot_partition, boot_path)
+            logging.debug(txt)
+            subprocess.check_call(['mount', boot_partition, boot_path])
+
+        # In advanced mode, mount all partitions (root and boot are already mounted)
+        if self.method == 'advanced':
+            for path in self.mount_devices:
+                if path == "":
+                    # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
+                    continue
+
+                mount_part = self.mount_devices[path]
+
+                if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
+                    if path[0] == '/':
+                        path = path[1:]
+                    mount_dir = os.path.join(DEST_DIR, path)
+                    try:
+                        os.makedirs(mount_dir, mode=0o755, exist_ok=True)
+                        txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
+                        logging.debug(txt)
+                        subprocess.check_call(['mount', mount_part, mount_dir])
+                    except subprocess.CalledProcessError as process_error:
+                        # We will continue as root and boot are already mounted
+                        txt = "Unable to mount {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                        logging.warning(txt)
+                elif mount_part == swap_partition:
+                    try:
+                        logging.debug("Activating swap in %s", mount_part)
+                        subprocess.check_call(['swapon', swap_partition])
+                    except subprocess.CalledProcessError as process_error:
+                        # We can continue even if no swap is on
+                        txt = "Unable to activate swap {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                        logging.warning(txt)
 
     @misc.raise_privileges
     def start(self):
         """ Run installation """
 
         '''
-        From this point, on a warning situation, Cnchi should try to continue, so we need to catch the exception here.
-        If we don't catch the exception here, it will be catched in run() and managed as a fatal error.
-        On the other hand, if we want to clarify the exception message we can catch it here
-        and then raise an InstallError exception.
+        From this point, on a warning situation, Cnchi should try to continue,
+        so we need to catch the exception here. If we don't catch the exception
+        here, it will be catched in run() and managed as a fatal error.
+        On the other hand, if we want to clarify the exception message we can
+        catch it here and then raise an InstallError exception.
         '''
-
-        # Common vars
-        self.packages = []
 
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
 
+        # Mount needed partitions (in automatic it's already done)
         if self.method == 'alongside' or self.method == 'advanced':
-
-            if os.path.exists(DEST_DIR):
-                # If we're recovering from a failed/stoped install, there'll be
-                # some mounted directories. Try to unmount them first.
-                # We use unmount_all from auto_partition to do this.
-                # Not doing this in automatic mode as AutoPartition class mounts
-                # the root and boot devices itself.
-                auto_partition.unmount_all(DEST_DIR)
-
-
-            # NOTE: Advanced method formats root by default in advanced.py
-
-            root_partition = self.mount_devices["/"]
-            # if root_partition in self.fs_devices:
-            #     root_fs = self.fs_devices[root_partition]
-            # else:
-            #    root_fs = "ext4"
-
-            if "/boot" in self.mount_devices:
-                boot_partition = self.mount_devices["/boot"]
-            else:
-                boot_partition = ""
-
-            if "swap" in self.mount_devices:
-                swap_partition = self.mount_devices["swap"]
-            else:
-                swap_partition = ""
-
-            # Mount root and boot partitions (only if it's needed)
-            # Not doing this in automatic mode as AutoPartition class mounts
-            # the root and boot devices itself.
-            txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
-            logging.debug(txt)
-            subprocess.check_call(['mount', root_partition, DEST_DIR])
-            # We also mount the boot partition if it's needed
-            boot_path = os.path.join(DEST_DIR, "boot")
-            os.makedirs(boot_path, mode=0o755, exist_ok=True)
-            if "/boot" in self.mount_devices:
-                txt = _("Mounting partition {0} into {1}/boot directory")
-                txt = txt.format(boot_partition, boot_path)
-                logging.debug(txt)
-                subprocess.check_call(['mount', boot_partition, boot_path])
-
-            # In advanced mode, mount all partitions (root and boot are already mounted)
-            if self.method == 'advanced':
-                for path in self.mount_devices:
-                    if path == "":
-                        # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
-                        continue
-
-                    mount_part = self.mount_devices[path]
-
-                    if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
-                        if path[0] == '/':
-                            path = path[1:]
-                        mount_dir = os.path.join(DEST_DIR, path)
-                        try:
-                            os.makedirs(mount_dir, mode=0o755, exist_ok=True)
-                            txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
-                            logging.debug(txt)
-                            subprocess.check_call(['mount', mount_part, mount_dir])
-                        except subprocess.CalledProcessError as process_error:
-                            # We will continue as root and boot are already mounted
-                            txt = "Unable to mount {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
-                            logging.warning(txt)
-                    elif mount_part == swap_partition:
-                        try:
-                            logging.debug("Activating swap in %s", mount_part)
-                            subprocess.check_call(['swapon', swap_partition])
-                        except subprocess.CalledProcessError as process_error:
-                            # We can continue even if no swap is on
-                            txt = "Unable to activate swap {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
-                            logging.warning(txt)
+            self.mount_partitions()
 
         # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
@@ -286,7 +273,7 @@ class Installation(object):
             if os.path.exists(img):
                 os.remove(img)
 
-        logging.debug("Prepare pacman...")
+        logging.debug("Preparing pacman...")
         self.prepare_pacman()
         logging.debug("Pacman ready")
 
@@ -371,13 +358,6 @@ class Installation(object):
         """ Configures pacman and syncs db on destination system """
 
         self.create_pacman_conf_file()
-
-        dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
-
-        for pacman_dir in dirs:
-            mydir = os.path.join(DEST_DIR, pacman_dir)
-            os.makedirs(mydir, mode=0o755, exist_ok=True)
-
         self.prepare_pacman_keyring()
 
         # Init pyalpm
@@ -385,18 +365,23 @@ class Installation(object):
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception:
             self.pacman = None
-            txt = _("Can't initialize pyalpm.")
-            raise InstallError(txt)
+            logging.error("Can't initialize pyalpm.")
+            raise InstallError(_("Can't initialize pyalpm."))
 
         # Refresh pacman databases
         if not self.pacman.refresh():
-            txt = _("Can't refresh pacman databases.")
-            logging.error(txt)
-            raise InstallError(txt)
+            logging.error("Can't refresh pacman databases.")
+            raise InstallError(_("Can't refresh pacman databases."))
 
     @staticmethod
     def prepare_pacman_keyring():
         """ Add gnupg pacman files to installed system """
+
+        dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
+
+        for pacman_dir in dirs:
+            mydir = os.path.join(DEST_DIR, pacman_dir)
+            os.makedirs(mydir, mode=0o755, exist_ok=True)
 
         # Be sure that haveged is running (liveCD)
         # haveged is a daemon that generates system entropy; this speeds up
@@ -428,252 +413,6 @@ class Installation(object):
         except subprocess.CalledProcessError as process_error:
             txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(process_error.cmd, process_error.output)
             logging.warning(txt)
-
-    def select_packages(self):
-        """ Get package list from the Internet """
-        self.packages = []
-
-        if len(self.alternate_package_list) > 0:
-            packages_xml = self.alternate_package_list
-        else:
-            # The list of packages is retrieved from an online XML to let us
-            # control the pkgname in case of any modification
-
-            self.queue_event('info', _("Getting package list..."))
-
-            try:
-                url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION.rsplit('.')[-2])
-                logging.debug("Getting url %s...", url)
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml = urllib.request.urlopen(req, timeout=10)
-            except urllib.error.URLError as url_error:
-                # If the installer can't retrieve the remote file Cnchi will use
-                # a local copy, which might be updated or not.
-                if "production" == info.CNCHI_RELEASE_STAGE:
-                    logging.warning("%s. Can't retrieve remote package list, using the local file instead.", url_error)
-                else:
-                    logging.debug("%s. Can't retrieve remote package list, using the local file instead.", url_error)
-                data_dir = self.settings.get("data")
-                packages_xml = os.path.join(data_dir, 'packages.xml')
-                logging.debug("Loading %s", packages_xml)
-
-        xml_tree = eTree.parse(packages_xml)
-        xml_root = xml_tree.getroot()
-
-        lib = desktop_info.LIBS
-
-        for editions in xml_root.iter('editions'):
-            for edition in editions.iter('edition'):
-                name = edition.attrib.get("name").lower()
-
-                # Add common packages to all desktops (including base)
-                if name == "common":
-                    for pkg in edition.iter('pkgname'):
-                        self.packages.append(pkg.text)
-
-                # Add common graphical packages
-                if name == "graphic" and self.desktop != "base":
-                    for pkg in edition.iter('pkgname'):
-                        # If package is Desktop Manager, save the name to activate the correct service later
-                        if pkg.attrib.get('dm'):
-                            self.desktop_manager = pkg.attrib.get('name')
-                        plib = pkg.attrib.get('lib')
-                        if plib is None or (plib is not None and self.desktop in lib[plib]):
-                            self.packages.append(pkg.text)
-
-                # Add specific desktop packages
-                if name == self.desktop:
-                    logging.debug("Adding %s desktop packages", self.desktop)
-                    for pkg in edition.iter('pkgname'):
-                        # If package is Network Manager, save the name to activate the correct service later
-                        if pkg.attrib.get('nm'):
-                            self.network_manager = pkg.attrib.get('name')
-                        # Stores conflicts packages in self.conflicts
-                        self.get_conflicts(pkg.attrib.get('conflicts'))
-                        # Finally, adds package name to our packages list
-                        self.packages.append(pkg.text)
-
-        # Set KDE language pack
-        if self.desktop == 'kde4' or self.desktop == 'plasma5':
-            pkg = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0]
-                if locale in lang_packs:
-                    pkg = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code')
-                pkg = base_name + lang_code
-            if len(pkg) > 0:
-                logging.debug("Selected kde language pack: %s", pkg)
-                self.packages.append(pkg)
-
-        try:
-            # Detect which hardware drivers are needed
-            self.hardware_install = hardware.HardwareInstall(
-                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
-            driver_names = self.hardware_install.get_found_driver_names()
-            if len(driver_names) > 0:
-                logging.debug("Hardware module detected these drivers: %s", driver_names)
-
-            # Add needed hardware packages to our list
-            hardware_pkgs = self.hardware_install.get_packages()
-            if len(hardware_pkgs) > 0:
-                txt = " ".join(hardware_pkgs)
-                logging.debug("Hardware module added these packages: %s", txt)
-                if 'virtualbox-guest-utils' in hardware_pkgs:
-                    self.vbox = "True"
-                self.packages.extend(hardware_pkgs)
-
-            # Run pre-install scripts (only catalyst does something here atm)
-            logging.debug("Running hardware drivers pre-install jobs...")
-            self.hardware_install.pre_install(DEST_DIR)
-        except Exception as general_error:
-            logging.warning("Unknown error in hardware module. Output: %s", general_error)
-
-        # Add filesystem packages
-        logging.debug("Adding filesystem packages")
-        for child in xml_root.iter("filesystems"):
-            for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
-
-        # Add chinese fonts
-        lang_code = self.settings.get("language_code")
-        if lang_code == "zh_TW" or lang_code == "zh_CN":
-            logging.debug("Selecting chinese fonts.")
-            for child in xml_root.iter('chinese'):
-                for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
-
-        # Add bootloader packages if needed
-        if self.settings.get('bootloader_install'):
-            boot_loader = self.settings.get('bootloader')
-            # Search boot_loader in packages.xml
-            bootloader_found = False
-            for child in xml_root.iter('bootloader'):
-                if child.attrib.get('name') == boot_loader:
-                    txt = _("Adding '%s' bootloader packages")
-                    logging.debug(txt, boot_loader)
-                    bootloader_found = True
-                    for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
-            if not bootloader_found:
-                txt = _("Couldn't find %s bootloader packages!")
-                logging.warning(txt, boot_loader)
-
-        # Check for user desired features and add them to our installation
-        logging.debug("Check for user desired features and add them to our installation")
-        self.add_features_packages(xml_root)
-        logging.debug("All features needed packages have been added")
-
-        # Remove duplicates
-        self.packages = list(set(self.packages))
-        self.conflicts = list(set(self.conflicts))
-
-        # Check the list of packages for empty strings and remove any that we find.
-        self.packages = [pkg for pkg in self.packages if pkg != '']
-        self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
-
-        # Remove any package from self.packages that is already in self.conflicts
-        for pkg in self.packages:
-            if pkg in self.conflicts:
-                self.packages.remove(pkg)
-
-        logging.debug(self.packages)
-        logging.debug("Conflicts list:", self.conflicts)
-
-
-    def get_conflicts(self, conflicts):
-        if conflicts:
-            if ',' in conflicts:
-                conflicts = conflicts.split(',')
-                for conflict in conflicts:
-                    conflict = conflict.rstrip()
-                    if conflict not in self.conflicts:
-                        self.conflicts.append(conflict)
-            else:
-                self.conflicts.append(conflict.rstrip())
-
-    def add_features_packages(self, xml_root):
-        """ Selects packages based on user selected features """
-
-        # Add necessary packages for user desired features to our install list
-        for xml_features in xml_root.iter('features'):
-            for xml_feature in xml_features.iter('feature'):
-                feature = xml_feature.attrib.get("name")
-
-                # If LEMP is selected, do not install lamp even if it's selected
-                if feature == "lamp" and self.settings.get("feature_lemp"):
-                    continue
-
-                # Add packages from each feature
-                if self.settings.get("feature_" + feature):
-                    logging.debug("Adding packages for '%s' feature.", feature)
-                    for pkg in xml_feature.iter('pkgname'):
-                        # If it's a specific gtk or qt package we have to check it
-                        # against our chosen desktop.
-
-                        lib = pkg.attrib.get('lib')
-                        if lib is not None and not self.desktop in desktop_info.LIBS[lib]:
-                            # Wrong lib (gtk/qt), so don't add it
-                            continue
-
-                        desktops = pkg.attrib.get('desktops')
-                        if desktops is not None and not self.desktop in desktops:
-                            # Wrong desktop, so don't add it
-                            continue
-
-                        self.get_conflicts(pkg.attrib.get('conflicts'))
-
-                        logging.debug("Selecting package %s for feature %s", pkg.text, feature)
-                        self.packages.append(pkg.text)
-
-
-        # Add libreoffice language package
-        if self.settings.get('feature_office'):
-            logging.debug("Add libreoffice language package")
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en-GB', 'en-ZA']
-                locale = self.settings.get('locale').split('.')[0]
-                locale = locale.replace('_', '-')
-                if locale in lang_packs:
-                    pkg = "libreoffice-fresh-{0}".format(locale)
-                    self.packages.append(pkg)
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code')
-                lang_code = lang_code.replace('_', '-')
-                pkg = "libreoffice-fresh-{0}".format(lang_code)
-                self.packages.append(pkg)
-
-        # Add firefox language package
-        if self.settings.get('feature_firefox'):
-            # Firefox is available in these languages
-            lang_codes = [
-                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
-                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
-                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
-                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
-                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
-                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt',
-                'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
-                'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
-                'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
-                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
-
-            logging.debug("Add libreoffice language package")
-            lang_name = self.settings.get("language_name").lower()
-            lang_code = self.settings.get('language_code')
-            lang_code = lang_code.replace('_', '-')
-            if lang_code in lang_codes:
-                pkg = "firefox-i18n-{0}".format(lang_code)
-                self.packages.append(pkg)
 
     def install_packages(self):
         """ Start pacman installation of packages """
