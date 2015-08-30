@@ -101,11 +101,8 @@ class SelectPackages(object):
         # Packages to be removed
         self.conflicts = []
 
-
-        # Initialize some vars that are correctly initialized elsewhere
-        # (pylint complains if we don't do it here)
+        # Packages to be installed
         self.packages = []
-        self.pacman = None
 
         # Cnchi will store here info (packages needed, post install actions, ...)
         # for the detected hardware
@@ -156,7 +153,7 @@ class SelectPackages(object):
             raise InstallError(_("Can't initialize pyalpm."))
 
         # Refresh pacman databases
-        if not self.pacman.refresh():
+        if not pacman.refresh():
             txt = _("Can't refresh pacman databases.")
             logging.error(txt)
             raise InstallError(txt)
