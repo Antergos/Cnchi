@@ -80,21 +80,22 @@ class DownloadPackages(object):
             self.pacman_cache_dir = pacman_cache_dir
 
         if cache_dir is None or not os.path.exists(cache_dir):
+            # Try to use liveCD cache if none provided
             self.cache_dir = "/var/cache/pacman/pkg"
         else:
             self.cache_dir = cache_dir
-
-        # Create pacman cache dir (it's ok if it already exists)
-        os.makedirs(pacman_cache_dir, mode=0o755, exist_ok=True)
-
-        # Stores last issued event for each event type
-        # (to prevent repeating events)
-        self.last_event = {}
 
         self.callback_queue = callback_queue
         self.settings = settings
         self.download_module = download_module
         self.package_names = package_names
+
+        # Create pacman cache dir (it's ok if it already exists)
+        os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
+
+        # Stores last issued event for each event type
+        # (to prevent repeating events)
+        self.last_event = {}
 
         # List of packages' metalinks
         self.metalinks = None

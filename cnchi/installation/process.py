@@ -67,7 +67,7 @@ class Process(multiprocessing.Process):
                 txt = _("Cannot create package list. Check log output for details.")
                 raise misc.InstallError(txt)
 
-            down = download.DownloadPackages(pkg.packages)
+            down = download.DownloadPackages(pkg.packages, "requests", "/tmp/pacman.conf", "/var/cache/pacman/pkg")
             down.create_metalinks_list()
 
             if len(down.metalinks) == 0:
