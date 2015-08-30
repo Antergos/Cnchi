@@ -68,13 +68,14 @@ class Process(multiprocessing.Process):
                 raise misc.InstallError(txt)
 
             down = download.DownloadPackages(
-                pkg.packages,
-                "requests",
-                "/tmp/pacman.conf",
-                "/var/cache/pacman/pkg",
-                "/var/cache/pacman/pkg",
-                self.settings,
-                self.callback_queue)
+                package_names=pkg.packages,
+                download_module='requests',
+                pacman_conf_file="/etc/pacman.conf",
+                pacman_cache_dir="/var/cache/pacman/pkg",
+                cache_dir="/var/cache/pacman/pkg",
+                settings=self.settings,
+                callback_queue=self.callback_queue)
+                
             down.create_metalinks_list()
 
             if not down.metalinks or len(down.metalinks) == 0:

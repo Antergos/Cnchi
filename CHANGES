@@ -1,3 +1,4 @@
+[2015-08-30 20:29:11 +0200]  Fix import                                                                 karasu      {16e23b2}
 [2015-08-30 20:27:06 +0200]  alpm needs root privileges                                                 karasu      {875b8e7}
 [2015-08-30 20:23:48 +0200]  There's an error when initialising alpm for the second time.               karasu      {28de19b}
 [2015-08-30 20:14:31 +0200]  Do not use /install before partitioning when trying to create metal..      karasu      {183b8b1}
