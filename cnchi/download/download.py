@@ -65,8 +65,8 @@ class DownloadPackages(object):
             pacman_conf_file=None,
             pacman_cache_dir=None,
             cache_dir=None,
-            callback_queue=None,
-            settings=None):
+            settings=None,
+            callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         if pacman_conf_file is None:

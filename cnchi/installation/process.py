@@ -63,15 +63,22 @@ class Process(multiprocessing.Process):
             pkg = pack.SelectPackages(self.settings, self.callback_queue)
             pkg.create_package_list()
 
-            if len(pkg.packages) == 0:
+            if not pkg.packages or len(pkg.packages) == 0:
                 txt = _("Cannot create package list. Check log output for details.")
                 raise misc.InstallError(txt)
 
-            down = download.DownloadPackages(pkg.packages, "requests", "/tmp/pacman.conf", "/var/cache/pacman/pkg")
+            down = download.DownloadPackages(
+                pkg.packages,
+                "requests",
+                "/tmp/pacman.conf",
+                "/var/cache/pacman/pkg",
+                "/var/cache/pacman/pkg",
+                self.settings,
+                self.callback_queue)
             down.create_metalinks_list()
 
-            if len(down.metalinks) == 0:
-                txt = _("Cannot create download package list. Check log output for details.")
+            if not down.metalinks or len(down.metalinks) == 0:
+                txt = _("Cannot create download package list (metalinks). Check log output for details.")
                 raise misc.InstallError(txt)
 
             # try except if pkg.packages is empty or down.metalinks is empty

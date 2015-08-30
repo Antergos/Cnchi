@@ -324,8 +324,8 @@ class Installation(object):
             pacman_conf_file,
             pacman_cache_dir,
             cache_dir,
-            self.callback_queue,
-            self.settings)
+            self.settings,
+            self.callback_queue)
         # Metalinks have already been calculated before,
         # When downloadpackages class has been called in process.py to test
         # that Cnchi was able to create it before partitioning/formatting

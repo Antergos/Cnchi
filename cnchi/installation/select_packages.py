@@ -302,7 +302,7 @@ class SelectPackages(object):
         self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
 
         if len(self.conflicts) > 0:
-            logging.debug("Conflicts list: %s", ",".join(self.conflicts))
+            logging.debug("Conflicts list: %s", ", ".join(self.conflicts))
             # Remove any package from self.packages that is already in self.conflicts
             for pkg in self.packages:
                 if pkg in self.conflicts:
