@@ -163,8 +163,10 @@ class Download(object):
                     completed_length = 0
                     start = time.clock()
                     try:
-                        r = requests.get(url, stream=True)
-                    except requests.exceptions.ConnectionError as connection_error:
+                        # By default, it seems that get waits five minutes before
+                        # issuing a timeout, which is too much. Let's set it to ten seconds
+                        r = requests.get(url, stream=True, timeout=10)
+                    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as connection_error:
                         msg = "Can't download {0} ({1}), Cnchi will try another mirror.".format(url, connection_error)
                         logging.debug(msg)
                         continue
