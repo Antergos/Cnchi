@@ -36,6 +36,7 @@ import subprocess
 import math
 import logging
 
+
 def unicode_to_string(raw):
     """ U+ , or +U+ ... to string """
     if raw[0:2] == "U+":

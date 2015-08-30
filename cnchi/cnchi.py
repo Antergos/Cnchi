@@ -28,10 +28,6 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
-# Useful vars for gettext (translations)
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
-
 import os
 import sys
 import logging
@@ -56,6 +52,10 @@ try:
     BUGSNAG_AVAILABLE = True
 except ImportError:
     BUGSNAG_AVAILABLE = False
+
+# Useful vars for gettext (translations)
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 # Command line options
 cmd_line = None

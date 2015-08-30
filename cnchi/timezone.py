@@ -208,7 +208,8 @@ class Timezone(GtkBaseBox):
         proc.start()
 
 
-    def log_location(self, loc):
+    @staticmethod
+    def log_location(loc):
         logging.debug("timezone human zone: %s", loc.human_zone)
         logging.debug("timezone country: %s", loc.country)
         logging.debug("timezone zone: %s", loc.zone)

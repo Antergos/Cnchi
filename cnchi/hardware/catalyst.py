@@ -50,7 +50,7 @@ newer, there is the regular Catalyst driver. Regardless of the driver you need,
 you will also need the Catalyst utilities.
 """
 
-DEVICES=[
+DEVICES = [
     "0x9850", "0x9851", "0x9852", "0x9853", "0x98B0", "0x98B1", "0x9874",
     "0x9830", "0x9831", "0x9832", "0x9833", "0x9834", "0x9835", "0x9836",
     "0x9837", "0x9838", "0x9839", "0x983A", "0x983B", "0x983C", "0x983D",
@@ -103,7 +103,8 @@ class Catalyst(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         pkgs = [
             "catalyst-hook",
             "catalyst-libgl",
@@ -117,7 +118,8 @@ class Catalyst(Hardware):
                 "lib32-opencl-catalyst"])
         return pkgs
 
-    def add_repositories(self, path):
+    @staticmethod
+    def add_repositories(path):
         """ Adds [xorg116] and [catalyst] repos to pacman.conf """
         with open(path, 'r') as pacman_conf:
             lines = pacman_conf.readlines()
@@ -157,5 +159,6 @@ class Catalyst(Hardware):
 
         super().chroot(["aticonfig", "--initial"], dest_dir)
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

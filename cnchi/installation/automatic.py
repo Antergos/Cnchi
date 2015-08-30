@@ -279,8 +279,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def get_changes(self):
         """ Grab all changes for confirmation """
-        change_list = []
-        change_list.append(action.Action("delete", self.auto_device))
+        change_list = [action.Action("delete", self.auto_device)]
 
         auto = auto_partition.AutoPartition(dest_dir=DEST_DIR,
                                             auto_device=self.auto_device,

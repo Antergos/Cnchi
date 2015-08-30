@@ -319,7 +319,8 @@ class InstallationAdvanced(GtkBaseBox):
             # Automatically select first entry
             self.select_first_combobox_item(self.bootloader_device_entry)
 
-    def select_bootdevice(self, combobox, value):
+    @staticmethod
+    def select_bootdevice(combobox, value):
         model = combobox.get_model()
         combo_iter = model.get_iter_first()
         index = 0
@@ -352,7 +353,8 @@ class InstallationAdvanced(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    def select_combobox_value(self, combobox, value):
+    @staticmethod
+    def select_combobox_value(combobox, value):
         model = combobox.get_model()
         combo_iter = model.get_iter(0)
         index = 0

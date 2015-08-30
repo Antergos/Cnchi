@@ -37,6 +37,7 @@ import requests
 import time
 import hashlib
 
+
 def get_md5(file_name):
     """ Gets md5 hash from a file """
     md5_hash = hashlib.md5()

@@ -65,7 +65,8 @@ class FingerPrint(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["fprintd"]
 
     def post_install(self, dest_dir):

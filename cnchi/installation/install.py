@@ -26,7 +26,6 @@
 
 import crypt
 import logging
-import multiprocessing
 import os
 import queue
 import shutil
@@ -34,8 +33,6 @@ import subprocess
 import sys
 import time
 import re
-import urllib.request
-import urllib.error
 
 from mako.template import Template
 
@@ -43,7 +40,6 @@ import desktop_info
 import parted3.fs_module as fs
 import misc.misc as misc
 import pacman.pac as pac
-import info
 import encfs
 
 from download import download
@@ -209,7 +205,8 @@ class Installation(object):
                         subprocess.check_call(['mount', mount_part, mount_dir])
                     except subprocess.CalledProcessError as process_error:
                         # We will continue as root and boot are already mounted
-                        txt = "Unable to mount {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                        txt = "Unable to mount {0}, command {1} failed: {2}".format(
+                            mount_part, process_error.cmd, process_error.output)
                         logging.warning(txt)
                 elif mount_part == swap_partition:
                     try:
@@ -217,7 +214,8 @@ class Installation(object):
                         subprocess.check_call(['swapon', swap_partition])
                     except subprocess.CalledProcessError as process_error:
                         # We can continue even if no swap is on
-                        txt = "Unable to activate swap {0}, command {1} failed: {2}".format(mount_part, process_error.cmd, process_error.output)
+                        txt = "Unable to activate swap {0}, command {1} failed: {2}".format(
+                            mount_part, process_error.cmd, process_error.output)
                         logging.warning(txt)
 
     @misc.raise_privileges
@@ -332,7 +330,6 @@ class Installation(object):
             self.settings)
         download_packages.start()
 
-
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
         myarch = os.uname()[-1]
@@ -392,7 +389,8 @@ class Installation(object):
             subprocess.check_call(cmd)
             os.mkdir(dest_path)
         except subprocess.CalledProcessError as process_error:
-            txt = "Error deleting old gnupg files, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            txt = "Error deleting old gnupg files, command {0} failed: {1}".format(
+                process_error.cmd, process_error.output)
             logging.warning(txt)
 
         # Tell pacman-key to regenerate gnupg files
@@ -402,7 +400,8 @@ class Installation(object):
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
-            txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(
+                process_error.cmd, process_error.output)
             logging.warning(txt)
 
     def install_packages(self):
@@ -656,19 +655,8 @@ class Installation(object):
     @staticmethod
     def change_user_password(user, new_password):
         """ Changes the user's password """
-        try:
-            shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
-        except:
-            logging.warning("Error creating password hash for user %s", user)
-            return False
-
-        try:
-            chroot_run(['usermod', '-p', shadow_password, user])
-        except:
-            logging.warning("Error changing password for user %s", user)
-            return False
-
-        return True
+        shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
+        chroot_run(['usermod', '-p', shadow_password, user])
 
     @staticmethod
     def auto_timesetting():
@@ -676,7 +664,8 @@ class Installation(object):
         try:
             subprocess.check_call(["hwclock", "--systohc", "--utc"])
         except subprocess.CalledProcessError as process_error:
-            txt = "Error adjusting hardware clock, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            txt = "Error adjusting hardware clock, command {0} failed: {1}".format(
+                process_error.cmd, process_error.output)
             logging.warning(txt)
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
@@ -1073,8 +1062,8 @@ class Installation(object):
             locale_conf.write('LANG={0}\n'.format(locale))
             locale_conf.write('LC_COLLATE={0}\n'.format(locale))
 
-        #environment_path = os.path.join(DEST_DIR, "etc/environment")
-        #with open(environment_path, "w") as environment:
+        # environment_path = os.path.join(DEST_DIR, "etc/environment")
+        # with open(environment_path, "w") as environment:
         #    environment.write('LANG={0}\n'.format(locale))
 
         self.queue_event('info', _("Adjusting hardware clock..."))
@@ -1094,7 +1083,8 @@ class Installation(object):
             xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
             try:
                 with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
-                    xorg_conf_xkb.write("# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
+                    xorg_conf_xkb.write(
+                        "# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
                     xorg_conf_xkb.write('# manually too freely.\n')
                     xorg_conf_xkb.write('Section "InputClass"\n')
                     xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
@@ -1151,12 +1141,7 @@ class Installation(object):
             self.settings.get('cnchi'),
             "scripts",
             POSTINSTALL_SCRIPT)
-        cmd = ["/usr/bin/bash",
-            script_path_postinstall,
-            username,
-            DEST_DIR,
-            self.desktop,
-            keyboard_layout]
+        cmd = ["/usr/bin/bash", script_path_postinstall, username, DEST_DIR, self.desktop, keyboard_layout]
         if keyboard_variant:
             cmd.append(keyboard_variant)
         else:
@@ -1167,7 +1152,8 @@ class Installation(object):
             logging.debug("Post install script completed successfully.")
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
-            logging.error("Error running post-install script, command %s failed: %s", process_error.cmd, process_error.output)
+            logging.error("Error running post-install script, command %s failed: %s",
+                process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 

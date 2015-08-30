@@ -40,6 +40,7 @@ from download import download
 
 from installation import select_packages as pack
 
+
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
 
@@ -51,8 +52,8 @@ class Process(multiprocessing.Process):
         self.install_screen = install_screen
 
     def create_downloads_list(self, package_list):
-        #download_packages = download.DownloadPackages(package_list)
-        #download_packages.create_downloads_list()
+        # download_packages = download.DownloadPackages(package_list)
+        # download_packages.create_downloads_list()
         pass
 
     def run(self):
@@ -65,7 +66,7 @@ class Process(multiprocessing.Process):
             # TODO: package list is created in install.py. We need to break that
             # file so select_packages() can be run BEFORE formatting (it could be
             # run here in process.py)
-            #self.create_downloads_list()
+            # self.create_downloads_list()
 
             pkg = pack.SelectPackages(self.settings, self.callback_queue)
             pkg.create_package_list()

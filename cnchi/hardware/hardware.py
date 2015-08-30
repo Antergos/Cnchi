@@ -55,7 +55,8 @@ class Hardware(object):
         """ This method runs commands that need to be run AFTER installing the driver """
         raise NotImplementedError("post_install is not implemented")
 
-    def pre_install(self, dest_dir):
+    @staticmethod
+    def pre_install(dest_dir):
         """ This method runs commands that need to run BEFORE installing the driver """
         pass
 
@@ -87,7 +88,8 @@ class Hardware(object):
                         return True
         return False
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         """ Proprietary drivers are drivers for your hardware devices
             that are not freely-available or open source, and must be
             obtained from the hardware manufacturer. """
@@ -273,7 +275,8 @@ class HardwareInstall(object):
                 # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(drivers_available[0])
 
-    def get_devices(self):
+    @staticmethod
+    def get_devices():
         devices = []
 
         # Get PCI devices

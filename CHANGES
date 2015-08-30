@@ -1,3 +1,4 @@
+[2015-08-30 13:45:31 +0200]  Use mousepad instead of leafpad                                            karasu      {490f895}
 [2015-08-30 03:39:14 +0200]  Packages are now selected in select_packages.py (before they were s..      karasu      {1bb0210}
 [2015-08-30 03:35:42 +0200]  Prettier logging (or not)                                                  karasu      {aa39179}
 [2015-08-30 03:34:08 +0200]  Fix logging in select_packages                                             karasu      {7964c4f}

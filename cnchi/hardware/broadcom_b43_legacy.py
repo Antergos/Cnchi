@@ -46,10 +46,12 @@ class BroadcomB43Legacy(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["b43-firmware-legacy"]
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
         with open(path, "w") as blacklist:
             blacklist.write("blacklist b43\n")

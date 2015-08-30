@@ -51,6 +51,7 @@ def get_special_dirs():
         special_dirs.append(efi)
     return special_dirs
 
+
 def mount_special_dirs(dest_dir):
     """ Mount special directories for our chroot (bind them)"""
 

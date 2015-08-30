@@ -54,7 +54,7 @@ PRIORITY = 2
 For GeForce 400 series cards and newer [NVCx and newer], install the nvidia or
     nvidia-lts package along with nvidia-libgl, available in the official repositories.
 """
-DEVICES=[
+DEVICES = [
     "0x06c0", "0x06c4", "0x06ca", "0x06cd", "0x06d1", "0x06d2", "0x06d8",
     "0x06d9", "0x06da", "0x06dc", "0x06dd", "0x06de", "0x06df", "0x0dc0",
     "0x0dc4", "0x0dc5", "0x0dc6", "0x0dcd", "0x0dce", "0x0dd1", "0x0dd2",
@@ -99,13 +99,15 @@ class Nvidia(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
         return pkgs
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
         with open(path, 'w') as nvidia:
             nvidia.write('Section "Device"\n')
@@ -115,5 +117,6 @@ class Nvidia(Hardware):
             nvidia.write('    Option "NoLogo" "true"\n')
             nvidia.write('EndSection\n')
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

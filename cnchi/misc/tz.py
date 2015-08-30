@@ -55,7 +55,8 @@ class SystemTzInfo(datetime.tzinfo):
         time.tzset()
         return tzbackup
 
-    def _restore_tz(self, tzbackup):
+    @staticmethod
+    def _restore_tz(tzbackup):
         if tzbackup is None:
             if 'TZ' in os.environ:
                 del os.environ['TZ']

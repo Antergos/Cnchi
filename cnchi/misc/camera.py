@@ -56,6 +56,7 @@ camera.py:70: DeprecationWarning: Clutter.BoxLayout.pack is deprecated
   y_align=Clutter.BoxAlignment.CENTER)
 '''
 
+
 class CameraBox(GtkClutter.Embed):
     __gtype_name__ = 'VideoBox'
 
@@ -86,10 +87,10 @@ class CameraBox(GtkClutter.Embed):
             y_align=Clutter.BoxAlignment.CENTER)
 
         self.camera = Cheese.Camera.new(
-            video_texture = self.video_texture,
-            camera_device_node = None,
-            x_resolution = 640,
-            y_resolution = 480)
+            video_texture=self.video_texture,
+            camera_device_node=None,
+            x_resolution=640,
+            y_resolution=480)
         
         try:
             self.camera.setup()

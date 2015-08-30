@@ -46,10 +46,12 @@ class Virtualbox(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["virtualbox-guest-modules", "virtualbox-guest-utils"]
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/modules-load.d")
         os.makedirs(path, mode=0o755, exist_ok=True)
         path = os.path.join(dest_dir, "etc/modules-load.d/virtualbox-guest.conf")

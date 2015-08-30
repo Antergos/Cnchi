@@ -36,13 +36,14 @@ import sys
 
 from gtkbasebox import GtkBaseBox
 
+import misc.i18n as i18n
+
+from rank_mirrors import AutoRankmirrorsProcess
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-import misc.i18n as i18n
-
-from rank_mirrors import AutoRankmirrorsProcess
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):

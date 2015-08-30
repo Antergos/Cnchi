@@ -216,8 +216,11 @@ class Pac(object):
             help = "a list of packages, e.g. libreoffice, openjdk6")
     '''
 
-    def remove(self, pkg_names, options={}):
+    def remove(self, pkg_names, options=None):
         """ Removes a list of package names """
+
+        if not options:
+            options = {}
 
         # Prepare target list
         targets = []
@@ -258,8 +261,14 @@ class Pac(object):
                 res = False
         return res
 
-    def install(self, pkgs, conflicts=[], options={}):
+    def install(self, pkgs, conflicts=None, options=None):
         """ Install a list of packages like pacman -S """
+
+        if not conflicts:
+            conflicts = []
+        if not options:
+            options = {}
+
         if self.handle is None:
             logging.error("alpm is not initialised")
             raise pyalpm.error
@@ -345,8 +354,10 @@ class Pac(object):
                 return pkgs
         return None
 
-    def get_packages_info(self, pkg_names=[]):
+    def get_packages_info(self, pkg_names=None):
         """ Get information about packages like pacman -Si """
+        if not pkg_names:
+            pkg_names = []
         packages_info = {}
         if len(pkg_names) == 0:
             # Store info from all packages from all repos

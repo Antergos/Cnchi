@@ -22,6 +22,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
+
 class Action(object):
     def __init__(self, action_type, path_or_info, relabel=False, format=False, mount_point="", encrypt=False):
         """ Init fields """

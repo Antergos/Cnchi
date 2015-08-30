@@ -63,6 +63,7 @@ def setup():
     except (FileExistsError, OSError) as io_error:
         logging.error(io_error)
 
+
 def mariadb_setup():
     cmd = [
         "mysql_install_db",

@@ -49,7 +49,7 @@ newer, there is the regular Catalyst driver. Regardless of the driver you need,
 you will also need the Catalyst utilities.
 """
 
-DEVICES=[
+DEVICES = [
     "0x9640", "0x9641", "0x9642", "0x9643", "0x9644", "0x9645", "0x9647",
     "0x9648", "0x9649", "0x964A", "0x964B", "0x964C", "0x964E", "0x964F",
     "0x9903", "0x9904", "0x990F", "0x9905", "0x9906", "0x9907", "0x9908",
@@ -102,7 +102,8 @@ class Catalyst_legacy(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         pkgs = [
             "catalyst-hook",
             "catalyst-libgl",
@@ -116,7 +117,8 @@ class Catalyst_legacy(Hardware):
                 "lib32-opencl-catalyst"])
         return pkgs
 
-    def add_repositories(self, path):
+    @staticmethod
+    def add_repositories(path):
         """ Adds [xorg116] and [catalyst-hd234k] repos to pacman.conf """
         with open(path, 'r') as pacman_conf:
             lines = pacman_conf.readlines()
@@ -156,5 +158,6 @@ class Catalyst_legacy(Hardware):
 
         super().chroot(["aticonfig", "--initial"], dest_dir)
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

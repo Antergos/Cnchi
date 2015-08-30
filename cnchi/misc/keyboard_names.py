@@ -36,7 +36,7 @@ class Model(GObject.GObject):
     def __init__(self, name, description, vendor):
         GObject.GObject.__init__(self)
         self.name = name
-        self.description =  description
+        self.description = description
         self.vendor = vendor
 
     def __repr__(self):
@@ -76,6 +76,7 @@ class Layout(GObject.GObject):
 
 class KeyboardNames():
     def __init__(self, filename):
+        self.layouts = None
         self._filename = filename
         self._load_file()
 

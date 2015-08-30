@@ -42,6 +42,7 @@ ICON_WARNING = "dialog-warning"
 # import misc.camera as camera
 # camera.cheese_init()
 
+
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
 

@@ -24,34 +24,18 @@
 
 """ Package list generation module. """
 
-import crypt
 import logging
-import multiprocessing
 import os
 import queue
-import shutil
-import subprocess
 import sys
-import time
-import re
 import urllib.request
 import urllib.error
 
-from mako.template import Template
-
 import desktop_info
-import parted3.fs_module as fs
 import misc.misc as misc
 import pacman.pac as pac
 import info
-import encfs
-
-from download import download
-
-from installation import auto_partition
 from installation import chroot
-from installation import mkinitcpio
-from installation import firewall
 
 from misc.misc import InstallError
 
@@ -67,7 +51,6 @@ except ImportError as err:
 
 import hardware.hardware as hardware
 
-POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
 
@@ -108,10 +91,10 @@ class SelectPackages(object):
         # for the detected hardware
         self.hardware_install = None
 
+        self.vbox = "True"
+
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
-        self.error = True
-        self.running = False
         self.queue_event('error', txt)
         # self.callback_queue.join()
         sys.exit(0)
@@ -255,13 +238,14 @@ class SelectPackages(object):
             if len(hardware_pkgs) > 0:
                 txt = " ".join(hardware_pkgs)
                 logging.debug("Hardware module added these packages: %s", txt)
-                if 'virtualbox-guest-utils' in hardware_pkgs:
+                if 'virtualbox-guest-utils' in hardware_pkgs or "virtualbox-guest-modules" in hardware_pkgs:
                     self.vbox = "True"
                 self.packages.extend(hardware_pkgs)
 
+            # FIXME: THIS SHOULD BE MOVED TO INSTALL.PY
             # Run pre-install scripts (only catalyst does something here atm)
-            logging.debug("Running hardware drivers pre-install jobs...")
-            self.hardware_install.pre_install(DEST_DIR)
+            # logging.debug("Running hardware drivers pre-install jobs...")
+            # self.hardware_install.pre_install(DEST_DIR)
         except Exception as general_error:
             logging.warning("Unknown error in hardware module. Output: %s", general_error)
 
@@ -320,13 +304,12 @@ class SelectPackages(object):
     def get_conflicts(self, conflicts):
         if conflicts:
             if ',' in conflicts:
-                conflicts = conflicts.split(',')
-                for conflict in conflicts:
+                for conflict in conflicts.split(','):
                     conflict = conflict.rstrip()
                     if conflict not in self.conflicts:
                         self.conflicts.append(conflict)
             else:
-                self.conflicts.append(conflict.rstrip())
+                self.conflicts.append(conflicts)
 
     def add_features_packages(self, xml_root):
         """ Selects packages based on user selected features """
@@ -348,12 +331,12 @@ class SelectPackages(object):
                         # against our chosen desktop.
 
                         lib = pkg.attrib.get('lib')
-                        if lib is not None and not self.desktop in desktop_info.LIBS[lib]:
+                        if lib is not None and self.desktop not in desktop_info.LIBS[lib]:
                             # Wrong lib (gtk/qt), so don't add it
                             continue
 
                         desktops = pkg.attrib.get('desktops')
-                        if desktops is not None and not self.desktop in desktops:
+                        if desktops is not None and self.desktop not in desktops:
                             # Wrong desktop, so don't add it
                             continue
 
@@ -361,7 +344,6 @@ class SelectPackages(object):
 
                         logging.debug("Selecting package %s for feature %s", pkg.text, feature)
                         self.packages.append(pkg.text)
-
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
@@ -398,7 +380,6 @@ class SelectPackages(object):
                 'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
 
             logging.debug("Add libreoffice language package")
-            lang_name = self.settings.get("language_name").lower()
             lang_code = self.settings.get('language_code')
             lang_code = lang_code.replace('_', '-')
             if lang_code in lang_codes:

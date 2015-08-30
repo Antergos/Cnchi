@@ -89,7 +89,8 @@ class Features(GtkBaseBox):
         from hardware.catalyst import Catalyst
         return Catalyst().detect()
 
-    def on_listbox_row_selected(self, listbox, listbox_row):
+    @staticmethod
+    def on_listbox_row_selected(listbox, listbox_row):
         """ Someone selected a different row of the listbox
             WARNING: IF LIST LAYOUT IS CHANGED THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         if listbox_row is not None:

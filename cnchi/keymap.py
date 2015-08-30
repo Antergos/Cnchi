@@ -49,8 +49,8 @@ class Keymap(GtkBaseBox):
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
 
-        self.keyboard_layout = { 'code': None, 'description': None }
-        self.keyboard_variant  = { 'code': None, 'description': None }
+        self.keyboard_layout = {'code': None, 'description': None}
+        self.keyboard_variant = {'code': None, 'description': None}
 
         base_xml_path = os.path.join(self.settings.get('data'), "base.xml")
         self.kbd_names = keyboard_names.KeyboardNames(base_xml_path)
@@ -84,10 +84,10 @@ class Keymap(GtkBaseBox):
         if lbl:
             lbl.set_markup(
                 _("Choose your keyboard layout and variant (if applies).\n"
-                "For instance, the default Slovak variant is qwertz, but you\n"
-                "can manually specify qwerty, etc.\n\n"
-                "You can use the entry below the keyboard to test your\n"
-                "layout selection."))
+                  "For instance, the default Slovak variant is qwertz, but you\n"
+                  "can manually specify qwerty, etc.\n\n"
+                  "You can use the entry below the keyboard to test your\n"
+                  "layout selection."))
             lbl.set_hexpand(False)
             lbl.set_line_wrap(True)
             lbl.set_max_width_chars(50)
@@ -196,7 +196,8 @@ class Keymap(GtkBaseBox):
         treeview.scroll_to_cell(path)
         return False
 
-    def get_selected_in_treeview(self, treeview):
+    @staticmethod
+    def get_selected_in_treeview(treeview):
         """ Gets selected value in treeview """
         layout = None
         variant = None
@@ -212,7 +213,7 @@ class Keymap(GtkBaseBox):
                     variant = layout
                     layout = tree_model[iter_parent][0]
 
-        return (layout, variant)
+        return layout, variant
 
     def on_keymap_row_activated(self, treeview, iter, path):
         """ Set selected keymap """

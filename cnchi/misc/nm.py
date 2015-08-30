@@ -98,6 +98,7 @@ class NetworkManager:
     def __init__(self, model, state_changed=None):
         self.model = model
         self.timeout_id = 0
+        self.rows_changed_id = None
         self.start(state_changed)
         self.active_connection = None
         self.active_device_obj = None
@@ -282,6 +283,8 @@ class NetworkManagerTreeView(Gtk.TreeView):
 
     def __init__(self, password_entry=None, state_changed=None):
         Gtk.TreeView.__init__(self)
+        self.user_collapsed = {}
+        self.icons = []
         self.password_entry = password_entry
         self.configure_icons()
         model = Gtk.TreeStore(str, object, object)
@@ -397,7 +400,8 @@ class NetworkManagerTreeView(Gtk.TreeView):
             icon += 5
         cell.set_property('pixbuf', self.icons[icon])
 
-    def data_func(self, column, cell, model, iterator, data):
+    @staticmethod
+    def data_func(column, cell, model, iterator, data):
         ssid = model[iterator][0]
 
         if not model.iter_parent(iterator):

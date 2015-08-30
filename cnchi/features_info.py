@@ -40,12 +40,13 @@ ICON_NAMES = {
     'firewall': 'network-server',
     'fonts': 'preferences-desktop-font',
     'games': 'applications-games',
-    'graphic_drivers' : 'gnome-system',
+    'graphic_drivers': 'gnome-system',
     'lamp': 'applications-internet',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
     'visual': 'video-display'}
+
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message):
@@ -83,55 +84,55 @@ DESCRIPTIONS = {
 
 TOOLTIPS = {
     'aur': _("Use yaourt to install AUR packages.\n"
-                "The AUR was created to organize and share new packages\n"
-                "from the community and to help expedite popular packages'\n"
-                "inclusion into the [community] repository."),
+             "The AUR was created to organize and share new packages\n"
+             "from the community and to help expedite popular packages'\n"
+             "inclusion into the [community] repository."),
     'bluetooth': _("Bluetooth is a standard for the short-range wireless\n"
-                    "interconnection of cellular phones, computers, and\n"
-                    "other electronic devices. In Linux, the canonical\n"
-                    "implementation of the Bluetooth protocol stack is BlueZ."),
+                   "interconnection of cellular phones, computers, and\n"
+                   "other electronic devices. In Linux, the canonical\n"
+                   "implementation of the Bluetooth protocol stack is BlueZ."),
     'cups': _("CUPS is the standards-based, open source printing\n"
-                "system developed by Apple Inc. for OS® X and other\n"
-                "UNIX®-like operating systems."),
+              "system developed by Apple Inc. for OS® X and other\n"
+              "UNIX®-like operating systems."),
     'firefox': _("Mozilla Firefox (known simply as Firefox) is a free and\n"
-                "open-source web browser developed for Windows, OS X, and Linux,\n"
-                "with a mobile version for Android, by the Mozilla Foundation and\n"
-                "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
-                "layout engine to render web pages, which implements current and\n"
-                "anticipated web standards."),
+                 "open-source web browser developed for Windows, OS X, and Linux,\n"
+                 "with a mobile version for Android, by the Mozilla Foundation and\n"
+                 "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
+                 "layout engine to render web pages, which implements current and\n"
+                 "anticipated web standards."),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
-                "managing a netfilter firewall. It provides a command line\n"
-                "interface and aims to be uncomplicated and easy to use."),
+                  "managing a netfilter firewall. It provides a command line\n"
+                  "interface and aims to be uncomplicated and easy to use."),
     'fonts': _("TrueType is an outline font standard developed by\n"
-                "Apple and Microsoft in the late 1980s as a competitor\n"
-                "to Adobe's Type 1 fonts used in PostScript. It has\n"
-                "become the most common format for fonts on both the\n"
-                "Mac OS and Microsoft Windows operating systems."),
+               "Apple and Microsoft in the late 1980s as a competitor\n"
+               "to Adobe's Type 1 fonts used in PostScript. It has\n"
+               "become the most common format for fonts on both the\n"
+               "Mac OS and Microsoft Windows operating systems."),
     'games': _("Steam is one of the most popular gaming clients that supports\n"
-                "linux in technology and gaming, while PlayOnLinux\n"
-                "is a very easy manager to setting up games to play\n"
-                "through wine, instead of doing it manually."),
+               "linux in technology and gaming, while PlayOnLinux\n"
+               "is a very easy manager to setting up games to play\n"
+               "through wine, instead of doing it manually."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver."),
     'lamp': _("This option installs a web server (you can choose\n"
-                "Apache or Nginx) plus a database server (Mariadb)\n"
-                "and PHP."),
+              "Apache or Nginx) plus a database server (Mariadb)\n"
+              "and PHP."),
     'lts': _("The linux-lts package is an alternative Arch kernel package\n"
-                "based upon Linux kernel 3.14 and is available in the core repository.\n"
-                "This particular kernel version enjoys long-term support from upstream,\n"
-                "including security fixes and some feature backports. Additionally, this\n"
-                "package includes ext4 support. For Antergos users seeking a long-term\n"
-                "support kernel, or who want a fallback kernel in case the latest kernel\n"
-                "version causes problems, this option is the answer."),
+             "based upon Linux kernel 3.14 and is available in the core repository.\n"
+             "This particular kernel version enjoys long-term support from upstream,\n"
+             "including security fixes and some feature backports. Additionally, this\n"
+             "package includes ext4 support. For Antergos users seeking a long-term\n"
+             "support kernel, or who want a fallback kernel in case the latest kernel\n"
+             "version causes problems, this option is the answer."),
     'office': _("LibreOffice is the free power-packed Open Source\n"
                 "personal productivity suite for Windows, Macintosh\n"
                 "and Linux, that gives you six feature-rich applications\n"
                 "for all your document production and data processing\n"
                 "needs: Writer, Calc, Impress, Draw, Math and Base."),
     'smb': _("In computer networking, Server Message Block (SMB)\n"
-                "operates as an application-layer network protocol mainly used\n"
-                "for providing shared access to files, printers, serial ports,\n"
-                "and miscellaneous communications between nodes on a network.\n"
-                "Most usage of SMB involves computers running Microsoft Windows."),
+             "operates as an application-layer network protocol mainly used\n"
+             "for providing shared access to files, printers, serial ports,\n"
+             "and miscellaneous communications between nodes on a network.\n"
+             "Most usage of SMB involves computers running Microsoft Windows."),
     'visual': _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"

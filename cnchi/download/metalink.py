@@ -222,11 +222,12 @@ class Metalink(object):
 class PkgSet(object):
     """ Represents a set of packages """
 
-    def __init__(self, pkgs=[]):
+    def __init__(self, pkgs=None):
         """ Init our internal self.pkgs dict with all given packages in pkgs """
         self.pkgs = dict()
-        for pkg in pkgs:
-            self.pkgs[pkg.name] = pkg
+        if pkgs:
+            for pkg in pkgs:
+                self.pkgs[pkg.name] = pkg
 
     def __repr__(self):
         return 'PkgSet({0})'.format(repr(self.pkgs))
