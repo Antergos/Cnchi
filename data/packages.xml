@@ -315,7 +315,6 @@
         <pkgname>gpicview</pkgname>
         <pkgname>gsimplecal</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>leafpad</pkgname>
         <pkgname>light-locker</pkgname>
         <pkgname>light-locker-settings</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -324,6 +323,7 @@
         <pkgname>lxtask</pkgname>
         <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
+        <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
