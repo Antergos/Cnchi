@@ -35,6 +35,32 @@ import subprocess
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
+'''
+Device Classes (https://pci-ids.ucw.cz/read/PD)
+
+00	Unclassified device
+01	Mass storage controller
+02	Network controller
+03	Display controller
+04	Multimedia controller
+05	Memory controller
+06	Bridge
+07	Communication controller
+08	Generic system peripheral
+09	Input device controller
+0a	Docking station
+0b	Processor
+0c	Serial bus controller
+0d	Wireless controller
+0e	Intelligent controller
+0f	Satellite communications controller
+10	Encryption controller
+11	Signal processing controller
+12	Processing accelerators
+13	Non-Essential Instrumentation
+40	Coprocessor
+ff	Unassigned class
+'''
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
