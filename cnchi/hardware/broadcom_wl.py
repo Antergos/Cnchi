@@ -44,7 +44,7 @@ VENDOR_ID = "0x14e4"
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-,
 # BCM43227- and BCM43228-based hardware.
 
-DEVICES = ['0x4311', '0x04B5', '0x4727', '0x1361', '0x4328', '0x432B']
+DEVICES = ['0x4311', '0x04B5', '0x4727', '0x1361', '0x4328', '0x432B', '0x43B1']
 
 # Give this driver more priority so it is chosen instead of
 # broadcom_b43 or Broadcom_b43_legacy

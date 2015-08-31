@@ -1,3 +1,4 @@
+[2015-08-30 20:51:23 +0200]  Do not timeout at five minutes, it's too much. (I know ten seconds ..      karasu      {0fac959}
 [2015-08-30 20:35:51 +0200]  /tmp/pacman.conf is used after (installation)                              karasu      {abebad1}
 [2015-08-30 20:29:11 +0200]  Fix import                                                                 karasu      {16e23b2}
 [2015-08-30 20:27:06 +0200]  alpm needs root privileges                                                 karasu      {875b8e7}
