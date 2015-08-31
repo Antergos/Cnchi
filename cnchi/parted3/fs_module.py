@@ -173,7 +173,7 @@ def create_fs(part, fstype, label='', other_opts=''):
 
     if not fstype:
         logging.error("Cannot make a filesystem of type None in partition %s", part)
-        return True, _("Cannot make a filesystem of type None in partition {0}".format(part)
+        return True, _("Cannot make a filesystem of type None in partition {0}").format(part)
 
     fstype = fstype.lower()
 
