@@ -171,6 +171,10 @@ def create_fs(part, fstype, label='', other_opts=''):
     # Second arg is either output from call if successful
     # or exception message error if failure
 
+    if not fstype:
+        logging.error("Cannot make a filesystem of type None in partition %s", part)
+        return True, _("Cannot make a filesystem of type None in partition {0}".format(part)
+
     fstype = fstype.lower()
 
     comdic = {'ext2': 'mkfs.ext2 -q',
@@ -180,6 +184,7 @@ def create_fs(part, fstype, label='', other_opts=''):
               'fat': 'mkfs.vfat -F 32',
               'fat16': 'mkfs.vfat -F 16',
               'fat32': 'mkfs.vfat -F 32',
+              'vfat': 'mkfs.vfat -F 32',
               'ntfs': 'mkfs.ntfs',
               'jfs': 'mkfs.jfs -q',
               'reiserfs': 'mkfs.reiserfs -q',
@@ -188,7 +193,7 @@ def create_fs(part, fstype, label='', other_opts=''):
               'swap': 'mkswap'}
 
     if fstype not in comdic.keys():
-        return True, _("Unknown filesystem {0}").format(fstype)
+        return True, _("Unknown filesystem {0} for partition {1}").format(fstype, part)
 
     cmd = comdic[fstype]
 
@@ -200,6 +205,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                   'fat': '-n "%(label)s"',
                   'fat16': '-n "%(label)s"',
                   'fat32': '-n "%(label)s"',
+                  'vfat': '-n "%(label)s"',
                   'ntfs': '-L "%(label)s"',
                   'jfs': '-L "%(label)s"',
                   'reiserfs': '-l "%(label)s"',
@@ -216,6 +222,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                         'fat': '',
                         'fat16': '',
                         'fat32': '',
+                        'vfat': '',
                         'ntfs': '',
                         'jfs': '',
                         'reiserfs': '',
