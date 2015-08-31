@@ -326,8 +326,8 @@ class HardwareInstall(object):
 ''' Test case '''
 if __name__ == "__main__":
     def _(x): return x
-    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
-    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
+    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
+    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
     print(hardware_install.get_found_driver_names())
     if len(hardware_pkgs) > 0:
