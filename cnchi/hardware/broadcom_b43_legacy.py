@@ -37,7 +37,7 @@ except ImportError:
     from hardware import Hardware
 
 CLASS_NAME = "BroadcomB43Legacy"
-CLASS_ID = "0x0200"
+CLASS_ID = "0x02"
 VENDOR_ID = "0x14e4"
 DEVICES = ['0x4301', '0x4306', '0x4320', '0x4324', '0x4325']
 

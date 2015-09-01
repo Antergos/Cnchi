@@ -35,32 +35,6 @@ import subprocess
 
 _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
-'''
-Device Classes (https://pci-ids.ucw.cz/read/PD)
-
-00	Unclassified device
-01	Mass storage controller
-02	Network controller
-03	Display controller
-04	Multimedia controller
-05	Memory controller
-06	Bridge
-07	Communication controller
-08	Generic system peripheral
-09	Input device controller
-0a	Docking station
-0b	Processor
-0c	Serial bus controller
-0d	Wireless controller
-0e	Intelligent controller
-0f	Satellite communications controller
-10	Encryption controller
-11	Signal processing controller
-12	Processing accelerators
-13	Non-Essential Instrumentation
-40	Coprocessor
-ff	Unassigned class
-'''
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
@@ -105,7 +79,7 @@ class Hardware(object):
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                class_id = "0x{0}".format(line.split()[1].rstrip(":"))
+                class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
                 if class_id == self.class_id:
                     dev = line.split()[2].split(":")
                     vendor_id = "0x{0}".format(dev[0])
@@ -123,7 +97,7 @@ class Hardware(object):
 
     def is_graphic_driver(self):
         """ Tells us if this is a graphic driver or not """
-        if self.class_id == "0x0300":
+        if self.class_id == "0x03":
             return True
         else:
             return False
@@ -206,7 +180,8 @@ class HardwareInstall(object):
         # We scan the folder for py files.
         # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
-            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
+            non_valid = ["__init__.py", "hardware.py"]
+            if filename.endswith(".py") and filename not in non_valid:
                 filename = filename[:-len(".py")]
                 name = ""
                 try:
@@ -309,7 +284,7 @@ class HardwareInstall(object):
         lines = subprocess.check_output(["/usr/bin/lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                class_id = line.split()[1].rstrip(":")
+                class_id = line.split()[1].rstrip(":")[0:2]
                 dev = line.split()[2].split(":")
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 

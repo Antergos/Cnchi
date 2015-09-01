@@ -39,7 +39,7 @@ import logging
 import subprocess
 
 CLASS_NAME = "Nvidia"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x10de"
 
 # Give this driver more priority so it is chosen instead of

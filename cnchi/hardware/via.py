@@ -37,7 +37,7 @@ except ImportError:
 import os
 
 CLASS_NAME = "Via"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x1106"
 DEVICES = []
 

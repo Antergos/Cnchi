@@ -35,7 +35,7 @@ except ImportError:
     from hardware import Hardware
 
 CLASS_NAME = "VesaFB"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = ""
 
 # All modern cards support Vesa. This will be used as a fallback.

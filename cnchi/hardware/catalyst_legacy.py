@@ -38,7 +38,7 @@ except ImportError:
 import os
 
 CLASS_NAME = "CatalystLegacy"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x1002"
 PRIORITY = 0
 

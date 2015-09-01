@@ -37,7 +37,7 @@ except ImportError:
 import os
 
 CLASS_NAME = "Nvidia340xx"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x10de"
 
 # Give this driver more priority so it is chosen instead of nvidia-304xx
