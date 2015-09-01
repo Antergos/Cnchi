@@ -1,3 +1,4 @@
+[2015-09-01 20:00:38 +0200]  Fix class id in all hardware files (it's class_id subclass_id), and..      karasu      {a2cfbd5}
 [2015-08-31 23:55:48 +0200]  Device classes are neither well used nor well defined in hardware m..      karasu      {2881d5b}
 [2015-08-31 21:27:50 +0200]  Some little changes in hardware module                                     karasu      {318edd2}
 [2015-08-31 14:20:00 +0200]  Fix typo                                                                   karasu      {a8a3d0c}
