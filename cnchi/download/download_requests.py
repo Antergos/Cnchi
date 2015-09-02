@@ -199,7 +199,7 @@ class Download(object):
 
                                 bps = (completed_length // (time.clock() - start)) / 1024
                                 if bps > 1024:
-                                    Mbps = bps / 1024
+                                    Mbps = bps / 1024 / 1024
                                     progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
                                 else:
                                     progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
