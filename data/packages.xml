@@ -26,7 +26,6 @@
         <pkgname>pkgfile</pkgname>
         <pkgname>sudo</pkgname>
         <pkgname>tar</pkgname>
-        <pkgname>transmission-cli</pkgname>
         <pkgname>unzip</pkgname>
         <pkgname>unrar</pkgname>
         <pkgname>usb_modeswitch</pkgname>
@@ -42,9 +41,10 @@
       <packages>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
-        <!--<pkgname>antergos-welcome</pkgname> -->
+        <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
         <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
+        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -63,7 +63,6 @@
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
         <pkgname>pamac</pkgname>
         <pkgname>pavucontrol</pkgname>
-        <!-- <pkgname>python-simplejson</pkgname>  Needed by Antergos Welcome screen -->
         <pkgname>pulseaudio</pkgname>
         <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
@@ -203,6 +202,7 @@
       <packages>
         <pkgname>cdrkit</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>file-roller</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -293,9 +293,12 @@
         <pkgname>enlightenment</pkgname>
         <pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
         <pkgname>econnman</pkgname>
+        <pkgname>file-roller</pkgname>
+        <pkgname>gtk-theme-e17gtk</pkgname>
         <pkgname>polkit-gnome</pkgname>
-        <pkgname>rage</pkgname>
+        <pkgname>rage</pkgname> <!-- video player -->
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
+        <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
       </packages>
     </edition>
@@ -307,7 +310,6 @@
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>file-roller</pkgname>
-        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -315,7 +317,6 @@
         <pkgname>gpicview</pkgname>
         <pkgname>gsimplecal</pkgname>
         <pkgname>gvfs-mtp</pkgname>
-        <pkgname>leafpad</pkgname>
         <pkgname>light-locker</pkgname>
         <pkgname>light-locker-settings</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -324,6 +325,7 @@
         <pkgname>lxtask</pkgname>
         <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
+        <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
