@@ -44,8 +44,7 @@
         <pkgname>antergos-wallpapers</pkgname>
         <!--<pkgname>antergos-welcome</pkgname> -->
         <pkgname>chromium</pkgname>
-        <pkgname>chromium-pepper-flash</pkgname>
-        <pkgname>ffmpegthumbnailer</pkgname>
+        <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
         <pkgname>gst-plugins-base</pkgname>
@@ -292,8 +291,8 @@
       <packages>
         <pkgname>antergos-enlightenment-setup</pkgname>
         <pkgname>enlightenment</pkgname>
-        <pkgname nm='true' name='connman' conflicts="networkmanager">connman</pkgname>
-        <!-- <pkgname>econnman</pkgname> -->
+        <pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
+        <pkgname>econnman</pkgname>
         <pkgname>polkit-gnome</pkgname>
         <pkgname>rage</pkgname>
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
@@ -308,6 +307,7 @@
         <pkgname>conky</pkgname>
         <pkgname>cdrkit</pkgname>
         <pkgname>file-roller</pkgname>
+        <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>galculator</pkgname>
         <pkgname>gmrun</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -315,6 +315,7 @@
         <pkgname>gpicview</pkgname>
         <pkgname>gsimplecal</pkgname>
         <pkgname>gvfs-mtp</pkgname>
+        <pkgname>leafpad</pkgname>
         <pkgname>light-locker</pkgname>
         <pkgname>light-locker-settings</pkgname>
         <pkgname>lxappearance-obconf</pkgname>
@@ -323,7 +324,6 @@
         <pkgname>lxtask</pkgname>
         <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
-        <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
@@ -358,31 +358,26 @@
 
     <edition name="KDE4" description="KDE 4 Desktop">
       <packages>
-        <pkgname>antergos-kde-setup</pkgname>
-        <pkgname>ark</pkgname>
         <pkgname>aspell-en</pkgname>
         <pkgname>breeze-kde4</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
-        <pkgname>dolphin</pkgname>
-        <pkgname>dolphin-plugins</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
-        <pkgname>gwenview</pkgname>
         <pkgname>k3b</pkgname>
-        <pkgname>kate</pkgname>
-        <pkgname>kcalc</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
         <pkgname>kdeartwork-desktopthemes</pkgname>
         <pkgname>kdeartwork-iconthemes</pkgname>
         <pkgname>kdeartwork-kscreensaver</pkgname>
         <pkgname>kdeartwork-styles</pkgname>
+        <pkgname>dolphin</pkgname>
         <pkgname>kdebase-kdepasswd</pkgname>
         <pkgname>kdebase-kdialog</pkgname>
         <pkgname>kdebase-kfind</pkgname>
         <pkgname>konsole</pkgname>
         <pkgname>kdebase-plasma</pkgname>
+        <pkgname>gwenview</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
@@ -393,13 +388,16 @@
         <pkgname>kde-servicemenus-rootactions</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
+        <pkgname>dolphin-plugins</pkgname>
+        <pkgname>kate</pkgname>
+        <pkgname>kcalc</pkgname>
         <pkgname>kdesudo</pkgname>
+        <pkgname>ark</pkgname>
         <pkgname>kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
-        <pkgname>nm-connection-editor</pkgname>
         <pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
@@ -414,13 +412,10 @@
 
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
-          <pkgname>antergos-kde-setup</pkgname>
           <pkgname>aspell-en</pkgname>
           <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
-          <pkgname>dolphin</pkgname>
-          <pkgname>dolphin-plugins</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
           <pkgname>grub2-editor</pkgname>
           <pkgname>k3b</pkgname>
@@ -444,8 +439,8 @@
           <pkgname>kinfocenter</pkgname>
           <pkgname>konsole</pkgname>
           <pkgname>kwrited</pkgname>
-          <pkgname>nm-connection-editor</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
+          <pkgname>pcmanfm-qt</pkgname> <!--Change to Dolphin on August 28-->
           <pkgname>plasma</pkgname><!--plasma group-->
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
           <pkgname>transmission-qt</pkgname>
@@ -464,12 +459,10 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname desktops='cinnamon'>blueberry</pkgname>
-      <pkgname lib='qt' desktops='kde4,lxqt'>bluedevil4</pkgname>
-      <pkgname lib='qt' desktops='plasma5'>bluedevil</pkgname>
+      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
+      <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
       <pkgname>bluez-utils</pkgname>
       <pkgname lib='gtk'>gnome-bluetooth</pkgname>
-      <pkgname>pulseaudio-bluetooth</pkgname>
     </feature>
     <feature name="cups">
       <pkgname>cups</pkgname>
@@ -483,8 +476,7 @@
       <pkgname>splix</pkgname>
     </feature>
     <feature name="firefox">
-        <pkgname conflicts="chromium,chromium-pepper-flash">firefox</pkgname>
-        <pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
+        <pkgname conflicts="chromium">firefox</pkgname>
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>
@@ -494,10 +486,6 @@
     <feature name="fonts">
       <pkgname>ttf-freefont</pkgname>
       <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
-    </feature>
-    <feature name="games">
-      <pkgname>steam</pkgname>
-      <pkgname>playonlinux</pkgname>
     </feature>
     <feature name="lts">
         <pkgname>linux-lts</pkgname>
