@@ -82,14 +82,19 @@ class Singleton(logging.Filter):
 class ContextFilter(Singleton):
     id = None
     install = None
+    api_key = None
+    maybe_spam = False
 
     def __init__(self):
         super().__init__()
-        if not self.install:
+        if self.api_key is None:
+            self.api_key = self.get_bugsnag_api()
+        if self.install is None:
             info = self.get_install_id()
             try:
                 self.id = info['ip']
                 self.install = info['id']
+                self.maybe_spam = info['maybe_spam']
             except TypeError:
                 pass
 
@@ -100,18 +105,38 @@ class ContextFilter(Singleton):
         record.install = self.install
         return True
 
-    @staticmethod
-    def get_install_id():
-        url = 'http://build.antergos.com/hook?cnchi=bKjW8GU48cQw'
+    def get_install_id(self):
+        url = self.get_url_for_id_request()
         install_info = None
         try:
             r = requests.get(url)
             install_info = json.loads(r.json())
-            logging.debug(install_info)
-        except ValueError as err:
-            logging.warning(err)
+        except (OSError, ValueError) as err:
+            logging.error('Unable to get an Id for this installation. Error: %s', err)
 
         return install_info
+
+    @staticmethod
+    def get_bugsnag_api():
+        config_path = '/etc/raven.conf'
+        bugsnag_api = None
+        if os.path.exists(config_path):
+            with open(config_path) as bugsnag_conf:
+                bugsnag_api = bugsnag_conf.readline().strip()
+        return bugsnag_api
+
+    def get_url_for_id_request(self):
+        build_srv = ['http://build', 'antergos', 'com']
+        build_srv_query = ['/hook', 'cnchi=']
+        build_server = '.'.join(build_srv) + '?'.join(build_srv_query) + self.api_key
+        return build_server
+
+    def bugsnag_before_notify_callback(self, notification=None):
+        if notification is not None:
+            notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install,
+                                 "maybe_spam": self.maybe_spam}
+            notification.context = self.install
+            return notification
 
 
 class CnchiApp(Gtk.Application):
@@ -194,33 +219,28 @@ def setup_logging():
 
         if BUGSNAG_AVAILABLE and log_server == 'bugsnag':
             # Bugsnag logger
-            bugsnag_api = get_bugsnag_api()
-            if bugsnag_api:
+            bugsnag_api = context_filter.api_key
+            if bugsnag_api is not None:
                 bugsnag.configure(
                     api_key=bugsnag_api,
                     app_version=info.CNCHI_VERSION,
                     project_root='/usr/share/cnchi/cnchi',
                     release_stage=info.CNCHI_RELEASE_STAGE)
-                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api,
-                                                 extra_fields={'user': ['id', 'install']})
+                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
                 bugsnag_handler.setLevel(logging.WARNING)
                 bugsnag_handler.setFormatter(formatter)
                 bugsnag_handler.addFilter(context_filter)
+                bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
                 logger.addHandler(bugsnag_handler)
-                logging.info(_("Also sending Cnchi log messages to bugsnag server (using python-bugsnag)."))
+                logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
             else:
-                logging.warning(
-                    "%s %s",
-                    _("Cannot read the bugsnag api key."),
-                    _("Logging to bugsnag is not possible."))
+                logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
                 log_server,
                 logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-            socket_formatter = logging.Formatter(
-                fmt="[%(uuid)s] [%(asctime)s] [%(module)s] %(levelname)s: %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S")
+            socket_formatter = logging.Formatter(formatter)
             socket_handler.setFormatter(socket_formatter)
             logger.addHandler(socket_handler)
 
@@ -230,16 +250,7 @@ def setup_logging():
 
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-            logging.info(_("Sending Cnchi logs to {0} with id '{1}'").format(log_server, myuid))
-
-
-def get_bugsnag_api():
-    config_path = '/etc/raven.conf'
-    bugsnag_api = None
-    if os.path.exists(config_path):
-        with open(config_path) as bugsnag_conf:
-            bugsnag_api = bugsnag_conf.readline().strip()
-    return bugsnag_api
+            logging.info("Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
 
 
 def check_gtk_version():
@@ -285,7 +296,7 @@ def check_pyalpm_version():
     try:
         import pyalpm
 
-        txt = _("Using pyalpm v{0} as interface to libalpm v{1}")
+        txt = "Using pyalpm v{0} as interface to libalpm v{1}"
         txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
         logging.info(txt)
     except (NameError, ImportError) as err:
@@ -398,7 +409,7 @@ def update_cnchi():
         local_cnchi_version=info.CNCHI_VERSION)
 
     if upd.update():
-        logging.info(_("Program updated! Restarting..."))
+        logging.info("Program updated! Restarting...")
         misc.remove_temp_files()
         if cmd_line.update:
             # Remove -u and --update options from new call
