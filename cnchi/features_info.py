@@ -110,7 +110,7 @@ TOOLTIPS = {
              "medievalsharp, nova, oldstandard, opensans, oxygen, pt-mono\n"
              "pt-sans, roboto, sil-fonts, sortsmillgoudy, source-code-pro\n"
              "source-sans-pro, ubuntu-font-family, vollkorn, fira-mono\n"
-             "fira-sans and lato."),
+             "fira-sans and lato.",
 
     'games': _("Steam is one of the most popular gaming clients that supports\n"
                "linux in technology and gaming, while PlayOnLinux\n"

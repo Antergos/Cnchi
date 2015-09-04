@@ -1,3 +1,4 @@
+[2015-09-04 20:45:52 +0200]  Add bluetooth for MATE                                                     karasu      {3674028}
 [2015-09-04 20:02:51 +0200]  forgot about the pre-commit hook (again)                                   karasu      {f9acdad}
 [2015-09-04 20:01:02 +0200]  Fix uk in vconsole.conf. Fixes issue #401                                  karasu      {c8d24f7}
 [2015-09-04 16:11:17 +0200]  Store bugsnag error to be able to log it later                             karasu      {6b57724}
