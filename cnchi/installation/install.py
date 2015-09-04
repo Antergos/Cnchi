@@ -1096,9 +1096,16 @@ class Installation(object):
                 logging.error(io_error)
 
         # Set vconsole.conf for console keymap
+        if keyboard_layout == "gb":
+            # The keyboard layout for Great Britain is "uk" in the cli and
+            # "gb" (not uk) in X, just to make things more complicated.
+            keyboard_layout_cli = "uk"
+        else:
+            keyboard_layout_cli = keyboard_layout
+
         vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
         with open(vconsole_path, 'w') as vconsole:
-            vconsole.write("KEYMAP={0}\n".format(keyboard_layout))
+            vconsole.write("KEYMAP={0}\n".format(keyboard_layout_cli))
 
         # Install configs for root
         cmd = ['cp', '-av', '/etc/skel/.', '/root/']
