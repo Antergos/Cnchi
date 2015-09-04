@@ -105,7 +105,7 @@ class ContextFilter(Singleton):
             r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
-            logging.error('Unable to get an Id for this installation. Error: %s', err)
+            print('Unable to get an Id for this installation. Error: %s', err)
 
         return install_info
 
@@ -181,7 +181,7 @@ def setup_logging():
     logger.setLevel(log_level)
 
     context_filter = ContextFilter()
-    logger.addFilter(context_filter)
+    logger.addFilter(context_filter.filter)
 
     # Log format
     formatter = logging.Formatter(
@@ -220,7 +220,7 @@ def setup_logging():
                 bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
                 bugsnag_handler.setLevel(logging.WARNING)
                 bugsnag_handler.setFormatter(formatter)
-                bugsnag_handler.addFilter(context_filter)
+                bugsnag_handler.addFilter(context_filter.filter)
                 bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
                 logger.addHandler(bugsnag_handler)
                 logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
@@ -237,7 +237,7 @@ def setup_logging():
 
             # Also add uuid filter to requests logs
             logger_requests = logging.getLogger("requests.packages.urllib3.connectionpool")
-            logger_requests.addFilter(context_filter)
+            logger_requests.addFilter(context_filter.filter)
 
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]

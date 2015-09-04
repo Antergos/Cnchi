@@ -1,3 +1,4 @@
+[2015-09-04 05:38:30 -0500]  use custom http headerin install_id request                            Dustin Falgout  {99dca86}
 [2015-09-04 00:37:15 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {f8e9c25}
 [2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {a0f831c}
 [2015-09-02 13:31:06 +0200]  Merge pull request #398 from akshar26/master                               karasu      {0bf1e77}
