@@ -1,3 +1,4 @@
+[2015-09-04 00:37:15 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {f8e9c25}
 [2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {a0f831c}
 [2015-09-02 13:31:06 +0200]  Merge pull request #398 from akshar26/master                               karasu      {0bf1e77}
 [2015-09-02 13:19:22 +0530]  Correct speed format                                                      akshar26     {b080a50}
