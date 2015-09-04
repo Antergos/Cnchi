@@ -66,25 +66,18 @@ GTK_VERSION_NEEDED = "3.16.0"
 
 # TODO: Find a proper place for these classes
 class Singleton(logging.Filter):
-    """
+    _instance = None
 
-    :param args:
-    :param kwargs:
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(Singleton, self).__init__()
-        globals()[self.__class__.__name__] = self
-
-    def __call__(self):
-        return self
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Singleton, cls).__new__(cls, *args)
+            cls._instance.id = None
+            cls._instance.install = None
+            cls._instance.api_key = None
+        return cls._instance
 
 
 class ContextFilter(Singleton):
-    id = None
-    install = None
-    api_key = None
-    maybe_spam = False
 
     def __init__(self):
         super().__init__()
@@ -95,7 +88,6 @@ class ContextFilter(Singleton):
             try:
                 self.id = info['ip']
                 self.install = info['id']
-                self.maybe_spam = info['maybe_spam']
             except TypeError:
                 pass
 
@@ -109,8 +101,9 @@ class ContextFilter(Singleton):
     def get_install_id(self):
         url = self.get_url_for_id_request()
         install_info = None
+        headers = {'X-Cnchi-Installer': True}
         try:
-            r = requests.get(url)
+            r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
             logging.error('Unable to get an Id for this installation. Error: %s', err)
@@ -134,9 +127,7 @@ class ContextFilter(Singleton):
 
     def bugsnag_before_notify_callback(self, notification=None):
         if notification is not None:
-            notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install,
-                                 "maybe_spam": self.maybe_spam}
-            notification.context = self.install
+            notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install}
             return notification
 
 
