@@ -49,9 +49,9 @@ import updater
 try:
     from bugsnag.handlers import BugsnagHandler
     import bugsnag
-    BUGSNAG_AVAILABLE = True
-except ImportError:
-    BUGSNAG_AVAILABLE = False
+    BUGSNAG_ERROR = None
+except ImportError as err:
+    BUGSNAG_ERROR = str(err)
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
@@ -108,8 +108,7 @@ class ContextFilter(Singleton):
             r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
-            print('BUGSNAG: Unable to get an Id for this installation. Error:', err)
-            BUGSNAG_AVAILABLE = False
+            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(err)
         return install_info
 
     @staticmethod
@@ -120,7 +119,7 @@ class ContextFilter(Singleton):
             with open(config_path) as bugsnag_conf:
                 bugsnag_api = bugsnag_conf.readline().strip()
         else:
-            BUGSNAG_AVAILABLE = False
+            BUGSNAG_ERROR = "Cannot find /etc/raven.conf file"
         return bugsnag_api
 
     def get_url_for_id_request(self):
@@ -263,7 +262,7 @@ def setup_logging():
         log_server = cmd_line.log_server
 
         if log_server == 'bugsnag':
-            if BUGSNAG_AVAILABLE:
+            if not BUGSNAG_ERROR:
                 # Bugsnag logger
                 bugsnag_api = context_filter.api_key
                 if bugsnag_api is not None:
@@ -281,6 +280,8 @@ def setup_logging():
                     logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
                 else:
                     logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
+            else:
+                logging.warning(BUGSNAG_ERROR)
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
