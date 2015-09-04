@@ -80,8 +80,13 @@ class ContextFilter(Singleton):
 
     def __init__(self):
         super().__init__()
+        # This will overwrite the values if they have already been set.
+        #self.id = ""
+        #self.install = ""
+
         if self.api_key is None:
             self.api_key = self.get_bugsnag_api()
+
         if self.install is None:
             info = self.get_install_id()
             try:
@@ -105,7 +110,7 @@ class ContextFilter(Singleton):
             r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
-            print('Unable to get an Id for this installation. Error: %s', err)
+            print('Unable to get an Id for this installation. Error:', err)
 
         return install_info
 
@@ -119,9 +124,11 @@ class ContextFilter(Singleton):
         return bugsnag_api
 
     def get_url_for_id_request(self):
-        build_srv = ['http://build', 'antergos', 'com']
-        build_srv_query = ['/hook', 'cnchi=']
-        build_server = '.'.join(build_srv) + '?'.join(build_srv_query) + self.api_key
+        build_server = None
+        if self.api_key:
+            build_srv = ['http://build', 'antergos', 'com']
+            build_srv_query = ['/hook', 'cnchi=']
+            build_server = '.'.join(build_srv) + '?'.join(build_srv_query) + self.api_key
         return build_server
 
     def bugsnag_before_notify_callback(self, notification=None):
@@ -144,7 +151,7 @@ class CnchiApp(Gtk.Application):
         try:
             import main_window
         except ImportError as err:
-            msg = _("Can't create Cnchi main window: {0}").format(err)
+            msg = "Cannot create Cnchi main window: {0}".format(err)
             logging.error(msg)
             sys.exit(1)
 
@@ -185,7 +192,7 @@ def setup_logging():
 
     # Log format
     formatter = logging.Formatter(
-        fmt="%(asctime)s [%(levelname)s] - %(filename)s : %(lineno)d : %(funcName)s | %(message)s",
+        fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S")
 
     # File logger

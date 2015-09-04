@@ -1,3 +1,4 @@
+[2015-09-04 08:54:22 -0500]  fixes double logging (hopefully) (cherry picked from commit c0eb26d)   Dustin Falgout  {e4c182a}
 [2015-09-04 05:38:30 -0500]  use custom http headerin install_id request                            Dustin Falgout  {99dca86}
 [2015-09-04 00:37:15 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {f8e9c25}
 [2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {a0f831c}
