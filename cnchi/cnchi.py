@@ -81,9 +81,6 @@ class ContextFilter(Singleton):
 
     def __init__(self):
         super().__init__()
-        # This will overwrite the values if they have already been set.
-        #self.id = ""
-        #self.install = ""
 
         if self.api_key is None:
             self.api_key = self.get_bugsnag_api()
@@ -111,8 +108,8 @@ class ContextFilter(Singleton):
             r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
-            print('Unable to get an Id for this installation. Error:', err)
-
+            print('BUGSNAG: Unable to get an Id for this installation. Error:', err)
+            BUGSNAG_AVAILABLE = False
         return install_info
 
     @staticmethod
@@ -122,6 +119,8 @@ class ContextFilter(Singleton):
         if os.path.exists(config_path):
             with open(config_path) as bugsnag_conf:
                 bugsnag_api = bugsnag_conf.readline().strip()
+        else:
+            BUGSNAG_AVAILABLE = False
         return bugsnag_api
 
     def get_url_for_id_request(self):
@@ -263,24 +262,25 @@ def setup_logging():
     if cmd_line.log_server:
         log_server = cmd_line.log_server
 
-        if BUGSNAG_AVAILABLE and log_server == 'bugsnag':
-            # Bugsnag logger
-            bugsnag_api = context_filter.api_key
-            if bugsnag_api is not None:
-                bugsnag.configure(
-                    api_key=bugsnag_api,
-                    app_version=info.CNCHI_VERSION,
-                    project_root='/usr/share/cnchi/cnchi',
-                    release_stage=info.CNCHI_RELEASE_STAGE)
-                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
-                bugsnag_handler.setLevel(logging.WARNING)
-                bugsnag_handler.setFormatter(formatter)
-                bugsnag_handler.addFilter(context_filter.filter)
-                bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
-                logger.addHandler(bugsnag_handler)
-                logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
-            else:
-                logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
+        if log_server == 'bugsnag':
+            if BUGSNAG_AVAILABLE:
+                # Bugsnag logger
+                bugsnag_api = context_filter.api_key
+                if bugsnag_api is not None:
+                    bugsnag.configure(
+                        api_key=bugsnag_api,
+                        app_version=info.CNCHI_VERSION,
+                        project_root='/usr/share/cnchi/cnchi',
+                        release_stage=info.CNCHI_RELEASE_STAGE)
+                    bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
+                    bugsnag_handler.setLevel(logging.WARNING)
+                    bugsnag_handler.setFormatter(formatter)
+                    bugsnag_handler.addFilter(context_filter.filter)
+                    bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
+                    logger.addHandler(bugsnag_handler)
+                    logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
+                else:
+                    logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
