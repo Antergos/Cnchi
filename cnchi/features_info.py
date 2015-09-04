@@ -70,7 +70,7 @@ TITLES = {
 DESCRIPTIONS = {
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
-    'fonts': _("Installation of extra TrueType fonts."),
+    'fonts': _("TrueType fonts from the Google Fonts project."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gamming enthusiasts."),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
@@ -103,11 +103,15 @@ TOOLTIPS = {
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
-    'fonts': _("TrueType is an outline font standard developed by\n"
-               "Apple and Microsoft in the late 1980s as a competitor\n"
-               "to Adobe's Type 1 fonts used in PostScript. It has\n"
-               "become the most common format for fonts on both the\n"
-               "Mac OS and Microsoft Windows operating systems."),
+    'fonts': "Fonts: adobe-source-code-pro, adobe-source-sans-pro, jsmath, lohit\n"
+             "oldstand, openarch, otf-bitter, otf-goudy, andika, anonymous-pro\n"
+             "cantarell, cardo, chromeos-fonts, comfortaa, droid, google-fonts\n"
+             "google-webfonts, inconsolata, kimberly_geswein_print, lekton\n"
+             "medievalsharp, nova, oldstandard, opensans, oxygen, pt-mono\n"
+             "pt-sans, roboto, sil-fonts, sortsmillgoudy, source-code-pro\n"
+             "source-sans-pro, ubuntu-font-family, vollkorn, fira-mono\n"
+             "fira-sans and lato."),
+
     'games': _("Steam is one of the most popular gaming clients that supports\n"
                "linux in technology and gaming, while PlayOnLinux\n"
                "is a very easy manager to setting up games to play\n"

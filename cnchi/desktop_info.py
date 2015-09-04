@@ -76,7 +76,7 @@ FEATURES = {
              "office", "smb"],
     'plasma5': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
                 "office", "smb"],
-    'mate': ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
+    'mate': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
     'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
                       "office", "smb"],
     'base': ["aur", "cups", "fonts", "lamp", "lts"],
