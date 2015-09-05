@@ -8,13 +8,13 @@ You are viewing the `master` branch.
 
 ## Current Status
 
-This is the latest, unreleased Cnchi code that is under active development, AKA: **Cnchi Next**. 
+This is the latest, unreleased Cnchi code that is under active development, AKA: **Cnchi Next**.
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
-|*Cnchi Legacy*|*v0.8.151*|*Frozen*|
-|Cnchi Stable|v0.10.x|Bug Fixes Only|
-|**Cnchi Next**|**v0.11.x** |**Active Development**|
+|*Cnchi Legacy*|*v0.10.x*|*Frozen*|
+|Cnchi Stable|v0.12.x|Bug Fixes Only|
+|**Cnchi Next**|**v0.13.x** |**Active Development**|
 
 ## Usage:
 
@@ -47,7 +47,7 @@ We manage our translations in transifex:
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
  - libtimezonemap (needed by Cnchi 0.6.x and older versions)
- - webkit2gtk 
+ - webkit2gtk
  - hdparm (needed by Cnchi 0.8.35 and older versions)
  - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
@@ -55,9 +55,9 @@ We manage our translations in transifex:
  - iso-codes
  - clutter, clutter-gtk, clutter-gst (user info screen)
  - cheese
- 
+
 ## Unit tests
- - python-mock 
+ - python-mock
 
 ## Fonts needed by the keyboard widget
  - ttf-aboriginal-sans
