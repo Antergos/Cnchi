@@ -37,7 +37,7 @@ except ImportError:
 import os
 
 CLASS_NAME = "Via"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x1106"
 DEVICES = []
 
@@ -46,10 +46,12 @@ class Via(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["xf86-video-openchrome"]
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/10-via.conf")
         with open(path, 'w') as video:
             video.write('Section "Device"\n')

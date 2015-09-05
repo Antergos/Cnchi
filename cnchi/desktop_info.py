@@ -33,7 +33,7 @@
 
 DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxde", "lxqt", "plasma5"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt", "plasma5"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -49,10 +49,9 @@ DIALOG - Size appropriate for dialogs (48px )
 # Descriptive names
 NAMES = {
     'base': "Base",
-    'gnome': "Gnome",
+    'gnome': "GNOME",
     'cinnamon': "Cinnamon",
     'xfce': "Xfce",
-    'lxde': "LXDE",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
     'kde4': "KDE 4",
@@ -61,24 +60,32 @@ NAMES = {
     'mate': "MATE"}
 
 LIBS = {
-    'gtk': ["cinnamon", "enlightenment", "gnome", "lxde", "mate", "openbox", "xfce"],
+    'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "graphic_drivers", "lamp", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
+                "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'gnome' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'kde4' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'plasma5' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'mate' : ["aur", "cups", "firefox", "firewall", "fonts", "lts", "office", "graphic_drivers", "smb"],
-    'enlightenment' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'base' : ["aur", "cups", "fonts", "lamp", "lts"],
-    'openbox' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb", "visual"],
-    'lxde' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'lxqt' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"],
-    'xfce' : ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "graphic_drivers", "lts", "office", "smb"]}
+    'cinnamon': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+                 "office", "smb"],
+    'gnome': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+              "office", "smb"],
+    'kde4': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+             "office", "smb"],
+    'plasma5': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+                "office", "smb"],
+    'mate': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
+    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+                      "office", "smb"],
+    'base': ["aur", "cups", "fonts", "lamp", "lts"],
+    'openbox': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+                "office", "smb", "visual"],
+    'lxqt': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+             "office", "smb"],
+    'xfce': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
+             "office", "smb"]}
 
 # Session names for lightDM setup
 SESSIONS = {
@@ -89,8 +96,7 @@ SESSIONS = {
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
-    'lxde': 'lx-session',  # FIXME: check this!
-    'lxqt': 'lxqt',  # FIXME: check this!
+    'lxqt': 'lx-session',  # FIXME: check this!
     'xfce': 'xfce'}
 
 
@@ -100,7 +106,7 @@ def _(message):
 
 
 DESCRIPTIONS = {
-    'gnome': _("Gnome 3 is an easy and elegant way to use your "
+    'gnome': _("GNOME 3 is an easy and elegant way to use your "
                "computer. It features the Activities Overview which "
                "is an easy way to access all your basic tasks. GNOME 3 is "
                "the default desktop in Antergos."),
@@ -114,11 +120,6 @@ DESCRIPTIONS = {
               "be fast and low on system resources, while remaining visually "
               "appealing and user friendly. It is a great option for use "
               "on older computers or those with low hardware specifications. "),
-
-    'lxde': _("LXDE is an extremely fast-performing and energy-saving desktop "
-              "environment. It uses less CPU and RAM than other environments. "
-              "LXDE is especially designed for cloud computers with low hardware "
-              "specifications such as netbooks, mobile devices, and older computers."),
 
     'openbox': _("Openbox is a highly configurable, next generation window "
                  "manager with extensive standards support. It's default theme "

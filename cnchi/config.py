@@ -42,6 +42,7 @@ class Settings(object):
         self.settings = multiprocessing.Queue(1)
 
         self.settings.put({
+            'alternate_package_list': '',
             'auto_device': '/dev/sda',
             'bootloader': 'grub2',
             'bootloader_device': '/dev/sda',
@@ -56,7 +57,7 @@ class Settings(object):
             'desktop': 'gnome',
             'desktop_ask': True,
             'desktops': [],
-            'download_library': 'requests',
+            'download_module': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
@@ -67,6 +68,7 @@ class Settings(object):
             'feature_firefox': False,
             'feature_firewall': False,
             'feature_fonts': False,
+            'feature_games': False,
             'feature_lamp': False,
             'feature_lemp': False,
             'feature_lts': False,

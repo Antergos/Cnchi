@@ -89,7 +89,8 @@ class Features(GtkBaseBox):
         from hardware.catalyst import Catalyst
         return Catalyst().detect()
 
-    def on_listbox_row_selected(self, listbox, listbox_row):
+    @staticmethod
+    def on_listbox_row_selected(listbox, listbox_row):
         """ Someone selected a different row of the listbox
             WARNING: IF LIST LAYOUT IS CHANGED THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         if listbox_row is not None:
@@ -122,7 +123,7 @@ class Features(GtkBaseBox):
             if feature in features_info.ICON_NAMES:
                 icon_name = features_info.ICON_NAMES[feature]
             else:
-                logging.warning(_("No icon found for feature %s"), feature)
+                logging.debug("No icon found for feature %s", feature)
                 icon_name = "missing"
 
             object_name = "image_" + feature
@@ -232,12 +233,8 @@ class Features(GtkBaseBox):
                     row = self.listbox_rows['bluetooth']
                     row[COL_SWITCH].set_active(True)
             except subprocess.CalledProcessError as process_error:
-                logging.warning(process_error)
-
-        # I do not think firewall should be enabled by default (karasu)
-        # if 'firewall' in self.features:
-        #    row = self.listbox_rows['firewall']
-        #    row[COL_SWITCH].set_active(True)
+                logging.warning("Error checking bluetooth presence. Command %s failed: %s",
+                                process_error.cmd, process_error.output)
 
         if 'cups' in self.features:
             row = self.listbox_rows['cups']
@@ -254,7 +251,7 @@ class Features(GtkBaseBox):
             is_active = row[COL_SWITCH].get_active()
             self.settings.set("feature_" + feature, is_active)
             if is_active:
-                logging.debug(_("Selected '%s' feature to install"), feature)
+                logging.debug("Feature '%s' has been selected", feature)
 
         # Show ufw info message if ufw is selected (show it only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:

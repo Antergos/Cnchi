@@ -35,7 +35,7 @@ except ImportError:
     from hardware import Hardware
 
 CLASS_NAME = "VesaFB"
-CLASS_ID = "0x0300"
+CLASS_ID = "0x03"
 VENDOR_ID = ""
 
 # All modern cards support Vesa. This will be used as a fallback.
@@ -46,7 +46,8 @@ class VesaFB(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["xf86-video-vesa"]
 
     def post_install(self, dest_dir):

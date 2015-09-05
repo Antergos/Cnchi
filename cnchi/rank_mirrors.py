@@ -4,7 +4,7 @@
 #  rank_mirrors.py
 #
 #  Copyright © 2013-2015 Antergos
-#  Copyright © 2012, 2013  Xyne
+#  Copyright © 2012, 2013 Xyne
 #
 #  This file is part of Cnchi.
 #
@@ -70,7 +70,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             try:
                 subprocess.check_call(['sync'])
             except subprocess.CalledProcessError as why:
-                logging.warning(_("Can't synchronize cached writes to persistent storage: %s"), why)
+                logging.warning("Can't synchronize cached writes to persistent storage: %s", why)
 
     def update_mirrorlist(self):
         """ Make sure we have the latest antergos-mirrorlist files """
@@ -84,9 +84,9 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 if os.path.exists(pacnew_path):
                     shutil.copy(pacnew_path, self.antergos_mirrorlist)
             except subprocess.CalledProcessError as why:
-                logging.debug(_('Update of antergos-mirrorlist package failed with error: %s'), why)
+                logging.debug('Update of antergos-mirrorlist package failed with error: %s', why)
             except OSError as why:
-                logging.debug(_('Error copying new mirrorlist files: %s'), why)
+                logging.debug('Error copying new mirrorlist files: %s', why)
         self.sync()
 
     def get_mirror_stats(self):
@@ -155,7 +155,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     with urllib.request.urlopen(req, None, 5) as f:
                         size = len(f.read())
                         dt = time.time() - t0
-                        rate = size / (dt)
+                        rate = size / dt
                 except (OSError, urllib.error.HTTPError, http.client.HTTPException):
                     pass
                 q_out.put((url, rate, dt))
@@ -170,7 +170,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         url_len = 0
         for mirror in mirrors:
             url_len = max(url_len, len(mirror['url']))
-            logging.debug(_("Rating mirror '%s'"), mirror['url'])
+            logging.debug("Rating mirror '%s'", mirror['url'])
             q_in.put(mirror['url'])
 
         q_in.join()
@@ -240,7 +240,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                         with open(self.antergos_mirrorlist, 'w') as antergos_mirrorlist_file:
                             antergos_mirrorlist_file.write(temp_file.read())
                 except subprocess.CalledProcessError as why:
-                    logging.debug(_('Error running rankmirrors on Antergos mirrorlist: %s'), why)
+                    logging.debug('Error running rankmirrors on Antergos mirrorlist: %s', why)
             self.sync()
 
     def filter_and_sort_arch_mirrorlist(self):
@@ -265,16 +265,16 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         while not misc.has_connection():
             time.sleep(4)  # Delay, try again after 4 seconds
 
-        logging.debug(_("Updating both mirrorlists (Arch and Antergos)..."))
+        logging.debug("Updating both mirrorlists (Arch and Antergos)...")
         self.update_mirrorlist()
 
-        logging.debug(_("Filtering and sorting Arch mirrors..."))
+        logging.debug("Filtering and sorting Arch mirrors...")
         self.filter_and_sort_arch_mirrorlist()
 
-        logging.debug(_("Running rankmirrors command to sort Antergos mirrors..."))
+        logging.debug("Running rankmirrors command to sort Antergos mirrors...")
         self.run_rankmirrors()
 
-        logging.debug(_("Auto mirror selection has been run successfully."))
+        logging.debug("Auto mirror selection has been run successfully.")
 
 
 if __name__ == '__main__':

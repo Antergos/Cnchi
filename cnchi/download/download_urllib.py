@@ -42,7 +42,7 @@ def url_open(url):
     """ Helper function to open a remote file """
 
     if url is None:
-        logging.warning(_("Wrong url, will try another one if available."))
+        logging.debug("Wrong url, will try another one if available.")
         return None
 
     # Remove trailing spaces or new lines at the end of the string
@@ -52,19 +52,19 @@ def url_open(url):
         urlp = urllib.request.urlopen(url)
     except urllib.error.HTTPError as err:
         urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+        msg = "Can't open {0} - Reason: {1}".format(url, err.reason)
         logging.warning(msg)
     except urllib.error.URLError as err:
         urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err.reason)
+        msg = "Can't open {0} - Reason: {1}".format(url, err.reason)
         logging.warning(msg)
     except http.client.BadStatusLine as err:
         urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err)
+        msg = "Can't open {0} - Reason: {1}".format(url, err)
         logging.warning(msg)
     except AttributeError as err:
         urlp = None
-        msg = _("Can't open {0} - Reason: {1}").format(url, err)
+        msg = "Can't open {0} - Reason: {1}".format(url, err)
         logging.warning(msg)
 
     return urlp
@@ -80,10 +80,10 @@ def url_open_read(urlp, chunk_size=8192):
         data = urlp.read(chunk_size)
         download_error = False
     except urllib.error.HTTPError as err:
-        msg = _('HTTP Error : {0}').format(err.reason)
+        msg = 'HTTP Error : {0}'.format(err.reason)
         logging.error(msg)
     except urllib.error.URLError as err:
-        msg = _('URL Error : {0}').format(err.reason)
+        msg = 'URL Error : {0}'.format(err.reason)
         logging.error(msg)
 
     return data, download_error
@@ -125,7 +125,7 @@ class Download(object):
             try:
                 total_length = int(element['size'])
             except TypeError:
-                logging.warning(_("Metalink for package %s has no size info"), element['identity'])
+                logging.warning("Metalink for package %s has no size info", element['identity'])
                 total_length = 0
 
             # If the user doesn't give us a cache dir to copy xz files from, self.cache_dir will be None
@@ -140,21 +140,20 @@ class Download(object):
 
             if os.path.exists(dst_path):
                 # File already exists (previous install?) do not download
-                logging.warning(_("File %s already exists, Cnchi will not overwrite it"), element['filename'])
+                logging.debug("File %s already exists, Cnchi will not overwrite it", element['filename'])
                 needs_to_download = False
                 downloaded += 1
             elif self.cache_dir and os.path.exists(dst_cache_path):
                 # We're lucky, the package is already downloaded in the cache the user has given us
                 # let's copy it to our destination
-                logging.debug(_('%s found in iso pkg cache. Copying...'), element['filename'])
+                logging.debug('%s found in iso pkg cache. Copying...', element['filename'])
                 try:
                     shutil.copy(dst_cache_path, dst_path)
                     needs_to_download = False
                     downloaded += 1
                 except OSError as os_error:
-                    logging.warning(_("Error copying %s to %s. Cnchi will try to download it"),
-                                    dst_cache_path, dst_path)
-                    logging.error(os_error)
+                    logging.debug("Error copying %s to %s, so cnchi will try to download it", dst_cache_path, dst_path)
+                    logging.debug(os_error)
                     needs_to_download = True
 
             if needs_to_download:
@@ -189,21 +188,21 @@ class Download(object):
                                 # else:
                                 # try next mirror url
                                 # completed_length = 0
-                                # msg = _("Can't download {0}, will try another mirror if available").format(url)
+                                # msg = "Can't download {0}, will try another mirror if available".format(url)
                                 # logging.warning(msg)
                                 # else:
                                 #    # try next mirror url
-                                #    msg = _("Can't open {0}, will try another mirror if available").format(url)
+                                #    msg = "Can't open {0}, will try another mirror if available".format(url)
                                 #    logging.warning(msg)
 
                 if download_error:
                     # None of the mirror urls works.
                     # This is not a total disaster, maybe alpm will be able
                     # to download it for us later in pac.py
-                    msg = _("Can't download {0}, even after trying all available mirrors")
+                    msg = "Can't download {0}, even after trying all available mirrors"
                     msg = msg.format(element['filename'])
                     all_successful = False
-                    logging.warning(msg)
+                    logging.error(msg)
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))

@@ -8,13 +8,13 @@ You are viewing the `master` branch.
 
 ## Current Status
 
-This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
+This is the latest, unreleased Cnchi code that is under active development, AKA: **Cnchi Next**. 
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
 |*Cnchi Legacy*|*v0.8.151*|*Frozen*|
-|**Cnchi Stable**|**v0.10.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.11.x | Active Development|
+|Cnchi Stable|v0.10.x|Bug Fixes Only|
+|**Cnchi Next**|**v0.11.x** |**Active Development**|
 
 ## Usage:
 

@@ -12,12 +12,11 @@ _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _CACHE="/var/cache/pacman/pkg"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v"
-_LOG_SERVER="-s bugsnag"
+_CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -c $_CACHE -p $_XML $_LOG_SERVER $1 $2 $3 $4
+sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -c $_CACHE -p $_XML $1 $2 $3 $4
 

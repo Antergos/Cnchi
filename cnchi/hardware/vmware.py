@@ -45,8 +45,10 @@ class Vmware(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         super().chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)

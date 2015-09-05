@@ -26,7 +26,6 @@
         <pkgname>pkgfile</pkgname>
         <pkgname>sudo</pkgname>
         <pkgname>tar</pkgname>
-        <pkgname>transmission-cli</pkgname>
         <pkgname>unzip</pkgname>
         <pkgname>unrar</pkgname>
         <pkgname>usb_modeswitch</pkgname>
@@ -42,9 +41,9 @@
       <packages>
         <pkgname>accountsservice</pkgname>
         <pkgname>antergos-wallpapers</pkgname>
-        <!--<pkgname>antergos-welcome</pkgname> -->
+        <pkgname>antergos-welcome</pkgname>
         <pkgname>chromium</pkgname>
-        <pkgname conflicts="firefox">chromium-pepper-flash</pkgname>
+        <pkgname>chromium-pepper-flash</pkgname>
         <pkgname>ffmpegthumbnailer</pkgname>
         <pkgname>gst-libav</pkgname>
         <pkgname>gst-plugins-bad</pkgname>
@@ -64,7 +63,6 @@
         <pkgname lib='gtk'>numix-icon-theme-square</pkgname>
         <pkgname>pamac</pkgname>
         <pkgname>pavucontrol</pkgname>
-        <!-- <pkgname>python-simplejson</pkgname>  Needed by Antergos Welcome screen -->
         <pkgname>pulseaudio</pkgname>
         <pkgname>pulseaudio-alsa</pkgname>
         <pkgname>ttf-bitstream-vera</pkgname>
@@ -204,6 +202,7 @@
       <packages>
         <pkgname>cdrkit</pkgname>
         <pkgname>evince</pkgname>
+        <pkgname>file-roller</pkgname>
         <pkgname>gamin</pkgname>
         <pkgname>gnome-calculator</pkgname>
         <pkgname>gnome-disk-utility</pkgname>
@@ -290,15 +289,17 @@
 
     <edition name="Enlightenment" description="Enlightenment Desktop">
       <packages>
+        <pkgname>antergos-enlightenment-setup</pkgname>
         <pkgname>enlightenment</pkgname>
-        <pkgname>gksu</pkgname>
+        <pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
+        <pkgname>econnman</pkgname>
+        <pkgname>file-roller</pkgname>
         <pkgname>gtk-theme-e17gtk</pkgname>
-        <pkgname nm='true' name='NetworkManager' conflicts='netctl'>connman</pkgname>
         <pkgname>polkit-gnome</pkgname>
-        <pkgname>pragha</pkgname>
+        <pkgname>rage</pkgname> <!-- video player -->
         <pkgname>terminology</pkgname> <!-- terminal emulator -->
+        <pkgname>transmission-gtk</pkgname>
         <pkgname>xdg-user-dirs-gtk</pkgname>
-        <pkgname>xfburn</pkgname>
       </packages>
     </edition>
 
@@ -324,11 +325,11 @@
         <pkgname>lxtask</pkgname>
         <pkgname>lxsession</pkgname>
         <pkgname>lxterminal</pkgname>
+        <pkgname>mousepad</pkgname>
         <pkgname>nitrogen</pkgname>
         <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
         <pkgname>networkmanager-openvpn</pkgname>
         <pkgname>networkmanager-pptp</pkgname>
-        <pkgname>mousepad</pkgname>
         <pkgname>obconf</pkgname>
         <pkgname>oblogout</pkgname>
         <pkgname>obmenu</pkgname>
@@ -359,26 +360,31 @@
 
     <edition name="KDE4" description="KDE 4 Desktop">
       <packages>
+        <pkgname>antergos-kde-setup</pkgname>
+        <pkgname>ark</pkgname>
         <pkgname>aspell-en</pkgname>
         <pkgname>breeze-kde4</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
+        <pkgname>dolphin</pkgname>
+        <pkgname>dolphin-plugins</pkgname>
         <pkgname>dvd+rw-tools</pkgname>
         <pkgname>grub2-editor</pkgname>
+        <pkgname>gwenview</pkgname>
         <pkgname>k3b</pkgname>
+        <pkgname>kate</pkgname>
+        <pkgname>kcalc</pkgname>
         <pkgname>kde-gtk-config</pkgname>
         <pkgname>kdeadmin-kuser</pkgname>
         <pkgname>kdeartwork-desktopthemes</pkgname>
         <pkgname>kdeartwork-iconthemes</pkgname>
         <pkgname>kdeartwork-kscreensaver</pkgname>
         <pkgname>kdeartwork-styles</pkgname>
-        <pkgname>dolphin</pkgname>
         <pkgname>kdebase-kdepasswd</pkgname>
         <pkgname>kdebase-kdialog</pkgname>
         <pkgname>kdebase-kfind</pkgname>
         <pkgname>konsole</pkgname>
         <pkgname>kdebase-plasma</pkgname>
-        <pkgname>gwenview</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
@@ -389,16 +395,13 @@
         <pkgname>kde-servicemenus-rootactions</pkgname>
         <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
         <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
-        <pkgname>dolphin-plugins</pkgname>
-        <pkgname>kate</pkgname>
-        <pkgname>kcalc</pkgname>
         <pkgname>kdesudo</pkgname>
-        <pkgname>ark</pkgname>
         <pkgname>kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
         <pkgname>kwebkitpart</pkgname>
+        <pkgname>nm-connection-editor</pkgname>
         <pkgname>numix-icon-theme-square-kde</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
@@ -413,14 +416,20 @@
 
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
+          <pkgname>antergos-kde-setup</pkgname>
+          <pkgname>ark</pkgname>
           <pkgname>aspell-en</pkgname>
           <pkgname>breeze-kde4</pkgname>
           <pkgname>cdrdao</pkgname>
           <pkgname>clementine</pkgname>
+          <pkgname>dolphin</pkgname>
+          <pkgname>dolphin-plugins</pkgname>
           <pkgname>dvd+rw-tools</pkgname>
           <pkgname>grub2-editor</pkgname>
           <pkgname>k3b</pkgname>
           <pkgname>gwenview</pkgname>
+          <pkgname>kate</pkgname>
+          <pkgname>kcalc</pkgname>
           <pkgname>kdegraphics-ksnapshot</pkgname>
           <pkgname>kdegraphics-okular</pkgname>
           <pkgname>kdegraphics-thumbnailers</pkgname>
@@ -428,10 +437,7 @@
           <pkgname>kmix</pkgname>
           <pkgname>kdenetwork-filesharing</pkgname>
           <pkgname>kdenetwork-kopete</pkgname>
-          <pkgname>kate</pkgname>
           <pkgname>kdesudo</pkgname>
-          <pkgname>ark</pkgname>
-          <pkgname>kcalc</pkgname>
           <pkgname>kwalletmanager</pkgname>
           <pkgname>kdeutils-sweeper</pkgname>
           <pkgname>kf5</pkgname>
@@ -440,9 +446,9 @@
           <pkgname>kinfocenter</pkgname>
           <pkgname>konsole</pkgname>
           <pkgname>kwrited</pkgname>
+          <pkgname>nm-connection-editor</pkgname>
           <pkgname>numix-icon-theme-square-kde</pkgname>
-          <pkgname>dolphin</pkgname>
-          <pkgname>plasma</pkgname><!--plasma group-->
+          <pkgname>plasma</pkgname>  <!--plasma group-->
           <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
           <pkgname>transmission-qt</pkgname>
           <pkgname>vlc</pkgname>
@@ -460,10 +466,15 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
-      <pkgname lib='qt'>bluedevil4</pkgname>  <!--kde4-->
-      <pkgname lib='qt' qt5="True">bluedevil</pkgname><!--kde5 (plasma)-->
+      <pkgname desktops='mate'>blueman</pkgname>
+      <pkgname desktops='cinnamon'>blueberry</pkgname>
+      <pkgname desktops='kde4,lxqt'>bluedevil4</pkgname>
+      <pkgname desktops='plasma5'>bluedevil</pkgname>
       <pkgname>bluez-utils</pkgname>
-      <pkgname lib='gtk'>gnome-bluetooth</pkgname>
+      <pkgname desktops='cinnamon,gnome'>gnome-bluetooth</pkgname>
+      <pkgname>pulseaudio-bluetooth</pkgname>
+      <pkgname desktops='mate'>python2-pybluez</pkgname>
+      <pkgname desktops='mate'>sbc</pkgname>
     </feature>
     <feature name="cups">
       <pkgname>cups</pkgname>
@@ -477,7 +488,8 @@
       <pkgname>splix</pkgname>
     </feature>
     <feature name="firefox">
-        <pkgname conflicts="chromium">firefox</pkgname>
+        <pkgname conflicts="chromium,chromium-pepper-flash">firefox</pkgname>
+        <pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>
@@ -488,8 +500,12 @@
       <pkgname>ttf-freefont</pkgname>
       <pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
     </feature>
+    <feature name="games">
+      <pkgname>steam</pkgname>
+      <pkgname>playonlinux</pkgname>
+    </feature>
     <feature name="lts">
-        <pkgname>linux-lts</pkgname>
+      <pkgname>linux-lts</pkgname>
     </feature>
     <feature name="office">
       <!-- There're now two libreoffice branches, fresh and still

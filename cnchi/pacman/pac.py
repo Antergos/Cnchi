@@ -111,10 +111,7 @@ class Pac(object):
 
         self.handle = pyalpm.Handle(root_dir, db_path)
 
-        logging.debug(
-            _("alpm init with root dir '{0}' and db path '{1}'").format(
-                root_dir,
-                db_path))
+        logging.debug("ALPM initialised with root dir %s and db path %s", root_dir, db_path)
 
         if self.handle is None:
             raise pyalpm.error
@@ -155,18 +152,18 @@ class Pac(object):
         """ Commit a transaction """
         all_ok = True
         try:
-            logging.debug(_("Prepare alpm transaction..."))
+            logging.debug("Prepare alpm transaction...")
             transaction.prepare()
-            logging.debug(_("Commit alpm transaction..."))
+            logging.debug("Commit alpm transaction...")
             transaction.commit()
         except pyalpm.error as pyalpm_error:
             msg = _("Can't finalize alpm transaction: %s")
             logging.error(msg, pyalpm_error)
             all_ok = False
         finally:
-            logging.debug(_("Releasing alpm transaction..."))
+            logging.debug("Releasing alpm transaction...")
             transaction.release()
-            logging.debug(_("Alpm transaction done."))
+            logging.debug("Alpm transaction done.")
             return all_ok
 
     def init_transaction(self, options=None):
@@ -192,8 +189,7 @@ class Pac(object):
                 alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
                 allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT))
         except pyalpm.error as pyalpm_error:
-            msg = _("Can't init alpm transaction: %s")
-            logging.error(msg, pyalpm_error)
+            logging.error("Can't init alpm transaction: %s", pyalpm_error)
         finally:
             return transaction
 
@@ -220,8 +216,11 @@ class Pac(object):
             help = "a list of packages, e.g. libreoffice, openjdk6")
     '''
 
-    def remove(self, pkg_names, options={}):
+    def remove(self, pkg_names, options=None):
         """ Removes a list of package names """
+
+        if not options:
+            options = {}
 
         # Prepare target list
         targets = []
@@ -229,18 +228,18 @@ class Pac(object):
         for pkg_name in pkg_names:
             pkg = db.get_pkg(pkg_name)
             if pkg is None:
-                logging.error(_("Target %s not found"), pkg_name)
+                logging.error("Target %s not found", pkg_name)
                 return False
             targets.append(pkg)
 
         transaction = self.init_transaction(options)
 
         if transaction is None:
-            logging.error(_("Can't init transaction"))
+            logging.error("Can't init transaction")
             return False
 
         for pkg in targets:
-            logging.debug(_("Adding package '%s' to remove transaction"), pkg.name)
+            logging.debug("Adding package '%s' to remove transaction", pkg.name)
             transaction.remove_pkg(pkg)
 
         return self.finalize_transaction(transaction)
@@ -248,7 +247,7 @@ class Pac(object):
     def refresh(self):
         """ Sync databases like pacman -Sy """
         if self.handle is None:
-            logging.error(_("alpm is not initialised"))
+            logging.error("alpm is not initialised")
             raise pyalpm.error
 
         force = True
@@ -262,17 +261,21 @@ class Pac(object):
                 res = False
         return res
 
-    def install(self, pkgs, conflicts=[], options={}):
+    def install(self, pkgs, conflicts=None, options=None):
         """ Install a list of packages like pacman -S """
+
+        if not conflicts:
+            conflicts = []
+        if not options:
+            options = {}
+
         if self.handle is None:
-            logging.error(_("alpm is not initialised"))
+            logging.error("alpm is not initialised")
             raise pyalpm.error
 
         if len(pkgs) == 0:
-            logging.error(_("Package list is empty"))
+            logging.error("Package list is empty")
             raise pyalpm.error
-
-        logging.debug(_("Cnchi will install a list of packages like pacman -S"))
 
         # Discard duplicates
         pkgs = list(set(pkgs))
@@ -300,13 +303,13 @@ class Pac(object):
                 else:
                     # No, it wasn't neither a package nor a group. As we don't know if
                     # this error is fatal or not, we'll register it and we'll allow to continue.
-                    logging.error(_("Can't find a package or group called '%s'"), name)
+                    logging.error("Can't find a package or group called '%s'", name)
 
         # Discard duplicates
         targets = list(set(targets))
 
         if len(targets) == 0:
-            logging.error(_("No targets found"))
+            logging.error("No targets found")
             return False
 
         num_targets = len(targets)
@@ -319,13 +322,12 @@ class Pac(object):
         transaction = self.init_transaction(options)
 
         if transaction is None:
-            logging.error(_("Can't init transaction"))
+            logging.error("Can't initialize alpm transaction")
             return False
 
         for i in range(0, num_targets):
             ok, pkg = self.find_sync_package(targets.pop(), repos)
             if ok:
-                # logging.debug(_("Adding package '%s' to install transaction"), pkg.name)
                 transaction.add_pkg(pkg)
             else:
                 logging.warning(pkg)
@@ -352,8 +354,10 @@ class Pac(object):
                 return pkgs
         return None
 
-    def get_packages_info(self, pkg_names=[]):
+    def get_packages_info(self, pkg_names=None):
         """ Get information about packages like pacman -Si """
+        if not pkg_names:
+            pkg_names = []
         packages_info = {}
         if len(pkg_names) == 0:
             # Store info from all packages from all repos
@@ -490,13 +494,12 @@ class Pac(object):
         elif level & pyalpm.LOG_WARNING:
             logging.warning(line)
         elif level & pyalpm.LOG_DEBUG:
-            # I get pyalpm errors here. Why?
+            # I get pyalpm errors here. Why? I think it's because they're not fatal
             # Check against error 0 as it is not an error :p
-            # There are a lot of "extracting" messages (not very useful). I do not show them.
+            # There are a lot of "extracting" messages (not very useful), so we do not log them.
 
-            # TODO: Check that we don't show normal debug messages as errors (or viceversa)
             if " error " in line and "error 0" not in line:
-                logging.error(line)
+                logging.debug(line)
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
 
@@ -551,7 +554,6 @@ class Pac(object):
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
-                # logging.debug("filename [%s], tx [%d], total [%d]", filename, tx, total)
                 self.last_dl_progress = progress
                 self.queue_event('percent', progress)
 

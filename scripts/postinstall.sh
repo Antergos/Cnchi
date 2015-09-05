@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-
 # -*- coding: utf-8 -*-
 #
 #  postinstall.sh
@@ -10,7 +9,7 @@
 #
 #  Cnchi is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
+#  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
 #  Cnchi is distributed in the hope that it will be useful,
@@ -18,10 +17,14 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 set_xorg()
 {
@@ -57,7 +60,7 @@ gnome_settings()
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
-    ## Set defaults directories
+    ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # xscreensaver config
@@ -109,7 +112,7 @@ cinnamon_settings()
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
 
-    ## Set defaults directories
+    ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Populate our wallpapers in Cinnamon Settings
@@ -138,7 +141,7 @@ xfce_settings()
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
-    ## Set defaults directories
+    ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 
     # Set xfce in .dmrc
@@ -168,13 +171,6 @@ openbox_settings()
     # Setup user defaults
     chroot ${DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${USER_NAME}
 
-    # Set settings
-    cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
-    mkdir -p ${DESTDIR}/var/run/dbus
-    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
-    rm ${DESTDIR}/usr/bin/set-settings
-
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
@@ -189,67 +185,13 @@ openbox_settings()
     rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 }
 
-lxde_settings()
-{
-    # FIXME: This is just a copy of openbox settings.
-    # TODO: Adapt this to LXDE
-
-    # Copy antergos menu icon
-    mkdir -p ${DESTDIR}/usr/share/antergos/
-    cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
-
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    wget -q -O /tmp/master.zip "https://github.com/Antergos/openbox-setup/archive/master.zip"
-    unzip -o -qq /tmp/master.zip -d /tmp
-
-    ## Copy slim theme
-    #mkdir -p ${DESTDIR}/usr/share/slim/themes/antergos-slim
-    #cp ${DESTDIR}/tmp/openbox-setup-master/antergos-slim/* ${DESTDIR}/usr/share/slim/themes/antergos-slim
-
-    # Copy home files
-    cp /tmp/openbox-setup-master/gtkrc-2.0 ${DESTDIR}/home/${USER_NAME}/.gtkrc-2.0
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.gtkrc-2.0
-    cp /tmp/openbox-setup-master/xinitrc ${DESTDIR}/home/${USER_NAME}/.xinitrc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.xinitrc
-
-    # Copy .config files
-    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
-    cp -R /tmp/openbox-setup-master/config/* ${DESTDIR}/home/${USER_NAME}/.config
-
-    # Copy /etc setup files
-    cp -R /tmp/openbox-setup-master/etc/* ${DESTDIR}/etc
-    chroot ${DESTDIR} chown -R ${USER_NAME}:users /home/${USER_NAME}/.config
-
-    # Copy oblogout icons
-    mkdir -p ${DESTDIR}/usr/share/themes/Numix/oblogout
-    cp -R /tmp/openbox-setup-master/oblogout/* ${DESTDIR}/usr/share/themes/Numix/oblogout
-
-    # Set settings
-    cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
-    mkdir -p ${DESTDIR}/var/run/dbus
-    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
-    rm ${DESTDIR}/usr/bin/set-settings
-
-    # Set skel directory
-    cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
-
-    ## Set defaults directories
-    #chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
-
-    # Set openbox in .dmrc
-    echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
-    echo "Session=openbox" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
-    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
-}
-
 lxqt_settings()
 {
     # Set theme
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.config/razor/razor-panel
     echo "[General]" > ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
     echo "__userfile__=true" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
-    echo "icon_theme=Faenza" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
+    echo "icon_theme=Numix" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
     echo "theme=ambiance" >> ${DESTDIR}/home/${USER_NAME}/.config/razor/razor.conf
 
     # Set panel launchers
@@ -285,25 +227,28 @@ kde4_settings()
     # Force QtCurve to use our theme
     rm -R ${DESTDIR}/usr/share/apps/QtCurve/
 
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
-    #xz -d -qq /tmp/master.tar.xz
-    #cd ${DESTDIR}
-    cd /tmp
-    tar xfJ /tmp/master.tar.xz
-    chown -R root:root /tmp/etc
-    chown -R root:root /tmp/usr
-    cp -R /tmp/etc/* ${DESTDIR}/etc
-    cp -R /tmp/usr/* ${DESTDIR}/usr
+    # Setup user defaults
+    chroot ${DESTDIR} /usr/share/antergos-kde-setup/install.sh ${USER_NAME}
+
+    ## # Get zip file from github, unzip it and copy all setup files in their right places.
+    ## wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
+    ## #xz -d -qq /tmp/master.tar.xz
+    ## #cd ${DESTDIR}
+    ## cd /tmp
+    ## tar xfJ /tmp/master.tar.xz
+    ## chown -R root:root /tmp/etc
+    ## chown -R root:root /tmp/usr
+    ## cp -R /tmp/etc/* ${DESTDIR}/etc
+    ## cp -R /tmp/usr/* ${DESTDIR}/usr
 
     # Set User & Root environments
-    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
-    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
-    cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+    ## cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
+    ## cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    ## cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+    ## chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
     cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
     cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
     cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/root
-    chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
     chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
     # When applications transition to Qt5 they will look for config files in the standardized (XDG) locations. Create
@@ -332,7 +277,7 @@ kde4_settings()
         link_config apps: conf:kdeglobals;
     done
 
-    ## Set defaults directories
+    ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
@@ -346,28 +291,31 @@ plasma5_settings()
     # Force QtCurve to use our theme
     #rm -R ${DESTDIR}/usr/share/apps/QtCurve/
 
-    # Get zip file from github, unzip it and copy all setup files in their right places.
-    wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
-    #xz -d -qq /tmp/master.tar.xz
-    #cd ${DESTDIR}
-    cd /tmp
-    tar xfJ /tmp/master.tar.xz
-    chown -R root:root /tmp/etc
-    chown -R root:root /tmp/usr
-    cp -R /tmp/etc/* ${DESTDIR}/etc
-    cp -R /tmp/usr/* ${DESTDIR}/usr
+    # Setup user defaults
+    chroot ${DESTDIR} /usr/share/antergos-kde-setup/install.sh ${USER_NAME}
 
-    # Set User & Root environments
-    cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
-    cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
-    cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+    ## # Get zip file from github, unzip it and copy all setup files in their right places.
+    ## wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
+    ## #xz -d -qq /tmp/master.tar.xz
+    ## #cd ${DESTDIR}
+    ## cd /tmp
+    ## tar xfJ /tmp/master.tar.xz
+    ## chown -R root:root /tmp/etc
+    ## chown -R root:root /tmp/usr
+    ## cp -R /tmp/etc/* ${DESTDIR}/etc
+    ## cp -R /tmp/usr/* ${DESTDIR}/usr
+
+    ## # Set User & Root environments
+    ## cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/home/${USER_NAME}
+    ## cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/home/${USER_NAME}
+    ## cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/home/${USER_NAME}
+    ## chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
     cp -R ${DESTDIR}/etc/skel/.config ${DESTDIR}/root
     cp -R ${DESTDIR}/etc/skel/.kde4 ${DESTDIR}/root
     cp ${DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${DESTDIR}/root
-    chroot ${DESTDIR} "ln -s /home/${USER_NAME}/.gtkrc-2.0-kde4 /home/${USER_NAME}/.gtkrc-2.0" ${USER_NAME}
     chroot ${DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
-    ## Set defaults directories
+    ## Set default directories
     chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
 }
 
@@ -420,7 +368,51 @@ nox_settings()
 enlightenment_settings()
 {
     # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
-    echo "TODO"
+    # copy antergos menu icon
+    mkdir -p ${DESTDIR}/usr/share/antergos/
+    cp /usr/share/antergos/antergos-menu.png ${DESTDIR}/usr/share/antergos/antergos-menu.png
+
+    # Setup user defaults
+    chroot ${DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${USER_NAME}
+
+    # Set Keyboard layout
+    E_CFG="/home/${USER_NAME}/.e/e/config/standard/e.cfg"
+    E_SRC="/home/${USER_NAME}/.e/e/config/standard/e.src"
+
+    ${DESTDIR}/usr/bin/eet -d ${E_CFG} config ${E_SRC}
+    sed -i 's/"us"/"${KEYBOARD_LAYOUT}"/' ${E_SRC}
+  	if [[ "${KEYBOARD_VARIANT}" != '' ]]; then
+  			sed -i 's/"basic"/"${KEYBOARD_VARIANT}"/' ${E_SRC}
+  	fi
+    ${DESTDIR}/usr/bin/eet -e ${E_CFG} config ${E_SRC} 1
+
+    # Set settings
+    cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
+    mkdir -p ${DESTDIR}/var/run/dbus
+    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    rm ${DESTDIR}/usr/bin/set-settings
+
+    # Set skel directory
+    cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
+
+    # Set default directories
+    chroot ${DESTDIR} su -c xdg-user-dirs-update ${USER_NAME}
+
+    # Set enlightenment in .dmrc
+    echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
+    echo "Session=enlightenment" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
+    chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
+
+    echo "QT_STYLE_OVERRIDE=gtk" >> ${DESTDIR}/etc/environment
+
+    # Add lxpolkit to autostart apps
+    cp /etc/xdg/autostart/lxpolkit.desktop ${DESTDIR}/home/${USER_NAME}/.config/autostart
+
+    # xscreensaver config
+    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
+    cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
+    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 }
 
 postinstall()

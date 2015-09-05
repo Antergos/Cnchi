@@ -110,18 +110,6 @@ class Welcome(GtkBaseBox):
     def on_tryit_button_clicked(self, widget, data=None):
         self.quit_cnchi()
 
-    def on_cli_button_clicked(self, widget, data=None):
-        pass
-        '''
-        try:
-            subprocess.Popen(["antergos-wrap"])
-            self.quit_cnchi()
-        except Exception as general_error:
-            msg = str(general_error)
-            logging.error(msg)
-            show.error(self.get_toplevel(), msg)
-        '''
-
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()
         # Tell timezone process to start searching now

@@ -36,8 +36,8 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "Nvidia_304xx"
-CLASS_ID = "0x0300"
+CLASS_NAME = "Nvidia304xx"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x10de"
 PRIORITY = 0
 
@@ -51,7 +51,7 @@ For GeForce 6000/7000 series cards [NV4x and NV6x] from around 2004-2006, instal
     available in the official repositories.
 """
 
-DEVICES=[
+DEVICES = [
     "0x0040", "0x0041", "0x0042", "0x0043", "0x0044", "0x0045", "0x0046",
     "0x0047", "0x0048", "0x004e", "0x0090", "0x0091", "0x0092", "0x0093",
     "0x0095", "0x0098", "0x0099", "0x009d", "0x00c0", "0x00c1", "0x00c2",
@@ -129,17 +129,19 @@ DEVICES=[
     "0x124d", "0x1251"]
 
 
-class Nvidia_304xx(Hardware):
+class Nvidia304xx(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         pkgs = ["nvidia-304xx", "nvidia-304xx-utils", "nvidia-304xx-libgl", "libvdpau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nvidia-304xx-libgl", "lib32-libvdpau"])
         return pkgs
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
         with open(path, 'w') as nvidia:
             nvidia.write('Section "Device"\n')
@@ -149,5 +151,6 @@ class Nvidia_304xx(Hardware):
             nvidia.write('    Option "NoLogo" "true"\n')
             nvidia.write('EndSection\n')
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

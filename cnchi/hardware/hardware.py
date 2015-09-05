@@ -55,7 +55,8 @@ class Hardware(object):
         """ This method runs commands that need to be run AFTER installing the driver """
         raise NotImplementedError("post_install is not implemented")
 
-    def pre_install(self, dest_dir):
+    @staticmethod
+    def pre_install(dest_dir):
         """ This method runs commands that need to run BEFORE installing the driver """
         pass
 
@@ -78,7 +79,7 @@ class Hardware(object):
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                class_id = "0x{0}".format(line.split()[1].rstrip(":"))
+                class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
                 if class_id == self.class_id:
                     dev = line.split()[2].split(":")
                     vendor_id = "0x{0}".format(dev[0])
@@ -87,7 +88,8 @@ class Hardware(object):
                         return True
         return False
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         """ Proprietary drivers are drivers for your hardware devices
             that are not freely-available or open source, and must be
             obtained from the hardware manufacturer. """
@@ -95,7 +97,7 @@ class Hardware(object):
 
     def is_graphic_driver(self):
         """ Tells us if this is a graphic driver or not """
-        if self.class_id == "0x0300":
+        if self.class_id == "0x03":
             return True
         else:
             return False
@@ -122,7 +124,7 @@ class Hardware(object):
             out = proc.communicate()[0]
             logging.debug(out.decode())
         except OSError as err:
-            logging.error(_("Error running command: %s"), err.strerror)
+            logging.error("Error running command: %s", err.strerror)
 
     def __str__(self):
         return "class name: {0}, class id: {1}, vendor id: {2}, product id: {3}".format(
@@ -141,12 +143,14 @@ class Hardware(object):
                 self.class_name]
             try:
                 subprocess.check_call(cmd, timeout=300)
-                logging.debug(_("%s completed successfully."), script_path)
+                logging.debug("Script '%s' completed successfully.", script_path)
             except subprocess.CalledProcessError as process_error:
                 # Even though Post-install script call has failed we will try to continue with the installation.
-                logging.error(_("Error running %s script"), script_path)
-                logging.error(_("Command %s failed"), process_error.cmd)
-                logging.error(_("Output: %s"), process_error.output)
+                logging.error(
+                    "Error running %s script, command %s failed. Output %s",
+                    script_path,
+                    process_error.cmd,
+                    process_error.output)
             except subprocess.TimeoutExpired as timeout_error:
                 logging.error(timeout_error)
 
@@ -176,7 +180,8 @@ class HardwareInstall(object):
         # We scan the folder for py files.
         # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
-            if filename.endswith(".py") and "__init__" not in filename and "hardware" not in filename:
+            non_valid = ["__init__.py", "hardware.py"]
+            if filename.endswith(".py") and filename not in non_valid:
                 filename = filename[:-len(".py")]
                 name = ""
                 try:
@@ -190,15 +195,20 @@ class HardwareInstall(object):
                     obj = getattr(__import__(package, fromlist=[class_name]), class_name)()
                     self.all_objects.append(obj)
                 except ImportError as err:
-                    logging.error(_("Error importing %s from %s : %s"), name, package, err)
+                    logging.error("Error importing %s from %s : %s", name, package, err)
                 except Exception as err:
-                    logging.error(_("Unexpected error importing %s: %s"), package, err)
+                    logging.error("Unexpected error importing %s: %s", package, err)
 
-        # Detect devices
-        devices = self.get_devices()
+        try:
+            # Detect devices
+            devices = self.get_devices()
+        except subprocess.CalledProcessError as process_error:
+            txt = "Unable scan devices, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+            logging.error(txt)
+            return
 
         logging.debug(
-            _("Cnchi will test %d drivers for %d hardware devices"),
+            "Cnchi will test %d drivers for %d hardware devices",
             len(self.all_objects),
             len(devices))
 
@@ -266,19 +276,20 @@ class HardwareInstall(object):
                 # Only one option, add it (it doesn't matter if it's open or not)
                 self.objects_used.append(drivers_available[0])
 
-    def get_devices(self):
+    @staticmethod
+    def get_devices():
         devices = []
 
         # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
-                class_id = line.split()[1].rstrip(":")
+                class_id = line.split()[1].rstrip(":")[0:2]
                 dev = line.split()[2].split(":")
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
-        lines = subprocess.check_output(["lsusb"]).decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lsusb"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")
@@ -316,8 +327,8 @@ class HardwareInstall(object):
 ''' Test case '''
 if __name__ == "__main__":
     def _(x): return x
-    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
-    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
+    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
+    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
     print(hardware_install.get_found_driver_names())
     if len(hardware_pkgs) > 0:

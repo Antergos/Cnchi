@@ -28,10 +28,6 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
-# Useful vars for gettext (translations)
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
-
 import os
 import sys
 import logging
@@ -46,15 +42,20 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
 import misc.misc as misc
+import show_message as show
 import info
 import updater
 
 try:
     from bugsnag.handlers import BugsnagHandler
     import bugsnag
-    BUGSNAG_AVAILABLE = True
-except ImportError:
-    BUGSNAG_AVAILABLE = False
+    BUGSNAG_ERROR = None
+except ImportError as err:
+    BUGSNAG_ERROR = str(err)
+
+# Useful vars for gettext (translations)
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 # Command line options
 cmd_line = None
@@ -80,9 +81,6 @@ class ContextFilter(Singleton):
 
     def __init__(self):
         super().__init__()
-        # This will overwrite the values if they have already been set.
-        #self.id = ""
-        #self.install = ""
 
         if self.api_key is None:
             self.api_key = self.get_bugsnag_api()
@@ -103,15 +101,14 @@ class ContextFilter(Singleton):
         return True
 
     def get_install_id(self):
-        url = self.get_url_for_id_request()
         install_info = None
+        url = self.get_url_for_id_request()
         headers = {'X-Cnchi-Installer': True}
         try:
             r = requests.get(url, headers=headers)
             install_info = json.loads(r.json())
         except (OSError, ValueError) as err:
-            print('Unable to get an Id for this installation. Error:', err)
-
+            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(err)
         return install_info
 
     @staticmethod
@@ -121,6 +118,8 @@ class ContextFilter(Singleton):
         if os.path.exists(config_path):
             with open(config_path) as bugsnag_conf:
                 bugsnag_api = bugsnag_conf.readline().strip()
+        else:
+            BUGSNAG_ERROR = "Cannot find /etc/raven.conf file"
         return bugsnag_api
 
     def get_url_for_id_request(self):
@@ -145,6 +144,7 @@ class CnchiApp(Gtk.Application):
         Gtk.Application.__init__(self,
                                  application_id="com.antergos.cnchi",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.TMP_RUNNING = "/tmp/.setup-running"
 
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
@@ -155,9 +155,29 @@ class CnchiApp(Gtk.Application):
             logging.error(msg)
             sys.exit(1)
 
+        # Check if we have administrative privileges
+        if os.getuid() != 0:
+            msg = _('This installer must be run with administrative privileges, '
+                    'and cannot continue without them.')
+            show.error(None, msg)
+            return
+
+        # Check if we're already running
+        if self.already_running():
+            msg = _("You cannot run two instances of this installer.\n\n"
+                    "If you are sure that the installer is not already running\n"
+                    "you can run this installer using the --force option\n"
+                    "or you can manually delete the offending file.\n\n"
+                    "Offending file: '{0}'").format(self.TMP_RUNNING)
+            show.error(None, msg)
+            return
+
         window = main_window.MainWindow(self, cmd_line)
         self.add_window(window)
         window.show()
+
+        with open(self.TMP_RUNNING, "w") as tmp_file:
+            tmp_file.write("Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid()))
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()
@@ -172,6 +192,32 @@ class CnchiApp(Gtk.Application):
         # menu.append("About", "win.about")
         # menu.append("Quit", "app.quit")
         # self.set_app_menu(menu)
+
+    def already_running(self):
+        """ Check if we're already running """
+        if os.path.exists(self.TMP_RUNNING):
+            logging.debug("File %s already exists.", self.TMP_RUNNING)
+            with open(self.TMP_RUNNING) as setup:
+                lines = setup.readlines()
+            if len(lines) >= 2:
+                try:
+                    pid = int(lines[1].strip('\n'))
+                except ValueError as err:
+                    logging.debug(err)
+                    logging.debug("Cannot read PID value.")
+                    return True
+            else:
+                logging.debug("Cannot read PID value.")
+                return True
+
+            if misc.check_pid(pid):
+                logging.info("Cnchi with pid '%d' already running.", pid)
+                return True
+            else:
+                # Cnchi with pid 'pid' is no longer running, we can safely
+                # remove the offending file and continue.
+                os.remove(self.TMP_RUNNING)
+        return False
 
 
 def setup_logging():
@@ -215,24 +261,27 @@ def setup_logging():
     if cmd_line.log_server:
         log_server = cmd_line.log_server
 
-        if BUGSNAG_AVAILABLE and log_server == 'bugsnag':
-            # Bugsnag logger
-            bugsnag_api = context_filter.api_key
-            if bugsnag_api is not None:
-                bugsnag.configure(
-                    api_key=bugsnag_api,
-                    app_version=info.CNCHI_VERSION,
-                    project_root='/usr/share/cnchi/cnchi',
-                    release_stage=info.CNCHI_RELEASE_STAGE)
-                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
-                bugsnag_handler.setLevel(logging.WARNING)
-                bugsnag_handler.setFormatter(formatter)
-                bugsnag_handler.addFilter(context_filter.filter)
-                bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
-                logger.addHandler(bugsnag_handler)
-                logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
+        if log_server == 'bugsnag':
+            if not BUGSNAG_ERROR:
+                # Bugsnag logger
+                bugsnag_api = context_filter.api_key
+                if bugsnag_api is not None:
+                    bugsnag.configure(
+                        api_key=bugsnag_api,
+                        app_version=info.CNCHI_VERSION,
+                        project_root='/usr/share/cnchi/cnchi',
+                        release_stage=info.CNCHI_RELEASE_STAGE)
+                    bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
+                    bugsnag_handler.setLevel(logging.WARNING)
+                    bugsnag_handler.setFormatter(formatter)
+                    bugsnag_handler.addFilter(context_filter.filter)
+                    bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
+                    logger.addHandler(bugsnag_handler)
+                    logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
+                else:
+                    logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
             else:
-                logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
+                logging.warning(BUGSNAG_ERROR)
         else:
             # Socket logger
             socket_handler = logging.handlers.SocketHandler(
@@ -333,8 +382,8 @@ def parse_options():
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
     parser.add_argument(
-        "-l", "--library",
-        help=_("Choose which library to use when downloading packages."
+        "-m", "--download-module",
+        help=_("Choose which download module will be used when downloading packages."
                " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
         nargs='?')
     parser.add_argument(
@@ -361,6 +410,10 @@ def parse_options():
     parser.add_argument(
         "--disable-update",
         help=_("Do not search for new Cnchi versions online"),
+        action="store_true")
+    parser.add_argument(
+        "--disable-rank-mirrors",
+        help=_("Do not try to rank Arch and Antergos mirrors"),
         action="store_true")
     parser.add_argument(
         "-v", "--verbose",

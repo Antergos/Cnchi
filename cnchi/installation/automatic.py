@@ -43,15 +43,18 @@ if __name__ == '__main__':
 
 import misc.misc as misc
 import parted3.fs_module as fs
-from installation import process as installation_process
-
 import parted
 
 from gtkbasebox import GtkBaseBox
 
+from installation import install
+from installation import action
+from installation import auto_partition
+
+DEST_DIR = "/install"
 
 class InstallationAutomatic(GtkBaseBox):
-    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
+    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "automatic", prev_page, next_page)
 
         self.auto_device = None
@@ -65,13 +68,16 @@ class InstallationAutomatic(GtkBaseBox):
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
         self.devices = {}
-        self.process = None
+        self.installation = None
 
         self.bootloader = "grub2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
         self.bootloader_device = {}
+
+        self.mount_devices = {}
+        self.fs_devices = {}
 
     def translate_ui(self):
         txt = _("Select drive:")
@@ -164,27 +170,35 @@ class InstallationAutomatic(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
         self.populate_devices()
+
+        # image = Gtk.Image.new_from_icon_name("go-next-symbolic", Gtk.IconSize.BUTTON)
+        # self.forward_button.set_label("")
+        # self.forward_button.set_image(image)
+        # self.forward_button.set_always_show_image(True)
+        # self.forward_button.set_name('fwd_btn')
+
         self.show_all()
         self.fill_bootloader_entry()
 
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
 
+
         # self.forward_button.set_sensitive(False)
 
     def store_values(self):
         """ Let's do our installation! """
-        response = self.show_warning()
-        if response == Gtk.ResponseType.NO:
-            return False
+        #response = self.show_warning()
+        #if response == Gtk.ResponseType.NO:
+        #   return False
 
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_root_password', luks_password)
         if luks_password != "":
-            logging.debug(_("A root LUKS password has been set"))
+            logging.debug("A root LUKS password has been set")
 
-        logging.info(_("Automatic install on %s"), self.auto_device)
-        self.start_installation()
+        self.set_bootloader()
+
         return True
 
     def on_luks_password_changed(self, widget):
@@ -263,14 +277,65 @@ class InstallationAutomatic(GtkBaseBox):
         message.destroy()
         return response
 
-    def start_installation(self):
-        txt = _("Cnchi will install Antergos on device %s")
-        logging.info(txt, self.auto_device)
+    def get_changes(self):
+        """ Grab all changes for confirmation """
+        change_list = [action.Action("delete", self.auto_device)]
 
+        auto = auto_partition.AutoPartition(dest_dir=DEST_DIR,
+                                            auto_device=self.auto_device,
+                                            use_luks=self.settings.get("use_luks"),
+                                            luks_password=self.settings.get("luks_root_password"),
+                                            use_lvm=self.settings.get("use_lvm"),
+                                            use_home=self.settings.get("use_home"),
+                                            bootloader=self.settings.get("bootloader"),
+                                            callback_queue=self.callback_queue)
+
+        devices = auto.get_devices()
+        mount_devices = auto.get_mount_devices()
+        fs_devices = auto.get_fs_devices()
+
+        mount_points = {}
+        for mount_point in mount_devices:
+            device = mount_devices[mount_point]
+            mount_points[device] = mount_point
+
+        for device in sorted(fs_devices.keys()):
+            try:
+                txt = _("Device {0} will be created ({1} filesystem) as {2}").format(device, fs_devices[device], mount_points[device])
+            except KeyError:
+                txt = _("Device {0} will be created ({1} filesystem)").format(device, fs_devices[device])
+            act = action.Action("info", txt)
+            change_list.append(act)
+
+        return change_list
+
+    def run_format(self):
+        logging.debug("Creating partitions and their filesystems in %s", self.auto_device)
+
+        # If no key password is given a key file is generated and stored in /boot
+        # (see auto_partition.py)
+
+        auto = auto_partition.AutoPartition(dest_dir=DEST_DIR,
+                                            auto_device=self.auto_device,
+                                            use_luks=self.settings.get("use_luks"),
+                                            luks_password=self.settings.get("luks_root_password"),
+                                            use_lvm=self.settings.get("use_lvm"),
+                                            use_home=self.settings.get("use_home"),
+                                            bootloader=self.settings.get("bootloader"),
+                                            callback_queue=self.callback_queue)
+        auto.run()
+
+        # Get mount_devices and fs_devices
+        # (mount_devices will be used when configuring GRUB in modify_grub_default)
+        # (fs_devices will be used when configuring the fstab file)
+        self.mount_devices = auto.get_mount_devices()
+        self.fs_devices = auto.get_fs_devices()
+
+    def set_bootloader(self):
         checkbox = self.ui.get_object("bootloader_device_check")
         if not checkbox.get_active():
             self.settings.set('bootloader_install', False)
-            logging.warning(_("Cnchi will not install any bootloader"))
+            logging.info("Cnchi will not install any bootloader")
         else:
             self.settings.set('bootloader_install', True)
             self.settings.set('bootloader_device', self.bootloader_device)
@@ -280,28 +345,27 @@ class InstallationAutomatic(GtkBaseBox):
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
-        # We don't need to pass which devices will be mounted nor which filesystems
-        # the devices will be formatted with, as auto_partition.py takes care of everything
-        # in an automatic installation.
-        mount_devices = {}
-        fs_devices = {}
+    def run_install(self, packages, metalinks):
+        txt = _("Cnchi will install Antergos on device %s")
+        logging.info(txt, self.auto_device)
 
         self.settings.set('auto_device', self.auto_device)
 
         ssd = {self.auto_device: fs.is_ssd(self.auto_device)}
 
         if not self.testing:
-            self.process = installation_process.InstallationProcess(
+            self.installation = install.Installation(
                 self.settings,
                 self.callback_queue,
-                mount_devices,
-                fs_devices,
-                self.alternate_package_list,
+                packages,
+                metalinks,
+                self.mount_devices,
+                self.fs_devices,
                 ssd)
 
-            self.process.start()
+            self.installation.start()
         else:
-            logging.warning(_("Testing mode. Cnchi will not change anything!"))
+            logging.debug("Testing mode, not changing anything")
 
 # When testing, no _() is available
 try:

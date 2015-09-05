@@ -29,11 +29,11 @@
 
 import logging
 
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
-
 import gettext
 import locale
+
+APP_NAME = "cnchi"
+LOCALE_DIR = "/usr/share/locale"
 
 locale_code, encoding = locale.getdefaultlocale()
 lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)

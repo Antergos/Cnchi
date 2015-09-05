@@ -109,7 +109,7 @@ def get_devices():
                 disk_obj = parted.Disk(dev)
                 result = OK
             except parted.DiskLabelException:
-                # logging.warning(_('Unrecognised disk label in device %s.'), dev.path)
+                # logging.warning('Unrecognised disk label in device %s.', dev.path)
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as general_error:
                 logging.error(general_error)
@@ -355,6 +355,7 @@ def finalize_changes(diskob):
     except parted._ped.IOException as io_error:
         logging.error(str(io_error))
         raise IOError(str(io_error))
+
 
 def order_partitions(partdic):
     """ Pass the result of get_partitions here and it will return list

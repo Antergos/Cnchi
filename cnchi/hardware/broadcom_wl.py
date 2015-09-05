@@ -37,14 +37,14 @@ except ImportError:
     from hardware import Hardware
 
 CLASS_NAME = "BroadcomWl"
-CLASS_ID = "0x0200"
+CLASS_ID = "0x02"
 VENDOR_ID = "0x14e4"
 
 # Broadcom's driver for:
 # BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-,
 # BCM43227- and BCM43228-based hardware.
 
-DEVICES = ['0x4311', '0x04B5', '0x4727', '0x1361', '0x4328', '0x432B']
+DEVICES = ['0x4311', '0x04b5', '0x4727', '0x1361', '0x4328', '0x432b', '0x43b1']
 
 # Give this driver more priority so it is chosen instead of
 # broadcom_b43 or Broadcom_b43_legacy
@@ -55,14 +55,17 @@ class BroadcomWl(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         return ["broadcom-wl"]
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
         with open(path, "w") as blacklist:
             blacklist.write("blacklist b43\n")
             blacklist.write("blacklist b43_legacy\n")
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

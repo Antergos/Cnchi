@@ -53,15 +53,16 @@ def chroot_run(cmd):
 
 def setup():
     try:
-        logging.debug(_("Doing Mariadb setup..."))
+        logging.debug("Doing Mariadb setup...")
         mariadb_setup()
-        logging.debug(_("Mariadb setup done. Doing Apache setup..."))
+        logging.debug("Mariadb setup done. Doing Apache setup...")
         apache_setup()
-        logging.debug(_("Apache setup done. Doing PHP setup..."))
+        logging.debug("Apache setup done. Doing PHP setup...")
         php_setup()
-        logging.debug(_("PHP setup done."))
+        logging.debug("PHP setup done.")
     except (FileExistsError, OSError) as io_error:
         logging.error(io_error)
+
 
 def mariadb_setup():
     cmd = [
@@ -164,9 +165,9 @@ def php_setup():
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf
     # Not necessary, a2ensite does this for us
-    #source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
-    #link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
-    #os.symlink(source, link_name)
+    # source = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-available/localhost.conf')
+    # link_name = os.path.join(DEST_DIR, 'etc/httpd/conf/sites-enabled/localhost.conf')
+    # os.symlink(source, link_name)
 
 
 if __name__ == '__main__':

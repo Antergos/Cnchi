@@ -205,7 +205,7 @@ class DesktopAsk(GtkBaseBox):
     def store_values(self):
         """ Store desktop """
         self.settings.set('desktop', self.desktop_choice.lower())
-        logging.info(_("Cnchi will install Antergos with the '%s' desktop"), self.desktop_choice.lower())
+        logging.info("Cnchi will install Antergos with the '%s' desktop", self.desktop_choice.lower())
         return True
 
     @staticmethod

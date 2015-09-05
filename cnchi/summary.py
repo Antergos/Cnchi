@@ -27,7 +27,7 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-""" Check screen (detects if Antergos prerequisites are meet) """
+""" Summary screen (last chance for the user) """
 
 
 from gi.repository import Gtk, GLib
@@ -40,6 +40,10 @@ import misc.gtkwidgets as gtkwidgets
 import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
+
+from installation.process import Process
+
+import show_message as show
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -56,9 +60,14 @@ class Summary(GtkBaseBox):
         """ Init class ui """
         super().__init__(self, params, "summary", prev_page, next_page)
 
+        self.main_window = params['main_window']
+
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
             scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+
+        self.num_features = 0
+        self.process = None
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -97,7 +106,7 @@ class Summary(GtkBaseBox):
         variant = self.settings.get("keyboard_variant")
         txt = _("Layout: {0}").format(layout)
         if variant:
-            txt += "\n" + _("Variant: {1}").format(variant)
+            txt += ", " + _("Variant: {0}").format(variant)
         statebox.set_property("label", txt)
 
         # Desktop Environment
@@ -109,25 +118,63 @@ class Summary(GtkBaseBox):
         # Features
         statebox = self.ui.get_object("features_statebox")
         txt = ""
+        self.num_features = 0
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
-                txt += "{0} ".format(features_info.TITLES[feature])
+                txt += "{0}\n".format(features_info.TITLES[feature])
+                self.num_features += 1
+        txt = txt[:-1]
         statebox.set_property("label", txt)
 
-        # TODO: Partitions
-        # Note: The way Cnchi is written, when using advanced installation
-        # everything is done in that screen (user input, real partitioning,
-        # creating fs...). Therefore, advanced screen should be split to be
-        # able to show this screen (summary) in between (use stage_opts).
+        # Partitions
+        install_screen = self.get_install_screen()
+        if install_screen:
+            changes = install_screen.get_changes()
+            statebox = self.ui.get_object("partitions_statebox")
+            txt = ""
+            for action in changes:
+                txt += "{0}\n".format(str(action))
+            txt = txt[:-1]
+            statebox.set_property("label", txt)
 
-    def store_values(self):
-        """ Continue """
-        return True
+    def get_install_screen(self):
+        page = "installation_" + self.settings.get('partition_mode')
+        try:
+            install_screen = self.main_window.pages[page]
+        except AttributeError:
+            install_screen = None
+        return install_screen
 
     def prepare(self, direction):
         """ Load screen """
         self.translate_ui()
+
+        # self.forward_button.set_label(_("Install now!"))
+        # self.forward_button.set_name('fwd_btn_install_now')
+
         self.show_all()
+
+        # Hide features statebox if no features are selected
+        if self.num_features == 0:
+            statebox = self.ui.get_object("features_statebox")
+            statebox.hide()
+            label = self.ui.get_object("features_label")
+            label.hide()
+
+    def store_values(self):
+        response = show.question(
+            self.get_toplevel(),
+            _("Are you REALLY sure you want to continue?"))
+        if response != Gtk.ResponseType.YES:
+            return False
+        install_screen = self.get_install_screen()
+        self.process = Process(install_screen, self.settings, self.callback_queue)
+        self.process.start()
+        return True
+
+    def get_prev_page(self):
+        page = "installation_" + self.settings.get('partition_mode')
+        return page
 
 
 # When testing, no _() is available

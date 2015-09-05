@@ -104,7 +104,7 @@ class Timezone(GtkBaseBox):
             self.forward_button.set_sensitive(False)
         else:
             self.timezone = tz_location.get_property('zone')
-            logging.info(_("location changed to : %s"), self.timezone)
+            logging.info("Location changed to : %s", self.timezone)
             self.update_comboboxes(self.timezone)
             self.forward_button.set_sensitive(True)
 
@@ -183,29 +183,19 @@ class Timezone(GtkBaseBox):
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
             except queue.Empty:
-                msg = _("Can't autodetect timezone coordinates")
-                if __name__ == '__main__':
-                    # When testing this screen, give 5 more seconds and try again just in case.
-                    # misc.set_cursor(Gdk.CursorType.WATCH)
-                    import time
-                    time.sleep(5)
-                    try:
-                        self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
-                    except queue.Empty:
-                        logging.warning(msg)
-                    finally:
-                        # misc.set_cursor(Gdk.CursorType.ARROW)
-                        pass
-                else:
-                    logging.warning(msg)
+                logging.warning("Can't autodetect timezone coordinates")
 
         if self.autodetected_coords:
             coords = self.autodetected_coords
-            latitude = float(coords[0])
-            longitude = float(coords[1])
-            timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
-            self.set_timezone(timezone)
-            self.forward_button.set_sensitive(True)
+            try:
+                latitude = float(coords[0])
+                longitude = float(coords[1])
+                timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
+                self.set_timezone(timezone)
+                self.forward_button.set_sensitive(True)
+            except ValueError as value_error:
+                self.autodetected_coords = None
+                logging.warning("Can't autodetect timezone coordinates: %s", value_error)
 
         self.show_all()
 
@@ -217,8 +207,8 @@ class Timezone(GtkBaseBox):
         # self.global_process_queue.put(proc)
         proc.start()
 
-
-    def log_location(self, loc):
+    @staticmethod
+    def log_location(loc):
         logging.debug("timezone human zone: %s", loc.human_zone)
         logging.debug("timezone country: %s", loc.country)
         logging.debug("timezone zone: %s", loc.zone)
@@ -286,11 +276,11 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
         # Wait until there is an Internet connection available
         if not misc.has_connection():
-            logging.warning(_("Can't get network status. Cnchi will try again in a moment"))
+            logging.warning("Can't get network status. Cnchi will try again in a moment")
             while not misc.has_connection():
                 time.sleep(4)  # Wait 4 seconds and try again
 
-        logging.debug(_("A working network connection has been detected."))
+        logging.debug("A working network connection has been detected.")
 
         # Do not start looking for our timezone until we've reached the language screen
         # (welcome.py sets timezone_start to true when next is clicked)
@@ -299,7 +289,7 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
         # OK, now get our timezone
 
-        logging.debug(_("We have connection. Let's get our timezone"))
+        logging.debug("We have connection. Let's get our timezone")
         try:
             url = urllib.request.Request(
                 url="http://geo.antergos.com",

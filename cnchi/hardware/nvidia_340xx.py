@@ -36,8 +36,8 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "Nvidia_340xx"
-CLASS_ID = "0x0300"
+CLASS_NAME = "Nvidia340xx"
+CLASS_ID = "0x03"
 VENDOR_ID = "0x10de"
 
 # Give this driver more priority so it is chosen instead of nvidia-304xx
@@ -54,7 +54,7 @@ For GeForce 8000/9000 and 100-300 series cards [NV5x, NV8x, NV9x and NVAx] from
     with nvidia-340xx-libgl, available in the official repositories.
 """
 
-DEVICES=[
+DEVICES = [
     "0x0191", "0x0193", "0x0194", "0x0197", "0x019d", "0x019e", "0x0400",
     "0x0401", "0x0402", "0x0403", "0x0404", "0x0405", "0x0406", "0x0407",
     "0x0408", "0x0409", "0x040a", "0x040b", "0x040c", "0x040d", "0x040e",
@@ -127,17 +127,19 @@ DEVICES=[
     "0x13ba", "0x13bb", "0x1140"]
 
 
-class Nvidia_340xx(Hardware):
+class Nvidia340xx(Hardware):
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
-    def get_packages(self):
+    @staticmethod
+    def get_packages():
         pkgs = ["nvidia-340xx", "nvidia-340xx-utils", "nvidia-340xx-libgl", "libvdpau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nvidia-340xx-libgl", "lib32-libvdpau"])
         return pkgs
 
-    def post_install(self, dest_dir):
+    @staticmethod
+    def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
         with open(path, 'w') as nvidia:
             nvidia.write('Section "Device"\n')
@@ -147,5 +149,6 @@ class Nvidia_340xx(Hardware):
             nvidia.write('    Option "NoLogo" "true"\n')
             nvidia.write('EndSection\n')
 
-    def is_proprietary(self):
+    @staticmethod
+    def is_proprietary():
         return True

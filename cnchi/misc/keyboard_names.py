@@ -36,7 +36,7 @@ class Model(GObject.GObject):
     def __init__(self, name, description, vendor):
         GObject.GObject.__init__(self)
         self.name = name
-        self.description =  description
+        self.description = description
         self.vendor = vendor
 
     def __repr__(self):
@@ -74,8 +74,9 @@ class Layout(GObject.GObject):
         self.variants = OrderedDict(sorted(self.variants.items(), key=lambda t: str(t[1])))
 
 
-class KeyboardNames():
+class KeyboardNames(object):
     def __init__(self, filename):
+        self.layouts = None
         self._filename = filename
         self._load_file()
 
@@ -85,7 +86,7 @@ class KeyboardNames():
 
     def _load_file(self):
         if not os.path.exists(self._filename):
-            logging.error(_("Can't find %s file!"), self._filename)
+            logging.error("Can't find %s file!", self._filename)
             return
 
         self._clear()
@@ -95,6 +96,9 @@ class KeyboardNames():
 
         for model in xml_root.iter('model'):
             for config_item in model.iter('configItem'):
+                model_name = ""
+                model_description = ""
+                model_vendor = ""
                 for item in config_item:
                     if item.tag == "name":
                         model_name = item.text

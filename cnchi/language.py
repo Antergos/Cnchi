@@ -36,13 +36,14 @@ import sys
 
 from gtkbasebox import GtkBaseBox
 
+import misc.i18n as i18n
+
+from rank_mirrors import AutoRankmirrorsProcess
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-import misc.i18n as i18n
-
-from rank_mirrors import AutoRankmirrorsProcess
 
 class Language(GtkBaseBox):
     def __init__(self, params, prev_page="welcome", next_page="check"):
@@ -67,6 +68,7 @@ class Language(GtkBaseBox):
 
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
+        self.disable_rank_mirrors = params['disable_rank_mirrors']
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
@@ -134,7 +136,7 @@ class Language(GtkBaseBox):
             lang.install()
             self.translate_ui()
         except IOError:
-            logging.warning(_("Can't find translation file for the %s language"), locale_code)
+            logging.warning("Can't find translation file for the %s language", locale_code)
 
     def select_default_row(self, language):
         for listbox_row in self.listbox.get_children():
@@ -166,13 +168,15 @@ class Language(GtkBaseBox):
         self.show_all()
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        if not self.testing and not self.rank_mirrors_launched:
+        if not self.testing and not self.disable_rank_mirrors and not self.rank_mirrors_launched:
             proc = AutoRankmirrorsProcess()
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()
             self.process_list.append(proc)
             self.rank_mirrors_launched = True
+        else:
+            logging.debug("Not running rank mirrors. This is discouraged.")
 
 # When testing, no _() is available
 try:

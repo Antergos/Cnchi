@@ -45,16 +45,18 @@ def get_uuid(part):
     if "UUID" in info.keys():
         return info['UUID']
     else:
-        logging.error(_("Can't get partition %s UUID"), part)
+        logging.error("Can't get partition %s UUID", part)
         return ""
+
 
 def get_label(part):
     info = get_info(part)
     if "LABEL" in info.keys():
         return info['LABEL']
     else:
-        logging.debug(_("Can't get partition %s label (or it does not have any)"), part)
+        logging.debug("Can't get partition %s label (or it does not have any)", part)
         return ""
+
 
 @misc.raise_privileges
 def get_info(part):
@@ -169,6 +171,10 @@ def create_fs(part, fstype, label='', other_opts=''):
     # Second arg is either output from call if successful
     # or exception message error if failure
 
+    if not fstype:
+        logging.error("Cannot make a filesystem of type None in partition %s", part)
+        return True, _("Cannot make a filesystem of type None in partition {0}").format(part)
+
     fstype = fstype.lower()
 
     comdic = {'ext2': 'mkfs.ext2 -q',
@@ -178,6 +184,7 @@ def create_fs(part, fstype, label='', other_opts=''):
               'fat': 'mkfs.vfat -F 32',
               'fat16': 'mkfs.vfat -F 16',
               'fat32': 'mkfs.vfat -F 32',
+              'vfat': 'mkfs.vfat -F 32',
               'ntfs': 'mkfs.ntfs',
               'jfs': 'mkfs.jfs -q',
               'reiserfs': 'mkfs.reiserfs -q',
@@ -186,7 +193,7 @@ def create_fs(part, fstype, label='', other_opts=''):
               'swap': 'mkswap'}
 
     if fstype not in comdic.keys():
-        return True, _("Unknown filesystem {0}").format(fstype)
+        return True, _("Unknown filesystem {0} for partition {1}").format(fstype, part)
 
     cmd = comdic[fstype]
 
@@ -198,6 +205,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                   'fat': '-n "%(label)s"',
                   'fat16': '-n "%(label)s"',
                   'fat32': '-n "%(label)s"',
+                  'vfat': '-n "%(label)s"',
                   'ntfs': '-L "%(label)s"',
                   'jfs': '-L "%(label)s"',
                   'reiserfs': '-l "%(label)s"',
@@ -214,6 +222,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                         'fat': '',
                         'fat16': '',
                         'fat32': '',
+                        'vfat': '',
                         'ntfs': '',
                         'jfs': '',
                         'reiserfs': '',
@@ -244,7 +253,8 @@ def is_ssd(disk_path):
     filename = os.path.join("/sys/block", disk_name, "queue/rotational")
     if not os.path.exists(filename):
         # Should not happen unless sysfs changes, but better safe than sorry
-        logging.warning(_("Can't verify if {0} is a Solid State Drive or not".format(disk_path)))
+        txt = "Cannot verify if {0} is a Solid State Drive or not".format(disk_path)
+        logging.warning(txt)
         return False
     with open(filename) as f:
         return f.read() == "0\n"
@@ -271,7 +281,7 @@ def resize(part, fs_type, new_size_in_mb):
     elif 'ext' in fs_type:
         res = resize_ext(part, new_size_in_mb)
     else:
-        logging.error(_("Sorry but filesystem %s can't be shrinked"), fs_type)
+        logging.error("Filesystem %s can't be shrinked", fs_type)
 
     return res
 

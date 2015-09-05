@@ -46,6 +46,7 @@ _update_info = "/usr/share/cnchi/update.info"
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
 
+
 def get_md5_from_file(filename):
     with open(filename, 'rb') as myfile:
         buf = myfile.read()
@@ -60,7 +61,7 @@ def get_md5_from_text(text):
     return md5.hexdigest()
 
 
-class Updater():
+class Updater(object):
     def __init__(self, local_cnchi_version, force_update):
         self.remote_version = ""
         self.local_cnchi_version = local_cnchi_version
@@ -69,7 +70,7 @@ class Updater():
         self.force = force_update
 
         if not os.path.exists(_update_info):
-            logging.warning(_("Could not find 'update.info' file. Cnchi will not be able to update itself."))
+            logging.warning("Cannot not find %s file. Cnchi will not be able to update itself.", _update_info)
             return
 
         # Get local info (local update.info)
@@ -95,7 +96,7 @@ class Updater():
                 self.remote_version = update_info['version']
                 for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
-                logging.info(_("Cnchi Internet version: %s"), self.remote_version)
+                logging.info("Internet version: %s", self.remote_version)
                 self.force = force_update
 
     def is_remote_version_newer(self):
@@ -135,22 +136,22 @@ class Updater():
         update_cnchi = False
 
         if self.is_remote_version_newer():
-            logging.info(_("New version found. Updating installer..."))
+            logging.info("New version found. Updating installer...")
             update_cnchi = True
         elif self.force:
-            logging.info(_("No new version found. Updating anyways..."))
+            logging.info("No new version found. Updating anyways...")
             update_cnchi = True
 
         if update_cnchi:
-            logging.debug(_("Downloading new version of Cnchi..."))
+            logging.debug("Downloading Cnchi %s...", self.remote_version)
             zip_path = "/tmp/cnchi-{0}.zip".format(self.remote_version)
             res = self.download_master_zip(zip_path)
             if not res:
-                logging.error(_("Can't download new Cnchi version."))
+                logging.error("Error downloading new version.")
                 return False
 
             # master.zip file is downloaded, we must unzip it
-            logging.debug(_("Uncompressing new version..."))
+            logging.debug("Uncompressing new version...")
             try:
                 self.unzip_and_copy(zip_path)
             except Exception as err:
