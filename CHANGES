@@ -1,3 +1,6 @@
+[2015-09-05 13:05:26 +0200]  Update run                                                                 karasu      {9ee423c}
+[2015-09-05 13:04:56 +0200]  Update requirements.txt                                                    karasu      {c3f17cf}
+[2015-09-05 13:01:47 +0200]  Fix release version info                                                   karasu      {fcd39b3}
 [2015-09-05 13:01:12 +0200]  Fix README                                                                 karasu      {e8f5838}
 [2015-09-05 12:47:42 +0200]  Merge branch 'master' of ../cnchi-dev                                      karasu      {abdcff2}
 [2015-09-04 21:40:49 +0200]  Set requests timeout to one minute                                         karasu      {30cdc4f}
