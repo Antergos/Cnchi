@@ -223,12 +223,12 @@ class SelectPackages(object):
             if lang_name == "english":
                 # There're some English variants available but not all of them.
                 lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0]
+                locale = self.settings.get('locale').split('.')[0].lower()
                 if locale in lang_packs:
                     pkg = base_name + locale
             else:
                 # All the other language packs use their language code
-                lang_code = self.settings.get('language_code')
+                lang_code = self.settings.get('language_code').lower()
                 pkg = base_name + lang_code
             if len(pkg) > 0:
                 logging.debug("Selected kde language pack: %s", pkg)
