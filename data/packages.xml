@@ -245,6 +245,7 @@
       <pkgname>qterminal</pkgname>
       <pkgname>juffed-qt5-git</pkgname>
       <pkgname>speedcrunch-git</pkgname>
+      <pkgname>hicolor-icon-theme</pkgname>
       <pkgname>plank</pkgname>
       <pkgname>plank-config</pkgname>
       <pkgname>plank-theme-numix</pkgname>
