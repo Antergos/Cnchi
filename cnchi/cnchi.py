@@ -45,6 +45,7 @@ import misc.misc as misc
 import show_message as show
 import info
 import updater
+from logging_utils import ContextFilter
 
 try:
     from bugsnag.handlers import BugsnagHandler
@@ -62,92 +63,6 @@ cmd_line = None
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.16.0"
-
-
-# TODO: Find a proper place for these classes
-class Singleton(logging.Filter):
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super(Singleton, cls).__new__(cls, *args)
-            cls._instance.id = None
-            cls._instance.install = None
-            cls._instance.api_key = None
-            cls._instance.have_install_id = False
-        return cls._instance
-
-
-class ContextFilter(Singleton):
-
-    def __init__(self):
-        super().__init__()
-
-        if self.api_key is None:
-            self.api_key = self.get_bugsnag_api()
-
-        if self.api_key and self.install is None:
-            info = self.get_install_id()
-            try:
-                self.id = info['ip']
-                self.install = info['id']
-                self.have_install_id = True
-            except TypeError:
-                self.have_install_id = False
-
-    def filter(self, record):
-        uid = str(uuid.uuid1()).split("-")
-        record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        record.id = self.id
-        record.install = self.install
-        return True
-
-    def get_install_id(self):
-        install_info = None
-        url = self.get_url_for_id_request()
-        headers = {'X-Cnchi-Installer': True}
-        try:
-            r = requests.get(url, headers=headers)
-            install_info = json.loads(r.json())
-        except (OSError, ValueError) as err:
-            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(err)
-        return install_info
-
-    @staticmethod
-    def get_bugsnag_api():
-        config_path = '/etc/raven.conf'
-        bugsnag_api = None
-        if os.path.exists(config_path):
-            with open(config_path) as bugsnag_conf:
-                bugsnag_api = bugsnag_conf.readline().strip()
-        else:
-            BUGSNAG_ERROR = "Cannot find /etc/raven.conf file"
-        return bugsnag_api
-
-    def get_url_for_id_request(self):
-        build_server = None
-        if self.api_key:
-            build_srv = ['http://build', 'antergos', 'com']
-            build_srv_query = ['/hook', 'cnchi=']
-            build_server = '.'.join(build_srv) + '?'.join(build_srv_query) + self.api_key
-        return build_server
-
-    def bugsnag_before_notify_callback(self, notification=None):
-        if notification is not None:
-            if not self.have_install_id:
-                # I know this is duplicating code from __init__, but we need to do it in __init__ because
-                # this function only runs if there is an error (we want an accurate install count). I'll
-                # come up with something better when I have time.
-                info = self.get_install_id()
-                try:
-                    self.id = info['ip']
-                    self.install = info['id']
-                    self.have_install_id = True
-                except TypeError:
-                    self.have_install_id = False
-
-            notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install}
-            return notification
 
 
 class CnchiApp(Gtk.Application):
