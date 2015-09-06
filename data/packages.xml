@@ -237,25 +237,25 @@
 
     <edition name="lxqt" description="LXQT Desktop">
       <packages>
+      <pkgname>cdrkit</pkgname>
       <pkgname>lxqt</pkgname> <!-- Group -->
       <pkgname>oxygen-icons</pkgname>
-        <pkgname>vlc</pkgname>
-        <! -- lximage-qt (On Aur) -->
-        <! -- ObConf-Qt (On Aur) -->
-        <! -- qterminal (On Aur) -->
-        <! -- juffed-qt5-git (On Aur) -->
-        <! -- speedcrunch-git (On Aur) -->
-        <pkgname>plank</pkgname>
-        <pkgname>plank-config</pkgname>
-        <pkgname>plank-theme-numix</pkgname>
-        <pkgname>cdrkit</pkgname>
-        <pkgname>xfburn</pkgname>
-        <pkgname>transmission-qt</pkgname>
-        <pkgname>qt5-base</pkgname>
-        <pkgname>smplayer</pkgname>
-        <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname> <!-- Assuming is correct since LXQT uses Openbox -->
-        <pkgname>networkmanager-openvpn</pkgname>
-        <pkgname>networkmanager-pptp</pkgname>
+      <pkgname>lximage-qt</pkgname>
+      <pkgname>ObConf-Qt</pkgname>
+      <pkgname>qterminal</pkgname>
+      <pkgname>juffed-qt5-git</pkgname>
+      <pkgname>speedcrunch-git</pkgname>
+      <pkgname>plank</pkgname>
+      <pkgname>plank-config</pkgname>
+      <pkgname>plank-theme-numix</pkgname>
+      <pkgname>transmission-qt</pkgname>
+      <pkgname>qt5-base</pkgname>
+      <pkgname>smplayer</pkgname>
+      <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname> <!-- Assuming is correct since LXQT uses Openbox -->
+      <pkgname>networkmanager-openvpn</pkgname>
+      <pkgname>networkmanager-pptp</pkgname>
+      <pkgname>xfburn</pkgname>
+      <pkgname>vlc</pkgname>
       </packages>
     </edition>
 
