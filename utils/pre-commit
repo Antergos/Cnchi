@@ -14,7 +14,8 @@
 # number) and create a GIT tag.
 
 if [ -f src/info.py ]; then
-    INFO_PY="src/info.py"
+
+	INFO_PY="src/info.py"
 elif [ -f cnchi/info.py ]; then
     INFO_PY="cnchi/info.py"
 else
@@ -24,12 +25,16 @@ fi
 
 if [[ ${INFO_PY} != "False" ]]; then
     BASE_STRING=$(python ${INFO_PY})
-    BASE_LIST=($(echo $BASE_STRING | tr '.' ' '))
+    BASE_LIST= ($(echo $BASE_STRING | tr '.' ' ' ))
     V_MAJOR=${BASE_LIST[0]}
     V_MINOR=${BASE_LIST[1]}
     V_PATCH=${BASE_LIST[2]}
     echo "Current version : $BASE_STRING"
-    V_PATCH=$((V_PATCH + 1))
+    if [[ $V_PATCH = '' ]]; then
+        V_PATCH=0
+    else
+        V_PATCH=$((V_PATCH + 1))
+    fi
     SUGGESTED_VERSION="$V_MAJOR.$V_MINOR.$V_PATCH"
 
     echo "Will set new version to be $SUGGESTED_VERSION"
