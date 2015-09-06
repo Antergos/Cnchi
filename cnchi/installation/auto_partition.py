@@ -50,8 +50,8 @@ and then raise an InstallError exception.
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
 
-# KDE needs 4.5 GB for its files. Need to leave extra space also.
-MIN_ROOT_SIZE = 6500
+# KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
+MIN_ROOT_SIZE = 8000
 
 
 def check_output(command):
