@@ -74,6 +74,7 @@ class Singleton(logging.Filter):
             cls._instance.id = None
             cls._instance.install = None
             cls._instance.api_key = None
+            cls._instance.have_install_id = False
         return cls._instance
 
 
@@ -85,13 +86,14 @@ class ContextFilter(Singleton):
         if self.api_key is None:
             self.api_key = self.get_bugsnag_api()
 
-        if self.install is None:
+        if self.api_key and self.install is None:
             info = self.get_install_id()
             try:
                 self.id = info['ip']
                 self.install = info['id']
+                self.have_install_id = True
             except TypeError:
-                pass
+                self.have_install_id = False
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
@@ -132,6 +134,18 @@ class ContextFilter(Singleton):
 
     def bugsnag_before_notify_callback(self, notification=None):
         if notification is not None:
+            if not self.have_install_id:
+                # I know this is duplicating code from __init__, but we need to do it in __init__ because
+                # this function only runs if there is an error (we want an accurate install count). I'll
+                # come up with something better when I have time.
+                info = self.get_install_id()
+                try:
+                    self.id = info['ip']
+                    self.install = info['id']
+                    self.have_install_id = True
+                except TypeError:
+                    self.have_install_id = False
+
             notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install}
             return notification
 
