@@ -1037,20 +1037,6 @@ def is_partition_extended(partition):
     if "/dev/" in partition:
         partition = partition[len("/dev/"):]
 
-    num = partition[len("sdX"):]
-    if len(num) == 0:
-        return False
-
-    try:
-        num = int(num)
-    except ValueError as err:
-        logging.error(err)
-        return False
-
-    if num > 4:
-        # logical partition
-        return False
-
     with open("/proc/partitions") as partitions:
         lines = partitions.readlines()
     for line in lines:
