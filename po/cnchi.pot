@@ -305,7 +305,7 @@ msgid "Installs AMD or Nvidia proprietary graphic driver."
 msgstr ""
 
 #: cnchi/features_info.py:75
-msgid "Installs Steam and Playonlinux for gamming enthusiasts."
+msgid "Installs Steam and Playonlinux for gaming enthusiasts."
 msgstr ""
 
 #: cnchi/features_info.py:76

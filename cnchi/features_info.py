@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #  features_info.py
@@ -72,7 +72,7 @@ DESCRIPTIONS = {
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
     'fonts': _("TrueType fonts from the Google Fonts project."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
-    'games': _("Installs Steam and Playonlinux for gamming enthusiasts."),
+    'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
     'cups': _("Installation of printer drivers and management tools."),
     'office': _("Open source office suite. Supports editing MS Office files."),
