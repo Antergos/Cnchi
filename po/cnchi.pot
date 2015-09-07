@@ -1,18 +1,22 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Cnchi v0.12.x\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: English <dev@antergos.com>\n"
+"Language: en_us\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
 # Cnchi
 # Copyright (C) 2013-2015 ANTERGOS
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-"Project-Id-Version: 0.12\n"
-"POT-Creation-Date: 2015-09-05 20:54+CEST\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
-
-
 #: cnchi/bootinfo.py:71 cnchi/bootinfo.py:84 cnchi/bootinfo.py:90
 #: cnchi/bootinfo.py:139 cnchi/bootinfo.py:144 cnchi/bootinfo.py:153
 #: cnchi/bootinfo.py:166 cnchi/bootinfo.py:191 cnchi/bootinfo.py:213
@@ -51,7 +55,6 @@ msgstr ""
 #: cnchi/installation/chroot.py:38 cnchi/keymap.py:296 cnchi/language.py:183
 #: cnchi/location.py:252 cnchi/slides.py:251 cnchi/summary.py:182
 #: cnchi/user_info.py:333 cnchi/welcome.py:144 cnchi/wireless.py:159
-
 #: cnchi/cnchi.py:160
 msgid "This installer must be run with administrative privileges, and cannot continue without them."
 msgstr ""
@@ -199,8 +202,7 @@ msgstr ""
 msgid "Downloading packages... ({0}/{1})..."
 msgstr ""
 
-#: cnchi/download/download_requests.py:79
-#: cnchi/download/download_urllib.py:121
+#: cnchi/download/download_requests.py:79 cnchi/download/download_urllib.py:121
 msgid "Downloading {0} {1} ({2}/{3})..."
 msgstr ""
 
@@ -359,8 +361,8 @@ msgstr ""
 #: cnchi/features_info.py:94
 msgid ""
 "CUPS is the standards-based, open source printing\n"
-"system developed by Apple Inc. for OS\302\256 X and other\n"
-"UNIX\302\256-like operating systems."
+"system developed by Apple Inc. for OS\\302\\256 X and other\n"
+"UNIX\\302\\256-like operating systems."
 msgstr ""
 
 #: cnchi/features_info.py:97
