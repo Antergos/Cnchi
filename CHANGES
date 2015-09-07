@@ -1,3 +1,4 @@
+[2015-09-07 21:39:14 +0200]  Fix version number                                                         karasu      {d5cae13}
 [2015-09-07 21:38:27 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {76ae003}
 [2015-09-07 21:37:38 +0200]  Fixes issue #410 but needs testing (do not merge to stable yet)            karasu      {35f6553}
 [2015-09-07 12:32:20 -0500]  fix pot file header                                                    Dustin Falgout  {671e7f8}

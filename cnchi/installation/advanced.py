@@ -651,10 +651,13 @@ class InstallationAdvanced(GtkBaseBox):
 
                     if partition.type == pm.PARTITION_EXTENDED:
                         # Show 'extended' in file system type column
-                        fs_type = 'extended'
+                        fs_type = "extended"
 
-                    # Do not show swap version, only the 'swap' word
-                    if 'swap' in fs_type:
+                    if not fs_type:
+                        # fs_type is None when it can't be readed
+                        fs_type = _("Unknown")
+                    elif 'swap' in fs_type:
+                        # Do not show swap version, only the 'swap' word
                         fs_type = 'swap'
 
                     row = [path, fs_type, mount_point, label, fmt_active, formatable, size_txt, used,
