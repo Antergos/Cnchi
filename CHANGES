@@ -1,3 +1,4 @@
+[2015-09-07 19:23:04 +0200]  typos                                                                      karasu      {f8428f8}
 [2015-09-06 17:08:29 +0200]  6.5GB is not enough when installing KDE plus all features.                 karasu      {d5784b5}
 [2015-09-06 01:27:03 -0500]  move logging logging related classes to their own module. don't att..  Dustin Falgout  {7586224}
 [2015-09-06 07:39:15 +0200]  Added compile_all helper script                                            karasu      {b772d34}
