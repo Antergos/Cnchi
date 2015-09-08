@@ -1,3 +1,4 @@
+[2015-09-07 22:52:06 +0200]  Fixed in https://github.com/Antergos/Cnchi/issues/411                      karasu      {c0d9f26}
 [2015-09-07 22:37:27 +0200]  Fixes issue #409                                                           karasu      {298ab15}
 [2015-09-07 21:39:14 +0200]  Fix version number                                                         karasu      {d5cae13}
 [2015-09-07 21:38:27 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {76ae003}

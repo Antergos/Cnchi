@@ -573,8 +573,8 @@
       <pkgname>os-prober</pkgname>
       <pkgname>grub2-theme-antergos</pkgname>
     </bootloader>
-    <bootloader name="gummiboot">
-      <pkgname>gummiboot</pkgname>
+    <bootloader name="systemd-boot">
+      <!-- previously called gummiboot -->
     </bootloader>
   </bootloaders>
 
