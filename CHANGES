@@ -1,3 +1,4 @@
+[2015-09-09 18:25:07 +0200]  Give a minute between connection tries (hoping that connection will..      karasu      {7bea1d4}
 [2015-09-09 14:17:55 +0200]  Update readme                                                              karasu      {531ab2d}
 [2015-09-08 17:26:06 +0200]  Use systemd-boot (previously called gummiboot)                             karasu      {dd11f62}
 [2015-09-07 22:52:06 +0200]  Fixed in https://github.com/Antergos/Cnchi/issues/411                      karasu      {c0d9f26}

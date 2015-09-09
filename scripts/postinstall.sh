@@ -45,6 +45,7 @@ gnome_settings()
     else
         sed -i "s/'us'/'${KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
     fi
+
     # Set gsettings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
@@ -58,6 +59,7 @@ gnome_settings()
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
+    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
     ## Set default directories
