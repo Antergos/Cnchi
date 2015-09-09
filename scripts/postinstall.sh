@@ -59,7 +59,6 @@ gnome_settings()
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
-    mkdir -p ${DESTDIR}/home/${USER_NAME}/.config
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
 
     ## Set default directories
@@ -109,7 +108,6 @@ cinnamon_settings()
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
     echo "Session=cinnamon" >> ${DESTDIR}/home/${USER_NAME}/.dmrc
     chroot ${DESTDIR} chown ${USER_NAME}:users /home/${USER_NAME}/.dmrc
-
 
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/home/${USER_NAME}/.cinnamon ${DESTDIR}/etc/skel
