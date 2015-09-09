@@ -422,9 +422,10 @@ postinstall()
     USER_NAME=$1
     DESTDIR=$2
     DESKTOP=$3
-    KEYBOARD_LAYOUT=$4
-    KEYBOARD_VARIANT=$5
-    IS_VBOX=$6
+    IS_VBOX=$4
+    KEYBOARD_LAYOUT=$5
+    KEYBOARD_VARIANT=$6
+    
     # Specific user configurations
     if [[ -f /usr/share/applications/firefox.desktop ]]; then
         export _BROWSER=firefox

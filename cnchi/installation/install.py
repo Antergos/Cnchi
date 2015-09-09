@@ -95,7 +95,7 @@ class Installation(object):
         msg = _("Installing using the '{0}' method").format(self.method)
         self.queue_event('info', msg)
 
-        self.desktop = self.settings.get('desktop')
+        self.desktop = self.settings.get('desktop').lower()
 
         # This flag tells us if there is a lvm partition (from advanced install)
         # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
@@ -1144,12 +1144,17 @@ class Installation(object):
             self.settings.get('cnchi'),
             "scripts",
             POSTINSTALL_SCRIPT)
-        cmd = ["/usr/bin/bash", script_path_postinstall, username, DEST_DIR, self.desktop, keyboard_layout]
+        cmd = [
+            "/usr/bin/bash",
+            script_path_postinstall,
+            username,
+            DEST_DIR,
+            self.desktop,
+            self.vbox,
+            keyboard_layout]
+        # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        else:
-            cmd.append("")
-        cmd.append(self.vbox)
         try:
             subprocess.check_call(cmd, timeout=300)
             logging.debug("Post install script completed successfully.")
