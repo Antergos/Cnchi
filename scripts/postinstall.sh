@@ -51,12 +51,12 @@ gnome_settings()
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    umount ${DESTDIR}/var/run/dbus
+    rm ${DESTDIR}/usr/bin/set-settings
 
     # Set gdm shell logo
     cp /usr/share/antergos/logo.png ${DESTDIR}/usr/share/antergos/
     chroot ${DESTDIR} sudo -u gdm dbus-launch gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" > /dev/null 2>&1
-
-    rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
     cp -R ${DESTDIR}/home/${USER_NAME}/.config ${DESTDIR}/etc/skel
@@ -91,6 +91,7 @@ cinnamon_settings()
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Copy menu@cinnamon.org.json to set menu icon
@@ -136,6 +137,7 @@ xfce_settings()
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory
@@ -348,6 +350,7 @@ mate_settings()
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -l -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set MintMenu Favorites
@@ -391,6 +394,7 @@ enlightenment_settings()
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
 
     # Set skel directory

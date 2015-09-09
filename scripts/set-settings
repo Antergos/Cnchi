@@ -26,8 +26,6 @@
 
 DESKTOP=$1
 
-echo "set-settings for desktop ${DESKTOP}"
-
 if [[ ${DESKTOP} == 'gnome' ]]; then
 
 	# Change keyboard layout
