@@ -425,7 +425,7 @@ postinstall()
     IS_VBOX=$4
     KEYBOARD_LAYOUT=$5
     KEYBOARD_VARIANT=$6
-    
+
     # Specific user configurations
     if [[ -f /usr/share/applications/firefox.desktop ]]; then
         export _BROWSER=firefox
@@ -448,7 +448,7 @@ postinstall()
     fi
 
     # Configure touchpad. Skip with base installs
-    if [[ $DESKTOP != 'nox' ]]; then
+    if [[ $DESKTOP != 'base' ]]; then
         set_xorg
     fi
 
@@ -489,5 +489,6 @@ postinstall()
 }
 
 touch /tmp/.postinstall.lock
-postinstall $1 $2 $3 $4 $5 $6 > /tmp/postinstall.log 2>&1
+echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6]" > /tmp/postinstall.log 2>&1
+postinstall $1 $2 $3 $4 $5 $6 >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
