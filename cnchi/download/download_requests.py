@@ -224,10 +224,15 @@ class Download(object):
                             download_error = True
                             msg = "Can't download {0}, Cnchi will try another mirror.".format(url)
                             logging.debug(msg)
-                    except (socket.timeout, requests.exceptions.ConnectionError, requests.exceptions.Timeout) as connection_error:
+                    except (socket.timeout, requests.exceptions.Timeout) as connection_error:
                         download_error = True
                         msg = "Can't download {0} ({1}), Cnchi will try another mirror.".format(url, connection_error)
                         logging.debug(msg)
+                    except requests.exceptions.ConnectionError as connection_error:
+                        download_error = True
+                        msg = "Can't download {0} ({1}), Cnchi will try another mirror in a minute.".format(url, connection_error)
+                        logging.debug(msg)
+                        time.sleep(60) # delays for 60 seconds
 
                 if download_error:
                     # None of the mirror urls works.
