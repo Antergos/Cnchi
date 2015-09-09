@@ -12,9 +12,9 @@ This is the latest, unreleased Cnchi code that is under active development, AKA:
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
-|*Cnchi Legacy*|*v0.8.151*|*Frozen*|
-|Cnchi Stable|v0.10.x|Bug Fixes Only|
-|**Cnchi Next**|**v0.11.x** |**Active Development**|
+|*Cnchi Legacy*|*v0.10.x*|*Frozen*|
+|Cnchi Stable|v0.12.x|Bug Fixes Only|
+|**Cnchi Next**|**v0.13.x** |**Active Development**|
 
 ## Usage:
 
