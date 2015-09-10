@@ -50,7 +50,7 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
     mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
-    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} > /dev/null 2>&1
+    chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >> /tmp/postinstall.log 2>&1
     umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
 
@@ -68,7 +68,9 @@ gnome_settings()
     cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${DESTDIR}/home/${USER_NAME}/.xscreensaver
     cp ${DESTDIR}/home/${USER_NAME}/.xscreensaver ${DESTDIR}/etc/skel
 
-    rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    if [[ -f ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop ]]; then
+      rm ${DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    fi
 
     # Ensure that Light Locker starts before gnome-shell
     sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${DESTDIR}/etc/lightdm/Xsession
@@ -96,14 +98,14 @@ cinnamon_settings()
 
     # Copy menu@cinnamon.org.json to set menu icon
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
-    cp -f /usr/share/cnchi/scripts/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
+    cp -f /usr/share/cnchi/scripts/postinstall/menu@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
     # Copy panel-launchers@cinnamon.org.json to set launchers
     if [[ $_BROWSER = "firefox" ]]; then
-        sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json
+        sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json
     fi
     mkdir -p ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
-    cp -f /usr/share/cnchi/scripts/panel-launchers@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
+    cp -f /usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json ${DESTDIR}/home/${USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
 
     # Set Cinnamon in .dmrc
     echo "[Desktop]" > ${DESTDIR}/home/${USER_NAME}/.dmrc
