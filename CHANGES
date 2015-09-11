@@ -1,3 +1,4 @@
+[2015-09-11 19:24:06 +0200]  Try to at least, show a pulse progress bar when auto partitioning          karasu      {08b16da}
 [2015-09-11 14:39:37 +0200]  Fixes issue #418 https://github.com/Antergos/Cnchi/issues/418              karasu      {ec59781}
 [2015-09-11 13:36:28 +0200]  Use -F in advanced (in automatic it was already being used) issue #..      karasu      {99b6c61}
 [2015-09-11 13:09:22 +0200]  why * 8 ?                                                                  karasu      {3dc5a26}
