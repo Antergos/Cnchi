@@ -1,4 +1,6 @@
+[2015-09-11 04:36:12 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {c81b06c}
 [2015-09-11 04:34:12 -0500]  fix set-settings issue with dbus-launch                                Dustin Falgout  {9bfc2da}
+[2015-09-11 11:23:07 +0200]  Do not mount/umount /dev constantly (just do it at the beginning an..      karasu      {53c5283}
 [2015-09-10 22:25:37 +0200]  Do not leave an if empty                                                   karasu      {d91a234}
 [2015-09-10 22:07:12 +0200]  Still don't know what's happening                                          karasu      {d44a574}
 [2015-09-10 00:18:15 +0200]  Can't find what's wrong                                                    karasu      {2f0b474}
