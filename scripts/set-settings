@@ -385,6 +385,7 @@ fi
 
 
 if [[ ${DESKTOP} == 'enlightenment' ]]; then
+	echo "TODO"
 	# eet -l e.cfg  # list all keys, usually just "config"
 	# eet -d e.cfg config e.src # writes human readable values to file e.src
 	# $EDITOR e.src # change whatever you like
