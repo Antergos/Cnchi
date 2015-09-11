@@ -83,3 +83,10 @@ class GtkBaseBox(Gtk.Box):
 
     def get_name(self):
         return self.name
+
+    def get_toplevel(self, widget):
+        top = super().get_toplevel(widget)
+        if top.is_top_level():
+            return top
+        else:
+            return None

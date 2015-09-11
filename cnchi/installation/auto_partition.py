@@ -335,6 +335,7 @@ class AutoPartition(object):
 
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
+        self.last_event = {}
 
         if os.path.exists("/sys/firmware/efi"):
             # If UEFI use GPT by default
@@ -344,6 +345,27 @@ class AutoPartition(object):
             # If no UEFI, use MBR by default
             self.UEFI = False
             self.GPT = False
+
+    def queue_event(self, event_type, event_text=""):
+        """ Adds an event to Cnchi event queue """
+
+        if self.callback_queue is None:
+            if event_type != "percent":
+                logging.debug("{0}:{1}".format(event_type, event_text))
+            return
+
+        if event_type in self.last_event:
+            if self.last_event[event_type] == event_text:
+                # do not repeat same event
+                return
+
+        self.last_event[event_type] = event_text
+
+        try:
+            # Add the event
+            self.callback_queue.put_nowait((event_type, event_text))
+        except queue.Full:
+            pass
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -616,6 +638,8 @@ class AutoPartition(object):
 
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
+
+        self.queue_event('pulse', 'start')
 
         # Partition sizes are expressed in MiB
 
@@ -902,6 +926,8 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 txt = "Can't copy LUKS keyfile to the installation device. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.warning(txt)
+
+        self.queue_event('pulse', 'stop')
 
 
 if __name__ == '__main__':
