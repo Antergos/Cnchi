@@ -409,14 +409,11 @@ postinstall() {
 		export CN_BROWSER=chromium
 	fi
 
-	## Set desktop-specific settings
-	"${CN_DESKTOP}_settings"
-
 	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute > /dev/null 2>&1
+	{ chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute; } > /dev/null 2>&1
 
 	# Fix transmission leftover
 	# What is this for? I think its old code.
@@ -441,6 +438,9 @@ postinstall() {
 	cp /etc/arch-release "${CN_DESTDIR}/etc"
 	cp /etc/os-release "${CN_DESTDIR}/etc"
 	sed -i 's|Arch|Antergos|g' "${CN_DESTDIR}/etc/issue"
+
+	## Set desktop-specific settings
+	"${CN_DESKTOP}_settings"
 
 	# Set BROWSER var
 	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/environment"
