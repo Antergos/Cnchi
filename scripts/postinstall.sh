@@ -49,7 +49,7 @@ gnome_settings()
     # Set gsettings
     cp /usr/share/cnchi/scripts/set-settings ${DESTDIR}/usr/bin/set-settings
     mkdir -p ${DESTDIR}/var/run/dbus
-    mount -o bind /var/run/dbus ${DESTDIR}/var/run/dbus
+    mount --bind /var/run/dbus ${DESTDIR}/var/run/dbus
     chroot ${DESTDIR} su -c "/usr/bin/set-settings ${DESKTOP}" ${USER_NAME} >> /tmp/postinstall.log 2>&1
     umount ${DESTDIR}/var/run/dbus
     rm ${DESTDIR}/usr/bin/set-settings
