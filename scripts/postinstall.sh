@@ -43,7 +43,7 @@ set_gsettings() {
 
 	systemd-nspawn -D "${CN_DESTDIR}" \
 					 -u "${CN_USER_NAME}" \
-					/usr/bin/set-settings "${CN_DESKTOP}" >> /tmp/postinstall.log 2>&1
+					/usr/bin/set-settings "${CN_DESKTOP}" 2>&1
 
 	rm ${CN_DESTDIR}/usr/bin/set-settings
 }
@@ -64,7 +64,7 @@ gnome_settings() {
 	systemd-nspawn -D "${CN_DESTDIR}" \
 					-u gdm \
 					gsettings set org.gnome.login-screen \
-					logo "/usr/share/antergos/logo.png" >> /tmp/postinstall.log 2>&1
+					logo "/usr/share/antergos/logo.png" 2>&1
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -103,7 +103,7 @@ cinnamon_settings() {
 	cp -f /usr/share/cnchi/scripts/postinstall/menu@cinnamon.org.json ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
 	# Copy panel-launchers@cinnamon.org.json to set launchers
-	if [[ $_BROWSER = "firefox" ]]; then
+	if [[ firefox = "${CN_BROWSER}" ]]; then
 		sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json
 	fi
 	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
@@ -132,16 +132,11 @@ xfce_settings() {
 	# Set settings
 	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/xfconf/xfce-perchannel-xml
 	cp -R ${CN_DESTDIR}/etc/xdg/xfce4/panel ${CN_DESTDIR}/etc/xdg/xfce4/helpers.rc ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4
-	if [[ ${_BROWSER} = "chromium" ]]; then
+	if [[ ${CN_BROWSER} = "chromium" ]]; then
 		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc
 	fi
 	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
-	cp /usr/share/cnchi/scripts/set-settings ${CN_DESTDIR}/usr/bin/set-settings
-	mkdir -p ${CN_DESTDIR}/var/run/dbus
-	mount -o bind /var/run/dbus ${CN_DESTDIR}/var/run/dbus
-	chroot ${CN_DESTDIR} su -c "/usr/bin/set-settings ${CN_DESKTOP}" ${CN_USER_NAME} > /dev/null 2>&1
-	umount ${CN_DESTDIR}/var/run/dbus
-	rm ${CN_DESTDIR}/usr/bin/set-settings
+	set_gsettings
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -344,15 +339,10 @@ mate_settings() {
 	chroot ${CN_DESTDIR} ln -sf /usr/share/antergos/antergos-menu.png /usr/share/icons/Numix/24x24/places/start-here.png
 
 	# Set gsettings
-	cp /usr/share/cnchi/scripts/set-settings ${CN_DESTDIR}/usr/bin/set-settings
-	mkdir -p ${CN_DESTDIR}/var/run/dbus
-	mount -o bind /var/run/dbus ${CN_DESTDIR}/var/run/dbus
-	chroot ${CN_DESTDIR} su -l -c "/usr/bin/set-settings ${CN_DESKTOP}" ${CN_USER_NAME} > /dev/null 2>&1
-	umount ${CN_DESTDIR}/var/run/dbus
-	rm ${CN_DESTDIR}/usr/bin/set-settings
+	set_gsettings
 
 	# Set MintMenu Favorites
-	if [[ $_BROWSER = "firefox" ]]; then
+	if [[ $CN_BROWSER = "firefox" ]]; then
 		sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/applications.list
 	fi
 	cp /usr/share/cnchi/scripts/postinstall/applications.list ${CN_DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
@@ -386,12 +376,7 @@ enlightenment_settings() {
 	${CN_DESTDIR}/usr/bin/eet -e ${E_CFG} config ${E_SRC} 1
 
 	# Set settings
-	cp /usr/share/cnchi/scripts/set-settings ${CN_DESTDIR}/usr/bin/set-settings
-	mkdir -p ${CN_DESTDIR}/var/run/dbus
-	mount -o bind /var/run/dbus ${CN_DESTDIR}/var/run/dbus
-	chroot ${CN_DESTDIR} su -c "/usr/bin/set-settings ${CN_DESKTOP}" ${CN_USER_NAME} > /dev/null 2>&1
-	umount ${CN_DESTDIR}/var/run/dbus
-	rm ${CN_DESTDIR}/usr/bin/set-settings
+	set_gsettings
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -480,12 +465,12 @@ postinstall() {
 }
 
 touch /tmp/.postinstall.lock
-echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6]" > /tmp/postinstall.log 2>&1
+echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6]" > /tmp/postinstall.log
 CN_USER_NAME=$1
 CN_DESTDIR=$2
 CN_DESKTOP=$3
 CN_IS_VBOX=$4
 CN_KEYBOARD_LAYOUT=$5
 CN_KEYBOARD_VARIANT=$6
-postinstall >> /tmp/postinstall.log 2>&1
+{ postinstall; } >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock

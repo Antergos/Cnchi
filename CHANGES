@@ -1,3 +1,4 @@
+[2015-09-11 04:34:12 -0500]  fix set-settings issue with dbus-launch (cherry picked from commit ..  Dustin Falgout  {e36f4a1}
 [2015-09-07 12:29:47 -0500]  fix pot file header                                                    Dustin Falgout  {64405d2}
 [2015-09-07 18:44:47 +0200]  Merge pull request #407 from Wyn10/master                                  karasu      {0f6c2af}
 [2015-09-07 00:15:22 -0400]  Spelling error.                                                              Wyn       {0284442}
