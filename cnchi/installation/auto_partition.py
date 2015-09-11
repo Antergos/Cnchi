@@ -113,8 +113,11 @@ def unmount_all(dest_dir):
     if dest_dir in mount_result:
         unmount(dest_dir)
 
-    # Remove all previous LVM volumes
-    # (it may have been left created due to a previous failed installation)
+
+def remove_lvm():
+    """ Remove all previous LVM volumes
+    (it may have been left created due to a previous failed installation) """
+
     try:
         lvolumes = check_output("lvs -o lv_name,vg_name --noheading").split("\n")
         if len(lvolumes[0]) > 0:
@@ -140,7 +143,11 @@ def unmount_all(dest_dir):
     except subprocess.CalledProcessError as err:
         logging.warning("Can't delete existent LVM volumes, command %s failed: %s", err.cmd, err.output)
 
-    # Close LUKS devices (they may have been left open because of a previous failed installation)
+
+def close_luks_devices():
+    """ Close LUKS devices (they may have been left open because of a previous
+    failed installation) """
+
     try:
         if os.path.exists("/dev/mapper/cryptAntergos"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
@@ -637,6 +644,8 @@ class AutoPartition(object):
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
+        remove_lvm()
+        close_luks_devices()
 
         printk(False)
 
