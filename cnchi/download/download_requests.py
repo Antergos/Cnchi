@@ -193,7 +193,7 @@ class Download(object):
                                     if old_percent != percent:
                                         self.queue_event('percent', percent)
 
-                                    bps = (completed_length // (time.clock() - start)) * 8
+                                    bps = completed_length // (time.clock() - start)
                                     if bps >= (1024 * 1024):
                                         Mbps = bps / (1024 * 1024)
                                         progress_text = "{0}%   {1:.2f} Mbps".format(int(percent * 100), Mbps)
