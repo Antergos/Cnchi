@@ -336,6 +336,7 @@ class AutoPartition(object):
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
         self.last_event = {}
+        self.percent = 0
 
         if os.path.exists("/sys/firmware/efi"):
             # If UEFI use GPT by default
@@ -639,10 +640,9 @@ class AutoPartition(object):
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
-        self.queue_event('pulse', 'start')
+        self.queue_event('percent', '0')
 
         # Partition sizes are expressed in MiB
-
         # Get just the disk size in MiB
         device = self.auto_device
         device_name = check_output("basename {0}".format(device))
@@ -926,8 +926,6 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 txt = "Can't copy LUKS keyfile to the installation device. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.warning(txt)
-
-        self.queue_event('pulse', 'stop')
 
 
 if __name__ == '__main__':
