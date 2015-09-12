@@ -1,3 +1,4 @@
+[2015-09-11 20:13:22 -0500]  not sure why it isnt working. it works fine running the commands ma..  Dustin Falgout  {100f564}
 [2015-09-11 18:48:10 -0500]  fix version again :grimacing:                                          Dustin Falgout  {c8045e6}
 [2015-09-11 18:47:36 -0500]  fix version                                                            Dustin Falgout  {618514b}
 [2015-09-11 18:46:35 -0500]  dont start container until after os-release files are copied.          Dustin Falgout  {de945fa}

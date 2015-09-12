@@ -41,7 +41,12 @@ set_gsettings() {
 	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
 	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
 
-	systemd-nspawn -D "${CN_DESTDIR}" -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" 2>&1
+	# I dont know why this isn't working but I don't have anymore time to mess with it right now
+	#systemd-nspawn -D "${CN_DESTDIR}" -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" 2>&1
+
+	mkdir -p "${CN_DESTDIR}/var/run/dbus"
+	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
+	chroot "${CN_DESTDIR}" su -c "/usr/bin/set-settings ${CN_DESKTOP}" "${CN_USER_NAME}" > /dev/null 2>&1
 
 	rm ${CN_DESTDIR}/usr/bin/set-settings
 }
