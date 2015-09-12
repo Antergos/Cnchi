@@ -1,3 +1,4 @@
+[2015-09-11 18:48:10 -0500]  fix version again :grimacing:                                          Dustin Falgout  {c8045e6}
 [2015-09-11 18:47:36 -0500]  fix version                                                            Dustin Falgout  {618514b}
 [2015-09-11 18:46:35 -0500]  dont start container until after os-release files are copied.          Dustin Falgout  {de945fa}
 [2015-09-11 05:01:06 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {b7c712e}

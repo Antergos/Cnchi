@@ -41,9 +41,7 @@ set_gsettings() {
 	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
 	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
 
-	systemd-nspawn -D "${CN_DESTDIR}" \
-					 -u "${CN_USER_NAME}" \
-					/usr/bin/set-settings "${CN_DESKTOP}" 2>&1
+	systemd-nspawn -D "${CN_DESTDIR}" -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" 2>&1
 
 	rm ${CN_DESTDIR}/usr/bin/set-settings
 }
@@ -61,10 +59,9 @@ gnome_settings() {
 
 	# Set gdm shell logo
 	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
-	systemd-nspawn -D "${CN_DESTDIR}" \
-					-u gdm \
-					gsettings set org.gnome.login-screen \
-					logo "/usr/share/antergos/logo.png" 2>&1
+	systemd-nspawn -D "${CN_DESTDIR}" -u gdm -M CN_GDM gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" &
+	sleep 5;
+	machinectl poweroff CN_GDM
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -413,7 +410,7 @@ postinstall() {
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	{ chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute; } > /dev/null 2>&1
+	chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute 2>&1
 
 	# Fix transmission leftover
 	# What is this for? I think its old code.
