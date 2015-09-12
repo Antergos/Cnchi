@@ -1,3 +1,4 @@
+[2015-09-12 18:45:05 +0200]  Show pulse bar while doing auto partition process                          karasu      {cf90cf9}
 [2015-09-11 20:37:59 +0200]  Fix queue_event in auto_partition                                          karasu      {dda8e5f}
 [2015-09-11 20:30:52 +0200]  Not sure about this                                                        karasu      {3b49276}
 [2015-09-11 20:21:00 +0200]  No parameter is required                                                   karasu      {d44e16f}

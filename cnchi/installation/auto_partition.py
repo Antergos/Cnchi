@@ -640,8 +640,6 @@ class AutoPartition(object):
     def run(self):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
-        self.queue_event('pulse', 'start')
-
         # Partition sizes are expressed in MiB
         # Get just the disk size in MiB
         device = self.auto_device
@@ -926,8 +924,6 @@ class AutoPartition(object):
             except subprocess.CalledProcessError as err:
                 txt = "Can't copy LUKS keyfile to the installation device. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.warning(txt)
-
-        self.queue_event('pulse', 'stop')
 
 
 if __name__ == '__main__':
