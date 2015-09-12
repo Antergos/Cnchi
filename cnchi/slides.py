@@ -124,7 +124,7 @@ class Slides(GtkBaseBox):
     def stop_pulse(self):
         """ Stop pulsing progressbar """
         self.should_pulse = False
-        self.progress_bar.hide()
+        # self.progress_bar.hide()
         self.info_label.show_all()
 
     def start_pulse(self):

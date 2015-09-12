@@ -871,7 +871,8 @@ class Installation(object):
             "Audigy Analog/Digital Output Jack off"]
 
         for cmd in cmds:
-            chroot_run(['sh', '-c', 'amixer -c 0 sset {0}'.format(cmd)])
+            full_cmd = ['sh', '-c', 'amixer -q -c 0 sset {0}'.format(cmd)]
+            chroot_run(full_cmd)
 
         # Save settings
         chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
@@ -887,8 +888,8 @@ class Installation(object):
 
         audio_system = "alsa"
 
-        pulse_path = os.path.join(DEST_DIR, "usr/bin/pulseaudio")
-        if os.path.exists(pulse_path):
+        pulseaudio_path = os.path.join(DEST_DIR, "usr/bin/pulseaudio")
+        if os.path.exists(pulseaudio_path):
             audio_system = "pulse"
 
         with open(fluid_path, "w") as fluid_conf:
@@ -1197,3 +1198,4 @@ class Installation(object):
         self.copy_log()
 
         self.queue_event('pulse', 'stop')
+        self.queue_event('progress_bar', 'hide')
