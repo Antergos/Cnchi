@@ -51,12 +51,15 @@ class Hardware(object):
         """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented")
 
+    def get_conflicts(self):
+        """ Returns a list with all conflicting packages """
+        return []
+
     def post_install(self, dest_dir):
         """ This method runs commands that need to be run AFTER installing the driver """
         raise NotImplementedError("post_install is not implemented")
 
-    @staticmethod
-    def pre_install(dest_dir):
+    def pre_install(self, dest_dir):
         """ This method runs commands that need to run BEFORE installing the driver """
         pass
 
@@ -302,7 +305,15 @@ class HardwareInstall(object):
         packages = []
         for obj in self.objects_used:
             packages.extend(obj.get_packages())
+        # Remove duplicates (not necessary but it's cleaner)
+        packages = list(set(packages))
+        return packages
 
+    def get_conflicts(self):
+        """ Get all conflicting packages for all detected devices """
+        packages = []
+        for obj in self.objects_used:
+            packages.extend(obj.get_conflicts())
         # Remove duplicates (not necessary but it's cleaner)
         packages = list(set(packages))
         return packages

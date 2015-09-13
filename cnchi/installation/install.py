@@ -273,6 +273,15 @@ class Installation(object):
         self.prepare_pacman()
         logging.debug("Pacman ready")
 
+        # Run pre-install scripts (only catalyst does something here atm)
+        try:
+            logging.debug("Running hardware drivers pre-install jobs...")
+            self.hardware_install = hardware.HardwareInstall(
+                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
+            self.hardware_install.pre_install(DEST_DIR)
+        except Exception as general_error:
+            logging.warning("Unknown error in hardware module. Output: %s", general_error)
+
         logging.debug("Downloading packages...")
         self.download_packages()
 

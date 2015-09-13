@@ -107,6 +107,13 @@ class Nvidia(Hardware):
         return pkgs
 
     @staticmethod
+    def get_conflicts():
+        pkgs = ["mesa-libgl"]
+        if os.uname()[-1] == "x86_64":
+            pkgs.append("lib32-mesa-libgl")
+        return pkgs
+
+    @staticmethod
     def post_install(dest_dir):
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
         with open(path, 'w') as nvidia:
