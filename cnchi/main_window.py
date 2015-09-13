@@ -201,7 +201,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.MAIN_WINDOW_HEIGHT = 450
 
         self.connect('delete-event', self.on_exit_button_clicked)
-        self.connect('key-release-event', self.check_escape)
+        self.connect('key-release-event', self.on_key_release)
 
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
@@ -344,7 +344,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def check_escape(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
-        if event.keyval == 65307:
+
+    def on_key_release(self, widget, event, data=None):
+        """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
+        if event.keyval == Gdk.keyval_from_name('Escape'):
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:
                 self.on_exit_button_clicked(self)

@@ -80,6 +80,12 @@ GtkProgressBar.progressbar {
     color: #2EA3F2;
 }
 
+#fwd_btn:focused, #bk_btn:focused {
+    color: #000000;
+    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
+    background-color: shade(@theme_bg_color, 1.08);
+}
+
 #fwd_btn:active, #bk_btn:active {
     color: #333A4C;
     box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
@@ -152,6 +158,18 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 }
 
 #tryit_btn, #graph_btn {
+    padding: 12px 20px;
+    border-radius: 3px;
+    border-color: #f0f0f0;
+    border-width: 2px;
+    background: rgba(255, 255, 255, 1);
+    font-size: 15px;
+    font-weight: 500;
+    color: #2EA3F2;
+    transition: all 0.1s ease-in;
+}
+
+#tryit_btn:focused, #graph_btn:focused {
     padding: 12px 20px;
     border-radius: 3px;
     border-color: #2EA3F2;
