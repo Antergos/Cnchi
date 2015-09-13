@@ -1759,6 +1759,9 @@ class InstallationAdvanced(GtkBaseBox):
                 has_part["/"] = True
                 part_label["/"].show()
                 part_label["/"].set_state(True)
+                if fsystem == "f2fs":
+                    # Special case. We need a /boot partition
+                    part_label["/boot"].show()
 
             if mnt == "swap":
                 has_part["swap"] = True
