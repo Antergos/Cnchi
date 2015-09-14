@@ -1,3 +1,4 @@
+[2015-09-14 18:32:25 +0200]  This left forward button pressed.                                          karasu      {1973cca}
 [2015-09-13 20:25:36 +0200]  Working on fixing hardware module (pre-install, post-install and co..      karasu      {aa330ce}
 [2015-09-13 19:18:41 +0200]  Ask for a boot partition when using f2fs as root                           karasu      {8329c5e}
 [2015-09-13 17:54:16 +0200]  Show which button is selected in welcome screen                            karasu      {5c38e02}
