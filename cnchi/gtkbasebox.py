@@ -85,4 +85,8 @@ class GtkBaseBox(Gtk.Box):
         return self.name
 
     def get_toplevel(self):
-        return super().get_toplevel()
+        top = self.main_window
+        if isinstance(top, Gtk.Window):
+            return top
+        else:
+            return None

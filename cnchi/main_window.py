@@ -342,9 +342,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_geometry_hints(None, geom, hints)
 
-    def check_escape(self, widget, event, data=None):
-        """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
-
     def on_key_release(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
         if event.keyval == Gdk.keyval_from_name('Escape'):
