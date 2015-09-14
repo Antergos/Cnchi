@@ -80,12 +80,6 @@ GtkProgressBar.progressbar {
     color: #2EA3F2;
 }
 
-#fwd_btn:focused, #bk_btn:focused {
-    color: #000000;
-    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
-    background-color: shade(@theme_bg_color, 1.08);
-}
-
 #fwd_btn:active, #bk_btn:active {
     color: #333A4C;
     box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
