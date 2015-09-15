@@ -1893,13 +1893,10 @@ class InstallationAdvanced(GtkBaseBox):
                                 swap_partition = self.get_swap_partition(partition_path)
                                 msg = ""
                                 if swap_partition == partition_path:
-                                    msg = _("{0} is mounted as swap.\nTo continue it has to be unmounted.\n"
-                                            "Click Yes to unmount, or No to return\n").format(partition_path)
+                                    msg = _("{0} is already mounted as swap, to continue it will be unmounted.").format(partition_path)
                                     mounted = True
                                 elif len(mount_point) > 0:
-                                    msg = _("{0} is mounted in '{1}'.\nTo continue it has to be unmounted.\n"
-                                            "Click Yes to unmount, or No to return\n").format(partition_path,
-                                                                                              mount_point)
+                                    msg = _("{0} is already mounted in {1}, to continue it will be unmounted.").format(partition_path, mount_point)
                                     mounted = True
 
                                 if "install" in mount_point:
@@ -1912,30 +1909,24 @@ class InstallationAdvanced(GtkBaseBox):
                                     except subprocess.CalledProcessError as process_error:
                                         logging.error("Command %s failed: %s", " ".join(cmd), process_error)
                                 elif mounted:
-                                    response = show.question(self.get_toplevel(), msg)
-                                    if response != Gtk.ResponseType.YES:
-                                        # User doesn't want to unmount, we can't go on.
-                                        return []
+                                    # unmount it!
+                                    show.warning(self.get_toplevel(), msg)
+                                    if swap_partition == partition_path:
+                                        try:
+                                            cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
+                                            subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                            logging.debug("Swap partition %s unmounted", partition_path)
+                                        except subprocess.CalledProcessError as process_error:
+                                            logging.error("Error running command %s: %s", " ".join(cmd), process_error)
                                     else:
-                                        # unmount it!
-                                        if swap_partition == partition_path:
-                                            try:
-                                                cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
-                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                                logging.debug("Swap partition %s unmounted", partition_path)
-                                            except subprocess.CalledProcessError as process_error:
-                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
-                                        else:
-                                            try:
-                                                cmd = ['umount', partition_path]
-                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                                logging.debug("%s unmounted", mount_point)
-                                            except subprocess.CalledProcessError as process_error:
-                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
+                                        try:
+                                            cmd = ['umount', partition_path]
+                                            subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                            logging.debug("%s unmounted", mount_point)
+                                        except subprocess.CalledProcessError as process_error:
+                                            logging.error("Error running command %s: %s", " ".join(cmd), process_error)
                                 else:
-                                    logging.warning(
-                                        "%s shows as mounted (busy) but it has no mount point",
-                                        partition_path)
+                                    logging.warning("%s shows as mounted (busy) but it has no mount point", partition_path)
 
                         (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
 
