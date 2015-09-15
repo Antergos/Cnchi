@@ -1,3 +1,4 @@
+[2015-09-14 23:13:06 +0200]  Trying to fix get_toplevel error                                           karasu      {4b10c4d}
 [2015-09-14 20:24:14 +0200]  Port postinstall.sh stable changes                                         karasu      {42df27b}
 [2015-09-14 18:32:25 +0200]  This left forward button pressed.                                          karasu      {1973cca}
 [2015-09-13 20:25:36 +0200]  Working on fixing hardware module (pre-install, post-install and co..      karasu      {aa330ce}

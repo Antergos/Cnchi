@@ -449,7 +449,10 @@ class InstallationAdvanced(GtkBaseBox):
         size = length * sector_size
         size_txt = "{0}b".format(size)
 
-        if size >= 1000000000:
+        if size >= 1000000000000:
+            size /= 1000000000000
+            size_txt = "{0:.0f}T".format(size)
+        elif size >= 1000000000:
             size /= 1000000000
             size_txt = "{0:.0f}G".format(size)
         elif size >= 1000000:
