@@ -80,9 +80,9 @@ class Bootloader(object):
         bootloader = self.settings.get('bootloader').lower()
         if bootloader == "grub2":
             self.install_grub()
-        elif bootloader == "gummiboot":
-            logging.debug("Cnchi will install the Gummiboot loader")
-            self.install_gummiboot()
+        elif bootloader == "systemd-boot":
+            logging.debug("Cnchi will install the Systemd-boot loader")
+            self.install_systemd_boot()
 
     def install_grub(self):
         self.modify_grub_default()
@@ -420,8 +420,8 @@ class Bootloader(object):
             # Ignore if already exists
             pass
 
-    def install_gummiboot(self):
-        """ Install Gummiboot bootloader to the EFI System Partition """
+    def install_systemd_boot(self):
+        """ Install Systemd-boot (Gummiboot) bootloader to the EFI System Partition """
         # Setup bootloader menu
         menu_dir = os.path.join(self.dest_dir, "boot/loader")
         os.makedirs(menu_dir, mode=0o755, exist_ok=True)
@@ -523,22 +523,22 @@ class Bootloader(object):
                     entry_file.write(line)
 
         # Install bootloader
-        logging.debug("Installing gummiboot bootloader...")
+        logging.debug("Installing Systemd-boot bootloader...")
         try:
             # chroot.mount_special_dirs(self.dest_dir)
-            cmd = ['gummiboot', '--path=/boot', 'install']
+            cmd = ['bootctl', '--path=/boot', 'install']
             chroot.run(cmd, self.dest_dir, 300)
             # chroot.umount_special_dirs(self.dest_dir)
-            logging.info("Gummiboot install completed successfully")
+            logging.info("Systemd-boot install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
-            logging.error('Command gummiboot failed. Error output: %s', process_error.output)
+            logging.error('Command %s failed. Error output: %s', " ".join(cmd), process_error.output)
             self.settings.set('bootloader_installation_successful', False)
         except subprocess.TimeoutExpired:
-            logging.error('Command gummiboot timed out.')
+            logging.error('Command %s timed out.', " ".join(cmd))
             self.settings.set('bootloader_installation_successful', False)
         except Exception as general_error:
-            logging.error('Command gummiboot failed. Unknown Error: %s', general_error)
+            logging.error('Command %s failed. Unknown Error: %s', " ".join(cmd), general_error)
             self.settings.set('bootloader_installation_successful', False)
 
     def freeze_unfreeze_xfs(self):

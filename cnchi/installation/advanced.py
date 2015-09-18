@@ -341,7 +341,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         if os.path.exists('/sys/firmware/efi'):
             self.bootloader_entry.append_text("Grub2")
-            self.bootloader_entry.append_text("Gummiboot")
+            self.bootloader_entry.append_text("Systemd-boot")
             if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
                 # Automatically select first entry
                 self.bootloader_entry.set_active(0)
@@ -1702,7 +1702,7 @@ class InstallationAdvanced(GtkBaseBox):
         """
         Check that all necessary mount points are specified.
         At least root (/) partition must be defined and in UEFI systems
-        a fat partition mounted in /boot (gummiboot) or /boot/efi (grub2) must be defined too.
+        a fat partition mounted in /boot (Systemd-boot) or /boot/efi (grub2) must be defined too.
         """
 
         check_parts = ["/", "/boot", "/boot/efi", "swap"]
@@ -1737,7 +1737,7 @@ class InstallationAdvanced(GtkBaseBox):
         if is_uefi:
             if self.bootloader == "grub2":
                 part_label["/boot/efi"].show()
-            if self.bootloader == "gummiboot":
+            if self.bootloader == "systemd-boot":
                 part_label["/boot"].show()
         else:
             # LVM in non UEFI needs a /boot partition
@@ -1770,8 +1770,8 @@ class InstallationAdvanced(GtkBaseBox):
                         has_part["/boot/efi"] = True
                         part_label["/boot/efi"].show()
                         part_label["/boot/efi"].set_state(True)
-                    elif self.bootloader == "gummiboot" and mnt == "/boot":
-                        # Gummiboot
+                    elif self.bootloader == "systemd-boot" and mnt == "/boot":
+                        # Systemd-boot (Gummiboot)
                         has_part["/boot"] = True
                         part_label["/boot"].show()
                         part_label["/boot"].set_state(True)
@@ -1789,8 +1789,8 @@ class InstallationAdvanced(GtkBaseBox):
             if self.bootloader == "grub2":
                 # Grub2 needs a /boot/efi partition in UEFI
                 check_ok = check_ok and has_part["/boot/efi"]
-            elif self.bootloader == "gummiboot":
-                # Gummiboot needs a /boot partition
+            elif self.bootloader == "systemd-boot":
+                # Systemd-boot (Gummiboot) needs a /boot partition
                 check_ok = check_ok and has_part["/boot"]
         else:
             if self.lv_partitions:
