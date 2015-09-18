@@ -50,8 +50,8 @@ and then raise an InstallError exception.
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
 
-# KDE needs 4.5 GB for its files. Need to leave extra space also.
-MIN_ROOT_SIZE = 6500
+# KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
+MIN_ROOT_SIZE = 8000
 
 
 def check_output(command):
@@ -113,8 +113,11 @@ def unmount_all(dest_dir):
     if dest_dir in mount_result:
         unmount(dest_dir)
 
-    # Remove all previous LVM volumes
-    # (it may have been left created due to a previous failed installation)
+
+def remove_lvm():
+    """ Remove all previous LVM volumes
+    (it may have been left created due to a previous failed installation) """
+
     try:
         lvolumes = check_output("lvs -o lv_name,vg_name --noheading").split("\n")
         if len(lvolumes[0]) > 0:
@@ -140,7 +143,11 @@ def unmount_all(dest_dir):
     except subprocess.CalledProcessError as err:
         logging.warning("Can't delete existent LVM volumes, command %s failed: %s", err.cmd, err.output)
 
-    # Close LUKS devices (they may have been left open because of a previous failed installation)
+
+def close_luks_devices():
+    """ Close LUKS devices (they may have been left open because of a previous
+    failed installation) """
+
     try:
         if os.path.exists("/dev/mapper/cryptAntergos"):
             subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
@@ -328,6 +335,8 @@ class AutoPartition(object):
 
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
+        self.last_event = {}
+        self.percent = 0
 
         if os.path.exists("/sys/firmware/efi"):
             # If UEFI use GPT by default
@@ -337,6 +346,27 @@ class AutoPartition(object):
             # If no UEFI, use MBR by default
             self.UEFI = False
             self.GPT = False
+
+    def queue_event(self, event_type, event_text=""):
+        """ Adds an event to Cnchi event queue """
+
+        if self.callback_queue is None:
+            if event_type != "percent":
+                logging.debug("{0}:{1}".format(event_type, event_text))
+            return
+
+        if event_type in self.last_event:
+            if self.last_event[event_type] == event_text:
+                # do not repeat same event
+                return
+
+        self.last_event[event_type] = event_text
+
+        try:
+            # Add the event
+            self.callback_queue.put_nowait((event_type, event_text))
+        except queue.Full:
+            pass
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """
@@ -517,7 +547,7 @@ class AutoPartition(object):
         if self.GPT and self.bootloader == "grub2":
             fs_devices[devices['efi']] = "vfat"
 
-        if self.GPT and self.bootloader == "gummiboot":
+        if self.GPT and self.bootloader == "systemd-boot":
             fs_devices[devices['boot']] = "vfat"
         else:
             fs_devices[devices['boot']] = "ext2"
@@ -611,7 +641,6 @@ class AutoPartition(object):
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
-
         # Get just the disk size in MiB
         device = self.auto_device
         device_name = check_output("basename {0}".format(device))
@@ -637,6 +666,8 @@ class AutoPartition(object):
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
+        remove_lvm()
+        close_luks_devices()
 
         printk(False)
 
@@ -684,7 +715,7 @@ class AutoPartition(object):
                 part_num += 1
 
             # Create Boot partition
-            if self.bootloader == "gummiboot":
+            if self.bootloader == "systemd-boot":
                 sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
             else:
                 sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
@@ -857,7 +888,7 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
-        if self.GPT and self.bootloader == "gummiboot":
+        if self.GPT and self.bootloader == "systemd-boot":
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
         else:
