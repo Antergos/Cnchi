@@ -492,7 +492,9 @@ class Pac(object):
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
-            logging.warning(line)
+            # Alpm outputs non-english log messages so we can't target certain useless warnings. I think most of
+            # the warnings are useless anyway. We can revisit this later if need be.
+            logging.debug(line)
         elif level & pyalpm.LOG_DEBUG:
             # I get pyalpm errors here. Why? I think it's because they're not fatal
             # Check against error 0 as it is not an error :p
