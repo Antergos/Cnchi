@@ -103,14 +103,14 @@ TOOLTIPS = {
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
-    'fonts': "Fonts: adobe-source-code-pro, adobe-source-sans-pro, jsmath, lohit\n"
+    'fonts': _("Fonts: adobe-source-code-pro, adobe-source-sans-pro, jsmath, lohit\n"
              "oldstand, openarch, otf-bitter, otf-goudy, andika, anonymous-pro\n"
              "cantarell, cardo, chromeos-fonts, comfortaa, droid, google-fonts\n"
              "google-webfonts, inconsolata, kimberly_geswein_print, lekton\n"
              "medievalsharp, nova, oldstandard, opensans, oxygen, pt-mono\n"
              "pt-sans, roboto, sil-fonts, sortsmillgoudy, source-code-pro\n"
              "source-sans-pro, ubuntu-font-family, vollkorn, fira-mono\n"
-             "fira-sans and lato.",
+             "fira-sans and lato."),
 
     'games': _("Steam is one of the most popular gaming clients that supports\n"
                "linux in technology and gaming, while PlayOnLinux\n"
