@@ -1,3 +1,4 @@
+[2015-09-19 18:46:00 +0200]  removed unnecessary if                                                     karasu      {8621389}
 [2015-09-19 18:44:40 +0200]  Missing _()                                                                karasu      {2fa203a}
 [2015-09-19 18:37:25 +0200]  Fix name                                                                   karasu      {f85f2b8}
 [2015-09-19 18:30:29 +0200]  Better names for functions                                                 karasu      {38c8240}

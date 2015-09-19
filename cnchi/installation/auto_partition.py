@@ -104,10 +104,13 @@ def unmount_all_in_directory(dest_dir):
     dirs = []
     for mount in mount_result:
         if dest_dir in mount:
-            directory = mount.split()[0]
-            # Do not unmount dest_dir now (we will do it later)
-            if directory is not dest_dir:
-                dirs.append(directory)
+            try:
+                directory = mount.split()[0]
+                # Do not unmount dest_dir now (we will do it later)
+                if directory is not dest_dir:
+                    dirs.append(directory)
+            except IndexError:
+                pass
 
     for directory in dirs:
         unmount(directory)
@@ -139,10 +142,12 @@ def unmount_all_in_device(device):
     # Umount all partitions of device
     dirs = []
     for mount in mount_result:
-        directory = mount.split()[0]
-        mounted_device = mount.split()[2]
-        if device in mounted_device:
-            dirs.append(directory)
+        if device in mount:
+            try:
+                directory = mount.split()[0]
+                dirs.append(directory)
+            except IndexError:
+                pass
 
     for directory in dirs:
         unmount(directory)
