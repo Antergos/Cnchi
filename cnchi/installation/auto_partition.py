@@ -116,7 +116,7 @@ def unmount_all_in_directory(dest_dir):
     if dest_dir in mount_result:
         unmount(dest_dir)
 
-def unmount_all_in_partition(device):
+def unmount_all_in_device(device):
     """ Unmounts all partitions from device """
 
     # Unmount all swap
