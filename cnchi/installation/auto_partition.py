@@ -80,8 +80,10 @@ def unmount(directory):
             logging.warning("Unmounting %s failed: %s", directory, process_error)
 
 
-def unmount_all(dest_dir):
+def unmount_all_in_directory(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
+
+    # Unmount all swap devices
     try:
         cmd = ["swapon", "--show=NAME", "--noheadings"]
         swaps = subprocess.check_output(cmd).decode().split("\n")
@@ -91,6 +93,7 @@ def unmount_all(dest_dir):
     except subprocess.CalledProcessError as err:
         logging.warning("Command %s failed: %s", err.cmd, err.output)
 
+    # Get all mounted devices
     try:
         mount_result = subprocess.check_output("mount").decode().split("\n")
     except subprocess.CalledProcessError as err:
@@ -113,6 +116,37 @@ def unmount_all(dest_dir):
     if dest_dir in mount_result:
         unmount(dest_dir)
 
+def unmount_all_in_partition(device):
+    """ Unmounts all partitions from device """
+
+    # Unmount all swap
+    try:
+        cmd = ["swapon", "--show=NAME", "--noheadings"]
+        swaps = subprocess.check_output(cmd).decode().split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                subprocess.check_call(["swapoff", name])
+    except subprocess.CalledProcessError as err:
+        logging.warning("Command %s failed: %s", err.cmd, err.output)
+
+    # Get all mounted devices
+    try:
+        mount_result = subprocess.check_output("mount").decode().split("\n")
+    except subprocess.CalledProcessError as err:
+        logging.warning("Command %s failed: %s", err.cmd, err.output)
+        return
+
+    # Umount all partitions of device
+    dirs = []
+    for mount in mount_result:
+        if dest_dir in mount:
+            directory = mount.split()[0]
+            mounted_device = mount.split()[2]
+            if device in mounted_device:
+                dirs.append(directory)
+
+    for directory in dirs:
+        unmount(directory)
 
 def remove_lvm(device):
     """ Remove all previous LVM volumes
@@ -664,8 +698,10 @@ class AutoPartition(object):
         part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
         self.log_part_sizes(part_sizes)
 
-        # Disable swap and all mounted partitions, umount / last!
-        unmount_all(self.dest_dir)
+        # Disable swap and unmount all partitions inside dest_dir
+        unmount_all_in_directory(self.dest_dir)
+        # Disable swap and unmount all partitions of device
+        unmount_all_in_device(device)
         # Remove lvm in destination device
         remove_lvm(device)
         # Close luks devices in destination device

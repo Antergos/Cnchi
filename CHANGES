@@ -1,3 +1,4 @@
+[2015-09-19 17:57:21 +0200]  Do not delete lvm from other devices                                       karasu      {99ecb90}
 [2015-09-18 15:25:48 -0500]  dont send alpm warning level messages to bugsnag                       Dustin Falgout  {ee2c6f8}
 [2015-09-15 18:09:10 +0200]  If something is mounted, unmount it (warn the user but do not ask p..      karasu      {aa12269}
 [2015-09-15 17:55:59 +0200]  Show TB in advanced                                                        karasu      {52ac9d3}

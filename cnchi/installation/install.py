@@ -150,8 +150,8 @@ class Installation(object):
         if os.path.exists(DEST_DIR):
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
-            # We use unmount_all from auto_partition to do this.
-            auto_partition.unmount_all(DEST_DIR)
+            # We use unmount_all_in_directory from auto_partition to do this.
+            auto_partition.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
         root_partition = self.mount_devices["/"]
