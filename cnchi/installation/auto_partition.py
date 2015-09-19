@@ -139,11 +139,10 @@ def unmount_all_in_device(device):
     # Umount all partitions of device
     dirs = []
     for mount in mount_result:
-        if dest_dir in mount:
-            directory = mount.split()[0]
-            mounted_device = mount.split()[2]
-            if device in mounted_device:
-                dirs.append(directory)
+        directory = mount.split()[0]
+        mounted_device = mount.split()[2]
+        if device in mounted_device:
+            dirs.append(directory)
 
     for directory in dirs:
         unmount(directory)
