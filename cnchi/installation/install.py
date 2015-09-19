@@ -803,11 +803,11 @@ class Installation(object):
         username = self.settings.get('username')
         autologin = not self.settings.get('require_password')
 
-        lightdm_conf_path = os.path.join(DEST_DIR, "etc/lightdm/lightdm.conf")
+        lightdm_greeter = "lightdm-webkit2-greeter"
 
+        lightdm_conf_path = os.path.join(DEST_DIR, "etc/lightdm/lightdm.conf")
         try:
             # Setup LightDM as Desktop Manager
-
             with open(lightdm_conf_path) as lightdm_conf:
                 text = lightdm_conf.readlines()
 
@@ -822,8 +822,10 @@ class Installation(object):
                     # Set correct DE session
                     if '#user-session=default' in line:
                         line = 'user-session={0}\n'.format(session)
+                    # Set correct greeter
+                    if '#greeter-session=example-gtk-gnome' in line:
+                        line = 'greeter-session={0}\n'.format(lightdm_greeter)
                     lightdm_conf.write(line)
-
             txt = _("LightDM display manager configuration completed.")
             logging.debug(txt)
         except FileNotFoundError:

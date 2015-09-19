@@ -1,3 +1,4 @@
+[2015-09-19 19:38:09 +0200]  Check device in mount line                                                 karasu      {682285c}
 [2015-09-19 18:46:00 +0200]  removed unnecessary if                                                     karasu      {8621389}
 [2015-09-19 18:44:40 +0200]  Missing _()                                                                karasu      {2fa203a}
 [2015-09-19 18:37:25 +0200]  Fix name                                                                   karasu      {f85f2b8}
