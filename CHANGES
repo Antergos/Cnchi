@@ -1,4 +1,4 @@
-[2015-09-21 07:37:19 -0500]  continue trying other mirrors after we catch an exception. fixes #426  Dustin Falgout  {ee91e30}
+[2015-09-21 07:37:19 -0500]  continue trying other mirrors after we catch an exception. fixes an..  Dustin Falgout  {4d6c44f}
 [2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors                                  Dustin Falgout  {754e727}
 [2015-09-19 20:30:12 +0200]  Set lightdm greeter in Cnchi                                               karasu      {bb059a6}
 [2015-09-19 19:38:09 +0200]  Check device in mount line                                                 karasu      {682285c}
