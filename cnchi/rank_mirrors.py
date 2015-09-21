@@ -52,7 +52,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
     def __init__(self):
         """ Initialize process class """
-        super(AutoRankmirrorsProcess, self).__init__()
+        super().__init__()
         self.rankmirrors_pid = None
         self.json_obj = None
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
@@ -61,7 +61,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
     @staticmethod
     def is_good_mirror(m):
-        return m['last_sync'] and m['completion_pct'] == 1.0 and m['protocol'] == 'http' and m['delay'] <= 7200
+        return m['last_sync'] and m['completion_pct'] == 1.0 and m['protocol'] == 'http' and int(m['delay']) <= 3600
 
     @staticmethod
     def sync():
@@ -193,7 +193,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         rated_mirrors = [m for m in mirrors if rates[m['url']] > 0]
         rated_mirrors.sort(key=lambda m: rates[m['url']], reverse=True)
 
-        return rated_mirrors + [m for m in mirrors if rates[m['url']] == 0]
+        return rated_mirrors
 
     def uncomment_antergos_mirrors(self):
         """ Uncomment Antergos mirrors and comment out auto selection so
@@ -263,7 +263,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
-            time.sleep(4)  # Delay, try again after 4 seconds
+            time.sleep(2)  # Delay, try again after 4 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
         self.update_mirrorlist()

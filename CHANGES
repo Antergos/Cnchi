@@ -1,3 +1,4 @@
+[2015-09-18 15:29:02 -0500]  dont send alpm warning level messages to bugsnag (cherry picked fro..  Dustin Falgout  {5dab4d4}
 [2015-09-18 19:52:30 +0200]  Use systemd-boot (pka gummiboot)                                           karasu      {77fc043}
 [2015-09-18 19:41:41 +0200]  Do not overwrite lvm in advanced                                           karasu      {9958509}
 [2015-09-13 01:00:54 -0500]  fix it for real this time                                              Dustin Falgout  {3baba93}
