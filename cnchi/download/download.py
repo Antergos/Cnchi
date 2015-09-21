@@ -174,13 +174,18 @@ class DownloadPackages(object):
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
+                #logging.debug(metalink_info)
+
 
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
+                    logging.debug(key)
                     if key not in self.metalinks:
                         self.metalinks[key] = metalink_info[key]
 
                 # Show progress to the user
+                logging.debug(self.metalinks)
+                sys.exit()
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
@@ -239,8 +244,8 @@ if __name__ == '__main__':
     logger.addHandler(stream_handler)
 
     dp = DownloadPackages(
-        package_names=["gnome-sudoku"],
-        download_module="urllib",
+        package_names=["gedit"],
+        download_module="requests",
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
     dp.start()

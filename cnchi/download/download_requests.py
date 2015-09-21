@@ -38,6 +38,7 @@ import time
 import hashlib
 import socket
 
+
 def get_md5(file_name):
     """ Gets md5 hash from a file """
     md5_hash = hashlib.md5()
@@ -150,7 +151,8 @@ class Download(object):
             if needs_to_download:
                 # Let's download our filename using url
                 for url in element['urls']:
-                    if url is None:
+                    # Let's catch empty values as well as None just to be safe
+                    if not url:
                         # Something bad has happened
                         logging.debug(
                             "Package %s v%s has an empty url for this mirror",
@@ -164,8 +166,8 @@ class Download(object):
                     start = time.clock()
                     try:
                         # By default, it seems that get waits five minutes before
-                        # issuing a timeout, which is too much. Let's set it to one minute
-                        r = requests.get(url, stream=True, timeout=60)
+                        # issuing a timeout, which is too much.
+                        r = requests.get(url, stream=True, timeout=30)
 
                         if r.status_code == requests.codes.ok:
                             # Get total file length
@@ -224,15 +226,18 @@ class Download(object):
                             download_error = True
                             msg = "Can't download {0}, Cnchi will try another mirror.".format(url)
                             logging.debug(msg)
+                            continue
                     except (socket.timeout, requests.exceptions.Timeout) as connection_error:
                         download_error = True
                         msg = "Can't download {0} ({1}), Cnchi will try another mirror.".format(url, connection_error)
                         logging.debug(msg)
+                        continue
                     except requests.exceptions.ConnectionError as connection_error:
                         download_error = True
                         msg = "Can't download {0} ({1}), Cnchi will try another mirror in a minute.".format(url, connection_error)
                         logging.debug(msg)
                         time.sleep(60) # delays for 60 seconds
+                        continue
 
                 if download_error:
                     # None of the mirror urls works.
