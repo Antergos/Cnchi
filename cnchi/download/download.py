@@ -179,6 +179,14 @@ class DownloadPackages(object):
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
                     if key not in self.metalinks:
+                        # TODO: The url list in metalinks is not sorted like our mirrorlist.
+                        # The ranked mirrorlist is now stored in the global settings object as "rankmirrors_result".
+                        # My plan is to sort the urls in metalinks by finding a substring match of the url in
+                        # rankmirrors_result and using the index position of the matched element as the key for sort.
+                        # Not even sure if that makes sense. If its dumb, let me know. Otherwise I will try to finish
+                        # it tomorrow.
+                        #urls = metalink_info[key]['urls']
+                        #urls = []
                         self.metalinks[key] = metalink_info[key]
 
                 # Show progress to the user

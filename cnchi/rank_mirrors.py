@@ -50,7 +50,7 @@ import misc.misc as misc
 class AutoRankmirrorsProcess(multiprocessing.Process):
     """ Process class that downloads and sorts the mirrorlist """
 
-    def __init__(self):
+    def __init__(self, settings):
         """ Initialize process class """
         super().__init__()
         self.rankmirrors_pid = None
@@ -58,6 +58,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
         self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
+        self.arch_mirrorlist_ranked = []
+        self.settings = settings
 
     @staticmethod
     def is_good_mirror(m):
@@ -249,6 +251,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         mirrors = self.sort_mirrors_by_speed(mirrors=mlist)
 
         for mirror in mirrors:
+            self.arch_mirrorlist_ranked.append(mirror['url'])
             line = "Server = {0}{1}/os/{2}\n".format(mirror['url'], '$repo', '$arch')
             output += line
 
@@ -273,6 +276,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         logging.debug("Running rankmirrors command to sort Antergos mirrors...")
         self.run_rankmirrors()
+        self.settings.set('rankmirrors_result', self.arch_mirrorlist_ranked)
 
         logging.debug("Auto mirror selection has been run successfully.")
 
@@ -280,6 +284,9 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 if __name__ == '__main__':
     def _(x): return x
 
-    rank_mirrors = AutoRankmirrorsProcess()
-    rank_mirrors.start()
-    rank_mirrors.join()
+
+    proc = AutoRankmirrorsProcess()
+    proc.daemon = True
+    proc.name = "rankmirrors"
+    proc.start()
+    proc.join()

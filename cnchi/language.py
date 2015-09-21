@@ -169,7 +169,7 @@ class Language(GtkBaseBox):
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
         if not self.testing and not self.disable_rank_mirrors and not self.rank_mirrors_launched:
-            proc = AutoRankmirrorsProcess()
+            proc = AutoRankmirrorsProcess(self.settings)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()

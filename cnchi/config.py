@@ -92,6 +92,7 @@ class Settings(object):
             'partition_mode': 'easy',
             'password': '',
             'rankmirrors_done': False,
+            'rankmirrors_result': '',
             'require_password': True,
             'ruuid': '',
             'sentry_dsn': '',
