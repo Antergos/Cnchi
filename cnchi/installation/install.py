@@ -1162,7 +1162,7 @@ class Installation(object):
             username,
             DEST_DIR,
             self.desktop,
-            self.vbox,
+            str(self.vbox),
             keyboard_layout]
         # Keyboard variant is optional
         if keyboard_variant:

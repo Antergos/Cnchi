@@ -45,8 +45,8 @@ set_gsettings() {
 
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-
 	chroot "${CN_DESTDIR}" sudo -u ${CN_USER_NAME} /usr/bin/set-settings ${CN_DESKTOP} > /dev/null 2>&1
+
 	rm ${CN_DESTDIR}/usr/bin/set-settings
 	umount -l "${CN_DESTDIR}/var/run/dbus"
 }
@@ -64,16 +64,15 @@ gnome_settings() {
 
 	# Set gdm shell logo
 	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
-	systemd-nspawn -D "${CN_DESTDIR}" \
-					-u gdm \
-					gsettings set org.gnome.login-screen \
-					logo "/usr/share/antergos/logo.png" 2>&1
-
-	# Set skel directory
-	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+	#systemd-nspawn -D "${CN_DESTDIR}" -u gdm -M CN_GDM gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" &
+	#sleep 5;
+	#machinectl poweroff CN_GDM
 
 	## Set default directories
 	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+
+	# Set skel directory
+	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
 	# xscreensaver config
 	cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver
@@ -412,9 +411,6 @@ postinstall() {
 		export CN_BROWSER=chromium
 	fi
 
-	## Set desktop-specific settings
-	"${CN_DESKTOP}_settings"
-
 	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
@@ -445,6 +441,9 @@ postinstall() {
 	cp /etc/os-release "${CN_DESTDIR}/etc"
 	sed -i 's|Arch|Antergos|g' "${CN_DESTDIR}/etc/issue"
 
+	## Set desktop-specific settings
+	"${CN_DESKTOP}_settings"
+
 	# Set BROWSER var
 	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/environment"
 	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/skel/.bashrc"
@@ -461,7 +460,7 @@ postinstall() {
 	chroot "${CN_DESTDIR}" chown -R "${CN_USER_NAME}:users" "/home/${CN_USER_NAME}"
 
 	# Start vbox client services if we are installed in vbox
-	if [[ ${CN_IS_VBOX} ]] || [[ ${CN_IS_VBOX} = 0 ]] || [[ ${CN_IS_VBOX} = "True" ]]; then
+	if [[ ${CN_IS_VBOX} = "True" ]]; then
 		sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' "${CN_DESTDIR}/etc/lightdm/Xsession"
 	fi
 
