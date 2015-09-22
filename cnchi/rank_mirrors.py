@@ -276,6 +276,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         logging.debug("Running rankmirrors command to sort Antergos mirrors...")
         self.run_rankmirrors()
+        self.arch_mirrorlist_ranked = [x for x in self.arch_mirrorlist_ranked if x]
         self.settings.set('rankmirrors_result', self.arch_mirrorlist_ranked)
 
         logging.debug("Auto mirror selection has been run successfully.")

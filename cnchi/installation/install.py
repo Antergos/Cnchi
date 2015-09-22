@@ -120,7 +120,7 @@ class Installation(object):
         self.auto_device = ""
         self.packages = packages
         self.pacman = None
-        self.vbox = "False"
+        self.vbox = self.settings.get('is_vbox')
 
         # Cnchi will store here info (packages needed, post install actions, ...)
         # for the detected hardware
@@ -1026,7 +1026,7 @@ class Installation(object):
 
         default_groups = 'lp,video,network,storage,wheel,audio'
 
-        if self.vbox == "True":
+        if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
             chroot_run(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'

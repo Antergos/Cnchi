@@ -87,7 +87,7 @@ class SelectPackages(object):
         # Packages to be installed
         self.packages = []
 
-        self.vbox = "True"
+        self.vbox = False
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -123,6 +123,9 @@ class SelectPackages(object):
             self.packages.remove("v86d")
             logging.debug("Removed 'v86d' package from list")
 
+        if self.vbox:
+            self.settings.set('is_vbox', True)
+
     @misc.raise_privileges
     def refresh_pacman_databases(self):
         # Init pyalpm
@@ -145,7 +148,6 @@ class SelectPackages(object):
             logging.error("Can't release pyalpm: %s", err)
             txt = _("Can't release pyalpm: {0}").format(err)
             raise InstallError()
-
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -242,8 +244,8 @@ class SelectPackages(object):
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
                 logging.debug("Hardware module added these packages: %s", ", ".join(hardware_pkgs))
-                if 'virtualbox-guest-utils' in hardware_pkgs or "virtualbox-guest-modules" in hardware_pkgs:
-                    self.vbox = "True"
+                if 'virtualbox' in hardware_pkgs:
+                    self.vbox = True
                 self.packages.extend(hardware_pkgs)
 
             # Add conflicting hardware packages to our conflicts list
