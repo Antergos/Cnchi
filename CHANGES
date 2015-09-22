@@ -1,3 +1,4 @@
+[2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors (cherry picked from commit 75..  Dustin Falgout  {4f80ead}
 [2015-09-18 15:29:02 -0500]  dont send alpm warning level messages to bugsnag (cherry picked fro..  Dustin Falgout  {5dab4d4}
 [2015-09-18 19:52:30 +0200]  Use systemd-boot (pka gummiboot)                                           karasu      {77fc043}
 [2015-09-18 19:41:41 +0200]  Do not overwrite lvm in advanced                                           karasu      {9958509}

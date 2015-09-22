@@ -174,6 +174,7 @@ class DownloadPackages(object):
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
+                #logging.debug(metalink_info)
 
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
@@ -239,8 +240,8 @@ if __name__ == '__main__':
     logger.addHandler(stream_handler)
 
     dp = DownloadPackages(
-        package_names=["gnome-sudoku"],
-        download_module="urllib",
+        package_names=["gedit"],
+        download_module="requests",
         cache_dir="",
         pacman_cache_dir="/tmp/pkg")
     dp.start()

@@ -36,6 +36,7 @@ import shutil
 import requests
 import time
 import hashlib
+import socket
 
 
 def get_md5(file_name):
@@ -150,7 +151,8 @@ class Download(object):
             if needs_to_download:
                 # Let's download our filename using url
                 for url in element['urls']:
-                    if url is None:
+                    # Let's catch empty values as well as None just to be safe
+                    if not url:
                         # Something bad has happened
                         logging.debug(
                             "Package %s v%s has an empty url for this mirror",
@@ -164,70 +166,78 @@ class Download(object):
                     start = time.clock()
                     try:
                         # By default, it seems that get waits five minutes before
-                        # issuing a timeout, which is too much. Let's set it to one minute
-                        r = requests.get(url, stream=True, timeout=60)
-                    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as connection_error:
+                        # issuing a timeout, which is too much.
+                        r = requests.get(url, stream=True, timeout=30)
+
+                        if r.status_code == requests.codes.ok:
+                            # Get total file length
+                            try:
+                                total_length = int(r.headers.get('content-length'))
+                            except TypeError:
+                                total_length = 0
+                                logging.debug(
+                                    "Metalink for package %s has no size info",
+                                    element['identity'])
+
+                            md5_hash = hashlib.md5()
+                            with open(dst_path, 'wb') as xz_file:
+                                for data in r.iter_content(1024):
+                                    if not data:
+                                        break
+                                    xz_file.write(data)
+                                    md5_hash.update(data)
+                                    completed_length += len(data)
+                                    old_percent = percent
+                                    if total_length > 0:
+                                        percent = round(float(completed_length / total_length), 2)
+                                    else:
+                                        percent += 0.1
+                                    if old_percent != percent:
+                                        self.queue_event('percent', percent)
+
+                                    bps = completed_length // (time.clock() - start)
+                                    if bps >= (1024 * 1024):
+                                        Mbps = bps / (1024 * 1024)
+                                        progress_text = "{0}%   {1:.2f} Mbps".format(int(percent * 100), Mbps)
+                                    elif bps >= 1024:
+                                        Kbps = bps / 1024
+                                        progress_text = "{0}%   {1:.2f} Kbps".format(int(percent * 100), Kbps)
+                                    else:
+                                        progress_text = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
+                                    self.queue_event('progress_bar_show_text', progress_text)
+
+                                md5 = md5_hash.hexdigest()
+
+                                if element['hash'] is not None and element['hash'] != md5:
+                                    logging.debug(
+                                        "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will try another mirror.",
+                                        element['hash'],
+                                        md5,
+                                        element['filename'])
+                                    # Force to download it again
+                                    download_error = True
+                                else:
+                                    download_error = False
+                                    downloaded += 1
+                                    # Get out of the for loop, as we managed
+                                    # to download the package
+                                    break
+                        else:
+                            download_error = True
+                            msg = "Can't download {0}, Cnchi will try another mirror.".format(url)
+                            logging.debug(msg)
+                            continue
+                    except (socket.timeout, requests.exceptions.Timeout) as connection_error:
+                        download_error = True
                         msg = "Can't download {0} ({1}), Cnchi will try another mirror.".format(url, connection_error)
                         logging.debug(msg)
                         continue
-
-                    if r.status_code == requests.codes.ok:
-                        # Get total file length
-                        try:
-                            total_length = int(r.headers.get('content-length'))
-                        except TypeError:
-                            total_length = 0
-                            logging.debug(
-                                "Metalink for package %s has no size info",
-                                element['identity'])
-
-                        md5_hash = hashlib.md5()
-                        with open(dst_path, 'wb') as xz_file:
-                            for data in r.iter_content(1024):
-                                if not data:
-                                    break
-                                xz_file.write(data)
-                                md5_hash.update(data)
-                                completed_length += len(data)
-                                old_percent = percent
-                                if total_length > 0:
-                                    percent = round(float(completed_length / total_length), 2)
-                                else:
-                                    percent += 0.1
-                                if old_percent != percent:
-                                    self.queue_event('percent', percent)
-
-                                bps = (completed_length // (time.clock() - start)) * 8
-                                if bps >= (1024 * 1024):
-                                    Mbps = bps / (1024 * 1024)
-                                    progress_text = "{0}% {1:.2f} Mbps".format(int(percent * 100), Mbps)
-                                elif bps >= 1024:
-                                    Kbps = bps / 1024
-                                    progress_text = "{0}% {1:.2f} Kbps".format(int(percent * 100), Kbps)
-                                else:
-                                    progress_text = "{0}% {1:.2f} bps".format(int(percent * 100), bps)
-                                self.queue_event('progress_bar_show_text', progress_text)
-
-                            md5 = md5_hash.hexdigest()
-
-                            if element['hash'] is not None and element['hash'] != md5:
-                                logging.debug(
-                                    "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will try another mirror.",
-                                    element['hash'],
-                                    md5,
-                                    element['filename'])
-                                # Force to download it again
-                                download_error = True
-                            else:
-                                download_error = False
-                                downloaded += 1
-                                # Get out of the for loop, as we managed
-                                # to download the package
-                                break
-                    else:
+                    except requests.exceptions.ConnectionError as connection_error:
                         download_error = True
-                        msg = "Can't download {0}, Cnchi will try another mirror.".format(url)
+                        msg = "Can't download {0} ({1}), Cnchi will try another mirror in a minute.".format(url, connection_error)
                         logging.debug(msg)
+                        time.sleep(60) # delays for 60 seconds
+                        continue
 
                 if download_error:
                     # None of the mirror urls works.
