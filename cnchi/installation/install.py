@@ -484,9 +484,7 @@ class Installation(object):
             partition_path = self.mount_devices[mount_point]
             uuid = fs.get_uuid(partition_path)
             if uuid == "":
-                logging.warning(
-                    _("Can't get {0} partition UUID. It won't be added to fstab"),
-                    partition_path)
+                logging.warning("Can't get %s partition UUID. It won't be added to fstab", partition_path)
                 continue
 
             if partition_path in self.fs_devices:
