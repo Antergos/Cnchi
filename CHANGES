@@ -1,4 +1,4 @@
-[2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {f3feb42}
+[2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {e083d15}
 [2015-09-21 23:56:00 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {d745dfb}
 [2015-09-21 23:54:37 -0500]  continue trying other mirrors after we catch an exception. fixes #426  Dustin Falgout  {b505188}
 [2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors (cherry picked from commit 75..  Dustin Falgout  {4f80ead}
