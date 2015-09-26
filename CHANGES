@@ -1,3 +1,4 @@
+[2015-09-26 12:46:37 +0200]  Backport hardware module changes to solve issue #431                       karasu      {0cab130}
 [2015-09-25 23:07:10 -0500]  missed this                                                            Dustin Falgout  {fcae144}
 [2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {e083d15}
 [2015-09-21 23:56:00 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {d745dfb}

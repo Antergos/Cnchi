@@ -1149,7 +1149,7 @@ class Installation(object):
             cmd.append(keyboard_variant)
         else:
             cmd.append("")
-        cmd.append(self.vbox)
+        cmd.append(str(self.vbox))
         try:
             subprocess.check_call(cmd, timeout=300)
             logging.debug("Post install script completed successfully.")
