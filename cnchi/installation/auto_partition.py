@@ -667,7 +667,7 @@ class AutoPartition(object):
 
         # Disable swap and all mounted partitions, umount / last!
         unmount_all(self.dest_dir)
-        remove_lvm()
+        remove_lvm(device)
         close_luks_devices()
 
         printk(False)
