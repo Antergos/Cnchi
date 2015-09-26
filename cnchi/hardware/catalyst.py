@@ -105,17 +105,9 @@ class Catalyst(Hardware):
 
     @staticmethod
     def get_packages():
-        pkgs = [
-            "catalyst-hook",
-            "catalyst-libgl",
-            "catalyst-utils",
-            "acpid",
-            "qt4"]
+        pkgs = ["catalyst-hook", "catalyst-libgl", "catalyst-utils", "acpid", "qt4"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend([
-                "lib32-catalyst-libgl",
-                "lib32-catalyst-utils",
-                "lib32-opencl-catalyst"])
+            pkgs.extend(["lib32-catalyst-libgl", "lib32-catalyst-utils", "lib32-opencl-catalyst"])
         return pkgs
 
     @staticmethod
