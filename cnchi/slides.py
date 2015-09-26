@@ -47,6 +47,7 @@ SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 import gi
 gi.require_version('WebKit', '3.0')
 from gi.repository import WebKit
+from .logging_utils import ContextFilter
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -190,6 +191,8 @@ class Slides(GtkBaseBox):
                     self.start_pulse()
             elif event[0] == 'finished':
                 logging.info(event[1])
+                log_util = ContextFilter()
+                log_util.send_install_result("True")
                 if self.settings.get('bootloader_install') and not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
                     boot_warn = _("IMPORTANT: There may have been a problem with the bootloader\n"
@@ -214,6 +217,8 @@ class Slides(GtkBaseBox):
                     sys.exit(0)
                 return False
             elif event[0] == 'error':
+                log_util = ContextFilter()
+                log_util.send_install_result("False")
                 self.callback_queue.task_done()
                 # A fatal error has been issued. We empty the queue
                 self.empty_queue()

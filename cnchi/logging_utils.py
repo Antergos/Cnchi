@@ -110,3 +110,14 @@ class ContextFilter(Singleton):
 
             notification.user = {"id": self.id, "name": "Antergos User", "install_id": self.install}
             return notification
+
+    def send_install_result(self, result):
+        build_server = self.get_url_for_id_request()
+        url = build_server + '&install_id=' + self.install + '&result=' + result
+        headers = {'X-Cnchi-Installer': CNCHI_VERSION}
+        try:
+            r = requests.get(url, headers=headers)
+            res = json.loads(r.json())
+        except Exception as err:
+            logger = logging.getLogger()
+            logger.error("Sending install result failed with Error: %s", err)
