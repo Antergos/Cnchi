@@ -87,11 +87,7 @@ class SelectPackages(object):
         # Packages to be installed
         self.packages = []
 
-        # Cnchi will store here info (packages needed, post install actions, ...)
-        # for the detected hardware
-        self.hardware_install = None
-
-        self.vbox = "True"
+        self.vbox = False
 
     def queue_fatal_event(self, txt):
         """ Queues the fatal event and exits process """
@@ -127,6 +123,9 @@ class SelectPackages(object):
             self.packages.remove("v86d")
             logging.debug("Removed 'v86d' package from list")
 
+        if self.vbox:
+            self.settings.set('is_vbox', True)
+
     @misc.raise_privileges
     def refresh_pacman_databases(self):
         # Init pyalpm
@@ -149,7 +148,6 @@ class SelectPackages(object):
             logging.error("Can't release pyalpm: %s", err)
             txt = _("Can't release pyalpm: {0}").format(err)
             raise InstallError()
-
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -236,25 +234,22 @@ class SelectPackages(object):
 
         try:
             # Detect which hardware drivers are needed
-            self.hardware_install = hardware.HardwareInstall(
+            hardware_install = hardware.HardwareInstall(
                 use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
-            driver_names = self.hardware_install.get_found_driver_names()
+            driver_names = hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
                 logging.debug("Hardware module detected these drivers: %s", driver_names)
 
             # Add needed hardware packages to our list
-            hardware_pkgs = self.hardware_install.get_packages()
+            hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
-                txt = " ".join(hardware_pkgs)
-                logging.debug("Hardware module added these packages: %s", txt)
-                if 'virtualbox-guest-utils' in hardware_pkgs or "virtualbox-guest-modules" in hardware_pkgs:
-                    self.vbox = "True"
+                logging.debug("Hardware module added these packages: %s", ", ".join(hardware_pkgs))
+                if 'virtualbox' in hardware_pkgs:
+                    self.vbox = True
                 self.packages.extend(hardware_pkgs)
 
-            # FIXME: THIS SHOULD BE MOVED TO INSTALL.PY
-            # Run pre-install scripts (only catalyst does something here atm)
-            # logging.debug("Running hardware drivers pre-install jobs...")
-            # self.hardware_install.pre_install(DEST_DIR)
+            # Add conflicting hardware packages to our conflicts list
+            self.conflicts.extend(hardware_install.get_conflicts())
         except Exception as general_error:
             logging.warning("Unknown error in hardware module. Output: %s", general_error)
 
@@ -301,9 +296,9 @@ class SelectPackages(object):
         self.packages = [pkg for pkg in self.packages if pkg != '']
         self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
 
+        # Remove any package from self.packages that is already in self.conflicts
         if len(self.conflicts) > 0:
             logging.debug("Conflicts list: %s", ", ".join(self.conflicts))
-            # Remove any package from self.packages that is already in self.conflicts
             for pkg in self.packages:
                 if pkg in self.conflicts:
                     self.packages.remove(pkg)

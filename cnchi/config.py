@@ -78,6 +78,7 @@ class Settings(object):
             'fullname': '',
             'GRUB_CMDLINE_LINUX': '',
             'hostname': 'antergos',
+            'is_vbox': False,
             'keyboard_layout': '',
             'keyboard_variant': '',
             'language_name': '',

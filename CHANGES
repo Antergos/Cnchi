@@ -1,5 +1,8 @@
+[2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {f3feb42}
+[2015-09-21 23:56:00 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {d745dfb}
 [2015-09-21 23:54:37 -0500]  continue trying other mirrors after we catch an exception. fixes #426  Dustin Falgout  {b505188}
 [2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors (cherry picked from commit 75..  Dustin Falgout  {4f80ead}
+[2015-09-19 18:00:10 +0200]  Do not delete lvm from other devices                                       karasu      {0d818df}
 [2015-09-18 15:29:02 -0500]  dont send alpm warning level messages to bugsnag (cherry picked fro..  Dustin Falgout  {5dab4d4}
 [2015-09-18 19:52:30 +0200]  Use systemd-boot (pka gummiboot)                                           karasu      {77fc043}
 [2015-09-18 19:41:41 +0200]  Do not overwrite lvm in advanced                                           karasu      {9958509}

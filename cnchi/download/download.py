@@ -142,6 +142,16 @@ class DownloadPackages(object):
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise misc.InstallError(txt)
 
+    def url_sort_helper(self, url):
+        if not url:
+            return 9999
+        # Use the mirrorlist we created earlier to determine a url's priority
+        ranked = self.settings.get('rankmirrors_result')
+        # Use the first part of the URL to find its position in the ranked mirror list
+        partial = '/'.join(url.split('/')[:3])
+        position = [i for i, s in enumerate(ranked) if partial in s] or [9999]
+        return position[0]
+
     @misc.raise_privileges
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
@@ -174,12 +184,17 @@ class DownloadPackages(object):
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
-                #logging.debug(metalink_info)
 
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
                     if key not in self.metalinks:
+                        urls = metalink_info[key]['urls']
+                        # Sort urls based on the mirrorlist we created earlier
+                        sorted_urls = sorted(urls, key=self.url_sort_helper)
                         self.metalinks[key] = metalink_info[key]
+                        # logging.debug(self.metalinks[key])
+                        self.metalinks[key]['urls'] = sorted_urls
+                        # logging.debug(self.metalinks[key])
 
                 # Show progress to the user
                 processed_packages += 1
