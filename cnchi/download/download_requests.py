@@ -154,6 +154,7 @@ class Download(object):
                     # Let's catch empty values as well as None just to be safe
                     if not url:
                         # Something bad has happened
+                        download_error = True
                         logging.debug(
                             "Package %s v%s has an empty url for this mirror",
                             element['identity'],
