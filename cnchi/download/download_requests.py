@@ -98,10 +98,9 @@ class Download(object):
                 md5 = get_md5(dst_path)
                 if element['hash'] is not None and element['hash'] != md5:
                     logging.debug(
-                        "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will download it",
-                        element['hash'],
-                        md5,
-                        element['filename'])
+                        "MD5 hash of file %s (%s) do not match! Cnchi will download it",
+                        element['filename'],
+                        url)
                     # Wrong hash. Force to download it
                     needs_to_download = True
                 else:
@@ -121,10 +120,21 @@ class Download(object):
                         # in the cache the user has given us
 
                         # Check the file's md5 hash
-                        md5 = get_md5(dst_xz_cache_path)
-                        if element['hash'] is not None and element['hash'] == md5:
-                            # File exists in cache and its md5 is ok
+                        # element['hash'] is not always available
+                        # that is why we have to check against None
+                        copy_it = False
+                        if element['hash'] is not None:
+                            md5 = get_md5(dst_xz_cache_path)
+                            if element['hash'] == md5:
+                                # File exists in cache and its md5 is ok
+                                # Let's copy it to our destination
+                                copy_it = True
+                        else:
+                            # File exists in cache but we can't check if its md5 is ok or not
                             # Let's copy it to our destination
+                            copy_it = True
+
+                        if copy_it:
                             logging.debug("%s found in suplied xz packages' cache. Copying...", element['filename'])
                             try:
                                 shutil.copy(dst_xz_cache_path, dst_path)
@@ -135,6 +145,7 @@ class Download(object):
                                 break
                             except OSError as os_error:
                                 logging.debug("Error copying %s to %s : %s", dst_xz_cache_path, dst_path, os_error)
+
 
             if needs_to_download:
                 # Package wasn't previously downloaded or its md5 was wrong
@@ -167,13 +178,11 @@ class Download(object):
                                     "Metalink for package %s has no size info",
                                     element['identity'])
 
-                            md5_hash = hashlib.md5()
                             with open(dst_path, 'wb') as xz_file:
                                 for data in r.iter_content(1024):
                                     if not data:
                                         break
                                     xz_file.write(data)
-                                    md5_hash.update(data)
                                     completed_length += len(data)
                                     old_percent = percent
                                     if total_length > 0:
@@ -193,23 +202,25 @@ class Download(object):
                                         progress_text = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
                                     self.queue_event('progress_bar_show_text', progress_text)
 
-                            md5 = md5_hash.hexdigest()
+                            # element['hash'] is not always available
+                            # that is why we have to check against None
+                            if element['hash'] is not None:
+                                md5 = get_md5(dst_path)
+                                if element['hash'] != md5:
+                                    # Wrong md5! Force to download it again
+                                    download_error = True
+                                    logging.debug(
+                                        "MD5 hash of file %s (%s) do not match! Cnchi will try another mirror.",
+                                        element['filename'],
+                                        url)
+                                    continue
 
-                            if element['hash'] is not None and element['hash'] == md5:
-                                download_error = False
-                                downloaded += 1
-                                # Get out of the for loop, as we managed
-                                # to download the package
-                                break
-                            else:
-                                # Force to download it again
-                                download_error = True
-                                logging.debug(
-                                    "MD5 hash (url:%s, file:%s) of file %s do not match! Cnchi will try another mirror.",
-                                    element['hash'],
-                                    md5,
-                                    element['filename'])
-                                continue
+                            # If we've reached here let's assume it's ok
+                            download_error = False
+                            downloaded += 1
+                            # Get out of the for loop, as we managed
+                            # to download the package
+                            break
                         else:
                             # requests failed to obtain the file. Wrong url?
                             download_error = True
