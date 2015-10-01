@@ -47,7 +47,7 @@ SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 import gi
 gi.require_version('WebKit', '3.0')
 from gi.repository import WebKit
-from .logging_utils import ContextFilter
+from logging_utils import ContextFilter
 
 # When we reach this page we can't go neither backwards nor forwards
 

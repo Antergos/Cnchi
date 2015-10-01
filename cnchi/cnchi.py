@@ -311,11 +311,6 @@ def parse_options():
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
     parser.add_argument(
-        "-m", "--download-module",
-        help=_("Choose which download module will be used when downloading packages."
-               " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
-        nargs='?')
-    parser.add_argument(
         "-n", "--no-check",
         help=_("Makes checks optional in check screen"),
         action="store_true")

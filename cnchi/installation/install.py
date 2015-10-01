@@ -314,27 +314,14 @@ class Installation(object):
 
     def download_packages(self):
         """ Downloads necessary packages """
-        pacman_conf_file = "/tmp/pacman.conf"
-        pacman_cache_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-
-        if self.settings.get("cache") != '':
-            cache_dir = self.settings.get("cache")
-        else:
-            cache_dir = '/var/cache/pacman/pkg'
-
-        if self.settings.get("download_module"):
-            download_module = self.settings.get("download_module")
-        else:
-            download_module = 'requests'
 
         download_packages = download.DownloadPackages(
-            self.packages,
-            download_module,
-            pacman_conf_file,
-            pacman_cache_dir,
-            cache_dir,
-            self.settings,
-            self.callback_queue)
+            package_names=self.packages,
+            pacman_conf_file='/tmp/pacman.conf',
+            pacman_cache_dir=os.path.join(DEST_DIR, 'var/cache/pacman/pkg'),
+            settings=self.settings,
+            callback_queue=self.callback_queue)
+
         # Metalinks have already been calculated before,
         # When downloadpackages class has been called in process.py to test
         # that Cnchi was able to create it before partitioning/formatting
@@ -376,7 +363,6 @@ class Installation(object):
         """ Add gnupg pacman files to installed system """
 
         dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
-
         for pacman_dir in dirs:
             mydir = os.path.join(DEST_DIR, pacman_dir)
             os.makedirs(mydir, mode=0o755, exist_ok=True)
@@ -719,32 +705,6 @@ class Installation(object):
     def check_output(command):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
-
-    def copy_cached_packages(self, cache_dir):
-        """ Copy all packages from specified directory to install's target """
-        # Check in case user has given a wrong folder
-        if not os.path.exists(cache_dir):
-            return
-        self.queue_event('info', _('Copying xz files from cache...'))
-        dest_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
-        self.copy_files_progress(cache_dir, dest_dir)
-
-    def copy_files_progress(self, src, dst):
-        """ Copy files updating the slides' progress bar """
-        percent = 0.0
-        items = os.listdir(src)
-        if len(items) > 0:
-            step = 1.0 / len(items)
-            for item in items:
-                self.queue_event('percent', percent)
-                source = os.path.join(src, item)
-                destination = os.path.join(dst, item)
-                try:
-                    shutil.copy2(source, destination)
-                except (FileExistsError, shutil.Error) as file_error:
-                    logging.warning(file_error)
-                percent += step
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """

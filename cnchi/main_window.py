@@ -90,9 +90,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.ui_dir = self.settings.get('ui')
 
-        if cmd_line.cache:
-            logging.debug("Cnchi will use '%s' as a source directory for cached xz packages", cmd_line.cache)
-            self.settings.set('cache', cmd_line.cache)
+        # By default, always try to use local /var/cache/pacman/pkg
+        xz_cache = ["/var/cache/pacman/pkg"]
+
+        # Check command line
+        if cmd_line.cache and cmd_line.cache not in xz_cache:
+            xz_cache.append(cmd_line.cache)
+
+        # Log cache dirs
+        for xz in xz_cache:
+            logging.debug("Cnchi will use '%s' as a source for cached xz packages", xz)
+
+        # Store cache dirs in config
+        self.settings.set('xz_cache', xz_cache)
 
         data_dir = self.settings.get('data')
 
@@ -154,15 +164,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # This list will have all processes (rankmirrors, autotimezone...)
         self.process_list = []
-
-        # Save in config which download method we have to use
-        if cmd_line.download_module:
-            self.settings.set("download_module", cmd_line.download_module)
-        else:
-            # Use requests by default
-            self.settings.set("download_module", 'requests')
-
-        logging.info("Using %s to download packages", self.settings.get("download_module"))
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)

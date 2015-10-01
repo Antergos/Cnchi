@@ -49,7 +49,6 @@ class Settings(object):
             'bootloader_install': True,
             'bootloader_installation_successful': False,
             'btrfs': False,
-            'cache': '',
             'cnchi': '/usr/share/cnchi/',
             'country_name': '',
             'country_code': '',
@@ -57,11 +56,9 @@ class Settings(object):
             'desktop': 'gnome',
             'desktop_ask': True,
             'desktops': [],
-            'download_module': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
-            'failed_download': False,
             'feature_aur': False,
             'feature_bluetooth': False,
             'feature_cups': False,
@@ -116,6 +113,7 @@ class Settings(object):
             'use_timesyncd': True,
             'user_info_done': False,
             'username': '',
+            'xz_cache': [],
             'z_hidden': False})
 
     def _get_settings(self):
