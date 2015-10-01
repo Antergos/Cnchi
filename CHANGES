@@ -1,3 +1,4 @@
+[2015-10-01 21:08:34 +0200]  We do not always have md5 info. If it's not present we must assume ..      karasu      {e33c3e4}
 [2015-10-01 20:41:39 +0200]  Prepare code to be able to specify multiple xz package cache direct..      karasu      {986e83a}
 [2015-09-30 19:45:15 +0200]  download_error when url is none (just in case is the last url we try)      karasu      {ce5834e}
 [2015-09-27 05:00:32 -0500]  Update packages.xml                                                    Dustin Falgout  {efb91e4}
