@@ -266,6 +266,7 @@ class Pac(object):
 
         if not conflicts:
             conflicts = []
+
         if not options:
             options = {}
 
@@ -301,8 +302,9 @@ class Pac(object):
                         if group_pkg.name not in conflicts:
                             targets.append(group_pkg.name)
                 else:
-                    # No, it wasn't neither a package nor a group. As we don't know if
-                    # this error is fatal or not, we'll register it and we'll allow to continue.
+                    # No, it wasn't neither a package nor a group. As we don't
+                    # know if this error is fatal or not, we'll register it and
+                    # we'll allow to continue.
                     logging.error("Can't find a package or group called '%s'", name)
 
         # Discard duplicates
@@ -315,8 +317,8 @@ class Pac(object):
         num_targets = len(targets)
         logging.debug("%d target(s) found", num_targets)
 
-        # Maybe not all this packages will be downloaded, but it's how many have to be there
-        # before starting the installation
+        # Maybe not all this packages will be downloaded, but it's
+        # how many have to be there before starting the installation
         self.total_packages_to_download = num_targets
 
         transaction = self.init_transaction(options)
@@ -401,9 +403,11 @@ class Pac(object):
         self.last_event[event_type] = event_text
 
         if event_type == "error":
-            # Format message to show file, function, and line where the error was issued
+            # Format message to show file, function, and line where the
+            # error was issued
             import inspect
-            # Get the previous frame in the stack, otherwise it would be this function
+            # Get the previous frame in the stack, otherwise it would be
+            # this function
             func = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
             event_text = "{0}: {1} in {2}:{3}".format(event_text, func.co_name, func.co_filename, func.co_firstlineno)
@@ -421,8 +425,9 @@ class Pac(object):
                 logging.warning("Callback queue is full")
 
             if event_type == "error":
-                # We've queued a fatal event so we must exit installer_process process
-                # wait until queue is empty (is emptied in slides.py, in the GUI thread), then exit
+                # We've queued a fatal event so we must exit installer_process
+                # process wait until queue is empty (is emptied in slides.py,
+                # in the GUI thread), then exit
                 self.callback_queue.join()
                 sys.exit(1)
 
