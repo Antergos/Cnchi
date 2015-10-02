@@ -37,6 +37,7 @@ import requests
 import time
 import hashlib
 import socket
+import io
 
 
 def get_md5(file_name):
@@ -59,12 +60,14 @@ class Download(object):
         self.xz_cache_dirs = xz_cache_dirs
         self.callback_queue = callback_queue
 
+        # Check that pacman cache directory exists
+        os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
+
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
     def start(self, downloads):
         """ Downloads using requests """
-
         downloaded = 0
         total_downloads = len(downloads)
         download_error = False
@@ -179,7 +182,7 @@ class Download(object):
                                     element['identity'])
 
                             with open(dst_path, 'wb') as xz_file:
-                                for data in r.iter_content(1024):
+                                for data in r.iter_content(io.DEFAULT_BUFFER_SIZE):
                                     if not data:
                                         break
                                     xz_file.write(data)
