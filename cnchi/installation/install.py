@@ -300,17 +300,23 @@ class Installation(object):
 
     @staticmethod
     def copy_log():
-        # Copy Cnchi log to new installation
+        # Copy Cnchi logs to new installation
+        log_dest_dir = os.path.join(DEST_DIR, "var/log/cnchi")
+        os.makedirs(log_dest_dir, mode=0o755, exist_ok=True)
+
         datetime = "{0}-{1}".format(time.strftime("%Y%m%d"), time.strftime("%H%M%S"))
-        dst = os.path.join(DEST_DIR, "var/log/cnchi-{0}.log".format(datetime))
-        pidst = os.path.join(DEST_DIR, "var/log/postinstall-{0}.log".format(datetime))
-        try:
-            shutil.copy("/tmp/cnchi.log", dst)
-            shutil.copy("/tmp/postinstall.log", pidst)
-        except FileNotFoundError:
-            logging.warning("Can't copy Cnchi log to %s", dst)
-        except FileExistsError:
-            pass
+
+        file_names = ["cnchi", "postinstall", "alpm"]
+
+        for name in file_names:
+            src = os.path.join("/tmp", "{0}.log".format(name))
+            dst = os.path.join(log_dest_dir, "{0}-{1}.log".format(name, datetime))
+            try:
+                shutil.copy(src, dst)
+            except FileNotFoundError:
+                logging.warning("Can't copy %s log to %s", src, dst)
+            except FileExistsError:
+                pass
 
     def download_packages(self):
         """ Downloads necessary packages """

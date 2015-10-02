@@ -61,7 +61,6 @@ except ImportError as err:
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
 
-
 class Pac(object):
     """ Communicates with libalpm using pyalpm """
 
@@ -120,25 +119,18 @@ class Pac(object):
             self.config.apply(self.handle)
 
         # Set callback functions
-
         # Callback used for logging
         self.handle.logcb = self.cb_log
-
         # Callback used to report download progress
         self.handle.dlcb = self.cb_dl
-
         # Callback used to report total download size
         self.handle.totaldlcb = self.cb_totaldl
-
         # Callback used for events
         self.handle.eventcb = self.cb_event
-
         # Callback used for questions
         self.handle.questioncb = self.cb_question
-
         # Callback used for operation progress
         self.handle.progresscb = self.cb_progress
-
         # Downloading callback
         self.handle.fetchcb = None
 
@@ -168,11 +160,10 @@ class Pac(object):
 
     def init_transaction(self, options=None):
         """ Transaction initialization """
-
-        transaction = None
-
         if options is None:
             options = {}
+
+        transaction = None
 
         try:
             transaction = self.handle.init_transaction(
@@ -192,29 +183,6 @@ class Pac(object):
             logging.error("Can't init alpm transaction: %s", pyalpm_error)
         finally:
             return transaction
-
-    '''
-    group.add_argument('-c', '--cascade',
-            action = 'store_true', default = False,
-            help = 'remove packages and all packages that depend on them')
-    group.add_argument('-d', '--nodeps',
-            action = 'store_true', default = False,
-            help = 'skip dependency checks')
-    group.add_argument('-k', '--dbonly',
-            action = 'store_true', default = False,
-            help = 'only modify database entries, not package files')
-    group.add_argument('-n', '--nosave',
-            action = 'store_true', default = False,
-            help = 'remove configuration files as well')
-    group.add_argument('-s', '--recursive',
-            action = 'store_true', default = False,
-            help = "remove dependencies also (that won't break packages)")
-    group.add_argument('-u', '--unneeded',
-            action = 'store_true', default = False,
-            help = "remove unneeded packages (that won't break packages)")
-    group.add_argument('pkgs', metavar = 'pkg', nargs='*',
-            help = "a list of packages, e.g. libreoffice, openjdk6")
-    '''
 
     def remove(self, pkg_names, options=None):
         """ Removes a list of package names """
@@ -502,19 +470,16 @@ class Pac(object):
             logging.debug(line)
             return
 
-        if level & pyalpm.LOG_ERROR:
+        if level & pyalpm.LOG_ERROR == pyalpm.LOG_ERROR:
             logging.error(line)
-        elif level & pyalpm.LOG_WARNING:
+        elif level & pyalpm.LOG_WARNING == pyalpm.LOG_WARNING:
             # Alpm outputs non-english log messages so we can't target certain
             # useless warnings. I think most of the warnings are useless anyway.
             # We can revisit this later if need be.
             logging.debug(line)
-        elif level & pyalpm.LOG_DEBUG:
-            # I get pyalpm errors here. Why? I think it's because they're not
-            # fatal. Check against error 0 as it is not an error :p
+        elif level & pyalpm.LOG_DEBUG == pyalpm.LOG_DEBUG:
             # There are a lot of "extracting" messages (not very useful), so we
             # do not log them.
-
             if " error " in line and "error 0" not in line:
                 logging.debug(line)
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
@@ -525,13 +490,9 @@ class Pac(object):
         if target:
             msg = _("Installing {0} ({1}/{2})").format(target, i, n)
             self.queue_event('info', msg)
-
             percent = i / n
             self.queue_event('percent', percent)
         else:
-            # msg = _("Checking and loading packages... ({0} targets)").format(n)
-            # self.queue_event('info', msg)
-
             percent /= 100
             self.queue_event('percent', percent)
 
