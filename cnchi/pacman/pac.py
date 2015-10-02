@@ -490,6 +490,13 @@ class Pac(object):
             # throwing errors when searching in the other ones
             return
 
+        if "command failed to execute correctly" in line:
+            # We get this warning sometimes (I think it's when Cnchi installs
+            # the kernel package). It seems to be harmless, we'll log it as
+            # a debug message instead of an error message
+            logging.debug(line)
+            return
+
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
