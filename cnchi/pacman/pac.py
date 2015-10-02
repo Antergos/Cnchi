@@ -485,20 +485,23 @@ class Pac(object):
         line = line.rstrip()
 
         if "error 31 from alpm_db_get_pkg" in line:
-            # It's ok not to show this error because we search the package in all repos,
-            # and obviously it will only be in one of them, throwing errors when searching in the other ones
+            # It's ok not to show this error because we search the package
+            # in all repos, and obviously it will only be in one of them,
+            # throwing errors when searching in the other ones
             return
 
         if level & pyalpm.LOG_ERROR:
             logging.error(line)
         elif level & pyalpm.LOG_WARNING:
-            # Alpm outputs non-english log messages so we can't target certain useless warnings. I think most of
-            # the warnings are useless anyway. We can revisit this later if need be.
+            # Alpm outputs non-english log messages so we can't target certain
+            # useless warnings. I think most of the warnings are useless anyway.
+            # We can revisit this later if need be.
             logging.debug(line)
         elif level & pyalpm.LOG_DEBUG:
-            # I get pyalpm errors here. Why? I think it's because they're not fatal
-            # Check against error 0 as it is not an error :p
-            # There are a lot of "extracting" messages (not very useful), so we do not log them.
+            # I get pyalpm errors here. Why? I think it's because they're not
+            # fatal. Check against error 0 as it is not an error :p
+            # There are a lot of "extracting" messages (not very useful), so we
+            # do not log them.
 
             if " error " in line and "error 0" not in line:
                 logging.debug(line)
