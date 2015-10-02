@@ -306,7 +306,7 @@ class Installation(object):
 
         datetime = "{0}-{1}".format(time.strftime("%Y%m%d"), time.strftime("%H%M%S"))
 
-        file_names = ["cnchi", "postinstall", "alpm"]
+        file_names = ["cnchi", "postinstall", "pacman"]
 
         for name in file_names:
             src = os.path.join("/tmp", "{0}.log".format(name))

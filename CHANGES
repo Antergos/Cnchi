@@ -1,3 +1,4 @@
+[2015-10-02 18:55:08 +0200]  log alpm to /tmp/alpm.log                                                  karasu      {472d987}
 [2015-10-02 12:02:56 +0200]  Fix some comments. Need to find out where pacman error messages are..      karasu      {10d5067}
 [2015-10-02 10:55:03 +0200]  Log "command failed to execute correctly" as a debug message               karasu      {92c33e5}
 [2015-10-02 10:36:00 +0200]  Line comments where too long                                               karasu      {438d006}
