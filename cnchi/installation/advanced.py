@@ -1151,7 +1151,8 @@ class InstallationAdvanced(GtkBaseBox):
                 elif radio["extended"].get_active():
                     # Not mounting extended partitions.
                     if mymount:
-                        self.diskdic['mounts'].remove(mymount)
+                        if mymount in self.diskdic['mounts']:
+                            self.diskdic['mounts'].remove(mymount)
                         mymount = ''
                     # And no labeling either
                     mylabel = ''
