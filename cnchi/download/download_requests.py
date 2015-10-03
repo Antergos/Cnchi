@@ -38,7 +38,7 @@ import time
 import hashlib
 import socket
 import io
-
+import threading
 
 def get_md5(file_name):
     """ Gets md5 hash from a file """
@@ -47,6 +47,24 @@ def get_md5(file_name):
         for line in myfile:
             md5_hash.update(line)
     return md5_hash.hexdigest()
+
+
+class CopyToCache(threading.Thread):
+    ''' Class thread to copy a xz file to the user's provided cache directory '''
+    def __init__(self, origin, xz_cache_dirs):
+        threading.Thread.__init__(self)
+        self.origin = origin
+        self.xz_cache_dirs = xz_cache_dirs
+
+    def run(self):
+        basename = os.path.basename(origin)
+        for xz_cache_dir in self.xz_cache_dirs:
+            dst = os.path.join(xz_cache_dir, basename)
+            # Try to copy the file, do not worry if it's not possible
+            try:
+                shutil.copy(origin, dst)
+            except (FileNotFoundError, FileExistsError):
+                pass
 
 
 class Download(object):
@@ -74,6 +92,8 @@ class Download(object):
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
+
+        copy_to_cache_threads = []
 
         while len(downloads) > 0:
             identity, element = downloads.popitem()
@@ -149,7 +169,6 @@ class Download(object):
                             except OSError as os_error:
                                 logging.debug("Error copying %s to %s : %s", dst_xz_cache_path, dst_path, os_error)
 
-
             if needs_to_download:
                 # Package wasn't previously downloaded or its md5 was wrong
                 # We'll have to download it
@@ -221,6 +240,12 @@ class Download(object):
                             # If we've reached here let's assume it's ok
                             download_error = False
                             downloaded += 1
+
+                            # Copy downloaded xz file to the cache the user has provided, too.
+                            copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
+                            copy_to_cache_threads += [copy_to_cache_thread]
+                            copy_to_cache_thread.start()
+
                             # Get out of the for loop, as we managed
                             # to download the package
                             break
@@ -249,6 +274,10 @@ class Download(object):
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
             self.queue_event('downloads_percent', str(downloads_percent))
+
+        # Wait until all xz packages are also copied to provided cache (if any)
+        for x in copy_to_cache_threads:
+            x.join()
 
         self.queue_event('downloads_progress_bar', 'hide')
         return True

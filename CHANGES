@@ -1,3 +1,4 @@
+[2015-10-02 21:23:18 +0200]  Removed unused file                                                        karasu      {f0d066c}
 [2015-10-02 20:12:11 +0200]  Name is pacman.log                                                         karasu      {92a46db}
 [2015-10-02 18:55:08 +0200]  log alpm to /tmp/alpm.log                                                  karasu      {472d987}
 [2015-10-02 12:02:56 +0200]  Fix some comments. Need to find out where pacman error messages are..      karasu      {10d5067}
