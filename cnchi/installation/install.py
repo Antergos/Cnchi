@@ -1176,8 +1176,8 @@ class Installation(object):
                 logging.warning("While installing boot loader Cnchi encountered this error: %s", general_error)
 
         # Create an initial database for mandb
-        logging.debug("Updating man database")
-        chroot_run(["mandb", "--quiet"])
+        # logging.debug("Updating man database")
+        # chroot_run(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")
