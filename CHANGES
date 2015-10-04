@@ -1,3 +1,4 @@
+[2015-10-04 10:23:39 +0200]  Can't write xz files to cache. Permission problem?                         karasu      {810095f}
 [2015-10-03 20:34:10 +0200]  Copy downloaded xz files to user's provided cache (if possible)            karasu      {cb50d47}
 [2015-10-02 21:23:18 +0200]  Removed unused file                                                        karasu      {f0d066c}
 [2015-10-02 20:12:11 +0200]  Name is pacman.log                                                         karasu      {92a46db}

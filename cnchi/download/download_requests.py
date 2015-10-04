@@ -57,12 +57,12 @@ class CopyToCache(threading.Thread):
         self.xz_cache_dirs = xz_cache_dirs
 
     def run(self):
-        basename = os.path.basename(origin)
+        basename = os.path.basename(self.origin)
         for xz_cache_dir in self.xz_cache_dirs:
             dst = os.path.join(xz_cache_dir, basename)
             # Try to copy the file, do not worry if it's not possible
             try:
-                shutil.copy(origin, dst)
+                shutil.copy(self.origin, dst)
             except (FileNotFoundError, FileExistsError):
                 pass
 

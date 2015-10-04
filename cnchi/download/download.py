@@ -86,7 +86,6 @@ class DownloadPackages(object):
         # List of packages' metalinks
         self.metalinks = None
 
-    @misc.raise_privileges
     def start(self, metalinks=None):
         if metalinks:
             self.metalinks = metalinks
