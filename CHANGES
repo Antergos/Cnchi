@@ -1,3 +1,4 @@
+[2015-10-04 11:53:20 +0200]  Takes too long                                                             karasu      {17d49b9}
 [2015-10-04 11:40:12 +0200]  Update databases and mount special dirs BEFORE installing                  karasu      {9636a72}
 [2015-10-04 11:18:01 +0200]  Enable detection of linux-* named initrd. Fixes #442                       karasu      {3069d1e}
 [2015-10-04 10:35:39 +0200]  Fix typo                                                                   karasu      {9be3af6}

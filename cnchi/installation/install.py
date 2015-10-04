@@ -1180,8 +1180,8 @@ class Installation(object):
         # chroot_run(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
-        logging.debug("Updating pkgfile database")
-        chroot_run(["pkgfile", "--update"])
+        # logging.debug("Updating pkgfile database")
+        # chroot_run(["pkgfile", "--update"])
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug("Copying install log to /var/log.")
