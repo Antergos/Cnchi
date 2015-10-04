@@ -285,11 +285,20 @@ class Installation(object):
         logging.debug("Downloading packages...")
         self.download_packages()
 
+        # This mounts (binds) /dev and others to /DEST_DIR/dev and others
+        chroot.mount_special_dirs(DEST_DIR)
+
         logging.debug("Installing packages...")
         self.install_packages()
 
         logging.debug("Configuring system...")
         self.configure_system()
+
+        # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
+        chroot.umount_special_dirs(DEST_DIR)
+
+        # Finally, try to unmount DEST_DIR
+        auto_partition.unmount_all_in_directory(DEST_DIR)
 
         self.running = False
 
@@ -882,9 +891,6 @@ class Installation(object):
         self.queue_event('pulse', 'start')
         self.queue_event('info', _("Configuring your new system"))
 
-        # This mounts (binds) /dev and others to /DEST_DIR/dev and others
-        chroot.mount_special_dirs(DEST_DIR)
-
         self.auto_fstab()
         logging.debug("fstab file generated.")
 
@@ -1169,8 +1175,13 @@ class Installation(object):
             except Exception as general_error:
                 logging.warning("While installing boot loader Cnchi encountered this error: %s", general_error)
 
-        # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
-        chroot.umount_special_dirs(DEST_DIR)
+        # Create an initial database for mandb
+        logging.debug("Updating man database")
+        chroot_run(["mandb", "--quiet"])
+
+        # Initialise pkgfile (pacman .files metadata explorer) database
+        logging.debug("Updating pkgfile database")
+        chroot_run(["pkgfile", "--update"])
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug("Copying install log to /var/log.")

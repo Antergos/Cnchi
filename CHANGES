@@ -1,3 +1,4 @@
+[2015-10-04 11:18:01 +0200]  Enable detection of linux-* named initrd. Fixes #442                       karasu      {3069d1e}
 [2015-10-04 10:35:39 +0200]  Fix typo                                                                   karasu      {9be3af6}
 [2015-10-04 10:23:39 +0200]  Can't write xz files to cache. Permission problem?                         karasu      {810095f}
 [2015-10-03 20:34:10 +0200]  Copy downloaded xz files to user's provided cache (if possible)            karasu      {cb50d47}
