@@ -1007,8 +1007,7 @@ class Installation(object):
 
         self.change_user_password(username, password)
 
-        cmd = ['chfn', '-f', fullname, username]
-        chroot_run(cmd)
+        chroot_run(['chfn', '-f', fullname, username])
 
         cmd = ['chown', '-R', '{0}:users'.format(username), os.path.join("/home", username)]
         chroot_run(cmd)
@@ -1084,16 +1083,15 @@ class Installation(object):
             vconsole.write("KEYMAP={0}\n".format(keyboard_layout_cli))
 
         # Install configs for root
-        cmd = ['cp', '-av', '/etc/skel/.', '/root/']
-        chroot_run(cmd)
+        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
 
         self.queue_event('info', _("Configuring hardware..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
-            shutil.copy2(
-                "/etc/X11/xorg.conf",
-                os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
+            src = "/etc/X11/xorg.conf"
+            dst = os.path.join(DEST_DIR, 'etc/X11/xorg.conf')
+            shutil.copy2(src, dst)
 
         # Configure ALSA
         self.alsa_mixer_setup()
@@ -1106,6 +1104,12 @@ class Installation(object):
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
         logging.debug("Updated fluidsynth configuration file")
+
+        # Workaround for pacman-key bug FS#45351
+        # https://bugs.archlinux.org/task/45351
+        # We have to kill gpg-agent because if it stays around we can't
+        # reliably unmount the target partition.
+        chroot_run(['killall', '-9', 'gpg-agent'])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.

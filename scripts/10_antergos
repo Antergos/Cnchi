@@ -255,6 +255,8 @@ while [ "x$list" != "x" ] ; do
 	   "initrd-${version}" "initramfs-${version}.img" \
 	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
 	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
+           "initrd-linux-${version}" "initramfs-linux-${version}.img" \
+           "initrd-linux-${alt_version}" "initramfs-linux-${alt_version}.img" \
 	   "initramfs-genkernel-${version}" \
 	   "initramfs-genkernel-${alt_version}" \
 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \
