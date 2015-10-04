@@ -1437,6 +1437,13 @@ class InstallationAdvanced(GtkBaseBox):
             btn.set_label(_("_Apply"))
 
         # Translate dialog "Create partition"
+
+        self.create_partition_dialog.set_title(_("Create partition"))
+
+        txt = _("Location:")
+        label = self.ui.get_objec('create_partition_create_place_label')
+        label.set_markup(txt)
+
         txt = _("Size:")
         label = self.ui.get_object('create_partition_size_label')
         label.set_markup(txt)
@@ -1511,6 +1518,9 @@ class InstallationAdvanced(GtkBaseBox):
         dialog.set_title(_("Create Partition Table"))
 
         # LUKS options dialog
+
+        self.luks_dialog.set_title(_("Encryption properties"))
+
         txt = _("Use LUKS encryption:")
         label = self.ui.get_object('luks_use_luks_label')
         label.set_markup(txt)

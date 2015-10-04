@@ -1,3 +1,4 @@
+[2015-10-04 12:52:44 +0200]  Fix unmount_all_in_directory from auto_partition                           karasu      {c2c7dfd}
 [2015-10-04 11:57:04 +0200]  We do not have metadata files in our repo                                  karasu      {8b0e0e9}
 [2015-10-04 11:53:20 +0200]  Takes too long                                                             karasu      {17d49b9}
 [2015-10-04 11:40:12 +0200]  Update databases and mount special dirs BEFORE installing                  karasu      {9636a72}
