@@ -1441,7 +1441,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.create_partition_dialog.set_title(_("Create partition"))
 
         txt = _("Location:")
-        label = self.ui.get_objec('create_partition_create_place_label')
+        label = self.ui.get_object('create_partition_create_place_label')
         label.set_markup(txt)
 
         txt = _("Size:")
