@@ -99,15 +99,14 @@ def get_used_fat(part):
     """ Gets used space in a FAT partition """
     used = 0
     try:
-        result = subprocess.check_output(["dosfsck", "-n", "-v", part])
+        result = subprocess.check_output(["fsck.fat", "-n", "-v", part])
     except subprocess.CalledProcessError as err:
         if b'Dirty bit is set' in err.output:
             result = err.output
         else:
             result = None
-            txt = _("Can't detect used space of FAT partition %s")
-            logging.error(txt, part)
-            logging.error(err)
+            txt = _("Can't detect used space of FAT partition %s : %s")
+            logging.error(txt, part, str(err.output))
 
     if result:
         bperc = 0

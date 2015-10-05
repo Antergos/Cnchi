@@ -41,6 +41,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 _dropped_privileges = 0
 
+# TODO: remove a lot of legacy code that's not used anymore
 
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
     for item in os.listdir(src_dir):
