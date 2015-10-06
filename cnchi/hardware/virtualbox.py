@@ -60,8 +60,9 @@ class Virtualbox(Hardware):
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")
-        super().chroot(["systemctl", "disable", "openntpd"], dest_dir)
-        super().chroot(["systemctl", "-f", "enable", "vboxservice"], dest_dir)
+
+        Hardware.chroot(["systemctl", "disable", "openntpd"], dest_dir)
+        Hardware.chroot(["systemctl", "-f", "enable", "vboxservice"], dest_dir)
 
         # This fixes bug in virtualbox-guest-modules package
-        super().chroot(["depmod", "-a"], dest_dir)
+        Hardware.chroot(["depmod", "-a"], dest_dir)
