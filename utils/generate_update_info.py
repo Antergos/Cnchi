@@ -38,7 +38,7 @@ def get_files(path):
     """ Returns all files from a directory """
     all_files = []
     skip_names = [
-        "__pycache__", ".git", "CHANGES", "info.py", "update.info", ".tx", "utils"]
+        "__pycache__", ".git", "CHANGES", "info.py", "update.info", ".tx/", "utils/"]
     if os.path.exists(path):
         for dpath, d, files in os.walk(path):
             for f in files:

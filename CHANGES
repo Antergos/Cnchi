@@ -1,3 +1,4 @@
+[2015-10-07 20:32:01 +0200]  Removed logserver as we use bugsnag                                        karasu      {7fabd1b}
 [2015-10-07 16:40:16 +0200]  Download update.info once when checking Internet version.                  karasu      {0deb74a}
 [2015-10-07 16:25:35 +0200]  Update pre-commit hook with update.info update                             karasu      {db2c795}
 [2015-10-07 16:19:28 +0200]  Forgotten import                                                           karasu      {ece3d1e}
