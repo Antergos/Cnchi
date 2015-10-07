@@ -35,7 +35,11 @@ if [[ ${INFO_PY} != "False" ]]; then
     echo "Will set new version to be $SUGGESTED_VERSION"
     sed -i "s|$BASE_STRING|$SUGGESTED_VERSION|g" ${INFO_PY}
     git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.10.0"...HEAD > CHANGES
-    git add CHANGES ${INFO_PY}
+
+    echo "updating update.info..."
+    python utils/generate_update_info.py
+
+    git add CHANGES ${INFO_PY} update.info
     #git commit -m "Version bump to $INPUT_STRING"
     #git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
     #git push origin
