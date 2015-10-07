@@ -59,6 +59,7 @@ class Check(GtkBaseBox):
 
         self.remove_timer = False
 
+        self.updater = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
@@ -120,13 +121,17 @@ class Check(GtkBaseBox):
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
 
-        updated = self.is_updated()
+        if has_internet:
+            updated = self.is_updated()
+        else:
+            updated = False
+
         self.updated.set_state(updated)
 
         if self.checks_are_optional:
             return True
 
-        if has_internet and space:
+        if has_internet and space and updated:
             return True
 
         return False
@@ -179,8 +184,10 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
-        upd = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
-        return not upd.is_remote_version_newer()
+        if self.updater == None:
+            # Only call updater once
+            self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
+        return not self.updater.is_remote_version_newer()
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """

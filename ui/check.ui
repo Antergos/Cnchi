@@ -32,17 +32,6 @@
         <property name="margin_bottom">10</property>
         <property name="hexpand">True</property>
         <child>
-          <object class="StateBox" id="updated">
-            <property name="visible">True</property>
-            <property name="label">Cnchi is up to date</property>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
           <object class="StateBox" id="prepare_enough_space">
             <property name="visible">True</property>
             <property name="label">has at least 3GB available drive space</property>
@@ -50,7 +39,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -61,13 +50,24 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="StateBox" id="prepare_network_connection">
             <property name="visible">True</property>
             <property name="label">is connected to the Internet</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="StateBox" id="updated">
+            <property name="visible">True</property>
+            <property name="label">Cnchi is up to date</property>
           </object>
           <packing>
             <property name="expand">True</property>

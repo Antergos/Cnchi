@@ -1,4 +1,4 @@
-{"version":"0.13.87","files":[
+{"version":"0.13.88","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -34,7 +34,7 @@
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"56bc690fa3254cb755e08921384ebc6a"},
 {"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"90716e53c8011cd82637d1dc568c787a"},
 {"name":"/usr/share/cnchi/cnchi/slides.py","md5":"bdd71f8430c39c975f0b7a168dd7700e"},
-{"name":"/usr/share/cnchi/cnchi/check.py","md5":"1e509ba394d1863a1932b8a2dc8ca8a0"},
+{"name":"/usr/share/cnchi/cnchi/check.py","md5":"3de7701ea5b7683740105e140bc192b8"},
 {"name":"/usr/share/cnchi/cnchi/cnchi.py","md5":"c55cd0c390f286a210ae41d7aaf458a4"},
 {"name":"/usr/share/cnchi/cnchi/updater.py","md5":"2325d18cf9b7cd70fef913ee05b22f02"},
 {"name":"/usr/share/cnchi/cnchi/download/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
@@ -496,7 +496,7 @@
 {"name":"/usr/share/cnchi/ui/welcome.ui","md5":"abc79e7009c0855ed9cbbdb6b6d1ec89"},
 {"name":"/usr/share/cnchi/ui/wired.ui","md5":"60a75d239ef8cb4285de847aa6646907"},
 {"name":"/usr/share/cnchi/ui/wireless.ui","md5":"31140db27ac445f20f9b08f8258cacda"},
-{"name":"/usr/share/cnchi/ui/check.ui","md5":"54e51c4a92c9facf8e5153b3c4116f26"},
+{"name":"/usr/share/cnchi/ui/check.ui","md5":"0dfa49201350ed0e8472cbfbac4ebc3f"},
 {"name":"/usr/share/cnchi/utils/KeyboardNames.pl","md5":"8d3fdcd2896beb6c5ee200edb6899a2c"},
 {"name":"/usr/share/cnchi/utils/antergos-mirrorlist","md5":"dfc630de621d797716bf03c92a8c7daa"},
 {"name":"/usr/share/cnchi/utils/download_package_list.py","md5":"37778ae26c58fd3736361f66bec203bd"},
