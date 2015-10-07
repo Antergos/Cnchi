@@ -31,10 +31,12 @@
 
 
 from gi.repository import GLib
+
 import subprocess
 import os
 import logging
 
+import updater
 import misc.misc as misc
 
 from gtkbasebox import GtkBaseBox
@@ -61,6 +63,7 @@ class Check(GtkBaseBox):
         self.prepare_enough_space = None
         self.timeout_id = None
         self.prepare_best_results = None
+        self.updated = None
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -73,6 +76,10 @@ class Check(GtkBaseBox):
         """ Translates all ui elements """
         txt = _("System Check")
         self.header.set_subtitle(txt)
+
+        self.updated = self.ui.get_object("updated")
+        txt = _("Cnchi is up to date")
+        self.updated.set_property("label", txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
@@ -111,6 +118,9 @@ class Check(GtkBaseBox):
 
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
+
+        updated = self.is_updated()
+        self.updated.set_state(updated)
 
         if self.checks_are_optional:
             return True
@@ -165,6 +175,11 @@ class Check(GtkBaseBox):
             return True
 
         return False
+
+    def is_updated(self):
+        """ Checks that cnchi version is, at least, latest stable """
+        upd = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
+        return not upd.is_remote_version_newer()
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """
