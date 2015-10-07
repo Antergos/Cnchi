@@ -1,3 +1,10 @@
+[2015-10-04 11:17:07 +0200]  Merge pull request #443 from DanySK/master                                 karasu      {b5bd04e}
+[2015-10-03 15:09:48 +0200]  Enable detection of linux-* named initrd. Fixes #442                   Danilo Pianini  {83467ee}
+[2015-09-27 05:02:05 -0500]  Update packages.xml                                                    Dustin Falgout  {22b637e}
+[2015-09-26 21:17:23 +0200]  Merge branch 'master' of github.com:Antergos/Cnchi                         karasu      {bf8dd82}
+[2015-09-26 21:16:28 +0200]  Fix for issue #436                                                         karasu      {9cd7d03}
+[2015-09-26 19:55:40 +0200]  Merge pull request #435 from fionera/master                                karasu      {b210244}
+[2015-09-26 17:57:43 +0200]  Added "device"                                                         Tim Windelschmidt {3da2393}
 [2015-09-26 12:46:37 +0200]  Backport hardware module changes to solve issue #431                       karasu      {0cab130}
 [2015-09-25 23:07:10 -0500]  missed this                                                            Dustin Falgout  {fcae144}
 [2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {e083d15}
