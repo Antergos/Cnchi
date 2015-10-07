@@ -1,16 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# CNCHI - ANTERGOS INSTALLER
+# Copyright (C) 2015 ANTERGOS
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: CNCHI 0.13\n"
 "POT-Creation-Date: 2015-10-07 09:06+CEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
 
@@ -53,8 +52,6 @@ msgstr ""
 #: cnchi/keymap.py:296 cnchi/language.py:183 cnchi/location.py:259
 #: cnchi/slides.py:256 cnchi/summary.py:182 cnchi/user_info.py:333
 #: cnchi/welcome.py:143 cnchi/wireless.py:159
-msgid ""
-msgstr ""
 
 #: cnchi/cnchi.py:90
 msgid "This installer must be run with administrative privileges, and cannot continue without them."
@@ -1600,4 +1597,3 @@ msgstr ""
 #: cnchi/wireless.py:71
 msgid "Display password"
 msgstr ""
-
