@@ -38,6 +38,7 @@ import uuid
 import gi
 import requests
 import json
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
@@ -106,7 +107,8 @@ class CnchiApp(Gtk.Application):
         window.show()
 
         with open(self.TMP_RUNNING, "w") as tmp_file:
-            tmp_file.write("Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid()))
+            txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
+            tmp_file.write(txt)
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()
