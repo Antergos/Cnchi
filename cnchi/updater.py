@@ -62,7 +62,7 @@ def get_md5_from_text(text):
 
 
 class Updater(object):
-    def __init__(self, local_cnchi_version, force_update):
+    def __init__(self, local_cnchi_version, force_update=False):
         self.remote_version = ""
         self.local_cnchi_version = local_cnchi_version
         self.md5s = {}
