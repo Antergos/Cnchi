@@ -1,4 +1,4 @@
-{"version":"0.13.93","files":[
+{"version":"0.13.94","files":[
 {"name":"/usr/share/cnchi/run","md5":"0a596937cb44f6a1759b6d1710611dc0"},
 {"name":"/usr/share/cnchi/changelog.txt","md5":"fe6eb3113e6dd0d39c30c257f946b265"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
@@ -412,7 +412,7 @@
 {"name":"/usr/share/cnchi/cnchi/misc/keyboard_widget.py","md5":"cea95163dfbd61dc0588d91ccfb442bd"},
 {"name":"/usr/share/cnchi/cnchi/installation/action.py","md5":"287a77aa865fb4ea4f83716606acf259"},
 {"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"0cd1e69a0f11650e20826d3f1d60427d"},
-{"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"526f5064121b474a4765e5f69a7b472b"},
+{"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"03ebbb91e97fd83be97be36e83f118d4"},
 {"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"3a8297c768d3a9b57a4622350a7c3d52"},
 {"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"22791db4d9ce69ca134f18871cea31b8"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"bd96a29156c6b169085e8a8783d2a893"},

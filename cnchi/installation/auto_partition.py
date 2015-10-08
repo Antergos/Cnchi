@@ -332,9 +332,11 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}".format(device, err.cmd, err.output)
+        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}"
+        txt = txt.format(device, err.cmd, err.stderr)
         logging.error(txt)
-        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}").format(device, err.cmd, err.output)
+        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}")
+        txt = txt.format(device, err.cmd, err.stderr)
         raise InstallError(txt)
 
 
@@ -344,9 +346,11 @@ def parted_mktable(device, table_type="msdos"):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as err:
-        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}").format(device, err.cmd, err.output)
+        txt = "Error creating a new partition table on device {0}. Command {1} failed: {2}"
+        txt = txt.format(device, err.cmd, err.stderr)
         logging.error(txt)
-        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}").format(device, err.cmd, err.output)
+        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}")
+        txt = txt.format(device, err.cmd, err.stderr)
         raise InstallError(txt)
 
 
