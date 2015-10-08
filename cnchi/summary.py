@@ -121,7 +121,8 @@ class Summary(GtkBaseBox):
         self.num_features = 0
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
-                txt += "{0}\n".format(features_info.TITLES[feature])
+                feature_title = _(features_info.TITLES[feature])
+                txt += "{0}\n".format(feature_title)
                 self.num_features += 1
         txt = txt[:-1]
         statebox.set_property("label", txt)
@@ -133,7 +134,7 @@ class Summary(GtkBaseBox):
             statebox = self.ui.get_object("partitions_statebox")
             txt = ""
             for action in changes:
-                txt += "{0}\n".format(str(action))
+                txt += "{0}\n".format(_(str(action)))
             txt = txt[:-1]
             statebox.set_property("label", txt)
 
