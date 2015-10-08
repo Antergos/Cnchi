@@ -5,6 +5,7 @@
   <editions>
     <edition name="common" description="Packages common to all DE and base">
       <packages>
+        <pkgname>acpid</pkgname>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
         <pkgname>antergos-mirrorlist</pkgname>
