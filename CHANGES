@@ -1,3 +1,4 @@
+[2015-10-10 16:27:56 +0200]  Added bootstrap to easely translate slides text                            karasu      {8300b72}
 [2015-10-08 16:55:04 +0200]  err.output only shows what the command returns (but not the error)...      karasu      {9763a2f}
 [2015-10-08 15:48:30 +0200]  Added acpid to common                                                      karasu      {e161a06}
 [2015-10-08 15:36:43 +0200]  Trying to fix #433                                                         karasu      {7e304d6}

@@ -12,12 +12,10 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/usr/share/cnchi/data/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <!--<link href="carousel.css" rel="stylesheet">-->
+      
   </head>
 
-    <body>
+  <body>
 
     <!-- Carousel ================================================== -->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -91,6 +89,13 @@
     <script src="../../assets/js/vendor/holder.min.js"></script>
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
     -->
+
+    <script>
+        // interval is in milliseconds. 1000 = 1 second - so 1000 * 10 = 10 seconds
+        $('.carousel').carousel({
+            interval: 1000 * 20
+        });
+      </script>
   </body>
 </html>
 
