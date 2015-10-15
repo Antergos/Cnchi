@@ -83,6 +83,9 @@ class Bootloader(object):
         elif bootloader == "systemd-boot":
             logging.debug("Cnchi will install the Systemd-boot (Gummiboot) loader")
             self.install_systemd_boot()
+        elif bootloader == "refind":
+            logging.debug("Cnchi will install the rEFInd loader")
+            self.install_refind()
 
     def install_grub(self):
         self.modify_grub_default()
@@ -540,6 +543,10 @@ class Bootloader(object):
         except Exception as general_error:
             logging.error('Command %s failed. Unknown Error: %s', " ".join(cmd), general_error)
             self.settings.set('bootloader_installation_successful', False)
+
+    def install_refind(self):
+        # FIXME: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
+        pass
 
     def freeze_unfreeze_xfs(self):
         """ Freeze and unfreeze xfs, as hack for grub(2) installing """

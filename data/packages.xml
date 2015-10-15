@@ -574,7 +574,10 @@
       <pkgname>grub2-theme-antergos</pkgname>
     </bootloader>
     <bootloader name="systemd-boot">
-      <!-- previously called gummiboot -->
+      <!-- previously called gummiboot, now comes with systemd -->
+    </bootloader>
+    <bootloader name="refind">
+      <pkgname>refind-efi</pkgname>
     </bootloader>
   </bootloaders>
 

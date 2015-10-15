@@ -585,11 +585,11 @@ class AutoPartition(object):
 
         fs_devices = {}
 
-        if self.GPT and self.bootloader == "grub2":
-            fs_devices[devices['efi']] = "vfat"
-
-        if self.GPT and self.bootloader == "systemd-boot":
-            fs_devices[devices['boot']] = "vfat"
+        if self.GPT:
+            if self.bootloader == "grub2":
+                fs_devices[devices['efi']] = "vfat"
+            elif self.bootloader in ["systemd-boot", "refind"]:
+                fs_devices[devices['boot']] = "vfat"
         else:
             fs_devices[devices['boot']] = "ext2"
 
@@ -760,7 +760,7 @@ class AutoPartition(object):
                 part_num += 1
 
             # Create Boot partition
-            if self.bootloader == "systemd-boot":
+            if self.bootloader in ["systemd-boot", "refind"]:
                 sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
             else:
                 sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
@@ -933,7 +933,7 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
-        if self.GPT and self.bootloader == "systemd-boot":
+        if self.GPT and self.bootloader in ["refind", "systemd-boot"]:
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
         else:

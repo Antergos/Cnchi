@@ -227,6 +227,8 @@ class InstallationAutomatic(GtkBaseBox):
         if os.path.exists('/sys/firmware/efi'):
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Systemd-boot")
+            # TODO: add rEFInd bootloader
+            # self.bootloader_entry.append_text("rEFInd")
             self.bootloader_entry.set_active(0)
             self.bootloader_entry.show()
         else:
