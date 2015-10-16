@@ -546,7 +546,25 @@ class Bootloader(object):
 
     def install_refind(self):
         # FIXME: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
-        pass
+        logging.debug("Installing and configuring rEFInd bootloader...")
+        try:
+            cmd = ["refind-install"]
+            chroot.run(cmd, self.dest_dir, 300)
+            self.settings.set('bootloader_installation_successful', True)
+        except subprocess.CalledProcessError as process_error:
+            logging.error("command %s failed. Error output: %s", " ".join(cmd), process_error.stderr)
+            self.settings.set('bootloader_installation_successful', False)
+
+        try:
+            cmd = ["refind-mkrlconf"]
+            chroot.run(cmd, self.dest_dir, 300)
+            self.settings.set('bootloader_installation_successful', True)
+            logging.debug("rEFIind installed.")
+        except subprocess.CalledProcessError as process_error:
+            logging.error("command %s failed. Error output: %s", " ".join(cmd), process_error.stderr)
+            self.settings.set('bootloader_installation_successful', False)
+
+
 
     def freeze_unfreeze_xfs(self):
         """ Freeze and unfreeze xfs, as hack for grub(2) installing """
