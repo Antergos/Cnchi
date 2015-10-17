@@ -1,4 +1,4 @@
-{"version":"0.13.98","files":[
+{"version":"0.13.99","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -74,7 +74,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"40a84839e8c2fc5e11894e40a89bf979"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"5d029c7c2985ce66858ee96b2fa8b0fe"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"e86815c0f75e814ffb08a235aedae63c"},
-{"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"72882a79687d5c84e16856f07f09b8f9"},
+{"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"3fa434eae6a791ca5ca192fb55bf490e"},
 {"name":"/usr/share/cnchi/cnchi/misc/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/misc/camera.py","md5":"7ad9bf243c52628a4f8b1765cf568c26"},
 {"name":"/usr/share/cnchi/cnchi/misc/gtkwidgets.py","md5":"e0852fb334bf16272ef22712e4f19464"},

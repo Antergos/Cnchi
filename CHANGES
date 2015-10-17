@@ -1,3 +1,4 @@
+[2015-10-16 21:17:38 +0200]  Working on rEFInd (but will have to wait 0.16.x)                           karasu      {db7515e}
 [2015-10-15 16:56:26 +0200]  Prepare Cnchi to be able to use rEFInd                                     karasu      {b588a1e}
 [2015-10-10 16:41:13 +0200]  Wait 20 seconds before slide transition                                    karasu      {fd06e8e}
 [2015-10-10 16:27:56 +0200]  Added bootstrap to easely translate slides text                            karasu      {8300b72}
