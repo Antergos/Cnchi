@@ -6,7 +6,12 @@
   <object class="GtkBox" id="zfs">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="margin_left">10</property>
+    <property name="margin_right">10</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
     <property name="orientation">vertical</property>
+    <property name="spacing">10</property>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -20,7 +25,6 @@
               <object class="GtkLabel" id="pool_type_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_right">10</property>
                 <property name="label" translatable="yes">Pool Type:</property>
               </object>
               <packing>
@@ -33,6 +37,7 @@
               <object class="GtkComboBoxText" id="pool_type_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
                 <items>
                   <item translatable="yes">None</item>
                 </items>
@@ -59,7 +64,6 @@
               <object class="GtkLabel" id="partition_scheme_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_right">10</property>
                 <property name="label" translatable="yes">Partition Scheme:</property>
               </object>
               <packing>
@@ -72,6 +76,7 @@
               <object class="GtkComboBoxText" id="partition_scheme_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
                 <items>
                   <item translatable="yes">GPT</item>
                   <item translatable="yes">MBR</item>
@@ -123,52 +128,79 @@
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="box2">
+      <object class="GtkGrid" id="grid1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="row_spacing">10</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="homogeneous">True</property>
         <child>
-          <object class="GtkBox" id="box21">
+          <object class="GtkCheckButton" id="pool_name_btn1">
+            <property name="label" translatable="yes">Pool Name:</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkCheckButton" id="pool_name_btn">
-                <property name="label" translatable="yes">Pool Name</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="xalign">0</property>
-                <property name="draw_indicator">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="pool_name_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="width_chars">8</property>
-                <property name="max_width_chars">80</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="padding">10</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="force_4k_btn">
+          <object class="GtkEntry" id="pool_name_entry1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="width_chars">8</property>
+            <property name="max_width_chars">80</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="force_4k_btn1">
             <property name="label" translatable="yes">Force ZFS 4k block size</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -179,7 +211,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
@@ -187,14 +219,13 @@
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="padding">10</property>
-        <property name="position">2</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child>
       <object class="GtkBox" id="box6">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkCheckButton" id="encrypt_disk_btn">
@@ -257,7 +288,6 @@
       <object class="GtkBox" id="box8">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkGrid" id="grid2">
@@ -269,8 +299,8 @@
               <object class="GtkLabel" id="password_lbl">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Password:</property>
                 <property name="xalign">1</property>
+                <property name="label" translatable="yes">Password:</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
