@@ -87,6 +87,9 @@ def get_screen(screen_name, params):
     elif screen_name == "InstallationAutomatic":
         import automatic
         screen = automatic.InstallationAutomatic(params)
+    elif screen_name == "zfs":
+        import zfs
+        screen = zfs.ZFS(params)
     return screen
 
 
