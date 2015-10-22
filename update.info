@@ -1,4 +1,4 @@
-{"version":"0.13.100","files":[
+{"version":"0.13.101","files":[
 {"name":"/usr/share/cnchi/run","md5":"0a596937cb44f6a1759b6d1710611dc0"},
 {"name":"/usr/share/cnchi/changelog.txt","md5":"fe6eb3113e6dd0d39c30c257f946b265"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
@@ -448,6 +448,7 @@
 {"name":"/usr/share/cnchi/cnchi/parted3/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/parted3/partition_module.py","md5":"1f600822e9f19e4d25455fa42aa55656"},
 {"name":"/usr/share/cnchi/cnchi/parted3/README","md5":"cf28aa5ca9975804e37676302f09c2cc"},
+{"name":"/usr/share/cnchi/cnchi/hardware/hardware.pyc","md5":"82d84521d27b860d20baf875abc9bd0c"},
 {"name":"/usr/share/cnchi/cnchi/hardware/broadcom_b43.py","md5":"bebe0dc44ebeae4214097cbb0f4c6059"},
 {"name":"/usr/share/cnchi/cnchi/hardware/firewire.py","md5":"ebbca131917973fabb3bc6f2893cdb18"},
 {"name":"/usr/share/cnchi/cnchi/hardware/via.py","md5":"40e2c45234899b8ac9916b016c9ae049"},
@@ -473,6 +474,7 @@
 {"name":"/usr/share/cnchi/bin/cnchi","md5":"1769e7d4f1da3455fb9e0ae7599692d7"},
 {"name":"/usr/share/cnchi/ui/desktop.ui","md5":"479d2816423e82fadef115f04f16b297"},
 {"name":"/usr/share/cnchi/ui/timezone.ui","md5":"b7ed15f3ab4f4a3cef3189bd9c3f4275"},
+{"name":"/usr/share/cnchi/ui/zfs.ui","md5":"a69579562bda5e38414842d27c0f0f50"},
 {"name":"/usr/share/cnchi/ui/bootloader.ui","md5":"33eea314d6e90cd775fb6af160d71e4e"},
 {"name":"/usr/share/cnchi/ui/alongside.ui","md5":"46774262a088a317d87ace77ed0c7907"},
 {"name":"/usr/share/cnchi/ui/wired.ui","md5":"60a75d239ef8cb4285de847aa6646907"},
@@ -481,6 +483,7 @@
 {"name":"/usr/share/cnchi/ui/welcome.ui","md5":"abc79e7009c0855ed9cbbdb6b6d1ec89"},
 {"name":"/usr/share/cnchi/ui/header.ui","md5":"a8e6db13f40ecf0a935de6453f607178"},
 {"name":"/usr/share/cnchi/ui/features.ui","md5":"45a58167b064a9dabcf32bcd555a8c47"},
+{"name":"/usr/share/cnchi/ui/zfs.ui~","md5":"ecba1c67e5c26f88dba77d765002db34"},
 {"name":"/usr/share/cnchi/ui/user_info.ui","md5":"17a978d6d4eff12aaf4fa22156f58bd1"},
 {"name":"/usr/share/cnchi/ui/keymap.ui","md5":"714703c2cf4641d09de6b14422ecf0f7"},
 {"name":"/usr/share/cnchi/ui/location.ui","md5":"edbee7bba316b1629fc27aa1581f9e65"},
