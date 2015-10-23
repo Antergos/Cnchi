@@ -5,6 +5,7 @@
   <editions>
     <edition name="common" description="Packages common to all DE and base">
       <packages>
+        <pkgname>acpid</pkgname>
         <pkgname>alsa-utils</pkgname>
         <pkgname>antergos-keyring</pkgname>
         <pkgname>antergos-mirrorlist</pkgname>
@@ -465,15 +466,14 @@
       <pkgname>bzr</pkgname>
     </feature>
     <feature name="bluetooth">
+      <pkgname>bluez-utils</pkgname>
+      <pkgname>pulseaudio-bluetooth</pkgname>
       <pkgname desktops='mate'>blueman</pkgname>
       <pkgname desktops='cinnamon'>blueberry</pkgname>
-      <pkgname desktops='kde4,lxqt'>bluedevil4</pkgname>
-      <pkgname desktops='plasma5'>bluedevil</pkgname>
-      <pkgname>bluez-utils</pkgname>
-      <pkgname desktops='cinnamon,gnome'>gnome-bluetooth</pkgname>
-      <pkgname>pulseaudio-bluetooth</pkgname>
+      <pkgname desktops='kde4'>bluedevil4</pkgname>
+      <pkgname desktops='plasma5,lxqt'>bluedevil</pkgname>
+      <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
       <pkgname desktops='mate'>python2-pybluez</pkgname>
-      <pkgname desktops='mate'>sbc</pkgname>
     </feature>
     <feature name="cups">
       <pkgname>cups</pkgname>
@@ -571,9 +571,6 @@
       <pkgname>grub</pkgname>
       <pkgname>os-prober</pkgname>
       <pkgname>grub2-theme-antergos</pkgname>
-    </bootloader>
-    <bootloader name="gummiboot">
-      <pkgname>gummiboot</pkgname>
     </bootloader>
   </bootloaders>
 
