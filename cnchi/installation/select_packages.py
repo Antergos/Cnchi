@@ -214,7 +214,7 @@ class SelectPackages(object):
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
-        if self.desktop == 'kde4' or self.desktop == 'plasma5':
+        if self.desktop in ['kde4', 'plasma5']:
             pkg = ""
             base_name = 'kde-l10n-'
             lang_name = self.settings.get("language_name").lower()
@@ -279,7 +279,7 @@ class SelectPackages(object):
                     bootloader_found = True
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
-            if not bootloader_found:
+            if not bootloader_found and not 'gummiboot' == boot_loader:
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
 

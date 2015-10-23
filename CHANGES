@@ -1,0 +1,123 @@
+[2015-10-22 16:59:28 +0200]  playing around                                                             karasu      {6161a2e}
+[2015-10-22 16:36:24 +0200]  Added zfs screen (does nothing)                                            karasu      {2621b63}
+[2015-10-22 14:24:16 +0200]  Playing around with an special dialog for zfs (inspired in GhostBSD)       karasu      {6b69572}
+[2015-10-20 10:00:36 +0200]  Working on vconsole.conf creation                                          karasu      {4d8c6ec}
+[2015-10-17 10:23:31 +0200]  Working on rEFInd                                                          karasu      {34ccc63}
+[2015-10-16 21:17:38 +0200]  Working on rEFInd (but will have to wait 0.16.x)                           karasu      {db7515e}
+[2015-10-15 16:56:26 +0200]  Prepare Cnchi to be able to use rEFInd                                     karasu      {b588a1e}
+[2015-10-10 16:41:13 +0200]  Wait 20 seconds before slide transition                                    karasu      {fd06e8e}
+[2015-10-10 16:27:56 +0200]  Added bootstrap to easely translate slides text                            karasu      {8300b72}
+[2015-10-08 16:55:04 +0200]  err.output only shows what the command returns (but not the error)...      karasu      {9763a2f}
+[2015-10-08 15:48:30 +0200]  Added acpid to common                                                      karasu      {e161a06}
+[2015-10-08 15:36:43 +0200]  Trying to fix #433                                                         karasu      {7e304d6}
+[2015-10-08 13:08:45 +0200]  It seems there's a tab error here, but I can't find it (issue #437)        karasu      {68f4e1c}
+[2015-10-08 13:00:31 +0200]  Fixes issue #440                                                           karasu      {235f979}
+[2015-10-07 20:37:10 +0200]  ups. Fix error in generate_update_info.py                                  karasu      {ad838a3}
+[2015-10-07 20:32:01 +0200]  Removed logserver as we use bugsnag                                        karasu      {7fabd1b}
+[2015-10-07 16:40:16 +0200]  Download update.info once when checking Internet version.                  karasu      {0deb74a}
+[2015-10-07 16:25:35 +0200]  Update pre-commit hook with update.info update                             karasu      {db2c795}
+[2015-10-07 16:19:28 +0200]  Forgotten import                                                           karasu      {ece3d1e}
+[2015-10-07 10:00:16 +0200]  Working on checking version                                                karasu      {59e90cf}
+[2015-10-07 09:28:41 +0200]  Fix pot file                                                               karasu      {03781e8}
+[2015-10-07 09:23:24 +0200]  Update translations (source pot file)                                      karasu      {ca553ab}
+[2015-10-07 09:03:05 +0200]  little modification in README                                              karasu      {9fdba1c}
+[2015-10-06 14:08:47 +0200]  As chroot is a static method we should be able to call it directly         karasu      {5f60d7d}
+[2015-10-05 16:42:36 +0200]  Minor changes                                                              karasu      {babd64f}
+[2015-10-04 22:04:47 +0200]  Fix typo                                                                   karasu      {d2ba3de}
+[2015-10-04 22:02:09 +0200]  Some strings were not translated                                           karasu      {1e32949}
+[2015-10-04 12:52:44 +0200]  Fix unmount_all_in_directory from auto_partition                           karasu      {c2c7dfd}
+[2015-10-04 11:57:04 +0200]  We do not have metadata files in our repo                                  karasu      {8b0e0e9}
+[2015-10-04 11:53:20 +0200]  Takes too long                                                             karasu      {17d49b9}
+[2015-10-04 11:40:12 +0200]  Update databases and mount special dirs BEFORE installing                  karasu      {9636a72}
+[2015-10-04 11:18:01 +0200]  Enable detection of linux-* named initrd. Fixes #442                       karasu      {3069d1e}
+[2015-10-04 10:35:39 +0200]  Fix typo                                                                   karasu      {9be3af6}
+[2015-10-04 10:23:39 +0200]  Can't write xz files to cache. Permission problem?                         karasu      {810095f}
+[2015-10-03 20:34:10 +0200]  Copy downloaded xz files to user's provided cache (if possible)            karasu      {cb50d47}
+[2015-10-02 21:23:18 +0200]  Removed unused file                                                        karasu      {f0d066c}
+[2015-10-02 20:12:11 +0200]  Name is pacman.log                                                         karasu      {92a46db}
+[2015-10-02 18:55:08 +0200]  log alpm to /tmp/alpm.log                                                  karasu      {472d987}
+[2015-10-02 12:02:56 +0200]  Fix some comments. Need to find out where pacman error messages are..      karasu      {10d5067}
+[2015-10-02 10:55:03 +0200]  Log "command failed to execute correctly" as a debug message               karasu      {92c33e5}
+[2015-10-02 10:36:00 +0200]  Line comments where too long                                               karasu      {438d006}
+[2015-10-02 10:15:27 +0200]  Check that pacman_conf_dir is always created                               karasu      {a7c48ea}
+[2015-10-02 08:54:08 +0200]  Forgot hook                                                                karasu      {3169442}
+[2015-10-02 08:51:00 +0200]  Fix valuerror exception in advanced                                        karasu      {6623d2a}
+[2015-10-01 22:05:03 +0200]  Added sample code (gvfs-mount)                                             karasu      {07b275f}
+[2015-10-01 21:08:34 +0200]  We do not always have md5 info. If it's not present we must assume ..      karasu      {e33c3e4}
+[2015-10-01 20:41:39 +0200]  Prepare code to be able to specify multiple xz package cache direct..      karasu      {986e83a}
+[2015-09-30 19:45:15 +0200]  download_error when url is none (just in case is the last url we try)      karasu      {ce5834e}
+[2015-09-27 05:00:32 -0500]  Update packages.xml                                                    Dustin Falgout  {efb91e4}
+[2015-09-25 22:21:18 -0500]  send install result to build server                                    Dustin Falgout  {8dbcdac}
+[2015-09-24 20:43:01 +0200]  Fix bug in warning message                                                 karasu      {60dcc0e}
+[2015-09-21 23:35:10 -0500]  port postinstall changes from stable                                   Dustin Falgout  {2eee631}
+[2015-09-21 23:20:34 -0500]  fix metalink url sorting (needs testing). fix vbox not properly det..  Dustin Falgout  {0ae609d}
+[2015-09-21 09:19:58 -0500]  working on metalinks                                                   Dustin Falgout  {10fc11e}
+[2015-09-21 07:40:46 -0500]  oops :grimacing:                                                       Dustin Falgout  {bfa404e}
+[2015-09-21 07:37:19 -0500]  continue trying other mirrors after we catch an exception. fixes an..  Dustin Falgout  {4d6c44f}
+[2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors                                  Dustin Falgout  {754e727}
+[2015-09-19 20:30:12 +0200]  Set lightdm greeter in Cnchi                                               karasu      {bb059a6}
+[2015-09-19 19:38:09 +0200]  Check device in mount line                                                 karasu      {682285c}
+[2015-09-19 18:46:00 +0200]  removed unnecessary if                                                     karasu      {8621389}
+[2015-09-19 18:44:40 +0200]  Missing _()                                                                karasu      {2fa203a}
+[2015-09-19 18:37:25 +0200]  Fix name                                                                   karasu      {f85f2b8}
+[2015-09-19 18:30:29 +0200]  Better names for functions                                                 karasu      {38c8240}
+[2015-09-19 17:57:21 +0200]  Do not delete lvm from other devices                                       karasu      {99ecb90}
+[2015-09-18 15:25:48 -0500]  dont send alpm warning level messages to bugsnag                       Dustin Falgout  {ee2c6f8}
+[2015-09-15 18:09:10 +0200]  If something is mounted, unmount it (warn the user but do not ask p..      karasu      {aa12269}
+[2015-09-15 17:55:59 +0200]  Show TB in advanced                                                        karasu      {52ac9d3}
+[2015-09-14 23:13:06 +0200]  Trying to fix get_toplevel error                                           karasu      {4b10c4d}
+[2015-09-14 20:24:14 +0200]  Port postinstall.sh stable changes                                         karasu      {42df27b}
+[2015-09-14 18:32:25 +0200]  This left forward button pressed.                                          karasu      {1973cca}
+[2015-09-13 20:25:36 +0200]  Working on fixing hardware module (pre-install, post-install and co..      karasu      {aa330ce}
+[2015-09-13 19:18:41 +0200]  Ask for a boot partition when using f2fs as root                           karasu      {8329c5e}
+[2015-09-13 17:54:16 +0200]  Show which button is selected in welcome screen                            karasu      {5c38e02}
+[2015-09-12 18:53:12 +0200]  Formatting and partitioning makes gui nearly freeze. Makes no sense..      karasu      {cd5fc90}
+[2015-09-12 18:45:05 +0200]  Show pulse bar while doing auto partition process                          karasu      {cf90cf9}
+[2015-09-11 20:37:59 +0200]  Fix queue_event in auto_partition                                          karasu      {dda8e5f}
+[2015-09-11 20:30:52 +0200]  Not sure about this                                                        karasu      {3b49276}
+[2015-09-11 20:21:00 +0200]  No parameter is required                                                   karasu      {d44e16f}
+[2015-09-11 20:19:15 +0200]  Playing with toplevel                                                      karasu      {3b2a47d}
+[2015-09-11 19:24:06 +0200]  Try to at least, show a pulse progress bar when auto partitioning          karasu      {08b16da}
+[2015-09-11 14:39:37 +0200]  Fixes issue #418 https://github.com/Antergos/Cnchi/issues/418              karasu      {ec59781}
+[2015-09-11 13:36:28 +0200]  Use -F in advanced (in automatic it was already being used) issue #..      karasu      {99b6c61}
+[2015-09-11 13:09:22 +0200]  why * 8 ?                                                                  karasu      {3dc5a26}
+[2015-09-11 12:50:36 +0200]  There's something wrong with bps                                           karasu      {39229b3}
+[2015-09-11 04:49:27 -0500]  redirect output to logfile only once to prevent recursion              Dustin Falgout  {0df7c82}
+[2015-09-11 04:36:12 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {c81b06c}
+[2015-09-11 04:34:12 -0500]  fix set-settings issue with dbus-launch                                Dustin Falgout  {9bfc2da}
+[2015-09-11 11:23:07 +0200]  Do not mount/umount /dev constantly (just do it at the beginning an..      karasu      {53c5283}
+[2015-09-10 22:25:37 +0200]  Do not leave an if empty                                                   karasu      {d91a234}
+[2015-09-10 22:07:12 +0200]  Still don't know what's happening                                          karasu      {d44a574}
+[2015-09-10 00:18:15 +0200]  Can't find what's wrong                                                    karasu      {2f0b474}
+[2015-09-09 23:13:03 +0200]  Remove wrong mkdir. This solves nothing.                                   karasu      {e4712ad}
+[2015-09-09 22:48:30 +0200]  Log postinstall parameters                                                 karasu      {2ad5a94}
+[2015-09-09 22:22:10 +0200]  What the hell is wrong with this? Vanilla Gnome?                           karasu      {b85190c}
+[2015-09-09 21:26:45 +0200]  Try to fix postinstall script in Gnome.                                    karasu      {f6e8988}
+[2015-09-09 18:25:07 +0200]  Give a minute between connection tries (hoping that connection will..      karasu      {7bea1d4}
+[2015-09-09 14:17:55 +0200]  Update readme                                                              karasu      {531ab2d}
+[2015-09-08 17:26:06 +0200]  Use systemd-boot (previously called gummiboot)                             karasu      {dd11f62}
+[2015-09-07 22:52:06 +0200]  Fixed in https://github.com/Antergos/Cnchi/issues/411                      karasu      {c0d9f26}
+[2015-09-07 22:37:27 +0200]  Fixes issue #409                                                           karasu      {298ab15}
+[2015-09-07 21:39:14 +0200]  Fix version number                                                         karasu      {d5cae13}
+[2015-09-07 21:38:27 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {76ae003}
+[2015-09-07 21:37:38 +0200]  Fixes issue #410 but needs testing (do not merge to stable yet)            karasu      {35f6553}
+[2015-09-07 12:32:20 -0500]  fix pot file header                                                    Dustin Falgout  {671e7f8}
+[2015-09-07 19:23:04 +0200]  typos                                                                      karasu      {f8428f8}
+[2015-09-06 17:08:29 +0200]  6.5GB is not enough when installing KDE plus all features.                 karasu      {d5784b5}
+[2015-09-06 01:27:03 -0500]  move logging logging related classes to their own module. don't att..  Dustin Falgout  {7586224}
+[2015-09-06 07:39:15 +0200]  Added compile_all helper script                                            karasu      {b772d34}
+[2015-09-05 20:11:37 -0500]  if we dont have an install id when attempting to send an error to b..  Dustin Falgout  {4a2e784}
+[2015-09-05 19:41:28 -0500]  fix readme. first update to pre-commit hook, one more will follow s..  Dustin Falgout  {97f490a}
+[2015-09-05 21:05:07 +0200]  New dev version                                                            karasu      {0369d14}
+[2015-09-05 21:04:27 +0200]  Updated cnchi.pot                                                          karasu      {ded539d}
+[2015-09-05 20:55:44 +0200]  Updated pot file                                                           karasu      {bb8e9db}
+[2015-09-05 13:05:26 +0200]  Update run                                                                 karasu      {9ee423c}
+[2015-09-05 13:04:56 +0200]  Update requirements.txt                                                    karasu      {c3f17cf}
+[2015-09-05 13:01:47 +0200]  Fix release version info                                                   karasu      {fcd39b3}
+[2015-09-05 13:01:12 +0200]  Fix README                                                                 karasu      {e8f5838}
+[2015-09-05 12:47:42 +0200]  Merge branch 'master' of ../cnchi-dev                                      karasu      {abdcff2}
+[2015-09-04 08:45:19 -0500]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {80d4ec2}
+[2015-09-04 08:54:22 -0500]  fixes double logging (hopefully) (cherry picked from commit c0eb26d)   Dustin Falgout  {e4c182a}
+[2015-09-04 05:38:30 -0500]  use custom http headerin install_id request                            Dustin Falgout  {99dca86}
+[2015-09-04 00:37:15 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {f8e9c25}
+[2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {a0f831c}
