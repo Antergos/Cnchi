@@ -36,6 +36,7 @@ import subprocess
 import os
 import logging
 
+import info
 import updater
 import misc.misc as misc
 
