@@ -1077,9 +1077,12 @@ class Installation(object):
                 logging.error(io_error)
 
         # Set vconsole.conf for console keymap
-        import vconsole
-        console = VConsole(keyboard_layout)
-        console.save(DEST_DIR)
+        try:
+            import vconsole
+            console = VConsole(keyboard_layout)
+            console.save(DEST_DIR)
+        except ImportError:
+            pass
 
         # Install configs for root
         chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])

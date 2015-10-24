@@ -1,3 +1,5 @@
+[2015-10-24 03:09:57 -0500]  Use time.perf_counter() in download Use time,perf_counter() for acc..  Dustin Falgout  {ca28040}
+[2015-10-23 05:28:50 -0500]  looking into #429 (cherry picked from commit b3fb54d)                  Dustin Falgout  {78de954}
 [2015-10-22 16:59:28 +0200]  playing around                                                             karasu      {6161a2e}
 [2015-10-22 16:36:24 +0200]  Added zfs screen (does nothing)                                            karasu      {2621b63}
 [2015-10-22 14:24:16 +0200]  Playing around with an special dialog for zfs (inspired in GhostBSD)       karasu      {6b69572}
