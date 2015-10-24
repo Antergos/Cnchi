@@ -163,7 +163,7 @@ class Download(object):
                     # logging.debug(msg)
                     percent = 0
                     completed_length = 0
-                    start = time.clock()
+                    start = time.perf_counter()
                     try:
                         # By default, it seems that get waits five minutes before
                         # issuing a timeout, which is too much.
@@ -194,8 +194,7 @@ class Download(object):
                                         percent += 0.1
                                     if old_percent != percent:
                                         self.queue_event('percent', percent)
-
-                                    bps = completed_length // (time.clock() - start)
+                                    bps = completed_length // (time.perf_counter() - start)
                                     if bps >= (1024 * 1024):
                                         Mbps = bps / (1024 * 1024)
                                         progress_text = "{0}%   {1:.2f} Mbps".format(int(percent * 100), Mbps)

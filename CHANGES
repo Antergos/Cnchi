@@ -1,3 +1,4 @@
+[2015-10-23 05:28:50 -0500]  looking into #429                                                      Dustin Falgout  {b3fb54d}
 [2015-10-07 16:30:24 +0200]  Update pre-commit hook                                                     karasu      {343c963}
 [2015-10-04 11:17:07 +0200]  Merge pull request #443 from DanySK/master                                 karasu      {b5bd04e}
 [2015-10-03 15:09:48 +0200]  Enable detection of linux-* named initrd. Fixes #442                   Danilo Pianini  {83467ee}
