@@ -39,9 +39,9 @@ import uuid
 import misc.misc as misc
 import requests
 
-_update_info_url = "https://raw.github.com/Antergos/Cnchi/master/utils/update.info"
+_update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
-_update_info = "/usr/share/cnchi/utils/update.info"
+_update_info = "/usr/share/cnchi/update.info"
 
 _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
