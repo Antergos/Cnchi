@@ -26,6 +26,7 @@ import os
 import hashlib
 import info
 
+
 def get_md5(file_name):
     """ Gets md5 hash from a file """
     md5_hash = hashlib.md5()
@@ -34,11 +35,11 @@ def get_md5(file_name):
             md5_hash.update(line)
     return md5_hash.hexdigest()
 
+
 def get_files(path):
     """ Returns all files from a directory """
     all_files = []
-    skip_names = [
-        "__pycache__", ".git", "CHANGES", "info.py", "update.info", ".tx/", "utils/"]
+    skip_names = ["__pycache__", ".git", "CHANGES", "info.py", "update.info", ".tx/", "utils/"]
     if os.path.exists(path):
         for dpath, d, files in os.walk(path):
             for f in files:
@@ -54,6 +55,7 @@ def get_files(path):
         all_files = False
 
     return all_files
+
 
 def create_update_info():
     """ Creates update.info file """

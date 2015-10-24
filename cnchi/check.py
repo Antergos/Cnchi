@@ -184,7 +184,7 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
-        if self.updater == None:
+        if not self.updater:
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()
