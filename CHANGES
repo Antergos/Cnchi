@@ -1,3 +1,4 @@
+[2015-10-24 03:30:33 -0500]  Download update.info once when checking Internet version. (cherry p..  Dustin Falgout  {0b15850}
 [2015-10-24 03:28:53 -0500]  Forgotten import (cherry picked from commit ece3d1e)                   Dustin Falgout  {ab4e4d4}
 [2015-10-07 03:00:16 -0500]  Working on checking version (cherry picked from commit 59e90cf)            karasu      {6cee6ce}
 [2015-10-24 03:09:57 -0500]  Use time,perf_counter() for accurate bps calculation (Fixes antergo..  Dustin Falgout  {61e882e}
