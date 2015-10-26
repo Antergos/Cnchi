@@ -39,6 +39,30 @@ class ZFS(GtkBaseBox):
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
         #lbl.set_markup(_("Connecting this computer to a wi-fi network"))
+
+        '''
+        liststore
+        pool_type_label
+        pool_type_combo
+        partition_scheme_label
+        partition_scheme_combo
+        scrolledwindow
+        treeview
+        password_check_lbl
+        password_check_entry
+        encrypt_swap_btn
+        password_entry
+        password_lbl
+        encrypt_disk_btn
+        swap_size_lbl
+        swap_size_entry
+        pool_name_btn
+        pool_name_entry
+        force_4k_btn
+        '''
+
+
+
         pass
 
     def prepare(self, direction):
