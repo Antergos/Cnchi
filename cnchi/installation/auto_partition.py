@@ -445,9 +445,9 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = "Can't create filesystem {0}. Command {1} failed: {2}".format(fs_type, err.cmd, err.output)
+                txt = "Can't create filesystem {0}. Command {1} failed: {2}".format(fs_type, err.cmd, err.stderr)
                 logging.error(txt)
-                txt = _("Can't create filesystem {0}. Command {1} failed: {2}").format(fs_type, err.cmd, err.output)
+                txt = _("Can't create filesystem {0}. Command {1} failed: {2}").format(fs_type, err.cmd, err.stderr)
                 raise InstallError(txt)
 
             # Flush filesystem buffers

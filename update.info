@@ -1,4 +1,4 @@
-{"version":"0.13.115","files":[
+{"version":"0.13.116","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -70,7 +70,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/systemd_networkd.py","md5":"7a973d20615a152852c9d9808dcb35fd"},
 {"name":"/usr/share/cnchi/cnchi/installation/process.py","md5":"5594e5581de636fb881d6f33a1354707"},
 {"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"14301b96022cc61565dd8bce2d0db610"},
-{"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"5d029c7c2985ce66858ee96b2fa8b0fe"},
+{"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"a083dc845887bcdff8a8f6dfda1dd436"},
 {"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"3fa434eae6a791ca5ca192fb55bf490e"},
 {"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"77d4d6861524fda434593a22c0ad8aeb"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"500a93babe4317e39bb22fd5125d6e07"},
