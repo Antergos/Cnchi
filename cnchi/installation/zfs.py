@@ -22,6 +22,8 @@ import subprocess
 import os
 import logging
 
+from gi.repository import Gtk, Gdk
+
 try:
     from gtkbasebox import GtkBaseBox
 except ImportError:
@@ -35,6 +37,16 @@ class ZFS(GtkBaseBox):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.ui.get_object('zfs')
+
+        self.force_4k = False
+        self.pool_name = ""
+        self.encrypt_swap = False
+
+
+        self.partition_list = self.ui.get_object('treeview')
+        self.partition_list_store = self.ui.get_object('liststore')
+        self.prepare_partition_list()
+        self.partition_list.set_hexpand(True)
 
         '''
         liststore
@@ -56,6 +68,51 @@ class ZFS(GtkBaseBox):
         pool_name_entry
         force_4k_btn
         '''
+
+    def prepare_partition_list(self):
+        """ Create columns for our treeview """
+        render_text = Gtk.CellRendererText()
+
+        """
+        col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_PATH)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Type"), render_text, text=COL_FS)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Mount point"), render_text, text=COL_MOUNT_POINT)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Label"), render_text, text=COL_LABEL)
+        self.partition_list.append_column(col)
+
+        format_toggle = Gtk.CellRendererToggle()
+        format_toggle.connect("toggled", self.on_format_cell_toggled)
+
+        col = Gtk.TreeViewColumn(
+            _("Format"),
+            format_toggle,
+            active=COL_FORMAT_ACTIVE,
+            visible=COL_FORMAT_VISIBLE,
+            sensitive=COL_FORMAT_SENSITIVE)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Size"), render_text, text=COL_SIZE)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Used"), render_text, text=COL_USED)
+        self.partition_list.append_column(col)
+
+        col = Gtk.TreeViewColumn(_("Flags"), render_text, text=COL_FLAGS)
+        self.partition_list.append_column(col)
+
+        ssd_toggle = Gtk.CellRendererToggle()
+        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
+
+        col = Gtk.TreeViewColumn(
+            _("SSD"), ssd_toggle, active=COL_SSD_ACTIVE, visible=COL_SSD_VISIBLE, sensitive=COL_SSD_SENSITIVE)
+        self.partition_list.append_column(col)
+        """
 
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
@@ -115,6 +172,28 @@ class ZFS(GtkBaseBox):
 
         btn = self.ui.get_object('force_4k_btn')
         btn.set_label(_("Force ZFS 4k block size"))
+
+    def on_encrypt_swap_btn_toggled(self, widget):
+        self.encrypt_swap = not self.encrypt_swap
+
+    def on_encrypt_disk_btn_toggled(self, widget):
+        names = [
+            'password_entry', 'password_check_entry',
+            'password_lbl', 'password_check_lbl']
+
+        for name in names:
+            obj = self.ui.get_object(name)
+            obj.set_sensitive(not obj.get_sensitive())
+
+    def on_pool_name_btn_toggled(self, widget):
+        obj = self.ui.get_object('pool_name_entry')
+        obj.set_sensitive(not obj.get_sensitive())
+
+    def on_force_4k_btn_toggled(self, widget):
+        self.force_4k = not self.force_4k
+
+    def fill_treeview(self):
+        pass
 
     def prepare(self, direction):
         self.translate_ui()

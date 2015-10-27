@@ -38,7 +38,7 @@
               <object class="GtkComboBoxText" id="pool_type_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
+                <property name="margin_start">10</property>
                 <items>
                   <item translatable="yes">None</item>
                 </items>
@@ -78,7 +78,7 @@
               <object class="GtkComboBoxText" id="partition_scheme_combo">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
+                <property name="margin_start">10</property>
                 <items>
                   <item translatable="yes">GPT</item>
                   <item translatable="yes">MBR</item>
@@ -167,6 +167,7 @@
             <property name="receives_default">False</property>
             <property name="valign">start</property>
             <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="on_encrypt_swap_btn_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">2</property>
@@ -204,6 +205,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="on_encrypt_disk_btn_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -238,6 +240,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="on_pool_name_btn_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -262,6 +265,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="on_force_4k_btn_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">3</property>
