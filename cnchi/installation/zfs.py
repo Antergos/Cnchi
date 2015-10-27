@@ -36,10 +36,6 @@ class ZFS(GtkBaseBox):
 
         self.page = self.ui.get_object('zfs')
 
-    def translate_ui(self):
-        #lbl = self.ui.get_object('wireless_section_label')
-        #lbl.set_markup(_("Connecting this computer to a wi-fi network"))
-
         '''
         liststore
         pool_type_label
@@ -61,9 +57,64 @@ class ZFS(GtkBaseBox):
         force_4k_btn
         '''
 
+    def translate_ui(self):
+        #lbl = self.ui.get_object('wireless_section_label')
+        #lbl.set_markup(_("Connecting this computer to a wi-fi network"))
 
+        # Disable objects
 
-        pass
+        entries = [
+            'pool_name_entry', 'password_entry', 'password_check_entry',
+            'password_lbl', 'password_check_lbl']
+        for name in entries:
+            entry = self.ui.get_object(name)
+            entry.set_sensitive(False)
+
+        '''
+        liststore
+        scrolledwindow
+        treeview
+        '''
+
+        lbl = self.ui.get_object('pool_type_label')
+        lbl.set_markup(_("Pool type"))
+
+        combo = self.ui.get_object('pool_type_combo')
+        combo.remove_all()
+        combo.append_text(_("None"))
+        combo.append_text(_("Stripe"))
+        combo.append_text(_("Mirror"))
+        combo.append_text(_("RAID-Z"))
+        combo.append_text(_("RAID-Z2"))
+
+        lbl = self.ui.get_object('partition_scheme_label')
+        lbl.set_markup(_("Partition scheme"))
+
+        combo = self.ui.get_object('partition_scheme_combo')
+        combo.remove_all()
+        combo.append_text(_("GPT"))
+        combo.append_text(_("MBR"))
+
+        lbl = self.ui.get_object('password_check_lbl')
+        lbl.set_markup(_("Validate password"))
+
+        lbl = self.ui.get_object('password_lbl')
+        lbl.set_markup(_("Password"))
+
+        lbl = self.ui.get_object('swap_size_lbl')
+        lbl.set_markup(_("Swap size"))
+
+        btn = self.ui.get_object('encrypt_swap_btn')
+        btn.set_label(_("Encrypt swap"))
+
+        btn = self.ui.get_object('encrypt_disk_btn')
+        btn.set_label(_("Encrypt disk"))
+
+        btn = self.ui.get_object('pool_name_btn')
+        btn.set_label(_("Pool name"))
+
+        btn = self.ui.get_object('force_4k_btn')
+        btn.set_label(_("Force ZFS 4k block size"))
 
     def prepare(self, direction):
         self.translate_ui()
