@@ -127,6 +127,12 @@ class ZFS(GtkBaseBox):
         if self.disks is None:
             self.disks = pm.get_devices()
 
+        # Check fill_partition_list from advanced.py
+        
+        # row = [volume_group, "", "", "", False, False, "", "", "", "", 0, False, is_ssd, False, False, False]
+        # lvparent = self.partition_list_store.append(None, row)
+
+
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
         #lbl.set_markup(_("Connecting this computer to a wi-fi network"))
