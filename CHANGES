@@ -1,3 +1,4 @@
+[2015-10-27 19:47:39 +0100]  Go back to choose vconsole in install.py (no vconsole.py). Problem ..      karasu      {2d0fa41}
 [2015-10-27 14:25:05 +0100]  fill_partition_list to be finished                                         karasu      {c6e0d31}
 [2015-10-27 14:22:06 +0100]  Added parted to zfs                                                        karasu      {0c8946e}
 [2015-10-27 14:18:37 +0100]  And... yes, more work on zfs screen                                        karasu      {e6334bd}

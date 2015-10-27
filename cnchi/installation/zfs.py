@@ -22,6 +22,8 @@ import subprocess
 import os
 import logging
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 try:
@@ -31,11 +33,9 @@ except ImportError:
     sys.path.append('/usr/share/cnchi/cnchi')
     from gtkbasebox import GtkBaseBox
 
-import parted3.partition_module as pm
-import parted3.fs_module as fs
-import parted3.lvm as lvm
-import parted3.used_space as used_space
+import parted
 
+import misc.misc as misc
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -56,11 +56,12 @@ class ZFS(GtkBaseBox):
         self.encrypt_swap = False
 
         self.disks = None
+        self.diskdic = {}
 
-        self.partition_list = self.ui.get_object('treeview')
-        self.partition_list_store = self.ui.get_object('liststore')
-        self.prepare_partition_list()
-        self.partition_list.set_hexpand(True)
+        self.device_list = self.ui.get_object('treeview')
+        self.device_list_store = self.ui.get_object('liststore')
+        self.prepare_device_list()
+        self.device_list.set_hexpand(True)
 
         '''
         liststore
@@ -83,10 +84,10 @@ class ZFS(GtkBaseBox):
         force_4k_btn
         '''
 
-    def on_use_device_toggled(self, widget):
-        pass
+    def on_use_device_toggled(self, widget, path):
+        self.device_list_store[path][COL_USE_ACTIVE] = not self.device_list_store[path][COL_USE_ACTIVE]
 
-    def prepare_partition_list(self):
+    def prepare_device_list(self):
         """ Create columns for our treeview """
 
         # Use check | Disk (sda) | Size(GB) | Name (device name)
@@ -101,37 +102,45 @@ class ZFS(GtkBaseBox):
             visible=COL_USE_VISIBLE,
             sensitive=COL_USE_SENSITIVE)
 
-        self.partition_list.append_column(col)
+        self.device_list.append_column(col)
 
         render_text = Gtk.CellRendererText()
-
         col = Gtk.TreeViewColumn(_("Disk"), render_text, text=COL_DISK)
-        self.partition_list.append_column(col)
+        self.device_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Size (GB)"), render_text, text=COL_SIZE)
-        self.partition_list.append_column(col)
+        render_text_right = Gtk.CellRendererText()
+        render_text_right.set_property("xalign", 1)
+        col = Gtk.TreeViewColumn(_("Size (GB)"), render_text_right, text=COL_SIZE)
+        self.device_list.append_column(col)
 
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_DEVICE_NAME)
-        self.partition_list.append_column(col)
+        self.device_list.append_column(col)
 
-    def fill_partition_list(self):
+    def fill_device_list(self):
         """ Fill the partition list with all the data. """
 
-        # We will store our data model in 'partition_list_store'
-        if self.partition_list_store is not None:
-            self.partition_list_store.clear()
+        # We will store our data model in 'device_list_store'
+        if self.device_list_store is not None:
+            self.device_list_store.clear()
 
-        self.partition_list_store = Gtk.TreeStore(bool, bool, bool, str, str, str)
+        self.device_list_store = Gtk.TreeStore(bool, bool, bool, str, int, str)
 
-        # Be sure to call get_devices once
-        if self.disks is None:
-            self.disks = pm.get_devices()
+        with misc.raised_privileges():
+            devices = parted.getAllDevices()
 
-        # Check fill_partition_list from advanced.py
-        
-        # row = [volume_group, "", "", "", False, False, "", "", "", "", 0, False, is_ssd, False, False, False]
-        # lvparent = self.partition_list_store.append(None, row)
+        for dev in devices:
+            # avoid cdrom and any raid, lvm volumes or encryptfs
+            if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
+                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                # Use check | Disk (sda) | Size(GB) | Name (device name)
+                if dev.path.startswith("/dev/"):
+                    path = dev.path[len("/dev/"):]
+                else:
+                    path = dev.path
+                row = [False, True, True, path, size_in_gigabytes, dev.model]
+                self.device_list_store.append(None, row)
 
+        self.device_list.set_model(self.device_list_store)
 
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
@@ -213,7 +222,7 @@ class ZFS(GtkBaseBox):
 
     def prepare(self, direction):
         self.translate_ui()
-        self.fill_partition_list()
+        self.fill_device_list()
         self.show_all()
 
     def store_values():
