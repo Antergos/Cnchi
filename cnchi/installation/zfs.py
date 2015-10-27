@@ -31,6 +31,11 @@ except ImportError:
     sys.path.append('/usr/share/cnchi/cnchi')
     from gtkbasebox import GtkBaseBox
 
+import parted3.partition_module as pm
+import parted3.fs_module as fs
+import parted3.lvm as lvm
+import parted3.used_space as used_space
+
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -50,6 +55,7 @@ class ZFS(GtkBaseBox):
         self.pool_name = ""
         self.encrypt_swap = False
 
+        self.disks = None
 
         self.partition_list = self.ui.get_object('treeview')
         self.partition_list_store = self.ui.get_object('liststore')
@@ -109,7 +115,17 @@ class ZFS(GtkBaseBox):
         self.partition_list.append_column(col)
 
     def fill_partition_list(self):
-        pass
+        """ Fill the partition list with all the data. """
+
+        # We will store our data model in 'partition_list_store'
+        if self.partition_list_store is not None:
+            self.partition_list_store.clear()
+
+        self.partition_list_store = Gtk.TreeStore(bool, bool, bool, str, str, str)
+
+        # Be sure to call get_devices once
+        if self.disks is None:
+            self.disks = pm.get_devices()
 
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
@@ -188,9 +204,6 @@ class ZFS(GtkBaseBox):
 
     def on_force_4k_btn_toggled(self, widget):
         self.force_4k = not self.force_4k
-
-    def fill_treeview(self):
-        pass
 
     def prepare(self, direction):
         self.translate_ui()
