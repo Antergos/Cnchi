@@ -1,4 +1,4 @@
-{"version":"0.13.110","files":[
+{"version":"0.13.111","files":[
 {"name":"/usr/share/cnchi/run","md5":"0a596937cb44f6a1759b6d1710611dc0"},
 {"name":"/usr/share/cnchi/changelog.txt","md5":"fe6eb3113e6dd0d39c30c257f946b265"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
@@ -427,7 +427,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/action.py","md5":"287a77aa865fb4ea4f83716606acf259"},
 {"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"0cd1e69a0f11650e20826d3f1d60427d"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"5d029c7c2985ce66858ee96b2fa8b0fe"},
-{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"d19d005ff0002a177139fba57bc18428"},
+{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"56a5c80d08962fe369a6b40857f0d078"},
 {"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"3fa434eae6a791ca5ca192fb55bf490e"},
 {"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"85b96cba6b879f37f841af8e57f87f8e"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"500a93babe4317e39bb22fd5125d6e07"},

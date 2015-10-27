@@ -32,6 +32,14 @@ except ImportError:
     from gtkbasebox import GtkBaseBox
 
 
+COL_USE_ACTIVE = 0
+COL_USE_VISIBLE = 1
+COL_USE_SENSITIVE = 2
+COL_DISK = 3
+COL_SIZE = 4
+COL_DEVICE_NAME = 5
+
+
 class ZFS(GtkBaseBox):
     def __init__(self, params, prev_page="", next_page=""):
         super().__init__(self, params, "zfs", prev_page, next_page)
@@ -69,50 +77,39 @@ class ZFS(GtkBaseBox):
         force_4k_btn
         '''
 
+    def on_use_device_toggled(self, widget):
+        pass
+
     def prepare_partition_list(self):
         """ Create columns for our treeview """
+
+        # Use check | Disk (sda) | Size(GB) | Name (device name)
+
+        use_toggle = Gtk.CellRendererToggle()
+        use_toggle.connect("toggled", self.on_use_device_toggled)
+
+        col = Gtk.TreeViewColumn(
+            _("Use"),
+            use_toggle,
+            active=COL_USE_ACTIVE,
+            visible=COL_USE_VISIBLE,
+            sensitive=COL_USE_SENSITIVE)
+
+        self.partition_list.append_column(col)
+
         render_text = Gtk.CellRendererText()
 
-        """
-        col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_PATH)
+        col = Gtk.TreeViewColumn(_("Disk"), render_text, text=COL_DISK)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Type"), render_text, text=COL_FS)
+        col = Gtk.TreeViewColumn(_("Size (GB)"), render_text, text=COL_SIZE)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Mount point"), render_text, text=COL_MOUNT_POINT)
+        col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_DEVICE_NAME)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Label"), render_text, text=COL_LABEL)
-        self.partition_list.append_column(col)
-
-        format_toggle = Gtk.CellRendererToggle()
-        format_toggle.connect("toggled", self.on_format_cell_toggled)
-
-        col = Gtk.TreeViewColumn(
-            _("Format"),
-            format_toggle,
-            active=COL_FORMAT_ACTIVE,
-            visible=COL_FORMAT_VISIBLE,
-            sensitive=COL_FORMAT_SENSITIVE)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Size"), render_text, text=COL_SIZE)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Used"), render_text, text=COL_USED)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Flags"), render_text, text=COL_FLAGS)
-        self.partition_list.append_column(col)
-
-        ssd_toggle = Gtk.CellRendererToggle()
-        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
-
-        col = Gtk.TreeViewColumn(
-            _("SSD"), ssd_toggle, active=COL_SSD_ACTIVE, visible=COL_SSD_VISIBLE, sensitive=COL_SSD_SENSITIVE)
-        self.partition_list.append_column(col)
-        """
+    def fill_partition_list(self):
+        pass
 
     def translate_ui(self):
         #lbl = self.ui.get_object('wireless_section_label')
@@ -197,6 +194,7 @@ class ZFS(GtkBaseBox):
 
     def prepare(self, direction):
         self.translate_ui()
+        self.fill_partition_list()
         self.show_all()
 
     def store_values():
