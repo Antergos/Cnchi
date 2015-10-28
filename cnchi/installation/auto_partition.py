@@ -36,7 +36,7 @@ from misc.misc import InstallError
 
 import parted3.fs_module as fs
 
-import wrapper
+from installation import wrapper
 
 '''
 NOTE: Exceptions in this file

@@ -35,7 +35,8 @@ except ImportError:
 
 import parted
 import misc.misc as misc
-import wrapper
+
+from installation import wrapper
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -288,7 +289,7 @@ class InstallationZFS(GtkBaseBox):
         for device_path in device_paths:
             wrapper.wipefs(device_path)
 
-        if self.scheme = "GPT":
+        if self.scheme == "GPT":
             if self.pool_type == "None":
                 pass
                 # 1       2M   BIOS boot partition (ef02)
