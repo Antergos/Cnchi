@@ -34,8 +34,8 @@ except ImportError:
     from gtkbasebox import GtkBaseBox
 
 import parted
-
 import misc.misc as misc
+import wrapper
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -46,7 +46,7 @@ COL_DEVICE_NAME = 5
 
 
 class InstallationZFS(GtkBaseBox):
-    def __init__(self, params, prev_page="", next_page=""):
+    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.ui.get_object('zfs')
@@ -62,6 +62,9 @@ class InstallationZFS(GtkBaseBox):
         self.device_list_store = self.ui.get_object('liststore')
         self.prepare_device_list()
         self.device_list.set_hexpand(True)
+
+        self.scheme = "GPT"
+        self.pool_type = "None"
 
         '''
         liststore
@@ -166,19 +169,23 @@ class InstallationZFS(GtkBaseBox):
 
         combo = self.ui.get_object('pool_type_combo')
         combo.remove_all()
-        combo.append_text(_("None"))
-        combo.append_text(_("Stripe"))
-        combo.append_text(_("Mirror"))
-        combo.append_text(_("RAID-Z"))
-        combo.append_text(_("RAID-Z2"))
+        combo.append_text("None")
+        combo.append_text("Stripe")
+        combo.append_text("Mirror")
+        combo.append_text("RAID-Z")
+        combo.append_text("RAID-Z2")
+        combo.set_active(0)
+        self.pool_type = "None"
 
         lbl = self.ui.get_object('partition_scheme_label')
         lbl.set_markup(_("Partition scheme"))
 
         combo = self.ui.get_object('partition_scheme_combo')
         combo.remove_all()
-        combo.append_text(_("GPT"))
-        combo.append_text(_("MBR"))
+        combo.append_text("GPT")
+        combo.append_text("MBR")
+        combo.set_active(0)
+        self.scheme = "GPT"
 
         lbl = self.ui.get_object('password_check_lbl')
         lbl.set_markup(_("Validate password"))
@@ -220,6 +227,18 @@ class InstallationZFS(GtkBaseBox):
     def on_force_4k_btn_toggled(self, widget):
         self.force_4k = not self.force_4k
 
+    def on_partition_scheme_combo_changed(self, widget):
+        tree_iter = widget.get_active_iter()
+        if tree_iter != None:
+            model = widget.get_model()
+            self.scheme = model[tree_iter][0]
+
+    def on_pool_type_combo_changed(self, widget):
+        tree_iter = widget.get_active_iter()
+        if tree_iter != None:
+            model = widget.get_model()
+            self.pool_type = model[tree_iter][0]
+
     def prepare(self, direction):
         self.translate_ui()
         self.fill_device_list()
@@ -259,6 +278,32 @@ class InstallationZFS(GtkBaseBox):
         # self.set_bootloader()
 
         return True
+
+    def run_format(self):
+        # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
+        # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
+        device_paths = self.settings.get("zfs_device_paths")
+        logging.debug("Creating partitions and their filesystems in %s", ",".join(device_paths))
+
+        for device_path in device_paths:
+            wrapper.wipefs(device_path)
+
+        if self.scheme = "GPT":
+            if self.pool_type == "None":
+                pass
+                # 1       2M   BIOS boot partition (ef02)
+                # 2     512M   Ext boot partition (8300)
+                # 3     XXXG   Solaris Root (bf00)
+        else:
+            if self.pool_type == "None":
+                pass
+                # 1     512M   Ext boot partition (8300)
+                # 2     XXXG   Solaris Root (bf00)
+
+    def run_install(self, packages, metalinks):
+        """ Start installation process """
+        pass
+
 
 # When testing, no _() is available
 try:
