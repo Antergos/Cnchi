@@ -104,6 +104,10 @@ class InstallationAsk(GtkBaseBox):
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
 
+        image = self.ui.get_object("zfs_image")
+        path = os.path.join(partitioner_dir, "zfs.png")
+        image.set_from_file(path)
+
         self.other_oses = []
 
         # DISABLE ALONGSIDE INSTALLATION. IT'S NOT READY YET
@@ -332,6 +336,20 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
+        # zfs
+        radio = self.ui.get_object("zfs_radiobutton")
+        radio.set_label(_("Use Zfs on the whole disk(s) (EXPERIMENTAL)"))
+        radio.set_name("zfs_radio_btn")
+
+        label = self.ui.get_object("zfs_description")
+        txt = _("This will ERASE all your data on selected disk(s)!")
+        # txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("zfs_desc_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
+
     def store_values(self):
         """ Store selected values """
         check = self.ui.get_object("encrypt_checkbutton")
@@ -373,6 +391,8 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('partition_mode', 'advanced')
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
+        elif self.next_page == "installation_zfs":
+            self.settings.set('partition_mode', 'zfs')
 
         # Check if there are still processes running...
         must_wait = False
@@ -449,6 +469,12 @@ class InstallationAsk(GtkBaseBox):
         """ Advanced selected, disable all automatic options """
         if widget.get_active():
             self.next_page = "installation_advanced"
+            self.enable_automatic_options(False)
+
+    def on_zfs_radiobutton_toggled(self, widget):
+        """ ZFS selected, disable all automatic options """
+        if widget.get_active():
+            self.next_page = "installation_zfs"
             self.enable_automatic_options(False)
 
 

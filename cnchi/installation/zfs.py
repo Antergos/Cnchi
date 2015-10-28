@@ -45,7 +45,7 @@ COL_SIZE = 4
 COL_DEVICE_NAME = 5
 
 
-class ZFS(GtkBaseBox):
+class InstallationZFS(GtkBaseBox):
     def __init__(self, params, prev_page="", next_page=""):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
@@ -226,6 +226,38 @@ class ZFS(GtkBaseBox):
         self.show_all()
 
     def store_values():
+        """ Store all vars """
+        '''
+        liststore
+        pool_type_label
+        pool_type_combo
+        partition_scheme_label
+        partition_scheme_combo
+        scrolledwindow
+        treeview
+        password_check_lbl
+        password_check_entry
+        encrypt_swap_btn
+        password_entry
+        password_lbl
+        encrypt_disk_btn
+        swap_size_lbl
+        swap_size_entry
+        pool_name_btn
+        pool_name_entry
+        force_4k_btn
+        '''
+
+        device_paths = []
+        for row in self.device_list_store:
+            if row[COL_USE_ACTIVE]:
+                device_paths.append("/dev/{0}".format(row[COL_DISK]))
+        self.settings.set("zfs_device_paths", device_paths)
+
+        # self.settings.set('pool_type')
+
+        # self.set_bootloader()
+
         return True
 
 # When testing, no _() is available

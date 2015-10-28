@@ -184,11 +184,10 @@ class InstallationAutomatic(GtkBaseBox):
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
 
-
         # self.forward_button.set_sensitive(False)
 
     def store_values(self):
-        """ Let's do our installation! """
+        """ User clicks on Install now! """
         #response = self.show_warning()
         #if response == Gtk.ResponseType.NO:
         #   return False
