@@ -201,7 +201,7 @@ GtkTreeView row:selected {
     border-color: shade(#2EA3F2, 0.9);
 }
 
-#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
+#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel, #zfs_radio_btn GtkLabel {
     font-size: 13px;
     font-weight: 600;
 }
