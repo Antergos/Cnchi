@@ -657,7 +657,7 @@ class AutoPartition(object):
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
-                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
+                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
                 part_num += 1
 
             if self.bootloader == "grub2":

@@ -52,9 +52,6 @@ class InstallationZFS(GtkBaseBox):
 
         self.page = self.ui.get_object('zfs')
 
-        self.force_4k = False
-        self.pool_name = ""
-        self.encrypt_swap = False
 
         self.disks = None
         self.diskdic = {}
@@ -64,11 +61,26 @@ class InstallationZFS(GtkBaseBox):
         self.prepare_device_list()
         self.device_list.set_hexpand(True)
 
-        self.scheme = "GPT"
-        self.pool_type = "None"
+        self.zfs_options = {
+            "force_4k": False,
+            "pool_name": "",
+            "encrypt_swap": False,
+            "encrypt_disk": False,
+            "encrypt_password": "",
+            "scheme": "GPT",
+            "pool_type": "None",
+            "swap_size": 0,
+            "pool_name": "",
+            "use_pool_name": False,
+            "device_paths": []
+        }
 
-        self.swap_size = 0
-        self.pool_name = ""
+        self.UEFI = True
+
+        if not os.path.exists("/sys/firmware/efi"):
+            # If no UEFI, use MBR by default
+            self.UEFI = False
+            self.zfs_options["scheme"] = "MBR"
 
         '''
         liststore
@@ -150,11 +162,7 @@ class InstallationZFS(GtkBaseBox):
         self.device_list.set_model(self.device_list_store)
 
     def translate_ui(self):
-        #lbl = self.ui.get_object('wireless_section_label')
-        #lbl.set_markup(_("Connecting this computer to a wi-fi network"))
-
         # Disable objects
-
         entries = [
             'pool_name_entry', 'password_entry', 'password_check_entry',
             'password_lbl', 'password_check_lbl']
@@ -171,25 +179,39 @@ class InstallationZFS(GtkBaseBox):
         lbl = self.ui.get_object('pool_type_label')
         lbl.set_markup(_("Pool type"))
 
+        pool_types = {
+            0: "None",
+            1: "Stripe",
+            2: "Mirror",
+            3: "RAID-Z",
+            4: "RAID-Z2"
+        }
+
         combo = self.ui.get_object('pool_type_combo')
         combo.remove_all()
-        combo.append_text("None")
-        combo.append_text("Stripe")
-        combo.append_text("Mirror")
-        combo.append_text("RAID-Z")
-        combo.append_text("RAID-Z2")
-        combo.set_active(0)
-        self.pool_type = "None"
+        active_index = 0
+        for index in pool_types:
+            combo.append_text(pool_types[index])
+            if self.zfs_options["pool_type"] == pool_types[index]:
+                active_index = index
+        combo.set_active(active_index)
 
         lbl = self.ui.get_object('partition_scheme_label')
         lbl.set_markup(_("Partition scheme"))
 
+        schemes = {
+            0: "GPT",
+            1: "MBR"
+        }
+
         combo = self.ui.get_object('partition_scheme_combo')
         combo.remove_all()
-        combo.append_text("GPT")
-        combo.append_text("MBR")
-        combo.set_active(0)
-        self.scheme = "GPT"
+        active_index = 0
+        for index in schemes:
+            combo.append_text(schemes[index])
+            if self.zfs_options["scheme"] == schemes[index]:
+                active_index = index
+        combo.set_active(active_index)
 
         lbl = self.ui.get_object('password_check_lbl')
         lbl.set_markup(_("Validate password"))
@@ -222,26 +244,30 @@ class InstallationZFS(GtkBaseBox):
 
         for name in names:
             obj = self.ui.get_object(name)
-            obj.set_sensitive(not obj.get_sensitive())
+            status = not obj.get_sensitive()
+            obj.set_sensitive(status)
+        self.zfs_options["encrypt_disk"] = status
 
     def on_pool_name_btn_toggled(self, widget):
         obj = self.ui.get_object('pool_name_entry')
-        obj.set_sensitive(not obj.get_sensitive())
+        status = not obj.get_sensitive()
+        obj.set_sensitive(status)
+        self.zfs_options["use_pool_name"] = status
 
     def on_force_4k_btn_toggled(self, widget):
-        self.force_4k = not self.force_4k
+        self.zfs_options["force_4k"] = not self.zfs_options["force_4k"]
 
     def on_partition_scheme_combo_changed(self, widget):
         tree_iter = widget.get_active_iter()
         if tree_iter != None:
             model = widget.get_model()
-            self.scheme = model[tree_iter][0]
+            self.zfs_options["scheme"] = model[tree_iter][0]
 
     def on_pool_type_combo_changed(self, widget):
         tree_iter = widget.get_active_iter()
         if tree_iter != None:
             model = widget.get_model()
-            self.pool_type = model[tree_iter][0]
+            self.zfs_options["pool_type"] = model[tree_iter][0]
 
     def prepare(self, direction):
         self.translate_ui()
@@ -271,16 +297,24 @@ class InstallationZFS(GtkBaseBox):
         force_4k_btn
         '''
 
+        # Get device paths
         device_paths = []
         for row in self.device_list_store:
             if row[COL_USE_ACTIVE]:
                 device_paths.append("/dev/{0}".format(row[COL_DISK]))
-        self.settings.set("zfs_device_paths", device_paths)
+        self.zfs_options["device_paths"] = device_paths
 
+        # Get swap size
+        txt = self.ui.get_object("swap_size_entry").get_text()
+        self.zfs_options["swap_size"] = int(txt)
 
-        #self.swap_size
-        #self.pool_name
-        # self.password
+        # Get pool name
+        txt = self.ui.get_object("pool_name_entry").get_text()
+        self.zfs_options["pool_name"] = txt
+
+        # Get password
+        txt = self.ui.get_object("password_lbl").get_text()
+        self.zfs_options["encrypt_password"] = txt
 
         # self.set_bootloader()
 
@@ -289,15 +323,14 @@ class InstallationZFS(GtkBaseBox):
     def run_format(self):
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
         # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
-        device_paths = self.settings.get("zfs_device_paths")
-        logging.debug("Creating partitions and their filesystems in %s", ",".join(device_paths))
 
-        for device_path in device_paths:
-            wrapper.wipefs(device_path)
+        device_paths = self.zfs_options["device_paths"]
+        logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
         if self.scheme == "GPT":
             if self.pool_type == "None":
-                '''
+                # With None, just one device is used
+                device = device_paths[0]
                 # Clean partition table to avoid issues!
                 wrapper.sgdisk("zap-all", device)
 
@@ -319,17 +352,32 @@ class InstallationZFS(GtkBaseBox):
 
                 part_num = 1
 
-
-                    # Create EFI System Partition (ESP)
-                    # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                    wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+                if not self.UEFI:
+                    # Create BIOS Boot Partition
+                    # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+                    # This partition is not required if the system is UEFI based,
+                    # as there is no such embedding of the second-stage code in that case
+                    wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
                     part_num += 1
-                '''
-                pass
-                # 1       2M   BIOS boot partition (ef02)
-                # 2     512M   Ext boot partition (8300)
-                # 3     XXXG   Solaris Root (bf00)
+                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
+                    part_num += 1
+                else:
+                    # UEFI
+                    if self.bootloader == "grub":
+                        # Create EFI System Partition (ESP)
+                        # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+                        wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", 200, "EF00")
+                        part_num += 1
+                        wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
+                        part_num += 1
+                    else:
+                        # systemd-boot, refind
+                        wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "EF00")
+                        part_num += 1
+
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_ZFS", 0, "BF00")
         else:
+            # MBR
             if self.pool_type == "None":
                 pass
                 # 1     512M   Ext boot partition (8300)
