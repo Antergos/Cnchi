@@ -67,6 +67,9 @@ class InstallationZFS(GtkBaseBox):
         self.scheme = "GPT"
         self.pool_type = "None"
 
+        self.swap_size = 0
+        self.pool_name = ""
+
         '''
         liststore
         pool_type_label
@@ -274,7 +277,10 @@ class InstallationZFS(GtkBaseBox):
                 device_paths.append("/dev/{0}".format(row[COL_DISK]))
         self.settings.set("zfs_device_paths", device_paths)
 
-        # self.settings.set('pool_type')
+
+        #self.swap_size
+        #self.pool_name
+        # self.password
 
         # self.set_bootloader()
 
@@ -291,6 +297,34 @@ class InstallationZFS(GtkBaseBox):
 
         if self.scheme == "GPT":
             if self.pool_type == "None":
+                '''
+                # Clean partition table to avoid issues!
+                wrapper.sgdisk("zap-all", device)
+
+                # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
+                wrapper.dd("/dev/zero", device, bs=512, count=2048)
+                wrapper.wipefs(device)
+
+                # Create fresh GPT
+                wrapper.sgdisk("clear", device)
+
+                # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
+                try:
+                    subprocess.check_call(["partprobe", device])
+                except subprocess.CalledProcessError as err:
+                    txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
+                    logging.error(txt)
+                    txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
+                    raise InstallError(txt)
+
+                part_num = 1
+
+
+                    # Create EFI System Partition (ESP)
+                    # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+                    wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+                    part_num += 1
+                '''
                 pass
                 # 1       2M   BIOS boot partition (ef02)
                 # 2     512M   Ext boot partition (8300)
