@@ -1,3 +1,4 @@
+[2015-10-29 20:09:08 +0100]  Working on zfs                                                             karasu      {928c567}
 [2015-10-29 12:29:58 +0100]  Nothing really, just have to rush out (so I save the changes)              karasu      {8a96c2e}
 [2015-10-28 23:27:50 +0100]  Fix imports (and a typo)                                                   karasu      {22d582e}
 [2015-10-28 23:24:57 +0100]  Split of auto_partition in two files (wrapper and itself) for ZFS s..      karasu      {10b9cd3}

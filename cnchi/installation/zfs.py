@@ -379,9 +379,34 @@ class InstallationZFS(GtkBaseBox):
         else:
             # MBR
             if self.pool_type == "None":
-                pass
-                # 1     512M   Ext boot partition (8300)
-                # 2     XXXG   Solaris Root (bf00)
+                # With None, just one device is used
+                device = device_paths[0]
+
+                # DOS MBR partition table
+                # Start at sector 1 for 4k drive compatibility and correct alignment
+                # Clean partitiontable to avoid issues!
+                wrapper.dd("/dev/zero", device, bs=512, count=2048)
+                wrapper.wipefs(device)
+
+                # Create DOS MBR
+                wrapper.parted_mktable(device, "msdos")
+
+                # Create boot partition (all sizes are in MiB)
+                # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+                start = -1
+                end = 512
+                wrapper.parted_mkpart(device, "primary", start, end)
+
+                # Set boot partition as bootable
+                wrapper.parted_set(device, "1", "boot", "on")
+
+                start = end
+                end = "-1s"
+                wrapper.parted_mkpart(device, "primary", start, end)
+
+
+        # Wait until /dev initialized correct devices
+        subprocess.check_call(["udevadm", "settle"])
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
