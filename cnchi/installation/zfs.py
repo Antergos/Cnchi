@@ -155,7 +155,8 @@ class InstallationZFS(GtkBaseBox):
             devices = parted.getAllDevices()
 
         for dev in devices:
-            print(dev)
+            #print(dev)
+            print(dev.__dir__())
             # avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
                 size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
@@ -328,21 +329,21 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
-    def init_device(self, device, scheme="GPT"):
+    def init_device(self, device_path, scheme="GPT"):
         if scheme == "GPT":
             # Clean partition table to avoid issues!
-            wrapper.sgdisk("zap-all", device)
+            wrapper.sgdisk("zap-all", device_path)
 
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            wrapper.dd("/dev/zero", device, bs=512, count=2048)
-            wrapper.wipefs(device)
+            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
+            wrapper.wipefs(device_path)
 
             # Create fresh GPT
-            wrapper.sgdisk("clear", device)
+            wrapper.sgdisk("clear", device_path)
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             try:
-                subprocess.check_call(["partprobe", device])
+                subprocess.check_call(["partprobe", device_path])
             except subprocess.CalledProcessError as err:
                 txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.error(txt)
@@ -352,15 +353,11 @@ class InstallationZFS(GtkBaseBox):
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
             # Clean partitiontable to avoid issues!
-            wrapper.dd("/dev/zero", device, bs=512, count=2048)
-            wrapper.wipefs(device)
+            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
+            wrapper.wipefs(device_path)
 
             # Create DOS MBR
-            wrapper.parted_mktable(device, "msdos")
-
-    def create_zfs_pool(self):
-        # lsblk -do NAME,WWN
-        pass
+            wrapper.parted_mktable(device_path, "msdos")
 
     def run_format(self):
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
@@ -370,9 +367,9 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
         if self.scheme == "GPT":
-            device = device_paths[0]
+            device_path = device_paths[0]
 
-            self.init_device(device, "GPT")
+            self.init_device(device_path, "GPT")
 
             part_num = 1
 
@@ -381,58 +378,63 @@ class InstallationZFS(GtkBaseBox):
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
-                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
+                wrapper.sgdisk_new(device_path, part_num, "BIOS_BOOT", 2, "EF02")
                 part_num += 1
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
+                wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
                 part_num += 1
             else:
                 # UEFI
                 if self.bootloader == "grub":
                     # Create EFI System Partition (ESP)
                     # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                    wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", 200, "EF00")
+                    wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
                     part_num += 1
-                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
+                    wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
                     part_num += 1
                 else:
                     # systemd-boot, refind
-                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "EF00")
+                    wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
                     part_num += 1
 
-            wrapper.sgdisk_new(device, part_num, "ANTERGOS_ZFS", 0, "BF00")
+            wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
 
             # Now init all other devices that will form part of the pool
-            for device in device_paths[1:]:
-                self.init_device(device, "GPT")
-                wrapper.sgdisk_new(device, 1, "ANTERGOS_ZFS", 0, "BF00")
+            for device_path in device_paths[1:]:
+                self.init_device(device_path, "GPT")
+                wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
         else:
             # MBR
-            device = device_paths[0]
+            device_path = device_paths[0]
 
-            self.init_device(device, "MBR")
+            self.init_device(device_path, "MBR")
 
             # Create boot partition (all sizes are in MiB)
             # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
             start = -1
             end = 512
-            wrapper.parted_mkpart(device, "primary", start, end)
+            wrapper.parted_mkpart(device_path, "primary", start, end)
 
             # Set boot partition as bootable
-            wrapper.parted_set(device, "1", "boot", "on")
+            wrapper.parted_set(device_path, "1", "boot", "on")
 
             start = end
             end = "-1s"
-            wrapper.parted_mkpart(device, "primary", start, end)
+            wrapper.parted_mkpart(device_path, "primary", start, end)
 
             # Now init all other devices that will form part of the pool
-            for device in device_paths[1:]:
-                self.init_device(device, "MBR")
-                wrapper.parted_mkpart(device, "primary", -1, "-1s")
+            for device_path in device_paths[1:]:
+                self.init_device(device_path, "MBR")
+                wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
 
         self.create_zfs_pool()
+
+    def create_zfs_pool(self):
+        # ls -go /dev/disk/by-id/ | grep -o 'ata[^ ]*'
+        # /dev/disk/by-id/
+        pass
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
