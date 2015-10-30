@@ -44,6 +44,7 @@ COL_USE_SENSITIVE = 2
 COL_DISK = 3
 COL_SIZE = 4
 COL_DEVICE_NAME = 5
+COL_WWN = 6
 
 
 class InstallationZFS(GtkBaseBox):
@@ -51,7 +52,6 @@ class InstallationZFS(GtkBaseBox):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.ui.get_object('zfs')
-
 
         self.disks = None
         self.diskdic = {}
@@ -135,6 +135,13 @@ class InstallationZFS(GtkBaseBox):
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_DEVICE_NAME)
         self.device_list.append_column(col)
 
+        col = Gtk.TreeViewColumn(_("WWN"), render_text, text=COL_WWN)
+        self.device_list.append_column(col)
+
+    def read_wwns(self):
+        # lsblk -do NAME,WWN
+        pass
+
     def fill_device_list(self):
         """ Fill the partition list with all the data. """
 
@@ -142,12 +149,13 @@ class InstallationZFS(GtkBaseBox):
         if self.device_list_store is not None:
             self.device_list_store.clear()
 
-        self.device_list_store = Gtk.TreeStore(bool, bool, bool, str, int, str)
+        self.device_list_store = Gtk.TreeStore(bool, bool, bool, str, int, str, str)
 
         with misc.raised_privileges():
             devices = parted.getAllDevices()
 
         for dev in devices:
+            print(dev)
             # avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
                 size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
@@ -156,7 +164,7 @@ class InstallationZFS(GtkBaseBox):
                     path = dev.path[len("/dev/"):]
                 else:
                     path = dev.path
-                row = [False, True, True, path, size_in_gigabytes, dev.model]
+                row = [False, True, True, path, size_in_gigabytes, dev.model, ""]
                 self.device_list_store.append(None, row)
 
         self.device_list.set_model(self.device_list_store)
@@ -320,6 +328,40 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
+    def init_device(self, device, scheme="GPT"):
+        if scheme == "GPT":
+            # Clean partition table to avoid issues!
+            wrapper.sgdisk("zap-all", device)
+
+            # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
+            wrapper.dd("/dev/zero", device, bs=512, count=2048)
+            wrapper.wipefs(device)
+
+            # Create fresh GPT
+            wrapper.sgdisk("clear", device)
+
+            # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
+            try:
+                subprocess.check_call(["partprobe", device])
+            except subprocess.CalledProcessError as err:
+                txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
+                logging.error(txt)
+                txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
+                raise InstallError(txt)
+        else:
+            # DOS MBR partition table
+            # Start at sector 1 for 4k drive compatibility and correct alignment
+            # Clean partitiontable to avoid issues!
+            wrapper.dd("/dev/zero", device, bs=512, count=2048)
+            wrapper.wipefs(device)
+
+            # Create DOS MBR
+            wrapper.parted_mktable(device, "msdos")
+
+    def create_zfs_pool(self):
+        # lsblk -do NAME,WWN
+        pass
+
     def run_format(self):
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
         # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
@@ -328,85 +370,69 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
         if self.scheme == "GPT":
-            if self.pool_type == "None":
-                # With None, just one device is used
-                device = device_paths[0]
-                # Clean partition table to avoid issues!
-                wrapper.sgdisk("zap-all", device)
+            device = device_paths[0]
 
-                # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-                wrapper.dd("/dev/zero", device, bs=512, count=2048)
-                wrapper.wipefs(device)
+            self.init_device(device, "GPT")
 
-                # Create fresh GPT
-                wrapper.sgdisk("clear", device)
+            part_num = 1
 
-                # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
-                try:
-                    subprocess.check_call(["partprobe", device])
-                except subprocess.CalledProcessError as err:
-                    txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
-                    logging.error(txt)
-                    txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
-                    raise InstallError(txt)
-
-                part_num = 1
-
-                if not self.UEFI:
-                    # Create BIOS Boot Partition
-                    # GPT GUID: 21686148-6449-6E6F-744E-656564454649
-                    # This partition is not required if the system is UEFI based,
-                    # as there is no such embedding of the second-stage code in that case
-                    wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
+            if not self.UEFI:
+                # Create BIOS Boot Partition
+                # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+                # This partition is not required if the system is UEFI based,
+                # as there is no such embedding of the second-stage code in that case
+                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
+                part_num += 1
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
+                part_num += 1
+            else:
+                # UEFI
+                if self.bootloader == "grub":
+                    # Create EFI System Partition (ESP)
+                    # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+                    wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", 200, "EF00")
                     part_num += 1
                     wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
                     part_num += 1
                 else:
-                    # UEFI
-                    if self.bootloader == "grub":
-                        # Create EFI System Partition (ESP)
-                        # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                        wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", 200, "EF00")
-                        part_num += 1
-                        wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "8300")
-                        part_num += 1
-                    else:
-                        # systemd-boot, refind
-                        wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "EF00")
-                        part_num += 1
+                    # systemd-boot, refind
+                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", 512, "EF00")
+                    part_num += 1
 
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_ZFS", 0, "BF00")
+            wrapper.sgdisk_new(device, part_num, "ANTERGOS_ZFS", 0, "BF00")
+
+            # Now init all other devices that will form part of the pool
+            for device in device_paths[1:]:
+                self.init_device(device, "GPT")
+                wrapper.sgdisk_new(device, 1, "ANTERGOS_ZFS", 0, "BF00")
         else:
             # MBR
-            if self.pool_type == "None":
-                # With None, just one device is used
-                device = device_paths[0]
+            device = device_paths[0]
 
-                # DOS MBR partition table
-                # Start at sector 1 for 4k drive compatibility and correct alignment
-                # Clean partitiontable to avoid issues!
-                wrapper.dd("/dev/zero", device, bs=512, count=2048)
-                wrapper.wipefs(device)
+            self.init_device(device, "MBR")
 
-                # Create DOS MBR
-                wrapper.parted_mktable(device, "msdos")
+            # Create boot partition (all sizes are in MiB)
+            # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            start = -1
+            end = 512
+            wrapper.parted_mkpart(device, "primary", start, end)
 
-                # Create boot partition (all sizes are in MiB)
-                # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
-                start = -1
-                end = 512
-                wrapper.parted_mkpart(device, "primary", start, end)
+            # Set boot partition as bootable
+            wrapper.parted_set(device, "1", "boot", "on")
 
-                # Set boot partition as bootable
-                wrapper.parted_set(device, "1", "boot", "on")
+            start = end
+            end = "-1s"
+            wrapper.parted_mkpart(device, "primary", start, end)
 
-                start = end
-                end = "-1s"
-                wrapper.parted_mkpart(device, "primary", start, end)
-
+            # Now init all other devices that will form part of the pool
+            for device in device_paths[1:]:
+                self.init_device(device, "MBR")
+                wrapper.parted_mkpart(device, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
         subprocess.check_call(["udevadm", "settle"])
+
+        self.create_zfs_pool()
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
