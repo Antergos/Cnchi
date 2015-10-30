@@ -31,6 +31,8 @@ import os
 import subprocess
 import logging
 
+from misc.misc import InstallError
+
 def wipefs(device):
     try:
         subprocess.check_call(["wipefs", "-a", device])

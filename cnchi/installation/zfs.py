@@ -35,6 +35,7 @@ except ImportError:
 
 import parted
 import misc.misc as misc
+from misc.misc import InstallError
 
 from installation import wrapper
 
@@ -44,7 +45,7 @@ COL_USE_SENSITIVE = 2
 COL_DISK = 3
 COL_SIZE = 4
 COL_DEVICE_NAME = 5
-COL_WWN = 6
+COL_DISK_ID = 6
 
 
 class InstallationZFS(GtkBaseBox):
@@ -60,6 +61,8 @@ class InstallationZFS(GtkBaseBox):
         self.device_list_store = self.ui.get_object('liststore')
         self.prepare_device_list()
         self.device_list.set_hexpand(True)
+
+        self.ids = {}
 
         self.zfs_options = {
             "force_4k": False,
@@ -135,12 +138,8 @@ class InstallationZFS(GtkBaseBox):
         col = Gtk.TreeViewColumn(_("Device"), render_text, text=COL_DEVICE_NAME)
         self.device_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("WWN"), render_text, text=COL_WWN)
+        col = Gtk.TreeViewColumn(_("Disk ID"), render_text, text=COL_DISK_ID)
         self.device_list.append_column(col)
-
-    def read_wwns(self):
-        # lsblk -do NAME,WWN
-        pass
 
     def fill_device_list(self):
         """ Fill the partition list with all the data. """
@@ -154,10 +153,10 @@ class InstallationZFS(GtkBaseBox):
         with misc.raised_privileges():
             devices = parted.getAllDevices()
 
+        self.get_ids()
+
         for dev in devices:
-            #print(dev)
-            print(dev.__dir__())
-            # avoid cdrom and any raid, lvm volumes or encryptfs
+            # Skip cdrom, raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
                 size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
                 # Use check | Disk (sda) | Size(GB) | Name (device name)
@@ -165,7 +164,8 @@ class InstallationZFS(GtkBaseBox):
                     path = dev.path[len("/dev/"):]
                 else:
                     path = dev.path
-                row = [False, True, True, path, size_in_gigabytes, dev.model, ""]
+                disk_id = self.ids.get(path, "")
+                row = [False, True, True, path, size_in_gigabytes, dev.model, disk_id]
                 self.device_list_store.append(None, row)
 
         self.device_list.set_model(self.device_list_store)
@@ -431,10 +431,61 @@ class InstallationZFS(GtkBaseBox):
 
         self.create_zfs_pool()
 
+    def check_call(self, cmd):
+        try:
+            logging.debug(" ".join(cmd))
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as err:
+            txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}".format(device, err.cmd, err.stderr)
+            logging.error(txt)
+            txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}").format(device, err.cmd, err.stderr)
+            raise InstallError(txt)
+
     def create_zfs_pool(self):
-        # ls -go /dev/disk/by-id/ | grep -o 'ata[^ ]*'
-        # /dev/disk/by-id/
-        pass
+        # Create the root zpool
+        device_paths = self.zfs_options["device_paths"]
+        if len(device_paths) <= 0:
+            txt = _("No devices were selected for ZFS")
+            raise InstallError(txt)
+
+        device_path = device_paths[0]
+
+        # Command: zpool create zroot /dev/disk/by-id/id-to-partition
+        device_id = self.ids[device_path]
+        self.check_call(["zpool", "create", "antergos", device_id])
+
+        # Set the mount point of the root filesystem
+        self.check_call(["zfs", "set", "mountpoint=/", "antergos"])
+
+        # Set the bootfs property on the descendant root filesystem so the
+        # boot loader knows where to find the operating system.
+        self.check_call(["zpool", "set", "bootfs=antergos", "antergos"])
+
+        # Create swap zvol
+        cmd = [
+            "zfs", "create", "-V", "8G", "-b", os.sysconf("SC_PAGE_SIZE"),
+            "-o", "primarycache=metadata", "-o", "com.sun:auto-snapshot=false",
+            "antergos/swap"]
+        self.check_call(cmd)
+
+        # Export the pool
+        self.check_call(["zpool", "export", "antergos"])
+
+        # Finally, re-import the pool
+        self.check_call(["zpool", "import", "-d", "/dev/disk/by-id", "-R", "/install", "antergos"])
+
+        # Create zpool.cache file
+        self.check_call(["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"])
+
+
+    def get_ids(self):
+        """ Get disk and partitions IDs """
+        path = "/dev/disk/by-id"
+        for entry in os.scandir(path):
+            if not entry.name.startswith('.') and entry.is_symlink() and entry.name.startswith("ata"):
+                dest_path = os.readlink(entry.path)
+                device = dest_path.split("/")[-1]
+                self.ids[device] = entry.name
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
