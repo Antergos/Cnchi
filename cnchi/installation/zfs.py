@@ -450,6 +450,9 @@ class InstallationZFS(GtkBaseBox):
 
         device_path = device_paths[0]
 
+        # Make sure the ZFS modules are loaded
+        self.check_call(["modprobe", "zfs"])
+
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         device_id = self.ids[device_path]
         self.check_call(["zpool", "create", "antergos", device_id])
