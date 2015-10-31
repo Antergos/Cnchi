@@ -1,4 +1,26 @@
+[2015-10-31 00:00:54 -0500]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {40597c3}
 [2015-10-30 19:03:25 -0500]  Update 10_antergos                                                     Julio Gutierrez {ace9baf}
+[2015-10-30 19:17:35 +0100]  load zfs module                                                            karasu      {bcd86bc}
+[2015-10-30 19:14:35 +0100]  More zfs                                                                   karasu      {c5e122d}
+[2015-10-30 11:00:04 +0100]  More zfs                                                                   karasu      {a5c6ab5}
+[2015-10-30 09:00:18 +0100]  Need to get disk id                                                        karasu      {539a767}
+[2015-10-29 23:33:20 +0100]  zfs                                                                        karasu      {080f9bb}
+[2015-10-29 20:09:08 +0100]  Working on zfs                                                             karasu      {928c567}
+[2015-10-29 12:29:58 +0100]  Nothing really, just have to rush out (so I save the changes)              karasu      {8a96c2e}
+[2015-10-28 23:27:50 +0100]  Fix imports (and a typo)                                                   karasu      {22d582e}
+[2015-10-28 23:24:57 +0100]  Split of auto_partition in two files (wrapper and itself) for ZFS s..      karasu      {10b9cd3}
+[2015-10-28 22:13:09 +0100]  Add CSS style for zfs_radio_btn                                            karasu      {8a32243}
+[2015-10-28 09:46:50 +0100]  More on zfs                                                                karasu      {6201cd4}
+[2015-10-27 21:46:49 +0100]  Try to get stderr when mkfs fails                                          karasu      {740a250}
+[2015-10-27 21:29:58 +0100]  And more work in zfs                                                       karasu      {eb41e1c}
+[2015-10-27 19:47:39 +0100]  Go back to choose vconsole in install.py (no vconsole.py). Problem ..      karasu      {2d0fa41}
+[2015-10-27 14:25:05 +0100]  fill_partition_list to be finished                                         karasu      {c6e0d31}
+[2015-10-27 14:22:06 +0100]  Added parted to zfs                                                        karasu      {0c8946e}
+[2015-10-27 14:18:37 +0100]  And... yes, more work on zfs screen                                        karasu      {e6334bd}
+[2015-10-27 14:07:22 +0100]  More work on zfs                                                           karasu      {afb0e82}
+[2015-10-27 13:45:49 +0100]  More work on zfs                                                           karasu      {c21117f}
+[2015-10-26 16:40:51 +0100]  Little changes                                                             karasu      {d93d0b7}
+[2015-10-26 15:56:46 +0100]  ZFS dialog done                                                            karasu      {954865a}
 [2015-10-24 03:09:57 -0500]  Use time.perf_counter() in download Use time,perf_counter() for acc..  Dustin Falgout  {2c47103}
 [2015-10-23 05:28:50 -0500]  looking into #429 (cherry picked from commit b3fb54d)                  Dustin Falgout  {78de954}
 [2015-10-22 16:59:28 +0200]  playing around                                                             karasu      {6161a2e}
