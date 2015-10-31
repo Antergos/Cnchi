@@ -1,4 +1,4 @@
-{"version":"0.13.134","files":[
+{"version":"0.13.135","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -62,7 +62,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/action.py","md5":"287a77aa865fb4ea4f83716606acf259"},
 {"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"14301b96022cc61565dd8bce2d0db610"},
 {"name":"/usr/share/cnchi/cnchi/installation/alongside.py","md5":"05021a05bd9063418fd5b02ca616507e"},
-{"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"f3f13840bbfa5009c2a628e3cb3ab4ef"},
+{"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"b78a8cb980242e7df58bff06cb05839c"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"40369b8811f21df77ac05677b00d3730"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"6aa29df363ec625553ad7bcbc97c00e0"},
 {"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"3fa434eae6a791ca5ca192fb55bf490e"},
