@@ -1,4 +1,4 @@
-{"version":"0.13.136","files":[
+{"version":"0.13.137","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -36,7 +36,7 @@
 {"name":"/usr/share/cnchi/cnchi/wireless.py","md5":"7bbbbea4d64869e855cb6db44d64057e"},
 {"name":"/usr/share/cnchi/cnchi/download/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/download/download.py","md5":"4ea9876c5c22aed2960513871212722a"},
-{"name":"/usr/share/cnchi/cnchi/download/download_requests.py","md5":"ae91d3679b0001baeedd2d4d1adabb63"},
+{"name":"/usr/share/cnchi/cnchi/download/download_requests.py","md5":"36f3b331bcb69c981a7232b03d725a38"},
 {"name":"/usr/share/cnchi/cnchi/download/metalink.py","md5":"b5e96c3d4dbb06d236f6766c2215a71b"},
 {"name":"/usr/share/cnchi/cnchi/hardware/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/hardware/broadcom_b43.py","md5":"bebe0dc44ebeae4214097cbb0f4c6059"},

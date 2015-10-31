@@ -63,7 +63,7 @@ class CopyToCache(threading.Thread):
             # Try to copy the file, do not worry if it's not possible
             try:
                 shutil.copy(self.origin, dst)
-            except (FileNotFoundError, FileExistsError):
+            except (FileNotFoundError, FileExistsError, OSError):
                 pass
 
 
