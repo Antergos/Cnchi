@@ -244,7 +244,7 @@ class InstallationZFS(GtkBaseBox):
         btn.set_label(_("Force ZFS 4k block size"))
 
     def on_encrypt_swap_btn_toggled(self, widget):
-        self.encrypt_swap = not self.encrypt_swap
+        self.zfs_options["encrypt_swap"] = not self.zfs_options["encrypt_swap"]
 
     def on_encrypt_disk_btn_toggled(self, widget):
         names = [
@@ -283,7 +283,7 @@ class InstallationZFS(GtkBaseBox):
         self.fill_device_list()
         self.show_all()
 
-    def store_values():
+    def store_values(self):
         """ Store all vars """
         '''
         liststore
