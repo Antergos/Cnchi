@@ -354,7 +354,7 @@ class InstallationZFS(GtkBaseBox):
         self.change_list = []
         device_paths = self.zfs_options["device_paths"]
 
-        if self.scheme == "GPT":
+        if self.zfs_options["scheme"] == "GPT":
             device_path = device_paths[0]
             self.append_change("delete", device_path)
             if not self.UEFI:
@@ -394,7 +394,7 @@ class InstallationZFS(GtkBaseBox):
         device_paths = self.zfs_options["device_paths"]
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
-        if self.scheme == "GPT":
+        if self.zfs_options["scheme"] == "GPT":
             device_path = device_paths[0]
 
             self.init_device(device_path, "GPT")
