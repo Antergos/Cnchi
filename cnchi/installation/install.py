@@ -1077,12 +1077,19 @@ class Installation(object):
                 logging.error(io_error)
 
         # Set vconsole.conf for console keymap
-        try:
-            import vconsole
-            console = VConsole(keyboard_layout)
-            console.save(DEST_DIR)
-        except ImportError:
-            pass
+        match = {
+            "ca": "us",
+            "gb": "uk",
+            "latam": "la-latin1",
+            "pt": "pt-latin1"
+        }
+        vconsole = match.get(keyboard_layout, keyboard_layout)
+        # Write vconsole.conf
+        vconsole_path = os.path.join(dest_dir, "etc/vconsole.conf")
+        with open(vconsole_path, 'w') as vconsole_file:
+            vconsole_file.write("# File modified by Cnchi\n\n")
+            vconsole_file.write("KEYMAP={0}\n".format(vconsole))
+        logging.debug("Set vconsole to %s", vconsole)
 
         # Install configs for root
         chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])

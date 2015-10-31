@@ -55,6 +55,7 @@ from installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
+from installation import zfs as installation_zfs
 
 
 def atk_set_image_description(widget, description):
@@ -287,6 +288,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["installation_alongside"] = None
 
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
+        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(self.params)
         self.pages["summary"] = summary.Summary(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -319,6 +321,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if self.pages["installation_alongside"] is not None:
                 del self.pages["installation_alongside"]
             del self.pages["installation_advanced"]
+            del self.pages["installation_zfs"]
         except KeyError as key_error:
             pass
 

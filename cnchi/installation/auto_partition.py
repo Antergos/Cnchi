@@ -26,6 +26,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Used by automatic installation """
 
 import os
 import subprocess
@@ -35,6 +36,8 @@ import math
 from misc.misc import InstallError
 
 import parted3.fs_module as fs
+
+from installation import wrapper
 
 '''
 NOTE: Exceptions in this file
@@ -210,11 +213,11 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
     # For 512 bit key length the header is 2MiB
     # If in doubt, just be generous and overwrite the first 10MiB or so
-    dd("/dev/zero", luks_device, bs=512, count=20480)
+    wrapper.dd("/dev/zero", luks_device, bs=512, count=20480)
 
     if luks_pass is None or luks_pass == "":
         # No key password given, let's create a random keyfile
-        dd("/dev/urandom", luks_key, bs=1024, count=4)
+        wrapper.dd("/dev/urandom", luks_key, bs=1024, count=4)
 
         # Set up luks with a keyfile
         try:
@@ -256,102 +259,6 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
             raise InstallError(txt)
 
 
-def wipefs(device):
-    try:
-        subprocess.check_call(["wipefs", "-a", device])
-    except subprocess.CalledProcessError as err:
-        logging.warning("Cannot wipe the filesystem of device %s. Command %s has failed: %s",
-                        device, err.cmd, err.output)
-
-
-def dd(input_device, output_device, bs=512, count=2048):
-    """ Helper function to call dd """
-    cmd = ['dd', 'if={0}'.format(input_device), 'of={0}'.format(output_device), 'bs={0}'.format(bs),
-           'count={0}'.format(count), 'status=noxfer']
-    try:
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as err:
-        logging.warning("Command %s failed: %s", err.cmd, err.output)
-
-
-def sgdisk(command, device):
-    """ Helper function to call sgdisk (GPT) """
-    cmd = ['sgdisk', "--{0}".format(command), device]
-    subprocess.check_call(cmd)
-
-
-def sgdisk_new(device, part_num, label, size, hex_code):
-    """ Helper function to call sgdisk --new (GPT) """
-    cmd = ['sgdisk', '--new={0}:0:+{1}M'.format(part_num, size), '--typecode={0}:{1}'.format(part_num, hex_code),
-           '--change-name={0}:{1}'.format(part_num, label), device]
-    # --new: Create a new partition, numbered partnum, starting at sector start and ending at sector end.
-    # Parameters: partnum:start:end (zero in start or end means using default value)
-    # --typecode: Change a partition's GUID type code to the one specified by hexcode.
-    #             Note that hexcode is a gdisk/sgdisk internal two-byte hexadecimal code.
-    #             You can obtain a list of codes with the -L option.
-    # Parameters: partnum:hexcode
-    # --change-name: Change the name of the specified partition.
-    # Parameters: partnum:name
-    logging.debug(" ".join(cmd))
-
-    try:
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as err:
-        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}".format(device, err.cmd, err.output)
-        logging.error(txt)
-        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}").format(device, err.cmd, err.output)
-        raise InstallError(txt)
-
-
-def parted_set(device, number, flag, state):
-    """ Helper function to call set parted command """
-    try:
-        cmd = ['parted', '--align', 'optimal', '--script', device, 'set', number, flag, state]
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as err:
-        txt = "Error setting flag {0} on device {1}. Command {2} has failed: {3}".format(flag, device, err.cmd, err.output)
-        logging.error(txt)
-
-
-def parted_mkpart(device, ptype, start, end, filesystem=""):
-    """ Helper function to call mkpart parted command """
-    # If start is < 0 we assume we want to mkpart at the start of the disk
-    if start < 0:
-        start_str = "1"
-    else:
-        start_str = "{0}MiB".format(start)
-
-    # -1s means "end of disk"
-    if end == "-1s":
-        end_str = end
-    else:
-        end_str = "{0}MiB".format(end)
-
-    cmd = ['parted', '--align', 'optimal', '--script', device, '--', 'mkpart', ptype, filesystem, start_str, end_str]
-
-    try:
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as err:
-        txt = "Error creating a new partition on device {0}. Command {1} has failed: {2}"
-        txt = txt.format(device, err.cmd, err.stderr)
-        logging.error(txt)
-        txt = _("Error creating a new partition on device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.stderr)
-        raise InstallError(txt)
-
-
-def parted_mktable(device, table_type="msdos"):
-    """ Helper function to call mktable parted command """
-    cmd = ["parted", "--align", "optimal", "--script", device, "mktable", table_type]
-    try:
-        subprocess.check_call(cmd)
-    except subprocess.CalledProcessError as err:
-        txt = "Error creating a new partition table on device {0}. Command {1} failed: {2}"
-        txt = txt.format(device, err.cmd, err.stderr)
-        logging.error(txt)
-        txt = _("Error creating a new partition table on device {0}. Command {1} failed: {2}")
-        txt = txt.format(device, err.cmd, err.stderr)
-        raise InstallError(txt)
 
 
 ''' AutoPartition Class '''
@@ -445,9 +352,9 @@ class AutoPartition(object):
             try:
                 subprocess.check_call(command.split())
             except subprocess.CalledProcessError as err:
-                txt = "Can't create filesystem {0}. Command {1} failed: {2}".format(fs_type, err.cmd, err.output)
+                txt = "Can't create filesystem {0}. Command {1} failed: {2}".format(fs_type, err.cmd, err.stderr)
                 logging.error(txt)
-                txt = _("Can't create filesystem {0}. Command {1} failed: {2}").format(fs_type, err.cmd, err.output)
+                txt = _("Can't create filesystem {0}. Command {1} failed: {2}").format(fs_type, err.cmd, err.stderr)
                 raise InstallError(txt)
 
             # Flush filesystem buffers
@@ -723,14 +630,14 @@ class AutoPartition(object):
 
         if self.GPT:
             # Clean partition table to avoid issues!
-            sgdisk("zap-all", device)
+            wrapper.sgdisk("zap-all", device)
 
             # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            dd("/dev/zero", device, bs=512, count=2048)
-            wipefs(device)
+            wrapper.dd("/dev/zero", device, bs=512, count=2048)
+            wrapper.wipefs(device)
 
             # Create fresh GPT
-            sgdisk("clear", device)
+            wrapper.sgdisk("clear", device)
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             try:
@@ -750,85 +657,85 @@ class AutoPartition(object):
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
-                sgdisk_new(device, part_num, "BIOS_BOOT", gpt_bios_grub_part_size, "EF02")
+                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
                 part_num += 1
 
             if self.bootloader == "grub2":
                 # Create EFI System Partition (ESP)
                 # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+                wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
                 part_num += 1
 
             # Create Boot partition
             if self.bootloader in ["systemd-boot", "refind"]:
-                sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
             else:
-                sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
             part_num += 1
 
             if self.lvm:
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
-                sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num += 1
             else:
-                sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
                 part_num += 1
                 if self.home:
-                    sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
+                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
                     part_num += 1
-                sgdisk_new(device, part_num, "ANTERGOS_SWAP", 0, "8200")
+                wrapper.sgdisk_new(device, part_num, "ANTERGOS_SWAP", 0, "8200")
 
             logging.debug(check_output("sgdisk --print {0}".format(device)))
         else:
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
             # Clean partitiontable to avoid issues!
-            dd("/dev/zero", device, bs=512, count=2048)
-            wipefs(device)
+            wrapper.dd("/dev/zero", device, bs=512, count=2048)
+            wrapper.wipefs(device)
 
             # Create DOS MBR
-            parted_mktable(device, "msdos")
+            wrapper.parted_mktable(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
-            # if start is -1 parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
             start = -1
             end = part_sizes['boot']
-            parted_mkpart(device, "primary", start, end)
+            wrapper.parted_mkpart(device, "primary", start, end)
 
             # Set boot partition as bootable
-            parted_set(device, "1", "boot", "on")
+            wrapper.parted_set(device, "1", "boot", "on")
 
             if self.lvm:
                 # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
                 start = end
                 # end = start + part_sizes['lvm_pv']
                 end = "-1s"
-                parted_mkpart(device, "primary", start, end)
+                wrapper.parted_mkpart(device, "primary", start, end)
 
                 # Set lvm flag
-                parted_set(device, "2", "lvm", "on")
+                wrapper.parted_set(device, "2", "lvm", "on")
             else:
                 # Create root partition
                 start = end
                 end = start + part_sizes['root']
-                parted_mkpart(device, "primary", start, end)
+                wrapper.parted_mkpart(device, "primary", start, end)
 
                 if self.home:
                     # Create home partition
                     start = end
                     end = start + part_sizes['home']
-                    parted_mkpart(device, "primary", start, end)
+                    wrapper.parted_mkpart(device, "primary", start, end)
 
                 # Create an extended partition where we will put our swap partition
                 start = end
                 # end = start + part_sizes['swap']
                 end = "-1s"
-                parted_mkpart(device, "extended", start, end)
+                wrapper.parted_mkpart(device, "extended", start, end)
 
                 # Now create a logical swap partition
                 start += 1
                 end = "-1s"
-                parted_mkpart(device, "logical", start, end, "linux-swap")
+                wrapper.parted_mkpart(device, "logical", start, end, "linux-swap")
 
         printk(True)
 

@@ -62,8 +62,9 @@ class InstallationAutomatic(GtkBaseBox):
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
 
-        self.entry = {'luks_password': self.ui.get_object('entry_luks_password'),
-                      'luks_password_confirm': self.ui.get_object('entry_luks_password_confirm')}
+        self.entry = {
+            'luks_password': self.ui.get_object('entry_luks_password'),
+            'luks_password_confirm': self.ui.get_object('entry_luks_password_confirm')}
 
         self.image_password_ok = self.ui.get_object('image_password_ok')
 
@@ -183,15 +184,10 @@ class InstallationAutomatic(GtkBaseBox):
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
 
-
         # self.forward_button.set_sensitive(False)
 
     def store_values(self):
-        """ Let's do our installation! """
-        #response = self.show_warning()
-        #if response == Gtk.ResponseType.NO:
-        #   return False
-
+        """ User clicks on Install now! """
         luks_password = self.entry['luks_password'].get_text()
         self.settings.set('luks_root_password', luks_password)
         if luks_password != "":
@@ -264,20 +260,6 @@ class InstallationAutomatic(GtkBaseBox):
         line = self.bootloader_entry.get_active_text()
         if line is not None:
             self.bootloader = line.lower()
-
-    def show_warning(self):
-        txt = _("Do you really want to proceed and delete all your content on your hard drive?")
-        txt = txt + "\n\n" + self.device_store.get_active_text()
-        message = Gtk.MessageDialog(
-            transient_for=self.get_toplevel(),
-            modal=True,
-            destroy_with_parent=True,
-            message_type=Gtk.MessageType.QUESTION,
-            buttons=Gtk.ButtonsType.YES_NO,
-            text=txt)
-        response = message.run()
-        message.destroy()
-        return response
 
     def get_changes(self):
         """ Grab all changes for confirmation """

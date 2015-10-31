@@ -483,9 +483,10 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         self.diskdic = {}
+        self.diskdic['mounts'] = []
+
         self.all_partitions = []
         self.lv_partitions = []
-        self.diskdic['mounts'] = []
 
         # Put all volumes (lvm) info in our model
         volume_groups = lvm.get_volume_groups()
