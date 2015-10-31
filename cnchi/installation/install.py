@@ -1085,7 +1085,7 @@ class Installation(object):
         }
         vconsole = match.get(keyboard_layout, keyboard_layout)
         # Write vconsole.conf
-        vconsole_path = os.path.join(dest_dir, "etc/vconsole.conf")
+        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
         with open(vconsole_path, 'w') as vconsole_file:
             vconsole_file.write("# File modified by Cnchi\n\n")
             vconsole_file.write("KEYMAP={0}\n".format(vconsole))
