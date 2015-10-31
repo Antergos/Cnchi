@@ -38,6 +38,7 @@ import misc.misc as misc
 from misc.misc import InstallError
 import show_message as show
 from installation import wrapper
+from installation import action
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -56,6 +57,8 @@ class InstallationZFS(GtkBaseBox):
 
         self.disks = None
         self.diskdic = {}
+
+        self.change_list = []
 
         self.device_list = self.ui.get_object('treeview')
         self.device_list_store = self.ui.get_object('liststore')
@@ -340,6 +343,50 @@ class InstallationZFS(GtkBaseBox):
             # Create DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
 
+    def append_change(self, action_type, device, action_description=""):
+        if action_type == "create":
+            action_description = _("{0} on device {1}").format(action_description, device)
+        self.change_list.append(action.Action(action_type, action_description))
+
+    def get_changes(self):
+        """ Grab all changes for confirmation """
+
+        self.change_list = []
+        device_paths = self.zfs_options["device_paths"]
+
+        if self.scheme == "GPT":
+            device_path = device_paths[0]
+            self.append_change("delete", device_path)
+            if not self.UEFI:
+                self.append_change("create", device_path, "BIOS boot (2MB)")
+                self.append_change("create", device_path, "Antergos Boot (512MB)")
+            else:
+                # UEFI
+                if self.bootloader == "grub":
+                    self.append_change("create", device_path, "UEFI System (200MB)")
+                    self.append_change("create", device_path, "Antergos Boot (512MB)")
+                else:
+                    self.append_change("create", device_path, "Antergos Boot (512MB)")
+
+            self.append_change("create", device_path, "Antergos ZFS")
+
+            for device_path in device_paths[1:]:
+                self.append_change("delete", device_path)
+                self.append_change("create", device_path, "Antergos ZFS")
+        else:
+            # MBR
+            self.append_change("delete", device_path)
+
+            self.append_change("create", device_path, "Antergos Boot (512MB)")
+            self.append_change("create", device_path, "Antergos ZFS")
+
+            # Now init all other devices that will form part of the pool
+            for device_path in device_paths[1:]:
+                self.append_change("delete", device_path)
+                self.append_change("create", device_path, "Antergos ZFS")
+
+        return self.change_list
+
     def run_format(self):
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
         # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
@@ -440,8 +487,7 @@ class InstallationZFS(GtkBaseBox):
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["antergos", device_id])
-
-        self.check_call()
+        self.check_call(cmd)
 
         # Set the mount point of the root filesystem
         self.check_call(["zfs", "set", "mountpoint=/", "antergos"])
@@ -465,7 +511,6 @@ class InstallationZFS(GtkBaseBox):
 
         # Create zpool.cache file
         self.check_call(["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"])
-
 
     def get_ids(self):
         """ Get disk and partitions IDs """
