@@ -343,10 +343,14 @@ class InstallationZFS(GtkBaseBox):
             # Create DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
 
-    def append_change(self, action_type, device, action_description=""):
+    def append_change(self, action_type, device, info=""):
         if action_type == "create":
-            action_description = _("{0} on device {1}").format(action_description, device)
-        self.change_list.append(action.Action(action_type, action_description))
+            info = _("Create {0} on device {1}").format(info, device)
+            # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
+            act = action.Action("info", info, True, True, "", self.zfs_options["encrypt_disk"])
+        elif action_type == "delete":
+            act = action.Action(action_type, device)
+        self.change_list.append(act)
 
     def get_changes(self):
         """ Grab all changes for confirmation """
