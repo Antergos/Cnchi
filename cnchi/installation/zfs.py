@@ -354,8 +354,9 @@ class InstallationZFS(GtkBaseBox):
         self.change_list = []
         device_paths = self.zfs_options["device_paths"]
 
+        device_path = device_paths[0]
+
         if self.zfs_options["scheme"] == "GPT":
-            device_path = device_paths[0]
             self.append_change("delete", device_path)
             if not self.UEFI:
                 self.append_change("create", device_path, "BIOS boot (2MB)")
@@ -394,9 +395,9 @@ class InstallationZFS(GtkBaseBox):
         device_paths = self.zfs_options["device_paths"]
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
-        if self.zfs_options["scheme"] == "GPT":
-            device_path = device_paths[0]
+        device_path = device_paths[0]
 
+        if self.zfs_options["scheme"] == "GPT":
             self.init_device(device_path, "GPT")
 
             part_num = 1
@@ -432,8 +433,6 @@ class InstallationZFS(GtkBaseBox):
                 wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
         else:
             # MBR
-            device_path = device_paths[0]
-
             self.init_device(device_path, "MBR")
 
             # Create boot partition (all sizes are in MiB)
