@@ -859,7 +859,7 @@ class Installation(object):
             chroot_run(full_cmd)
 
         # Save settings
-        chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
+        chroot_run(['alsactl', 'store'])
 
     @staticmethod
     def set_fluidsynth():
