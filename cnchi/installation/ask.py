@@ -49,6 +49,7 @@ if __name__ == '__main__':
 
 import bootinfo
 import logging
+import subprocess
 
 from gtkbasebox import GtkBaseBox
 import misc.misc as misc
@@ -82,6 +83,17 @@ def check_alongside_disk_layout():
         return True
 
     return False
+
+
+def load_zfs():
+    cmd = ["modprobe", "zfs"]
+    try:
+        subprocess.check_call(cmd)
+        logging.debug("ZFS kernel module loaded successfully.")
+    except subprocess.CalledProcessError as err:
+        logging.debug("Can't load ZFS kernel module. ZFS won't be available")
+        return False
+    return True
 
 
 class InstallationAsk(GtkBaseBox):
@@ -182,14 +194,24 @@ class InstallationAsk(GtkBaseBox):
         self.show_all()
 
         if not self.settings.get('enable_alongside'):
-            self.hide_alongside_option()
+            self.hide_option("alongside")
 
-    def hide_alongside_option(self):
-        """ Hides alongisde widgets """
-        widgets = [
-            "alongside_radiobutton",
-            "alongside_description",
-            "alongside_image"]
+        if not load_zfs():
+            self.hide_option("zfs")
+
+    def hide_option(self, option):
+        """ Hides widgets """
+        widgets = []
+        if option == "alongside":
+            widgets = [
+                "alongside_radiobutton",
+                "alongside_description",
+                "alongside_image"]
+        elif option == "zfs":
+            widgets = [
+                "zfs_radiobutton",
+                "zfs_description",
+                "zfs_image"]
 
         for name in widgets:
             widget = self.ui.get_object(name)
