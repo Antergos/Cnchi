@@ -200,6 +200,8 @@ class InstallationAsk(GtkBaseBox):
         if not load_zfs():
             self.hide_option("zfs")
 
+        self.forward_button.set_sensitive(True)
+
     def hide_option(self, option):
         """ Hides widgets """
         widgets = []
