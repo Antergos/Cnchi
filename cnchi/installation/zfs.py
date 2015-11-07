@@ -21,10 +21,11 @@
 import subprocess
 import os
 import logging
+import math
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 try:
     from gtkbasebox import GtkBaseBox
@@ -48,12 +49,22 @@ COL_SIZE = 4
 COL_DEVICE_NAME = 5
 COL_DISK_ID = 6
 
+def is_int(num):
+    try:
+        int(num)
+        return True
+    except ValueError:
+        return False
+
 
 class InstallationZFS(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.ui.get_object('zfs')
+
+        self.remove_timer = False
+        self.timeout_id = -1
 
         self.disks = None
         self.diskdic = {}
@@ -82,6 +93,22 @@ class InstallationZFS(GtkBaseBox):
             "device_paths": []
         }
 
+        self.pool_types = {
+            0: "None",
+            1: "Stripe",
+            2: "Mirror",
+            3: "RAID-Z",
+            4: "RAID-Z2",
+            5: "RAID-Z3"
+        }
+
+        self.schemes = {
+            0: "GPT",
+            1: "MBR"
+        }
+
+        self.pool_types_help_shown = []
+
         if os.path.exists("/sys/firmware/efi"):
             # UEFI, use GPT by default
             self.UEFI = True
@@ -90,7 +117,6 @@ class InstallationZFS(GtkBaseBox):
             # No UEFI, use MBR by default
             self.UEFI = False
             self.zfs_options["scheme"] = "MBR"
-
 
     def on_use_device_toggled(self, widget, path):
         self.device_list_store[path][COL_USE_ACTIVE] = not self.device_list_store[path][COL_USE_ACTIVE]
@@ -156,6 +182,16 @@ class InstallationZFS(GtkBaseBox):
 
         self.device_list.set_model(self.device_list_store)
 
+    def fill_pool_types_combo(self):
+        combo = self.ui.get_object('pool_type_combo')
+        combo.remove_all()
+        active_index = 0
+        for index in self.pool_types:
+            combo.append_text(self.pool_types[index])
+            if self.zfs_options["pool_type"] == self.pool_types[index]:
+                active_index = index
+        combo.set_active(active_index)
+
     def translate_ui(self):
         # Disable objects
         entries = [
@@ -165,46 +201,20 @@ class InstallationZFS(GtkBaseBox):
             entry = self.ui.get_object(name)
             entry.set_sensitive(False)
 
-        '''
-        liststore
-        scrolledwindow
-        treeview
-        '''
-
         lbl = self.ui.get_object('pool_type_label')
         lbl.set_markup(_("Pool type"))
 
-        pool_types = {
-            0: "None",
-            1: "Stripe",
-            2: "Mirror",
-            3: "RAID-Z",
-            4: "RAID-Z2"
-        }
-
-        combo = self.ui.get_object('pool_type_combo')
-        combo.remove_all()
-        active_index = 0
-        for index in pool_types:
-            combo.append_text(pool_types[index])
-            if self.zfs_options["pool_type"] == pool_types[index]:
-                active_index = index
-        combo.set_active(active_index)
+        self.fill_pool_types_combo()
 
         lbl = self.ui.get_object('partition_scheme_label')
         lbl.set_markup(_("Partition scheme"))
 
-        schemes = {
-            0: "GPT",
-            1: "MBR"
-        }
-
         combo = self.ui.get_object('partition_scheme_combo')
         combo.remove_all()
         active_index = 0
-        for index in schemes:
-            combo.append_text(schemes[index])
-            if self.zfs_options["scheme"] == schemes[index]:
+        for index in self.schemes:
+            combo.append_text(self.schemes[index])
+            if self.zfs_options["scheme"] == self.schemes[index]:
                 active_index = index
         combo.set_active(active_index)
 
@@ -232,6 +242,110 @@ class InstallationZFS(GtkBaseBox):
 
         btn = self.ui.get_object('force_4k_btn')
         btn.set_label(_("Force ZFS 4k block size"))
+
+    def check_pool_type(self, show_warning=False):
+        """ Check that the user has selected the right number
+        of devices for the selected pool type """
+
+        num_drives = 0
+        msg = ""
+        pool_type = self.zfs_options["pool_type"]
+
+        for row in self.device_list_store:
+            if row[COL_USE_ACTIVE]:
+                num_drives += 1
+
+        if pool_type == "None":
+            if num_drives > 0:
+                is_ok = True
+            else:
+                is_ok = False
+                msg = _("You must select at least one drive")
+
+        elif pool_type == "Stripe" or pool_type == "Mirror":
+            if num_drives > 1:
+                is_ok = True
+            else:
+                is_ok = False
+                msg = _("For the {0} pool_type, you must select at least two drives").format(pool_type)
+
+        elif "RAID" in pool_type:
+            min_drives = 3
+            min_parity_drives = 1
+
+            if pool_type == "RAID-Z2":
+                min_drives = 4
+                min_parity_drives = 2
+
+            elif pool_type == "RAID-Z3":
+                min_drives = 5
+                min_parity_drives = 3
+
+            if num_drives < min_drives:
+                is_ok = False
+                msg = _("You must select at least {0} drives").format(min_drives)
+            else:
+                num = math.log2(num_drives - min_parity_drives)
+                if not is_int(num):
+                    msg = _("For the {0} pool type, you must use a 'power of two' (2,4,8,...) "
+                    "plus the appropriate number of drives for the parity. RAID-Z = 1 disk, "
+                    "RAIDZ-2 = 2 disks, and so on.").format(pool_type, min_parity_drives)
+
+        if not is_ok and show_warning:
+            show.message(self.get_toplevel(), msg)
+
+        return is_ok
+
+    def check_all_options(self):
+        return self.check_pool_type()
+
+    def on_timer(self):
+        """ If all requirements are meet, enable forward button """
+        if not self.remove_timer:
+            self.forward_button.set_sensitive(self.check_all_options())
+        return not self.remove_timer
+
+    def show_pool_type_help(self, pool_type):
+        pool_types = list(self.pool_types.values())
+        msg = ""
+        if pool_type in pool_types and pool_type not in self.pool_types_help_shown:
+            if pool_type == "Stripe":
+                msg = _(" When created together, with equal capacity, ZFS "
+                "space-balancing makes a span act like a RAID0 stripe. "
+                "The space is added together. Provided all the devices are "
+                "of the same size, the stripe behavior will continue regardless "
+                "of fullness level. If devices/vdevs are not equally sized, then "
+                "they will fill mostly equally until one device/vdev is full. "
+                "The stripe behavior stops at that point and the other "
+                "device(s)/vdev(s) with more capacity will be used more.\n\n"
+
+                "Reading or writing simultaneously to multiple devices is faster than "
+                "using a single device, but if the underlying vdevs don't include "
+                "redundancy, one drive failure can result in even more data loss "
+                "than you might anticipate. For example, with a stripe of 3 "
+                "devices/vdevs, and one device/vdev fails, at best, any file "
+                "that had portions stored on the failed device will have chunks "
+                "missing, and at worst, the whole pool will be unsalvageable.")
+            elif pool_type == "Mirror":
+                msg = _("When creating a mirror, specify the mirror keyword followed "
+                "by the list of member devices for the mirror. A mirror consists of "
+                "two or more devices, all data will be written to all member devices.\n\n"
+
+                "A mirror vdev will only hold as much data as its smallest member. "
+                "A mirror vdev can withstand the failure of all but one of its "
+                "members without losing any data.")
+            elif pool_type.startswith("RAID-Z"):
+                msg = _("ZFS implements RAID-Z, a variation on standard RAID-5 that "
+                "offers better distribution of parity and eliminates the \"RAID-5 write hole\" "
+                "in which the data and parity information become inconsistent after an unexpected "
+                "restart. ZFS supports three levels of RAID-Z which provide varying levels of "
+                "redundancy in exchange for decreasing levels of usable storage. The types are "
+                "named RAID-Z1 through RAID-Z3 based on the number of parity devices in the array "
+                "and the number of disks which can fail while the pool remains operational.")
+
+            self.pool_types_help_shown.append(pool_type)
+            if len(msg) > 0:
+                show.message(self.get_toplevel(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
         msg = _("Advanced Format (AF) is a new disk format which natively uses "
@@ -277,11 +391,14 @@ class InstallationZFS(GtkBaseBox):
         if tree_iter != None:
             model = widget.get_model()
             self.zfs_options["pool_type"] = model[tree_iter][0]
+            self.show_pool_type_help(model[tree_iter][0])
 
     def prepare(self, direction):
         self.translate_ui()
         self.fill_device_list()
         self.show_all()
+        self.forward_button.set_sensitive(self.check_all_options())
+        self.timeout_id = GLib.timeout_add(5000, self.on_timer)
 
     def store_values(self):
         """ Store all vars """
