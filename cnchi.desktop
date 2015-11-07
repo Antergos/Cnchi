@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Install Antergos Linux
+Name[pl]=Zainstaluj Antergos Linux
 GenericName=Live Installer
 Comment=Install the operating system to disk
+Comment[pl]=Zainstaluj system Antergos Linux
 Exec=sudo -E /usr/bin/cnchi -d -v -c /var/cache/pacman/pkg
 Icon=/usr/share/cnchi/data/images/antergos/antergos-icon.png
 Terminal=False
