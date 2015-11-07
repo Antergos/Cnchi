@@ -63,9 +63,6 @@ class InstallationZFS(GtkBaseBox):
 
         self.page = self.ui.get_object('zfs')
 
-        self.remove_timer = False
-        self.timeout_id = -1
-
         self.disks = None
         self.diskdic = {}
 
@@ -120,6 +117,7 @@ class InstallationZFS(GtkBaseBox):
 
     def on_use_device_toggled(self, widget, path):
         self.device_list_store[path][COL_USE_ACTIVE] = not self.device_list_store[path][COL_USE_ACTIVE]
+        self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare_device_list(self):
         """ Create columns for our treeview """
@@ -296,15 +294,6 @@ class InstallationZFS(GtkBaseBox):
 
         return is_ok
 
-    def check_all_options(self):
-        return self.check_pool_type()
-
-    def on_timer(self):
-        """ If all requirements are meet, enable forward button """
-        if not self.remove_timer:
-            self.forward_button.set_sensitive(self.check_all_options())
-        return not self.remove_timer
-
     def show_pool_type_help(self, pool_type):
         pool_types = list(self.pool_types.values())
         msg = ""
@@ -392,13 +381,13 @@ class InstallationZFS(GtkBaseBox):
             model = widget.get_model()
             self.zfs_options["pool_type"] = model[tree_iter][0]
             self.show_pool_type_help(model[tree_iter][0])
+            self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare(self, direction):
         self.translate_ui()
         self.fill_device_list()
         self.show_all()
-        self.forward_button.set_sensitive(self.check_all_options())
-        self.timeout_id = GLib.timeout_add(5000, self.on_timer)
+        self.forward_button.set_sensitive(self.check_pool_type())
 
     def store_values(self):
         """ Store all vars """
@@ -430,6 +419,8 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
+    # --------------------------------------------------------------------------
+
     def init_device(self, device_path, scheme="GPT"):
         if scheme == "GPT":
             # Clean partition table to avoid issues!
@@ -446,9 +437,11 @@ class InstallationZFS(GtkBaseBox):
             try:
                 subprocess.check_call(["partprobe", device_path])
             except subprocess.CalledProcessError as err:
-                txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
+                txt = "Error informing the kernel of the partition change. "
+                "Command {0} failed: {1}".format(err.cmd, err.output)
                 logging.error(txt)
-                txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
+                txt = _("Error informing the kernel of the partition change. "
+                "Command {0} failed: {1}").format(err.cmd, err.output)
                 raise InstallError(txt)
         else:
             # DOS MBR partition table
@@ -464,7 +457,8 @@ class InstallationZFS(GtkBaseBox):
         if action_type == "create":
             info = _("Create {0} on device {1}").format(info, device)
             # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
-            act = action.Action("info", info, True, True, "", self.zfs_options["encrypt_disk"])
+            encrypt = self.zfs_options["encrypt_disk"]
+            act = action.Action("info", info, True, True, "", encrypt)
         elif action_type == "delete":
             act = action.Action(action_type, device)
         self.change_list.append(act)

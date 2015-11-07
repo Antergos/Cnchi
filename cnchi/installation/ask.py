@@ -314,7 +314,7 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("home_label")
-        txt = _("This will setup you /home directory in a different partition or volume.")
+        txt = _("This will setup your /home directory in a different partition or volume.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
