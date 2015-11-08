@@ -117,10 +117,6 @@ class InstallationAsk(GtkBaseBox):
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
 
-        image = self.ui.get_object("zfs_image")
-        path = os.path.join(partitioner_dir, "zfs.png")
-        image.set_from_file(path)
-
         self.other_oses = []
 
         # DISABLE ALONGSIDE INSTALLATION. IT'S NOT READY YET
@@ -134,7 +130,6 @@ class InstallationAsk(GtkBaseBox):
             msg = "Cnchi will NOT enable the 'alongside' installation mode."
         logging.debug(msg)
         '''
-
         # By default, select automatic installation
         self.next_page = "installation_automatic"
 
@@ -189,6 +184,12 @@ class InstallationAsk(GtkBaseBox):
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
 
+        is_zfs_available = load_zfs()
+        names = ["zfs_checkbutton", "zfs_label"]
+        for name in names:
+            obj = self.ui.get_object(name)
+            obj.set_sensitive(status and is_zfs_available)
+
     def prepare(self, direction):
         """ Prepares screen """
         self.translate_ui()
@@ -198,9 +199,27 @@ class InstallationAsk(GtkBaseBox):
             self.hide_option("alongside")
 
         if not load_zfs():
-            self.hide_option("zfs")
+            self.disable_option("zfs")
 
         self.forward_button.set_sensitive(True)
+
+    def disable_option(self, option):
+        """ Disables widgets """
+        widgets = []
+        if option == "alongside":
+            widgets = [
+                "alongside_radiobutton",
+                "alongside_description",
+                "alongside_image"]
+        elif option == "zfs":
+            widgets = [
+                "zfs_checkbutton",
+                "zfs_label"]
+
+        for name in widgets:
+            widget = self.ui.get_object(name)
+            if widget is not None:
+                widget.set_sensitive(False)
 
     def hide_option(self, option):
         """ Hides widgets """
@@ -212,9 +231,8 @@ class InstallationAsk(GtkBaseBox):
                 "alongside_image"]
         elif option == "zfs":
             widgets = [
-                "zfs_radiobutton",
-                "zfs_description",
-                "zfs_image"]
+                "zfs_checkbutton",
+                "zfs_label"]
 
         for name in widgets:
             widget = self.ui.get_object(name)
@@ -305,6 +323,23 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
+        button = self.ui.get_object("zfs_checkbutton")
+        txt = _("Use ZFS with this installation.")
+        button.set_label(txt)
+        button.set_name("zfs_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
+
+        label = self.ui.get_object("zfs_label")
+        txt = _("This will setup ZFS on your drive(s).")
+        # txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("zfs_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
+
         button = self.ui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
         button.set_label(txt)
@@ -361,20 +396,6 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
-        # zfs
-        radio = self.ui.get_object("zfs_radiobutton")
-        radio.set_label(_("Use Zfs on the whole disk(s) (EXPERIMENTAL)"))
-        radio.set_name("zfs_radio_btn")
-
-        label = self.ui.get_object("zfs_description")
-        txt = _("This will ERASE all your data on selected disk(s)!")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("zfs_desc_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
-
     def store_values(self):
         """ Store selected values """
         check = self.ui.get_object("encrypt_checkbutton")
@@ -382,6 +403,9 @@ class InstallationAsk(GtkBaseBox):
 
         check = self.ui.get_object("lvm_checkbutton")
         use_lvm = check.get_active()
+
+        check = self.ui.get_object("zfs_checkbutton")
+        use_zfs = check.get_active()
 
         check = self.ui.get_object("home_checkbutton")
         use_home = check.get_active()
@@ -391,6 +415,7 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_luks', use_luks)
             self.settings.set('use_luks_in_root', True)
             self.settings.set('luks_root_volume', "cryptAntergos")
+            self.settings.set('use_zfs', use_zfs)
             self.settings.set('use_home', use_home)
         else:
             # Set defaults. We don't know these yet.
@@ -400,24 +425,32 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('luks_root_volume', "")
             self.settings.set('use_home', False)
 
-        if self.settings.get('use_luks'):
-            logging.info("Antergos installation will be encrypted using LUKS")
-
-        if self.settings.get('use_lvm'):
-            logging.info("Antergos will be installed using LVM volumes")
+        if not self.settings.get('use_zfs'):
+            if self.settings.get('use_luks'):
+                logging.info("Antergos installation will be encrypted using LUKS")
+            if self.settings.get('use_lvm'):
+                logging.info("Antergos will be installed using LVM volumes")
+                if self.settings.get('use_home'):
+                    logging.info("Antergos will be installed using a separate /home volume.")
+            else:
+                self.settings.get('use_home')
+                logging.info("Antergos will be installed using a separate /home partition.")
+        else:
+            logging.info("Antergos will be installed using ZFS")
+            if self.settings.get('use_luks'):
+                logging.info("Antergos ZFS installation will be encrypted")
             if self.settings.get('use_home'):
                 logging.info("Antergos will be installed using a separate /home volume.")
-        elif self.settings.get('use_home'):
-            logging.info("Antergos will be installed using a separate /home partition.")
 
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
         elif self.next_page == "installation_advanced":
             self.settings.set('partition_mode', 'advanced')
         elif self.next_page == "installation_automatic":
-            self.settings.set('partition_mode', 'automatic')
-        elif self.next_page == "installation_zfs":
-            self.settings.set('partition_mode', 'zfs')
+            if self.settings.get('use_zfs'):
+                self.settings.set('partition_mode', 'zfs')
+            else:
+                self.settings.set('partition_mode', 'automatic')
 
         # Check if there are still processes running...
         must_wait = False
@@ -481,8 +514,28 @@ class InstallationAsk(GtkBaseBox):
     def on_automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """
         if widget.get_active():
-            self.next_page = "installation_automatic"
+            check = self.ui.get_object("zfs_checkbutton")
+            if check.get_active():
+                self.next_page = "installation_zfs"
+            else:
+                self.next_page = "installation_automatic"
             self.enable_automatic_options(True)
+
+    def on_automatic_lvm_checkbutton_toggled(self, widget):
+        if widget.get_active():
+            self.next_page = "installation_automatic"
+            check = self.ui.get_object("zfs_checkbutton")
+            if check.get_active():
+                check.set_active(False)
+
+    def on_automatic_zfs_checkbutton_toggled(self, widget):
+        if widget.get_active():
+            self.next_page = "installation_zfs"
+            check = self.ui.get_object("lvm_checkbutton")
+            if check.get_active():
+                check.set_active(False)
+        else:
+            self.next_page = "installation_automatic"
 
     def on_alongside_radiobutton_toggled(self, widget):
         """ Alongside selected, disable all automatic options """
@@ -494,12 +547,6 @@ class InstallationAsk(GtkBaseBox):
         """ Advanced selected, disable all automatic options """
         if widget.get_active():
             self.next_page = "installation_advanced"
-            self.enable_automatic_options(False)
-
-    def on_zfs_radiobutton_toggled(self, widget):
-        """ ZFS selected, disable all automatic options """
-        if widget.get_active():
-            self.next_page = "installation_zfs"
             self.enable_automatic_options(False)
 
 

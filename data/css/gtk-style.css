@@ -201,16 +201,16 @@ GtkTreeView row:selected {
     border-color: shade(#2EA3F2, 0.9);
 }
 
-#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel, #zfs_radio_btn GtkLabel {
+#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
     font-size: 13px;
     font-weight: 600;
 }
 
-#lvm_btn GtkLabel, #enc_btn GtkLabel, #home_btn GtkLabel {
+#lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
     font-size: 11px;
 }
 
-#lvm_label, #enc_label, #home_label {
+#lvm_label, #enc_label, #zfs_label, #home_label {
     font-size: 10px;
     font-style: italic;
 }

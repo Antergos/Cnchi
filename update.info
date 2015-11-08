@@ -1,4 +1,4 @@
-{"version":"0.13.144","files":[
+{"version":"0.13.145","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -62,7 +62,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/action.py","md5":"287a77aa865fb4ea4f83716606acf259"},
 {"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"14301b96022cc61565dd8bce2d0db610"},
 {"name":"/usr/share/cnchi/cnchi/installation/alongside.py","md5":"05021a05bd9063418fd5b02ca616507e"},
-{"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"0f0edacc72ffc72a29f7e300cfdf71c3"},
+{"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"afef4ff60a57b912f189619f489bd593"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"40369b8811f21df77ac05677b00d3730"},
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"6aa29df363ec625553ad7bcbc97c00e0"},
 {"name":"/usr/share/cnchi/cnchi/installation/chroot.py","md5":"7edec2767eccd6694c72032066700c7c"},
@@ -114,7 +114,7 @@
 {"name":"/usr/share/cnchi/data/css/bootstrap.css","md5":"957474c344c7131fb8e093449cc4893a"},
 {"name":"/usr/share/cnchi/data/css/bootstrap.css.map","md5":"ea05728a43eaff288b1d535ebe89ec25"},
 {"name":"/usr/share/cnchi/data/css/bootstrap.min.css","md5":"5d5357cb3704e1f43a1f5bfed2aebf42"},
-{"name":"/usr/share/cnchi/data/css/gtk-style.css","md5":"35fbf4b838ca1162537f251ed3ecbbde"},
+{"name":"/usr/share/cnchi/data/css/gtk-style.css","md5":"421938b7c16030f09b01e5db2e863052"},
 {"name":"/usr/share/cnchi/data/css/lightSlider.css","md5":"7d6fbc3ca5eee9a21b538403a8385f26"},
 {"name":"/usr/share/cnchi/data/css/scale.css","md5":"61da3a5a6db4d31b3ef601b9cd26d0f7"},
 {"name":"/usr/share/cnchi/data/css/slides-style.css","md5":"459e980ba0d855fc59b2f4dd15a7edcb"},
@@ -477,7 +477,7 @@
 {"name":"/usr/share/cnchi/test/pacman_conf_test.py","md5":"b92d22bf6f6491751a139de1c76dc1a5"},
 {"name":"/usr/share/cnchi/ui/advanced.ui","md5":"cab6ddf5eb37c955c93edb24c5229288"},
 {"name":"/usr/share/cnchi/ui/alongside.ui","md5":"46774262a088a317d87ace77ed0c7907"},
-{"name":"/usr/share/cnchi/ui/ask.ui","md5":"48a9153a48faf64578ee8f238484bd5a"},
+{"name":"/usr/share/cnchi/ui/ask.ui","md5":"17f15c52013edea0e41817c48977d191"},
 {"name":"/usr/share/cnchi/ui/automatic.ui","md5":"c106f005da9a56e7609b33d2a72529e9"},
 {"name":"/usr/share/cnchi/ui/bootloader.ui","md5":"33eea314d6e90cd775fb6af160d71e4e"},
 {"name":"/usr/share/cnchi/ui/check.ui","md5":"0dfa49201350ed0e8472cbfbac4ebc3f"},
