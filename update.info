@@ -1,4 +1,4 @@
-{"version":"0.13.143","files":[
+{"version":"0.13.144","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -7,7 +7,7 @@
 {"name":"/usr/share/cnchi/TODO.md","md5":"489e1d693ba7777aaaa78647ed80b0b2"},
 {"name":"/usr/share/cnchi/TRANSLATORS","md5":"1a628a4622ee69ce9e2727bbcfff168b"},
 {"name":"/usr/share/cnchi/changelog.txt","md5":"fe6eb3113e6dd0d39c30c257f946b265"},
-{"name":"/usr/share/cnchi/cnchi.desktop","md5":"9f438cc6cf1a56752b710d9fbb4ec4bd"},
+{"name":"/usr/share/cnchi/cnchi.desktop","md5":"a5fe339c7ea38ad2164120a0c07bd4f9"},
 {"name":"/usr/share/cnchi/requirements.txt","md5":"abd860242898e825307d27cff12c67fb"},
 {"name":"/usr/share/cnchi/run","md5":"0a596937cb44f6a1759b6d1710611dc0"},
 {"name":"/usr/share/cnchi/bin/cnchi","md5":"1769e7d4f1da3455fb9e0ae7599692d7"},
