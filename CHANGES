@@ -1,3 +1,4 @@
+[2015-11-11 15:51:08 -0600]  don't call blkid if part value is empty. Hopefully Fixes antergos/C..  Dustin Falgout  {6c0c37a}
 [2015-11-11 19:47:55 +0100]  Shorten explanations                                                       karasu      {e3677b8}
 [2015-11-11 19:37:04 +0100]  Fix ugly bug (in advanced and summary screens)                             karasu      {30a4070}
 [2015-11-08 13:51:29 +0100]  Add ZFS as an automatic option                                             karasu      {400fd44}

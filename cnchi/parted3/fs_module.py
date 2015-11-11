@@ -67,7 +67,7 @@ def get_info(part):
     # Do not try to get extended partition info
     if part and not misc.is_partition_extended(part):
         try:
-            ret = subprocess.check_output(['blkid', part]).decode().strip()
+            ret = subprocess.check_output(['blkid', '-c', '/dev/null', part]).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
 
