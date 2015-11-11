@@ -1,3 +1,4 @@
+[2015-11-11 16:22:30 -0600]  don't call blkid if part value is empty. Hopefully Fixes antergos/C..  Dustin Falgout  {3b8bf16}
 [2015-11-11 19:40:01 +0100]  Fix return identation. Could fix issue #422 (needs testing)                karasu      {4e58812}
 [2015-11-08 00:34:03 +0100]  Merge pull request #459 from artur9010/patch-1                             karasu      {eb262f8}
 [2015-11-07 22:29:29 +0100]  Update cnchi.desktop                                                        Artur      {3c25a49}
