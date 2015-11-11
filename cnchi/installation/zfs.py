@@ -299,38 +299,21 @@ class InstallationZFS(GtkBaseBox):
         msg = ""
         if pool_type in pool_types and pool_type not in self.pool_types_help_shown:
             if pool_type == "Stripe":
-                msg = _(" When created together, with equal capacity, ZFS "
+                msg = _("When created together, with equal capacity, ZFS "
                 "space-balancing makes a span act like a RAID0 stripe. "
                 "The space is added together. Provided all the devices are "
                 "of the same size, the stripe behavior will continue regardless "
                 "of fullness level. If devices/vdevs are not equally sized, then "
-                "they will fill mostly equally until one device/vdev is full. "
-                "The stripe behavior stops at that point and the other "
-                "device(s)/vdev(s) with more capacity will be used more.\n\n"
-
-                "Reading or writing simultaneously to multiple devices is faster than "
-                "using a single device, but if the underlying vdevs don't include "
-                "redundancy, one drive failure can result in even more data loss "
-                "than you might anticipate. For example, with a stripe of 3 "
-                "devices/vdevs, and one device/vdev fails, at best, any file "
-                "that had portions stored on the failed device will have chunks "
-                "missing, and at worst, the whole pool will be unsalvageable.")
+                "they will fill mostly equally until one device/vdev is full.")
             elif pool_type == "Mirror":
-                msg = _("When creating a mirror, specify the mirror keyword followed "
-                "by the list of member devices for the mirror. A mirror consists of "
-                "two or more devices, all data will be written to all member devices.\n\n"
-
-                "A mirror vdev will only hold as much data as its smallest member. "
-                "A mirror vdev can withstand the failure of all but one of its "
-                "members without losing any data.")
+                msg = _("A mirror consists of two or more devices, all data will "
+                "be written to all member devices.")
             elif pool_type.startswith("RAID-Z"):
-                msg = _("ZFS implements RAID-Z, a variation on standard RAID-5 that "
-                "offers better distribution of parity and eliminates the \"RAID-5 write hole\" "
-                "in which the data and parity information become inconsistent after an unexpected "
-                "restart. ZFS supports three levels of RAID-Z which provide varying levels of "
-                "redundancy in exchange for decreasing levels of usable storage. The types are "
-                "named RAID-Z1 through RAID-Z3 based on the number of parity devices in the array "
-                "and the number of disks which can fail while the pool remains operational.")
+                msg = _("ZFS implements RAID-Z, a variation on standard RAID-5. ZFS supports "
+                "three levels of RAID-Z which provide varying levels of redundancy in exchange "
+                "for decreasing levels of usable storage. The types are named RAID-Z1 through "
+                "RAID-Z3 based on the number of parity devices in the array and the number of "
+                "disks which can fail while the pool remains operational.")
 
             self.pool_types_help_shown.append(pool_type)
             if len(msg) > 0:
@@ -339,11 +322,11 @@ class InstallationZFS(GtkBaseBox):
     def on_force_4k_help_btn_clicked(self, widget):
         msg = _("Advanced Format (AF) is a new disk format which natively uses "
         "a 4,096 byte instead of 512 byte sector size. To maintain compatibility "
-        "with legacy systems AF disks emulate a sector size of 512 bytes.\n\n"
+        "with legacy systems AF disks emulate a sector size of 512 bytes. "
         "By default, ZFS will automatically detect the sector size of the drive. "
         "This combination will result in poorly aligned disk access which will "
         "greatly degrade the pool performance. If that might be your case, you "
-        "can force ZFS to use a sector size of 4096 bytes by selecting this option.")
+        "can force ZFS to use a sector size of 4,096 bytes by selecting this option.")
         show.message(self.get_toplevel(), msg)
 
     def on_encrypt_swap_btn_toggled(self, widget):
