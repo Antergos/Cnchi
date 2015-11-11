@@ -1,4 +1,4 @@
-{"version":"0.13.145","files":[
+{"version":"0.13.146","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -27,7 +27,7 @@
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"56bc690fa3254cb755e08921384ebc6a"},
 {"name":"/usr/share/cnchi/cnchi/show_message.py","md5":"ee545450238f92a5a1a299aa68536657"},
 {"name":"/usr/share/cnchi/cnchi/slides.py","md5":"bdd71f8430c39c975f0b7a168dd7700e"},
-{"name":"/usr/share/cnchi/cnchi/summary.py","md5":"dee0441358f776b7a5ccf813a391ecb0"},
+{"name":"/usr/share/cnchi/cnchi/summary.py","md5":"105b0a763cded441d6f2b6befd01b681"},
 {"name":"/usr/share/cnchi/cnchi/test_hardware_module.py","md5":"98011bcd476f7ded18a33142872ede3c"},
 {"name":"/usr/share/cnchi/cnchi/test_screen.py","md5":"025e594a31e2676b6dbf02280410cabf"},
 {"name":"/usr/share/cnchi/cnchi/timezone.py","md5":"165463ed5e4852c64f5298286c543d08"},
@@ -60,7 +60,7 @@
 {"name":"/usr/share/cnchi/cnchi/hardware/vmware.py","md5":"9d8eb7b7c9481c2499f07958b38abb6f"},
 {"name":"/usr/share/cnchi/cnchi/installation/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/installation/action.py","md5":"287a77aa865fb4ea4f83716606acf259"},
-{"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"14301b96022cc61565dd8bce2d0db610"},
+{"name":"/usr/share/cnchi/cnchi/installation/advanced.py","md5":"c6eabb905779ed183ab4c4f5ea3aacbc"},
 {"name":"/usr/share/cnchi/cnchi/installation/alongside.py","md5":"05021a05bd9063418fd5b02ca616507e"},
 {"name":"/usr/share/cnchi/cnchi/installation/ask.py","md5":"afef4ff60a57b912f189619f489bd593"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"40369b8811f21df77ac05677b00d3730"},

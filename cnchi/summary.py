@@ -130,12 +130,16 @@ class Summary(GtkBaseBox):
         # Partitions
         install_screen = self.get_install_screen()
         if install_screen:
-            changes = install_screen.get_changes()
-            statebox = self.ui.get_object("partitions_statebox")
             txt = ""
-            for action in changes:
-                txt += "{0}\n".format(_(str(action)))
-            txt = txt[:-1]
+            statebox = self.ui.get_object("partitions_statebox")
+            changes = install_screen.get_changes()
+            if changes == None or len(changes) == 0:
+                txt = _("Error getting changes from install screen")
+                logging.error("Error getting changes from install screen")
+            else:
+                for action in changes:
+                    txt += "{0}\n".format(_(str(action)))
+                txt = txt[:-1]
             statebox.set_property("label", txt)
 
     def get_install_screen(self):
