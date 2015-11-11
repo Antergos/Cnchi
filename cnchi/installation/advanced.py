@@ -1970,7 +1970,7 @@ class InstallationAdvanced(GtkBaseBox):
                         changelist.append(act)
                         logging.debug(str(act))
 
-            return changelist
+        return changelist
 
 
     @staticmethod
