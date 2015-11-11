@@ -62,20 +62,20 @@ def get_label(part):
 def get_info(part):
     """ Get partition info using blkid """
 
-    # Do not try to get extended partition info
     ret = ''
-    if not misc.is_partition_extended(part):
+    partdic = {}
+    # Do not try to get extended partition info
+    if part and not misc.is_partition_extended(part):
         try:
             ret = subprocess.check_output(['blkid', part]).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
-            ret = ''
 
-    partdic = {}
-    for info in ret.split():
-        if '=' in info:
-            info = info.split('=')
-            partdic[info[0]] = info[1].strip('"')
+        for info in ret.split():
+            if '=' in info:
+                info = info.split('=')
+                partdic[info[0]] = info[1].strip('"')
+
     return partdic
 
 
@@ -83,13 +83,13 @@ def get_info(part):
 def get_type(part):
     """ Get filesystem type using blkid """
     ret = ''
-    if not misc.is_partition_extended(part):
+    if part and not misc.is_partition_extended(part):
         try:
             cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
-            ret = ''
+
     return ret
 
 
