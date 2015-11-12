@@ -144,8 +144,7 @@ xfce_settings() {
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
 	## Set default directories
-	#chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
-	chroot ${CN_DESTDIR} su -c "LANG=${CN_LOCALE} xdg-user-dirs-update --force" ${CN_USER_NAME}
+	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc

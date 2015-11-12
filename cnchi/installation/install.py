@@ -880,6 +880,19 @@ class Installation(object):
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
 
+    @staticmethod
+    def patch_user_dirs_update_gtk():
+        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE and MATE """
+        path = os.path.join(DEST_DIR, "etc/xdg/user-dirs-update-gtk.desktop")
+        with open(path, 'r') as user_dirs:
+            lines = user_dirs.readlines()
+        with open(path, 'w') as user_dirs:
+            for line in lines:
+                if "OnlyShowIn=" in line:
+                    line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;Mate\n"
+                user_dirs.write(line)
+
+
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1154,6 +1167,10 @@ class Installation(object):
             logging.error(txt , process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
+
+        # Patch user-dirs-update-gtk.desktop
+        self.patch_user_dirs_update_gtk()
+        logging.debug("File user-dirs-update-gtk.desktop patched.")
 
         # Set lightdm config including autologin if selected
         if self.desktop != "base":
