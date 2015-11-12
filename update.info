@@ -1,4 +1,4 @@
-{"version":"0.13.152","files":[
+{"version":"0.13.153","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -67,7 +67,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"6aa29df363ec625553ad7bcbc97c00e0"},
 {"name":"/usr/share/cnchi/cnchi/installation/chroot.py","md5":"7edec2767eccd6694c72032066700c7c"},
 {"name":"/usr/share/cnchi/cnchi/installation/firewall.py","md5":"08f82ba34046e44aeda321bca92b7375"},
-{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"ad97980aa71317d8c0b44a36b9e5e29c"},
+{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"01a272e48547faf48eced63ff0738f1c"},
 {"name":"/usr/share/cnchi/cnchi/installation/lamp.py","md5":"975b81c50a2ca98efb6d348dff500f40"},
 {"name":"/usr/share/cnchi/cnchi/installation/lemp.py","md5":"4ff693315fc0b7a7420261c7f0a18b56"},
 {"name":"/usr/share/cnchi/cnchi/installation/mkinitcpio.py","md5":"2064e1b965e6a3900e52f4bb5d0ee3a0"},

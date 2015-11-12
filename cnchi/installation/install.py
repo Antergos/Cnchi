@@ -883,7 +883,7 @@ class Installation(object):
     @staticmethod
     def patch_user_dirs_update_gtk():
         """ Patches user-dirs-update-gtk.desktop so it is run in XFCE and MATE """
-        path = os.path.join(DEST_DIR, "etc/xdg/user-dirs-update-gtk.desktop")
+        path = os.path.join(DEST_DIR, "etc/xdg/autostart/user-dirs-update-gtk.desktop")
         with open(path, 'r') as user_dirs:
             lines = user_dirs.readlines()
         with open(path, 'w') as user_dirs:
