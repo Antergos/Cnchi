@@ -1139,6 +1139,7 @@ class Installation(object):
             username,
             DEST_DIR,
             self.desktop,
+            locale,
             str(self.vbox),
             keyboard_layout]
         # Keyboard variant is optional

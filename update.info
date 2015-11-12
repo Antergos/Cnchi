@@ -1,4 +1,4 @@
-{"version":"0.13.150","files":[
+{"version":"0.13.151","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -67,7 +67,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/automatic.py","md5":"6aa29df363ec625553ad7bcbc97c00e0"},
 {"name":"/usr/share/cnchi/cnchi/installation/chroot.py","md5":"7edec2767eccd6694c72032066700c7c"},
 {"name":"/usr/share/cnchi/cnchi/installation/firewall.py","md5":"08f82ba34046e44aeda321bca92b7375"},
-{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"e4a466ec8f9dfdc1f58ebd9ba36a61d2"},
+{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"6c53f0780ec2cb43085c83c7990bd554"},
 {"name":"/usr/share/cnchi/cnchi/installation/lamp.py","md5":"975b81c50a2ca98efb6d348dff500f40"},
 {"name":"/usr/share/cnchi/cnchi/installation/lemp.py","md5":"4ff693315fc0b7a7420261c7f0a18b56"},
 {"name":"/usr/share/cnchi/cnchi/installation/mkinitcpio.py","md5":"2064e1b965e6a3900e52f4bb5d0ee3a0"},
@@ -461,7 +461,7 @@
 {"name":"/usr/share/cnchi/scripts/ckbcomp","md5":"f142ff9e4bcfc7f13cc5ebc16424321e"},
 {"name":"/usr/share/cnchi/scripts/enlightenment_remote","md5":"8b8117de8a7f908359d74b029a971a24"},
 {"name":"/usr/share/cnchi/scripts/fonts.conf","md5":"b4ca88881777849e653db73330cc90ef"},
-{"name":"/usr/share/cnchi/scripts/postinstall.sh","md5":"a9af5c9c450b22fef68d8ee3ef537bcc"},
+{"name":"/usr/share/cnchi/scripts/postinstall.sh","md5":"a57910d9a6c8ddc2a5b42d8e8da87ea2"},
 {"name":"/usr/share/cnchi/scripts/set-settings","md5":"94dce80e44e7383fbc56e08c393bbe64"},
 {"name":"/usr/share/cnchi/scripts/testing.sh","md5":"eee24e04b1b2fbec46d58e7a677bcba4"},
 {"name":"/usr/share/cnchi/scripts/postinstall/50-cros-touchpad.conf","md5":"701985fd7f7c77e3017da82cb4921881"},
