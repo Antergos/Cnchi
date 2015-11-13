@@ -882,14 +882,14 @@ class Installation(object):
 
     @staticmethod
     def patch_user_dirs_update_gtk():
-        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE and MATE """
+        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE, MATE and Cinnamon """
         path = os.path.join(DEST_DIR, "etc/xdg/autostart/user-dirs-update-gtk.desktop")
         with open(path, 'r') as user_dirs:
             lines = user_dirs.readlines()
         with open(path, 'w') as user_dirs:
             for line in lines:
                 if "OnlyShowIn=" in line:
-                    line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;Mate\n"
+                    line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
                 user_dirs.write(line)
 
 
