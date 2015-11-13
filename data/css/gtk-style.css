@@ -1,7 +1,8 @@
 #main {
-    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
+    font-family: 'Lato';
     font-size: 11px;
 }
+
 
 #location {
     font-size: 11px;
@@ -21,14 +22,16 @@ GtkWindow {
     color: #2EA3F2;
     font-size: 11px;
     font-weight: 600;
-    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
+    font-family: 'Lato';
     text-shadow: 0px 1px 0px #222;
 }
 
+.label.subtitle,
+#header .subtitle,
 .subtitle {
     font-size: 13px;
     font-weight: 400;
-    font-family: 'Lato', 'Droid Sans', 'DejaVu Sans', sans-serif;
+    font-family: 'Lato';
     color: #eee;
 }
 
@@ -39,7 +42,7 @@ GtkWindow {
     background-size: 100% 100%;
     border-bottom: 0px;
     border-color: transparent;
-    font-family: Lato, 'DejaVu Sans', Helvetica, sans-serif;
+    font-family: Lato;
     padding: 8px 12px;
 }
 
@@ -209,10 +212,6 @@ GtkTreeView row:selected {
 
 #slides GtkScrolledWindow {
     border: none;
-}
-
-#main_box {
-    margin-bottom: 0px;
 }
 
 StateBox {

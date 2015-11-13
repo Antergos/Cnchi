@@ -132,6 +132,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
+        # self.main_box.set_property('width_request', 800)
 
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
