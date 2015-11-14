@@ -337,7 +337,9 @@ class HardwareInstall(object):
 
 ''' Test case '''
 if __name__ == "__main__":
-    def _(x): return x
+    def _(x):
+        return x
+
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
@@ -346,22 +348,3 @@ if __name__ == "__main__":
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)
-
-    """
-    from nvidia import Nvidia
-    if Nvidia().detect():
-        print("Nvidia detected")
-    # Nvidia().post_install("/")
-
-    from nvidia_340xx import Nvidia_340xx
-    if Nvidia_340xx().detect():
-        print("Nvidia-340xx detected")
-
-    from nvidia_304xx import Nvidia_304xx
-    if Nvidia_304xx().detect():
-        print("nvidia-304xx detected")
-
-    from catalyst import Catalyst
-    if Catalyst().detect():
-        print("Catalyst detected")
-    """
