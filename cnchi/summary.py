@@ -146,9 +146,11 @@ class Summary(GtkBaseBox):
         page = "installation_" + self.settings.get('partition_mode')
         try:
             install_screen = self.main_window.pages[page]
-        except AttributeError:
+        except (AttributeError, KeyError) as page_error:
+            logging.error("Can't find installation page called {0}", page)
             install_screen = None
-        return install_screen
+        finally:
+            return install_screen
 
     def prepare(self, direction):
         """ Load screen """

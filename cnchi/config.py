@@ -87,7 +87,7 @@ class Settings(object):
             'luks_root_password': "",
             'luks_root_volume': "",
             'luks_root_device': "",
-            'partition_mode': 'easy',
+            'partition_mode': 'automatic',
             'password': '',
             'rankmirrors_done': False,
             'rankmirrors_result': '',

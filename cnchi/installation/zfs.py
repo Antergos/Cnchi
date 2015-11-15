@@ -342,6 +342,7 @@ class InstallationZFS(GtkBaseBox):
             status = not obj.get_sensitive()
             obj.set_sensitive(status)
         self.zfs_options["encrypt_disk"] = status
+        self.settings.set('use_luks', status)
 
     def on_pool_name_btn_toggled(self, widget):
         obj = self.ui.get_object('pool_name_entry')
@@ -367,6 +368,8 @@ class InstallationZFS(GtkBaseBox):
             self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare(self, direction):
+        self.zfs_options['encrypt_disk'] = self.settings.get('use_luks')
+
         self.translate_ui()
         self.fill_device_list()
         self.show_all()

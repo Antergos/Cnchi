@@ -132,6 +132,7 @@ class InstallationAsk(GtkBaseBox):
         '''
         # By default, select automatic installation
         self.next_page = "installation_automatic"
+        self.settings.set("partition_mode", "automatic")
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
