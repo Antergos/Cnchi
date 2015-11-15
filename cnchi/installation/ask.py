@@ -134,6 +134,8 @@ class InstallationAsk(GtkBaseBox):
         self.next_page = "installation_automatic"
         self.settings.set("partition_mode", "automatic")
 
+        self.is_zfs_available = None
+
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
         Alongside only works when Windows is installed on sda  """
@@ -185,11 +187,13 @@ class InstallationAsk(GtkBaseBox):
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
 
-        is_zfs_available = load_zfs()
+        if self.is_zfs_available == None:
+            self.is_zfs_available = load_zfs()
+
         names = ["zfs_checkbutton", "zfs_label"]
         for name in names:
             obj = self.ui.get_object(name)
-            obj.set_sensitive(status and is_zfs_available)
+            obj.set_sensitive(status and self.is_zfs_available)
 
     def prepare(self, direction):
         """ Prepares screen """
@@ -199,28 +203,7 @@ class InstallationAsk(GtkBaseBox):
         if not self.settings.get('enable_alongside'):
             self.hide_option("alongside")
 
-        if not load_zfs():
-            self.disable_option("zfs")
-
         self.forward_button.set_sensitive(True)
-
-    def disable_option(self, option):
-        """ Disables widgets """
-        widgets = []
-        if option == "alongside":
-            widgets = [
-                "alongside_radiobutton",
-                "alongside_description",
-                "alongside_image"]
-        elif option == "zfs":
-            widgets = [
-                "zfs_checkbutton",
-                "zfs_label"]
-
-        for name in widgets:
-            widget = self.ui.get_object(name)
-            if widget is not None:
-                widget.set_sensitive(False)
 
     def hide_option(self, option):
         """ Hides widgets """
@@ -230,10 +213,6 @@ class InstallationAsk(GtkBaseBox):
                 "alongside_radiobutton",
                 "alongside_description",
                 "alongside_image"]
-        elif option == "zfs":
-            widgets = [
-                "zfs_checkbutton",
-                "zfs_label"]
 
         for name in widgets:
             widget = self.ui.get_object(name)

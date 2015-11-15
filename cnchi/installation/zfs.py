@@ -182,15 +182,25 @@ class InstallationZFS(GtkBaseBox):
     def translate_ui(self):
         self.header.set_subtitle(_("ZFS Setup"))
 
-        entry = self.ui.get_object('pool_name_entry')
-        entry.set_sensitive(self.zfs_options["use_pool_name"])
+        # Encrypt disk checkbox
+        btn = self.ui.get_object("encrypt_disk_btn")
+        btn.set_active(self.zfs_options["encrypt_disk"])
 
+        # Disable/Enable Encrypt disk options entries
         entries = [
             'password_entry', 'password_check_entry',
             'password_lbl', 'password_check_lbl']
         for name in entries:
             entry = self.ui.get_object(name)
             entry.set_sensitive(self.zfs_options["encrypt_disk"])
+
+        # Pool name checkbox
+        btn = self.ui.get_object("pool_name_btn")
+        btn.set_active(self.zfs_options["use_pool_name"])
+
+        # Disable/Enable Pool name entry
+        entry = self.ui.get_object('pool_name_entry')
+        entry.set_sensitive(self.zfs_options["use_pool_name"])
 
         # Set pool type label text
         lbl = self.ui.get_object('pool_type_label')
@@ -220,6 +230,7 @@ class InstallationZFS(GtkBaseBox):
                 active_index = index
         combo.set_active(active_index)
 
+        # Set all labels
         lbl = self.ui.get_object('password_check_lbl')
         lbl.set_markup(_("Validate password"))
 
@@ -229,10 +240,7 @@ class InstallationZFS(GtkBaseBox):
         lbl = self.ui.get_object('swap_size_lbl')
         lbl.set_markup(_("Swap size (MB)"))
 
-        swap_size = str(self.zfs_options["swap_size"])
-        entry = self.ui.get_object("swap_size_entry")
-        entry.set_text(swap_size)
-
+        # Set button labels
         btn = self.ui.get_object('encrypt_swap_btn')
         btn.set_label(_("Encrypt swap"))
 
@@ -244,6 +252,11 @@ class InstallationZFS(GtkBaseBox):
 
         btn = self.ui.get_object('force_4k_btn')
         btn.set_label(_("Force ZFS 4k block size"))
+
+        # Set swap Size
+        swap_size = str(self.zfs_options["swap_size"])
+        entry = self.ui.get_object("swap_size_entry")
+        entry.set_text(swap_size)
 
     def check_pool_type(self, show_warning=False):
         """ Check that the user has selected the right number
@@ -337,13 +350,14 @@ class InstallationZFS(GtkBaseBox):
         self.zfs_options["encrypt_swap"] = not self.zfs_options["encrypt_swap"]
 
     def on_encrypt_disk_btn_toggled(self, widget):
+        status = widget.get_active()
+
         names = [
             'password_entry', 'password_check_entry',
             'password_lbl', 'password_check_lbl']
 
         for name in names:
             obj = self.ui.get_object(name)
-            status = not obj.get_sensitive()
             obj.set_sensitive(status)
         self.zfs_options["encrypt_disk"] = status
         self.settings.set('use_luks', status)
