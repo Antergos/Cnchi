@@ -93,7 +93,7 @@ class Slides(GtkBaseBox):
 
             self.scrolled_window.add(self.web_view)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-            self.scrolled_window.set_size_request(800, 324)
+            self.scrolled_window.set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
