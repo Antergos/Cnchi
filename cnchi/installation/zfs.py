@@ -78,7 +78,6 @@ class InstallationZFS(GtkBaseBox):
         # Set zfs default options
         self.zfs_options = {
             "force_4k": False,
-            "pool_name": "",
             "encrypt_swap": False,
             "encrypt_disk": False,
             "encrypt_password": "",
@@ -180,7 +179,23 @@ class InstallationZFS(GtkBaseBox):
 
         self.device_list.set_model(self.device_list_store)
 
-    def fill_pool_types_combo(self):
+    def translate_ui(self):
+
+        entry = self.ui.get_object('pool_name_entry')
+        entry.set_sensitive(self.zfs_options["use_pool_name"])
+
+        entries = [
+            'password_entry', 'password_check_entry',
+            'password_lbl', 'password_check_lbl']
+        for name in entries:
+            entry = self.ui.get_object(name)
+            entry.set_sensitive(self.zfs_options["encrypt_disk"])
+
+        # Set pool type label text
+        lbl = self.ui.get_object('pool_type_label')
+        lbl.set_markup(_("Pool type"))
+
+        # Fill pool types combobox
         combo = self.ui.get_object('pool_type_combo')
         combo.remove_all()
         active_index = 0
@@ -190,23 +205,11 @@ class InstallationZFS(GtkBaseBox):
                 active_index = index
         combo.set_active(active_index)
 
-    def translate_ui(self):
-        # Disable objects
-        entries = [
-            'pool_name_entry', 'password_entry', 'password_check_entry',
-            'password_lbl', 'password_check_lbl']
-        for name in entries:
-            entry = self.ui.get_object(name)
-            entry.set_sensitive(False)
-
-        lbl = self.ui.get_object('pool_type_label')
-        lbl.set_markup(_("Pool type"))
-
-        self.fill_pool_types_combo()
-
+        # Set partition scheme label text
         lbl = self.ui.get_object('partition_scheme_label')
         lbl.set_markup(_("Partition scheme"))
 
+        # Fill partition scheme combobox
         combo = self.ui.get_object('partition_scheme_combo')
         combo.remove_all()
         active_index = 0
