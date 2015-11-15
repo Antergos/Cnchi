@@ -591,7 +591,7 @@ class InstallationZFS(GtkBaseBox):
         # Create the root zpool
         device_paths = self.zfs_options["device_paths"]
         if len(device_paths) <= 0:
-            txt = _("No devices were selected for ZFS")
+            txt = _("No devices were selected for the ZFS pool")
             raise InstallError(txt)
 
         device_path = device_paths[0]
@@ -600,7 +600,15 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(["modprobe", "zfs"])
 
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
-        device_id = self.ids[device_path]
+        device = dest_path.split("/")[-1]
+        device_id = self.ids.get(device, None)
+
+        if device_id == None:
+            txt = "Error while creating ZFS pool: Cannot find device {0}".format(device)
+            raise InstallError(txt)
+
+        logging.debug("Cnchi will create a ZFS pool in {0}".format(device_id))
+
         cmd = ["zpool", "create"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
