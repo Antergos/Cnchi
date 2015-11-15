@@ -180,6 +180,7 @@ class InstallationZFS(GtkBaseBox):
         self.device_list.set_model(self.device_list_store)
 
     def translate_ui(self):
+        self.header.set_subtitle(_("ZFS Setup"))
 
         entry = self.ui.get_object('pool_name_entry')
         entry.set_sensitive(self.zfs_options["use_pool_name"])

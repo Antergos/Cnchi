@@ -399,19 +399,19 @@ class InstallationAsk(GtkBaseBox):
 
     def store_values(self):
         """ Store selected values """
-        check = self.ui.get_object("encrypt_checkbutton")
-        use_luks = check.get_active()
-
-        check = self.ui.get_object("lvm_checkbutton")
-        use_lvm = check.get_active()
-
-        check = self.ui.get_object("zfs_checkbutton")
-        use_zfs = check.get_active()
-
-        check = self.ui.get_object("home_checkbutton")
-        use_home = check.get_active()
-
         if self.next_page == "installation_automatic":
+            check = self.ui.get_object("encrypt_checkbutton")
+            use_luks = check.get_active()
+
+            check = self.ui.get_object("lvm_checkbutton")
+            use_lvm = check.get_active()
+
+            check = self.ui.get_object("zfs_checkbutton")
+            use_zfs = check.get_active()
+
+            check = self.ui.get_object("home_checkbutton")
+            use_home = check.get_active()
+
             self.settings.set('use_lvm', use_lvm)
             self.settings.set('use_luks', use_luks)
             self.settings.set('use_luks_in_root', True)
@@ -424,6 +424,7 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_luks', False)
             self.settings.set('use_luks_in_root', False)
             self.settings.set('luks_root_volume', "")
+            self.settings.set('use_zfs', False)
             self.settings.set('use_home', False)
 
         if not self.settings.get('use_zfs'):
