@@ -432,8 +432,7 @@ class InstallationAsk(GtkBaseBox):
                 logging.info("Antergos will be installed using LVM volumes")
                 if self.settings.get('use_home'):
                     logging.info("Antergos will be installed using a separate /home volume.")
-            else:
-                self.settings.get('use_home')
+            elif self.settings.get('use_home'):
                 logging.info("Antergos will be installed using a separate /home partition.")
         else:
             logging.info("Antergos will be installed using ZFS")
