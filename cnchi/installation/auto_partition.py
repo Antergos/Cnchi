@@ -180,7 +180,7 @@ def remove_lvm(device):
             for pvolume in pvolumes:
                 pvolume = pvolume.strip(" ")
                 if device in pvolume:
-                    subprocess.check_call(["pvremove", "-f", pvolume])
+                    subprocess.check_call(["pvremove", "-ff", pvolume])
     except subprocess.CalledProcessError as err:
         logging.warning("Can't delete existent LVM volumes in device %s, command %s failed: %s", device, err.cmd, err.output)
 
