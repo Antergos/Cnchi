@@ -600,7 +600,7 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(["modprobe", "zfs"])
 
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
-        device = dest_path.split("/")[-1]
+        device = device_path.split("/")[-1]
         device_id = self.ids.get(device, None)
 
         if device_id == None:
