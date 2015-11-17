@@ -261,7 +261,7 @@ def check_gtk_version():
             import show_message as show
             show.error(None, text)
         except ImportError as import_error:
-            logging.error(text)
+            logging.error(import_error)
         finally:
             return False
     else:
@@ -283,7 +283,7 @@ def check_pyalpm_version():
             import show_message as show
             show.error(None, err)
         except ImportError as import_error:
-            logging.error(text)
+            logging.error(import_error)
         finally:
             logging.error(err)
             return False
