@@ -445,10 +445,13 @@ postinstall() {
 	## Set desktop-specific settings
 	"${CN_DESKTOP}_settings"
 
-	# Set BROWSER var
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/environment"
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/skel/.bashrc"
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/profile"
+	# Set some environment vars
+	for file in "${CN_DESTDIR}/etc/environment" "${CN_DESTDIR}/etc/skel/.bashrc" "${CN_DESTDIR}/etc/profile"
+	do
+		echo "# >>>>ADDED BY CNCHI INSTALLER<<<< #"
+		echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
+		echo "EDITOR=/usr/bin/nano" >> "${file}"
+	done
 
 	# Configure makepkg so that it doesn't compress packages after building.
 	# Most users are building packages to install them locally so there's no need for compression.
@@ -461,7 +464,7 @@ postinstall() {
 	chroot "${CN_DESTDIR}" chown -R "${CN_USER_NAME}:users" "/home/${CN_USER_NAME}"
 
 	# Start vbox client services if we are installed in vbox
-	if [[ ${CN_IS_VBOX} ]] || [[ ${CN_IS_VBOX} = 0 ]] || [[ ${CN_IS_VBOX} = "True" ]]; then
+	if [[ ${CN_IS_VBOX} = "True" ]]; then
 		sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' "${CN_DESTDIR}/etc/lightdm/Xsession"
 	fi
 
