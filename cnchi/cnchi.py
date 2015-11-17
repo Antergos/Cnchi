@@ -63,7 +63,7 @@ LOCALE_DIR = "/usr/share/locale"
 cmd_line = None
 
 # At least this GTK version is needed
-GTK_VERSION_NEEDED = "3.16.0"
+GTK_VERSION_NEEDED = "3.18.0"
 
 
 class CnchiApp(Gtk.Application):
@@ -261,8 +261,9 @@ def check_gtk_version():
             import show_message as show
             show.error(None, text)
         except ImportError as import_error:
-            logging.info(text)
-        return False
+            logging.error(text)
+        finally:
+            return False
     else:
         logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
 
@@ -278,8 +279,14 @@ def check_pyalpm_version():
         txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
         logging.info(txt)
     except (NameError, ImportError) as err:
-        logging.error(err)
-        sys.exit(1)
+        try:
+            import show_message as show
+            show.error(None, err)
+        except ImportError as import_error:
+            logging.error(text)
+        finally:
+            logging.error(err)
+            return False
 
     return True
 
