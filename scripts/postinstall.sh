@@ -444,10 +444,13 @@ postinstall() {
 	## Set desktop-specific settings
 	"${CN_DESKTOP}_settings"
 
-	# Set BROWSER var
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/environment"
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/skel/.bashrc"
-	echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${CN_DESTDIR}/etc/profile"
+	# Set some environment vars
+	for file in "${CN_DESTDIR}/etc/environment" "${CN_DESTDIR}/etc/skel/.bashrc" "${CN_DESTDIR}/etc/profile"
+	do
+		echo "# >>>>ADDED BY CNCHI INSTALLER<<<< #"
+		echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
+		echo "EDITOR=/usr/bin/nano" >> "${file}"
+	done
 
 	# Configure makepkg so that it doesn't compress packages after building.
 	# Most users are building packages to install them locally so there's no need for compression.
