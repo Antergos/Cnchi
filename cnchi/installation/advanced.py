@@ -1156,8 +1156,9 @@ class InstallationAdvanced(GtkBaseBox):
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
                 elif radio["extended"].get_active():
                     # Not mounting extended partitions.
-                    if mymount and mymount in self.diskdic['mounts']:
-                        self.diskdic['mounts'].remove(mymount)
+                    if mymount:
+                        if mymount in self.diskdic['mounts']:
+                            self.diskdic['mounts'].remove(mymount)
                         mymount = ''
                     # And no labeling either
                     mylabel = ''
