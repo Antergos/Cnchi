@@ -131,44 +131,11 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
-        # Load create and edit partition dialogs
+        # Create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
-        # setup_luks freezes our UI completely. It's no use to try to use a progressbar
-        # self.advanced_progressbar = self.ui.get_object('advanced_progressbar')
-
-        # Initialize our create partition dialog filesystems' combo.
-        combo = self.ui.get_object('create_partition_use_combo')
-        combo.remove_all()
-        for fs_name in sorted(fs.NAMES):
-            combo.append_text(fs_name)
-        combo.set_wrap_width(2)
-
-        # Initialize our edit partition dialog filesystems' combo.
-        combo = self.ui.get_object('edit_partition_use_combo')
-        combo.remove_all()
-        for fs_name in sorted(fs.NAMES):
-            combo.append_text(fs_name)
-        combo.set_wrap_width(2)
-
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")
-
-        # Automatically select first entry
-        self.select_first_combobox_item(combo)
-
-        # Initialize our create and edit partition dialog mount points' combo.
-        mount_combos = [self.ui.get_object('create_partition_mount_combo'),
-                        self.ui.get_object('edit_partition_mount_combo')]
-
-        for combo in mount_combos:
-            combo.remove_all()
-            for mount_point in fs.COMMON_MOUNT_POINTS:
-                combo.append_text(mount_point)
+        self.initialize_widgets()
 
         self.bootloader = "grub2"
         self.bootloader_device = ""
@@ -217,6 +184,33 @@ class InstallationAdvanced(GtkBaseBox):
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
+
+    def initialize_widgets(self):
+        # Initialize our create/edit partition dialogs filesystems combos.
+        names = ['create_partition_use_combo', 'edit_partition_use_combo']
+        for name in names:
+            combo = self.ui.get_object(name)
+            combo.remove_all()
+            for fs_name in sorted(fs.NAMES):
+                combo.append_text(fs_name)
+            combo.set_wrap_width(2)
+
+        # Initialize partition_types_combo
+        combo = self.ui.get_object('partition_types_combo')
+        combo.remove_all()
+        combo.append_text("msdos (MBR)")
+        combo.append_text("GUID Partition Table (GPT)")
+
+        # Automatically select first entry
+        self.select_first_combobox_item(combo)
+
+        # Initialize our create and edit partition dialog mount points' combo.
+        names = ['create_partition_mount_combo', 'edit_partition_mount_combo']
+        for name in names:
+            combo = self.ui.get_object(name)
+            combo.remove_all()
+            for mount_point in fs.COMMON_MOUNT_POINTS:
+                combo.append_text(mount_point)
 
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -754,14 +748,21 @@ class InstallationAdvanced(GtkBaseBox):
         # Select the fs in dialog combobox
         combo = self.ui.get_object('edit_partition_use_combo')
         combo_model = combo.get_model()
-        combo_iter = combo_model.get_iter_first()
-        while combo_iter is not None:
-            combo_row = combo_model[combo_iter]
-            if combo_row[0] and combo_row[0] in row[COL_FS]:
-                combo.set_active_iter(combo_iter)
-                combo_iter = None
-            else:
-                combo_iter = combo_model.iter_next(combo_iter)
+        if combo_model is None:
+            """ Issue 451 : combo_model is None
+                Can't reproduce it here. Let's try to reload combo contents """
+            self.initialize_widgets()
+            combo_model = combo.get_model()
+
+        if combo_model:
+            combo_iter = combo_model.get_iter_first()
+            while combo_iter is not None:
+                combo_row = combo_model[combo_iter]
+                if combo_row[0] and combo_row[0] in row[COL_FS]:
+                    combo.set_active_iter(combo_iter)
+                    combo_iter = None
+                else:
+                    combo_iter = combo_model.iter_next(combo_iter)
 
         # Set the mount point in dialog combobox
         mount_combo_entry = self.ui.get_object('edit_partition_mount_combo_entry')
