@@ -1,4 +1,4 @@
-{"version":"0.13.171","files":[
+{"version":"0.13.172","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -25,7 +25,7 @@
 {"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"90716e53c8011cd82637d1dc568c787a"},
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"56bc690fa3254cb755e08921384ebc6a"},
 {"name":"/usr/share/cnchi/cnchi/show_message.py","md5":"ee545450238f92a5a1a299aa68536657"},
-{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"35707badc7b0d91d8575a4aad9353f60"},
+{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"0679b93e3ade86bce916c6cf7ceec1d3"},
 {"name":"/usr/share/cnchi/cnchi/summary.py","md5":"e9e613055051e3e83179ee4a52e2b5e4"},
 {"name":"/usr/share/cnchi/cnchi/test_hardware_module.py","md5":"98011bcd476f7ded18a33142872ede3c"},
 {"name":"/usr/share/cnchi/cnchi/test_screen.py","md5":"025e594a31e2676b6dbf02280410cabf"},

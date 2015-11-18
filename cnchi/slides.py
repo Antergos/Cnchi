@@ -148,8 +148,7 @@ class Slides(GtkBaseBox):
             GLib.timeout_add(100, pbar_pulse)
 
     def manage_events_from_cb_queue(self):
-        """ We should do as less as possible here, we want to maintain our
-            queue message as empty as possible """
+        """ We should be quick here and do as less as possible """
 
         if self.fatal_error:
             return False
@@ -160,7 +159,14 @@ class Slides(GtkBaseBox):
         while not self.callback_queue.empty():
             try:
                 event = self.callback_queue.get_nowait()
+            except ValueError as queue_error:
+                # Calling get_nowait so many times can issue a ValueError
+                # exception with this error: semaphore or lock released too many times
+                # Log it anyways to keep an eye on this error
+                logging.error(queue_error)
+                return True
             except queue.Empty:
+                # Queue is empty, just quit.
                 return True
 
             if event[0] == 'percent':
