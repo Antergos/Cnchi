@@ -1,4 +1,4 @@
-{"version":"0.13.174","files":[
+{"version":"0.13.175","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -72,7 +72,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/lemp.py","md5":"4ff693315fc0b7a7420261c7f0a18b56"},
 {"name":"/usr/share/cnchi/cnchi/installation/mkinitcpio.py","md5":"2064e1b965e6a3900e52f4bb5d0ee3a0"},
 {"name":"/usr/share/cnchi/cnchi/installation/process.py","md5":"5594e5581de636fb881d6f33a1354707"},
-{"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"77d4d6861524fda434593a22c0ad8aeb"},
+{"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"39235f17ce9841976c58473f0a1ae5ac"},
 {"name":"/usr/share/cnchi/cnchi/installation/systemd_networkd.py","md5":"7a973d20615a152852c9d9808dcb35fd"},
 {"name":"/usr/share/cnchi/cnchi/installation/wrapper.py","md5":"b31336445f1337f9c51caa0e5f86f89c"},
 {"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"4c0f93cc867a7a3806deffba115ae03d"},

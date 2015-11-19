@@ -253,6 +253,10 @@ class SelectPackages(object):
         except Exception as general_error:
             logging.warning("Unknown error in hardware module. Output: %s", general_error)
 
+        # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
+        if self.vbox and self.desktop == "base":
+            self.packages.append("virtualbox-guest-utils-nox")
+
         # Add filesystem packages
         logging.debug("Adding filesystem packages")
         for child in xml_root.iter("filesystems"):
