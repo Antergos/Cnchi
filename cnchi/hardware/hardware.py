@@ -83,6 +83,10 @@ class Hardware(object):
 
     def detect(self):
         """ Tries to guess if a device suitable for this driver is present """
+
+        if not self.enabled:
+            return False
+
         # Get PCI devices
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:

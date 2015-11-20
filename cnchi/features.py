@@ -107,12 +107,12 @@ class Features(GtkBaseBox):
 
         # Only add graphic-driver feature if an AMD or Nvidia is detected
         # FIXME: Conflict between lib32-nvidia-libgl and lib32-mesa-libgl
-        #if "graphic_drivers" in self.features:
-        #    if not self.amd_detected() and not self.nvidia_detected():
-        #        logging.debug("Neither nvidia nor amd have been detected. Removing proprietary graphic driver feature")
-        #        self.features.remove("graphic_drivers")
         if "graphic_drivers" in self.features:
-            self.features.remove("graphic_drivers")
+            if not self.amd_detected() and not self.nvidia_detected():
+                logging.debug("Neither NVidia nor AMD have been detected.")
+                self.features.remove("graphic_drivers")
+        #if "graphic_drivers" in self.features:
+        #    self.features.remove("graphic_drivers")
 
         for feature in self.features:
             box = Gtk.Box(spacing=20)
@@ -299,7 +299,8 @@ class Features(GtkBaseBox):
             toallow = misc.get_network()
             txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\nufw allow SSH").format(toallow)
         else:
-            txt1 = txt2 = ""
+            # No message
+            return
 
         txt1 = "<big>{0}</big>".format(txt1)
         txt2 = "<i>{0}</i>".format(txt2)

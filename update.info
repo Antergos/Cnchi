@@ -1,4 +1,4 @@
-{"version":"0.13.176","files":[
+{"version":"0.13.177","files":[
 {"name":"/usr/share/cnchi/run","md5":"0a596937cb44f6a1759b6d1710611dc0"},
 {"name":"/usr/share/cnchi/changelog.txt","md5":"fe6eb3113e6dd0d39c30c257f946b265"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
@@ -408,7 +408,7 @@
 {"name":"/usr/share/cnchi/cnchi/gtkbasebox.py","md5":"be94f7c83b32e9e5e8476890f0c07143"},
 {"name":"/usr/share/cnchi/cnchi/keymap.py","md5":"b94785ad31be810b6dc793c39e8f3427"},
 {"name":"/usr/share/cnchi/cnchi/main_window.py","md5":"56184275378abc005af0a06eb9f9bf77"},
-{"name":"/usr/share/cnchi/cnchi/features.py","md5":"255cde4726ce8108103b6917f020be4a"},
+{"name":"/usr/share/cnchi/cnchi/features.py","md5":"8437bf112d069b98368db139b5ee11bd"},
 {"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"90716e53c8011cd82637d1dc568c787a"},
 {"name":"/usr/share/cnchi/cnchi/download/metalink.py","md5":"b5e96c3d4dbb06d236f6766c2215a71b"},
 {"name":"/usr/share/cnchi/cnchi/download/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
@@ -472,7 +472,7 @@
 {"name":"/usr/share/cnchi/cnchi/hardware/nouveau.py","md5":"245d38906b5c1649f2d2d0a6692dae75"},
 {"name":"/usr/share/cnchi/cnchi/hardware/fingerprint.py","md5":"cd932c3259e246f5b977f1baf00a65d5"},
 {"name":"/usr/share/cnchi/cnchi/hardware/nvidia_340xx.py","md5":"60ed4e811c600288a23213ec4c6ceb8b"},
-{"name":"/usr/share/cnchi/cnchi/hardware/hardware.py","md5":"94eee1ec785e2282f97e898521466438"},
+{"name":"/usr/share/cnchi/cnchi/hardware/hardware.py","md5":"ca08618c5b352bb782c53c25daba1a9a"},
 {"name":"/usr/share/cnchi/cnchi/hardware/nvidia_304xx.py","md5":"e6d439aacbc10d77fe528d43a0ec73ab"},
 {"name":"/usr/share/cnchi/cnchi/hardware/radeon.py","md5":"a754ee5efdf07f101ad8c46ec78280bd"},
 {"name":"/usr/share/cnchi/cnchi/hardware/etouchscreen.py","md5":"0c447cd7faa8c2f3fdcdcba90738ba04"},
