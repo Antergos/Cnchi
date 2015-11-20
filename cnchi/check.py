@@ -131,7 +131,7 @@ class Check(GtkBaseBox):
         if self.checks_are_optional:
             return True
 
-        if has_internet and space and updated:
+        if has_internet and space:
             return True
 
         return False
