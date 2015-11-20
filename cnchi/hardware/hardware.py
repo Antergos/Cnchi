@@ -38,7 +38,7 @@ _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
-    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1, enabled=TRUE):
+    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1, enabled=True):
         self.class_name = class_name
         self.class_id = class_id
         self.vendor_id = vendor_id
