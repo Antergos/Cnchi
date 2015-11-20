@@ -1,4 +1,4 @@
-{"version":"0.13.183","files":[
+{"version":"0.13.184","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -104,7 +104,7 @@
 {"name":"/usr/share/cnchi/data/base.xml","md5":"628d442b44f17eb7da46d2b89466442b"},
 {"name":"/usr/share/cnchi/data/console-keymaps.txt","md5":"79a03b8f098cf98694d4c14e75a2d89d"},
 {"name":"/usr/share/cnchi/data/keymaps.txt","md5":"30d3ef13e82d3aba61f16ae36e43d5af"},
-{"name":"/usr/share/cnchi/data/packages.xml","md5":"34cf0736078a1c68b955fd79496401b6"},
+{"name":"/usr/share/cnchi/data/packages.xml","md5":"fb2d7895a0a60ee6e051d23890de2d23"},
 {"name":"/usr/share/cnchi/data/pacman.tmpl","md5":"b87ee97fe97856668cd4c3e49cb7ecf9"},
 {"name":"/usr/share/cnchi/data/pci.ids","md5":"dd857f8b8f1a797a77fc8e512e32f092"},
 {"name":"/usr/share/cnchi/data/powerpill.json","md5":"547568178d3ad7072fa7e0c2734951e8"},
