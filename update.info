@@ -1,4 +1,4 @@
-{"version":"0.13.180","files":[
+{"version":"0.13.181","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -355,7 +355,7 @@
 {"name":"/usr/share/cnchi/data/js/jquery.min.js","md5":"e40ec2161fe7993196f23c8a07346306"},
 {"name":"/usr/share/cnchi/data/js/npm.js","md5":"ccb7f3909e30b1eb8f65a24393c6e12b"},
 {"name":"/usr/share/cnchi/data/locale/geonames-cities15000.txt.gz","md5":"9f885d4cc9f1d93db01d2b0e44d6c435"},
-{"name":"/usr/share/cnchi/data/locale/iso3366-1.xml","md5":"5334aee8f22a5e8df147e43754ecebde"},
+{"name":"/usr/share/cnchi/data/locale/iso3366-1.xml","md5":"10abc27fdfb646d41beeccdbe835da4a"},
 {"name":"/usr/share/cnchi/data/locale/languagelist.txt.gz","md5":"4fc6ba242a3ac557fd4d661721438a08"},
 {"name":"/usr/share/cnchi/data/locale/locales.xml","md5":"4b952a0291ba850bc6c57bdaf58ee8ce"},
 {"name":"/usr/share/cnchi/data/locale/timezones.xml","md5":"7de1c400a0f1ae6030d5a2082b51df4c"},
