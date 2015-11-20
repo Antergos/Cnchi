@@ -1,6 +1,10 @@
+[2015-11-18 18:47:17 +0100]  Merge pull request #460 from prescott66/patch-7                            karasu      {da8c410}
+[2015-11-16 19:01:28 -0600]  set editor env var in postinstall                                      Dustin Falgout  {0bce60a}
+[2015-11-13 12:49:46 -0600]  fix window size issues with new version of numix frost theme (cherr..  Dustin Falgout  {950e38c}
 [2015-11-11 16:23:16 -0600]  not really sure if it will help but it cant hurt so why not? anterg..  Dustin Falgout  {74ef943}
 [2015-11-11 16:22:30 -0600]  don't call blkid if part value is empty. Hopefully Fixes antergos/C..  Dustin Falgout  {3b8bf16}
 [2015-11-11 19:40:01 +0100]  Fix return identation. Could fix issue #422 (needs testing)                karasu      {4e58812}
+[2015-11-08 13:09:01 +0100]  Update cnchi.desktop                                                     Dušan Kazik   {eb85113}
 [2015-11-08 00:34:03 +0100]  Merge pull request #459 from artur9010/patch-1                             karasu      {eb262f8}
 [2015-11-07 22:29:29 +0100]  Update cnchi.desktop                                                        Artur      {3c25a49}
 [2015-10-30 23:53:27 -0500]  Merge pull request #456 from bubuntux/master                           Dustin Falgout  {077ed53}
