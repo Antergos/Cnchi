@@ -1,4 +1,4 @@
-{"version":"0.13.181","files":[
+{"version":"0.13.182","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -33,7 +33,7 @@
 {"name":"/usr/share/cnchi/cnchi/welcome.py","md5":"357a433ee1c1ea2d2a6617e26c371e8d"},
 {"name":"/usr/share/cnchi/cnchi/wireless.py","md5":"7bbbbea4d64869e855cb6db44d64057e"},
 {"name":"/usr/share/cnchi/cnchi/main_window.py","md5":"56184275378abc005af0a06eb9f9bf77"},
-{"name":"/usr/share/cnchi/cnchi/cnchi.py","md5":"993e4b2dafa65d00a497337e2ccc7cd2"},
+{"name":"/usr/share/cnchi/cnchi/cnchi.py","md5":"3a5b27847ce16f03425f16c84cf01716"},
 {"name":"/usr/share/cnchi/cnchi/features.py","md5":"82ea7eec0de01c7a7c3b5288d6d9bee2"},
 {"name":"/usr/share/cnchi/cnchi/download/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/download/download.py","md5":"4ea9876c5c22aed2960513871212722a"},

@@ -295,9 +295,16 @@ def check_iso_version():
     """ Hostname contains the ISO version """
     from socket import gethostname
     hostname = gethostname()
-    # TODO: Finish this!
-    #if "ANTERGOS" in hostname:
-    #    # We're running form the ISO
+    # antergos-year.month-iso
+    prefix = "antergos-"
+    suffix = "-iso"
+    if hostname.startswith(prefix) and hostname.endswith(suffix):
+        # We're running form the ISO, register which version.
+        version = hostname[len(prefix):-len(suffix)]
+        logging.debug("Running from ISO version %s", version)
+    else:
+        logging.debug("Not running from ISO")
+    return True
 
 
 def parse_options():
@@ -480,6 +487,10 @@ def init_cnchi():
 
     # Check installed pyalpm and libalpm versions
     if not check_pyalpm_version():
+        sys.exit(1)
+
+    # Check ISO version where Cnchi is running from
+    if not check_iso_version():
         sys.exit(1)
 
     # if not cmd_line.disable_update:
