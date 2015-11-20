@@ -41,6 +41,8 @@ CLASS_NAME = "CatalystLegacy"
 CLASS_ID = "0x03"
 VENDOR_ID = "0x1002"
 PRIORITY = 0
+# Disable this driver
+ENABLED = False
 
 """
 Since Catalyst 12.4, AMD has separated its development for Radeon HD 2xxx,
@@ -99,7 +101,7 @@ DEVICES = [
 
 class CatalystLegacy(Hardware):
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
 
     @staticmethod
     def get_packages():
