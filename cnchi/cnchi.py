@@ -291,6 +291,15 @@ def check_pyalpm_version():
     return True
 
 
+def check_iso_version():
+    """ Hostname contains the ISO version """
+    from socket import gethostname
+    hostname = gethostname()
+    # TODO: Finish this!
+    #if "ANTERGOS" in hostname:
+    #    # We're running form the ISO
+
+
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
 
