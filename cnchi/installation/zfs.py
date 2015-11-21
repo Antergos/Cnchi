@@ -585,9 +585,9 @@ class InstallationZFS(GtkBaseBox):
             logging.debug(" ".join(cmd))
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as err:
-            txt = "Command {0} has failed: {1}".format(err.cmd, err.stderr)
+            txt = "Command {0} has failed: {1}".format(err.cmd, err.stdout)
             logging.error(txt)
-            txt = _("Command {0} has failed: {1}").format(err.cmd, err.stderr)
+            txt = _("Command {0} has failed: {1}").format(err.cmd, err.stdout)
             raise InstallError(txt)
 
     def create_zfs_pool(self):
