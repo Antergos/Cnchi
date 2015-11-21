@@ -599,10 +599,14 @@ class InstallationZFS(GtkBaseBox):
 
         device = device_path.split("/")[-1]
         device_id = self.ids.get(device, None)
+        device_id_path = "/dev/disk/by-id/" + device_id
 
         if device_id == None:
             txt = "Error while creating ZFS pool: Cannot find device {0}".format(device)
             raise InstallError(txt)
+
+        cmd = ["zpool", "labelclear", "-f", device_id_path]
+        self.check_call(cmd)
 
         logging.debug("Cnchi will create a ZFS pool in {0}".format(device_id))
 
