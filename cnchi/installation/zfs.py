@@ -441,15 +441,7 @@ class InstallationZFS(GtkBaseBox):
             wrapper.sgdisk("clear", device_path)
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
-            try:
-                subprocess.check_call(["partprobe", device_path])
-            except subprocess.CalledProcessError as err:
-                txt = "Error informing the kernel of the partition change. "
-                "Command {0} failed: {1}".format(err.cmd, err.output)
-                logging.error(txt)
-                txt = _("Error informing the kernel of the partition change. "
-                "Command {0} failed: {1}").format(err.cmd, err.output)
-                raise InstallError(txt)
+            self.check_call(["partprobe", device_path])
         else:
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
@@ -459,6 +451,8 @@ class InstallationZFS(GtkBaseBox):
 
             # Create DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
+
+        self.check_call(["sync"])
 
     def append_change(self, action_type, device, info=""):
         if action_type == "create":
@@ -576,7 +570,8 @@ class InstallationZFS(GtkBaseBox):
                 wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
-        subprocess.check_call(["udevadm", "settle"])
+        self.check_call(["udevadm", "settle"])
+        self.check_call(["sync"])
 
         self.create_zfs_pool()
 
@@ -593,7 +588,7 @@ class InstallationZFS(GtkBaseBox):
     def create_zfs_pool(self):
         # Create the root zpool
         device_paths = self.zfs_options["device_paths"]
-        if len(device_paths) <= 0:
+        if not device_paths:
             txt = _("No devices were selected for the ZFS pool")
             raise InstallError(txt)
 
