@@ -41,6 +41,8 @@ import show_message as show
 from installation import wrapper
 from installation import action
 
+import parted3.fs_module as fs
+
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
 COL_USE_SENSITIVE = 2
@@ -512,6 +514,7 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
         device_path = device_paths[0]
+        solaris_partition_number = -1
 
         if self.zfs_options["scheme"] == "GPT":
             self.init_device(device_path, "GPT")
@@ -525,7 +528,10 @@ class InstallationZFS(GtkBaseBox):
                 # as there is no such embedding of the second-stage code in that case
                 wrapper.sgdisk_new(device_path, part_num, "BIOS_BOOT", 2, "EF02")
                 part_num += 1
+
+                # Create BOOT partition
                 wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
+                fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                 part_num += 1
             else:
                 # UEFI
@@ -534,14 +540,19 @@ class InstallationZFS(GtkBaseBox):
                     # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
                     wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
                     part_num += 1
+                    # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
+                    fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                     part_num += 1
                 else:
                     # systemd-boot, refind
+                    # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
+                    fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                     part_num += 1
 
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
+            solaris_partition_number = part_num
 
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
@@ -560,9 +571,16 @@ class InstallationZFS(GtkBaseBox):
             # Set boot partition as bootable
             wrapper.parted_set(device_path, "1", "boot", "on")
 
+            # Format the boot partition as well as any other system partitions.
+            # Do not do anything to the Solaris partition nor to the BIOS boot partition.
+            # ZFS will manage the first, and the bootloader the second.
+            fs.create_fs(device_path + "1", "ext4", "ANTERGOS_BOOT")
+
+            # The rest will be solaris type
             start = end
             end = "-1s"
             wrapper.parted_mkpart(device_path, "primary", start, end)
+            solaris_partition_number = 2
 
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
@@ -573,7 +591,7 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(["udevadm", "settle"])
         self.check_call(["sync"])
 
-        self.create_zfs_pool()
+        self.create_zfs_pool(solaris_partition_number)
 
     def check_call(self, cmd):
         try:
@@ -585,30 +603,42 @@ class InstallationZFS(GtkBaseBox):
             txt = _("Command {0} has failed: {1}").format(err.cmd, err.stdout)
             raise InstallError(txt)
 
-    def create_zfs_pool(self):
-        # Create the root zpool
+    def create_zfs_pool(self, solaris_partition_number):
+        """ Create the root zpool """
+
         device_paths = self.zfs_options["device_paths"]
         if not device_paths:
             txt = _("No devices were selected for the ZFS pool")
             raise InstallError(txt)
 
-        device_path = device_paths[0]
-
         # Make sure the ZFS modules are loaded
         self.check_call(["modprobe", "zfs"])
 
-        device = device_path.split("/")[-1]
-        device_id = self.ids.get(device, None)
-        device_id_path = "/dev/disk/by-id/" + device_id
+        first_disk = True
+        devices_ids = []
 
-        if device_id == None:
-            txt = "Error while creating ZFS pool: Cannot find device {0}".format(device)
-            raise InstallError(txt)
+        for device_path in device_paths:
+            device = device_path.split("/")[-1]
+            device_id = self.ids.get(device, None)
 
-        cmd = ["zpool", "labelclear", "-f", device_id_path]
-        self.check_call(cmd)
+            if device_id == None:
+                txt = "Error while creating ZFS pool: Cannot find device {0}".format(device)
+                raise InstallError(txt)
 
-        logging.debug("Cnchi will create a ZFS pool in {0}".format(device_id))
+            if first_disk:
+                # In system disk (first one) use just one partition
+                id_path = "/dev/disk/by-id/{0}-part{1}".format(device_id, solaris_partition_number)
+                first_disk = False
+            else:
+                # Use full device for the other disks
+                id_path = device_id
+                cmd = ["zpool", "labelclear", "-f", id_path]
+                self.check_call(cmd)
+
+            devices_ids.append(id_path)
+
+        line = " ".join(devices_ids)
+        logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
         try:
             os.mkdir(DEST_DIR, mode=0o755)
@@ -619,7 +649,8 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["-m", DEST_DIR, "antergos", device_id])
+        cmd.extend(["-m", DEST_DIR, "antergos"])
+        cmd.extend(devices_ids)
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
