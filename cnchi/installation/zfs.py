@@ -640,7 +640,11 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Finally, re-import the pool
-        cmd = ["zpool", "import", "-d", "/dev/disk/by-id", "-R", DEST_DIR, "antergos"]
+        cmd = [
+            "zpool", "import",
+            "-d", "/dev/disk/by-id",
+            "-R", DEST_DIR,
+            "antergos"]
         self.check_call(cmd)
 
         # Create zpool.cache file
