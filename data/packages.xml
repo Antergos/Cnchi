@@ -56,7 +56,7 @@
         <pkgname>libdvdcss</pkgname>
         <pkgname>libreoffice-installer</pkgname>
         <pkgname dm='true' name='lightdm'>lightdm</pkgname>
-        <pkgname>lightdm-webkit-theme-antergos</pkgname>
+        <pkgname>lightdm-webkit2-greeter</pkgname>
         <pkgname>mesa</pkgname>
         <pkgname>mesa-vdpau</pkgname>
         <pkgname>numix-frost-themes</pkgname>

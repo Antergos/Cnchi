@@ -1,3 +1,4 @@
+[2015-11-20 23:26:48 +0100]  Allow to continue even if it's not updated                                 karasu      {1fdd2b7}
 [2015-11-20 23:20:32 +0100]  zukitwo-themes is now zuki-themes                                          karasu      {19fa02b}
 [2015-11-18 18:47:17 +0100]  Merge pull request #460 from prescott66/patch-7                            karasu      {da8c410}
 [2015-11-16 19:01:28 -0600]  set editor env var in postinstall                                      Dustin Falgout  {0bce60a}
