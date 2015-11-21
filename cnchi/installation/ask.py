@@ -134,7 +134,9 @@ class InstallationAsk(GtkBaseBox):
         self.next_page = "installation_automatic"
         self.settings.set("partition_mode", "automatic")
 
-        self.is_zfs_available = None
+        self.is_zfs_available = load_zfs()
+        
+        self.enable_automatic_options(True)
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
@@ -186,9 +188,6 @@ class InstallationAsk(GtkBaseBox):
         for name in names:
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
-
-        if self.is_zfs_available == None:
-            self.is_zfs_available = load_zfs()
 
         names = ["zfs_checkbutton", "zfs_label"]
         for name in names:
