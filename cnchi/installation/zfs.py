@@ -599,7 +599,6 @@ class InstallationZFS(GtkBaseBox):
         # Make sure the ZFS modules are loaded
         self.check_call(["modprobe", "zfs"])
 
-        # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         device = device_path.split("/")[-1]
         device_id = self.ids.get(device, None)
 
@@ -609,10 +608,12 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Cnchi will create a ZFS pool in {0}".format(device_id))
 
+        # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         cmd = ["zpool", "create"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["antergos", device_id])
+        device_id_path = "/dev/disk/by-id/" + device_id
+        cmd.extend(["antergos", device_id_path])
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
