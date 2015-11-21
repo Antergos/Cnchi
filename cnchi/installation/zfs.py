@@ -627,8 +627,11 @@ class InstallationZFS(GtkBaseBox):
 
         # Create swap zvol
         cmd = [
-            "zfs", "create", "-f", "-V", "8G", "-b", os.sysconf("SC_PAGE_SIZE"),
-            "-o", "primarycache=metadata", "-o", "com.sun:auto-snapshot=false",
+            "zfs", "create", "-f",
+            "-V", "8G",
+            "-b", os.sysconf("SC_PAGE_SIZE"),
+            "-o", "primarycache=metadata",
+            "-o", "com.sun:auto-snapshot=false",
             "antergos/swap"]
         self.check_call(cmd)
 
