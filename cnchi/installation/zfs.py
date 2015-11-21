@@ -49,6 +49,9 @@ COL_SIZE = 4
 COL_DEVICE_NAME = 5
 COL_DISK_ID = 6
 
+DEST_DIR = "/install"
+
+
 def is_int(num):
     try:
         int(num)
@@ -608,12 +611,16 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Cnchi will create a ZFS pool in {0}".format(device_id))
 
+        try:
+            os.mkdir(DEST_DIR, mode=0o755)
+        except OSError:
+            pass
+
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
-        cmd = ["zpool", "create"]
+        cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
-        device_id_path = "/dev/disk/by-id/" + device_id
-        cmd.extend(["antergos", device_id_path])
+        cmd.extend(["-m", DEST_DIR, "antergos", device_id])
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
@@ -625,19 +632,25 @@ class InstallationZFS(GtkBaseBox):
 
         # Create swap zvol
         cmd = [
-            "zfs", "create", "-V", "8G", "-b", os.sysconf("SC_PAGE_SIZE"),
+            "zfs", "create", "-f", "-V", "8G", "-b", os.sysconf("SC_PAGE_SIZE"),
             "-o", "primarycache=metadata", "-o", "com.sun:auto-snapshot=false",
             "antergos/swap"]
         self.check_call(cmd)
 
         # Export the pool
-        self.check_call(["zpool", "export", "antergos"])
+        cmd = ["zpool", "export", "antergos"]
+        self.check_call(cmd)
 
         # Finally, re-import the pool
-        self.check_call(["zpool", "import", "-d", "/dev/disk/by-id", "-R", "/install", "antergos"])
+        cmd = ["zpool", "import", "-d", "/dev/disk/by-id", "-R", DEST_DIR, "antergos"]
+        self.check_call(cmd)
 
         # Create zpool.cache file
-        self.check_call(["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"])
+        cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"]
+        self.check_call(cmd)
+
+        # systemctl enable zfs.target
+
 
     def get_ids(self):
         """ Get disk and partitions IDs """
