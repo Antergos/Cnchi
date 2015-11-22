@@ -220,9 +220,11 @@ def setup_logging():
                     bugsnag_handler.addFilter(context_filter.filter)
                     bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
                     logger.addHandler(bugsnag_handler)
-                    logging.info("Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
+                    logging.info(
+                        "Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
                 else:
-                    logging.warning("Cannot read the bugsnag api key, logging to bugsnag is not possible.")
+                    logging.warning(
+                        "Cannot read the bugsnag api key, logging to bugsnag is not possible.")
             else:
                 logging.warning(BUGSNAG_ERROR)
         else:

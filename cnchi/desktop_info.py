@@ -63,29 +63,41 @@ LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
     'qt': ["kde4", "lxqt", "plasma5"]}
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
-                "visual", "firewall", "smb"]
+ALL_FEATURES = [
+    "aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
+    "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 FEATURES = {
-    'cinnamon': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                 "office", "smb"],
-    'gnome': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-              "office", "smb"],
-    'kde4': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-             "office", "smb"],
-    'plasma5': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                "office", "smb"],
-    'mate': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
-    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                      "office", "smb"],
-    'base': ["aur", "cups", "fonts", "lamp", "lts"],
-    'openbox': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                "office", "smb", "visual"],
-    'lxqt': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-             "office", "smb"],
-    'xfce': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-             "office", "smb"]}
+    'cinnamon': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"],
+    'gnome': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"],
+    'kde4': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"],
+    'plasma5': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"],
+    'mate': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts",
+        "office", "games", "graphic_drivers", "smb"],
+    'enlightenment': [
+        "aur", "bluetooth", "cups", "firefox", "firewall",
+        "fonts", "games", "graphic_drivers", "lts", "office", "smb"],
+    'base': [
+        "aur", "cups", "fonts", "lamp", "lts"],
+    'openbox': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb", "visual"],
+    'lxqt': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"],
+    'xfce': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"]}
 
 # Session names for lightDM setup
 SESSIONS = {
@@ -96,7 +108,7 @@ SESSIONS = {
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
-    'lxqt': 'lx-session',  # FIXME: check this!
+    'lxqt': 'lx-session',
     'xfce': 'xfce'}
 
 
@@ -124,7 +136,8 @@ DESCRIPTIONS = {
     'openbox': _("Openbox is a highly configurable, next generation window "
                  "manager with extensive standards support. It's default theme "
                  "is well known for its minimalistic appearance and flexibility. "
-                 "Your desktop becomes cleaner, faster. Perfect for low hardware specifications, too."),
+                 "Your desktop becomes cleaner, faster. Perfect for low hardware "
+                 "specifications, too."),
 
     'enlightenment': _("Enlightenment is not just a window manager for Linux/X11 "
                        "and others, but also a whole suite of libraries to help "
@@ -135,8 +148,8 @@ DESCRIPTIONS = {
               "computing experience so you can be productive right from the start."),
 
     'plasma5': _("Plasma 5.0 introduces a new major version of KDE's workspace offering. "
-                 "It provides a visually updated core desktop experience that is easy to use "
-                 "and familiar to the user. "),
+                 "It provides a visually updated core desktop experience that is easy "
+                 "to use and familiar to the user."),
 
     'lxqt': _("LXQt is an advanced, easy-to-use, and fast desktop environment "
               "based on Qt technologies. It has been tailored for users who "
@@ -147,8 +160,9 @@ DESCRIPTIONS = {
               "customize Antergos by installing packages with the command-line package manager."),
 
     'mate': _("An intuitive, attractive and lightweight desktop environment, fork of GNOME 2. "
-              "MATE is one of the best options for use on older computers or those with low hardware "
-              "specifications due to its lightweight yet very customizable set of features.")}
+              "MATE is one of the best options for use on older computers or those with low "
+              "hardware specifications due to its lightweight yet very customizable set of "
+              "features.")}
 
 # Delete previous _() dummy declaration
 del _

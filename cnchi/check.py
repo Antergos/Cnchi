@@ -86,10 +86,12 @@ class Check(GtkBaseBox):
         self.updated.set_property("label", txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
+        txt = _("has at least {0}GB available storage space. (*)")
+        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
         self.prepare_enough_space.set_property("label", txt)
 
-        txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
+        txt = _("This highly depends on which desktop environment you choose, "
+                "so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)
         self.label_space.set_hexpand(False)
@@ -150,6 +152,7 @@ class Check(GtkBaseBox):
         return False
 
     def has_battery(self):
+        """ Checks if latptop is connected to a power supply """
         # UPower doesn't seem to have an interface for this.
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
@@ -186,7 +189,7 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
-        if self.updater == None:
+        if self.updater is None:
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()

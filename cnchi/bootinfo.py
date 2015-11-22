@@ -203,41 +203,52 @@ def _check_linux(mount_name):
     """ Checks for linux """
     detected_os = _("unknown")
 
+    paths = []
     for os_release in OS_RELEASE_PATHS:
         path = os.path.join(mount_name, os_release)
         if os.path.exists(path):
-            with open(path, 'r') as os_release_file:
-                lines = os_release_file.readlines()
-            for line in lines:
-                if line.startswith("PRETTY_NAME"):
-                    os_pretty_name = line[len("PRETTY_NAME="):]
-                elif line.startswith("ID"):
-                    os_id = line[len("ID="):]
-                elif line.startswith("VERSION"):
-                    os_version = line[len("VERSION="):]
+            paths.append(path)
 
-            if len(os_pretty_name) > 0:
-                detected_os = os_pretty_name
-            elif len(os_id) > 0:
-                detected_os = os_id
-                if len(os_version) > 0:
-                    detected_os = "{0} {1}".format(detected_os, os_version)
+    for path in paths:
+        with open(path, 'r') as os_release_file:
+            lines = os_release_file.readlines()
+        os_info = {
+            "pretty_name": "",
+            "id": "",
+            "version": ""}
+        for line in lines:
+            if line.startswith("PRETTY_NAME"):
+                os_info["pretty_name"] = line[len("PRETTY_NAME="):]
+            elif line.startswith("ID"):
+                os_info["id"] = line[len("ID="):]
+            elif line.startswith("VERSION"):
+                os_info["version"] = line[len("VERSION="):]
+
+        if os_info["pretty_name"]:
+            detected_os = os_info["pretty_name"]
+        elif os_info["id"]:
+            detected_os = os_info["id"]
+            if os_info["version"]:
+                detected_os = "{0} {1}".format(detected_os, os_info["version"])
 
     detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
     if detected_os == _("unknown"):
+        paths = []
         for name in LINUX_NAMES:
             path = os.path.join(mount_name, "etc", name)
             if os.path.exists(path):
-                with open(path, 'r') as system_file:
-                    line = system_file.readline()
-                textlist = line.split()
-                text = ""
-                for element in textlist:
-                    if "\\" not in element:
-                        text += element
-                detected_os = text
+                paths.append(path)
+        for path in paths:
+            with open(path, 'r') as system_file:
+                line = system_file.readline()
+            textlist = line.split()
+            text = ""
+            for element in textlist:
+                if "\\" not in element:
+                    text += element
+            detected_os = text
     return detected_os
 
 
@@ -276,16 +287,21 @@ def get_os_dict():
                     device = "/dev/" + device
 
                     try:
-                        subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
+                        subprocess.call(
+                            ["mount", device, tmp_dir],
+                            stderr=subprocess.DEVNULL)
                         oses[device] = _get_os(tmp_dir)
-                        subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
+                        subprocess.call(
+                            ["umount", "-l", tmp_dir],
+                            stderr=subprocess.DEVNULL)
                     except AttributeError:
                         subprocess.call(["mount", device, tmp_dir])
                         oses[device] = _get_os(tmp_dir)
                         subprocess.call(["umount", "-l", tmp_dir])
 
                     if oses[device] == _("unknown"):
-                        # As a last resort, try reading partition info with hexdump
+                        # As a last resort, try reading partition info
+                        # with hexdump
                         # print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
 
