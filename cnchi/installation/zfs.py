@@ -657,6 +657,7 @@ class InstallationZFS(GtkBaseBox):
             pass
 
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
+        # This will be our / (root) system
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
@@ -665,19 +666,19 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        mount_point = "mountpoint={0}".format(DEST_DIR)
-        self.check_call(["zfs", "set", mount_point, "antergos"])
+        self.check_call(["zfs", "set", "mountpoint=legacy", "antergos"])
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
         self.check_call(["zpool", "set", "bootfs=antergos", "antergos"])
 
-        # Create swap zvol
+        # Create swap zvol (8 GB)
         cmd = [
-            "zfs", "create", "-f",
+            "zfs", "create",
             "-V", "8G",
             "-b", str(os.sysconf("SC_PAGE_SIZE")),
             "-o", "primarycache=metadata",
+            "-o", "checksum=off",
             "-o", "com.sun:auto-snapshot=false",
             "antergos/swap"]
         self.check_call(cmd)
