@@ -604,12 +604,14 @@ class InstallationZFS(GtkBaseBox):
 
     def check_call(self, cmd):
         try:
-            logging.debug(" ".join(cmd))
+            # Convert list to string and get sure all items are converted to str
+            cmd_line = ' '.join(str(x) for x in cmd)
+            logging.debug(cmd_line)
             subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
-            txt = "Command {0} has failed: {1}".format(err.cmd, err.stdout)
+        except subprocess.CalledProcessError as process_error:
+            txt = "Command {0} has failed".format(process_error.cmd)
             logging.error(txt)
-            txt = _("Command {0} has failed: {1}").format(err.cmd, err.stdout)
+            txt = _("Command {0} has failed").format(process_error.cmd)
             raise InstallError(txt)
 
     def create_zfs_pool(self, solaris_partition_number):
@@ -674,7 +676,7 @@ class InstallationZFS(GtkBaseBox):
         cmd = [
             "zfs", "create", "-f",
             "-V", "8G",
-            "-b", os.sysconf("SC_PAGE_SIZE"),
+            "-b", str(os.sysconf("SC_PAGE_SIZE")),
             "-o", "primarycache=metadata",
             "-o", "com.sun:auto-snapshot=false",
             "antergos/swap"]

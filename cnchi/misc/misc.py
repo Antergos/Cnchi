@@ -1079,6 +1079,10 @@ class InstallError(Exception):
         super().__init__(message)
         self.message = message
 
+    def __repr__(self):
+        """ Returns exception message """
+        return repr(self.message)
+        
     def __str__(self):
         """ Returns exception message """
         return repr(self.message)

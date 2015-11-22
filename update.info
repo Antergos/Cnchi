@@ -1,4 +1,4 @@
-{"version":"0.13.198","files":[
+{"version":"0.13.199","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -21,7 +21,7 @@
 {"name":"/usr/share/cnchi/cnchi/keymap.py","md5":"b94785ad31be810b6dc793c39e8f3427"},
 {"name":"/usr/share/cnchi/cnchi/language.py","md5":"f64fb9a395c71521d8efa4157959b36d"},
 {"name":"/usr/share/cnchi/cnchi/location.py","md5":"69fabac11023a47996b4658b0c4540c3"},
-{"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"3c3744306f2d0c97a8d6f7a3da9a4aca"},
+{"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"5808a85884adafb76796bd06ba0df369"},
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"56bc690fa3254cb755e08921384ebc6a"},
 {"name":"/usr/share/cnchi/cnchi/show_message.py","md5":"ee545450238f92a5a1a299aa68536657"},
 {"name":"/usr/share/cnchi/cnchi/slides.py","md5":"9b4e3343c32818e3b9ab716dc30a3d32"},
@@ -75,7 +75,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"39235f17ce9841976c58473f0a1ae5ac"},
 {"name":"/usr/share/cnchi/cnchi/installation/systemd_networkd.py","md5":"7a973d20615a152852c9d9808dcb35fd"},
 {"name":"/usr/share/cnchi/cnchi/installation/wrapper.py","md5":"b31336445f1337f9c51caa0e5f86f89c"},
-{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"5bf4d15023861884d7abe701688fbcd3"},
+{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"5edc2aefad34c9c9fed97bfb5010c6e7"},
 {"name":"/usr/share/cnchi/cnchi/installation/bootloader.py","md5":"b5decb79b55eff5c36a445c64a38fb92"},
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"094353c082f89e48bd99092bf7bf2ddf"},
 {"name":"/usr/share/cnchi/cnchi/misc/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
@@ -84,7 +84,7 @@
 {"name":"/usr/share/cnchi/cnchi/misc/i18n.py","md5":"a333a40c25b0576d87aa8aebf3b678e6"},
 {"name":"/usr/share/cnchi/cnchi/misc/keyboard_names.py","md5":"003df65a92b2149e1b669cdd0e9b21e4"},
 {"name":"/usr/share/cnchi/cnchi/misc/keyboard_widget.py","md5":"cea95163dfbd61dc0588d91ccfb442bd"},
-{"name":"/usr/share/cnchi/cnchi/misc/misc.py","md5":"47ae22e79f5d0dcbd1a4dc42da042142"},
+{"name":"/usr/share/cnchi/cnchi/misc/misc.py","md5":"a67e06e2de8acc8296c0032b56816294"},
 {"name":"/usr/share/cnchi/cnchi/misc/nm.py","md5":"dc2016b42ae1f924b016d0b8794055a0"},
 {"name":"/usr/share/cnchi/cnchi/misc/osextras.py","md5":"72ac6ae77ca4318b79f0f939df0bb076"},
 {"name":"/usr/share/cnchi/cnchi/misc/timezonemap.py","md5":"57dac1f4b95814fdba06f266f71e1410"},
