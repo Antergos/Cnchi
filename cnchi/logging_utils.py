@@ -112,12 +112,14 @@ class ContextFilter(Singleton):
             return notification
 
     def send_install_result(self, result):
-        build_server = self.get_url_for_id_request()
-        url = build_server + '&install_id=' + self.install + '&result=' + result
-        headers = {'X-Cnchi-Installer': CNCHI_VERSION}
         try:
-            r = requests.get(url, headers=headers)
-            res = json.loads(r.json())
+            build_server = self.get_url_for_id_request()
+            if build_server:
+                # url = build_server + '&install_id=' + self.install + '&result=' + result
+                url = "{0}&install_id={1}&result={2}".format(build_server, self.install, result)
+                headers = {'X-Cnchi-Installer': CNCHI_VERSION}
+                r = requests.get(url, headers=headers)
+                res = json.loads(r.json())
         except Exception as err:
             logger = logging.getLogger()
             logger.error("Sending install result failed with Error: %s", err)
