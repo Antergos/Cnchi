@@ -38,7 +38,7 @@ import subprocess
 import queue
 
 import show_message as show
-import misc.misc as misc
+import misc.extra as misc
 
 from gtkbasebox import GtkBaseBox
 

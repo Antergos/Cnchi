@@ -28,8 +28,19 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
+
 import os
 import sys
+
+CNCHI_PATH = "/usr/share/cnchi"
+sys.path.append(CNCHI_PATH)
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
+
 import logging
 import logging.handlers
 import gettext
@@ -42,7 +53,7 @@ import json
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
-import misc.misc as misc
+import misc.extra as misc
 import show_message as show
 import info
 import updater

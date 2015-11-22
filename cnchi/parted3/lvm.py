@@ -32,9 +32,9 @@
 import subprocess
 import logging
 
-import misc.misc as misc
 import show_message as show
 
+import misc.extra as misc
 
 @misc.raise_privileges
 def get_lvm_partitions():

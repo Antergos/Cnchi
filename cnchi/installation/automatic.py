@@ -34,15 +34,6 @@ import os
 import sys
 import logging
 
-if __name__ == '__main__':
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test this screen
-    base_dir = os.path.dirname(__file__) or '.'
-    parent_dir = os.path.join(base_dir, '..')
-    sys.path.insert(0, parent_dir)
-
-import misc.misc as misc
-import parted3.fs_module as fs
 import parted
 
 from gtkbasebox import GtkBaseBox
@@ -50,6 +41,9 @@ from gtkbasebox import GtkBaseBox
 from installation import install
 from installation import action
 from installation import auto_partition
+
+import misc.extra as misc
+import parted3.fs_module as fs
 
 DEST_DIR = "/install"
 

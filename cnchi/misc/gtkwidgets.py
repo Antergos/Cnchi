@@ -22,9 +22,9 @@ import cairo
 from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 try:
-    import misc.misc as misc
+    import misc.extra as misc
 except ImportError:
-    import misc
+    import extra as misc
 
 
 def refresh():

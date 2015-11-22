@@ -33,7 +33,8 @@ import os
 import shutil
 import subprocess
 import logging
-import misc.misc as misc
+
+import misc.extra as misc
 
 # TODO: This is unfinished and untested
 

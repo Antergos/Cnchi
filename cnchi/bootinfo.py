@@ -35,7 +35,7 @@ import re
 import tempfile
 import logging
 
-import misc.misc as misc
+import misc.extra as misc
 
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]

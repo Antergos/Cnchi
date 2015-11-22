@@ -33,7 +33,7 @@ import os
 import logging
 import sys
 import queue
-import misc.misc as misc
+import misc.extra as misc
 from gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
 

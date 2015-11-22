@@ -15,7 +15,7 @@ Contents:
 
 .. autoclass:: CnchiApp
 
-
+    :members:
 
 Indices and tables
 ==================

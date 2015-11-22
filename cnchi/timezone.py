@@ -39,7 +39,7 @@ import logging
 import hashlib
 
 import misc.tz as tz
-import misc.misc as misc
+import misc.extra as misc
 import misc.timezonemap as timezonemap
 from gtkbasebox import GtkBaseBox
 

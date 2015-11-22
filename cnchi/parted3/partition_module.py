@@ -33,10 +33,11 @@ import subprocess
 import os
 import logging
 
-import misc.misc as misc
 import show_message as show
 
 import parted
+
+import misc.extra as misc
 
 OK = 0
 UNRECOGNISED_DISK_LABEL = -1

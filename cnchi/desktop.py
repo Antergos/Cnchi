@@ -34,8 +34,9 @@ import os
 import logging
 
 import desktop_info
-import misc.misc as misc
 from gtkbasebox import GtkBaseBox
+
+import misc.extra as misc
 
 
 class DesktopAsk(GtkBaseBox):

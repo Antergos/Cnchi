@@ -38,7 +38,8 @@ import logging
 
 import info
 import updater
-import misc.misc as misc
+
+import misc.extra as misc
 
 from gtkbasebox import GtkBaseBox
 

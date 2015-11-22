@@ -30,12 +30,13 @@
 """ Installation advanced module. Custom partition screen """
 
 from gi.repository import Gtk, Gdk
+
 import subprocess
 import os
 import logging
 import re
 
-import misc.misc as misc
+import misc.extra as misc
 import misc.validation as validation
 
 import parted3.partition_module as pm

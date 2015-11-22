@@ -33,7 +33,7 @@ import subprocess
 import shlex
 import logging
 
-import misc.misc as misc
+import misc.extra as misc
 
 
 @misc.raise_privileges

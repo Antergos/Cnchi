@@ -34,7 +34,8 @@ import subprocess
 import logging
 import desktop_info
 import features_info
-import misc.misc as misc
+
+import misc.extra as misc
 
 from gtkbasebox import GtkBaseBox
 

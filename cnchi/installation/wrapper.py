@@ -31,7 +31,7 @@ import os
 import subprocess
 import logging
 
-from misc.misc import InstallError
+from misc.extra import InstallError
 
 def wipefs(device):
     try:

@@ -33,26 +33,13 @@ import os
 import sys
 import queue
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test this screen
-    BASE_DIR = os.path.dirname(__file__) or '.'
-    PARENT_DIR = os.path.join(BASE_DIR, '..')
-    sys.path.insert(0, PARENT_DIR)
-
 import bootinfo
 import logging
 import subprocess
 
 from gtkbasebox import GtkBaseBox
-import misc.misc as misc
+
+import misc.extra as misc
 
 
 def check_alongside_disk_layout():

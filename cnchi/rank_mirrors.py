@@ -44,7 +44,7 @@ import requests
 import tempfile
 import multiprocessing
 
-import misc.misc as misc
+import misc.extra as misc
 
 
 class AutoRankmirrorsProcess(multiprocessing.Process):

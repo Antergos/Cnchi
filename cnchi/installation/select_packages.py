@@ -32,12 +32,12 @@ import urllib.request
 import urllib.error
 
 import desktop_info
-import misc.misc as misc
-import pacman.pac as pac
 import info
 from installation import chroot
 
-from misc.misc import InstallError
+import misc.extra as misc
+import pacman.pac as pac
+from misc.extra import InstallError
 
 try:
     import xml.etree.cElementTree as eTree

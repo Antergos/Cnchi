@@ -44,7 +44,8 @@ if __name__ == '__main__':
 import pacman.pac as pac
 import download.metalink as ml
 import download.download_requests as download_requests
-import misc.misc as misc
+
+import misc.extra as misc
 
 
 class DownloadPackages(object):

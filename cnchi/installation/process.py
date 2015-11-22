@@ -34,8 +34,9 @@ import subprocess
 import traceback
 import logging
 import sys
-import misc.misc as misc
 import pyalpm
+
+import misc.extra as misc
 
 from download import download
 

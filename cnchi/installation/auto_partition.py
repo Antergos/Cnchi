@@ -33,7 +33,7 @@ import subprocess
 import logging
 import math
 
-from misc.misc import InstallError
+from misc.extra import InstallError
 
 import parted3.fs_module as fs
 

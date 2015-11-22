@@ -36,7 +36,7 @@ import logging
 import shutil
 import uuid
 
-import misc.misc as misc
+import misc.extra as misc
 import requests
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"

@@ -37,19 +37,14 @@ import logging
 import subprocess
 import tempfile
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-import misc.misc as misc
-import misc.gtkwidgets as gtkwidgets
 import show_message as show
 import bootinfo
 
 from gtkbasebox import GtkBaseBox
+
+import misc.extra as misc
+import misc.gtkwidgets as gtkwidgets
+
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500

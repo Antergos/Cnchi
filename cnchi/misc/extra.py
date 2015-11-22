@@ -34,7 +34,10 @@ import dbus
 import urllib
 from socket import timeout
 
-import misc.osextras as osextras
+try:
+    import misc.osextras as osextras
+except ImportError:
+    import osextras
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70

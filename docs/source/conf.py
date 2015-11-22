@@ -21,16 +21,16 @@ import shlex
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
+cnchi_path = "/usr/share/cnchi"
+print(cnchi_path)
+sys.path.append(cnchi_path)
+sys.path.append(os.path.join(cnchi_path, "cnchi/download"))
+sys.path.append(os.path.join(cnchi_path, "cnchi/hardware"))
+sys.path.append(os.path.join(cnchi_path, "cnchi/installation"))
+sys.path.append(os.path.join(cnchi_path, "cnchi/misc"))
+sys.path.append(os.path.join(cnchi_path, "cnchi/pacman"))
+sys.path.append(os.path.join(cnchi_path, "cnchi/parted3"))
 
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi")
-'''
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/download")
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/hardware")
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/installation")
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/misc")
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/pacman")
-sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/parted3")
-'''
 
 # -- General configuration ------------------------------------------------
 

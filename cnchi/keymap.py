@@ -33,7 +33,7 @@ import os
 import logging
 import subprocess
 
-import misc.misc as misc
+import misc.extra as misc
 import misc.keyboard_names as keyboard_names
 import misc.keyboard_widget as keyboard_widget
 

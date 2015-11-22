@@ -35,7 +35,7 @@ import subprocess
 import os
 import logging
 
-import misc.misc as misc
+import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
 import desktop_info
 import features_info

@@ -37,9 +37,6 @@ import re
 from mako.template import Template
 
 import desktop_info
-import parted3.fs_module as fs
-import misc.misc as misc
-import pacman.pac as pac
 import encfs
 
 from download import download
@@ -49,7 +46,11 @@ from installation import chroot
 from installation import mkinitcpio
 from installation import firewall
 
-from misc.misc import InstallError
+from misc.extra import InstallError
+
+import parted3.fs_module as fs
+import misc.extra as misc
+import pacman.pac as pac
 
 try:
     import xml.etree.cElementTree as eTree

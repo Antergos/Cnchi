@@ -48,9 +48,11 @@ import timezone
 import user_info
 import slides
 import summary
-import misc.misc as misc
 import info
+
 import show_message as show
+import misc.extra as misc
+
 from installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
