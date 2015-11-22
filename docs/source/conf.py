@@ -22,6 +22,16 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi")
+'''
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/download")
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/hardware")
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/installation")
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/misc")
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/pacman")
+sys.path.insert(0, "/home/karasu/cnchi-dev/cnchi/parted3")
+'''
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
