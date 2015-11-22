@@ -614,6 +614,27 @@ class InstallationZFS(GtkBaseBox):
             txt = _("Command {0} has failed").format(process_error.cmd)
             raise InstallError(txt)
 
+    def zfs_export_pool(self, pool)
+        """ This will cause the kernel to flush all pending data to disk, writes
+            data to the disk acknowledging that the export was done, and removes
+            all knowledge that the storage pool existed in the system """
+        try:
+            cmd = ["zpool", "export", pool]
+            cmd_line = "zpool export {0}".format(pool)
+            logging.debug(cmd_line)
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as process_error:
+            try:
+                cmd = ["zpool", "export", "-f", pool]
+                cmd_line = "zpool export -f {0}".format(pool)
+                logging.debug(cmd_line)
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as process_error:
+                txt = "Command {0} has failed".format(process_error.cmd)
+                logging.error(txt)
+                txt = _("Command {0} has failed").format(process_error.cmd)
+                raise InstallError(txt)
+
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
 
@@ -684,11 +705,7 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Export the pool
-        # This will cause the kernel to flush all pending data to disk, writes
-        # data to the disk acknowledging that the export was done, and removes
-        # all knowledge that the storage pool existed in the system
-        cmd = ["zpool", "export", "antergos"]
-        self.check_call(cmd)
+        self.zfs_export_pool("antergos")
 
         # Finally, re-import the pool
         cmd = [
