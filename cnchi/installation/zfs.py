@@ -614,7 +614,7 @@ class InstallationZFS(GtkBaseBox):
             txt = _("Command {0} has failed").format(process_error.cmd)
             raise InstallError(txt)
 
-    def zfs_export_pool(self, pool)
+    def zfs_export_pool(self, pool):
         """ This will cause the kernel to flush all pending data to disk, writes
             data to the disk acknowledging that the export was done, and removes
             all knowledge that the storage pool existed in the system """
