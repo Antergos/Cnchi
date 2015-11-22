@@ -593,6 +593,15 @@ class InstallationZFS(GtkBaseBox):
 
         self.create_zfs_pool(solaris_partition_number)
 
+    def get_ids(self):
+        """ Get disk and partitions IDs """
+        path = "/dev/disk/by-id"
+        for entry in os.scandir(path):
+            if not entry.name.startswith('.') and entry.is_symlink() and entry.name.startswith("ata"):
+                dest_path = os.readlink(entry.path)
+                device = dest_path.split("/")[-1]
+                self.ids[device] = entry.name
+
     def check_call(self, cmd):
         try:
             logging.debug(" ".join(cmd))
@@ -654,7 +663,8 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        self.check_call(["zfs", "set", "mountpoint=/", "antergos"])
+        mount_point = "mountpoint={0}".format(DEST_DIR)
+        self.check_call(["zfs", "set", mount_point, "antergos"])
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
@@ -689,14 +699,6 @@ class InstallationZFS(GtkBaseBox):
         # systemctl enable zfs.target
 
 
-    def get_ids(self):
-        """ Get disk and partitions IDs """
-        path = "/dev/disk/by-id"
-        for entry in os.scandir(path):
-            if not entry.name.startswith('.') and entry.is_symlink() and entry.name.startswith("ata"):
-                dest_path = os.readlink(entry.path)
-                device = dest_path.split("/")[-1]
-                self.ids[device] = entry.name
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
