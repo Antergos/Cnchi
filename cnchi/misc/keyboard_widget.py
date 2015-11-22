@@ -152,24 +152,23 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         # Font: TSCu Times
         lst = ["tam_TAB", "tam_TSCII", "tam_unicode"]
-        for i in lst:
-            if self.variant == i:
-                self.font = "TSCu_Times"
+        if self.variant in lst:
+            self.font = "TSCu_Times"
 
         # Font: Telugu
         if self.variant == "tel":
             self.font = "Lohit Telugu"
 
         # Font: Oriya
-        lst = ["af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il", "la", "ma", "pk", "lk", "sy"]
-        for i in lst:
-            if self.layout == i:
-                self.font = "Oriya"
+        lst = [
+            "af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il",
+            "la", "ma", "pk", "lk", "sy"]
+        if self.layout in lst:
+            self.font = "Oriya"
 
         lst = ["geo", "urd-phonetic3", "urd-phonetic", "urd-winkeys"]
-        for i in lst:
-            if self.variant == i:
-                self.font = "Oriya"
+        if self.variant in lst:
+            self.font = "Oriya"
 
         if self.variant == "ori":
             self.font = "Lohit Oriya"
@@ -213,8 +212,8 @@ class KeyboardWidget(Gtk.DrawingArea):
         degrees = math.pi / 180.0
 
         cr.new_sub_path()
-        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees)
-        cr.arc(x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees)
+        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
+        cr.arc(x + width - radius, y + height - radius, radius, 0, 90 * degrees)
         cr.arc(x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees)
         cr.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
         cr.close_path()
@@ -278,10 +277,13 @@ class KeyboardWidget(Gtk.DrawingArea):
                 px = rect[0] + 5
                 py = rect[1] + rect[3] - (rect[3] / 4)
 
-                if len(self.codes) > 0:
+                if self.codes and len(self.codes) > 0:
                     # Draw lower character
                     cr.set_source_rgb(1.0, 1.0, 1.0)
-                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                    cr.select_font_face(
+                        self.font,
+                        cairo.FONT_SLANT_NORMAL,
+                        cairo.FONT_WEIGHT_BOLD)
                     cr.set_font_size(10)
                     cr.move_to(px, py)
                     cr.show_text(self.regular_text(k))
@@ -291,7 +293,10 @@ class KeyboardWidget(Gtk.DrawingArea):
 
                     # Draw upper character
                     cr.set_source_rgb(0.82, 0.82, 0.82)
-                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                    cr.select_font_face(
+                        self.font,
+                        cairo.FONT_SLANT_NORMAL,
+                        cairo.FONT_WEIGHT_NORMAL)
                     cr.set_font_size(8)
                     cr.move_to(px, py)
                     cr.show_text(self.shift_text(k))
@@ -356,7 +361,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             cr.line_to(x1 + w1 - rx, y1)
             cr.arc(x1 + w1 - rx, y1 + rx, rx, -90 * degrees, 0)
             cr.line_to(x1 + w1, y2 + kw - rx)
-            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0 * degrees, 90 * degrees)
+            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0, 90 * degrees)
             cr.line_to(x2 + rx, y2 + kw)
             cr.arc(x2 + rx, y2 + kw - rx, rx, 90 * degrees, 180 * degrees)
             cr.line_to(x2, y1 + kw)
@@ -417,11 +422,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            # pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
-            # cfile = pipe.communicate()[0].decode("utf-8").split('\n')
             cfile = subprocess.check_output(cmd).decode().split('\n')
         except subprocess.CalledProcessError as process_error:
-            logging.error(process_error)
+            logging.error(
+                "Error running command %s: %s",
+                " ".join(cmd),
+                process_error)
             return
 
         # Clear current codes
