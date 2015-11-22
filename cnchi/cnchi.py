@@ -369,6 +369,10 @@ def parse_options():
         help=_("Show logging messages to stdout"),
         action="store_true")
     parser.add_argument(
+        "-V", "--version",
+        help=_("Show Cnchi version and quit"),
+        action="store_true")
+    parser.add_argument(
         "-z", "--z_hidden",
         help=_("Show options in development (for developers only, do not use this!)"),
         action="store_true")
@@ -467,6 +471,11 @@ def init_cnchi():
     # Command line options
     global cmd_line
     cmd_line = parse_options()
+
+
+    if cmd_line.version:
+        print(_("Cnchi (Antergos Installer) version {0}").format(info.CNCHI_VERSION))
+        sys.exit(0)
 
     if cmd_line.force:
         misc.remove_temp_files()
