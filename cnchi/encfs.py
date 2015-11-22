@@ -41,6 +41,7 @@ import misc.extra as misc
 
 @misc.raise_privileges
 def backup_conf_files(dest_dir):
+    """ Copy encfs setup files """
     conf_files = [
         "etc/security/pam_encfs.conf",
         "etc/security/pam_env.conf",
@@ -56,10 +57,13 @@ def backup_conf_files(dest_dir):
 
 @misc.raise_privileges
 def setup_conf_files(dest_dir):
+    """ Setup encfs """
     path = os.path.join(dest_dir, "etc/security/pam_encfs.conf")
     with open(path, 'w') as pam_encfs:
         pam_encfs.write("# File created by Cnchi (Antergos Installer)\n\n")
-        pam_encfs.write("# If this is specified program will attempt to drop permissions before running encfs.\n")
+        pam_encfs.write(
+            "# If this is specified program will attempt to drop permissions "
+            "before running encfs.\n")
         pam_encfs.write("drop_permissions\n\n")
         pam_encfs.write("# This specifies which options to pass to encfs for every user.\n")
         pam_encfs.write("# You can find encfs options by running encfs without any arguments\n")
@@ -74,7 +78,8 @@ def setup_conf_files(dest_dir):
     path = os.path.join(dest_dir, "etc/security/pam_env.conf")
     with open(path, 'a') as pam_env:
         pam_env.write("\n# Added by Cnchi - Antergos Installer\n")
-        pam_env.write("# Set the ICEAUTHORITY file location to allow GNOME to start on encfs $HOME\n")
+        pam_env.write(
+            "# Set the ICEAUTHORITY file location to allow GNOME to start on encfs $HOME\n")
         pam_env.write("ICEAUTHORITY DEFAULT=/tmp/.ICEauthority_@{PAM_USER}\n")
 
     path = os.path.join(dest_dir, "etc/fuse.conf")
@@ -127,12 +132,12 @@ def setup(username, dest_dir, password):
 
     # Create encrypted directory
     try:
-        p1 = subprocess.Popen(["/bin/echo", "-e", '"p\n%s\n"'.format(password)],
-                              stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(['encfs', '-S', encrypted_dir, mount_dir, "--public"],
-                              stdin=p1.stdout, stdout=subprocess.PIPE)
-        p2.communicate()
-        if p2.poll() != 0:
+        cmd = ["/bin/echo", "-e", "p\n{0}\n".format(password)]
+        passw = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        cmd = ['encfs', '-S', encrypted_dir, mount_dir, "--public"]
+        encfs = subprocess.Popen(cmd, stdin=passw.stdout, stdout=subprocess.PIPE)
+        encfs.communicate()
+        if encfs.poll() != 0:
             logging.error("Can't run encfs. Bad password?")
     except subprocess.CalledProcessError as process_error:
         logging.error(process_error)

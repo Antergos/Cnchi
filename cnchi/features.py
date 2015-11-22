@@ -28,8 +28,10 @@
 
 
 """ Features screen """
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
 import subprocess
 import logging
 import desktop_info
@@ -171,7 +173,8 @@ class Features(GtkBaseBox):
     def listbox_sort_by_name(row1, row2, user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
-            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE
+            CHANGED ACCORDINGLY. """
         box1 = row1.get_child()
         txt_box1 = box1.get_children()[1]
         label1 = txt_box1.get_children()[0]
@@ -227,7 +230,10 @@ class Features(GtkBaseBox):
         if 'bluetooth' in self.features:
             try:
                 process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
-                process2 = subprocess.Popen(["grep", "-i", "bluetooth"], stdin=process1.stdout, stdout=subprocess.PIPE)
+                process2 = subprocess.Popen(
+                    ["grep", "-i", "bluetooth"],
+                    stdin=process1.stdout,
+                    stdout=subprocess.PIPE)
                 process1.stdout.close()
                 out, process_error = process2.communicate()
                 if out.decode() is not '':
