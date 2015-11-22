@@ -684,6 +684,9 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Export the pool
+        # This will cause the kernel to flush all pending data to disk, writes
+        # data to the disk acknowledging that the export was done, and removes
+        # all knowledge that the storage pool existed in the system
         cmd = ["zpool", "export", "antergos"]
         self.check_call(cmd)
 
@@ -694,6 +697,9 @@ class InstallationZFS(GtkBaseBox):
             "-R", DEST_DIR,
             "antergos"]
         self.check_call(cmd)
+
+        # Set the mount point of the root filesystem
+        self.check_call(["zfs", "set", "mountpoint=/", "antergos"])
 
         # Create zpool.cache file
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"]
