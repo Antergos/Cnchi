@@ -38,7 +38,6 @@ import misc.misc as misc
 import pyalpm
 
 from download import download
-import show_message as show
 
 from installation import select_packages as pack
 
@@ -91,7 +90,6 @@ class Process(multiprocessing.Process):
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(process_error.cmd, process_error.output)
             logging.error(txt)
-            show.error(None, txt)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             for line in trace:
@@ -106,7 +104,6 @@ class Process(multiprocessing.Process):
                 OSError,
                 IOError) as install_error:
             logging.error(install_error)
-            show.error(None, install_error)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
             for line in trace:

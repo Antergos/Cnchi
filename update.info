@@ -1,4 +1,4 @@
-{"version":"0.13.196","files":[
+{"version":"0.13.197","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -24,7 +24,7 @@
 {"name":"/usr/share/cnchi/cnchi/logging_utils.py","md5":"90716e53c8011cd82637d1dc568c787a"},
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"56bc690fa3254cb755e08921384ebc6a"},
 {"name":"/usr/share/cnchi/cnchi/show_message.py","md5":"ee545450238f92a5a1a299aa68536657"},
-{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"0679b93e3ade86bce916c6cf7ceec1d3"},
+{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"9b4e3343c32818e3b9ab716dc30a3d32"},
 {"name":"/usr/share/cnchi/cnchi/summary.py","md5":"e9e613055051e3e83179ee4a52e2b5e4"},
 {"name":"/usr/share/cnchi/cnchi/test_hardware_module.py","md5":"98011bcd476f7ded18a33142872ede3c"},
 {"name":"/usr/share/cnchi/cnchi/test_screen.py","md5":"025e594a31e2676b6dbf02280410cabf"},
@@ -71,7 +71,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/lamp.py","md5":"975b81c50a2ca98efb6d348dff500f40"},
 {"name":"/usr/share/cnchi/cnchi/installation/lemp.py","md5":"4ff693315fc0b7a7420261c7f0a18b56"},
 {"name":"/usr/share/cnchi/cnchi/installation/mkinitcpio.py","md5":"2064e1b965e6a3900e52f4bb5d0ee3a0"},
-{"name":"/usr/share/cnchi/cnchi/installation/process.py","md5":"51431b3cada82ac76875d9b22a65c79d"},
+{"name":"/usr/share/cnchi/cnchi/installation/process.py","md5":"a59fe22c2065ca216770b7aaa628b0cf"},
 {"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"39235f17ce9841976c58473f0a1ae5ac"},
 {"name":"/usr/share/cnchi/cnchi/installation/systemd_networkd.py","md5":"7a973d20615a152852c9d9808dcb35fd"},
 {"name":"/usr/share/cnchi/cnchi/installation/wrapper.py","md5":"b31336445f1337f9c51caa0e5f86f89c"},

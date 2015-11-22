@@ -74,6 +74,8 @@ class Slides(GtkBaseBox):
 
         self.scrolled_window = self.ui.get_object("scrolledwindow")
 
+        GLib.timeout_add(1000, self.manage_events_from_cb_queue)
+
     def translate_ui(self):
         """ Translates all ui elements """
         if len(self.info_label.get_label()) <= 0:
@@ -111,7 +113,6 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-        GLib.timeout_add(400, self.manage_events_from_cb_queue)
 
     @staticmethod
     def store_values():
