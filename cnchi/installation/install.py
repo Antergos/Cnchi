@@ -109,7 +109,6 @@ class Installation(object):
         self.mount_devices = mount_devices
 
         self.desktop_manager = 'lightdm'
-        # Set defaults
         self.network_manager = 'NetworkManager'
 
         self.fs_devices = fs_devices
@@ -274,6 +273,7 @@ class Installation(object):
         logging.debug("Pacman ready")
 
         # Run pre-install scripts (only catalyst does something here atm)
+        # Note: Catalyst is disabled in catalyst.py
         try:
             logging.debug("Running hardware drivers pre-install jobs...")
             self.hardware_install = hardware.HardwareInstall(
@@ -954,6 +954,8 @@ class Installation(object):
             # In base we use systemd-networkd (setup already done above)
             services.append(self.network_manager)
         services.extend(["ModemManager", "haveged"])
+        if self.method == "zfs":
+            services.append("zfs")
         self.enable_services(services)
 
         # Enable timesyncd service

@@ -722,13 +722,20 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"]
         self.check_call(cmd)
 
-        # systemctl enable zfs.target
-
-
-
     def run_install(self, packages, metalinks):
         """ Start installation process """
-        pass
+        self.fs_devices = {}
+        self.mount_devices = {}
+
+        self.installation = install.Installation(
+            self.settings,
+            self.callback_queue,
+            packages,
+            metalinks,
+            self.mount_devices,
+            self.fs_devices)
+
+        self.installation.start()
 
 try:
     _("")
