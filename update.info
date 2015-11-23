@@ -1,4 +1,4 @@
-{"version":"0.13.204","files":[
+{"version":"0.13.205","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -498,4 +498,7 @@
 {"name":"/usr/share/cnchi/ui/wired.ui","md5":"3f0c0aa2141d834bc38936e060b398db"},
 {"name":"/usr/share/cnchi/ui/wireless.ui","md5":"65293c1eb2f9d801cbaa995fa96692ed"},
 {"name":"/usr/share/cnchi/ui/zfs.ui","md5":"55f76b4d5a5dd247e30c0fd944714498"},
-{"name":"/usr/share/cnchi/ui/welcome.ui","md5":"ae24295d101464d2d2511a3cea10e93f"}]}
+{"name":"/usr/share/cnchi/ui/welcome.ui","md5":"ae24295d101464d2d2511a3cea10e93f"},
+{"name":"/usr/share/cnchi/docs/Makefile","md5":"5f7b5b01300272fc705370162826af3a"},
+{"name":"/usr/share/cnchi/docs/source/conf.py","md5":"233a54edde7c1d6741cb42b83de122db"},
+{"name":"/usr/share/cnchi/docs/source/index.rst","md5":"324cba96c240e70865e6cec6008a3050"}]}
