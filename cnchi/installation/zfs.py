@@ -38,8 +38,9 @@ import parted
 import misc.misc as misc
 from misc.misc import InstallError
 import show_message as show
-from installation import wrapper
 from installation import action
+from installation import install
+from installation import wrapper
 
 import parted3.fs_module as fs
 
