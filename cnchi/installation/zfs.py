@@ -678,21 +678,26 @@ class InstallationZFS(GtkBaseBox):
         except OSError:
             pass
 
+        if self.zfs_options['use_pool_name']:
+            pool_name = self.zfs_options["pool_name"]
+        else:
+            pool_name = "antergos"
+
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["-m", DEST_DIR, "antergos"])
+        cmd.extend(["-m", DEST_DIR, pool_name])
         cmd.extend(devices_ids)
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        self.check_call(["zfs", "set", "mountpoint=legacy", "antergos"])
+        self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
-        self.check_call(["zpool", "set", "bootfs=antergos", "antergos"])
+        self.check_call(["zpool", "set", "bootfs=antergos", pool_name])
 
         # Create swap zvol (8 GB)
         cmd = [
@@ -702,25 +707,25 @@ class InstallationZFS(GtkBaseBox):
             "-o", "primarycache=metadata",
             "-o", "checksum=off",
             "-o", "com.sun:auto-snapshot=false",
-            "antergos/swap"]
+            "{0}/swap".format(pool_name)]
         self.check_call(cmd)
 
         # Export the pool
-        self.zfs_export_pool("antergos")
+        self.zfs_export_pool(pool_name)
 
         # Finally, re-import the pool
         cmd = [
             "zpool", "import",
             "-d", "/dev/disk/by-id",
             "-R", DEST_DIR,
-            "antergos"]
+            pool_name]
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        self.check_call(["zfs", "set", "mountpoint=/", "antergos"])
+        self.check_call(["zfs", "set", "mountpoint=/", pool_name])
 
         # Create zpool.cache file
-        cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", "antergos"]
+        cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
         self.check_call(cmd)
 
     def run_install(self, packages, metalinks):
