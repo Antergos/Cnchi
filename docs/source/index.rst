@@ -11,11 +11,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-.. automodule:: cnchi
-
-.. autoclass:: CnchiApp
-
-    :members:
 
 Indices and tables
 ==================

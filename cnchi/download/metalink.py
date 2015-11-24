@@ -136,9 +136,9 @@ def create(alpm, package_name, pacman_conf_file):
     return metalink
 
 
-# From here comes modified code from pm2ml
-# pm2ml is Copyright (C) 2012-2013 Xyne
-# More info: http://xyne.archlinux.ca/projects/pm2ml
+""" From here comes modified code from pm2ml
+    pm2ml is Copyright (C) 2012-2013 Xyne
+    More info: http://xyne.archlinux.ca/projects/pm2ml """
 
 
 def download_queue_to_metalink(download_queue):
@@ -224,6 +224,7 @@ class PkgSet(object):
 
     def __init__(self, pkgs=None):
         """ Init our internal self.pkgs dict with all given packages in pkgs """
+
         self.pkgs = dict()
         if pkgs:
             for pkg in pkgs:
@@ -438,9 +439,10 @@ def needs_sig(siglevel, insistence, prefix):
     """ Determines if a signature should be downloaded.
         The siglevel is the pacman.conf SigLevel for the given repo.
         The insistence is an integer. Anything below 1 will return false,
-            anything above 1 will return true, and 1 will check if the
-            siglevel is required or optional.
+        anything above 1 will return true, and 1 will check if the
+        siglevel is required or optional.
         The prefix is either "Database" or "Package". """
+
     if insistence > 1:
         return True
     elif insistence == 1 and siglevel:

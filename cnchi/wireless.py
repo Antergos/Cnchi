@@ -23,7 +23,9 @@
 
 import dbus
 
-from misc import misc, nm
+import misc.extra as misc
+import misc.nm as nm
+
 from gtkbasebox import GtkBaseBox
 
 

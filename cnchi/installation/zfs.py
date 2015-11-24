@@ -35,8 +35,10 @@ except ImportError:
     from gtkbasebox import GtkBaseBox
 
 import parted
+
 import misc.extra as misc
 from misc.extra import InstallError
+
 import show_message as show
 from installation import action
 from installation import install

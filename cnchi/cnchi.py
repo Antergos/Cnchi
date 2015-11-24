@@ -34,6 +34,7 @@ import sys
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
 sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
 sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
 sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))

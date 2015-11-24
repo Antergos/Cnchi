@@ -33,8 +33,9 @@
 from gi.repository import GLib
 
 import subprocess
-import os
 import logging
+
+import os
 
 import info
 import updater
