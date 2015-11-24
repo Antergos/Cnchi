@@ -1,4 +1,4 @@
-{"version":"0.13.213","files":[
+{"version":"0.13.214","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -30,7 +30,7 @@
 {"name":"/usr/share/cnchi/cnchi/keymap.py","md5":"475ced2efaccfc8631e9a2b3bade3d7b"},
 {"name":"/usr/share/cnchi/cnchi/main_window.py","md5":"5e408fcf6e50ed986c8a4226849e601a"},
 {"name":"/usr/share/cnchi/cnchi/rank_mirrors.py","md5":"e7a9c12883dab7c31246df3dfe7c3f91"},
-{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"616371468ec9f8a932cf539ef89331bb"},
+{"name":"/usr/share/cnchi/cnchi/slides.py","md5":"bccc7f77ec1da97dba45e27d4d64d489"},
 {"name":"/usr/share/cnchi/cnchi/summary.py","md5":"6be3aa7e4cb4cc6574ff3fabb8802658"},
 {"name":"/usr/share/cnchi/cnchi/timezone.py","md5":"8225430be1f686474b0facda602ccc4d"},
 {"name":"/usr/share/cnchi/cnchi/updater.py","md5":"da91cbc8c391f90b3365381351f1f1d0"},

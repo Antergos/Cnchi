@@ -202,12 +202,13 @@ class Slides(GtkBaseBox):
                 log_util.send_install_result("True")
                 if self.settings.get('bootloader_install') and not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
-                    boot_warn = _("IMPORTANT: There may have been a problem with the bootloader\n"
-                                  "installation which could prevent your system from booting properly. Before\n"
-                                  "rebooting, you may want to verify whether or not the bootloader is installed and\n"
-                                  "configured. The Arch Linux Wiki contains troubleshooting information:\n"
-                                  "\thttps://wiki.archlinux.org/index.php/GRUB\n"
-                                  "\nWould you like to view the wiki page now?")
+                    boot_warn = _("IMPORTANT: There may have been a problem with the bootloader "
+                                  "installation which could prevent your system from booting properly. Before "
+                                  "rebooting, you may want to verify whether or not the bootloader is installed and "
+                                  "configured.\n\n"
+                                  "The Arch Linux Wiki contains troubleshooting information:\n"
+                                  "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
+                                  "Would you like to view the wiki page now?")
                     response = show.question(self.get_toplevel(), boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
