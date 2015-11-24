@@ -140,7 +140,11 @@ class Summary(GtkBaseBox):
                 for action in changes:
                     txt += "{0}\n".format(_(str(action)))
                 txt = txt[:-1]
-            statebox.set_property("label", txt)
+        else:
+            txt = _("Error getting changes from install screen")
+            logging.error("Error getting changes from install screen")
+
+        statebox.set_property("label", txt)
 
     def get_install_screen(self):
         page = "installation_" + self.settings.get('partition_mode')

@@ -1847,8 +1847,13 @@ class InstallationAdvanced(GtkBaseBox):
         # Store values as (path, create?, label?, format?, mount_point, encrypt?)
         if self.lv_partitions:
             for partition_path in self.lv_partitions:
+                # Init vars
                 relabel = False
+                fmt = False
+                createme = False
                 encrypt = False
+                mnt = ''
+
                 uid = self.gen_partition_uid(path=partition_path)
                 if uid in self.stage_opts:
                     is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
@@ -1876,19 +1881,12 @@ class InstallationAdvanced(GtkBaseBox):
                         (use_luks, vol_name, password) = self.luks_options[uid]
                         if use_luks:
                             encrypt = True
-                else:
-                    relabel = False
-                    fmt = False
-                    createme = False
-                    mnt = ''
-                    encrypt = False
 
-                if createme or relabel or fmt or mnt or encrypt:
-                    # changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
                     if createme:
                         action_type = "create"
                     else:
                         action_type = "modify"
+
                     act = action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt)
                     changelist.append(act)
                     logging.debug(str(act))
@@ -1900,7 +1898,10 @@ class InstallationAdvanced(GtkBaseBox):
                 for partition_path in partitions:
                     # Init vars
                     relabel = False
+                    fmt = False
+                    createme = False
                     encrypt = False
+                    mnt = ''
                     uid = self.gen_partition_uid(path=partition_path)
                     if uid in self.stage_opts:
                         if disk.device.busy:
@@ -1973,18 +1974,12 @@ class InstallationAdvanced(GtkBaseBox):
                             (use_luks, vol_name, password) = self.luks_options[uid]
                             if use_luks:
                                 encrypt = True
-                    else:
-                        relabel = False
-                        fmt = False
-                        createme = False
-                        mnt = ''
 
-                    if createme or relabel or fmt or mnt or encrypt:
-                        #changelist.append((partition_path, createme, relabel, fmt, mnt, encrypt))
                         if createme:
                             action_type = "create"
                         else:
                             action_type = "modify"
+
                         act = action.Action(action_type, partition_path, relabel, fmt, mnt, encrypt)
                         changelist.append(act)
                         logging.debug(str(act))
