@@ -421,6 +421,8 @@ class InstallationZFS(GtkBaseBox):
 
         # Get pool name
         txt = self.ui.get_object("pool_name_entry").get_text()
+        if not txt:
+            txt = "antergos"
         self.zfs_options["pool_name"] = txt
 
         # Get password
