@@ -640,6 +640,29 @@ class InstallationZFS(GtkBaseBox):
                 txt = _("Command {0} has failed").format(process_error.cmd)
                 raise InstallError(txt)
 
+    def get_swap_size(self, disk_size):
+        mem_total = check_output("grep MemTotal /proc/meminfo")
+        mem_total = int(mem_total.split()[1])
+        mem = mem_total / 1024
+
+        swap_size = 0
+
+        # Suggested sizes from Anaconda installer
+        if mem < 2048:
+            swap_size = 2 * mem
+        elif 2048 <= mem < 8192:
+            swap_size = mem
+        elif 8192 <= mem < 65536:
+            swap_size = mem // 2
+        else:
+            swap_size = 4096
+
+        # Max swap size is 10% of all available disk size
+        max_swap = disk_size * 0.1
+        if swap_size > max_swap:
+            swap_size = max_swap
+        return swap_size
+
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
 
@@ -703,10 +726,24 @@ class InstallationZFS(GtkBaseBox):
         # boot loader knows where to find the operating system.
         self.check_call(["zpool", "set", "bootfs=antergos", pool_name])
 
-        # Create swap zvol (8 GB)
+        if self.settings.set('use_home'):
+            # TODO
+            '''
+            # Decide how much we leave to root and how much we leave to /home
+            root_needs = part_sizes['root'] // 5
+            if new_root_part_size > MAX_ROOT_SIZE:
+                new_root_part_size = MAX_ROOT_SIZE
+            elif new_root_part_size < MIN_ROOT_SIZE:
+                new_root_part_size = MIN_ROOT_SIZE
+            part_sizes['home'] = part_sizes['root'] - new_root_part_size
+            part_sizes['root'] = new_root_part_size
+            '''
+
+        # Create swap zvol
+        swap_size = self.get_swap_size(disk_size)
         cmd = [
             "zfs", "create",
-            "-V", "8G",
+            "-V", "{0}M".format(swap_size),
             "-b", str(os.sysconf("SC_PAGE_SIZE")),
             "-o", "primarycache=metadata",
             "-o", "checksum=off",
