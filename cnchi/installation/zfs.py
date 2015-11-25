@@ -678,9 +678,14 @@ class InstallationZFS(GtkBaseBox):
     def get_swap_size(self, pool_name):
         """ Gets recommended swap size in GB """
 
-        mem_total = check_output("grep MemTotal /proc/meminfo")
-        mem_total = int(mem_total.split()[1])
-        mem = mem_total / 1024
+        cmd = ["grep", "MemTotal", "/proc/meminfo"]
+        try:
+            mem_total = subprocess.check_output(cmd).decode().split()
+            mem_total = int(mem_total[1])
+            mem = mem_total / 1024
+        except (subprocess.CalledProcessError, ValueError) as mem_error:
+            logging.warning("Can't get system memory")
+            mem = 4096
 
         swap_size = 0
 
