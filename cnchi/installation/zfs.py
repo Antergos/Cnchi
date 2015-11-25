@@ -472,6 +472,11 @@ class InstallationZFS(GtkBaseBox):
             # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
             encrypt = self.zfs_options["encrypt_disk"]
             act = action.Action("info", info, True, True, "", encrypt)
+        elif action_type == "add":
+            info = _("Add device {0} to {1}").format(device, info)
+            # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
+            encrypt = self.zfs_options["encrypt_disk"]
+            act = action.Action("info", info, True, True, "", encrypt)
         elif action_type == "delete":
             act = action.Action(action_type, device)
         self.change_list.append(act)
@@ -503,7 +508,7 @@ class InstallationZFS(GtkBaseBox):
             self.append_change("delete", device_path)
             self.append_change("create", device_path, "Antergos Boot (512MB)")
 
-        self.append_change("create", device_path, "Antergos ZFS ({0})".format(pool_name))
+        self.append_change("create", device_path, "Antergos ZFS pool ({0})".format(pool_name))
         self.append_change("create", device_path, "Antergos ZFS vol (swap)")
 
         if self.settings.get("use_home"):
@@ -512,7 +517,7 @@ class InstallationZFS(GtkBaseBox):
         # Now init all other devices that will form part of the pool
         for device_path in device_paths[1:]:
             self.append_change("delete", device_path)
-            self.append_change("create", device_path,  "Antergos ZFS ({0})".format(pool_name))
+            self.append_change("add", device_path,  "Antergos ZFS pool ({0})".format(pool_name))
 
         return self.change_list
 
@@ -775,6 +780,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
+        logging.debug("Creating zfs pool %s", pool_name)
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
@@ -789,7 +795,7 @@ class InstallationZFS(GtkBaseBox):
         # boot loader knows where to find the operating system.
         self.check_call(["zpool", "set", "bootfs=antergos", pool_name])
 
-        if self.settings.set('use_home'):
+        if self.settings.get('use_home'):
             home_size = self.get_home_size(pool_name)
             logging.debug("Creating zfs vol 'home' (%dGB)", home_size)
             self.create_zfs_vol(pool_name, "home", home_size)
