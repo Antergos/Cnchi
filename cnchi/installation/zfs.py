@@ -640,14 +640,16 @@ class InstallationZFS(GtkBaseBox):
                 txt = _("Command {0} has failed").format(process_error.cmd)
                 raise InstallError(txt)
 
-    def get_swap_size(self, disk_size):
+    def get_swap_size(self, pool_name):
+        """ Gets recommended swap size in GB """
+
         mem_total = check_output("grep MemTotal /proc/meminfo")
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
 
         swap_size = 0
 
-        # Suggested sizes from Anaconda installer
+        # Suggested sizes from Anaconda installer (these are in MB)
         if mem < 2048:
             swap_size = 2 * mem
         elif 2048 <= mem < 8192:
@@ -657,10 +659,36 @@ class InstallationZFS(GtkBaseBox):
         else:
             swap_size = 4096
 
-        # Max swap size is 10% of all available disk size
-        max_swap = disk_size * 0.1
-        if swap_size > max_swap:
-            swap_size = max_swap
+        # MB to GB
+        swap_size = swap_size // 1024
+
+        # Check pool size and adapt swap size if necessary
+        # Swap size should not exceed 10% of all available pool size
+        pool_size = 0
+        try:
+            cmd_line = "zpool {0} list -H -o size".format(pool_name)
+            cmd = cmd_line.split()
+            logging.debug(cmd_line)
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as process_error:
+            logging.warning("Can't get zfs %s pool size", pool_name)
+            pool_size = 0
+
+        if pool_size != 0:
+            # pool size will be in M, G, T or P
+            if 'M' in pool_size:
+                pool_size = int(pool_size[:-1]) // 1024
+            elif 'G' in pool_size:
+                pool_size = int(pool_size[:-1])
+            elif 'T' in pool_size:
+                pool_size = int(pool_size[:-1]) * 1024
+            elif 'P' in pool_size:
+                pool_size = int(pool_size[:-1]) * 1024 * 1024
+
+            # Max swap size is 10% of all available disk size
+            max_swap = pool_size * 0.1
+            if swap_size > max_swap:
+                swap_size = max_swap
         return swap_size
 
     def create_zfs_pool(self, solaris_partition_number):
