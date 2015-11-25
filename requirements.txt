@@ -7,5 +7,4 @@ pycairo
 pyparted>=3.10.1
 mako
 requests
-webkitgtk
 

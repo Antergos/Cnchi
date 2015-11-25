@@ -285,8 +285,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 if __name__ == '__main__':
     def _(x): return x
 
-
-    proc = AutoRankmirrorsProcess()
+    proc = AutoRankmirrorsProcess({})
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
