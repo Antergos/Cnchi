@@ -56,6 +56,11 @@ COL_DISK_ID = 6
 
 DEST_DIR = "/install"
 
+# Partition sizes are in MiB
+MAX_ROOT_SIZE = 30000
+
+# KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
+MIN_ROOT_SIZE = 8000
 
 def is_int(num):
     try:
@@ -92,7 +97,7 @@ class InstallationZFS(GtkBaseBox):
             "scheme": "GPT",
             "pool_type": "None",
             "swap_size": 8192,
-            "pool_name": "",
+            "pool_name": "antergos",
             "use_pool_name": False,
             "device_paths": []
         }
@@ -479,6 +484,8 @@ class InstallationZFS(GtkBaseBox):
 
         device_path = device_paths[0]
 
+        pool_name = self.zfs_options["pool_name"]
+
         if self.zfs_options["scheme"] == "GPT":
             self.append_change("delete", device_path)
             if not self.UEFI:
@@ -491,23 +498,21 @@ class InstallationZFS(GtkBaseBox):
                     self.append_change("create", device_path, "Antergos Boot (512MB)")
                 else:
                     self.append_change("create", device_path, "Antergos Boot (512MB)")
-
-            self.append_change("create", device_path, "Antergos ZFS")
-
-            for device_path in device_paths[1:]:
-                self.append_change("delete", device_path)
-                self.append_change("create", device_path, "Antergos ZFS")
         else:
             # MBR
             self.append_change("delete", device_path)
-
             self.append_change("create", device_path, "Antergos Boot (512MB)")
-            self.append_change("create", device_path, "Antergos ZFS")
 
-            # Now init all other devices that will form part of the pool
-            for device_path in device_paths[1:]:
-                self.append_change("delete", device_path)
-                self.append_change("create", device_path, "Antergos ZFS")
+        self.append_change("create", device_path, "Antergos ZFS ({0})".format(pool_name))
+        self.append_change("create", device_path, "Antergos ZFS vol (swap)")
+
+        if self.settings.get("use_home"):
+            self.append_change("create", device_path, "Antergos ZFS vol (/home)")
+
+        # Now init all other devices that will form part of the pool
+        for device_path in device_paths[1:]:
+            self.append_change("delete", device_path)
+            self.append_change("create", device_path,  "Antergos ZFS ({0})".format(pool_name))
 
         return self.change_list
 
@@ -640,6 +645,31 @@ class InstallationZFS(GtkBaseBox):
                 txt = _("Command {0} has failed").format(process_error.cmd)
                 raise InstallError(txt)
 
+    def get_home_size(self, pool_name):
+        """ Get recommended /home size """
+        pool_size = self.get_pool_size(pool_name)
+        home_size = 0
+        if pool_size != 0:
+            root_needs = pool_size // 5
+            if root_needs > MAX_ROOT_SIZE:
+                root_needs = MAX_ROOT_SIZE
+            elif root_needs < MIN_ROOT_SIZE:
+                root_needs = MIN_ROOT_SIZE
+            home_size = pool_size - root_needs
+        return home_size
+
+    def get_pool_size(self, pool_name):
+        """ Gets zfs pool size """
+        pool_size = 0
+        try:
+            cmd_line = "zpool {0} list -H -o size".format(pool_name)
+            logging.debug(cmd_line)
+            cmd = cmd_line.split()
+            pool_size = subprocess.check_output(cmd).decode()
+        except subprocess.CalledProcessError as process_error:
+            logging.warning("Can't get zfs %s pool size", pool_name)
+            pool_size = 0
+
     def get_swap_size(self, pool_name):
         """ Gets recommended swap size in GB """
 
@@ -664,16 +694,8 @@ class InstallationZFS(GtkBaseBox):
 
         # Check pool size and adapt swap size if necessary
         # Swap size should not exceed 10% of all available pool size
-        pool_size = 0
-        try:
-            cmd_line = "zpool {0} list -H -o size".format(pool_name)
-            cmd = cmd_line.split()
-            logging.debug(cmd_line)
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            logging.warning("Can't get zfs %s pool size", pool_name)
-            pool_size = 0
 
+        pool_size = self.get_pool_size(pool_name)
         if pool_size != 0:
             # pool size will be in M, G, T or P
             if 'M' in pool_size:
@@ -690,6 +712,19 @@ class InstallationZFS(GtkBaseBox):
             if swap_size > max_swap:
                 swap_size = max_swap
         return swap_size
+
+    def create_zfs_vol(self, pool_name, vol_name, size):
+        """ Creates zfs vol inside the pool
+            size is in GB """
+        cmd = [
+            "zfs", "create",
+            "-V", "{0}G".format(size),
+            "-b", str(os.sysconf("SC_PAGE_SIZE")),
+            "-o", "primarycache=metadata",
+            "-o", "checksum=off",
+            "-o", "com.sun:auto-snapshot=false",
+            "{0}/{1}".format(pool_name, vol_name)]
+        self.check_call(cmd)
 
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
@@ -755,29 +790,14 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(["zpool", "set", "bootfs=antergos", pool_name])
 
         if self.settings.set('use_home'):
-            # TODO
-            '''
-            # Decide how much we leave to root and how much we leave to /home
-            root_needs = part_sizes['root'] // 5
-            if new_root_part_size > MAX_ROOT_SIZE:
-                new_root_part_size = MAX_ROOT_SIZE
-            elif new_root_part_size < MIN_ROOT_SIZE:
-                new_root_part_size = MIN_ROOT_SIZE
-            part_sizes['home'] = part_sizes['root'] - new_root_part_size
-            part_sizes['root'] = new_root_part_size
-            '''
+            home_size = self.get_home_size(pool_name)
+            logging.debug("Creating zfs vol 'home' (%dGB)", home_size)
+            self.create_zfs_vol(pool_name, "home", home_size)
 
         # Create swap zvol
-        swap_size = self.get_swap_size(disk_size)
-        cmd = [
-            "zfs", "create",
-            "-V", "{0}M".format(swap_size),
-            "-b", str(os.sysconf("SC_PAGE_SIZE")),
-            "-o", "primarycache=metadata",
-            "-o", "checksum=off",
-            "-o", "com.sun:auto-snapshot=false",
-            "{0}/swap".format(pool_name)]
-        self.check_call(cmd)
+        swap_size = self.get_swap_size(pool_name)
+        logging.debug("Creating zfs vol 'swap' (%dGB)", swap_size)
+        self.create_zfs_vol(pool_name, "swap", swap_size)
 
         # Export the pool
         self.zfs_export_pool(pool_name)
