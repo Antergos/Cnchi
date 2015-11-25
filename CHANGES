@@ -1,3 +1,6 @@
+[2015-11-21 09:41:45 -0600]  Merge pull request #470 from ronhuang/taiwan-not-part-of-china         Dustin Falgout  {3a5074b}
+[2015-11-21 22:48:23 +0800]  Taiwan is not part of China                                               Ron Huang    {e1fb839}
+[2015-11-21 13:13:00 +0100]  Install lightdm-webkit2-greeter                                            karasu      {b9ac894}
 [2015-11-20 23:26:48 +0100]  Allow to continue even if it's not updated                                 karasu      {1fdd2b7}
 [2015-11-20 23:20:32 +0100]  zukitwo-themes is now zuki-themes                                          karasu      {19fa02b}
 [2015-11-18 18:47:17 +0100]  Merge pull request #460 from prescott66/patch-7                            karasu      {da8c410}
