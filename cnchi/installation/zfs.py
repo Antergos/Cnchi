@@ -667,7 +667,7 @@ class InstallationZFS(GtkBaseBox):
         """ Gets zfs pool size """
         pool_size = 0
         try:
-            cmd_line = "zpool {0} list -H -o size".format(pool_name)
+            cmd_line = "zpool list -H -o size {0}".format(pool_name)
             logging.debug(cmd_line)
             cmd = cmd_line.split()
             pool_size = subprocess.check_output(cmd).decode()
