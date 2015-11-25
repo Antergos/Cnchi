@@ -674,6 +674,8 @@ class InstallationZFS(GtkBaseBox):
         except subprocess.CalledProcessError as process_error:
             logging.warning("Can't get zfs %s pool size", pool_name)
             pool_size = 0
+        finally:
+            return pool_size
 
     def get_swap_size(self, pool_name):
         """ Gets recommended swap size in GB """
@@ -706,7 +708,7 @@ class InstallationZFS(GtkBaseBox):
         # Swap size should not exceed 10% of all available pool size
 
         pool_size = self.get_pool_size(pool_name)
-        if pool_size != 0:
+        if pool_size and pool_size != 0:
             # pool size will be in M, G, T or P
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-1]) // 1024
