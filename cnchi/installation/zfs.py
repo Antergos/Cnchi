@@ -710,19 +710,24 @@ class InstallationZFS(GtkBaseBox):
         pool_size = self.get_pool_size(pool_name)
         if pool_size and pool_size != 0:
             # pool size will be in M, G, T or P
-            if 'M' in pool_size:
-                pool_size = int(pool_size[:-1]) // 1024
-            elif 'G' in pool_size:
-                pool_size = int(pool_size[:-1])
-            elif 'T' in pool_size:
-                pool_size = int(pool_size[:-1]) * 1024
-            elif 'P' in pool_size:
-                pool_size = int(pool_size[:-1]) * 1024 * 1024
+            pool_size.replace(",", ".", 1)
+            try:
+                if 'M' in pool_size:
+                    pool_size = int(pool_size[:-2]) // 1024
+                elif 'G' in pool_size:
+                    pool_size = int(pool_size[:-2])
+                elif 'T' in pool_size:
+                    pool_size = int(pool_size[:-2]) * 1024
+                elif 'P' in pool_size:
+                    pool_size = int(pool_size[:-2]) * 1024 * 1024
+            except ValueError as value_error:
+                return swap_size
 
             # Max swap size is 10% of all available disk size
             max_swap = pool_size * 0.1
             if swap_size > max_swap:
                 swap_size = max_swap
+
         return swap_size
 
     def create_zfs_vol(self, pool_name, vol_name, size):
