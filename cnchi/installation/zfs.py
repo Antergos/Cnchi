@@ -791,6 +791,8 @@ class InstallationZFS(GtkBaseBox):
         else:
             pool_name = "antergos"
 
+        pool_type = self.zfs_options["pool_type"]
+
         # Command: zpool create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
         logging.debug("Creating zfs pool %s", pool_name)
@@ -798,6 +800,8 @@ class InstallationZFS(GtkBaseBox):
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["-m", DEST_DIR, pool_name])
+        if pool_type != "None" and pool_type in self.pool_types.values():
+            cmd.extend(pool_type)
         cmd.extend(devices_ids)
         self.check_call(cmd)
 
