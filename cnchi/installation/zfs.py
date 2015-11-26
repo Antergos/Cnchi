@@ -119,6 +119,9 @@ class InstallationZFS(GtkBaseBox):
 
         self.pool_types_help_shown = []
 
+        self.fs_devices = {}
+        self.mount_devices = {}
+
         if os.path.exists("/sys/firmware/efi"):
             # UEFI, use GPT by default
             self.UEFI = True
