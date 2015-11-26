@@ -734,6 +734,10 @@ class InstallationZFS(GtkBaseBox):
     def create_zfs_vol(self, pool_name, vol_name, size):
         """ Creates zfs vol inside the pool
             size is in GB """
+
+        # Round up
+        size = math.ceil(size)
+        logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, size)
         cmd = [
             "zfs", "create",
             "-V", "{0}G".format(size),
