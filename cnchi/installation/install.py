@@ -923,8 +923,8 @@ class Installation(object):
 
     @staticmethod
     def patch_user_dirs_update_gtk():
-        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE,
-            MATE and Cinnamon """
+        """ Patches user-dirs-update-gtk.desktop so it is run in
+            XFCE, MATE and Cinnamon """
         path = os.path.join(
             DEST_DIR,
             "etc/xdg/autostart/user-dirs-update-gtk.desktop")
