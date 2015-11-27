@@ -38,13 +38,12 @@ _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
-    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1, enabled=True):
+    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1):
         self.class_name = class_name
         self.class_id = class_id
         self.vendor_id = vendor_id
         self.devices = devices
         self.priority = priority
-        self.enabled = enabled
 
         self.product_id = ""
 
@@ -58,7 +57,7 @@ class Hardware(object):
 
     def post_install(self, dest_dir):
         """ This method runs commands that need to be run AFTER installing the driver """
-        pass
+        raise NotImplementedError("post_install is not implemented")
 
     def pre_install(self, dest_dir):
         """ This method runs commands that need to run BEFORE installing the driver """
@@ -66,10 +65,6 @@ class Hardware(object):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-
-        if not self.enabled:
-            return False
-
         if len(self.class_id) > 0 and class_id != self.class_id:
             return False
 
@@ -83,10 +78,6 @@ class Hardware(object):
 
     def detect(self):
         """ Tries to guess if a device suitable for this driver is present """
-
-        if not self.enabled:
-            return False
-
         # Get PCI devices
         lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
         for line in lines:
@@ -170,10 +161,9 @@ class Hardware(object):
 class HardwareInstall(object):
     """ This class checks user's hardware
 
-    If 'use_proprietary_graphic_drivers' is True, this module will try to
-    install the proprietary variants of the graphic drivers available
-    (only if the hardware is detected). For non graphical drivers,
-    the open one is always choosen as default.
+    If 'use_proprietary_graphic_drivers' is True, this module will try to install the proprietary
+    variants of the graphic drivers available (only if the hardware is detected).
+    For non graphical drivers, the open one is always choosen as default.
     """
 
     def __init__(self, use_proprietary_graphic_drivers=False):
@@ -182,8 +172,7 @@ class HardwareInstall(object):
         # All available objects
         self.all_objects = []
 
-        # All objects that support devices found
-        # (can have more than one object for each device)
+        # All objects that support devices found (can have more than one object for each device)
         self.objects_found = {}
 
         # All objects that are really used
@@ -192,8 +181,7 @@ class HardwareInstall(object):
         dirs = os.listdir(_HARDWARE_PATH)
 
         # We scan the folder for py files.
-        # This is unsafe, but we don't care if
-        # somebody wants Cnchi to run code arbitrarily.
+        # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
             non_valid = ["__init__.py", "hardware.py"]
             if filename.endswith(".py") and filename not in non_valid:
@@ -218,9 +206,7 @@ class HardwareInstall(object):
             # Detect devices
             devices = self.get_devices()
         except subprocess.CalledProcessError as process_error:
-            txt = "Unable scan devices, command {0} failed: {1}".format(
-                process_error.cmd,
-                process_error.output)
+            txt = "Unable scan devices, command {0} failed: {1}".format(process_error.cmd, process_error.output)
             logging.error(txt)
             return
 
@@ -298,8 +284,7 @@ class HardwareInstall(object):
         devices = []
 
         # Get PCI devices
-        lines = subprocess.check_output(["/usr/bin/lspci", "-n"])
-        lines = lines.decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lspci", "-n"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 class_id = line.split()[1].rstrip(":")[0:2]
@@ -307,8 +292,7 @@ class HardwareInstall(object):
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
-        lines = subprocess.check_output(["/usr/bin/lsusb"])
-        lines = lines.decode().split("\n")
+        lines = subprocess.check_output(["/usr/bin/lsusb"]).decode().split("\n")
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")
@@ -353,9 +337,7 @@ class HardwareInstall(object):
 
 ''' Test case '''
 if __name__ == "__main__":
-    def _(x):
-        return x
-
+    def _(x): return x
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
@@ -364,3 +346,22 @@ if __name__ == "__main__":
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)
+
+    """
+    from nvidia import Nvidia
+    if Nvidia().detect():
+        print("Nvidia detected")
+    # Nvidia().post_install("/")
+
+    from nvidia_340xx import Nvidia_340xx
+    if Nvidia_340xx().detect():
+        print("Nvidia-340xx detected")
+
+    from nvidia_304xx import Nvidia_304xx
+    if Nvidia_304xx().detect():
+        print("nvidia-304xx detected")
+
+    from catalyst import Catalyst
+    if Catalyst().detect():
+        print("Catalyst detected")
+    """

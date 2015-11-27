@@ -113,7 +113,7 @@ def remove_volume_group(volume_group):
 def remove_physical_volume(physical_volume):
     """ Removes a physical volume """
     try:
-        subprocess.check_call(["pvremove", "-ff", physical_volume])
+        subprocess.check_call(["pvremove", "-f", physical_volume])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove physical volume {0}").format(physical_volume)
         logging.error(txt)

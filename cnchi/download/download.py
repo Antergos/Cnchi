@@ -42,8 +42,12 @@ if __name__ == '__main__':
     sys.path.insert(0, parent_dir)
 
 import pacman.pac as pac
+
 import download.metalink as ml
+import download.download_urllib as download_urllib
+import download.download_aria2 as download_aria2
 import download.download_requests as download_requests
+
 import misc.misc as misc
 
 
@@ -57,24 +61,34 @@ class DownloadPackages(object):
     def __init__(
             self,
             package_names,
-            pacman_conf_file,
-            pacman_cache_dir,
+            download_module='requests',
+            pacman_conf_file=None,
+            pacman_cache_dir=None,
+            cache_dir=None,
             settings=None,
             callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
-        self.package_names = package_names
-
-        self.pacman_conf_file = pacman_conf_file
-        self.pacman_cache_dir = pacman_cache_dir
-
-        self.settings = settings
-        if self.settings:
-            self.xz_cache_dirs = self.settings.get('xz_cache')
+        if pacman_conf_file is None:
+            self.pacman_conf_file = "/etc/pacman.conf"
         else:
-            self.xz_cache_dirs = []
+            self.pacman_conf_file = pacman_conf_file
+
+        if pacman_cache_dir is None:
+            self.pacman_cache_dir = "/install/var/cache/pacman/pkg"
+        else:
+            self.pacman_cache_dir = pacman_cache_dir
+
+        if cache_dir is None or not os.path.exists(cache_dir):
+            # Try to use liveCD cache if none provided
+            self.cache_dir = "/var/cache/pacman/pkg"
+        else:
+            self.cache_dir = cache_dir
 
         self.callback_queue = callback_queue
+        self.settings = settings
+        self.download_module = download_module
+        self.package_names = package_names
 
         # Create pacman cache dir (it's ok if it already exists)
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
@@ -99,13 +113,32 @@ class DownloadPackages(object):
             txt = _("Can't create download package list. Check log output for details")
             raise misc.InstallError(txt)
 
-        download = download_requests.Download(
-            self.pacman_cache_dir,
-            self.xz_cache_dirs,
-            self.callback_queue)
+        logging.debug("Using %s module to download packages", self.download_module)
+
+        if self.download_module == "aria2":
+            download = download_aria2.Download(
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
+        elif self.download_module == "urllib":
+            download = download_urllib.Download(
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
+        else:
+            if self.download_module != "requests":
+                logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", self.download_module)
+            download = download_requests.Download(
+                self.pacman_cache_dir,
+                self.cache_dir,
+                self.callback_queue)
 
         if not download.start(self.metalinks):
-            # When we can't download (even one package), we stop right here
+            self.settings.set('failed_download', True)
+            # New: When we can't download (even one package), we stop right here
+            # Pros: The user will be prompted immediately when a package fails
+            # to download
+            # Cons: We won't let alpm to try to download the package itself
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise misc.InstallError(txt)
 
@@ -155,15 +188,13 @@ class DownloadPackages(object):
                 # Update downloads list with the new info from the processed metalink
                 for key in metalink_info:
                     if key not in self.metalinks:
-                        self.metalinks[key] = metalink_info[key]
                         urls = metalink_info[key]['urls']
-                        if self.settings:
-                            # Sort urls based on the mirrorlist we created earlier
-                            sorted_urls = sorted(urls, key=self.url_sort_helper)
-                            self.metalinks[key]['urls'] = sorted_urls
-                        else:
-                            # When testing, settings is not available
-                            self.metalinks[key]['urls'] = urls
+                        # Sort urls based on the mirrorlist we created earlier
+                        sorted_urls = sorted(urls, key=self.url_sort_helper)
+                        self.metalinks[key] = metalink_info[key]
+                        # logging.debug(self.metalinks[key])
+                        self.metalinks[key]['urls'] = sorted_urls
+                        # logging.debug(self.metalinks[key])
 
                 # Show progress to the user
                 processed_packages += 1
@@ -225,8 +256,7 @@ if __name__ == '__main__':
 
     dp = DownloadPackages(
         package_names=["gedit"],
-        pacman_conf_file="/etc/pacman.conf",
-        pacman_cache_dir="/tmp/pkg",
-        settings=None,
-        callback_queue=None)
+        download_module="requests",
+        cache_dir="",
+        pacman_cache_dir="/tmp/pkg")
     dp.start()

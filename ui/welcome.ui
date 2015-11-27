@@ -76,6 +76,45 @@
                         <property name="height">3</property>
                     </packing>
                 </child>
+                <!--
+                <child>
+                  <object class="GtkBox" id="box_cli">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkImage" id="cli_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="cli_button">
+                        <property name="label" translatable="yes">CLI Installer</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_cli_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                -->
                 <child>
                     <object class="GtkBox" id="box_graph">
                         <property name="visible">True</property>
@@ -116,6 +155,7 @@
                                 <property name="label" translatable="yes">Graphical Installer</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
                                 <property name="margin-top">10</property>
                                 <signal name="clicked" handler="on_graph_button_clicked" swapped="no"/>
                             </object>

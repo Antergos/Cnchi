@@ -41,7 +41,6 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 _dropped_privileges = 0
 
-# TODO: remove a lot of legacy code that's not used anymore
 
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
     for item in os.listdir(src_dir):
@@ -1038,6 +1037,20 @@ def is_partition_extended(partition):
     if "/dev/" in partition:
         partition = partition[len("/dev/"):]
 
+    num = partition[len("sdX"):]
+    if len(num) == 0:
+        return False
+
+    try:
+        num = int(num)
+    except ValueError as err:
+        logging.error(err)
+        return False
+
+    if num > 4:
+        # logical partition
+        return False
+
     with open("/proc/partitions") as partitions:
         lines = partitions.readlines()
     for line in lines:
@@ -1079,10 +1092,6 @@ class InstallError(Exception):
         super().__init__(message)
         self.message = message
 
-    def __repr__(self):
-        """ Returns exception message """
-        return repr(self.message)
-        
     def __str__(self):
         """ Returns exception message """
         return repr(self.message)

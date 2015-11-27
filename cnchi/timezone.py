@@ -255,7 +255,7 @@ class Timezone(GtkBaseBox):
         return True
 
     def on_switch_ntp_activate(self, ntp_switch):
-        self.settings.set('use_timesyncd', ntp_switch.get_active())
+        self.settings['use_timesyncd'] = ntp_switch.get_active()
 
 
 class AutoTimezoneProcess(multiprocessing.Process):

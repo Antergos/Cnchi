@@ -51,4 +51,4 @@ class Vmware(Hardware):
 
     @staticmethod
     def post_install(dest_dir):
-        Hardware.chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)
+        super().chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)

@@ -20,7 +20,6 @@
                 <object class="GtkListBox" id="listbox">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
                 </object>
             </child>
         </object>
@@ -51,8 +50,12 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_start">20</property>
+            <!--<property name="yalign">1</property>-->
             <property name="use_markup">True</property>
+            <!--<property name="justify">fill</property>-->
             <property name="wrap">True</property>
+            <!--<property name="vexpand">True</property>-->
+            <!--<property name="valign">3</property>-->
           </object>
           <packing>
             <property name="expand">True</property>

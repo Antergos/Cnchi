@@ -351,11 +351,10 @@
         <pkgname>transmission-gtk</pkgname>
         <pkgname>udiskie</pkgname>
         <pkgname>volumeicon</pkgname>
-        <pkgname>waldorf-ui-theme</pkgname>
-        <pkgname>xdg-user-dirs-gtk</pkgname>
         <pkgname>xfburn</pkgname>
         <pkgname>xfce4-notifyd</pkgname>
         <pkgname>xscreensaver</pkgname>
+        <pkgname>waldorf-ui-theme</pkgname>
       </packages>
     </edition>
 
@@ -572,12 +571,6 @@
       <pkgname>grub</pkgname>
       <pkgname>os-prober</pkgname>
       <pkgname>grub2-theme-antergos</pkgname>
-    </bootloader>
-    <bootloader name="systemd-boot">
-      <!-- previously called gummiboot, now comes with systemd -->
-    </bootloader>
-    <bootloader name="refind">
-      <pkgname>refind-efi</pkgname>
     </bootloader>
   </bootloaders>
 

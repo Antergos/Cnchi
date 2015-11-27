@@ -38,7 +38,6 @@ import uuid
 import gi
 import requests
 import json
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
@@ -63,7 +62,7 @@ LOCALE_DIR = "/usr/share/locale"
 cmd_line = None
 
 # At least this GTK version is needed
-GTK_VERSION_NEEDED = "3.18.0"
+GTK_VERSION_NEEDED = "3.16.0"
 
 
 class CnchiApp(Gtk.Application):
@@ -107,8 +106,7 @@ class CnchiApp(Gtk.Application):
         window.show()
 
         with open(self.TMP_RUNNING, "w") as tmp_file:
-            txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
-            tmp_file.write(txt)
+            tmp_file.write("Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid()))
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()
@@ -261,9 +259,8 @@ def check_gtk_version():
             import show_message as show
             show.error(None, text)
         except ImportError as import_error:
-            logging.error(import_error)
-        finally:
-            return False
+            logging.info(text)
+        return False
     else:
         logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
 
@@ -279,31 +276,9 @@ def check_pyalpm_version():
         txt = txt.format(pyalpm.version(), pyalpm.alpmversion())
         logging.info(txt)
     except (NameError, ImportError) as err:
-        try:
-            import show_message as show
-            show.error(None, err)
-        except ImportError as import_error:
-            logging.error(import_error)
-        finally:
-            logging.error(err)
-            return False
+        logging.error(err)
+        sys.exit(1)
 
-    return True
-
-
-def check_iso_version():
-    """ Hostname contains the ISO version """
-    from socket import gethostname
-    hostname = gethostname()
-    # antergos-year.month-iso
-    prefix = "antergos-"
-    suffix = "-iso"
-    if hostname.startswith(prefix) and hostname.endswith(suffix):
-        # We're running form the ISO, register which version.
-        version = hostname[len(prefix):-len(suffix)]
-        logging.debug("Running from ISO version %s", version)
-    else:
-        logging.debug("Not running from ISO")
     return True
 
 
@@ -336,6 +311,11 @@ def parse_options():
         help=_("Disables first screen's 'try it' option"),
         action="store_true")
     parser.add_argument(
+        "-m", "--download-module",
+        help=_("Choose which download module will be used when downloading packages."
+               " Possible options are 'requests' (default), 'urllib' and 'aria2'"),
+        nargs='?')
+    parser.add_argument(
         "-n", "--no-check",
         help=_("Makes checks optional in check screen"),
         action="store_true")
@@ -367,10 +347,6 @@ def parse_options():
     parser.add_argument(
         "-v", "--verbose",
         help=_("Show logging messages to stdout"),
-        action="store_true")
-    parser.add_argument(
-        "-V", "--version",
-        help=_("Show Cnchi version and quit"),
         action="store_true")
     parser.add_argument(
         "-z", "--z_hidden",
@@ -472,11 +448,6 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
-
-    if cmd_line.version:
-        print(_("Cnchi (Antergos Installer) version {0}").format(info.CNCHI_VERSION))
-        sys.exit(0)
-
     if cmd_line.force:
         misc.remove_temp_files()
 
@@ -496,10 +467,6 @@ def init_cnchi():
 
     # Check installed pyalpm and libalpm versions
     if not check_pyalpm_version():
-        sys.exit(1)
-
-    # Check ISO version where Cnchi is running from
-    if not check_iso_version():
         sys.exit(1)
 
     # if not cmd_line.disable_update:

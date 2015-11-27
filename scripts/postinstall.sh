@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+
 # -*- coding: utf-8 -*-
 #
 #  postinstall.sh
@@ -415,7 +416,7 @@ postinstall() {
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute > /dev/null 2>&1
+	chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute 2>&1
 
 	# Fix transmission leftover
 	# What is this for? I think its old code.
@@ -470,13 +471,12 @@ postinstall() {
 }
 
 touch /tmp/.postinstall.lock
-echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6] [$7]" > /tmp/postinstall.log
+echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6]" > /tmp/postinstall.log
 CN_USER_NAME=$1
 CN_DESTDIR=$2
 CN_DESKTOP=$3
-CN_LOCALE=$4
-CN_IS_VBOX=$5
-CN_KEYBOARD_LAYOUT=$6
-CN_KEYBOARD_VARIANT=$7
+CN_IS_VBOX=$4
+CN_KEYBOARD_LAYOUT=$5
+CN_KEYBOARD_VARIANT=$6
 { postinstall; } >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock

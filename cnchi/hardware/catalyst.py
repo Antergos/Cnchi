@@ -43,9 +43,6 @@ VENDOR_ID = "0x1002"
 # Give this driver more priority so it is chosen instead of catalyst-legacy
 PRIORITY = 1
 
-# Disable this driver
-ENABLED = False
-
 """
 Since Catalyst 12.4, AMD has separated its development for Radeon HD 2xxx,
 3xxx and 4xxx cards into the legacy Catalyst driver. For Radeon HD 5xxx and
@@ -104,7 +101,7 @@ DEVICES = [
 
 class Catalyst(Hardware):
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
@@ -148,11 +145,11 @@ class Catalyst(Hardware):
         path = os.path.join(dest_dir, "etc/pacman.conf")
         self.add_repositories(path)
 
-        Hardware.chroot(["systemctl", "enable", "atieventsd"])
-        Hardware.chroot(["systemctl", "enable", "catalyst-hook"])
-        Hardware.chroot(["systemctl", "enable", "temp-links-catalyst"])
+        super().chroot(["systemctl", "enable", "atieventsd"])
+        super().chroot(["systemctl", "enable", "catalyst-hook"])
+        super().chroot(["systemctl", "enable", "temp-links-catalyst"])
 
-        Hardware.chroot(["aticonfig", "--initial"], dest_dir)
+        super().chroot(["aticonfig", "--initial"], dest_dir)
 
     @staticmethod
     def is_proprietary():

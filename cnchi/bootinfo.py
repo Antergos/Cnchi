@@ -66,61 +66,33 @@ OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
+    # FIXME: Windows Vista/7 detection does not work! ##############################################################
 
     detected_os = _("unknown")
-    paths = []
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
-            paths.append(os.path.join(mount_name, windows, system))
-
-    for path in paths:
-        if _check_vista(path):
-            detected_os = "Windows Vista"
-        elif _check_win7(path):
-            detected_os = "Windows 7"
-        elif _check_winxp(path):
-            detected_os = "Win XP"
-        else:
-            detected_os = _("unknown")
-
+            # Search for Windows Vista and 7
+            for name in WINLOAD_NAMES:
+                path = os.path.join(mount_name, windows, system, name)
+                if os.path.exists(path):
+                    with open(path, "rb") as system_file:
+                        lines = system_file.readlines()
+                    for line in lines:
+                        for vista_mark in VISTA_MARKS:
+                            if vista_mark.encode('utf-8') in line:
+                                detected_os = "Windows Vista"
+                    if detected_os == _("unknown"):
+                        for line in lines:
+                            for seven_mark in SEVEN_MARKS:
+                                if seven_mark.encode('utf-8') in line:
+                                    detected_os = "Windows 7"
+            # Search for Windows XP
+            if detected_os == _("unknown"):
+                for name in SECEVENT_NAMES:
+                    path = os.path.join(mount_name, windows, system, "config", name)
+                    if os.path.exists(path):
+                        detected_os = "Windows XP"
     return detected_os
-
-
-def _check_vista(system_path):
-    # Search for Windows Vista
-    for name in WINLOAD_NAMES:
-        path = os.path.join(system_path, name)
-        if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                lines = system_file.readlines()
-            for line in lines:
-                for vista_mark in VISTA_MARKS:
-                    if vista_mark.encode('utf-8') in line:
-                        return True
-    return False
-
-
-def _check_win7(system_path):
-    # Search for Windows 7
-    for name in WINLOAD_NAMES:
-        path = os.path.join(system_path, name)
-        if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                lines = system_file.readlines()
-                for line in lines:
-                    for seven_mark in SEVEN_MARKS:
-                        if seven_mark.encode('utf-8') in line:
-                            return True
-    return False
-
-
-def _check_winxp(system_path):
-    # Search for Windows XP
-    for name in SECEVENT_NAMES:
-        path = os.path.join(system_path, "config", name)
-        if os.path.exists(path):
-            return True
-    return False
 
 
 @misc.raise_privileges

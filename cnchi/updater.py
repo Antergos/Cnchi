@@ -68,17 +68,18 @@ class Updater(object):
         self.md5s = {}
 
         self.force = force_update
+        self.local_files = []
 
-        if not os.path.exists(_update_info):
-            logging.warning("Cannot not find %s file. Cnchi will not be able to update itself.", _update_info)
-            return
+        # if not os.path.exists(_update_info):
+        #     logging.warning("Cannot not find %s file. Cnchi will not be able to update itself.", _update_info)
+        #     return
 
         # Get local info (local update.info)
-        with open(_update_info, "r") as local_update_info:
-            response = local_update_info.read()
-            if len(response) > 0:
-                update_info = json.loads(response)
-                self.local_files = update_info['files']
+        # with open(_update_info, "r") as local_update_info:
+        #     response = local_update_info.read()
+        #     if len(response) > 0:
+        #         update_info = json.loads(response)
+        #         self.local_files = update_info['files']
 
         try:
             r = requests.get(_update_info_url, stream=True)
@@ -97,7 +98,6 @@ class Updater(object):
                 for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
                 logging.info("Internet version: %s", self.remote_version)
-                self.force = force_update
 
     def is_remote_version_newer(self):
         """ Returns true if the Internet version of Cnchi is newer than the local one """

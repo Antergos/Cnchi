@@ -27,7 +27,7 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 import os
 import logging
@@ -46,7 +46,7 @@ class GtkBaseBox(Gtk.Box):
         self.testing = params['testing']
         self.ui_dir = params['ui_dir']
         self.process_list = params['process_list']
-        self.main_window = params['main_window']
+
         self.prev_page = prev_page
         self.next_page = next_page
 
@@ -83,10 +83,3 @@ class GtkBaseBox(Gtk.Box):
 
     def get_name(self):
         return self.name
-
-    def get_toplevel(self):
-        top = self.main_window
-        if isinstance(top, Gtk.Window):
-            return top
-        else:
-            return None

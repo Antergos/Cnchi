@@ -261,7 +261,6 @@ class Keymap(GtkBaseBox):
             self.settings.set("keyboard_layout", self.keyboard_layout['code'])
             self.settings.set("keyboard_variant", self.keyboard_variant['code'])
 
-            # setxkbmap sets the keyboard layout for the current X session only
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
             if self.keyboard_variant['code']:

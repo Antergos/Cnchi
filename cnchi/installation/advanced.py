@@ -131,11 +131,44 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
-        # Create and edit partition dialogs
+        # Load create and edit partition dialogs
         self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
         self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
 
-        self.initialize_widgets()
+        # setup_luks freezes our UI completely. It's no use to try to use a progressbar
+        # self.advanced_progressbar = self.ui.get_object('advanced_progressbar')
+
+        # Initialize our create partition dialog filesystems' combo.
+        combo = self.ui.get_object('create_partition_use_combo')
+        combo.remove_all()
+        for fs_name in sorted(fs.NAMES):
+            combo.append_text(fs_name)
+        combo.set_wrap_width(2)
+
+        # Initialize our edit partition dialog filesystems' combo.
+        combo = self.ui.get_object('edit_partition_use_combo')
+        combo.remove_all()
+        for fs_name in sorted(fs.NAMES):
+            combo.append_text(fs_name)
+        combo.set_wrap_width(2)
+
+        # Initialize partition_types_combo
+        combo = self.ui.get_object('partition_types_combo')
+        combo.remove_all()
+        combo.append_text("msdos (MBR)")
+        combo.append_text("GUID Partition Table (GPT)")
+
+        # Automatically select first entry
+        self.select_first_combobox_item(combo)
+
+        # Initialize our create and edit partition dialog mount points' combo.
+        mount_combos = [self.ui.get_object('create_partition_mount_combo'),
+                        self.ui.get_object('edit_partition_mount_combo')]
+
+        for combo in mount_combos:
+            combo.remove_all()
+            for mount_point in fs.COMMON_MOUNT_POINTS:
+                combo.append_text(mount_point)
 
         self.bootloader = "grub2"
         self.bootloader_device = ""
@@ -184,33 +217,6 @@ class InstallationAdvanced(GtkBaseBox):
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
-
-    def initialize_widgets(self):
-        # Initialize our create/edit partition dialogs filesystems combos.
-        names = ['create_partition_use_combo', 'edit_partition_use_combo']
-        for name in names:
-            combo = self.ui.get_object(name)
-            combo.remove_all()
-            for fs_name in sorted(fs.NAMES):
-                combo.append_text(fs_name)
-            combo.set_wrap_width(2)
-
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")
-
-        # Automatically select first entry
-        self.select_first_combobox_item(combo)
-
-        # Initialize our create and edit partition dialog mount points' combo.
-        names = ['create_partition_mount_combo', 'edit_partition_mount_combo']
-        for name in names:
-            combo = self.ui.get_object(name)
-            combo.remove_all()
-            for mount_point in fs.COMMON_MOUNT_POINTS:
-                combo.append_text(mount_point)
 
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -336,10 +342,6 @@ class InstallationAdvanced(GtkBaseBox):
         if os.path.exists('/sys/firmware/efi'):
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Systemd-boot")
-
-            # TODO: Finish rEFInd addition
-            # self.bootloader_entry.append_text("rEFInd")
-
             if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
                 # Automatically select first entry
                 self.bootloader_entry.set_active(0)
@@ -447,10 +449,7 @@ class InstallationAdvanced(GtkBaseBox):
         size = length * sector_size
         size_txt = "{0}b".format(size)
 
-        if size >= 1000000000000:
-            size /= 1000000000000
-            size_txt = "{0:.0f}T".format(size)
-        elif size >= 1000000000:
+        if size >= 1000000000:
             size /= 1000000000
             size_txt = "{0:.0f}G".format(size)
         elif size >= 1000000:
@@ -477,10 +476,9 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         self.diskdic = {}
-        self.diskdic['mounts'] = []
-
         self.all_partitions = []
         self.lv_partitions = []
+        self.diskdic['mounts'] = []
 
         # Put all volumes (lvm) info in our model
         volume_groups = lvm.get_volume_groups()
@@ -653,13 +651,10 @@ class InstallationAdvanced(GtkBaseBox):
 
                     if partition.type == pm.PARTITION_EXTENDED:
                         # Show 'extended' in file system type column
-                        fs_type = "extended"
+                        fs_type = 'extended'
 
-                    if not fs_type:
-                        # fs_type is None when it can't be readed
-                        fs_type = _("Unknown")
-                    elif 'swap' in fs_type:
-                        # Do not show swap version, only the 'swap' word
+                    # Do not show swap version, only the 'swap' word
+                    if 'swap' in fs_type:
                         fs_type = 'swap'
 
                     row = [path, fs_type, mount_point, label, fmt_active, formatable, size_txt, used,
@@ -748,21 +743,14 @@ class InstallationAdvanced(GtkBaseBox):
         # Select the fs in dialog combobox
         combo = self.ui.get_object('edit_partition_use_combo')
         combo_model = combo.get_model()
-        if combo_model is None:
-            """ Issue 451 : combo_model is None
-                Can't reproduce it here. Let's try to reload combo contents """
-            self.initialize_widgets()
-            combo_model = combo.get_model()
-
-        if combo_model:
-            combo_iter = combo_model.get_iter_first()
-            while combo_iter is not None:
-                combo_row = combo_model[combo_iter]
-                if combo_row[0] and combo_row[0] in row[COL_FS]:
-                    combo.set_active_iter(combo_iter)
-                    combo_iter = None
-                else:
-                    combo_iter = combo_model.iter_next(combo_iter)
+        combo_iter = combo_model.get_iter_first()
+        while combo_iter is not None:
+            combo_row = combo_model[combo_iter]
+            if combo_row[0] and combo_row[0] in row[COL_FS]:
+                combo.set_active_iter(combo_iter)
+                combo_iter = None
+            else:
+                combo_iter = combo_model.iter_next(combo_iter)
 
         # Set the mount point in dialog combobox
         mount_combo_entry = self.ui.get_object('edit_partition_mount_combo_entry')
@@ -1157,8 +1145,7 @@ class InstallationAdvanced(GtkBaseBox):
                 elif radio["extended"].get_active():
                     # Not mounting extended partitions.
                     if mymount:
-                        if mymount in self.diskdic['mounts']:
-                            self.diskdic['mounts'].remove(mymount)
+                        self.diskdic['mounts'].remove(mymount)
                         mymount = ''
                     # And no labeling either
                     mylabel = ''
@@ -1443,13 +1430,6 @@ class InstallationAdvanced(GtkBaseBox):
             btn.set_label(_("_Apply"))
 
         # Translate dialog "Create partition"
-
-        self.create_partition_dialog.set_title(_("Create partition"))
-
-        txt = _("Location:")
-        label = self.ui.get_object('create_partition_create_place_label')
-        label.set_markup(txt)
-
         txt = _("Size:")
         label = self.ui.get_object('create_partition_size_label')
         label.set_markup(txt)
@@ -1524,9 +1504,6 @@ class InstallationAdvanced(GtkBaseBox):
         dialog.set_title(_("Create Partition Table"))
 
         # LUKS options dialog
-
-        self.luks_dialog.set_title(_("Encryption properties"))
-
         txt = _("Use LUKS encryption:")
         label = self.ui.get_object('luks_use_luks_label')
         label.set_markup(txt)
@@ -1760,7 +1737,7 @@ class InstallationAdvanced(GtkBaseBox):
         if is_uefi:
             if self.bootloader == "grub2":
                 part_label["/boot/efi"].show()
-            elif self.bootloader in ["systemd-boot", "refind"]:
+            if self.bootloader == "systemd-boot":
                 part_label["/boot"].show()
         else:
             # LVM in non UEFI needs a /boot partition
@@ -1779,9 +1756,6 @@ class InstallationAdvanced(GtkBaseBox):
                 has_part["/"] = True
                 part_label["/"].show()
                 part_label["/"].set_state(True)
-                if fsystem == "f2fs":
-                    # Special case. We need a /boot partition
-                    part_label["/boot"].show()
 
             if mnt == "swap":
                 has_part["swap"] = True
@@ -1791,18 +1765,16 @@ class InstallationAdvanced(GtkBaseBox):
             if is_uefi:
                 # /boot or /boot/efi need to be fat32 in UEFI systems
                 if "fat" in fsystem:
-                    if mnt == "/boot/efi":
-                        if self.bootloader == "grub2":
-                            # Grub2 in UEFI
-                            has_part["/boot/efi"] = True
-                            part_label["/boot/efi"].show()
-                            part_label["/boot/efi"].set_state(True)
-                    elif mnt == "/boot":
-                        if self.bootloader in ["systemd-boot", "refind"]:
-                            # systemd-boot (Gummiboot) and rEFInd
-                            has_part["/boot"] = True
-                            part_label["/boot"].show()
-                            part_label["/boot"].set_state(True)
+                    if self.bootloader == "grub2" and mnt == "/boot/efi":
+                        # Grub2 in UEFI
+                        has_part["/boot/efi"] = True
+                        part_label["/boot/efi"].show()
+                        part_label["/boot/efi"].set_state(True)
+                    elif self.bootloader == "systemd-boot" and mnt == "/boot":
+                        # Systemd-boot (Gummiboot)
+                        has_part["/boot"] = True
+                        part_label["/boot"].show()
+                        part_label["/boot"].set_state(True)
             else:
                 if mnt == "/boot" and fsystem not in ["f2fs", "swap"]:
                     # /boot in non UEFI systems
@@ -1817,8 +1789,8 @@ class InstallationAdvanced(GtkBaseBox):
             if self.bootloader == "grub2":
                 # Grub2 needs a /boot/efi partition in UEFI
                 check_ok = check_ok and has_part["/boot/efi"]
-            elif self.bootloader in ["systemd-boot", "refind"]:
-                # systemd-boot (Gummiboot) needs a /boot partition
+            elif self.bootloader == "systemd-boot":
+                # Systemd-boot (Gummiboot) needs a /boot partition
                 check_ok = check_ok and has_part["/boot"]
         else:
             if self.lv_partitions:
@@ -1912,10 +1884,13 @@ class InstallationAdvanced(GtkBaseBox):
                                 swap_partition = self.get_swap_partition(partition_path)
                                 msg = ""
                                 if swap_partition == partition_path:
-                                    msg = _("{0} is already mounted as swap, to continue it will be unmounted.").format(partition_path)
+                                    msg = _("{0} is mounted as swap.\nTo continue it has to be unmounted.\n"
+                                            "Click Yes to unmount, or No to return\n").format(partition_path)
                                     mounted = True
                                 elif len(mount_point) > 0:
-                                    msg = _("{0} is already mounted in {1}, to continue it will be unmounted.").format(partition_path, mount_point)
+                                    msg = _("{0} is mounted in '{1}'.\nTo continue it has to be unmounted.\n"
+                                            "Click Yes to unmount, or No to return\n").format(partition_path,
+                                                                                              mount_point)
                                     mounted = True
 
                                 if "install" in mount_point:
@@ -1928,24 +1903,30 @@ class InstallationAdvanced(GtkBaseBox):
                                     except subprocess.CalledProcessError as process_error:
                                         logging.error("Command %s failed: %s", " ".join(cmd), process_error)
                                 elif mounted:
-                                    # unmount it!
-                                    show.warning(self.get_toplevel(), msg)
-                                    if swap_partition == partition_path:
-                                        try:
-                                            cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
-                                            subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                            logging.debug("Swap partition %s unmounted", partition_path)
-                                        except subprocess.CalledProcessError as process_error:
-                                            logging.error("Error running command %s: %s", " ".join(cmd), process_error)
+                                    response = show.question(self.get_toplevel(), msg)
+                                    if response != Gtk.ResponseType.YES:
+                                        # User doesn't want to unmount, we can't go on.
+                                        return []
                                     else:
-                                        try:
-                                            cmd = ['umount', partition_path]
-                                            subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                                            logging.debug("%s unmounted", mount_point)
-                                        except subprocess.CalledProcessError as process_error:
-                                            logging.error("Error running command %s: %s", " ".join(cmd), process_error)
+                                        # unmount it!
+                                        if swap_partition == partition_path:
+                                            try:
+                                                cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
+                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                logging.debug("Swap partition %s unmounted", partition_path)
+                                            except subprocess.CalledProcessError as process_error:
+                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
+                                        else:
+                                            try:
+                                                cmd = ['umount', partition_path]
+                                                subprocess.Popen(cmd, stdout=subprocess.PIPE)
+                                                logging.debug("%s unmounted", mount_point)
+                                            except subprocess.CalledProcessError as process_error:
+                                                logging.error("Error running command %s: %s", " ".join(cmd), process_error)
                                 else:
-                                    logging.warning("%s shows as mounted (busy) but it has no mount point", partition_path)
+                                    logging.warning(
+                                        "%s shows as mounted (busy) but it has no mount point",
+                                        partition_path)
 
                         (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
 
