@@ -49,6 +49,7 @@ class Settings(object):
             'bootloader_install': True,
             'bootloader_installation_successful': False,
             'btrfs': False,
+            'cache_pkgs_md5_check_failed': [],
             'cnchi': '/usr/share/cnchi/',
             'country_name': '',
             'country_code': '',
@@ -139,5 +140,12 @@ class Settings(object):
     def set(self, key, value):
         """ Set one setting's value """
         settings = self._get_settings()
-        settings[key] = value
+        current = settings.get(key, 'keyerror')
+        exists = 'keyerror' != current
+
+        if exists and current and isinstance(current, list) and not isinstance(value, list):
+            settings[key].append(value)
+        else:
+            settings[key] = value
+
         self._update_settings(settings)

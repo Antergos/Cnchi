@@ -25,6 +25,7 @@
 """ Installation process module. """
 
 import crypt
+import glob
 import logging
 import os
 import queue
@@ -121,6 +122,7 @@ class Installation(object):
         self.packages = packages
         self.pacman = None
         self.vbox = self.settings.get('is_vbox')
+        self.pacman_cache_dir = ''
 
         # Cnchi will store here info (packages needed, post install actions, ...)
         # for the detected hardware
@@ -154,11 +156,7 @@ class Installation(object):
             auto_partition.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
-        # NOTE: In zfs we do not neet to mount root partition
-        if "/" in self.mount_devices:
-            root_partition = self.mount_devices["/"]
-        else:
-            root_partition = ""
+        root_partition = self.mount_devices["/"]
 
         # Boot partition
         if "/boot" in self.mount_devices:
@@ -175,15 +173,13 @@ class Installation(object):
         # Mount root and boot partitions (only if it's needed)
         # Not doing this in automatic mode as AutoPartition class mounts
         # the root and boot devices itself.
-        if root_partition:
-            txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
-            logging.debug(txt)
-            subprocess.check_call(['mount', root_partition, DEST_DIR])
-
-        # Check if we also have to mount a /boot partition
+        txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
+        logging.debug(txt)
+        subprocess.check_call(['mount', root_partition, DEST_DIR])
+        # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")
         os.makedirs(boot_path, mode=0o755, exist_ok=True)
-        if boot_partition:
+        if "/boot" in self.mount_devices:
             txt = _("Mounting partition {0} into {1}/boot directory")
             txt = txt.format(boot_partition, boot_path)
             logging.debug(txt)
@@ -198,7 +194,7 @@ class Installation(object):
 
                 mount_part = self.mount_devices[path]
 
-                if mount_part not in [root_partition, boot_partition, swap_partition]:
+                if mount_part != root_partition and mount_part != boot_partition and mount_part != swap_partition:
                     if path[0] == '/':
                         path = path[1:]
                     mount_dir = os.path.join(DEST_DIR, path)
@@ -239,13 +235,13 @@ class Installation(object):
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
 
         # Mount needed partitions (in automatic it's already done)
-        if self.method in ['alongside', 'advanced']:
+        if self.method == 'alongside' or self.method == 'advanced':
             self.mount_partitions()
 
         # Nasty workaround:
         # If pacman was stoped and /var is in another partition than root
-        # (so as to be able to resume install), database lock file will still
-        # be in place. We must delete it or this new installation will fail
+        # (so as to be able to resume install), database lock file will still be in place.
+        # We must delete it or this new installation will fail
         db_lock = os.path.join(DEST_DIR, "var/lib/pacman/db.lck")
         if os.path.exists(db_lock):
             with misc.raised_privileges():
@@ -261,9 +257,8 @@ class Installation(object):
         for folder in folders:
             os.makedirs(folder, mode=0o755, exist_ok=True)
 
-        # If kernel images exists in /boot they are most likely from a failed
-        # install attempt and need to be removed otherwise pyalpm will raise
-        # a fatal exception later on.
+        # If kernel images exists in /boot they are most likely from a failed install attempt and need
+        # to be removed otherwise pyalpm will raise a fatal exception later on.
         kernel_imgs = (
             "/install/boot/vmlinuz-linux",
             "/install/boot/vmlinuz-linux-lts",
@@ -284,9 +279,8 @@ class Installation(object):
         # Note: Catalyst is disabled in catalyst.py
         try:
             logging.debug("Running hardware drivers pre-install jobs...")
-            proprietary = self.settings.get('feature_graphic_drivers')
             self.hardware_install = hardware.HardwareInstall(
-                use_proprietary_graphic_drivers=proprietary)
+                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
             self.hardware_install.pre_install(DEST_DIR)
         except Exception as general_error:
             logging.warning("Unknown error in hardware module. Output: %s", general_error)
@@ -339,10 +333,12 @@ class Installation(object):
     def download_packages(self):
         """ Downloads necessary packages """
 
+        self.pacman_cache_dir = os.path.join(DEST_DIR, 'var/cache/pacman/pkg')
+
         download_packages = download.DownloadPackages(
             package_names=self.packages,
             pacman_conf_file='/tmp/pacman.conf',
-            pacman_cache_dir=os.path.join(DEST_DIR, 'var/cache/pacman/pkg'),
+            pacman_cache_dir=self.pacman_cache_dir,
             settings=self.settings,
             callback_queue=self.callback_queue)
 
@@ -360,10 +356,7 @@ class Installation(object):
         # Template functionality. Needs Mako (see http://www.makotemplates.org/)
         template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
-        file_rendered = file_template.render(
-            destDir=DEST_DIR,
-            arch=myarch,
-            desktop=self.desktop)
+        file_rendered = file_template.render(destDir=DEST_DIR, arch=myarch, desktop=self.desktop)
         write_file(file_rendered, os.path.join("/tmp", "pacman.conf"))
 
     def prepare_pacman(self):
@@ -402,8 +395,7 @@ class Installation(object):
             cmd = ["systemctl", "start", "haveged"]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
-            txt = "Can't start haveged service, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
+            txt = "Can't start haveged service, command {0} failed: {1}".format(process_error.cmd, process_error.output)
             logging.warning(txt)
 
         # Delete old gnupg files
@@ -433,6 +425,18 @@ class Installation(object):
 
         logging.debug("Installing packages...")
         result = self.pacman.install(pkgs=self.packages)
+        stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
+
+        if not result and len(stale_pkgs) > 0:
+            # Failure might be due to stale cached packages. Delete them and try again.
+            if os.path.exists(self.pacman_cache_dir):
+                for stale_pkg in stale_pkgs:
+                    filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
+                    to_delete = glob.glob(filepath + '***') if filepath else False
+                    if to_delete and len(to_delete) <= 6:
+                        os.remove(to_delete)
+
+                result = self.pacman.install(pkgs=self.packages)
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")
@@ -479,15 +483,14 @@ class Installation(object):
     def auto_fstab(self):
         """ Create /etc/fstab file """
 
-        all_lines = [
-            "# /etc/fstab: static file system information.",
-            "#",
-            "# Use 'blkid' to print the universally unique identifier for a",
-            "# device; this may be used with UUID= as a more robust way to name devices",
-            "# that works even if disks are added and removed. See fstab(5).",
-            "#",
-            "# <file system> <mount point>   <type>  <options>       <dump>  <pass>",
-            "#"]
+        all_lines = ["# /etc/fstab: static file system information.",
+                     "#",
+                     "# Use 'blkid' to print the universally unique identifier for a",
+                     "# device; this may be used with UUID= as a more robust way to name devices",
+                     "# that works even if disks are added and removed. See fstab(5).",
+                     "#",
+                     "# <file system> <mount point>   <type>  <options>       <dump>  <pass>",
+                     "#"]
 
         use_luks = self.settings.get("use_luks")
         use_lvm = self.settings.get("use_lvm")
@@ -548,9 +551,9 @@ class Installation(object):
 
             # Add all LUKS partitions from Advanced Install (except root).
             if self.method == "advanced" and mount_point is not "/" and use_luks and "/dev/mapper" in partition_path:
-                # As the mapper with the filesystem will have a different UUID
-                # thanvthe partition it is encrypted in, we have to take care
-                # of this here.vThen we will be able to add it to crypttab
+                # As the mapper with the filesystem will have a different UUID than
+                # the partition it is encrypted in, we have to take care of this here.
+                # Then we will be able to add it to crypttab
 
                 vol_name = partition_path[len("/dev/mapper/"):]
                 try:
@@ -588,8 +591,7 @@ class Installation(object):
             if "btrfs" in myfmt:
                 self.settings.set('btrfs', True)
 
-            # Avoid adding a partition to fstab when it has no mount point
-            # (swap has been checked above)
+            # Avoid adding a partition to fstab when it has no mount point (swap has been checked above)
             if mount_point == "":
                 continue
 
@@ -648,12 +650,8 @@ class Installation(object):
         logging.debug("fstab written.")
 
     def set_scheduler(self):
-        rule_src = os.path.join(
-            self.settings.get('cnchi'),
-            'scripts/60-schedulers.rules')
-        rule_dst = os.path.join(
-            DEST_DIR,
-            "etc/udev/rules.d/60-schedulers.rules")
+        rule_src = os.path.join(self.settings.get('cnchi'), 'scripts/60-schedulers.rules')
+        rule_dst = os.path.join(DEST_DIR, "etc/udev/rules.d/60-schedulers.rules")
         try:
             shutil.copy2(rule_src, rule_dst)
             os.chmod(rule_dst, 0o755)
@@ -901,11 +899,8 @@ class Installation(object):
 
     @staticmethod
     def patch_user_dirs_update_gtk():
-        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE,
-            MATE and Cinnamon """
-        path = os.path.join(
-            DEST_DIR,
-            "etc/xdg/autostart/user-dirs-update-gtk.desktop")
+        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE, MATE and Cinnamon """
+        path = os.path.join(DEST_DIR, "etc/xdg/autostart/user-dirs-update-gtk.desktop")
         with open(path, 'r') as user_dirs:
             lines = user_dirs.readlines()
         with open(path, 'w') as user_dirs:
@@ -990,9 +985,7 @@ class Installation(object):
             chroot_run(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
-        zoneinfo_path = os.path.join(
-            "/usr/share/zoneinfo",
-            self.settings.get("timezone_zone"))
+        zoneinfo_path = os.path.join("/usr/share/zoneinfo", self.settings.get("timezone_zone"))
         chroot_run(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         logging.debug("Timezone set.")
 
@@ -1018,8 +1011,7 @@ class Installation(object):
             os.chmod(sudoers_path, 0o440)
             logging.debug("Sudo configuration for user %s done.", username)
         except IOError as io_error:
-            # Do not fail if can't write 10-installer file.
-            # Something bad must be happening, though.
+            # Do not fail if can't write 10-installer file. Something bad must be happening, though.
             logging.error(io_error)
 
         # Configure detected hardware
@@ -1043,8 +1035,7 @@ class Installation(object):
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
-            # Prepare system for autologin. LightDM needs the user to be in
-            # the autologin group.
+            # Prepare system for autologin. LightDM needs the user to be in the autologin group.
             chroot_run(['groupadd', 'autologin'])
             default_groups += ',autologin'
 

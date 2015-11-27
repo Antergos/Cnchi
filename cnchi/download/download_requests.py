@@ -89,6 +89,7 @@ class Download(object):
         downloaded = 0
         total_downloads = len(downloads)
         download_error = False
+        needs_to_download = None
 
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
@@ -119,14 +120,19 @@ class Download(object):
                 # File already exists in destination pacman's cache (previous install?)
                 # We check the file md5 hash
                 md5 = get_md5(dst_path)
-                if element['hash'] is not None and element['hash'] != md5:
-                    logging.debug(
-                        "MD5 hash of file %s does not match what's in the repo database! Cnchi will download it",
-                        element['filename'])
+                md5hash = element.get('hash', False)
+                if md5hash and md5hash != md5:
+                    logging.debug("MD5 hash of file %s does not match what's in the repo"
+                                  "database! Cnchi will download it", element['filename'])
                     # Wrong hash. Force to download it
                     needs_to_download = True
-                else:
-                    # Hash ok (or can't be checked). Do not download it
+                elif md5hash == md5 or not md5hash:
+                    # Hash ok or can't be checked (is False or an empty string). Do not
+                    # download the pkg but store the pkg name in case it causes problems later.
+                    self.queue_event('cache_pkgs_md5_check_failed', element['identity'])
+                    logging.debug(
+                            'Checksum unavailable for cached package: %s',
+                            element['identity'])
                     logging.debug(
                         "File %s already exists, Cnchi will not overwrite it",
                         element['filename'])
@@ -143,9 +149,9 @@ class Download(object):
 
                         # Check the file's md5 hash
                         # element['hash'] is not always available
-                        # that is why we have to check against None
+                        # that is why we use get() with default of False
                         copy_it = False
-                        if element['hash'] is not None:
+                        if element.get('hash', False):
                             md5 = get_md5(dst_xz_cache_path)
                             if element['hash'] == md5:
                                 # File exists in cache and its md5 is ok
@@ -153,8 +159,15 @@ class Download(object):
                                 copy_it = True
                         else:
                             # File exists in cache but we can't check if its md5 is ok or not
-                            # Let's copy it to our destination
+                            # Let's copy it to our destination but store the pkg's name in case
+                            # it causes problems later on.
                             copy_it = True
+                            self.queue_event(
+                                    'cache_pkgs_md5_check_failed',
+                                    [element['identity'], element['name']])
+                            logging.debug(
+                                    'Checksum unavailable for cached package: %s',
+                                    element['identity'])
 
                         if copy_it:
                             logging.debug("%s found in suplied xz packages' cache. Copying...", element['filename'])
@@ -281,7 +294,7 @@ class Download(object):
         self.queue_event('downloads_progress_bar', 'hide')
         return True
 
-    def queue_event(self, event_type, event_text=""):
+    def queue_event(self, event_type, event_text=None):
         """ Adds an event to Cnchi event queue """
 
         if self.callback_queue is None:
