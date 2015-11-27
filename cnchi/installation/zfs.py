@@ -119,6 +119,7 @@ class InstallationZFS(GtkBaseBox):
 
         self.pool_types_help_shown = []
 
+        self.devices = {}
         self.fs_devices = {}
         self.mount_devices = {}
 
@@ -183,7 +184,8 @@ class InstallationZFS(GtkBaseBox):
 
         for dev in devices:
             # Skip cdrom, raid, lvm volumes or encryptfs
-            if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
+            if (not dev.path.startswith("/dev/sr") and
+                not dev.path.startswith("/dev/mapper")):
                 size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
                 # Use check | Disk (sda) | Size(GB) | Name (device name)
                 if dev.path.startswith("/dev/"):
@@ -331,7 +333,8 @@ class InstallationZFS(GtkBaseBox):
     def show_pool_type_help(self, pool_type):
         pool_types = list(self.pool_types.values())
         msg = ""
-        if pool_type in pool_types and pool_type not in self.pool_types_help_shown:
+        if (pool_type in pool_types and
+            pool_type not in self.pool_types_help_shown):
             if pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
                 "space-balancing makes a span act like a RAID0 stripe. "
@@ -456,7 +459,8 @@ class InstallationZFS(GtkBaseBox):
             # Create fresh GPT
             wrapper.sgdisk("clear", device_path)
 
-            # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
+            # Inform the kernel of the partition change.
+            # Needed if the hard disk had a MBR partition table.
             self.check_call(["partprobe", device_path])
         else:
             # DOS MBR partition table
@@ -473,12 +477,10 @@ class InstallationZFS(GtkBaseBox):
     def append_change(self, action_type, device, info=""):
         if action_type == "create":
             info = _("Create {0} on device {1}").format(info, device)
-            # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
             encrypt = self.zfs_options["encrypt_disk"]
             act = action.Action("info", info, True, True, "", encrypt)
         elif action_type == "add":
             info = _("Add device {0} to {1}").format(device, info)
-            # action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
             encrypt = self.zfs_options["encrypt_disk"]
             act = action.Action("info", info, True, True, "", encrypt)
         elif action_type == "delete":
@@ -551,6 +553,8 @@ class InstallationZFS(GtkBaseBox):
                 # Create BOOT partition
                 wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
                 fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
+                self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+                self.fs_devices[devices['boot']] = "ext4"
                 part_num += 1
             else:
                 # UEFI
@@ -558,16 +562,26 @@ class InstallationZFS(GtkBaseBox):
                     # Create EFI System Partition (ESP)
                     # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
                     wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
+                    self.devices['efi'] = "{0}{1}".format(device_path, part_num)
+                    self.fs_devices[self.devices['efi']] = "vfat"
+                    self.mount_devices['/boot/efi'] = self.devices['efi']
                     part_num += 1
+
                     # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
                     fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
+                    self.devices['boot'] = "{0}{1}".format(device_path, part_num
+                    self.fs_devices[self.devices['boot']] = "ext4"
+                    self.mount_devices['/boot'] = self.devices['boot']
                     part_num += 1
                 else:
                     # systemd-boot, refind
                     # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
-                    fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
+                    fs.create_fs(device_path + str(part_num), "vfat", "ANTERGOS_BOOT")
+                    self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+                    self.fs_devices[devices['boot']] = "vfat"
+                    self.mount_devices['/boot'] = self.devices['boot']
                     part_num += 1
 
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
@@ -582,18 +596,23 @@ class InstallationZFS(GtkBaseBox):
             self.init_device(device_path, "MBR")
 
             # Create boot partition (all sizes are in MiB)
-            # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            # if start is -1 wrapper.parted_mkpart assumes that our partition
+            # starts at 1 (first partition in disk)
             start = -1
             end = 512
+            part_num = "1"
             wrapper.parted_mkpart(device_path, "primary", start, end)
 
             # Set boot partition as bootable
-            wrapper.parted_set(device_path, "1", "boot", "on")
+            wrapper.parted_set(device_path, part_num, "boot", "on")
 
             # Format the boot partition as well as any other system partitions.
-            # Do not do anything to the Solaris partition nor to the BIOS boot partition.
-            # ZFS will manage the first, and the bootloader the second.
-            fs.create_fs(device_path + "1", "ext4", "ANTERGOS_BOOT")
+            # Do not do anything to the Solaris partition nor to the BIOS boot
+            # partition. ZFS will manage the first, and the bootloader the second.
+            fs.create_fs(device_path + part_num, "ext4", "ANTERGOS_BOOT")
+            self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+            self.fs_devices[self.devices['boot']] = "ext4"
+            self.mount_devices['/boot'] = self.devices['boot']
 
             # The rest will be solaris type
             start = end
@@ -616,7 +635,9 @@ class InstallationZFS(GtkBaseBox):
         """ Get disk and partitions IDs """
         path = "/dev/disk/by-id"
         for entry in os.scandir(path):
-            if not entry.name.startswith('.') and entry.is_symlink() and entry.name.startswith("ata"):
+            if (not entry.name.startswith('.') and
+                entry.is_symlink() and
+                entry.name.startswith("ata")):
                 dest_path = os.readlink(entry.path)
                 device = dest_path.split("/")[-1]
                 self.ids[device] = entry.name
@@ -740,7 +761,11 @@ class InstallationZFS(GtkBaseBox):
 
         # Round up
         size = math.ceil(size)
-        logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, size)
+        logging.debug(
+            "Creating a zfs vol %s/%s of size %dGB",
+            pool_name,
+            vol_name,
+            size)
         cmd = [
             "zfs", "create",
             "-V", "{0}G".format(size),
@@ -867,8 +892,6 @@ class InstallationZFS(GtkBaseBox):
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
-        self.fs_devices = {}
-        self.mount_devices = {}
 
         self.installation = install.Installation(
             self.settings,
