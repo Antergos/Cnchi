@@ -1,4 +1,4 @@
-{"version":"0.13.229","files":[
+{"version":"0.13.230","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -19,7 +19,7 @@
 {"name":"/usr/share/cnchi/.idea/misc.xml","md5":"b0a866e432e3db475619a0ef7118897d"},
 {"name":"/usr/share/cnchi/.idea/cnchi.iml","md5":"811646b9b7ee64159d69789cf3227976"},
 {"name":"/usr/share/cnchi/.idea/webResources.xml","md5":"6cf714f1bb19f5b3f98c475f92fc8802"},
-{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"9e9d71917553f7310a5f48bcc1d2eceb"},
+{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"aa24a6c00fffd273d06486d388f09be6"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/profiles_settings.xml","md5":"4b2b1c0ecf04d07f0792fc1b37f04e82"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/Project_Default.xml","md5":"d6d3302de0bf1f8fad42c29468e6c788"},
 {"name":"/usr/share/cnchi/.idea/template/template_variable_settings.xml","md5":"c85070e5ab937fd406196dec1d07604e"},
@@ -456,7 +456,7 @@
 {"name":"/usr/share/cnchi/cnchi/download/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/download/metalink.py","md5":"2bd16504b416f99af018c5390034358d"},
 {"name":"/usr/share/cnchi/cnchi/download/download.py","md5":"b634516f542ebfb6defa0fabe59646df"},
-{"name":"/usr/share/cnchi/cnchi/download/download_requests.py","md5":"c9df57c3a081bb680a7fd539459d5037"},
+{"name":"/usr/share/cnchi/cnchi/download/download_requests.py","md5":"b69f272a0f3e08b9c117db6c83a69104"},
 {"name":"/usr/share/cnchi/cnchi/hardware/broadcom_wl.py","md5":"4dd5444d961efbafe32c92f631f29d05"},
 {"name":"/usr/share/cnchi/cnchi/hardware/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/hardware/firewire.py","md5":"ebbca131917973fabb3bc6f2893cdb18"},

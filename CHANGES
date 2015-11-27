@@ -1,3 +1,4 @@
+[2015-11-27 05:12:00 -0600]  Possible fix for antergos/cnchi#363 NEEDS TESTING!                     Dustin Falgout  {38f6b8e}
 [2015-11-22 08:24:28 +0100]  More changes in zfs BUT ALSO in install                                    karasu      {d469583}
 [2015-11-26 22:21:30 +0100]  Need to fill both vars                                                     karasu      {16623d9}
 [2015-11-26 18:59:25 +0100]  Size in GB must be int                                                     karasu      {1ac6e34}

@@ -164,7 +164,7 @@ class Download(object):
                             copy_it = True
                             self.queue_event(
                                     'cache_pkgs_md5_check_failed',
-                                    [element['identity'], element['name']])
+                                    element['identity'])
                             logging.debug(
                                     'Checksum unavailable for cached package: %s',
                                     element['identity'])
