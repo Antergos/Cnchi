@@ -1,4 +1,4 @@
-{"version":"0.13.234","files":[
+{"version":"0.13.235","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -76,7 +76,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/process.py","md5":"ba105d914a0bd9274e6650288fb9e9ca"},
 {"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"30f08855cfe447865cadf9a82b20b85d"},
 {"name":"/usr/share/cnchi/cnchi/installation/wrapper.py","md5":"c8a4ea6b158266bc96779860b36404be"},
-{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"a61706971d763aa385ea1c4ae2ffd4f0"},
+{"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"d5a8ecc86f8e2a4ee5fedd7c6442406a"},
 {"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"0e594c205d3124213ad80c7708299fff"},
 {"name":"/usr/share/cnchi/cnchi/misc/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/misc/camera.py","md5":"7ad9bf243c52628a4f8b1765cf568c26"},
