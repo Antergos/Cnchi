@@ -561,6 +561,13 @@
     <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
   </filesystems>
 
+  <zfs>
+    <pkgname>zfs</pkgname>
+    <pkgname>zfs-utils</pkgname>
+    <pkgname>spl</pkgname>
+    <pkgname>spl-utils</pkgname>
+  </zfs>
+
   <locale_fonts>
     <chinese>
       <pkgname>opendesktop-fonts</pkgname>

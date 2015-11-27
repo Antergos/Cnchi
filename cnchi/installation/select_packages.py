@@ -76,6 +76,10 @@ class SelectPackages(object):
         self.settings = settings
         self.alternate_package_list = self.settings.get('alternate_package_list')
         self.desktop = self.settings.get('desktop')
+        if self.settings.get('partition_mode') == "installation_zfs":
+            self.zfs = True
+        else:
+            self.zfs = False
 
         # Set defaults
         self.desktop_manager = 'lightdm'
@@ -263,9 +267,16 @@ class SelectPackages(object):
             for pkg in child.iter('pkgname'):
                 self.packages.append(pkg.text)
 
+        # Add ZFS filesystem
+        if self.zfs:
+            logging.debug("Adding zfs packages")
+            for child in xml_root.iter("zfs"):
+                for pkg in child.iter('pkgname'):
+                    self.packages.append(pkg.text)
+
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
-        if lang_code == "zh_TW" or lang_code == "zh_CN":
+        if lang_code in ["zh_TW", "zh_CN"]:
             logging.debug("Selecting chinese fonts.")
             for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
