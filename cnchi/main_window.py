@@ -55,6 +55,7 @@ from installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
+from installation import zfs as installation_zfs
 
 
 def atk_set_image_description(widget, description):
@@ -90,9 +91,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.ui_dir = self.settings.get('ui')
 
-        if cmd_line.cache:
-            logging.debug("Cnchi will use '%s' as a source directory for cached xz packages", cmd_line.cache)
-            self.settings.set('cache', cmd_line.cache)
+        # By default, always try to use local /var/cache/pacman/pkg
+        xz_cache = ["/var/cache/pacman/pkg"]
+
+        # Check command line
+        if cmd_line.cache and cmd_line.cache not in xz_cache:
+            xz_cache.append(cmd_line.cache)
+
+        # Log cache dirs
+        for xz in xz_cache:
+            logging.debug("Cnchi will use '%s' as a source for cached xz packages", xz)
+
+        # Store cache dirs in config
+        self.settings.set('xz_cache', xz_cache)
 
         data_dir = self.settings.get('data')
 
@@ -156,15 +167,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # This list will have all processes (rankmirrors, autotimezone...)
         self.process_list = []
 
-        # Save in config which download method we have to use
-        if cmd_line.download_module:
-            self.settings.set("download_module", cmd_line.download_module)
-        else:
-            # Use requests by default
-            self.settings.set("download_module", 'requests')
-
-        logging.info("Using %s to download packages", self.settings.get("download_module"))
-
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
             logging.info("Using '%s' file as package list", self.settings.get('alternate_package_list'))
@@ -202,7 +204,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.MAIN_WINDOW_HEIGHT = 450
 
         self.connect('delete-event', self.on_exit_button_clicked)
-        self.connect('key-release-event', self.check_escape)
+        self.connect('key-release-event', self.on_key_release)
 
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
@@ -287,6 +289,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["installation_alongside"] = None
 
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
+        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(self.params)
         self.pages["summary"] = summary.Summary(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -319,6 +322,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if self.pages["installation_alongside"] is not None:
                 del self.pages["installation_alongside"]
             del self.pages["installation_advanced"]
+            del self.pages["installation_zfs"]
         except KeyError as key_error:
             pass
 
@@ -343,9 +347,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_geometry_hints(None, geom, hints)
 
-    def check_escape(self, widget, event, data=None):
+    def on_key_release(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
-        if event.keyval == 65307:
+        if event.keyval == Gdk.keyval_from_name('Escape'):
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:
                 self.on_exit_button_clicked(self)

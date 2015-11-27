@@ -95,7 +95,7 @@ class Installation(object):
         msg = _("Installing using the '{0}' method").format(self.method)
         self.queue_event('info', msg)
 
-        self.desktop = self.settings.get('desktop')
+        self.desktop = self.settings.get('desktop').lower()
 
         # This flag tells us if there is a lvm partition (from advanced install)
         # If it's true we'll have to add the 'lvm2' hook to mkinitcpio
@@ -150,8 +150,8 @@ class Installation(object):
         if os.path.exists(DEST_DIR):
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
-            # We use unmount_all from auto_partition to do this.
-            auto_partition.unmount_all(DEST_DIR)
+            # We use unmount_all_in_directory from auto_partition to do this.
+            auto_partition.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
         root_partition = self.mount_devices["/"]
@@ -273,14 +273,32 @@ class Installation(object):
         self.prepare_pacman()
         logging.debug("Pacman ready")
 
+        # Run pre-install scripts (only catalyst does something here atm)
+        try:
+            logging.debug("Running hardware drivers pre-install jobs...")
+            self.hardware_install = hardware.HardwareInstall(
+                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
+            self.hardware_install.pre_install(DEST_DIR)
+        except Exception as general_error:
+            logging.warning("Unknown error in hardware module. Output: %s", general_error)
+
         logging.debug("Downloading packages...")
         self.download_packages()
+
+        # This mounts (binds) /dev and others to /DEST_DIR/dev and others
+        chroot.mount_special_dirs(DEST_DIR)
 
         logging.debug("Installing packages...")
         self.install_packages()
 
         logging.debug("Configuring system...")
         self.configure_system()
+
+        # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
+        chroot.umount_special_dirs(DEST_DIR)
+
+        # Finally, try to unmount DEST_DIR
+        auto_partition.unmount_all_in_directory(DEST_DIR)
 
         self.running = False
 
@@ -291,41 +309,34 @@ class Installation(object):
 
     @staticmethod
     def copy_log():
-        # Copy Cnchi log to new installation
+        # Copy Cnchi logs to new installation
+        log_dest_dir = os.path.join(DEST_DIR, "var/log/cnchi")
+        os.makedirs(log_dest_dir, mode=0o755, exist_ok=True)
+
         datetime = "{0}-{1}".format(time.strftime("%Y%m%d"), time.strftime("%H%M%S"))
-        dst = os.path.join(DEST_DIR, "var/log/cnchi-{0}.log".format(datetime))
-        pidst = os.path.join(DEST_DIR, "var/log/postinstall-{0}.log".format(datetime))
-        try:
-            shutil.copy("/tmp/cnchi.log", dst)
-            shutil.copy("/tmp/postinstall.log", pidst)
-        except FileNotFoundError:
-            logging.warning("Can't copy Cnchi log to %s", dst)
-        except FileExistsError:
-            pass
+
+        file_names = ["cnchi", "postinstall", "pacman"]
+
+        for name in file_names:
+            src = os.path.join("/tmp", "{0}.log".format(name))
+            dst = os.path.join(log_dest_dir, "{0}-{1}.log".format(name, datetime))
+            try:
+                shutil.copy(src, dst)
+            except FileNotFoundError:
+                logging.warning("Can't copy %s log to %s", src, dst)
+            except FileExistsError:
+                pass
 
     def download_packages(self):
         """ Downloads necessary packages """
-        pacman_conf_file = "/tmp/pacman.conf"
-        pacman_cache_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-
-        if self.settings.get("cache") != '':
-            cache_dir = self.settings.get("cache")
-        else:
-            cache_dir = '/var/cache/pacman/pkg'
-
-        if self.settings.get("download_module"):
-            download_module = self.settings.get("download_module")
-        else:
-            download_module = 'requests'
 
         download_packages = download.DownloadPackages(
-            self.packages,
-            download_module,
-            pacman_conf_file,
-            pacman_cache_dir,
-            cache_dir,
-            self.settings,
-            self.callback_queue)
+            package_names=self.packages,
+            pacman_conf_file='/tmp/pacman.conf',
+            pacman_cache_dir=os.path.join(DEST_DIR, 'var/cache/pacman/pkg'),
+            settings=self.settings,
+            callback_queue=self.callback_queue)
+
         # Metalinks have already been calculated before,
         # When downloadpackages class has been called in process.py to test
         # that Cnchi was able to create it before partitioning/formatting
@@ -367,7 +378,6 @@ class Installation(object):
         """ Add gnupg pacman files to installed system """
 
         dirs = ["var/cache/pacman/pkg", "var/lib/pacman"]
-
         for pacman_dir in dirs:
             mydir = os.path.join(DEST_DIR, pacman_dir)
             os.makedirs(mydir, mode=0o755, exist_ok=True)
@@ -475,9 +485,7 @@ class Installation(object):
             partition_path = self.mount_devices[mount_point]
             uuid = fs.get_uuid(partition_path)
             if uuid == "":
-                logging.warning(
-                    _("Can't get {0} partition UUID. It won't be added to fstab"),
-                    partition_path)
+                logging.warning("Can't get %s partition UUID. It won't be added to fstab", partition_path)
                 continue
 
             if partition_path in self.fs_devices:
@@ -713,32 +721,6 @@ class Installation(object):
         """ Helper function to run a command """
         return subprocess.check_output(command.split()).decode().strip("\n")
 
-    def copy_cached_packages(self, cache_dir):
-        """ Copy all packages from specified directory to install's target """
-        # Check in case user has given a wrong folder
-        if not os.path.exists(cache_dir):
-            return
-        self.queue_event('info', _('Copying xz files from cache...'))
-        dest_dir = os.path.join(DEST_DIR, "var/cache/pacman/pkg")
-        os.makedirs(dest_dir, mode=0o755, exist_ok=True)
-        self.copy_files_progress(cache_dir, dest_dir)
-
-    def copy_files_progress(self, src, dst):
-        """ Copy files updating the slides' progress bar """
-        percent = 0.0
-        items = os.listdir(src)
-        if len(items) > 0:
-            step = 1.0 / len(items)
-            for item in items:
-                self.queue_event('percent', percent)
-                source = os.path.join(src, item)
-                destination = os.path.join(dst, item)
-                try:
-                    shutil.copy2(source, destination)
-                except (FileExistsError, shutil.Error) as file_error:
-                    logging.warning(file_error)
-                percent += step
-
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
         services = []
@@ -794,11 +776,11 @@ class Installation(object):
         username = self.settings.get('username')
         autologin = not self.settings.get('require_password')
 
-        lightdm_conf_path = os.path.join(DEST_DIR, "etc/lightdm/lightdm.conf")
+        lightdm_greeter = "lightdm-webkit2-greeter"
 
+        lightdm_conf_path = os.path.join(DEST_DIR, "etc/lightdm/lightdm.conf")
         try:
             # Setup LightDM as Desktop Manager
-
             with open(lightdm_conf_path) as lightdm_conf:
                 text = lightdm_conf.readlines()
 
@@ -813,8 +795,10 @@ class Installation(object):
                     # Set correct DE session
                     if '#user-session=default' in line:
                         line = 'user-session={0}\n'.format(session)
+                    # Set correct greeter
+                    if '#greeter-session=example-gtk-gnome' in line:
+                        line = 'greeter-session={0}\n'.format(lightdm_greeter)
                     lightdm_conf.write(line)
-
             txt = _("LightDM display manager configuration completed.")
             logging.debug(txt)
         except FileNotFoundError:
@@ -871,10 +855,11 @@ class Installation(object):
             "Audigy Analog/Digital Output Jack off"]
 
         for cmd in cmds:
-            chroot_run(['sh', '-c', 'amixer -c 0 sset {0}'.format(cmd)])
+            full_cmd = ['sh', '-c', 'amixer -q -c 0 sset {0}'.format(cmd)]
+            chroot_run(full_cmd)
 
         # Save settings
-        chroot_run(['alsactl', '-f', '/etc/asound.state', 'store'])
+        chroot_run(['alsactl', 'store'])
 
     @staticmethod
     def set_fluidsynth():
@@ -887,13 +872,26 @@ class Installation(object):
 
         audio_system = "alsa"
 
-        pulse_path = os.path.join(DEST_DIR, "usr/bin/pulseaudio")
-        if os.path.exists(pulse_path):
+        pulseaudio_path = os.path.join(DEST_DIR, "usr/bin/pulseaudio")
+        if os.path.exists(pulseaudio_path):
             audio_system = "pulse"
 
         with open(fluid_path, "w") as fluid_conf:
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
             fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
+
+    @staticmethod
+    def patch_user_dirs_update_gtk():
+        """ Patches user-dirs-update-gtk.desktop so it is run in XFCE, MATE and Cinnamon """
+        path = os.path.join(DEST_DIR, "etc/xdg/autostart/user-dirs-update-gtk.desktop")
+        with open(path, 'r') as user_dirs:
+            lines = user_dirs.readlines()
+        with open(path, 'w') as user_dirs:
+            for line in lines:
+                if "OnlyShowIn=" in line:
+                    line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
+                user_dirs.write(line)
+
 
     def configure_system(self):
         """ Final install steps
@@ -905,9 +903,6 @@ class Installation(object):
 
         self.queue_event('pulse', 'start')
         self.queue_event('info', _("Configuring your new system"))
-
-        # This mounts (binds) /dev and others to /DEST_DIR/dev and others
-        chroot.mount_special_dirs(DEST_DIR)
 
         self.auto_fstab()
         logging.debug("fstab file generated.")
@@ -1031,8 +1026,7 @@ class Installation(object):
 
         self.change_user_password(username, password)
 
-        cmd = ['chfn', '-f', fullname, username]
-        chroot_run(cmd)
+        chroot_run(['chfn', '-f', fullname, username])
 
         cmd = ['chown', '-R', '{0}:users'.format(username), os.path.join("/home", username)]
         chroot_run(cmd)
@@ -1096,28 +1090,30 @@ class Installation(object):
                 logging.error(io_error)
 
         # Set vconsole.conf for console keymap
-        if keyboard_layout == "gb":
-            # The keyboard layout for Great Britain is "uk" in the cli and
-            # "gb" (not uk) in X, just to make things more complicated.
-            keyboard_layout_cli = "uk"
-        else:
-            keyboard_layout_cli = keyboard_layout
-
+        match = {
+            "ca": "us",
+            "gb": "uk",
+            "latam": "la-latin1",
+            "pt": "pt-latin1"
+        }
+        vconsole = match.get(keyboard_layout, keyboard_layout)
+        # Write vconsole.conf
         vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        with open(vconsole_path, 'w') as vconsole:
-            vconsole.write("KEYMAP={0}\n".format(keyboard_layout_cli))
+        with open(vconsole_path, 'w') as vconsole_file:
+            vconsole_file.write("# File modified by Cnchi\n\n")
+            vconsole_file.write("KEYMAP={0}\n".format(vconsole))
+        logging.debug("Set vconsole to %s", vconsole)
 
         # Install configs for root
-        cmd = ['cp', '-av', '/etc/skel/.', '/root/']
-        chroot_run(cmd)
+        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
 
         self.queue_event('info', _("Configuring hardware..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
-            shutil.copy2(
-                "/etc/X11/xorg.conf",
-                os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
+            src = "/etc/X11/xorg.conf"
+            dst = os.path.join(DEST_DIR, 'etc/X11/xorg.conf')
+            shutil.copy2(src, dst)
 
         # Configure ALSA
         self.alsa_mixer_setup()
@@ -1130,6 +1126,12 @@ class Installation(object):
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
         logging.debug("Updated fluidsynth configuration file")
+
+        # Workaround for pacman-key bug FS#45351
+        # https://bugs.archlinux.org/task/45351
+        # We have to kill gpg-agent because if it stays around we can't
+        # reliably unmount the target partition.
+        chroot_run(['killall', '-9', 'gpg-agent'])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1144,21 +1146,31 @@ class Installation(object):
             self.settings.get('cnchi'),
             "scripts",
             POSTINSTALL_SCRIPT)
-        cmd = ["/usr/bin/bash", script_path_postinstall, username, DEST_DIR, self.desktop, keyboard_layout]
+        cmd = [
+            "/usr/bin/bash",
+            script_path_postinstall,
+            username,
+            DEST_DIR,
+            self.desktop,
+            locale,
+            str(self.vbox),
+            keyboard_layout]
+        # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        else:
-            cmd.append("")
-        cmd.append(str(self.vbox))
         try:
             subprocess.check_call(cmd, timeout=300)
             logging.debug("Post install script completed successfully.")
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
-            logging.error("Error running post-install script, command %s failed: %s",
-                process_error.cmd, process_error.output)
+            txt = "Error running post-install script, command %s failed: %s"
+            logging.error(txt , process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
+
+        # Patch user-dirs-update-gtk.desktop
+        self.patch_user_dirs_update_gtk()
+        logging.debug("File user-dirs-update-gtk.desktop patched.")
 
         # Set lightdm config including autologin if selected
         if self.desktop != "base":
@@ -1184,11 +1196,17 @@ class Installation(object):
             except Exception as general_error:
                 logging.warning("While installing boot loader Cnchi encountered this error: %s", general_error)
 
-        # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
-        chroot.umount_special_dirs(DEST_DIR)
+        # Create an initial database for mandb
+        # logging.debug("Updating man database")
+        # chroot_run(["mandb", "--quiet"])
+
+        # Initialise pkgfile (pacman .files metadata explorer) database
+        # logging.debug("Updating pkgfile database")
+        # chroot_run(["pkgfile", "--update"])
 
         # Copy installer log to the new installation (just in case something goes wrong)
         logging.debug("Copying install log to /var/log.")
         self.copy_log()
 
         self.queue_event('pulse', 'stop')
+        self.queue_event('progress_bar', 'hide')

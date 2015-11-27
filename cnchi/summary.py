@@ -121,7 +121,8 @@ class Summary(GtkBaseBox):
         self.num_features = 0
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
-                txt += "{0}\n".format(features_info.TITLES[feature])
+                feature_title = _(features_info.TITLES[feature])
+                txt += "{0}\n".format(feature_title)
                 self.num_features += 1
         txt = txt[:-1]
         statebox.set_property("label", txt)
@@ -129,21 +130,27 @@ class Summary(GtkBaseBox):
         # Partitions
         install_screen = self.get_install_screen()
         if install_screen:
-            changes = install_screen.get_changes()
-            statebox = self.ui.get_object("partitions_statebox")
             txt = ""
-            for action in changes:
-                txt += "{0}\n".format(str(action))
-            txt = txt[:-1]
+            statebox = self.ui.get_object("partitions_statebox")
+            changes = install_screen.get_changes()
+            if changes == None or len(changes) == 0:
+                txt = _("Error getting changes from install screen")
+                logging.error("Error getting changes from install screen")
+            else:
+                for action in changes:
+                    txt += "{0}\n".format(_(str(action)))
+                txt = txt[:-1]
             statebox.set_property("label", txt)
 
     def get_install_screen(self):
         page = "installation_" + self.settings.get('partition_mode')
         try:
             install_screen = self.main_window.pages[page]
-        except AttributeError:
+        except (AttributeError, KeyError) as page_error:
+            logging.error("Can't find installation page called {0}", page)
             install_screen = None
-        return install_screen
+        finally:
+            return install_screen
 
     def prepare(self, direction):
         """ Load screen """

@@ -47,7 +47,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
-MIN_ROOT_SIZE = 6000000000
+MIN_ROOT_SIZE = 8000000000
 
 
 class Check(GtkBaseBox):
@@ -184,7 +184,7 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
-        if not self.updater:
+        if self.updater == None:
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()

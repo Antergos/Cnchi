@@ -157,6 +157,18 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 #tryit_btn, #graph_btn {
     padding: 12px 20px;
     border-radius: 3px;
+    border-color: #f0f0f0;
+    border-width: 2px;
+    background: rgba(255, 255, 255, 1);
+    font-size: 15px;
+    font-weight: 500;
+    color: #2EA3F2;
+    transition: all 0.1s ease-in;
+}
+
+#tryit_btn:focused, #graph_btn:focused {
+    padding: 12px 20px;
+    border-radius: 3px;
     border-color: #2EA3F2;
     border-width: 2px;
     background: rgba(255, 255, 255, 1);
@@ -197,11 +209,11 @@ GtkTreeView row:selected {
     font-weight: 600;
 }
 
-#lvm_btn GtkLabel, #enc_btn GtkLabel, #home_btn GtkLabel {
+#lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
     font-size: 11px;
 }
 
-#lvm_label, #enc_label, #home_label {
+#lvm_label, #enc_label, #zfs_label, #home_label {
     font-size: 10px;
     font-style: italic;
 }

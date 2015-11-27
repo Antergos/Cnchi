@@ -29,9 +29,9 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.12.43"
+CNCHI_VERSION = "0.13.201"
 CNCHI_WEBSITE = "http://www.antergos.com"
-CNCHI_RELEASE_STAGE = "production"
+CNCHI_RELEASE_STAGE = "development"
 
 if __name__ == '__main__':
     print(CNCHI_VERSION)

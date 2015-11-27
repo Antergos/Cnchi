@@ -391,8 +391,3 @@ if [[ ${DESKTOP} == 'enlightenment' ]]; then
 	# $EDITOR e.src # change whatever you like
 	# eet -e e.cfg config e.src 1  # compile human readable values to binary form and use compression
 fi
-
-# Shutdown systemd-nspawn container
-if systemd-detect-virt --container; then
-	poweroff
-fi

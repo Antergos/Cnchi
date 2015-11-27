@@ -47,6 +47,7 @@ SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 import gi
 gi.require_version('WebKit', '3.0')
 from gi.repository import WebKit
+from logging_utils import ContextFilter
 
 # When we reach this page we can't go neither backwards nor forwards
 
@@ -73,6 +74,8 @@ class Slides(GtkBaseBox):
 
         self.scrolled_window = self.ui.get_object("scrolledwindow")
 
+        GLib.timeout_add(1000, self.manage_events_from_cb_queue)
+
     def translate_ui(self):
         """ Translates all ui elements """
         if len(self.info_label.get_label()) <= 0:
@@ -92,7 +95,7 @@ class Slides(GtkBaseBox):
 
             self.scrolled_window.add(self.web_view)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-            self.scrolled_window.set_size_request(800, 324)
+            self.scrolled_window.set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
@@ -110,7 +113,6 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-        GLib.timeout_add(400, self.manage_events_from_cb_queue)
 
     @staticmethod
     def store_values():
@@ -124,7 +126,7 @@ class Slides(GtkBaseBox):
     def stop_pulse(self):
         """ Stop pulsing progressbar """
         self.should_pulse = False
-        self.progress_bar.hide()
+        # self.progress_bar.hide()
         self.info_label.show_all()
 
     def start_pulse(self):
@@ -147,8 +149,7 @@ class Slides(GtkBaseBox):
             GLib.timeout_add(100, pbar_pulse)
 
     def manage_events_from_cb_queue(self):
-        """ We should do as less as possible here, we want to maintain our
-            queue message as empty as possible """
+        """ We should be quick here and do as less as possible """
 
         if self.fatal_error:
             return False
@@ -159,7 +160,14 @@ class Slides(GtkBaseBox):
         while not self.callback_queue.empty():
             try:
                 event = self.callback_queue.get_nowait()
+            except ValueError as queue_error:
+                # Calling get_nowait so many times can issue a ValueError
+                # exception with this error: semaphore or lock released too many times
+                # Log it anyways to keep an eye on this error
+                logging.error(queue_error)
+                return True
             except queue.Empty:
+                # Queue is empty, just quit.
                 return True
 
             if event[0] == 'percent':
@@ -190,6 +198,8 @@ class Slides(GtkBaseBox):
                     self.start_pulse()
             elif event[0] == 'finished':
                 logging.info(event[1])
+                log_util = ContextFilter()
+                log_util.send_install_result("True")
                 if self.settings.get('bootloader_install') and not self.settings.get('bootloader_installation_successful'):
                     # Warn user about GRUB and ask if we should open wiki page.
                     boot_warn = _("IMPORTANT: There may have been a problem with the bootloader\n"
@@ -214,6 +224,8 @@ class Slides(GtkBaseBox):
                     sys.exit(0)
                 return False
             elif event[0] == 'error':
+                log_util = ContextFilter()
+                log_util.send_install_result("False")
                 self.callback_queue.task_done()
                 # A fatal error has been issued. We empty the queue
                 self.empty_queue()

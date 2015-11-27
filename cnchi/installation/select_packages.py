@@ -221,12 +221,12 @@ class SelectPackages(object):
             if lang_name == "english":
                 # There're some English variants available but not all of them.
                 lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
+                locale = self.settings.get('locale').split('.')[0]
                 if locale in lang_packs:
                     pkg = base_name + locale
             else:
                 # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
+                lang_code = self.settings.get('language_code')
                 pkg = base_name + lang_code
             if len(pkg) > 0:
                 logging.debug("Selected kde language pack: %s", pkg)
@@ -252,6 +252,10 @@ class SelectPackages(object):
             self.conflicts.extend(hardware_install.get_conflicts())
         except Exception as general_error:
             logging.warning("Unknown error in hardware module. Output: %s", general_error)
+
+        # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
+        if self.vbox and self.desktop == "base":
+            self.packages.append("virtualbox-guest-utils-nox")
 
         # Add filesystem packages
         logging.debug("Adding filesystem packages")

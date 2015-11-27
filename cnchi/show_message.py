@@ -99,3 +99,9 @@ def question(parent, my_message):
     response = msg_dialog.run()
     msg_dialog.destroy()
     return response
+
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message

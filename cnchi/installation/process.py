@@ -36,6 +36,7 @@ import logging
 import sys
 import misc.misc as misc
 import pyalpm
+
 from download import download
 
 from installation import select_packages as pack
@@ -67,15 +68,15 @@ class Process(multiprocessing.Process):
                 txt = _("Cannot create package list. Check log output for details.")
                 raise misc.InstallError(txt)
 
+            # Won't download anything here. It's just to create the metalinks list
             down = download.DownloadPackages(
                 package_names=pkg.packages,
-                download_module='requests',
-                pacman_conf_file="/etc/pacman.conf",
-                pacman_cache_dir="/var/cache/pacman/pkg",
-                cache_dir="/var/cache/pacman/pkg",
+                pacman_conf_file='/etc/pacman.conf',
+                pacman_cache_dir='/var/cache/pacman/pkg',
                 settings=self.settings,
                 callback_queue=self.callback_queue)
-                
+
+            # Create metalinks list
             down.create_metalinks_list()
 
             if not down.metalinks or len(down.metalinks) == 0:
@@ -83,7 +84,6 @@ class Process(multiprocessing.Process):
                 raise misc.InstallError(txt)
 
             # try except if pkg.packages is empty or down.metalinks is empty
-
             with misc.raised_privileges():
                 self.install_screen.run_format()
                 self.install_screen.run_install(pkg.packages, down.metalinks)

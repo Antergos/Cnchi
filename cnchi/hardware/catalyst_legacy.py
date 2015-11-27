@@ -41,6 +41,8 @@ CLASS_NAME = "CatalystLegacy"
 CLASS_ID = "0x03"
 VENDOR_ID = "0x1002"
 PRIORITY = 0
+# Disable this driver
+ENABLED = False
 
 """
 Since Catalyst 12.4, AMD has separated its development for Radeon HD 2xxx,
@@ -99,7 +101,7 @@ DEVICES = [
 
 class CatalystLegacy(Hardware):
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
 
     @staticmethod
     def get_packages():
@@ -143,11 +145,11 @@ class CatalystLegacy(Hardware):
         path = os.path.join(dest_dir, "etc/pacman.conf")
         self.add_repositories(path)
 
-        super().chroot(["systemctl", "enable", "atieventsd"])
-        super().chroot(["systemctl", "enable", "catalyst-hook"])
-        super().chroot(["systemctl", "enable", "temp-links-catalyst"])
+        Hardware.chroot(["systemctl", "enable", "atieventsd"])
+        Hardware.chroot(["systemctl", "enable", "catalyst-hook"])
+        Hardware.chroot(["systemctl", "enable", "temp-links-catalyst"])
 
-        super().chroot(["aticonfig", "--initial"], dest_dir)
+        Hardware.chroot(["aticonfig", "--initial"], dest_dir)
 
     @staticmethod
     def is_proprietary():

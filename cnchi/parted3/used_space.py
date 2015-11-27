@@ -49,18 +49,14 @@ def get_used_ntfs(part):
         logging.error(err)
 
     if result:
-        csize, vsize, fsize = (0, 0, 0)
+        vsize, fsize = (0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
-            if 'Cluster Size:' in line:
-                # csize = int(line.split(':')[-1].strip())
-                pass
-            elif 'Volume Size in Clusters' in line:
+            if 'Volume Size in Clusters' in line:
                 vsize = int(line.split(':')[-1].strip())
             elif 'Free Clusters:' in line:
                 fsize = int(line.strip().split()[2])
-        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
 
@@ -78,7 +74,7 @@ def get_used_ext(part):
         logging.error(err)
 
     if result:
-        csize, vsize, fsize = (0, 0, 0)
+        vsize, fsize = (0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
@@ -86,10 +82,6 @@ def get_used_ext(part):
                 vsize = int(line.split(':')[-1].strip())
             elif "Free blocks:" in line:
                 fsize = int(line.split(':')[-1].strip())
-            elif "Block size:" in line:
-                # csize = int(line.split(':')[-1].strip())
-                pass
-        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
 
@@ -99,32 +91,32 @@ def get_used_fat(part):
     """ Gets used space in a FAT partition """
     used = 0
     try:
-        result = subprocess.check_output(["dosfsck", "-n", "-v", part])
+        result = subprocess.check_output(["fsck.fat", "-n", "-v", part])
     except subprocess.CalledProcessError as err:
         if b'Dirty bit is set' in err.output:
             result = err.output
         else:
             result = None
-            txt = _("Can't detect used space of FAT partition %s")
-            logging.error(txt, part)
-            logging.error(err)
+            txt = _("Can't detect used space of FAT partition %s : %s")
+            logging.error(txt, part, str(err.output))
 
     if result:
-        bperc = 0
-        cl = 0
-        sbyte = 0
-        ucl = 0
+        bytes_per_cluster, cl, sbyte, ucl = (0, 0, 0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
             if 'bytes per cluster' in line:
-                bperc = int(line.split()[0].strip())
+                bytes_per_cluster = int(line.split()[0].strip())
             elif 'Data area starts at' in line:
                 sbyte = int(line.split()[5])
             elif part in line:
                 cl = int(line.split()[3].split('/')[1])
                 ucl = int(line.split()[3].split('/')[0])
-        used = (sbyte + (bperc * ucl)) / (bperc * cl)
+        try:
+            used = (sbyte + (bytes_per_cluster * ucl)) / (bytes_per_cluster * cl)
+        except ZeroDivisionError as zero_error:
+            logging.error("Error in get_used_fat: %s", zero_error)
+
     return used
 
 
@@ -150,6 +142,7 @@ def get_used_jfs(part):
             elif "kilobytes are available for use" in line:
                 fsize = int(line.split()[0].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
@@ -178,6 +171,7 @@ def get_used_reiser(part):
             elif "Free blocks (count of blocks" in line:
                 fsize = int(line.split()[-1].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
@@ -214,6 +208,7 @@ def get_used_btrfs(part):
                 usize = float(usize.strip("KMGTPBib")) * umult
                 vsize = float(vsize.strip("KMGTPBib")) * vmult
         used = usize / vsize
+
     return used
 
 
@@ -240,6 +235,7 @@ def get_used_xfs(part):
             elif "dblocks" in line:
                 vsize = int(line.split()[-1].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
@@ -282,4 +278,5 @@ def get_used_space(part, part_type):
         space = get_used_f2fs(part)
     else:
         space = 0
+
     return space

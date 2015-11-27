@@ -1,3 +1,4 @@
+[2015-11-24 22:51:29 -0600]  fix typo (cherry picked from commit 0a5a7e1)                           Dustin Falgout  {f8521c6}
 [2015-11-21 09:41:45 -0600]  Merge pull request #470 from ronhuang/taiwan-not-part-of-china         Dustin Falgout  {3a5074b}
 [2015-11-21 22:48:23 +0800]  Taiwan is not part of China                                               Ron Huang    {e1fb839}
 [2015-11-21 13:13:00 +0100]  Install lightdm-webkit2-greeter                                            karasu      {b9ac894}
