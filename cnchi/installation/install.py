@@ -929,14 +929,15 @@ class Installation(object):
             DEST_DIR,
             "etc/xdg/autostart/user-dirs-update-gtk.desktop")
 
-        with open(path, 'r') as user_dirs:
-            lines = user_dirs.readlines()
+        if os.path.exists(path):
+            with open(path, 'r') as user_dirs:
+                lines = user_dirs.readlines()
 
-        with open(path, 'w') as user_dirs:
-            for line in lines:
-                if "OnlyShowIn=" in line:
-                    line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
-                user_dirs.write(line)
+            with open(path, 'w') as user_dirs:
+                for line in lines:
+                    if "OnlyShowIn=" in line:
+                        line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
+                    user_dirs.write(line)
 
 
     def configure_system(self):
