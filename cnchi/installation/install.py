@@ -137,13 +137,11 @@ class Installation(object):
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
-        if self.callback_queue is not None:
+        if self.callback_queue:
             try:
                 self.callback_queue.put_nowait((event_type, event_text))
             except queue.Full:
                 pass
-        else:
-            print("{0}: {1}".format(event_type, event_text))
 
     def mount_partitions(self):
         """ Do not call this in automatic mode as AutoPartition class mounts
@@ -156,7 +154,6 @@ class Installation(object):
             auto_partition.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
-        # NOTE: In zfs we do not neet to mount root partition
         if "/" in self.mount_devices:
             root_partition = self.mount_devices["/"]
         else:
@@ -178,9 +175,13 @@ class Installation(object):
         # Not doing this in automatic mode as AutoPartition class mounts
         # the root and boot devices itself.
         if root_partition:
-            txt = _("Mounting partition {0} into {1} directory").format(root_partition, DEST_DIR)
+            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
             logging.debug(txt)
             subprocess.check_call(['mount', root_partition, DEST_DIR])
+        elif self.method == "zfs":
+            # Mount /
+            logging.debug("ZFS: Mounting root")
+            subprocess.check_call(["zfs", "mount", "-a"])
 
         # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")

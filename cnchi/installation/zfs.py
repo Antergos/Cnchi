@@ -879,10 +879,6 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
         self.check_call(cmd)
 
-        # Mount /
-        cmd = ["zfs", "mount", "-a"]
-        self.check_call(cmd)
-
         # Copy created cache file to destination
         try:
             dst_dir = os.path.join(DEST_DIR, "etc/zfs")
