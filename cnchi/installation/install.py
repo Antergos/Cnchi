@@ -424,9 +424,14 @@ class Installation(object):
 
         # Tell pacman-key to regenerate gnupg files
         try:
+            # Initialize the pacman keyring
             cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
             subprocess.check_call(cmd)
+            # Load the signature keys
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+            subprocess.check_call(cmd)
+            # Refresh and update the signature keys
+            cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
             txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(
@@ -438,13 +443,6 @@ class Installation(object):
 
         for cache_dir in self.settings.get('xz_cache'):
             self.pacman.handle.add_cachedir(cache_dir)
-
-        logging.debug("Checking that all packages are downloaded...")
-        download_options = {"downloadonly": True}
-        result = self.pacman.install(
-            pkgs=self.packages,
-            conflicts=None,
-            options=download_options)
 
         logging.debug("Installing packages...")
         result = self.pacman.install(
