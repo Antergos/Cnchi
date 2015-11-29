@@ -449,8 +449,8 @@ class Installation(object):
     def install_packages(self):
         """ Start pacman installation of packages """
 
-        for cache_dir in self.settings.get('xz_cache'):
-            self.pacman.handle.add_cachedir(cache_dir)
+        #for cache_dir in self.settings.get('xz_cache'):
+        #    self.pacman.handle.add_cachedir(cache_dir)
 
         logging.debug("Installing packages...")
         result = self.pacman.install(
