@@ -440,7 +440,7 @@ class Installation(object):
         result = self.pacman.install(pkgs=self.packages)
         stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
 
-        if not result and len(stale_pkgs) > 0:
+        if not result and stale_pkgs and len(stale_pkgs) > 0:
             # Failure might be due to stale cached packages. Delete them and try again.
             if os.path.exists(self.pacman_cache_dir):
                 with misc.raised_privileges:
@@ -450,7 +450,7 @@ class Installation(object):
                         if to_delete and len(to_delete) <= 6:
                             os.remove(to_delete)
 
-                    result = self.pacman.install(pkgs=self.packages)
+                result = self.pacman.install(pkgs=self.packages)
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")

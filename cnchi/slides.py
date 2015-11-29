@@ -241,6 +241,7 @@ class Slides(GtkBaseBox):
                     self.set_message(event[1])
 
             elif event[0] == 'cache_pkgs_md5_check_failed':
+                logging.debug('adding %s to cache_pkgs_md5_check_failed list', event[1])
                 self.settings.set('cache_pkgs_md5_check_failed', event[1])
 
             self.callback_queue.task_done()
