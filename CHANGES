@@ -1,3 +1,4 @@
+[2015-11-29 00:57:32 -0600]  fix some faulty logic                                                  Dustin Falgout  {6e3b056}
 [2015-11-29 00:36:14 -0600]  wrong key name                                                         Dustin Falgout  {bd68b1f}
 [2015-11-29 00:21:05 -0600]  copy alpm database files for pkgs copied from iso's pkg cache          Dustin Falgout  {114831f}
 [2015-11-28 22:44:07 -0600]  make sure we get all data from alpm errors                             Dustin Falgout  {bbc00f3}

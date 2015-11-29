@@ -190,9 +190,10 @@ class Download(object):
                                 # Copy alpm database files for the this package if available
                                 dbfiles_dirname = element['identity'] + '-' + element['version']
                                 dbfiles_srcpath = os.path.join('/var/lib/pacman/local', dbfiles_dirname)
+                                dbfiles_dstpath = os.path.join(self.dbfiles_path, dbfiles_dirname)
                                 if os.path.exists(dbfiles_srcpath):
                                     try:
-                                        shutil.copytree(dbfiles_srcpath, self.dbfiles_path)
+                                        shutil.copytree(dbfiles_srcpath, dbfiles_dstpath)
                                     except shutil.Error as err:
                                         logging.warning(
                                                 'failed to copy dbfiles for %s. src was: %s, dst was: %s, err was: %s',
@@ -202,7 +203,6 @@ class Download(object):
                                 # Get out of the for loop, as we managed
                                 # to find the package in this cache directory
                                 break
-
 
             if needs_to_download:
                 # Package wasn't previously downloaded or its md5 was wrong
