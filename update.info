@@ -1,4 +1,4 @@
-{"version":"0.13.239","files":[
+{"version":"0.13.240","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -19,7 +19,7 @@
 {"name":"/usr/share/cnchi/.idea/misc.xml","md5":"b0a866e432e3db475619a0ef7118897d"},
 {"name":"/usr/share/cnchi/.idea/cnchi.iml","md5":"811646b9b7ee64159d69789cf3227976"},
 {"name":"/usr/share/cnchi/.idea/webResources.xml","md5":"6cf714f1bb19f5b3f98c475f92fc8802"},
-{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"734723d925e51513d9b3bd43267e0f28"},
+{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"09ec72d4f676c7914f79f60761fc8a47"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/profiles_settings.xml","md5":"4b2b1c0ecf04d07f0792fc1b37f04e82"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/Project_Default.xml","md5":"d6d3302de0bf1f8fad42c29468e6c788"},
 {"name":"/usr/share/cnchi/.idea/template/template_variable_settings.xml","md5":"c85070e5ab937fd406196dec1d07604e"},
@@ -495,7 +495,7 @@
 {"name":"/usr/share/cnchi/cnchi/installation/auto_partition.py","md5":"1ccd9161c04fcf54b3f1a3fadbc8d54b"},
 {"name":"/usr/share/cnchi/cnchi/installation/select_packages.py","md5":"e95097c96fcaf266b15b36df605061d7"},
 {"name":"/usr/share/cnchi/cnchi/installation/zfs.py","md5":"d5a8ecc86f8e2a4ee5fedd7c6442406a"},
-{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"cb671a481cb7c2cbc9549f16e060a825"},
+{"name":"/usr/share/cnchi/cnchi/installation/install.py","md5":"9473c84bf47094f9c742c4f06d16815c"},
 {"name":"/usr/share/cnchi/cnchi/misc/keyboard_widget.py","md5":"cea95163dfbd61dc0588d91ccfb442bd"},
 {"name":"/usr/share/cnchi/cnchi/misc/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/misc/timezonemap.py","md5":"57dac1f4b95814fdba06f266f71e1410"},

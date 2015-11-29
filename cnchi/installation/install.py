@@ -443,13 +443,14 @@ class Installation(object):
         if not result and len(stale_pkgs) > 0:
             # Failure might be due to stale cached packages. Delete them and try again.
             if os.path.exists(self.pacman_cache_dir):
-                for stale_pkg in stale_pkgs:
-                    filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
-                    to_delete = glob.glob(filepath + '***') if filepath else False
-                    if to_delete and len(to_delete) <= 6:
-                        os.remove(to_delete)
+                with misc.raised_privileges:
+                    for stale_pkg in stale_pkgs:
+                        filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
+                        to_delete = glob.glob(filepath + '***') if filepath else False
+                        if to_delete and len(to_delete) <= 6:
+                            os.remove(to_delete)
 
-                result = self.pacman.install(pkgs=self.packages)
+                    result = self.pacman.install(pkgs=self.packages)
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")
