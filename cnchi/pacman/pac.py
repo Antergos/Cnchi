@@ -305,6 +305,42 @@ class Pac(object):
 
         return self.finalize_transaction(transaction)
 
+    def upgrade(self, pkgs, conflicts=None, options=None):
+        """ Install a list package tarballs like pacman -U """
+
+        conflicts = conflicts if conflicts else []
+        options = options if options else {}
+
+        if self.handle is None:
+            logging.error("alpm is not initialised")
+            raise pyalpm.error
+
+        if len(pkgs) == 0:
+            logging.error("Package list is empty")
+            raise pyalpm.error
+
+        # Discard duplicates
+        pkgs = list(set(pkgs))
+
+        self.handle.get_localdb()
+
+        # Prepare targets list
+        targets = []
+        for tarball in pkgs:
+            pkg = self.handle.load_pkg(tarball)
+            targets.append(pkg)
+
+        transaction = self.init_transaction(options)
+
+        if transaction is None:
+            logging.error("Can't initialize alpm transaction")
+            return False
+
+        for pkg in targets:
+            transaction.add_pkg(pkg)
+
+        return self.finalize_transaction(transaction)
+
     @staticmethod
     def find_sync_package(pkgname, syncdbs):
         """ Finds a package name in a list of DBs
