@@ -432,6 +432,7 @@ class Installation(object):
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
             subprocess.check_call(cmd)
 
+            #path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
             # Run dirmngr
             # https://bbs.archlinux.org/viewtopic.php?id=190380
             with open(os.devnull, 'r') as dev_null:
@@ -449,8 +450,10 @@ class Installation(object):
     def install_packages(self):
         """ Start pacman installation of packages """
 
-        #for cache_dir in self.settings.get('xz_cache'):
-        #    self.pacman.handle.add_cachedir(cache_dir)
+        """ This shouldn't be necessary if download.py really downloaded all
+            needed packages, but it does not do it (why?) """
+        for cache_dir in self.settings.get('xz_cache'):
+            self.pacman.handle.add_cachedir(cache_dir)
 
         logging.debug("Installing packages...")
         result = self.pacman.install(
