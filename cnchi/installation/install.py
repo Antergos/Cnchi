@@ -439,8 +439,19 @@ class Installation(object):
         for cache_dir in self.settings.get('xz_cache'):
             self.pacman.handle.add_cachedir(cache_dir)
 
+        logging.debug("Checking that all packages are downloaded...")
+        download_options = {"downloadonly": True}
+        result = self.pacman.install(
+            pkgs=self.packages,
+            conflicts=None,
+            options=download_options)
+
         logging.debug("Installing packages...")
-        result = self.pacman.install(pkgs=self.packages)
+        result = self.pacman.install(
+            pkgs=self.packages,
+            conflicts=None,
+            options=None)
+
         stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
 
         if not result and stale_pkgs and len(stale_pkgs) > 0:
