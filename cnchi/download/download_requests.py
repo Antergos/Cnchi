@@ -182,7 +182,7 @@ class Download(object):
                                 needs_to_download = False
                                 downloaded += 1
                                 # Copy alpm database files for the this package if available
-                                dbfiles_dirname = element['name'] + '-' + element['version']
+                                dbfiles_dirname = element['identity'] + '-' + element['version']
                                 dbfiles_srcpath = os.path.join('/var/lib/pacman/local', dbfiles_dirname)
                                 if os.path.exists(dbfiles_srcpath):
                                     try:
