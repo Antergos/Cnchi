@@ -172,7 +172,7 @@ class Download(object):
                         if copy_it:
                             logging.debug("%s found in suplied xz packages' cache. Copying...", element['filename'])
                             try:
-                                shutil.copy(dst_xz_cache_path, dst_path)
+                                # shutil.copy(dst_xz_cache_path, dst_path)
                                 needs_to_download = False
                                 downloaded += 1
                                 # Get out of the for loop, as we managed
