@@ -81,12 +81,6 @@ class Download(object):
         # Check that pacman cache directory exists
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
 
-        # Determine path to alpm database files and ensure it exists
-        self.dbfiles_path = os.path.normpath(
-                os.path.join(self.pacman_cache_dir, '../../../lib/pacman/local')
-        )
-        os.makedirs(self.dbfiles_path, mode=0o755, exist_ok=True)
-
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
@@ -181,28 +175,11 @@ class Download(object):
                                 shutil.copy(dst_xz_cache_path, dst_path)
                                 needs_to_download = False
                                 downloaded += 1
-                            except OSError as os_error:
-                                logging.debug("Error copying %s to %s : %s", dst_xz_cache_path,
-                                              dst_path, os_error)
-
-                            has_name_ver = element.get('identity', False) and element.get('version', False)
-                            if has_name_ver and not needs_to_download:
-                                # Copy alpm database files for the this package if available
-                                dbfiles_dirname = element['identity'] + '-' + element['version']
-                                dbfiles_srcpath = os.path.join('/var/lib/pacman/local', dbfiles_dirname)
-                                dbfiles_dstpath = os.path.join(self.dbfiles_path, dbfiles_dirname)
-                                if os.path.exists(dbfiles_srcpath):
-                                    try:
-                                        shutil.copytree(dbfiles_srcpath, dbfiles_dstpath)
-                                    except shutil.Error as err:
-                                        logging.warning(
-                                                'failed to copy dbfiles for %s. src was: %s, dst was: %s, err was: %s',
-                                                element['name'], dbfiles_srcpath, self.dbfiles_path, err
-                                        )
-                            if not needs_to_download:
                                 # Get out of the for loop, as we managed
                                 # to find the package in this cache directory
                                 break
+                            except OSError as os_error:
+                                logging.debug("Error copying %s to %s : %s", dst_xz_cache_path, dst_path, os_error)
 
             if needs_to_download:
                 # Package wasn't previously downloaded or its md5 was wrong
