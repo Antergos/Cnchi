@@ -125,9 +125,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Check version of cryptsetup pkg (used to test mirror speed)
         try:
-            version = subprocess.check_output(
-                ['pacman', '-Ss', 'cryptsetup', '|', 'cut', '-d', ' ', '-f2', '|', 'xargs'],
-                shell=True, executable='/bin/bash')
+            line = subprocess.check_output(["pacman", "-Ss", "cryptsetup"]).decode().split()
+            version = line[1]
             logging.debug('cryptsetup version is: %s', version)
         except subprocess.CalledProcessError as err:
             logging.debug(err.output)
