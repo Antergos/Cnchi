@@ -427,9 +427,17 @@ class Installation(object):
             # Initialize the pacman keyring
             cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
             subprocess.check_call(cmd)
+
             # Load the signature keys
             cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
             subprocess.check_call(cmd)
+
+            # Run dirmngr
+            # https://bbs.archlinux.org/viewtopic.php?id=190380
+            with open(os.devnull, 'r') as dev_null:
+                cmd = ["dirmngr"]
+                subprocess.check_call(cmd, stdin=dev_null)
+
             # Refresh and update the signature keys
             cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
             subprocess.check_call(cmd)
