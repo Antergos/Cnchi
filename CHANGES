@@ -1,3 +1,4 @@
+[2015-11-28 18:56:06 -0600]  need priveldges to delete stale cache files                            Dustin Falgout  {953042e}
 [2015-11-28 18:51:23 -0600]  fix files owned by root. added utility script for future use           Dustin Falgout  {196473f}
 [2015-11-28 11:23:27 +0100]  auto_partition was unmounting zfs (or so it seems)                         karasu      {72268c5}
 [2015-11-28 11:05:09 +0100]  ZFS is not mounted                                                         karasu      {99edbf8}
