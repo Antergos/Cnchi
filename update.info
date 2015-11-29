@@ -1,4 +1,4 @@
-{"version":"0.13.243","files":[
+{"version":"0.13.244","files":[
 {"name":"/usr/share/cnchi/.arcconfig","md5":"a8a87bfe7fe32c93dd7769d7a4f0d698"},
 {"name":"/usr/share/cnchi/.landscape.yaml","md5":"c7d5370bf5710ce0e2fb86f89fcd58fa"},
 {"name":"/usr/share/cnchi/AUTHORS","md5":"e59415ced583cdcf272679e5602944b1"},
@@ -19,7 +19,7 @@
 {"name":"/usr/share/cnchi/.idea/misc.xml","md5":"b0a866e432e3db475619a0ef7118897d"},
 {"name":"/usr/share/cnchi/.idea/cnchi.iml","md5":"811646b9b7ee64159d69789cf3227976"},
 {"name":"/usr/share/cnchi/.idea/webResources.xml","md5":"6cf714f1bb19f5b3f98c475f92fc8802"},
-{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"498f2d3ce8ef386e389ebf7ccaa033fc"},
+{"name":"/usr/share/cnchi/.idea/workspace.xml","md5":"a069631c195d188467ec131e97c0d8e9"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/profiles_settings.xml","md5":"4b2b1c0ecf04d07f0792fc1b37f04e82"},
 {"name":"/usr/share/cnchi/.idea/inspectionProfiles/Project_Default.xml","md5":"d6d3302de0bf1f8fad42c29468e6c788"},
 {"name":"/usr/share/cnchi/.idea/template/template_variable_settings.xml","md5":"c85070e5ab937fd406196dec1d07604e"},
@@ -510,8 +510,8 @@
 {"name":"/usr/share/cnchi/cnchi/misc/camera.py","md5":"7ad9bf243c52628a4f8b1765cf568c26"},
 {"name":"/usr/share/cnchi/cnchi/pacman/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/pacman/alpm_events.py","md5":"33f97ac063e9d8324330682b14d99360"},
-{"name":"/usr/share/cnchi/cnchi/pacman/pac.py","md5":"07cb75b2a82e650313fe93773f32fdd2"},
 {"name":"/usr/share/cnchi/cnchi/pacman/pacman_conf.py","md5":"8e5c5320f5d8f83a876fbd2508c1ddce"},
+{"name":"/usr/share/cnchi/cnchi/pacman/pac.py","md5":"7bc46a56fd6cc937694be202e641f8fe"},
 {"name":"/usr/share/cnchi/cnchi/parted3/lvm.py","md5":"fb083abb21f65f22dc0b098051d2c583"},
 {"name":"/usr/share/cnchi/cnchi/parted3/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/parted3/README","md5":"cf28aa5ca9975804e37676302f09c2cc"},

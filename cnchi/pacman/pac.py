@@ -149,8 +149,9 @@ class Pac(object):
             logging.debug("Commit alpm transaction...")
             transaction.commit()
         except pyalpm.error as pyalpm_error:
-            msg = _("Can't finalize alpm transaction: %s")
-            logging.error(msg, pyalpm_error)
+            errmsg, errno, data = pyalpm_error
+            msg = _("Can't finalize alpm transaction: %s :: %s :: %s")
+            logging.error(msg, errmsg, errno, data)
             all_ok = False
         finally:
             logging.debug("Releasing alpm transaction...")
