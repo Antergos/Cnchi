@@ -1,3 +1,4 @@
+[2015-11-28 22:44:07 -0600]  make sure we get all data from alpm errors                             Dustin Falgout  {bbc00f3}
 [2015-11-28 21:48:23 -0600]  still working on checksum ussue                                        Dustin Falgout  {8c3f432}
 [2015-11-28 21:33:53 -0600]  nothing important                                                      Dustin Falgout  {4a43288}
 [2015-11-28 18:56:06 -0600]  need priveldges to delete stale cache files                            Dustin Falgout  {953042e}

@@ -81,6 +81,12 @@ class Download(object):
         # Check that pacman cache directory exists
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
 
+        # Determine path to alpm database files and ensure it exists
+        self.dbfiles_path = os.path.normpath(
+                os.path.join(self.pacman_cache_dir, '../../../lib/pacman/local')
+        )
+        os.makedirs(self.dbfiles_path, mode=0o755, exist_ok=True)
+
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
@@ -175,6 +181,17 @@ class Download(object):
                                 shutil.copy(dst_xz_cache_path, dst_path)
                                 needs_to_download = False
                                 downloaded += 1
+                                # Copy alpm database files for the this package if available
+                                dbfiles_dirname = element['name'] + '-' + element['version']
+                                dbfiles_srcpath = os.path.join('/var/lib/pacman/local', dbfiles_dirname)
+                                if os.path.exists(dbfiles_srcpath):
+                                    try:
+                                        shutil.copytree(dbfiles_srcpath, self.dbfiles_path)
+                                    except shutil.Error as err:
+                                        logging.warning(
+                                                'failed to copy dbfiles for %s. src was: %s, dst was: %s, err was: %s',
+                                                element['name'], dbfiles_srcpath, self.dbfiles_path, err
+                                        )
                                 # Get out of the for loop, as we managed
                                 # to find the package in this cache directory
                                 break
