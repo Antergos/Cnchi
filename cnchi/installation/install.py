@@ -875,7 +875,7 @@ class Installation(object):
     def alsa_mixer_setup():
         """ Sets ALSA mixer settings """
 
-        cmds = [
+        alsa_commands = [
             "Master 70% unmute",
             "Front 70% unmute"
             "Side 70% unmute"
@@ -920,12 +920,15 @@ class Installation(object):
             "SB Live Analog/Digital Output Jack off",
             "Audigy Analog/Digital Output Jack off"]
 
-        for cmd in cmds:
-            full_cmd = ['sh', '-c', 'amixer -q -c 0 sset {0}'.format(cmd)]
-            chroot_run(full_cmd)
+        for alsa_command in alsa_commands:
+            cmd = ["amixer", "-q", "-c", "0", "sset"]
+            cmd.extend(alsa_command.split())
+            chroot_run(cmd)
 
         # Save settings
+        logging.debug("Saving ALSA settings...")
         chroot_run(['alsactl', 'store'])
+        logging.debug("ALSA settings saved.")
 
     @staticmethod
     def set_fluidsynth():
@@ -1200,7 +1203,8 @@ class Installation(object):
         logging.debug("Updated Alsa mixer settings")
 
         # Set pulse
-        if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
+        path = os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")
+        if os.path.exists(path):
             chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
