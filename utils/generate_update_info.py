@@ -26,6 +26,7 @@ import os
 import hashlib
 import info
 
+
 def get_md5(file_name):
     """ Gets md5 hash from a file """
     md5_hash = hashlib.md5()
@@ -33,6 +34,7 @@ def get_md5(file_name):
         for line in myfile:
             md5_hash.update(line)
     return md5_hash.hexdigest()
+
 
 def get_files(path):
     """ Returns all files from a directory """
@@ -55,6 +57,7 @@ def get_files(path):
 
     return all_files
 
+
 def create_update_info():
     """ Creates update.info file """
 
@@ -62,15 +65,15 @@ def create_update_info():
 
     txt = '{"version":"%s","files":[\n' % info.CNCHI_VERSION
 
-    for filename in myfiles:
-        md5 = get_md5(filename)
-        if "usr/share/cnchi" not in filename:
-            filename = filename.replace('./', '/usr/share/cnchi/')
-        txt += '{"name":"%s","md5":"%s"},\n' % (filename, md5)
+    # for filename in myfiles:
+    #     md5 = get_md5(filename)
+    #     if "usr/share/cnchi" not in filename:
+    #         filename = filename.replace('./', '/usr/share/cnchi/')
+    #     txt += '{"name":"%s","md5":"%s"},\n' % (filename, md5)
 
     # remove last comma and close
-    txt = txt[:-3]
-    txt += '}]}\n'
+    # txt = txt[:-3]
+    txt += ']}\n'
 
     with open("update.info", "w") as update_info:
         update_info.write(txt)
