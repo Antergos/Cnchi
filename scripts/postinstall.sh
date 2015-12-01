@@ -415,7 +415,7 @@ postinstall() {
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	chroot "${CN_DESTDIR}" amixer -c 0 set Master playback 50% unmute > /dev/null 2>&1
+	chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
 
 	# Fix transmission leftover
 	# What is this for? I think its old code.
