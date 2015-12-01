@@ -26,12 +26,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Cnchi's base class for screens """
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 import os
 import logging
-
 
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
@@ -67,24 +69,31 @@ class GtkBaseBox(Gtk.Box):
         child.add(self.ui.get_object(name))
 
     def get_prev_page(self):
+        """ Returns previous screen """
         return self.prev_page
 
     def get_next_page(self):
+        """ Returns next screen """
         return self.next_page
 
     def translate_ui(self):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def prepare(self, direction):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def store_values(self):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def get_name(self):
+        """ Return screen name """
         return self.name
 
     def get_toplevel(self):
+        """ Returns top level window """
         top = self.main_window
         if isinstance(top, Gtk.Window):
             return top
