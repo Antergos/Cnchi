@@ -26,6 +26,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Keymap screen """
 
 from gi.repository import Gtk, GLib
 
@@ -41,6 +42,7 @@ from gtkbasebox import GtkBaseBox
 
 
 class Keymap(GtkBaseBox):
+    """ Keymap screen """
     def __init__(self, params, prev_page="timezone", next_page="desktop"):
         super().__init__(self, params, "keymap", prev_page, next_page)
 
@@ -73,8 +75,8 @@ class Keymap(GtkBaseBox):
         if tree_store:
             tree_store.clear()
 
-        self.keyboard_layout = { 'code': None, 'description': None }
-        self.keyboard_variant  = { 'code': None, 'description': None }
+        self.keyboard_layout = {'code': None, 'description': None}
+        self.keyboard_variant = {'code': None, 'description': None}
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -93,10 +95,11 @@ class Keymap(GtkBaseBox):
             lbl.set_max_width_chars(50)
 
     def prepare(self, direction):
+        """ Prepare screen """
         self.translate_ui()
 
         if self.keyboard_layout['code'] is None:
-            country_code =  self.settings.get("country_code")
+            country_code = self.settings.get("country_code")
             self.clear()
 
             self.populate_keymap_treeview()
@@ -110,13 +113,15 @@ class Keymap(GtkBaseBox):
                 # specific variant cases
                 country_name = self.settings.get("country_name")
                 language_name = self.settings.get("language_name")
-                language_code = self.settings.get("language_code")
+                # language_code = self.settings.get("language_code")
                 if country_name == "Spain" and language_name == "Catalan":
                     self.keyboard_variant['code'] = "cat"
-                    self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "cat")
+                    variant_desc = self.kbd_names.get_variant_description(country_code, "cat")
+                    self.keyboard_variant['description'] = variant_desc
                 elif country_name == "Canada" and language_name == "English":
                     self.keyboard_variant['code'] = "eng"
-                    self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "eng")
+                    variant_desc = self.kbd_names.get_variant_description(country_code, "eng")
+                    self.keyboard_variant['description'] = variant_desc
 
                 self.select_in_treeview(
                     self.keymap_treeview,
@@ -137,6 +142,7 @@ class Keymap(GtkBaseBox):
         self.show_all()
 
     def populate_keymap_treeview(self):
+        """ Fills keymap treeview """
         # Clear our model
         tree_store = self.keymap_treeview.get_model()
         tree_store.clear()
@@ -193,6 +199,7 @@ class Keymap(GtkBaseBox):
 
     @staticmethod
     def scroll_to_cell(treeview, path):
+        """ Move scroll in treeview """
         treeview.scroll_to_cell(path)
         return False
 
@@ -250,7 +257,8 @@ class Keymap(GtkBaseBox):
             else:
                 logging.warning("Unknown variant description: %s", variant_description)
 
-        # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
+        # Fixes issue 75:
+        # Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
         if not self.testing and self.prepare_called:
             self.set_keymap()
         return True
@@ -275,7 +283,8 @@ class Keymap(GtkBaseBox):
             # Show logs to inform of keymap change
             if self.keyboard_variant['code']:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
-                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
+                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})")
+                txt = txt.format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'],
                     self.keyboard_variant['description'],
