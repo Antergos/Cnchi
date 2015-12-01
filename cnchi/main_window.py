@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  main_window.py
+# main_window.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Main Cnchi Window """
@@ -61,7 +61,8 @@ from installation import zfs as installation_zfs
 
 
 def atk_set_image_description(widget, description):
-    """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
+    """ Sets the textual description for a widget that displays image/pixmap
+        information onscreen. """
     atk_widget = widget.get_accessible()
     if atk_widget is not None:
         atk_widget.set_image_description(description)
@@ -102,7 +103,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Log cache dirs
         for xz in xz_cache:
-            logging.debug("Cnchi will use '%s' as a source for cached xz packages", xz)
+            logging.debug(
+                "Cnchi will use '%s' as a source for cached xz packages",
+                xz)
 
         # Store cache dirs in config
         self.settings.set('xz_cache', xz_cache)
@@ -123,7 +126,9 @@ class MainWindow(Gtk.ApplicationWindow):
             if desktop in desktop_info.DESKTOPS:
                 self.settings.set('desktop', desktop)
                 self.settings.set('desktop_ask', False)
-                logging.debug("Cnchi will install the %s desktop environment", desktop)
+                logging.debug(
+                    "Cnchi will install the %s desktop environment",
+                    desktop)
 
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
@@ -137,7 +142,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header = self.header_ui.get_object("header")
 
         self.logo = self.header_ui.get_object("logo")
-        path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
+        path = os.path.join(
+            data_dir,
+            "images",
+            "antergos",
+            "antergos-logo-mini2.png")
         self.logo.set_from_file(path)
 
         # To honor our css
@@ -162,8 +171,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-        # Create a queue. Will be used to report pacman messages (pacman/pac.py)
-        # to the main thread (installation/process.py)
+        # Create a queue. Will be used to report pacman messages
+        # (pacman/pac.py) to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # This list will have all processes (rankmirrors, autotimezone...)
@@ -171,7 +180,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
-            logging.info("Using '%s' file as package list", self.settings.get('alternate_package_list'))
+            logging.info(
+                "Using '%s' file as package list",
+                self.settings.get('alternate_package_list'))
 
         self.set_titlebar(self.header)
 
@@ -193,7 +204,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['testing'] = cmd_line.testing
 
         # Just load the first two screens (the other ones will be loaded later)
-        # We do this so the user has not to wait for all the screens to be loaded
+        # We do this so the user has not to wait for all the screens to be
+        # loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
 
@@ -220,7 +232,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_geometry()
 
         # Set window icon
-        icon_path = os.path.join(data_dir, "images", "antergos", "antergos-icon.png")
+        icon_path = os.path.join(
+            data_dir,
+            "images",
+            "antergos",
+            "antergos-icon.png")
         self.set_icon_from_file(icon_path)
 
         # Set the first page to show
@@ -260,7 +276,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.
+        # Do not hide progress bar for minimal iso as it would break
+        # the widget alignment on language page.
         if not os.path.exists('/home/antergos/.config/openbox'):
             # Hide progress bar
             self.progressbar.hide()
@@ -270,6 +287,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["language"] = language.Language(self.params)
+
         self.pages["check"] = check.Check(self.params)
         self.pages["location"] = location.Location(self.params)
         self.pages["timezone"] = timezone.Timezone(self.params)
@@ -279,8 +297,12 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["desktop"] = desktop.DesktopAsk(self.params)
             self.pages["features"] = features.Features(self.params)
         else:
-            self.pages["keymap"] = keymap.Keymap(self.params, next_page='features')
-            self.pages["features"] = features.Features(self.params, prev_page='keymap')
+            self.pages["keymap"] = keymap.Keymap(
+                self.params,
+                next_page='features')
+            self.pages["features"] = features.Features(
+                self.params,
+                prev_page='keymap')
 
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
@@ -345,7 +367,10 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.width_inc = 0
         geom.height_inc = 0
 
-        hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE | Gdk.WindowHints.RESIZE_INC
+        hints = (Gdk.WindowHints.MIN_SIZE |
+                 Gdk.WindowHints.MAX_SIZE |
+                 Gdk.WindowHints.BASE_SIZE |
+                 Gdk.WindowHints.RESIZE_INC)
 
         self.set_geometry_hints(None, geom, hints)
 
