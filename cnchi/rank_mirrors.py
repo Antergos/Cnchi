@@ -1,31 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  rank_mirrors.py
+# rank_mirrors.py
 #
-#  Copyright © 2013-2015 Antergos
-#  Copyright © 2012, 2013 Xyne
+# Copyright © 2013-2015 Antergos
+# Copyright © 2012, 2013 Xyne
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Creates mirrorlist sorted by both latest updates and fastest connection """
@@ -63,7 +63,10 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
     @staticmethod
     def is_good_mirror(m):
-        return m['last_sync'] and m['completion_pct'] == 1.0 and m['protocol'] == 'http' and int(m['delay']) <= 3600
+        return (m['last_sync'] and
+                m['completion_pct'] == 1.0 and
+                m['protocol'] == 'http' and
+                int(m['delay']) <= 3600)
 
     @staticmethod
     def sync():
@@ -72,13 +75,21 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             try:
                 subprocess.check_call(['sync'])
             except subprocess.CalledProcessError as why:
-                logging.warning("Can't synchronize cached writes to persistent storage: %s", why)
+                logging.warning(
+                    "Can't synchronize cached writes to persistent storage: %s",
+                    why)
 
     def update_mirrorlist(self):
         """ Make sure we have the latest antergos-mirrorlist files """
         with misc.raised_privileges():
             try:
-                cmd = ['pacman', '-Syy', '--noconfirm', '--noprogressbar', '--quiet', 'antergos-mirrorlist']
+                cmd = [
+                    'pacman',
+                    '-Syy',
+                    '--noconfirm',
+                    '--noprogressbar',
+                    '--quiet',
+                    'antergos-mirrorlist']
                 with open(os.devnull, 'w') as fnull:
                     subprocess.call(cmd, stdout=fnull, stderr=subprocess.STDOUT)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
@@ -86,32 +97,38 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 if os.path.exists(pacnew_path):
                     shutil.copy(pacnew_path, self.antergos_mirrorlist)
             except subprocess.CalledProcessError as why:
-                logging.debug('Update of antergos-mirrorlist package failed with error: %s', why)
+                logging.debug('Cannot update antergos-mirrorlist package: %s', why)
             except OSError as why:
                 logging.debug('Error copying new mirrorlist files: %s', why)
         self.sync()
 
     def get_mirror_stats(self):
-        """Retrieve the current mirror status JSON data."""
+        """ Retrieve the current mirror status JSON data. """
+
+        mirrors = []
+
         if not self.json_obj:
             try:
                 with requests.Session() as session:
                     self.json_obj = session.get(self.arch_mirror_status).json()
             except requests.RequestException as err:
-                logging.debug('Failed to retrieve mirror status information: %s', err)
+                logging.debug(
+                    'Failed to retrieve mirror status information: %s',
+                    err)
 
         try:
-            # Remove servers that have not synced, and parse the "last_sync" times for
-            # comparison later.
+            # Remove servers that have not synced, and parse the "last_sync"
+            # times for comparison later.
             mirrors = self.json_obj['urls']
 
             # Filter incomplete mirrors  and mirrors that haven't synced.
             mirrors = list(m for m in mirrors if self.is_good_mirror(m))
 
             self.json_obj['urls'] = mirrors
-            return mirrors
         except KeyError as err:
             logging.debug('Failed to parse retrieved mirror data: %s', err)
+
+        return mirrors
 
     @staticmethod
     def sort_mirrors_by_speed(mirrors=None, threads=5):
@@ -125,7 +142,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Check version of cryptsetup pkg (used to test mirror speed)
         try:
-            line = subprocess.check_output(["pacman", "-Ss", "cryptsetup"]).decode().split()
+            cmd = ["pacman", "-Ss", "cryptsetup"]
+            line = subprocess.check_output(cmd).decode().split()
             version = line[1]
             logging.debug('cryptsetup version is: %s', version)
         except subprocess.CalledProcessError as err:
@@ -141,7 +159,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             while True:
                 url = q_in.get()
                 if version:
-                    db_subpath = 'core/os/x86_64/cryptsetup-' + version + '-x86_64.pkg.tar.xz'
+                    db_subpath = 'core/os/x86_64/cryptsetup-{0}-x86_64.pkg.tar.xz'
+                    db_subpath = db_subpath.format(version)
                 else:
                     db_subpath = 'core/os/x86_64/core.db.tar.gz'
                 db_url = url + db_subpath
@@ -157,7 +176,9 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                         size = len(f.read())
                         dt = time.time() - t0
                         rate = size / dt
-                except (OSError, urllib.error.HTTPError, http.client.HTTPException):
+                except (OSError,
+                        urllib.error.HTTPError,
+                        http.client.HTTPException):
                     pass
                 q_out.put((url, rate, dt))
                 q_in.task_done()
@@ -178,10 +199,15 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Log some extra data.
         url_len = str(url_len)
-        logging.debug(('%-' + url_len + 's  %14s  %9s'), _("Server"), _("Rate"), _("Time"))
+        logging.debug(
+            ('%-' + url_len + 's  %14s  %9s'),
+            _("Server"),
+            _("Rate"),
+            _("Time"))
+
         fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
 
-        # Loop over the mirrors just to ensure that we get the rate for each mirror.
+        # Loop over the mirrors just to ensure that we get the rate for each.
         # The value in the loop does not (necessarily) correspond to the mirror.
         for mirror in mirrors:
             url, rate, dt = q_out.get()
@@ -234,14 +260,20 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 try:
                     # Store rankmirrors output in a temporary file
                     with tempfile.TemporaryFile(mode='w+t') as temp_file:
-                        cmd = ['rankmirrors', '-n', '0', '-r', 'antergos', self.antergos_mirrorlist]
+                        cmd = [
+                            'rankmirrors',
+                            '-n', '0',
+                            '-r', 'antergos',
+                            self.antergos_mirrorlist]
                         subprocess.call(cmd, stdout=temp_file)
                         temp_file.seek(0)
                         # Copy new mirrorlist to the old one
                         with open(self.antergos_mirrorlist, 'w') as antergos_mirrorlist_file:
                             antergos_mirrorlist_file.write(temp_file.read())
                 except subprocess.CalledProcessError as why:
-                    logging.debug('Error running rankmirrors on Antergos mirrorlist: %s', why)
+                    logging.debug(
+                        'Cannot run rankmirrors on Antergos mirrorlist: %s',
+                        why)
             self.sync()
 
     def filter_and_sort_arch_mirrorlist(self):
@@ -251,7 +283,10 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         for mirror in mirrors:
             self.arch_mirrorlist_ranked.append(mirror['url'])
-            line = "Server = {0}{1}/os/{2}\n".format(mirror['url'], '$repo', '$arch')
+            line = "Server = {0}{1}/os/{2}\n".format(
+                mirror['url'],
+                '$repo',
+                '$arch')
             output += line
 
         # Write modified Arch mirrorlist
