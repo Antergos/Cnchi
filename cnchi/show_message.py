@@ -1,46 +1,49 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  show_message.py
+# show_message.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
-from gi.repository import Gtk
+""" Helper functions to show Gtk message dialogs """
 
 import sys
 import os
 import multiprocessing
 
-_show_event_queue_messages = True
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 
 def fatal_error(parent, my_message):
+    """ Shows an error message and quits """
+
     # Remove /tmp/.setup-running
-    p = "/tmp/.setup-running"
-    if os.path.exists(p):
-        os.remove(p)
+    path = "/tmp/.setup-running"
+    if os.path.exists(path):
+        os.remove(path)
 
     # multiprocessing.active_children()
 
@@ -49,6 +52,8 @@ def fatal_error(parent, my_message):
 
 
 def error(parent, my_message):
+    """ Shows an error message """
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
@@ -62,6 +67,8 @@ def error(parent, my_message):
 
 
 def warning(parent, my_message):
+    """ Shows a warning message """
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
@@ -75,6 +82,8 @@ def warning(parent, my_message):
 
 
 def message(parent, my_message):
+    """ Show message """
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
@@ -88,6 +97,8 @@ def message(parent, my_message):
 
 
 def question(parent, my_message):
+    """ Shows a question message """
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
