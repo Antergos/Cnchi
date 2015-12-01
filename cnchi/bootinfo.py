@@ -35,7 +35,10 @@ import re
 import tempfile
 import logging
 
-import misc.extra as misc
+try:
+    import misc.extra as misc
+except ImportError:
+    import extra as misc
 
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
@@ -87,7 +90,8 @@ def _check_windows(mount_name):
 
 
 def _check_vista(system_path):
-    # Search for Windows Vista
+    """ Searches for Windows Vista """
+
     for name in WINLOAD_NAMES:
         path = os.path.join(system_path, name)
         if os.path.exists(path):
@@ -101,7 +105,8 @@ def _check_vista(system_path):
 
 
 def _check_win7(system_path):
-    # Search for Windows 7
+    """ Searches for Windows 7 """
+
     for name in WINLOAD_NAMES:
         path = os.path.join(system_path, name)
         if os.path.exists(path):
@@ -115,7 +120,8 @@ def _check_win7(system_path):
 
 
 def _check_winxp(system_path):
-    # Search for Windows XP
+    """ Searches for Windows XP """
+
     for name in SECEVENT_NAMES:
         path = os.path.join(system_path, "config", name)
         if os.path.exists(path):
@@ -179,13 +185,17 @@ def _check_reactos(mount_name):
 def _check_dos(mount_name):
     """ Checks for DOS and W9x """
     detected_os = _("unknown")
+    paths = []
     for name in DOS_NAMES:
         path = os.path.join(mount_name, name)
         if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                for mark in DOS_MARKS:
-                    if mark in system_file:
-                        detected_os = mark
+            paths.append(path)
+
+    for path in paths:
+        with open(path, "rb") as system_file:
+            for mark in DOS_MARKS:
+                if mark in system_file:
+                    detected_os = mark
     return detected_os
 
 
