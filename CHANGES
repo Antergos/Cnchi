@@ -1,3 +1,4 @@
+[2015-12-01 03:13:16 -0600]  update pre-commit hook                                                 Dustin Falgout  {3847846}
 [2015-11-22 12:32:55 +0100]  Little changes to keyboard_widget                                          karasu      {5d51dff}
 [2015-11-29 22:08:24 +0100]  Add cache dir to pacman (again)                                            karasu      {04ac00b}
 [2015-11-29 21:43:37 +0100]  Updated pacman.conf template (used while installing)                       karasu      {3b4b26a}
