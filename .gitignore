@@ -45,3 +45,7 @@ nosetests.xml
 .idea
 .idea*
 .idea/*.xml
+
+# Documentation
+*.rst
+*.doctree
