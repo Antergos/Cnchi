@@ -40,9 +40,10 @@ import logging
 import time
 import os
 import shutil
-import requests
 import tempfile
 import multiprocessing
+
+import requests
 
 import misc.extra as misc
 

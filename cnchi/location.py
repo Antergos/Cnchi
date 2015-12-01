@@ -26,8 +26,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
-from gi.repository import Gtk
+""" Location screen """
 
 # Import functions
 import os
@@ -40,6 +39,10 @@ try:
     import xml.etree.cElementTree as eTree
 except ImportError:
     import xml.etree.ElementTree as eTree
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from gtkbasebox import GtkBaseBox
 from logging_utils import ContextFilter

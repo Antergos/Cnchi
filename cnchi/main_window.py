@@ -29,8 +29,6 @@
 
 """ Main Cnchi Window """
 
-from gi.repository import Gtk, Gdk, Atk
-
 import os
 import sys
 import multiprocessing
@@ -49,6 +47,10 @@ import user_info
 import slides
 import summary
 import info
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, Atk
 
 import show_message as show
 import misc.extra as misc
@@ -74,8 +76,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, cmd_line):
         Gtk.ApplicationWindow.__init__(self, title="Cnchi", application=app)
 
-        self.MAIN_WINDOW_WIDTH = 875
-        self.MAIN_WINDOW_HEIGHT = 550
+        self._main_window_width = 875
+        self._main_window_height = 550
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -122,13 +124,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.settings.set("desktops", desktop_info.DESKTOPS)
 
         if cmd_line.environment:
-            desktop = cmd_line.environment.lower()
-            if desktop in desktop_info.DESKTOPS:
-                self.settings.set('desktop', desktop)
+            my_desktop = cmd_line.environment.lower()
+            if my_desktop in desktop_info.DESKTOPS:
+                self.settings.set('desktop', my_desktop)
                 self.settings.set('desktop_ask', False)
                 logging.debug(
                     "Cnchi will install the %s desktop environment",
-                    desktop)
+                    my_desktop)
 
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
@@ -214,8 +216,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["language"] = language.Language(self.params)
 
             # Fix bugy Gtk window size when using Openbox
-            self.MAIN_WINDOW_WIDTH = 750
-            self.MAIN_WINDOW_HEIGHT = 450
+            self._main_window_width = 750
+            self._main_window_height = 450
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.on_key_release)
@@ -354,16 +356,16 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
-        self.set_size_request(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
-        self.set_default_size(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
+        self.set_size_request(self._main_window_width, self._main_window_height)
+        self.set_default_size(self._main_window_width, self._main_window_height)
 
         geom = Gdk.Geometry()
-        geom.min_width = self.MAIN_WINDOW_WIDTH
-        geom.min_height = self.MAIN_WINDOW_HEIGHT
-        geom.max_width = self.MAIN_WINDOW_WIDTH
-        geom.max_height = self.MAIN_WINDOW_HEIGHT
-        geom.base_width = self.MAIN_WINDOW_WIDTH
-        geom.base_height = self.MAIN_WINDOW_HEIGHT
+        geom.min_width = self._main_window_width
+        geom.min_height = self._main_window_height
+        geom.max_width = self._main_window_width
+        geom.max_height = self._main_window_height
+        geom.base_width = self._main_window_width
+        geom.base_height = self._main_window_height
         geom.width_inc = 0
         geom.height_inc = 0
 
