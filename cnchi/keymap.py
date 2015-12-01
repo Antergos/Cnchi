@@ -1,34 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  keymap.py
+# keymap.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 """ Keymap screen """
-
-from gi.repository import Gtk, GLib
 
 import os
 import logging
@@ -37,6 +35,10 @@ import subprocess
 import misc.extra as misc
 import misc.keyboard_names as keyboard_names
 import misc.keyboard_widget as keyboard_widget
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GLib
 
 from gtkbasebox import GtkBaseBox
 
@@ -67,7 +69,9 @@ class Keymap(GtkBaseBox):
         column.add_attribute(cell, "text", 0)
 
         self.keymap_treeview.set_activate_on_single_click(True)
-        self.keymap_treeview.connect("row-activated", self.on_keymap_row_activated)
+        self.keymap_treeview.connect(
+            "row-activated",
+            self.on_keymap_row_activated)
 
     def clear(self):
         """ Clears treeview model """
@@ -116,11 +120,15 @@ class Keymap(GtkBaseBox):
                 # language_code = self.settings.get("language_code")
                 if country_name == "Spain" and language_name == "Catalan":
                     self.keyboard_variant['code'] = "cat"
-                    variant_desc = self.kbd_names.get_variant_description(country_code, "cat")
+                    variant_desc = self.kbd_names.get_variant_description(
+                        country_code,
+                        "cat")
                     self.keyboard_variant['description'] = variant_desc
                 elif country_name == "Canada" and language_name == "English":
                     self.keyboard_variant['code'] = "eng"
-                    variant_desc = self.kbd_names.get_variant_description(country_code, "eng")
+                    variant_desc = self.kbd_names.get_variant_description(
+                        country_code,
+                        "eng")
                     self.keyboard_variant['description'] = variant_desc
 
                 self.select_in_treeview(
@@ -255,10 +263,13 @@ class Keymap(GtkBaseBox):
                 self.keyboard_variant['code'] = variant_name
                 self.keyboard_variant['description'] = variant_description
             else:
-                logging.warning("Unknown variant description: %s", variant_description)
+                logging.warning(
+                    "Unknown variant description: %s",
+                    variant_description)
 
         # Fixes issue 75:
-        # Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
+        # Won't pick/load the keyboard layout after selecting one
+        # (sticks to qwerty)
         if not self.testing and self.prepare_called:
             self.set_keymap()
         return True
