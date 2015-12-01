@@ -3,28 +3,28 @@
 #
 #  location.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 from gi.repository import Gtk
@@ -64,7 +64,10 @@ class Location(GtkBaseBox):
         self.show_all_locations = False
 
         button = self.ui.get_object("show_all_locations_checkbutton")
-        button.connect("toggled", self.on_show_all_locations_checkbox_toggled, "")
+        button.connect(
+            "toggled",
+            self.on_show_all_locations_checkbox_toggled,
+            "")
 
         self.scrolledwindow = self.ui.get_object("scrolledwindow1")
 
@@ -74,9 +77,10 @@ class Location(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("The location you select will be used to help determine the system locale. "
-                "It should normally be the country in which you reside. "
-                "Here is a shortlist of locations based on the language you selected.")
+        txt = _("The location you select will be used to help determine the "
+                "system locale. It should normally be the country in which "
+                "you reside. Here is a shortlist of locations based on the "
+                "language you selected.")
 
         self.label_help.set_text(txt)
         self.label_help.set_name("label_help")
@@ -219,7 +223,10 @@ class Location(GtkBaseBox):
                     logging.debug("Locale changed to : %s", mylocale)
                     self.settings.set("locale", mylocale)
                 except locale.Error as err:
-                    logging.warning("Cannot change to locale '%s': %s", mylocale, err)
+                    logging.warning(
+                        "Cannot change to locale '%s': %s",
+                        mylocale,
+                        err)
             else:
                 logging.warning("Cannot change to locale '%s'", mylocale)
 
