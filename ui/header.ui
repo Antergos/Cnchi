@@ -4,10 +4,14 @@
   <object class="GtkHeaderBar" id="header">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+      <property name="valign">start</property>
     <child>
       <object class="GtkImage" id="logo">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+          <style>
+      <class name="logo"/>
+    </style>
       </object>
       <packing>
         <property name="pack_type">start</property>
@@ -88,5 +92,59 @@
         <property name="pack_type">end</property>
       </packing>
     </child>
+    <style>
+      <class name="header_bar"/>
+    </style>
   </object>
+    <object class="GtkOverlay" id="header_overlay">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+            <object class="GtkBox" id="header_bg_wrapper">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="homogeneous">False</property>
+                <child>
+                    <object class="GtkLabel" id="header_bg_top">
+                        <property name="height_request">70</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <style>
+                            <class name="header_bg_top"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="header_bg_bottom">
+                        <property name="height_request">58</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <style>
+                            <class name="header_bg_bottom"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <style>
+                    <class name="header_bg_wrapper"/>
+                </style>
+            </object>
+            <packing>
+                <property name="index">-1</property>
+            </packing>
+        </child>
+        <style>
+            <class name="header_overlay"/>
+        </style>
+    </object>
 </interface>

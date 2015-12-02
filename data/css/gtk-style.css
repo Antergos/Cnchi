@@ -14,7 +14,7 @@ GtkWindow {
 
 #logo {
     background-color: transparent;
-    margin-top: 0px;
+    margin-top: 15px;
 }
 
 .title {
@@ -36,10 +36,10 @@ GtkWindow {
 }
 
 #header {
-    background-image: url('/usr/share/cnchi/data/images/header.png');
+    /*background-image: url('/usr/share/cnchi/data/images/header.png');
     background-position: top;
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: 100% 100%;*/
     border-bottom: 0px;
     border-color: transparent;
     font-family: Lato;
@@ -228,4 +228,16 @@ GtkTreeView row:selected {
 
 StateBox {
     border-radius: 2px;
+}
+
+.header_bg_top {
+    background-color: #2E66B9;
+}
+
+.header_bg_bottom {
+    background-color: #3B70D0;
+}
+
+.header_bar {
+    background: transparent;
 }

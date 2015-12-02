@@ -142,13 +142,14 @@ class MainWindow(Gtk.ApplicationWindow):
         path = os.path.join(self.ui_dir, "header.ui")
         self.header_ui.add_from_file(path)
         self.header = self.header_ui.get_object("header")
+        self.header_overlay = self.header_ui.get_object("header_overlay")
 
         self.logo = self.header_ui.get_object("logo")
         path = os.path.join(
             data_dir,
             "images",
             "antergos",
-            "antergos-logo-mini2.png")
+            "image10.png")
         self.logo.set_from_file(path)
 
         # To honor our css
@@ -186,7 +187,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 "Using '%s' file as package list",
                 self.settings.get('alternate_package_list'))
 
-        self.set_titlebar(self.header)
+        self.header_overlay.add_overlay(self.header)
+        self.set_titlebar(self.header_overlay)
 
         # Prepare params dict to pass common parameters to all screens
         self.params = dict()
@@ -238,7 +240,7 @@ class MainWindow(Gtk.ApplicationWindow):
             data_dir,
             "images",
             "antergos",
-            "antergos-icon.png")
+            "antergos-ball.png")
         self.set_icon_from_file(icon_path)
 
         # Set the first page to show
