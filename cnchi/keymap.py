@@ -285,26 +285,22 @@ class Keymap(GtkBaseBox):
 
             if self.keyboard_variant['code']:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
-
-            try:
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as process_error:
-                logging.warning(process_error)
-
-            # Show logs to inform of keymap change
-            if self.keyboard_variant['code']:
-                cmd.extend(["-variant", self.keyboard_variant['code']])
-                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})")
+                txt = _("Set keyboard to '{0}' ({1}), wvariant '{2}' ({3})")
                 txt = txt.format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'],
                     self.keyboard_variant['description'],
                     self.keyboard_variant['code'])
             else:
-                txt = _("Set keyboard to layout name '{0}' ({1})").format(
+                txt = _("Set keyboard to '{0}' ({1})").format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'])
-            logging.debug(txt)
+
+            try:
+                subprocess.check_call(cmd)
+                logging.debug(txt)
+            except (OSError, subprocess.CalledProcessError) as setxkbmap_error:
+                logging.warning(setxkbmap_error)
 
     def set_keyboard_widget_keymap(self):
         """ Pass current keyboard layout to the keyboard widget. """
