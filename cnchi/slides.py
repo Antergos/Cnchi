@@ -1,55 +1,52 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  slides.py
+# slides.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Shows slides while installing. Also manages installing messages and progress bars """
 
-from gi.repository import Gtk, GLib
-import os
 import sys
 import logging
 import subprocess
 
 import queue
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GLib, WebKit
+
 import show_message as show
 import misc.extra as misc
 
 from gtkbasebox import GtkBaseBox
 
-SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
-
-import gi
-gi.require_version('WebKit', '3.0')
-from gi.repository import WebKit
 from logging_utils import ContextFilter
 
-# When we reach this page we can't go neither backwards nor forwards
+SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
 
 class Slides(GtkBaseBox):
@@ -84,6 +81,7 @@ class Slides(GtkBaseBox):
         self.header.set_subtitle(_("Installing Antergos..."))
 
     def prepare(self, direction):
+        """ Prepare slides screen """
         # We don't load webkit until we reach this screen
         if self.web_view is None:
             # Add a webkit view and load our html file to show the slides
@@ -162,8 +160,8 @@ class Slides(GtkBaseBox):
                 event = self.callback_queue.get_nowait()
             except ValueError as queue_error:
                 # Calling get_nowait so many times can issue a ValueError
-                # exception with this error: semaphore or lock released too many times
-                # Log it anyways to keep an eye on this error
+                # exception with this error: semaphore or lock released too
+                # many times. Log it anyways to keep an eye on this error
                 logging.error(queue_error)
                 return True
             except queue.Empty:
@@ -200,22 +198,28 @@ class Slides(GtkBaseBox):
                 logging.info(event[1])
                 log_util = ContextFilter()
                 log_util.send_install_result("True")
-                if self.settings.get('bootloader_install') and not self.settings.get('bootloader_installation_successful'):
+                if (self.settings.get('bootloader_install') and
+                        not self.settings.get('bootloader_installation_successful')):
                     # Warn user about GRUB and ask if we should open wiki page.
-                    boot_warn = _("IMPORTANT: There may have been a problem with the bootloader "
-                                  "installation which could prevent your system from booting properly. Before "
-                                  "rebooting, you may want to verify whether or not the bootloader is installed and "
-                                  "configured.\n\n"
-                                  "The Arch Linux Wiki contains troubleshooting information:\n"
+                    boot_warn = _("IMPORTANT: There may have been a problem "
+                                  "with the bootloader installation which "
+                                  "could prevent your system from booting "
+                                  "properly. Before rebooting, you may want "
+                                  "to verify whether or not the bootloader is "
+                                  "installed and configured.\n\n"
+                                  "The Arch Linux Wiki contains "
+                                  "troubleshooting information:\n"
                                   "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
                                   "Would you like to view the wiki page now?")
                     response = show.question(self.get_toplevel(), boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
                         misc.drop_privileges()
-                        webbrowser.open('https://wiki.archlinux.org/index.php/GRUB')
+                        wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
+                        webbrowser.open(wiki_url)
 
-                install_ok = _("Installation Complete!\nDo you want to restart your system now?")
+                install_ok = _("Installation Complete!\n"
+                               "Do you want to restart your system now?")
                 response = show.question(self.get_toplevel(), install_ok)
                 misc.remove_temp_files()
                 logging.shutdown()
@@ -241,7 +245,9 @@ class Slides(GtkBaseBox):
                     self.set_message(event[1])
 
             elif event[0] == 'cache_pkgs_md5_check_failed':
-                logging.debug('adding %s to cache_pkgs_md5_check_failed list', event[1])
+                logging.debug(
+                    'Adding %s to cache_pkgs_md5_check_failed list',
+                    event[1])
                 self.settings.set('cache_pkgs_md5_check_failed', event[1])
 
             self.callback_queue.task_done()
@@ -260,15 +266,11 @@ class Slides(GtkBaseBox):
     @misc.raise_privileges
     def reboot(self):
         """ Reboots the system, used when installation is finished """
-        os.system("sync")
-        subprocess.call(["/usr/bin/systemctl", "reboot", "--force", "--no-wall"])
+        cmd = ["sync"]
+        subprocess.call(cmd)
+        cmd = ["/usr/bin/systemctl", "reboot", "--force", "--no-wall"]
+        subprocess.call(cmd)
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
 
 if __name__ == '__main__':
     from test_screen import _, run
