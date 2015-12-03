@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  download_requests.py
+# download_requests.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Module to download packages using requests library """
@@ -50,7 +50,8 @@ def get_md5(file_name):
 
 
 class CopyToCache(threading.Thread):
-    ''' Class thread to copy a xz file to the user's provided cache directory '''
+    ''' Class thread to copy a xz file to the user's
+        provided cache directory '''
     def __init__(self, origin, xz_cache_dirs):
         threading.Thread.__init__(self)
         self.origin = origin
@@ -83,6 +84,29 @@ class Download(object):
 
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
+
+    def is_hash_ok(self, element, dst_path):
+        """ Checks file md5 hash """
+        # Check the file's md5 hash
+        # element['hash'] is not always available
+        # that is why we use get() with default of False
+        md5 = get_md5(dst_path)
+        md5hash = element.get('hash', False)
+        if md5hash and md5hash != md5:
+            logging.debug(
+                "MD5 hash of file %s does not match what's in the repo database! Cnchi will download it",
+                element['filename'])
+            is_ok = False
+        elif md5hash == md5 or not md5hash:
+            # Hash ok or can't be checked (is False or an empty string)
+            self.queue_event(
+                'cache_pkgs_md5_check_failed',
+                element['identity'])
+            logging.debug(
+                    'Checksum unavailable for cached package: %s',
+                    element['identity'])
+            is_ok = True
+        return is_ok
 
     def start(self, downloads):
         """ Downloads using requests """
@@ -117,60 +141,39 @@ class Download(object):
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
             if os.path.exists(dst_path):
-                # File already exists in destination pacman's cache (previous install?)
-                # We check the file md5 hash
-                md5 = get_md5(dst_path)
-                md5hash = element.get('hash', False)
-                if md5hash and md5hash != md5:
-                    logging.debug("MD5 hash of file %s does not match what's in the repo"
-                                  "database! Cnchi will download it", element['filename'])
+                # File already exists in destination pacman's cache
+                # (previous install?). We check the file md5 hash.
+                if not self.is_hash_ok(element, dst_path):
                     # Wrong hash. Force to download it
                     needs_to_download = True
-                elif md5hash == md5 or not md5hash:
-                    # Hash ok or can't be checked (is False or an empty string). Do not
-                    # download the pkg but store the pkg name in case it causes problems later.
-                    self.queue_event('cache_pkgs_md5_check_failed', element['identity'])
-                    logging.debug(
-                            'Checksum unavailable for cached package: %s',
-                            element['identity'])
+                else:
+                    needs_to_download = False
+                    downloaded += 1
                     logging.debug(
                         "File %s already exists, Cnchi will not overwrite it",
                         element['filename'])
-                    needs_to_download = False
-                    downloaded += 1
             else:
                 needs_to_download = True
+                # Check all cache directories
                 for xz_cache_dir in self.xz_cache_dirs:
-                    dst_xz_cache_path = os.path.join(xz_cache_dir, element['filename'])
+                    dst_xz_cache_path = os.path.join(
+                        xz_cache_dir,
+                        element['filename'])
 
                     if os.path.exists(dst_xz_cache_path):
                         # We're lucky, the package is already downloaded
                         # in the cache the user has given us
-
                         # Check the file's md5 hash
-                        # element['hash'] is not always available
-                        # that is why we use get() with default of False
-                        copy_it = False
-                        if element.get('hash', False):
-                            md5 = get_md5(dst_xz_cache_path)
-                            if element['hash'] == md5:
-                                # File exists in cache and its md5 is ok
-                                # Let's copy it to our destination
-                                copy_it = True
-                        else:
-                            # File exists in cache but we can't check if its md5 is ok or not
-                            # Let's copy it to our destination but store the pkg's name in case
-                            # it causes problems later on.
+
+                        if self.is_hash_ok(element, dst_xz_cache_path):
                             copy_it = True
-                            self.queue_event(
-                                    'cache_pkgs_md5_check_failed',
-                                    element['identity'])
-                            logging.debug(
-                                    'Checksum unavailable for cached package: %s',
-                                    element['identity'])
+                        else:
+                            copy_it = False
 
                         if copy_it:
-                            logging.debug("%s found in suplied xz packages' cache. Copying...", element['filename'])
+                            logging.debug(
+                                "%s found in suplied xz packages' cache. Copying...",
+                                element['filename'])
                             try:
                                 # shutil.copy(dst_xz_cache_path, dst_path)
                                 needs_to_download = False
@@ -179,7 +182,11 @@ class Download(object):
                                 # to find the package in this cache directory
                                 break
                             except OSError as os_error:
-                                logging.debug("Error copying %s to %s : %s", dst_xz_cache_path, dst_path, os_error)
+                                logging.debug(
+                                    "Error copying %s to %s : %s",
+                                    dst_xz_cache_path,
+                                    dst_path,
+                                    os_error)
 
             if needs_to_download:
                 # Package wasn't previously downloaded or its md5 was wrong
@@ -201,11 +208,11 @@ class Download(object):
                     try:
                         # By default, get waits five minutes before
                         # issuing a timeout, which is too much.
-                        r = requests.get(url, stream=True, timeout=30)
-                        if r.status_code == requests.codes.ok:
+                        req = requests.get(url, stream=True, timeout=30)
+                        if req.status_code == requests.codes.ok:
                             # Get total file length
                             try:
-                                total_length = int(r.headers.get('content-length'))
+                                total_length = int(req.headers.get('content-length'))
                             except TypeError:
                                 total_length = 0
                                 logging.debug(
@@ -213,7 +220,7 @@ class Download(object):
                                     element['identity'])
 
                             with open(dst_path, 'wb') as xz_file:
-                                for data in r.iter_content(io.DEFAULT_BUFFER_SIZE):
+                                for data in req.iter_content(io.DEFAULT_BUFFER_SIZE):
                                     if not data:
                                         break
                                     xz_file.write(data)
