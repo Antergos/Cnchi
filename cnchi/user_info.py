@@ -182,7 +182,8 @@ class UserInfo(GtkBaseBox):
 
         self.password_strength.hide()
 
-        # Hide encryption if using LUKS encryption (user must use one or the other but not both)
+        # Hide encryption if using LUKS encryption (user must use one or
+        # the other but not both)
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
 
