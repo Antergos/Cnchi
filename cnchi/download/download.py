@@ -3,43 +3,34 @@
 #
 # download.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
-
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 """ Module to download packages """
 
 import os
 import logging
 import queue
-
-if __name__ == '__main__':
-    import sys
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test
-    base_dir = os.path.dirname(__file__) or '.'
-    parent_dir = os.path.join(base_dir, '..')
-    sys.path.insert(0, parent_dir)
 
 import pacman.pac as pac
 import download.metalink as ml
@@ -88,6 +79,7 @@ class DownloadPackages(object):
         self.metalinks = None
 
     def start(self, metalinks=None):
+        """ Begin download """
         if metalinks:
             self.metalinks = metalinks
 
@@ -111,6 +103,7 @@ class DownloadPackages(object):
             raise misc.InstallError(txt)
 
     def url_sort_helper(self, url):
+        """ helper method for sorting mirror urls """
         if not url:
             return 9999
         # Use the mirrorlist we created earlier to determine a url's priority
@@ -146,21 +139,27 @@ class DownloadPackages(object):
             for package_name in self.package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink is None:
-                    logging.error("Error creating metalink for package %s. Installation will stop", package_name)
-                    txt = _("Error creating metalink for package {0}. Installation will stop").format(package_name)
+                    txt = "Error creating metalink for package %s. Installation will stop"
+                    logging.error(txt, package_name)
+                    txt = _("Error creating metalink for package {0}. "
+                            "Installation will stop").format(package_name)
                     raise misc.InstallError(txt)
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
 
-                # Update downloads list with the new info from the processed metalink
+                # Update downloads list with the new info from
+                # the processed metalink
                 for key in metalink_info:
                     if key not in self.metalinks:
                         self.metalinks[key] = metalink_info[key]
                         urls = metalink_info[key]['urls']
                         if self.settings:
-                            # Sort urls based on the mirrorlist we created earlier
-                            sorted_urls = sorted(urls, key=self.url_sort_helper)
+                            # Sort urls based on the mirrorlist
+                            # we created earlier
+                            sorted_urls = sorted(
+                                urls,
+                                key=self.url_sort_helper)
                             self.metalinks[key]['urls'] = sorted_urls
                         else:
                             # When testing, settings is not available
@@ -191,7 +190,7 @@ class DownloadPackages(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug("{0}:{1}".format(event_type, event_text))
+                logging.debug("%s:%s", event_type, event_text)
             return
 
         if event_type in self.last_event:
@@ -208,8 +207,8 @@ class DownloadPackages(object):
             pass
 
 
-''' Test case '''
-if __name__ == '__main__':
+def main():
+    """ Test function """
     import gettext
 
     _ = gettext.gettext
@@ -224,10 +223,13 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    dp = DownloadPackages(
+    download_packages = DownloadPackages(
         package_names=["gedit"],
         pacman_conf_file="/etc/pacman.conf",
         pacman_cache_dir="/tmp/pkg",
         settings=None,
         callback_queue=None)
-    dp.start()
+    download_packages.start()
+
+if __name__ == '__main__':
+    main()
