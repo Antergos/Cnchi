@@ -296,7 +296,7 @@ class Download(object):
                 continue
         return download_error
 
-    def format_progress_message(percent, bps):
+    def format_progress_message(self, percent, bps):
         """ Formats speed message information """
         if bps >= (1024 * 1024):
             Mbps = bps / (1024 * 1024)
