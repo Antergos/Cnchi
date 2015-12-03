@@ -1,42 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  summary.py
+# summary.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Summary screen (last chance for the user) """
 
 
-from gi.repository import Gtk, GLib
-import subprocess
-import os
 import logging
 
-import misc.extra as misc
-import misc.gtkwidgets as gtkwidgets
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
@@ -147,14 +146,17 @@ class Summary(GtkBaseBox):
         statebox.set_property("label", txt)
 
     def get_install_screen(self):
+        """ Returns installation screen page """
         page = "installation_" + self.settings.get('partition_mode')
+        install_screen = None
         try:
             install_screen = self.main_window.pages[page]
         except (AttributeError, KeyError) as page_error:
-            logging.error("Can't find installation page called {0}", page)
-            install_screen = None
-        finally:
-            return install_screen
+            logging.error(
+                "Can't find installation page called %s: %s",
+                page,
+                page_error)
+        return install_screen
 
     def prepare(self, direction):
         """ Load screen """
@@ -173,6 +175,7 @@ class Summary(GtkBaseBox):
             label.hide()
 
     def store_values(self):
+        """ User wants to continue """
         response = show.question(
             self.get_toplevel(),
             _("Are you REALLY sure you want to continue?"))
@@ -184,16 +187,10 @@ class Summary(GtkBaseBox):
         return True
 
     def get_prev_page(self):
+        """ Gets previous page """
         page = "installation_" + self.settings.get('partition_mode')
         return page
 
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
 
 if __name__ == '__main__':
     from test_screen import _, run
