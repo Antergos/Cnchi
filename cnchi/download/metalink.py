@@ -142,10 +142,11 @@ def create(alpm, package_name, pacman_conf_file):
 
 
 def download_queue_to_metalink(download_queue):
+    """ Converts a download_queue object to a metalink """
     metalink = Metalink()
 
-    for db, sigs in download_queue.dbs:
-        metalink.add_db(db, sigs)
+    for database, sigs in download_queue.dbs:
+        metalink.add_db(database, sigs)
 
     for pkg, urls, sigs in download_queue.sync_pkgs:
         metalink.add_sync_pkg(pkg, urls, sigs)
@@ -154,6 +155,7 @@ def download_queue_to_metalink(download_queue):
 
 
 class Metalink(object):
+    """ Metalink class """
     def __init__(self):
         self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
         self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
@@ -163,6 +165,7 @@ class Metalink(object):
     #    self.doc.unlink()
 
     def __str__(self):
+        """ Get a string representation of a metalink """
         return re.sub(
             r'(?<=>)\n\s*([^\s<].*?)\s*\n\s*',
             r'\1',
@@ -446,14 +449,12 @@ def needs_sig(siglevel, insistence, prefix):
     if insistence > 1:
         return True
     elif insistence == 1 and siglevel:
-        for sl in ('Required', 'Optional'):
-            if siglevel == sl or siglevel == prefix + sl:
+        for sl_type in ('Required', 'Optional'):
+            if siglevel == sl_type or siglevel == prefix + sl_type:
                 return True
     return False
 
-
-''' Test case '''
-if __name__ == '__main__':
+def test():
     import gettext
 
     _ = gettext.gettext
@@ -473,15 +474,20 @@ if __name__ == '__main__':
     import cnchi.pacman.pac as pac
 
     try:
-        pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)
+        pacman = pac.Pac(
+            conf_path="/etc/pacman.conf",
+            callback_queue=None)
 
-        for i in range(1, 10000):
+        for index in range(1, 10000):
             print("Creating metalink...")
-            meta4 = create(alpm=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
+            meta4 = create(
+                alpm=pacman,
+                package_name="gnome",
+                pacman_conf_file="/etc/pacman.conf")
             print(get_info(meta4))
             meta4 = None
-            n = gc.collect()
-            print("Unreachable objects: ", n)
+            objects = gc.collect()
+            print("Unreachable objects: ", objects)
             print("Remaining garbage: ", pprint.pprint(gc.garbage))
 
         pacman.release()
@@ -489,3 +495,7 @@ if __name__ == '__main__':
 
     except Exception as err:
         logging.error("Can't initialize pyalpm: %s", err)
+
+''' Test case '''
+if __name__ == '__main__':
+    test()

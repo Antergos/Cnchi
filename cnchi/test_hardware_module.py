@@ -56,7 +56,7 @@ def setup_logging():
     logger.addHandler(stream_handler)
 
 
-def main():
+def test():
     """ Main function """
     locale_code, encoding = locale.getdefaultlocale()
     lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
@@ -73,4 +73,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    test()
