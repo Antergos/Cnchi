@@ -35,6 +35,7 @@ from gi.repository import Gtk, Gdk
 import os
 import logging
 
+
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
     def __init__(self, child, params, name, prev_page, next_page):
@@ -52,7 +53,7 @@ class GtkBaseBox(Gtk.Box):
         self.prev_page = prev_page
         self.next_page = next_page
 
-        Gtk.Box.__init__(self)
+        super(GtkBaseBox, self).__init__()
 
         self.set_name(name)
         self.name = name

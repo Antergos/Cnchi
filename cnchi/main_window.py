@@ -76,8 +76,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, cmd_line):
         Gtk.ApplicationWindow.__init__(self, title="Cnchi", application=app)
 
-        self._main_window_width = 875
-        self._main_window_height = 550
+        self._main_window_width = 960
+        self._main_window_height = 600
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -143,6 +143,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_ui.add_from_file(path)
         self.header = self.header_ui.get_object("header")
         self.header_overlay = self.header_ui.get_object("header_overlay")
+        self.header_nav = self.header_ui.get_object("header_nav")
 
         self.logo = self.header_ui.get_object("logo")
         path = os.path.join(
@@ -156,8 +157,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_name("header")
         self.logo.set_name("logo")
 
-        self.main_box = self.ui.get_object("main_box")
+        # self.main_box = self.ui.get_object("main_box")
         # self.main_box.set_property('width_request', 800)
+        self.main_box = self.ui.get_object("main_stack")
+        self.header_nav.set_stack(self.main_box)
 
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
@@ -188,6 +191,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.settings.get('alternate_package_list'))
 
         self.header_overlay.add_overlay(self.header)
+        self.header_overlay.add_overlay(self.header_nav)
+        self.header_overlay.set_overlay_pass_through(self.header, True)
+        self.header_overlay.set_overlay_pass_through(self.header_nav, True)
         self.set_titlebar(self.header_overlay)
 
         # Prepare params dict to pass common parameters to all screens
@@ -212,6 +218,9 @@ class MainWindow(Gtk.ApplicationWindow):
         # loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
+        self.pages["language"] = language.Language(self.params)
+        self.pages["check"] = check.Check(self.params)
+        self.pages["location"] = location.Location(self.params)
 
         if os.path.exists('/home/antergos/.config/openbox'):
             # In minimal iso, load language screen now
@@ -252,7 +261,11 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.current_page = self.pages["welcome"]
 
-        self.main_box.add(self.current_page)
+        self.main_box.add_titled(self.current_page, 'welcome', 'Welcome')
+        self.main_box.add_titled(self.pages["language"], 'language', 'Language')
+        self.main_box.add_titled(self.pages["check"], 'check', 'Check')
+        self.main_box.add_titled(self.pages["location"], 'location', 'Location')
+        self.settings.set('timezone_start', True)
 
         # Use our css file
         style_provider = Gtk.CssProvider()

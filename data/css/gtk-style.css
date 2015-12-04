@@ -3,7 +3,6 @@
     font-size: 11px;
 }
 
-
 #location {
     font-size: 11px;
 }
@@ -240,4 +239,23 @@ StateBox {
 
 .header_bar {
     background: transparent;
+}
+
+.header_nav .button {
+    background-color: transparent;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Open Sans';
+    padding: 15px 20px;
+    color: #ffffff;
+    box-shadow: none;
+}
+
+.header_nav .button:hover, .header_nav .button:checked {
+    background-color: #3F7AE4;
+}
+
+.logo {
+    padding-top: 10px;
 }
