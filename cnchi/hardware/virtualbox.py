@@ -43,15 +43,18 @@ DEVICES = ['0xbeef']
 
 
 class Virtualbox(Hardware):
+    """ Virtualbox modules """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["virtualbox-guest-modules", "virtualbox-guest-utils"]
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/modules-load.d")
         os.makedirs(path, mode=0o755, exist_ok=True)
         path = os.path.join(dest_dir, "etc/modules-load.d/virtualbox-guest.conf")

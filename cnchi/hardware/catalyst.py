@@ -103,11 +103,13 @@ DEVICES = [
     "0x6784", "0x6788", "0x678a", "0x692f", "0x692b", "0x6929", "0x68f2"]
 
 class Catalyst(Hardware):
+    """ AMD ATI Catalyst graphics driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         pkgs = ["catalyst-hook", "catalyst-libgl", "catalyst-utils", "acpid", "qt4"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-catalyst-libgl", "lib32-catalyst-utils", "lib32-opencl-catalyst"])
@@ -139,11 +141,13 @@ class Catalyst(Hardware):
                 pacman_conf.write(line)
 
     def pre_install(self, dest_dir):
+        """ Pre install commands """
         # Catalyst needs an extra repository and a downgraded Xorg
         # Cnchi uses /tmp/pacman.conf to do the installation
         self.add_repositories("/tmp/pacman.conf")
 
     def post_install(self, dest_dir):
+        """ Post install commands """
         # Add repos to user's pacman.conf
         path = os.path.join(dest_dir, "etc/pacman.conf")
         self.add_repositories(path)
@@ -156,4 +160,5 @@ class Catalyst(Hardware):
 
     @staticmethod
     def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
         return True

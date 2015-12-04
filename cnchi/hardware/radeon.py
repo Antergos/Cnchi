@@ -46,11 +46,13 @@ PRIORITY = 2
 
 
 class Radeon(Hardware):
+    """ AMD ATI open graphics driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         pkgs = ["xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-mesa", "lib32-mesa-libgl"])
@@ -58,6 +60,12 @@ class Radeon(Hardware):
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/modprobe.d/radeon.conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options radeon modeset=1\n")
+
+    @staticmethod
+    def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
+        return False

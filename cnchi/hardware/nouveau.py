@@ -47,11 +47,13 @@ PRIORITY = 3
 
 
 class Nouveau(Hardware):
+    """ Nvidia open graphics driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         pkgs = ["xf86-video-nouveau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-mesa", "lib32-mesa-libgl"])
@@ -59,6 +61,7 @@ class Nouveau(Hardware):
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/modprobe.d/nouveau.conf")
         with open(path, 'w') as modprobe:
             modprobe.write("options nouveau modeset=1\n")
@@ -66,3 +69,8 @@ class Nouveau(Hardware):
         # path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-nvidia.conf")
         # with open(path, "w") as blacklist:
         #    blacklist.write("blacklist nvidia\n")
+
+    @staticmethod
+    def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
+        return False

@@ -96,11 +96,13 @@ DEVICES = [
 
 
 class Nvidia(Hardware):
+    """ Nvidia proprietary graphics driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
@@ -115,6 +117,7 @@ class Nvidia(Hardware):
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
         with open(path, 'w') as nvidia:
             nvidia.write('Section "Device"\n')
@@ -126,4 +129,5 @@ class Nvidia(Hardware):
 
     @staticmethod
     def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
         return True

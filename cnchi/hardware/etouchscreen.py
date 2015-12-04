@@ -48,15 +48,18 @@ DEVICES = ['0x0001']
 
 
 class ETouchScreen(Hardware):
+    """ eGalax Touch Screen driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["xinput_calibrator", "xournal"]
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         subprocess.check_call(["rmmod", "usbtouchscreen"])
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")

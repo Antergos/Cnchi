@@ -52,15 +52,18 @@ PRIORITY = 2
 
 
 class BroadcomWl(Hardware):
+    """ Broadcom wl proprietary driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["broadcom-wl"]
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-broadcom.conf")
         with open(path, "w") as blacklist:
             blacklist.write("blacklist b43\n")

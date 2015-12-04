@@ -62,12 +62,15 @@ DEVICES = [
 
 
 class FingerPrint(Hardware):
+    """ Fingerprint devices driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["fprintd"]
 
     def post_install(self, dest_dir):
+        """ Post install commands """
         pass
