@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  advanced.py
+# advanced.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Installation advanced module. Custom partition screen """
@@ -72,7 +72,8 @@ COL_ENCRYPTED = 15
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
 
-    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
+    def __init__(self, params, prev_page="installation_ask",
+                 next_page="summary"):
         # Call base class
         super().__init__(self, params, "advanced", prev_page, next_page)
 
@@ -95,7 +96,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.luks_options = {}
 
         # Store here LUKS options for current partition (create/edit dialog)
-        # (they will finally be stored in luks_options if user selects ok in create/edit partition dialog)
+        # (they will finally be stored in luks_options if user selects ok
+        # in create/edit partition dialog)
         # stores tuple (use_luks, vol_name, password)
         self.tmp_luks_options = (False, "", "")
 
@@ -104,7 +106,8 @@ class InstallationAdvanced(GtkBaseBox):
         self.orig_label_dic = {}
         self.orig_part_dic = {}
 
-        # stage_opts holds info about newly created partitions (it's like a todo list)
+        # stage_opts holds info about newly created partitions
+        # (it's like a todo list)
         # format is tuple (is_new, label, mount_point, fs, format)
         # see its usage in listing, creating, and deleting partitions
         # uses partition uid as index
@@ -133,15 +136,18 @@ class InstallationAdvanced(GtkBaseBox):
         # Init GUI elements
 
         # Create and edit partition dialogs
-        self.create_partition_dialog = self.ui.get_object('create_partition_dialog')
-        self.edit_partition_dialog = self.ui.get_object('edit_partition_dialog')
+        self.create_partition_dialog = self.ui.get_object(
+            'create_partition_dialog')
+        self.edit_partition_dialog = self.ui.get_object(
+            'edit_partition_dialog')
 
         self.initialize_widgets()
 
         self.bootloader = "grub2"
         self.bootloader_device = ""
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
-        self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
+        self.bootloader_device_entry = self.ui.get_object(
+            'bootloader_device_entry')
         self.bootloader_devices = {}
 
         # Initialise our partition list tree view
@@ -159,7 +165,9 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Connect changing selection in the partition list treeview
         select = self.partition_list.get_selection()
-        select.connect("changed", self.on_partition_list_treeview_selection_changed)
+        select.connect(
+            "changed",
+            self.on_partition_list_treeview_selection_changed)
 
         # Assign images to buttons
         btns = [
@@ -240,8 +248,8 @@ class InstallationAdvanced(GtkBaseBox):
         return uid
 
     def check_buttons(self, selection):
-        """ Activates/deactivates our buttons depending on which is selected in the
-            partition treeview """
+        """ Activates/deactivates our buttons depending on which is
+            selected in the partition treeview """
 
         model, tree_iter = selection.get_selected()
 
@@ -249,47 +257,54 @@ class InstallationAdvanced(GtkBaseBox):
         if tree_iter is not None:
             path = model[tree_iter][COL_PATH]
 
-        if path is not None:
-            button = {"undo": self.ui.get_object('partition_button_undo'),
-                      "new": self.ui.get_object('partition_button_new'),
-                      "delete": self.ui.get_object('partition_button_delete'),
-                      "edit": self.ui.get_object('partition_button_edit'),
-                      "new_label": self.ui.get_object('partition_button_new_label')}
+        if not path:
+            return
 
-            for key in button:
-                button[key].set_sensitive(False)
+        button = {"undo": self.ui.get_object('partition_button_undo'),
+                  "new": self.ui.get_object('partition_button_new'),
+                  "delete": self.ui.get_object('partition_button_delete'),
+                  "edit": self.ui.get_object('partition_button_edit'),
+                  "new_label": self.ui.get_object('partition_button_new_label')}
 
-            if self.stage_opts:
-                button["undo"].set_sensitive(True)
+        for key in button:
+            button[key].set_sensitive(False)
 
-            if path == _("free space"):
-                button["new"].set_sensitive(True)
-            else:
-                disks = pm.get_devices()
-                if (path not in disks and 'dev/mapper' not in path) or ('dev/mapper' in path and '-' in path):
-                    # A partition is selected
-                    diskobj = None
-                    for i in self.all_partitions:
-                        if path in i and '/mapper' not in path and '/' in path:
-                            diskobj = i[path].disk.device.path
-                    if diskobj and model[tree_iter][COL_FS] == 'extended' and self.diskdic[diskobj]['has_logical']:
-                        # It's an extended partition and has logical ones in it,
-                        # so it can't be edited or deleted until the logical ones are deleted first.
-                        button["delete"].set_sensitive(False)
-                        button["edit"].set_sensitive(False)
-                    else:
-                        if '/mapper' in path:
-                            button["delete"].set_sensitive(False)
-                        else:
-                            button["delete"].set_sensitive(True)
+        if self.stage_opts:
+            button["undo"].set_sensitive(True)
 
-                        button["edit"].set_sensitive(True)
+        if path == _("free space"):
+            button["new"].set_sensitive(True)
+        else:
+            disks = pm.get_devices()
+            if ((path not in disks and 'dev/mapper' not in path) or
+                    ('dev/mapper' in path and '-' in path)):
+                # A partition is selected
+                diskobj = None
+                for i in self.all_partitions:
+                    if path in i and '/mapper' not in path and '/' in path:
+                        diskobj = i[path].disk.device.path
+                if (diskobj and
+                        model[tree_iter][COL_FS] == 'extended' and
+                        self.diskdic[diskobj]['has_logical']):
+                    # It's an extended partition and has logical ones in it,
+                    # so it can't be edited or deleted until the logical ones
+                    # are deleted first.
+                    button["delete"].set_sensitive(False)
+                    button["edit"].set_sensitive(False)
                 else:
-                    # A drive (disk) is selected
-                    button["new_label"].set_sensitive(True)
+                    if '/mapper' in path:
+                        button["delete"].set_sensitive(False)
+                    else:
+                        button["delete"].set_sensitive(True)
+
+                    button["edit"].set_sensitive(True)
+            else:
+                # A drive (disk) is selected
+                button["new_label"].set_sensitive(True)
 
     def fill_bootloader_device_entry(self):
-        """ Get all devices where we can put our bootloader. Avoiding partitions """
+        """ Get all devices where we can put our bootloader.
+            Avoiding partitions """
 
         self.bootloader_device_entry.remove_all()
         self.bootloader_devices.clear()
@@ -303,10 +318,14 @@ class InstallationAdvanced(GtkBaseBox):
             if disk is not None:
                 dev = disk.device
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
-                if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
+                if (not dev.path.startswith("/dev/sr") and
+                        not dev.path.startswith("/dev/mapper")):
                     # Hard drives measure themselves assuming kilo=1000, mega=1mil, etc
                     size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-                    line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
+                    line = '{0} [{1} GB] ({2})'.format(
+                        dev.model,
+                        size_in_gigabytes,
+                        dev.path)
                     self.bootloader_device_entry.append_text(line)
                     self.bootloader_devices[line] = dev.path
 
@@ -439,7 +458,11 @@ class InstallationAdvanced(GtkBaseBox):
         ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
 
         col = Gtk.TreeViewColumn(
-            _("SSD"), ssd_toggle, active=COL_SSD_ACTIVE, visible=COL_SSD_VISIBLE, sensitive=COL_SSD_SENSITIVE)
+            _("SSD"),
+            ssd_toggle,
+            active=COL_SSD_ACTIVE,
+            visible=COL_SSD_VISIBLE,
+            sensitive=COL_SSD_SENSITIVE)
         self.partition_list.append_column(col)
 
     @staticmethod
@@ -471,7 +494,8 @@ class InstallationAdvanced(GtkBaseBox):
             self.partition_list_store.clear()
 
         self.partition_list_store = Gtk.TreeStore(
-            str, str, str, str, bool, bool, str, str, str, str, int, bool, bool, bool, bool, bool)
+            str, str, str, str, bool, bool, str, str, str, str, int, bool,
+            bool, bool, bool, bool)
 
         # Be sure to call get_devices once
         if self.disks is None:
@@ -491,7 +515,8 @@ class InstallationAdvanced(GtkBaseBox):
                 logical_volumes = lvm.get_logical_volumes(volume_group)
                 if not logical_volumes:
                     continue
-                row = [volume_group, "", "", "", False, False, "", "", "", "", 0, False, is_ssd, False, False, False]
+                row = [volume_group, "", "", "", False, False, "", "", "", "",
+                    0, False, is_ssd, False, False, False]
                 lvparent = self.partition_list_store.append(None, row)
                 for logical_volume in logical_volumes:
                     fmt_enable = True
@@ -514,11 +539,16 @@ class InstallationAdvanced(GtkBaseBox):
                         # kludge, btrfs not being detected...
                         fs_type = 'btrfs'
                     else:
-                        # Say unknown if we can't detect fs type instead of assumming btrfs
+                        # Say unknown if we can't detect fs type instead
+                        # of assumming btrfs
                         fs_type = 'unknown'
 
                     if uid in self.stage_opts:
-                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                        (is_new,
+                        label,
+                        mount_point,
+                        fs_type,
+                        fmt_active) = self.stage_opts[uid]
 
                     label = fs.get_label(partition_path)
 
