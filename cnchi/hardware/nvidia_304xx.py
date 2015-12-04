@@ -144,6 +144,7 @@ class Nvidia304xx(Hardware):
 
     @staticmethod
     def get_conflicts():
+        """ Get conflicting packages """
         pkgs = ["mesa-libgl"]
         if os.uname()[-1] == "x86_64":
             pkgs.append("lib32-mesa-libgl")
