@@ -52,7 +52,8 @@ class Hardware(object):
         """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented")
 
-    def get_conflicts(self):
+    @staticmethod
+    def get_conflicts():
         """ Returns a list with all conflicting packages """
         return []
 
@@ -115,9 +116,11 @@ class Hardware(object):
             return False
 
     def get_name(self):
+        """ Returns class name """
         return self.class_name
 
     def get_priority(self):
+        """ Get module (driver) priority """
         return self.priority
 
     @staticmethod
@@ -145,9 +148,9 @@ class Hardware(object):
             self.vendor_id,
             self.product_id)
 
-    @staticmethod
     def call_script(self, script_path, dest_dir):
-        if os.path.exists(path):
+        """ Helper function that will run a script """
+        if os.path.exists(script_path):
             cmd = [
                 "/usr/bin/bash",
                 script_path,
@@ -157,7 +160,8 @@ class Hardware(object):
                 subprocess.check_call(cmd, timeout=300)
                 logging.debug("Script '%s' completed successfully.", script_path)
             except subprocess.CalledProcessError as process_error:
-                # Even though Post-install script call has failed we will try to continue with the installation.
+                # Even though Post-install script call has failed we
+                # will try to continue with the installation.
                 logging.error(
                     "Error running %s script, command %s failed. Output %s",
                     script_path,
@@ -295,6 +299,7 @@ class HardwareInstall(object):
 
     @staticmethod
     def get_devices():
+        """ Gets a list of all pci/usb devices """
         devices = []
 
         # Get PCI devices
@@ -335,6 +340,7 @@ class HardwareInstall(object):
         return packages
 
     def get_found_driver_names(self):
+        """ Returns a list of found driver names """
         driver_names = []
         for obj in self.objects_used:
             driver_names.append(obj.get_name())
@@ -350,11 +356,11 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             obj.post_install(dest_dir)
 
-
-''' Test case '''
-if __name__ == "__main__":
-    def _(x):
-        return x
+def test():
+    """ Test module function """
+    def _(text):
+        """ Helper function """
+        return text
 
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
@@ -364,3 +370,6 @@ if __name__ == "__main__":
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)
+
+if __name__ == "__main__":
+    test()
