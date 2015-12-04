@@ -71,4 +71,5 @@ class BroadcomWl(Hardware):
 
     @staticmethod
     def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
         return True

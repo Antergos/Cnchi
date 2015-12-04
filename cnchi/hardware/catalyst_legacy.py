@@ -115,26 +115,28 @@ class CatalystLegacy(Hardware):
     @staticmethod
     def add_repositories(path):
         """ Adds [xorg116] and [catalyst-hd234k] repos to pacman.conf """
+        txt = (
+            "[xorg116]\n"
+            "Server = http://catalyst.wirephire.com/repo/xorg116/$arch\n"
+            "SigLevel = Optional TrustAll\n"
+            "## Mirrors, if the primary server does not work or is too slow:\n"
+            "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg116/$arch\n"
+            "#Server = http://mirror.hactar.bz/Vi0L0/xorg116/$arch\n\n"
+            "[catalyst-hd234k]\n"
+            "http://catalyst.wirephire.com/repo/catalyst-hd234k/$arch\n"
+            "SigLevel = Optional TrustAll\n"
+            "## Mirrors, if the primary server does not work or is too slow:\n"
+            "#Server = http://70.239.162.206/catalyst-mirror/repo/catalyst-hd234k/$arch\n"
+            "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/catalyst-hd234k/$arch\n"
+            "#Server = http://mirror.hactar.bz/Vi0L0/catalyst-hd234k/$arch\n\n")
+
         with open(path, 'r') as pacman_conf:
             lines = pacman_conf.readlines()
         with open(path, "w") as pacman_conf:
             for line in lines:
                 # xorg11x needs to be present before core repository
                 if "[core]" in line:
-                    line = "[xorg116]\n"
-                    line += "Server = http://catalyst.wirephire.com/repo/xorg116/$arch\n"
-                    line += "SigLevel = Optional TrustAll\n"
-                    line += "## Mirrors, if the primary server does not work or is too slow:\n"
-                    line += "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg116/$arch\n"
-                    line += "#Server = http://mirror.hactar.bz/Vi0L0/xorg116/$arch\n\n"
-                    line += "[catalyst-hd234k]\n"
-                    line += "http://catalyst.wirephire.com/repo/catalyst-hd234k/$arch\n"
-                    line += "SigLevel = Optional TrustAll\n"
-                    line += "## Mirrors, if the primary server does not work or is too slow:\n"
-                    line += "#Server = http://70.239.162.206/catalyst-mirror/repo/catalyst-hd234k/$arch\n"
-                    line += "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/catalyst-hd234k/$arch\n"
-                    line += "#Server = http://mirror.hactar.bz/Vi0L0/catalyst-hd234k/$arch\n\n"
-                    line += "[core]\n"
+                    line = txt + "[core]\n"
                 pacman_conf.write(line)
 
     def pre_install(self, dest_dir):
