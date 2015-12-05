@@ -64,6 +64,7 @@ class Slides(GtkBaseBox):
         self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
+        self.title = _('Install')
 
         self.fatal_error = False
         self.should_pulse = False

@@ -55,11 +55,12 @@ MIN_ROOT_SIZE = 8000000000
 class Check(GtkBaseBox):
     """ Check class """
 
-    def __init__(self, params, prev_page="language", next_page="location"):
+    def __init__(self, params, prev_page="welcome", next_page="location"):
         """ Init class ui """
         super().__init__(self, params, "check", prev_page, next_page)
 
         self.remove_timer = False
+        self.title = _("System Check")
 
         self.updater = None
         self.prepare_power_source = None
@@ -78,8 +79,7 @@ class Check(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("System Check")
-        self.header.set_subtitle(txt)
+        self.header.set_subtitle(self.title)
 
         self.updated = self.ui.get_object("updated")
         txt = _("Cnchi is up to date")

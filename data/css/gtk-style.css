@@ -259,3 +259,8 @@ StateBox {
 .logo {
     padding-top: 10px;
 }
+.logo_text {
+    font-family: Futura;
+    font-size: 20px;
+    color: #ffffff;
+}

@@ -52,6 +52,7 @@ class Timezone(GtkBaseBox):
         super().__init__(self, params, "timezone", prev_page, next_page)
 
         self.map_window = self.ui.get_object('timezone_map_window')
+        self.title = _('Timezone')
 
         self.combobox_zone = self.ui.get_object('comboboxtext_zone')
         self.combobox_region = self.ui.get_object('comboboxtext_region')

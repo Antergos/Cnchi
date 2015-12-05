@@ -79,6 +79,7 @@ class InstallationZFS(GtkBaseBox):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.ui.get_object('zfs')
+        self.title = _('ZFS Setup')
 
         self.disks = None
         self.diskdic = {}

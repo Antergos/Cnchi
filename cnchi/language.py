@@ -45,16 +45,30 @@ APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
 
-class Language(GtkBaseBox):
-    def __init__(self, params, prev_page="welcome", next_page="check"):
-        super().__init__(self, params, "language", prev_page, next_page)
+class LanguageWidget(Gtk.Box):
+    def __init__(self, params=None, name='language'):
+        super().__init__()
+
+        self.settings = params['settings']
+        self.ui_dir = params['ui_dir']
+        self.ui = Gtk.Builder()
+        self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
+        self.ui.add_from_file(self.ui_file)
+        self.main_box_wrapper = params['main_box_wrapper']
+
+        # Connect UI signals
+        self.ui.connect_signals(self)
+
+        self.contents = self.ui.get_object('language_box')
+        self.add(self.contents)
 
         # Set up list box
-        self.listbox = self.ui.get_object("listbox")
+        self.listbox = self.ui.get_object('listbox')
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
         data_dir = self.settings.get('data')
+        self.title = _('Language')
 
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
@@ -63,15 +77,10 @@ class Language(GtkBaseBox):
             "languagelist.txt.gz")
         self.set_languages_list()
 
-        image1 = self.ui.get_object("image1")
-        image1.set_from_file(os.path.join(data_dir, "images/languages.png"))
-
-        label = self.ui.get_object("welcome_label")
-        label.set_name("WelcomeMessage")
-
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
+        self.show_all()
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
@@ -99,15 +108,15 @@ class Language(GtkBaseBox):
                 "<a href='{1}'>{1}</a>")
         url = "http://bugs.antergos.com"
         txt = txt.format(txt_bold, url)
-        label = self.ui.get_object("welcome_label")
-        label.set_markup(txt)
-
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(50)
-
-        txt = _("Choose your language")
-        self.header.set_subtitle(txt)
+        # label = self.ui.get_object("welcome_label")
+        # label.set_markup(txt)
+        #
+        # label.set_hexpand(False)
+        # label.set_line_wrap(True)
+        # label.set_max_width_chars(50)
+        #
+        # txt = _("Choose your language")
+        # self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
@@ -180,7 +189,7 @@ class Language(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
         # Enable forward button
-        self.forward_button.set_sensitive(True)
+        # self.forward_button.set_sensitive(True)
         self.show_all()
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists

@@ -89,6 +89,7 @@ class InstallationAsk(GtkBaseBox):
         super().__init__(self, params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
+        self.title = _('Install Mode')
 
         partitioner_dir = os.path.join(data_dir, "images", "partitioner", "small")
 

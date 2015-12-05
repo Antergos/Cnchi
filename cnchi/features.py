@@ -56,6 +56,7 @@ class Features(GtkBaseBox):
         super().__init__(self, params, "features", prev_page, next_page)
 
         self.listbox_rows = {}
+        self.title = _("Feature Selection")
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
@@ -208,9 +209,7 @@ class Features(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
 
-        desktop = self.settings.get('desktop')
-        txt = desktop_info.NAMES[desktop] + " - " + _("Feature Selection")
-        self.header.set_subtitle(txt)
+        self.header.set_subtitle(self.title)
 
         for feature in self.features:
             if feature == "graphic_drivers":

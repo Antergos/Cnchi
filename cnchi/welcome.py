@@ -40,7 +40,7 @@ from gi.repository import GdkPixbuf
 
 class Welcome(GtkBaseBox):
     """ Welcome screen class """
-    def __init__(self, params, prev_page=None, next_page="language"):
+    def __init__(self, params, prev_page=None, next_page="check"):
         super().__init__(self, params, "welcome", prev_page, next_page)
 
         data_dir = self.settings.get('data')

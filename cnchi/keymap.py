@@ -49,6 +49,7 @@ class Keymap(GtkBaseBox):
         super().__init__(self, params, "keymap", prev_page, next_page)
 
         self.prepare_called = False
+        self.title = _('Keyboard Layout')
 
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")

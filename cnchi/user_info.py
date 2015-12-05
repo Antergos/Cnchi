@@ -47,6 +47,7 @@ class UserInfo(GtkBaseBox):
 
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
+        self.title = _('User Account')
 
         self.image_is_ok = dict()
         self.image_is_ok['fullname'] = self.ui.get_object('fullname_ok')

@@ -61,6 +61,7 @@ class Location(GtkBaseBox):
 
         self.locales = {}
         self.load_locales()
+        self.title = _('Location')
 
         self.selected_country = ""
 

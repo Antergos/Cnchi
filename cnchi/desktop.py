@@ -49,6 +49,7 @@ class DesktopAsk(GtkBaseBox):
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
+        self.title = _("Choose Your Desktop")
 
         self.desktop_info = self.ui.get_object("desktop_info")
 
@@ -121,8 +122,7 @@ class DesktopAsk(GtkBaseBox):
 
         if set_header:
             # set header text
-            txt = _("Choose Your Desktop")
-            self.header.set_subtitle(txt)
+            self.header.set_subtitle(self.title)
 
     def prepare(self, direction):
         """ Prepare screen """

@@ -79,6 +79,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Init class vars
 
         self.blvm = False
+        self.title = _('Advanced Mode')
 
         self.installation = None
         self.mount_devices = {}
