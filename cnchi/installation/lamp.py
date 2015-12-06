@@ -48,10 +48,12 @@ DEST_DIR = '/install'
 
 
 def chroot_run(cmd):
+    """ Helper function to run a cmd inside chroot """
     chroot.run(cmd, DEST_DIR)
 
 
 def setup():
+    """ Runs lamp setup """
     try:
         logging.debug("Doing Mariadb setup...")
         mariadb_setup()
@@ -65,6 +67,7 @@ def setup():
 
 
 def mariadb_setup():
+    """ Runs MariaDB setup """
     cmd = [
         "mysql_install_db",
         "--user=mysql",
@@ -79,6 +82,7 @@ def mariadb_setup():
 
 
 def apache_setup():
+    """ Configure Apache web server """
     # Allow site virtualization
     httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
     with open(httpd_path, 'a') as httpd_conf:
@@ -126,6 +130,7 @@ def apache_setup():
 
 
 def php_setup():
+    """ Setup PHP """
     # Comment mpm_event_module
     httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
     with open(httpd_path, 'r') as load_module:
@@ -160,7 +165,8 @@ def php_setup():
             # Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
             # to make sure PHP can access and read files under those directories
             if "open_basedir =" in line:
-                line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
+                line = ("open_basedir = /srv/http/:/home/:/tmp/:"
+                        "/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n")
             php_ini.write(line)
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf

@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation.py
+# installation.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
 
 """ Installation process module. """
 
@@ -34,8 +34,6 @@ import subprocess
 import sys
 import time
 import re
-
-from mako.template import Template
 
 import desktop_info
 import encfs
@@ -53,23 +51,23 @@ import parted3.fs_module as fs
 import misc.extra as misc
 import pacman.pac as pac
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError as err:
-    import xml.etree.ElementTree as eTree
-
-try:
-    import pyalpm
-except ImportError as err:
-    logging.error(err)
+from mako.template import Template
 
 import hardware.hardware as hardware
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 def chroot_run(cmd):
+    """ Helper function to run a command in chroot """
     chroot.run(cmd, DEST_DIR)
 
 
@@ -77,8 +75,8 @@ def write_file(filecontents, filename):
     """ writes a string of data to disk """
     os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
 
-    with open(filename, "w") as fh:
-        fh.write(filecontents)
+    with open(filename, "w") as my_file:
+        my_file.write(filecontents)
 
 
 class Installation(object):
@@ -137,6 +135,7 @@ class Installation(object):
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
+        """ Enqueue a new event """
         if self.callback_queue:
             try:
                 self.callback_queue.put_nowait((event_type, event_text))
@@ -207,7 +206,8 @@ class Installation(object):
                     mount_dir = os.path.join(DEST_DIR, path)
                     try:
                         os.makedirs(mount_dir, mode=0o755, exist_ok=True)
-                        txt = _("Mounting partition {0} into {1} directory").format(mount_part, mount_dir)
+                        txt = _("Mounting partition {0} into {1} directory")
+                        txt = txt.format(mount_part, mount_dir)
                         logging.debug(txt)
                         subprocess.check_call(['mount', mount_part, mount_dir])
                     except subprocess.CalledProcessError as process_error:
@@ -229,13 +229,11 @@ class Installation(object):
     def start(self):
         """ Run installation """
 
-        '''
-        From this point, on a warning situation, Cnchi should try to continue,
-        so we need to catch the exception here. If we don't catch the exception
-        here, it will be catched in run() and managed as a fatal error.
-        On the other hand, if we want to clarify the exception message we can
-        catch it here and then raise an InstallError exception.
-        '''
+        # From this point, on a warning situation, Cnchi should try to continue,
+        # so we need to catch the exception here. If we don't catch the exception
+        # here, it will be catched in run() and managed as a fatal error.
+        # On the other hand, if we want to clarify the exception message we can
+        # catch it here and then raise an InstallError exception.
 
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
@@ -321,7 +319,7 @@ class Installation(object):
 
     @staticmethod
     def copy_log():
-        # Copy Cnchi logs to new installation
+        """ Copy Cnchi logs to new installation """
         log_dest_dir = os.path.join(DEST_DIR, "var/log/cnchi")
         os.makedirs(log_dest_dir, mode=0o755, exist_ok=True)
 
@@ -450,8 +448,8 @@ class Installation(object):
     def install_packages(self):
         """ Start pacman installation of packages """
 
-        """ This shouldn't be necessary if download.py really downloaded all
-            needed packages, but it does not do it (why?) """
+        # This shouldn't be necessary if download.py really downloaded all
+        # needed packages, but it does not do it (why?)
         for cache_dir in self.settings.get('xz_cache'):
             self.pacman.handle.add_cachedir(cache_dir)
 
@@ -540,7 +538,9 @@ class Installation(object):
             partition_path = self.mount_devices[mount_point]
             uuid = fs.get_uuid(partition_path)
             if uuid == "":
-                logging.warning("Can't get %s partition UUID. It won't be added to fstab", partition_path)
+                logging.warning(
+                    "Can't get %s partition UUID. It won't be added to fstab",
+                    partition_path)
                 continue
 
             if partition_path in self.fs_devices:
@@ -551,7 +551,8 @@ class Installation(object):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                # If using a TRIM supported SSD, discard is a valid mount option for swap
+                # If using a TRIM supported SSD, discard is a valid mount
+                # option for swap
                 if partition_path in self.ssd:
                     opts = "defaults,discard"
                 else:
@@ -564,7 +565,10 @@ class Installation(object):
             crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
 
             # Fix for home + luks, no lvm (from Automatic Install)
-            if "/home" in mount_point and self.method == "automatic" and use_luks and not use_lvm:
+            if ("/home" in mount_point and
+                    self.method == "automatic" and
+                    use_luks and
+                    not use_lvm):
                 # Modify the crypttab file
                 luks_root_password = self.settings.get("luks_root_password")
                 if luks_root_password and len(luks_root_password) > 0:
@@ -588,8 +592,10 @@ class Installation(object):
                 continue
 
             # Add all LUKS partitions from Advanced Install (except root).
-            if (self.method == "advanced" and mount_point is not "/" and
-                use_luks and "/dev/mapper" in partition_path):
+            if (self.method == "advanced" and
+                    mount_point is not "/" and
+                    use_luks and
+                    "/dev/mapper" in partition_path):
                 # As the mapper with the filesystem will have a different UUID
                 # than the partition it is encrypted in, we have to take care
                 # of this here. Then we will be able to add it to crypttab
@@ -609,7 +615,8 @@ class Installation(object):
                     # OK, add it to crypttab with the correct uuid
                     os.chmod(crypttab_path, 0o666)
                     with open(crypttab_path, 'a') as crypttab_file:
-                        line = "{0} /dev/disk/by-uuid/{1} none luks\n".format(vol_name, luks_uuid)
+                        line = "{0} /dev/disk/by-uuid/{1} none luks\n"
+                        line = line.format(vol_name, luks_uuid)
                         crypttab_file.write(line)
                         logging.debug("Added %s to crypttab", line)
                     os.chmod(crypttab_path, 0o600)
@@ -622,7 +629,8 @@ class Installation(object):
                 # Finally, the fstab line to mount the unencrypted file system
                 # if a mount point has been specified by the user
                 if len(mount_point) > 0:
-                    txt = "{0} {1} {2} defaults 0 0".format(partition_path, mount_point, myfmt)
+                    txt = "{0} {1} {2} defaults 0 0"
+                    txt = txt.format(partition_path, mount_point, myfmt)
                     all_lines.append(txt)
                     logging.debug("Added %s to fstab", txt)
                 continue
@@ -634,7 +642,8 @@ class Installation(object):
             if "btrfs" in myfmt:
                 self.settings.set('btrfs', True)
 
-            # Avoid adding a partition to fstab when it has no mount point (swap has been checked above)
+            # Avoid adding a partition to fstab when it has no mount point
+            # (swap has been checked above)
             if mount_point == "":
                 continue
 
@@ -645,34 +654,35 @@ class Installation(object):
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
 
-            logging.debug("Device list : {0}".format(self.ssd))
+            txt = "Device list : %s".format(self.ssd)
+            logging.debug(txt)
             device = re.sub("[0-9]+$", "", partition_path)
             is_ssd = self.ssd.get(device)
-            logging.debug("Device: {0}, SSD: {1}".format(device, is_ssd))
+            txt = "Device: {0}, SSD: {1}".format(device, is_ssd)
+            logging.debug(txt)
 
             # Add mount options parameters
             if not is_ssd:
                 if "btrfs" in myfmt:
-                    opts = 'defaults,rw,relatime,space_cache,autodefrag,inode_cache'
+                    opts = "defaults,rw,relatime,space_cache,autodefrag,inode_cache"
                 elif "f2fs" in myfmt:
-                    opts = 'defaults,rw,noatime'
+                    opts = "defaults,rw,noatime"
                 elif "ext3" in myfmt or "ext4" in myfmt:
-                    opts = 'defaults,rw,relatime,data=ordered'
+                    opts = "defaults,rw,relatime,data=ordered"
                 else:
-                    opts = 'defaults,rw,relatime'
+                    opts = "defaults,rw,relatime"
             else:
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-                if myfmt == 'ext4' or myfmt == 'jfs' or myfmt == 'xfs':
-                    opts = 'defaults,rw,noatime,discard'
-                elif myfmt == 'btrfs':
-                    opts = 'defaults,rw,noatime,compress=lzo,ssd,discard,space_cache,autodefrag,inode_cache'
+                if myfmt in ["ext4", "jfs", "xfs"]:
+                    opts = "defaults,rw,noatime,discard"
+                elif myfmt == "btrfs":
+                    opts = ("defaults,rw,noatime,compress=lzo,ssd,discard,"
+                            "space_cache,autodefrag,inode_cache")
                 else:
-                    opts = 'defaults,rw,noatime'
+                    opts = "defaults,rw,noatime"
 
-            no_check = ["btrfs", "f2fs"]
-
-            if mount_point == "/" and myfmt not in no_check:
+            if mount_point == "/" and myfmt not in ["btrfs", "f2fs"]:
                 chk = '1'
             else:
                 chk = '0'
@@ -680,7 +690,8 @@ class Installation(object):
             if mount_point == "/":
                 self.settings.set('ruuid', uuid)
 
-            txt = "UUID={0} {1} {2} {3} 0 {4}".format(uuid, mount_point, myfmt, opts, chk)
+            txt = "UUID={0} {1} {2} {3} 0 {4}"
+            txt = txt.format(uuid, mount_point, myfmt, opts, chk)
             all_lines.append(txt)
             logging.debug("Added %s to fstab", txt)
 
@@ -734,8 +745,8 @@ class Installation(object):
         try:
             subprocess.check_call(["hwclock", "--systohc", "--utc"])
         except subprocess.CalledProcessError as process_error:
-            txt = "Error adjusting hardware clock, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
+            txt = "Error adjusting hardware clock, command {0} failed: {1}"
+            txt = txt.format(process_error.cmd, process_error.output)
             logging.warning(txt)
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
@@ -744,22 +755,23 @@ class Installation(object):
         """ Add Antergos and multilib repos """
         path = os.path.join(DEST_DIR, "etc/pacman.conf")
         if os.path.exists(path):
-            paclines = []
-            with open(path) as f:
-                paclines = f.readlines()
+            with open(path) as pacman_file:
+                paclines = pacman_file.readlines()
 
-            if os.uname()[-1] == "x86_64":
-                for i in range(0, len(paclines)):
-                    if paclines[i] == "#[multilib]\n":
-                        paclines[i] = "[multilib]\n"
-                        paclines[i+1] = "Include = /etc/pacman.d/mirrorlist\n"
-                        break
-            paclines.append("\n")
-            paclines.append("[antergos]\n")
-            paclines.append("SigLevel = PackageRequired\n")
-            paclines.append("Include = /etc/pacman.d/antergos-mirrorlist\n")
-            with open(path, "w") as f:
-                f.write("".join(paclines))
+            mode = os.uname()[-1]
+
+            with open(path, 'w') as pacman_file:
+                for pacline in paclines:
+                    if mode == "x86_64" and pacline == "#[multilib]\n":
+                        pacman_file.write("[multilib]\n")
+                        pacman_file.write("Include = /etc/pacman.d/mirrorlist\n")
+                    else:
+                        pacman_file.write(pacline)
+
+                # Add antergos repository
+                pacman_file.write("\n[antergos]\n")
+                pacman_file.write("SigLevel = PackageRequired\n")
+                pacman_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
         else:
             logging.warning("Can't find pacman configuration file")
 
@@ -810,14 +822,17 @@ class Installation(object):
             firewall.run(["enable"])
             services.append('ufw')
 
-        if self.settings.get("feature_lamp") and not self.settings.get("feature_lemp"):
+        if (self.settings.get("feature_lamp") and
+                not self.settings.get("feature_lemp")):
             try:
                 from installation import lamp
                 logging.debug("Configuring LAMP...")
                 lamp.setup()
                 services.extend(["httpd", "mysqld"])
             except ImportError as import_error:
-                logging.warning("Unable to import LAMP module: %s", str(import_error))
+                logging.warning(
+                    "Unable to import LAMP module: %s",
+                    str(import_error))
         elif self.settings.get("feature_lemp"):
             try:
                 from installation import lemp
@@ -825,7 +840,9 @@ class Installation(object):
                 lemp.setup()
                 services.extend(["nginx", "mysqld", "php-fpm"])
             except ImportError as import_error:
-                logging.warning("Unable to import LEMP module: %s", str(import_error))
+                logging.warning(
+                    "Unable to import LEMP module: %s",
+                    str(import_error))
 
         self.enable_services(services)
 
@@ -947,7 +964,9 @@ class Installation(object):
 
         with open(fluid_path, "w") as fluid_conf:
             fluid_conf.write('# Created by Cnchi, Antergos installer\n')
-            fluid_conf.write('SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'.format(audio_system))
+            txt = 'SYNTHOPTS="-is -a {0} -m alsa_seq -r 48000"\n\n'
+            txt = txt.format(audio_system)
+            fluid_conf.write(txt)
 
     @staticmethod
     def patch_user_dirs_update_gtk():
@@ -966,6 +985,51 @@ class Installation(object):
                     if "OnlyShowIn=" in line:
                         line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
                     user_dirs.write(line)
+
+    def set_keyboard_conf(self):
+        """ Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout """
+        logging.debug("Setting /etc/X11/xorg.conf.d/00-keyboard.conf")
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
+        xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
+        if not os.path.exists(xorg_conf_dir):
+            os.mkdir(xorg_conf_dir, 0o755)
+        xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
+        try:
+            with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
+                xorg_conf_xkb.write("# Read and parsed by systemd-localed. "
+                                    "It's probably wise not to edit this file\n")
+                xorg_conf_xkb.write('# manually too freely.\n')
+                xorg_conf_xkb.write('Section "InputClass"\n')
+                xorg_conf_xkb.write('    Identifier "system-keyboard"\n')
+                xorg_conf_xkb.write('    MatchIsKeyboard "on"\n')
+                xorg_conf_xkb.write('    Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
+                if keyboard_variant and len(keyboard_variant) > 0:
+                    xorg_conf_xkb.write('    Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
+                xorg_conf_xkb.write('EndSection\n')
+            logging.debug("00-keyboard.conf written.")
+        except IOError as io_error:
+            # Do not fail if 00-keyboard.conf can't be created.
+            # Something bad must be happening, though.
+            logging.error(io_error)
+
+    def set_console_conf(self):
+        """ Set vconsole.conf for console keymap """
+        match = {
+            "ca": "us",
+            "gb": "uk",
+            "latam": "la-latin1",
+            "pt": "pt-latin1"
+        }
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
+        vconsole = match.get(keyboard_layout, keyboard_layout)
+        # Write vconsole.conf
+        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
+        with open(vconsole_path, 'w') as vconsole_file:
+            vconsole_file.write("# File modified by Cnchi\n\n")
+            vconsole_file.write("KEYMAP={0}\n".format(vconsole))
+        logging.debug("Set vconsole to %s", vconsole)
 
 
     def configure_system(self):
@@ -995,11 +1059,11 @@ class Installation(object):
             # Setup systemd-networkd for systems that won't use the
             # networkmanager or connman daemons (atm it's just base install)
             # Enable systemd_networkd services
-            # See: https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
+            # https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
             self.enable_services(["systemd-networkd", "systemd-resolved"])
             # Setup systemd_networkd
-            # TODO: Ask user for SSID and passphrase if a wireless link is found
-            # (should this be done here or inside systemd_networkd.setup() ?)
+            # TODO: Ask user for SSID and passphrase if a wireless link is
+            # found (here or inside systemd_networkd.setup() ?)
             from installation import systemd_networkd
             systemd_networkd.setup()
 
@@ -1037,11 +1101,15 @@ class Installation(object):
 
         # Enable timesyncd service
         if self.settings.get("use_timesyncd"):
-            timesyncd_path = os.path.join(DEST_DIR, "etc/systemd/timesyncd.conf")
+            timesyncd_path = os.path.join(
+                DEST_DIR,
+                "etc/systemd/timesyncd.conf")
             with open(timesyncd_path, 'w') as timesyncd:
                 timesyncd.write("[Time]\n")
-                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org 2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
-                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org 0.fr.pool.ntp.org\n")
+                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org "
+                                "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
+                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
+                                "0.fr.pool.ntp.org\n")
             chroot_run(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
@@ -1085,7 +1153,9 @@ class Installation(object):
                 logging.debug("Running hardware drivers post-install jobs...")
                 self.hardware_install.post_install(DEST_DIR)
             except Exception as general_error:
-                logging.error("Unknown error in hardware module. Output: %s", general_error)
+                logging.error(
+                    "Unknown error in hardware module. Output: %s",
+                    general_error)
 
         # Setup user
 
@@ -1103,17 +1173,24 @@ class Installation(object):
             chroot_run(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
-        cmd = ['useradd', '-m', '-s', '/bin/bash', '-g', 'users', '-G', default_groups, username]
+        cmd = [
+            'useradd',
+            '-m',
+            '-s', '/bin/bash',
+            '-g', 'users',
+            '-G', default_groups,
+            username]
         chroot_run(cmd)
         logging.debug("User %s added.", username)
 
         self.change_user_password(username, password)
 
         chroot_run(['chfn', '-f', fullname, username])
-
-        cmd = ['chown', '-R', '{0}:users'.format(username), os.path.join("/home", username)]
+        home_dir = os.path.join("/home", username)
+        cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
         chroot_run(cmd)
 
+        # Set hostname
         hostname_path = os.path.join(DEST_DIR, "etc/hostname")
         if not os.path.exists(hostname_path):
             with open(hostname_path, "w") as hostname_file:
@@ -1144,48 +1221,10 @@ class Installation(object):
 
         self.queue_event('info', _("Configuring keymap..."))
 
-        keyboard_layout = self.settings.get("keyboard_layout")
-        keyboard_variant = self.settings.get("keyboard_variant")
-
         if self.desktop != "base":
-            # Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout
-            logging.debug("Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout")
-            xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
-            if not os.path.exists(xorg_conf_dir):
-                os.mkdir(xorg_conf_dir, 0o755)
-            xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
-            try:
-                with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
-                    xorg_conf_xkb.write(
-                        "# Read and parsed by systemd-localed. It's probably wise not to edit this file\n")
-                    xorg_conf_xkb.write('# manually too freely.\n')
-                    xorg_conf_xkb.write('Section "InputClass"\n')
-                    xorg_conf_xkb.write('        Identifier "system-keyboard"\n')
-                    xorg_conf_xkb.write('        MatchIsKeyboard "on"\n')
-                    xorg_conf_xkb.write('        Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                    if keyboard_variant and len(keyboard_variant) > 0:
-                        xorg_conf_xkb.write('        Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
-                    xorg_conf_xkb.write('EndSection\n')
-                logging.debug("00-keyboard.conf written.")
-            except IOError as io_error:
-                # Do not fail if 00-keyboard.conf can't be created.
-                # Something bad must be happening, though.
-                logging.error(io_error)
+            self.set_keyboard_conf()
 
-        # Set vconsole.conf for console keymap
-        match = {
-            "ca": "us",
-            "gb": "uk",
-            "latam": "la-latin1",
-            "pt": "pt-latin1"
-        }
-        vconsole = match.get(keyboard_layout, keyboard_layout)
-        # Write vconsole.conf
-        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        with open(vconsole_path, 'w') as vconsole_file:
-            vconsole_file.write("# File modified by Cnchi\n\n")
-            vconsole_file.write("KEYMAP={0}\n".format(vconsole))
-        logging.debug("Set vconsole to %s", vconsole)
+        self.set_console_conf()
 
         # Install configs for root
         chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
@@ -1225,6 +1264,8 @@ class Installation(object):
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
         logging.debug("Running Cnchi post-install script")
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
         # Call post-install script to fine tune our setup
         script_path_postinstall = os.path.join(
             self.settings.get('cnchi'),
@@ -1248,7 +1289,7 @@ class Installation(object):
         except subprocess.CalledProcessError as process_error:
             # Even though Post-install script call has failed we will go on
             txt = "Error running post-install script, command %s failed: %s"
-            logging.error(txt , process_error.cmd, process_error.output)
+            logging.error(txt, process_error.cmd, process_error.output)
         except subprocess.TimeoutExpired as timeout_error:
             logging.error(timeout_error)
 
@@ -1275,10 +1316,13 @@ class Installation(object):
             try:
                 logging.debug("Installing bootloader...")
                 from installation import bootloader
-                boot_loader = bootloader.Bootloader(DEST_DIR, self.settings, self.mount_devices)
+                boot_loader = bootloader.Bootloader(
+                    DEST_DIR,
+                    self.settings,
+                    self.mount_devices)
                 boot_loader.install()
             except Exception as general_error:
-                logging.warning("While installing boot loader Cnchi encountered this error: %s", general_error)
+                logging.warning("Cannot install bootloader: %s", general_error)
 
         # Create an initial database for mandb
         # logging.debug("Updating man database")
@@ -1288,7 +1332,7 @@ class Installation(object):
         # logging.debug("Updating pkgfile database")
         # chroot_run(["pkgfile", "--update"])
 
-        # Copy installer log to the new installation (just in case something goes wrong)
+        # Copy installer log to the new installation
         logging.debug("Copying install log to /var/log.")
         self.copy_log()
 

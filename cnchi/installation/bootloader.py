@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  bootloader.py
+# bootloader.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Bootloader installation """
@@ -34,13 +34,12 @@ import os
 import shutil
 import subprocess
 import re
+import random
+import string
 
 import parted3.fs_module as fs
 
 from installation import chroot
-
-import random
-import string
 
 # When testing, no _() is available
 try:
@@ -51,6 +50,7 @@ except NameError as err:
 
 
 class Bootloader(object):
+    """ Class to perform boot loader installation """
     def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
         self.settings = settings
@@ -74,7 +74,8 @@ class Bootloader(object):
     def install(self):
         """ Installs the bootloader """
 
-        # Freeze and unfreeze xfs filesystems to enable bootloader installation on xfs filesystems
+        # Freeze and unfreeze xfs filesystems to enable bootloader
+        # installation on xfs filesystems
         self.freeze_unfreeze_xfs()
 
         bootloader = self.settings.get('bootloader').lower()
@@ -88,6 +89,7 @@ class Bootloader(object):
             self.install_refind()
 
     def install_grub(self):
+        """ Install Grub2 bootloader """
         self.modify_grub_default()
         self.prepare_grub_d()
 
@@ -117,8 +119,10 @@ class Bootloader(object):
         if cmdline_linux_default is None:
             cmdline_linux_default = ""
 
-        boot_command = 'linux /vmlinuz-linux {0} {1} {2}\n'.format(ruuid_str, cmdline_linux,
-                                                                   cmdline_linux_default)
+        boot_command = 'linux /vmlinuz-linux {0} {1} {2}\n'.format(
+            ruuid_str,
+            cmdline_linux,
+            cmdline_linux_default)
 
         pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
 
@@ -130,7 +134,10 @@ class Bootloader(object):
             entry = pattern.search(parse)
             if entry:
                 logging.debug("Wrong uuid in grub.cfg, Cnchi will try to fix it.")
-                new_entry = re.sub("linux\t/vmlinuz.*quiet\n", boot_command, entry.group())
+                new_entry = re.sub(
+                    "linux\t/vmlinuz.*quiet\n",
+                    boot_command,
+                    entry.group())
                 parse = parse.replace(entry.group(), new_entry)
 
                 with open(cfg, 'w') as grub_file:
@@ -138,11 +145,13 @@ class Bootloader(object):
 
     def modify_grub_default(self):
         """ If using LUKS as root, we need to modify GRUB_CMDLINE_LINUX
-        GRUB_CMDLINE_LINUX : Command-line arguments to add to menu entries for the Linux kernel.
-        GRUB_CMDLINE_LINUX_DEFAULT : Unless ‘GRUB_DISABLE_RECOVERY’ is set to ‘true’, two menu
-            entries will be generated for each Linux kernel: one default entry and one entry
-            for recovery mode. This option lists command-line arguments to add only to the default
-            menu entry, after those listed in ‘GRUB_CMDLINE_LINUX’. """
+            GRUB_CMDLINE_LINUX : Command-line arguments to add to menu entries
+            for the Linux kernel.
+            GRUB_CMDLINE_LINUX_DEFAULT : Unless ‘GRUB_DISABLE_RECOVERY’ is set
+            to ‘true’, two menu entries will be generated for each Linux kernel:
+            one default entry and one entry for recovery mode. This option lists
+            command-line arguments to add only to the default menu entry, after
+            those listed in ‘GRUB_CMDLINE_LINUX’. """
 
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
         if os.path.exists(plymouth_bin):
@@ -151,28 +160,34 @@ class Bootloader(object):
             use_splash = ""
 
         if "swap" in self.mount_devices:
-            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(self.swap_uuid, use_splash)
+            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(
+                self.swap_uuid,
+                use_splash)
         else:
             cmd_linux_default = 'quiet {0}'.format(use_splash)
 
-        self.set_grub_option("GRUB_THEME", "/boot/grub/themes/Antergos-Default/theme.txt")
+        self.set_grub_option(
+            "GRUB_THEME",
+            "/boot/grub/themes/Antergos-Default/theme.txt")
         self.set_grub_option("GRUB_CMDLINE_LINUX_DEFAULT", cmd_linux_default)
         self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
 
         if self.settings.get('use_luks'):
-
-            # When using separate boot partition, add GRUB_ENABLE_CRYPTODISK to grub.cfg
+            # When using separate boot partition,
+            # add GRUB_ENABLE_CRYPTODISK to grub.cfg
             if self.root_uuid != self.boot_uuid:
                 self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
 
-            # Let GRUB automatically add the kernel parameters for root encryption
+            # Let GRUB automatically add the kernel parameters for
+            # root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
 
             logging.debug("Luks Root Volume: %s", luks_root_volume)
 
             root_device = self.root_device
 
-            if self.method == "advanced" and self.settings.get('use_luks_in_root'):
+            if (self.method == "advanced" and
+                    self.settings.get('use_luks_in_root')):
                 # Special case, in advanced when using luks in root device,
                 # we store it in luks_root_device
                 root_device = self.settings.get('luks_root_device')
@@ -181,13 +196,16 @@ class Bootloader(object):
 
             logging.debug("Root device: %s", root_device)
 
-            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}".format(root_uuid, luks_root_volume)
+            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}".format(
+                root_uuid,
+                luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
                 cmd_linux += " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
-            # Store grub line in settings, we'll use it later in check_root_uuid_in_grub()
+            # Store grub line in settings, we'll use it later in
+            # check_root_uuid_in_grub()
             self.settings.set('GRUB_CMDLINE_LINUX', cmd_linux)
             # Store grub line in /etc/default/grub file
             self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
@@ -204,18 +222,16 @@ class Bootloader(object):
 
             option_found = False
 
-            for i in range(len(lines)):
-                if option + "=" in lines[i]:
-                    option_found = True
-                    lines[i] = '{0}="{1}"\n'.format(option, cmd)
+            with open(default_grub, 'w') as grub_file:
+                for line in lines:
+                    if option + "=" in line:
+                        # Option was already in file, update it
+                        option_found = True
+                        line = '{0}="{1}"\n'.format(option, cmd)
+                    grub_file.write(line)
 
-            if option_found:
-                # Option was found and changed, store our changes
-                with open(default_grub, 'w') as grub_file:
-                    grub_file.write("\n".join(lines) + "\n")
-            else:
-                # Option was not found. Thus, append new option
-                with open(default_grub, 'a') as grub_file:
+                if not option_found:
+                    # Option was not found. Thus, append new option
                     grub_file.write('{0}="{1}"\n'.format(option, cmd))
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
@@ -259,7 +275,8 @@ class Bootloader(object):
                         '--boot-directory=/boot',
                         '--recheck']
 
-        if len(grub_location) > len("/dev/sdX"):  # Use --force when installing in /dev/sdXY
+        # Use --force when installing in /dev/sdXY
+        if len(grub_location) > len("/dev/sdX"):
             grub_install.append("--force")
 
         grub_install.append(grub_location)
@@ -267,11 +284,15 @@ class Bootloader(object):
         try:
             chroot.run(grub_install, self.dest_dir)
         except subprocess.CalledProcessError as process_error:
-            logging.error('Command grub-install failed. Error output: %s', process_error.output)
+            logging.error(
+                'Command grub-install failed. Error output: %s',
+                process_error.output)
         except subprocess.TimeoutExpired:
             logging.error('Command grub-install timed out.')
         except Exception as general_error:
-            logging.error('Command grub-install failed. Unknown Error: %s', general_error)
+            logging.error(
+                'Command grub-install failed. Unknown Error: %s',
+                general_error)
 
         self.install_grub2_locales()
 
@@ -306,7 +327,8 @@ class Bootloader(object):
 
     @staticmethod
     def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
-        """ Generates a random string to be used as an identifier for the UEFI bootloader_id """
+        """ Generates a random string to be used as an identifier
+            for the UEFI bootloader_id """
         return ''.join(random.choice(chars) for x in range(size))
 
     def install_grub2_efi(self):
@@ -334,25 +356,34 @@ class Bootloader(object):
             subprocess.call(load_module, timeout=15)
             subprocess.check_call(grub_install, timeout=120)
         except subprocess.CalledProcessError as process_error:
-            logging.error('Command grub-install failed. Error output: %s', process_error.output)
+            logging.error(
+                'Command grub-install failed. Error output: %s',
+                process_error.output)
         except subprocess.TimeoutExpired:
             logging.error('Command grub-install timed out.')
         except Exception as general_error:
-            logging.error('Command grub-install failed. Unknown Error: %s', general_error)
+            logging.error(
+                'Command grub-install failed. Unknown Error: %s',
+                general_error)
 
         self.install_grub2_locales()
 
-        # Copy grub into dirs known to be used as default by some OEMs if they do not exist yet.
-        grub_defaults = [os.path.join(self.dest_dir,
-                                      "boot/efi/EFI/BOOT",
-                                      "BOOT{0}.efi".format(spec_uefi_arch_caps)),
-                         os.path.join(self.dest_dir,
-                                      "boot/efi/EFI/Microsoft/Boot",
-                                      'bootmgfw.efi')]
+        # Copy grub into dirs known to be used as default by some OEMs
+        # if they do not exist yet.
+        grub_defaults = [
+            os.path.join(
+                self.dest_dir,
+                "boot/efi/EFI/BOOT",
+                "BOOT{0}.efi".format(spec_uefi_arch_caps)),
+            os.path.join(
+                self.dest_dir,
+                "boot/efi/EFI/Microsoft/Boot",
+                "bootmgfw.efi")]
 
-        grub_path = os.path.join(self.dest_dir,
-                                 "boot/efi/EFI/antergos_grub",
-                                 "grub{0}.efi".format(spec_uefi_arch))
+        grub_path = os.path.join(
+            self.dest_dir,
+            "boot/efi/EFI/antergos_grub",
+            "grub{0}.efi".format(spec_uefi_arch))
 
         for grub_default in grub_defaults:
             path = grub_default.split()[0]
@@ -394,10 +425,12 @@ class Bootloader(object):
         except subprocess.CalledProcessError as err:
             logging.error(err)
 
-        paths = [os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
-                 os.path.join(self.dest_dir,
-                              "boot/efi/EFI/{0}".format(bootloader_id),
-                              "grub{0}.efi".format(spec_uefi_arch))]
+        paths = [
+            os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
+            os.path.join(
+                self.dest_dir,
+                "boot/efi/EFI/{0}".format(bootloader_id),
+                "grub{0}.efi".format(spec_uefi_arch))]
 
         exists = True
 
@@ -415,7 +448,9 @@ class Bootloader(object):
 
     def apply_osprober_patch(self):
         """ Adds -l option to os-prober's umount call so that it does not hang """
-        osp_path = os.path.join(self.dest_dir, "usr/lib/os-probes/50mounted-tests")
+        osp_path = os.path.join(
+            self.dest_dir,
+            "usr/lib/os-probes/50mounted-tests")
         if os.path.exists(osp_path):
             with open(osp_path) as osp:
                 text = osp.read().replace("umount", "umount -l")
@@ -432,7 +467,9 @@ class Bootloader(object):
 
         os.makedirs(dest_locale_dir, mode=0o755, exist_ok=True)
 
-        grub_mo = os.path.join(self.dest_dir, "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
+        grub_mo = os.path.join(
+            self.dest_dir,
+            "usr/share/locale/en@quot/LC_MESSAGES/grub.mo")
 
         try:
             shutil.copy2(grub_mo, os.path.join(dest_locale_dir, "en.mo"))
@@ -459,20 +496,23 @@ class Bootloader(object):
             conf['default'].append("title\tAntergos\n")
             conf['default'].append("linux\t/vmlinuz-linux\n")
             conf['default'].append("initrd\t/initramfs-linux.img\n")
-            conf['default'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
+            conf['default'].append("options\troot=UUID={0}"
+                                   " rw quiet\n\n".format(self.root_uuid))
 
             conf['fallback'] = []
             conf['fallback'].append("title\tAntergos (fallback)\n")
             conf['fallback'].append("linux\t/vmlinuz-linux\n")
             conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
-            conf['fallback'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
+            conf['fallback'].append("options\troot=UUID={0}"
+                                    " rw quiet\n\n".format(self.root_uuid))
 
             if self.settings.get('feature_lts'):
                 conf['lts'] = []
                 conf['lts'].append("title\tAntergos LTS\n")
                 conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
                 conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
-                conf['lts'].append("options\troot=UUID={0} rw quiet\n\n".format(self.root_uuid))
+                conf['lts'].append("options\troot=UUID={0}"
+                                   " rw quiet\n\n".format(self.root_uuid))
 
                 conf['lts_fallback'] = []
                 conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
@@ -482,12 +522,14 @@ class Bootloader(object):
                                             " rw quiet\n\n".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
-            luks_root_volume_uuid = fs.get_uuid("/dev/mapper/{0}".format(luks_root_volume))
+            mapper = "/dev/mapper/{0}".format(luks_root_volume)
+            luks_root_volume_uuid = fs.get_uuid(mapper)
 
-            # In automatic mode, root_device is in self.mount_devices, as it should be
+            # In automatic mode, root_device is in self.mount_devices
             root_device = self.root_device
 
-            if self.method == "advanced" and self.settings.get('use_luks_in_root'):
+            if (self.method == "advanced" and
+                    self.settings.get('use_luks_in_root')):
                 root_device = self.settings.get('luks_root_device')
 
             root_uuid = fs.get_uuid(root_device)
@@ -497,8 +539,11 @@ class Bootloader(object):
                 key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
             root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
-            root_uuid_line = root_uuid_line.format(root_uuid, luks_root_volume, key,
-                                                   luks_root_volume_uuid)
+            root_uuid_line = root_uuid_line.format(
+                root_uuid,
+                luks_root_volume,
+                key,
+                luks_root_volume_uuid)
 
             conf['default'] = []
             conf['default'].append("title\tAntergos\n")
@@ -567,7 +612,10 @@ class Bootloader(object):
             logging.error('Command %s timed out.', " ".join(cmd))
             self.settings.set('bootloader_installation_successful', False)
         except Exception as general_error:
-            logging.error('Command %s failed. Unknown Error: %s', " ".join(cmd), general_error)
+            logging.error(
+                'Command %s failed. Unknown Error: %s',
+                " ".join(cmd),
+                general_error)
             self.settings.set('bootloader_installation_successful', False)
 
     def install_refind(self):
@@ -577,10 +625,11 @@ class Bootloader(object):
         cmd = ["refind-install"]
         try:
             chroot.run(cmd, self.dest_dir, 300)
-            # This script will attempt to find the kernel in /boot and automatically
-            # generate refind_linux.conf.
+            # This script will attempt to find the kernel in /boot and
+            # automatically generate refind_linux.conf.
             # FIXME: The script will only set up the most basic kernel
-            # parameters, so be sure to check the file it created for correctness.
+            # parameters, so be sure to check the file it created for
+            # correctness.
             cmd = ["refind-mkrlconf"]
             chroot.run(cmd, self.dest_dir, 300)
             self.settings.set('bootloader_installation_successful', True)
@@ -602,7 +651,8 @@ class Bootloader(object):
             subprocess.check_call(["sync"])
             with open("/proc/mounts") as mounts_file:
                 mounts = mounts_file.readlines()
-            # We leave a blank space in the end as we want to search exactly for this mount points
+            # We leave a blank space in the end as we want to search
+            # exactly for this mount points
             boot_mount_point = self.dest_dir + "/boot "
             root_mount_point = self.dest_dir + " "
             for line in mounts:

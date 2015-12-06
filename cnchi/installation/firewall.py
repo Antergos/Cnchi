@@ -1,36 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  firewall.py
+# firewall.py
 #
-#  Copyright © 2013-2015 Antergos
-#  Based on parts of ufw code © 2012 Canonical
+# Copyright © 2013-2015 Antergos
+# Based on parts of ufw code © 2012 Canonical
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Manage ufw setup """
 
 import logging
+
 from installation import chroot
 
 try:
@@ -41,6 +42,7 @@ except ImportError:
 
 
 def run(params, dest_dir="/install"):
+    """ Setup ufw """
     cmd = ["ufw"]
     cmd.extend(params)
 
@@ -51,8 +53,7 @@ def run(params, dest_dir="/install"):
             chroot.run(cmd, dest_dir)
         except OSError as os_error:
             logging.warning(os_error)
-        finally:
-            return
+        return
 
     app_action = False
 
@@ -98,7 +99,6 @@ def run(params, dest_dir="/install"):
             chroot.run(cmd, dest_dir)
         except OSError as os_error:
             logging.warning(os_error)
-        finally:
-            return
+        return
 
     logging.debug(res)

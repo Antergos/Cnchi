@@ -1,30 +1,34 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  action.py
+# action.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+
+""" Store actions on devices for the user to confirm """
 
 
 class Action(object):
-    def __init__(self, action_type, path_or_info, relabel=False, fs_format=False, mount_point="", encrypt=False):
+    """ Store actions on devices for the user to confirm """
+    def __init__(self, action_type, path_or_info, relabel=False,
+                 fs_format=False, mount_point="", encrypt=False):
         """ Init fields """
 
         # action_type can be "create", "modify" , "delete", "info"
@@ -47,7 +51,10 @@ class Action(object):
                 txt = _("Device {0} will be created").format(self.path)
                 txt += ", "
             elif self.action_type == "modify":
-                txt = _("Device {0} will be modified").format(self.path)
+                if self.relabel or self.format or self.encrypt:
+                    txt = _("Device {0} will be modified").format(self.path)
+                else:
+                    txt = _("Device {0} will be ").format(self.path)
                 txt += ", "
             if self.relabel:
                 txt += _("relabeled") + ", "

@@ -1043,11 +1043,14 @@ def is_partition_extended(partition):
 
     with open("/proc/partitions") as partitions:
         lines = partitions.readlines()
+
+
     for line in lines:
         if "major" not in line:
             info = line.split()
             if len(info) > 0 and info[2] == '1' and info[3] == partition:
                 return True
+
     return False
 
 
@@ -1085,7 +1088,7 @@ class InstallError(Exception):
     def __repr__(self):
         """ Returns exception message """
         return repr(self.message)
-        
+
     def __str__(self):
         """ Returns exception message """
         return repr(self.message)

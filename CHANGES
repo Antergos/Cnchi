@@ -1,5 +1,17 @@
-[2015-12-01 23:24:53 -0600]  not sure why i keep having problems with file permissions!             Dustin Falgout  {894f6c4}
-[2015-12-01 19:39:25 -0600]  just playing...                                                        Dustin Falgout  {5792384}
+[2015-12-05 00:41:54 -0600]  working on UI refresh                                                  Dustin Falgout  {62aec24}
+[2015-12-04 00:51:54 -0600]  okay, what started out as playing around is now getting serious :wi..  Dustin Falgout  {4ca8a37}
+[2015-12-03 23:35:33 +0100]  Fix typo                                                                   karasu      {3ab3d10}
+[2015-12-03 22:39:53 +0100]  Require webkit version, too                                                karasu      {fd9fa7e}
+[2015-12-03 22:37:41 +0100]  Split a big function. Needs testing!                                       karasu      {a607c59}
+[2015-12-03 17:02:04 +0100]  Must quit                                                                  karasu      {382a6fc}
+[2015-12-03 15:55:42 +0100]  pep8 on download.py                                                        karasu      {1fec610}
+[2015-12-03 14:35:07 +0100]  More pep8                                                                  karasu      {d10ec76}
+[2015-12-03 14:20:02 +0100]  pep8                                                                       karasu      {759edb0}
+[2015-12-03 14:19:32 +0100]  pep8 user_info                                                             karasu      {7076bff}
+[2015-12-03 13:58:54 +0100]  pep8 updater.py                                                            karasu      {198ffc0}
+[2015-12-03 13:46:33 +0100]  More pep8                                                                  karasu      {35086e4}
+[2015-12-02 09:50:57 +0100]  Catch OSError when calling setxkbmap, too.                                 karasu      {821a971}
+[2015-12-01 19:39:25 -0600]  just playing...                                                        Dustin Falgout  {7354e5f}
 [2015-12-01 22:28:03 +0100]  Some users experience problems after amixer is run ¿?                      karasu      {f4ad531}
 [2015-12-01 22:17:35 +0100]  More pep8 on show_message                                                  karasu      {1e826a9}
 [2015-12-01 19:14:06 +0100]  pylint                                                                     karasu      {dce5eb0}

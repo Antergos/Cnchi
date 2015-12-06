@@ -207,7 +207,7 @@ class DownloadPackages(object):
             pass
 
 
-def main():
+def test():
     """ Test function """
     import gettext
 
@@ -232,4 +232,4 @@ def main():
     download_packages.start()
 
 if __name__ == '__main__':
-    main()
+    test()

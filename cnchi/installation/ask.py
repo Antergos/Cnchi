@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  ask.py
+# ask.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Asks which type of installation the user wants to perform """
@@ -32,10 +32,15 @@
 import os
 import sys
 import queue
-
-import bootinfo
+import time
 import logging
 import subprocess
+
+import bootinfo
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from gtkbasebox import GtkBaseBox
 
@@ -91,7 +96,11 @@ class InstallationAsk(GtkBaseBox):
         data_dir = self.settings.get("data")
         self.title = _('Install Mode')
 
-        partitioner_dir = os.path.join(data_dir, "images", "partitioner", "small")
+        partitioner_dir = os.path.join(
+            data_dir,
+            "images",
+            "partitioner",
+            "small")
 
         image = self.ui.get_object("automatic_image")
         path = os.path.join(partitioner_dir, "automatic.png")
@@ -123,7 +132,7 @@ class InstallationAsk(GtkBaseBox):
         self.settings.set("partition_mode", "automatic")
 
         self.is_zfs_available = load_zfs()
-        
+
         self.enable_automatic_options(True)
 
     def check_alongside(self):
@@ -142,10 +151,11 @@ class InstallationAsk(GtkBaseBox):
             self.other_oses = []
             for key in oses:
                 # We only check the first hard disk
-                if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
+                non_valid = ["unknown", "Swap", "Data or Swap", self.other_oses]
+                if "sda" in key and oses[key] not in non_valid:
                     self.other_oses.append(oses[key])
 
-            if len(self.other_oses) > 0:
+            if self.other_oses:
                 for detected_os in self.other_oses:
                     if "windows" in detected_os.lower():
                         logging.debug("Windows(tm) OS detected.")
@@ -158,7 +168,8 @@ class InstallationAsk(GtkBaseBox):
                 enable_alongside = False
 
             if not check_alongside_disk_layout():
-                logging.debug("Unsuported disk layout for the 'alongside' installation mode")
+                msg = "Unsuported disk layout for the 'alongside' installation mode"
+                logging.debug(msg)
                 enable_alongside = False
 
         return enable_alongside
@@ -207,6 +218,7 @@ class InstallationAsk(GtkBaseBox):
                 widget.hide()
 
     def get_os_list_str(self):
+        """ Get string with the detected os names """
         os_str = ""
         len_other_oses = len(self.other_oses)
         if len_other_oses > 0:
@@ -265,7 +277,8 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("encrypt_label")
-        txt = _("You will be asked to create an encryption password in the next step.")
+        txt = _("You will be asked to create an encryption password in the "
+                "next step.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("enc_label")
@@ -282,7 +295,8 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("lvm_label")
-        txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
+        txt = _("This will setup LVM and allow you to easily manage "
+                "partitions and create snapshots.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("lvm_label")
@@ -316,7 +330,8 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("home_label")
-        txt = _("This will setup your /home directory in a different partition or volume.")
+        txt = _("This will setup your /home directory in a different "
+                "partition or volume.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
@@ -442,21 +457,26 @@ class InstallationAsk(GtkBaseBox):
         if not must_wait:
             return
 
-        from gi.repository import Gtk
         txt1 = _("Ranking mirrors")
+        txt1 = "<big>{0}</big>".format(txt1)
+
         txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
         txt2 += "\n\n"
         txt2 += _("Please be patient...")
-        txt1 = "<big>{0}</big>".format(txt1)
         txt2 = "<i>{0}</i>".format(txt2)
+
         wait_ui = Gtk.Builder()
         ui_file = os.path.join(self.ui_dir, "wait.ui")
         wait_ui.add_from_file(ui_file)
+
         lbl1 = wait_ui.get_object("label1")
         lbl1.set_markup(txt1)
+
         lbl2 = wait_ui.get_object("label2")
         lbl2.set_markup(txt2)
+
         progress_bar = wait_ui.get_object("progressbar")
+
         wait_window = wait_ui.get_object("wait_window")
         wait_window.set_modal(True)
         wait_window.set_transient_for(self.get_toplevel())
@@ -468,7 +488,6 @@ class InstallationAsk(GtkBaseBox):
         if ask_box:
             ask_box.set_sensitive(False)
 
-        import time
         logging.debug("Waiting for all external processes to finish...")
         while must_wait:
             must_wait = False
@@ -482,7 +501,8 @@ class InstallationAsk(GtkBaseBox):
             progress_bar.pulse()
             while Gtk.events_pending():
                 Gtk.main_iteration()
-        logging.debug("All external processes are finished. Installation can go on")
+        logging.debug(
+            "All external processes are finished. Installation can go on")
         wait_window.hide()
 
         if ask_box:
