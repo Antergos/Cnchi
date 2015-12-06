@@ -137,6 +137,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.popover = Gtk.Popover.new(self.language_menu_btn)
         self.popover.add(self.language_widget)
         self.popover.set_position(Gtk.PositionType.BOTTOM)
+        self.popover.connect('closed', self.on_language_popover_closed)
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
@@ -420,10 +421,11 @@ class MainWindow(Gtk.ApplicationWindow):
             pass
 
     def on_language_button_clicked(self, widget, data=None):
-        if self.popover.is_visible():
-            self.popover.set_visible(False)
-        else:
-            self.popover.show_all()
+        self.popover.show_all()
+        self.language_widget.popover_is_visible = True
+
+    def on_language_popover_closed(self, widget, data=None):
+        self.language_widget.popover_is_visible = False
 
     def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value

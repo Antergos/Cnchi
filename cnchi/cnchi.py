@@ -96,7 +96,6 @@ class CnchiApp(Gtk.Application):
         super().__init__(application_id="com.antergos.cnchi",
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.TMP_RUNNING = "/tmp/.setup-running"
-        self.popover = None
 
     def do_activate(self):
         # Make sure we have administrative privileges

@@ -54,7 +54,7 @@ class LanguageWidget(Gtk.Box):
         self.ui = Gtk.Builder()
         self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
         self.ui.add_from_file(self.ui_file)
-        self.main_box_wrapper = params['main_box_wrapper']
+        self.main_window = params['main_window']
 
         # Connect UI signals
         self.ui.connect_signals(self)
@@ -79,6 +79,8 @@ class LanguageWidget(Gtk.Box):
 
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
+        self.selecting_default_row = False
+        self.popover_is_visible = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
         self.show_all()
 
@@ -93,6 +95,10 @@ class LanguageWidget(Gtk.Box):
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
+                    if hasattr(self.main_window, 'popover'):
+                        if not self.selecting_default_row and self.popover_is_visible:
+                            self.main_window.popover.set_visible(False)
+                            self.popover_is_visible = False
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -161,11 +167,13 @@ class LanguageWidget(Gtk.Box):
                 locale_code)
 
     def select_default_row(self, language):
+        self.selecting_default_row = True
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[0]
                 if language == label.get_text():
                     self.listbox.select_row(listbox_row)
+                    self.selecting_default_row = False
                     return
 
     def store_values(self):
