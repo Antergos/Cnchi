@@ -372,6 +372,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     sub_page = self.pages[page_name][sub_page_name]
                     if sub_page:
                         sub_stack.add_titled(sub_page, sub_page_name, sub_page.title)
+                        self.pages[sub_page_name] = sub_page
 
                 self.pages[page_name] = page = sub_stack
 
@@ -483,6 +484,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Show next screen """
 
         next_page = self.current_page.get_next_page()
+        logging.debug(next_page)
 
         if next_page is not None:
             if next_page not in self.pages.keys():
@@ -500,15 +502,17 @@ class MainWindow(Gtk.ApplicationWindow):
                     self.main_stack.set_visible(True)
 
                 self.current_page = self.pages[next_page]
+                logging.debug(self.pages)
 
                 if self.current_page is not None:
-                    self.current_page.prepare('forwards')
                     if isinstance(self.current_page, substack.SubStack):
                         self.current_stack = self.current_page
-                        self.current_page = self.current_page.get_next_page()
+                        page_after_next = self.current_page.get_next_page()
+                        self.current_page = self.pages[page_after_next]
                     elif not self.current_page.in_group:
                         self.current_stack = self.main_stack
 
+                    self.current_page.prepare('forwards')
                     self.current_stack.set_visible_child_name(self.current_page.get_name())
                     if self.current_page.get_prev_page() is not None:
                         # There is a previous page, show back button

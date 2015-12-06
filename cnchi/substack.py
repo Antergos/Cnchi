@@ -64,15 +64,15 @@ class SubStack(Gtk.Stack):
 
     def translate_ui(self):
         """ This must be implemented by childen """
-        raise NotImplementedError
+        pass
 
     def prepare(self, direction):
         """ This must be implemented by childen """
-        raise NotImplementedError
+        pass
 
     def store_values(self):
         """ This must be implemented by childen """
-        raise NotImplementedError
+        pass
 
     def get_name(self):
         """ Return screen name """

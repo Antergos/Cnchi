@@ -11,11 +11,6 @@ GtkWindow {
     border-color: transparent;
 }
 
-#logo {
-    background-color: transparent;
-    margin-top: 15px;
-}
-
 .title {
     background-color: transparent;
     color: #2EA3F2;
@@ -255,7 +250,7 @@ StateBox {
     padding-left: 3px;
 }
 .logo_text {
-    font: Futura 20;
+    font-family: 'Futura Md BT';
     font-size: 20px;
     color: #ffffff;
 }
