@@ -242,7 +242,7 @@ StateBox {
     font-size: 13px;
     font-weight: 500;
     font-family: 'Open Sans';
-    padding: 15px 15px;
+    padding: 15px 23.5px;
     color: #ffffff;
     box-shadow: none;
 }
@@ -255,7 +255,7 @@ StateBox {
     padding-left: 3px;
 }
 .logo_text {
-    font-family: Futura;
+    font: Futura 20;
     font-size: 20px;
     color: #ffffff;
 }
@@ -266,4 +266,8 @@ StateBox {
 }
 .nav_box {
     padding-right: 10px;
+}
+
+.main_stack {
+    background-color: #F5F8FB
 }

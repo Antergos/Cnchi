@@ -38,7 +38,8 @@ import logging
 
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
-    def __init__(self, child=None, params=None, name=None, prev_page=None, next_page=None):
+    def __init__(self, child=None, params=None, name=None, prev_page=None,
+                 next_page=None, in_group=False):
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.disable_tryit = params['disable_tryit']
@@ -52,6 +53,7 @@ class GtkBaseBox(Gtk.Box):
         self.main_window = params['main_window']
         self.prev_page = prev_page
         self.next_page = next_page
+        self.in_group = in_group
 
         super().__init__()
 

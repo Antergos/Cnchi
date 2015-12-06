@@ -47,6 +47,7 @@ import user_info
 import slides
 import summary
 import info
+import substack
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -87,6 +88,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.cmd_line = cmd_line
         self.params = dict()
         self.data_dir = self.settings.get('data')
+        self.current_stack = None
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -292,36 +294,59 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
 
+        top_level_pages = ['check', 'location_group', 'desktop', 'features', 'disk_group',
+                           'user_info', 'summary']
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["check"] = check.Check(params=self.params)
 
-        self.pages["location"] = location.Location(params=self.params)
-        self.pages["timezone"] = timezone.Timezone(params=self.params)
+        self.pages["location_group"] = {'title': 'Location',
+                                        'prev_page': 'check',
+                                        'next_page': 'location',
+                                        'pages': ['location', 'timezone', 'keymap']}
+        self.pages["location_group"]["location"] = location.Location(params=self.params, in_group=True)
+        self.pages["location_group"]["timezone"] = timezone.Timezone(params=self.params, in_group=True)
 
         if self.settings.get('desktop_ask'):
-            self.pages["keymap"] = keymap.Keymap(params=self.params)
+            self.pages["location_group"]["keymap"] = keymap.Keymap(params=self.params, in_group=True)
             self.pages["desktop"] = desktop.DesktopAsk(params=self.params)
             self.pages["features"] = features.Features(params=self.params)
         else:
-            self.pages["keymap"] = keymap.Keymap(
+            self.pages["location_group"]["keymap"] = keymap.Keymap(
                 self.params,
-                next_page='features')
+                next_page='features',
+                in_group=True)
             self.pages["features"] = features.Features(
                 self.params,
-                prev_page='keymap')
+                prev_page='location_group')
 
-        self.pages["installation_ask"] = installation_ask.InstallationAsk(params=self.params)
-        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(params=self.params)
+        self.pages["disk_group"] = {'title': 'Disk Setup',
+                                    'prev_page': 'features',
+                                    'next_page': 'installation_ask',
+                                    'pages': ['installation_ask', 'installation_automatic',
+                                              'installation_alongside', 'installation_advanced',
+                                              'installation_zfs']}
+        self.pages["disk_group"]["installation_ask"] = installation_ask.InstallationAsk(
+                params=self.params,
+                in_group=True)
+        self.pages["disk_group"]["installation_automatic"] = installation_automatic.InstallationAutomatic(
+                params=self.params,
+                in_group=True)
 
         if self.settings.get("enable_alongside"):
-            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(params=self.params)
+            self.pages["disk_group"]["installation_alongside"] = installation_alongside.InstallationAlongside(
+                    params=self.params,
+                    in_group=True)
         else:
-            self.pages["installation_alongside"] = None
+            self.pages["disk_group"]["installation_alongside"] = None
 
-        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(params=self.params)
-        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(params=self.params)
-        self.pages["summary"] = summary.Summary(params=self.params)
+        self.pages["disk_group"]["installation_advanced"] = installation_advanced.InstallationAdvanced(
+                params=self.params,
+                in_group=True)
+        self.pages["disk_group"]["installation_zfs"] = installation_zfs.InstallationZFS(
+                params=self.params,
+                in_group=True)
         self.pages["user_info"] = user_info.UserInfo(params=self.params)
+        self.pages["summary"] = summary.Summary(params=self.params)
         self.pages["slides"] = slides.Slides(params=self.params)
 
         diff = 2
@@ -334,13 +359,27 @@ class MainWindow(Gtk.ApplicationWindow):
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
 
-        for name, page in self.pages.items():
-            if not page or 'welcome' == name:
-                continue
+        for page_name in top_level_pages:
+            page = self.pages[page_name]
+            if isinstance(page, dict):
+                sub_stack = substack.SubStack(params=self.params,
+                                              name=page_name,
+                                              title=page['title'],
+                                              prev_page=page['prev_page'],
+                                              next_page=page['next_page'])
+
+                for sub_page_name in page['pages']:
+                    sub_page = self.pages[page_name][sub_page_name]
+                    if sub_page:
+                        sub_stack.add_titled(sub_page, sub_page_name, sub_page.title)
+
+                self.pages[page_name] = page = sub_stack
+
             page.show_all()
-            self.main_stack.add_titled(page, name, page.title)
+            self.main_stack.add_titled(page, page_name, page.title)
 
         self.header_nav.set_stack(self.main_stack)
+        self.current_stack = self.main_stack
 
     def del_pages(self):
         """ When we get to user_info page we can't go back
@@ -442,10 +481,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
+
         next_page = self.current_page.get_next_page()
 
         if next_page is not None:
-            # self.logo.hide()
             if next_page not in self.pages.keys():
                 # Load all pages
                 self.load_pages()
@@ -464,7 +503,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
                 if self.current_page is not None:
                     self.current_page.prepare('forwards')
-                    self.main_stack.set_visible_child_name(self.current_page.get_name())
+                    if isinstance(self.current_page, substack.SubStack):
+                        self.current_stack = self.current_page
+                        self.current_page = self.current_page.get_next_page()
+                    elif not self.current_page.in_group:
+                        self.current_stack = self.main_stack
+
+                    self.current_stack.set_visible_child_name(self.current_page.get_name())
                     if self.current_page.get_prev_page() is not None:
                         # There is a previous page, show back button
                         self.backwards_button.show()

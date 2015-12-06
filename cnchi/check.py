@@ -55,7 +55,7 @@ MIN_ROOT_SIZE = 8000000000
 class Check(GtkBaseBox):
     """ Check class """
 
-    def __init__(self, params, prev_page="welcome", next_page="location"):
+    def __init__(self, params, prev_page="welcome", next_page="location_group"):
         """ Init class ui """
         super().__init__(self, params, "check", prev_page, next_page)
 

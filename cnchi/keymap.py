@@ -45,8 +45,8 @@ from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
     """ Keymap screen """
-    def __init__(self, params, prev_page="timezone", next_page="desktop"):
-        super().__init__(self, params, "keymap", prev_page, next_page)
+    def __init__(self, params, prev_page="timezone", next_page="desktop", **kwargs):
+        super().__init__(self, params, "keymap", prev_page, next_page, **kwargs)
 
         self.prepare_called = False
         self.title = _('Keyboard Layout')

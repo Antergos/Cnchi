@@ -90,8 +90,8 @@ def load_zfs():
 
 
 class InstallationAsk(GtkBaseBox):
-    def __init__(self, params, prev_page="features", next_page=None):
-        super().__init__(self, params, "ask", prev_page, next_page)
+    def __init__(self, params, prev_page="features", next_page=None, **kwargs):
+        super().__init__(self, params, "ask", prev_page, next_page, **kwargs)
 
         data_dir = self.settings.get("data")
         self.title = _('Install Mode')

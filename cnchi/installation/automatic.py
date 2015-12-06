@@ -51,8 +51,8 @@ DEST_DIR = "/install"
 
 class InstallationAutomatic(GtkBaseBox):
     """ Automatic Installation Screen """
-    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
-        super().__init__(self, params, "automatic", prev_page, next_page)
+    def __init__(self, params, prev_page="installation_ask", next_page="summary", **kwargs):
+        super().__init__(self, params, "automatic", prev_page, next_page, **kwargs)
 
         self.auto_device = None
         self.title = _('Automatic Mode')

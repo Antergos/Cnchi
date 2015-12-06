@@ -67,7 +67,7 @@ class Summary(GtkBaseBox):
 
         self.num_features = 0
         self.process = None
-        self.title = _("Installation Summary")
+        self.title = _("Review")
 
     def translate_ui(self):
         """ Translates all ui elements """

@@ -77,9 +77,9 @@ class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
 
     def __init__(self, params, prev_page="installation_ask",
-                 next_page="summary"):
+                 next_page="summary", **kwargs):
         # Call base class
-        super().__init__(self, params, "advanced", prev_page, next_page)
+        super().__init__(self, params, "advanced", prev_page, next_page, **kwargs)
 
         # Init class vars
 

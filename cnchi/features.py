@@ -56,7 +56,7 @@ class Features(GtkBaseBox):
         super().__init__(self, params, "features", prev_page, next_page)
 
         self.listbox_rows = {}
-        self.title = _("Feature Selection")
+        self.title = _("Features")
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")

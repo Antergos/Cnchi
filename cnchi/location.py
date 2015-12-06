@@ -49,8 +49,8 @@ from logging_utils import ContextFilter
 
 
 class Location(GtkBaseBox):
-    def __init__(self, params, prev_page="check", next_page="timezone"):
-        super().__init__(self, params, "location", prev_page, next_page)
+    def __init__(self, params, prev_page="check", next_page="timezone", **kwargs):
+        super().__init__(self, params, "location", prev_page, next_page, **kwargs)
 
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)

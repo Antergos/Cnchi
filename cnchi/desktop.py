@@ -44,12 +44,12 @@ import misc.extra as misc
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
 
-    def __init__(self, params, prev_page="keymap", next_page="features"):
+    def __init__(self, params, prev_page="location_group", next_page="features"):
         super().__init__(self, params, "desktop", prev_page, next_page)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
-        self.title = _("Choose Your Desktop")
+        self.title = _("Desktop Selection")
 
         self.desktop_info = self.ui.get_object("desktop_info")
 
