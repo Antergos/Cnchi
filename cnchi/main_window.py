@@ -288,7 +288,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_title(title)
         self.header.set_title(title)
         self.header.set_subtitle(_("Antergos Installer"))
-        self.header.set_show_close_button(True)
+        self.header.set_show_close_button(False)
 
     def load_pages(self):
 
@@ -337,6 +337,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for name, page in self.pages.items():
             if not page or 'welcome' == name:
                 continue
+            page.show_all()
             self.main_stack.add_titled(page, name, page.title)
 
         self.header_nav.set_stack(self.main_stack)

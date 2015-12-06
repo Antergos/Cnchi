@@ -63,11 +63,15 @@ GtkProgressBar.progressbar {
     background-image: linear-gradient(to bottom, #2EA3F2, #2EA3F2);
 }
 
-#fwd_btn, #bk_btn {
+/*#fwd_btn, #bk_btn {
     padding-left: 2px;
     padding-right: 2px;
     padding-top: 7px;
     padding-bottom: 7px;
+}*/
+
+#fwd_btn, #bk_btn {
+    background-color: #2E8FE3;
 }
 
 #fwd_btn {
@@ -135,23 +139,14 @@ GtkProgressBar.progressbar {
     padding-right: 0px;
 }
 
-.header-bar GtkSeparator {
-    color: rgba(255, 255, 255, 0.08);
-}
-
-.toolbar .separator, .separator,
-.header-bar GtkSeparatorToolItem,
-GtkSeparatorToolItem {
-    margin-left: 10px;
-}
 
 .list {
     background-color: #eee;
 }
 
-GtkListBoxRow:active, .list-row:active, .list-row:selected {
+/*GtkListBoxRow:active, .list-row:active, .list-row:selected {
     background-color: #2EA3F2;
-}
+}*/
 
 #tryit_btn, #graph_btn {
     padding: 12px 20px;
@@ -244,10 +239,10 @@ StateBox {
 .header_nav .button {
     background-color: transparent;
     border: none;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     font-family: 'Open Sans';
-    padding: 15px 20px;
+    padding: 15px 15px;
     color: #ffffff;
     box-shadow: none;
 }
@@ -257,10 +252,18 @@ StateBox {
 }
 
 .logo {
-    padding-top: 10px;
+    padding-left: 3px;
 }
 .logo_text {
     font-family: Futura;
     font-size: 20px;
     color: #ffffff;
+}
+
+.header_separator {
+    background-color: #3a5ab4;
+    color: #3a5ab4;
+}
+.nav_box {
+    padding-right: 10px;
 }
