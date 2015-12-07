@@ -5,21 +5,32 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">start</property>
-        <property name="height_request">70</property>
+        <property name="height_request">65</property>
         <child>
-            <object class="GtkImage" id="logo">
+            <object class="GtkBox" id="logo_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="valign">center</property>
-                <property name="height_request">26</property>
-                <property name="width_request">26</property>
+                <property name="hexpand">False</property>
                 <style>
-                    <class name="logo"/>
+                    <class name="logo_box"/>
                 </style>
+                <child>
+                    <object class="GtkImage" id="logo">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="height_request">26</property>
+                        <property name="width_request">26</property>
+                        <style>
+                            <class name="logo"/>
+                        </style>
+                    </object>
+                    <packing>
+                        <property name="pack_type">start</property>
+                    </packing>
+                </child>
             </object>
-            <packing>
-                <property name="pack_type">start</property>
-            </packing>
         </child>
         <child>
             <object class="GtkLabel" id="logo_text">
@@ -151,12 +162,23 @@
             <class name="header_bar"/>
         </style>
     </object>
-    <object class="GtkStackSwitcher" id="header_nav">
+    <!--<object class="GtkStackSwitcher" id="header_nav">
         <property name="height_request">58</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
         <property name="valign">end</property>
+        <style>
+            <class name="header_nav"/>
+        </style>
+    </object>-->
+    <object class="GtkBox" id="header_nav">
+        <property name="height_request">58</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="valign">end</property>
+        <property name="orientation">horizontal</property>
         <style>
             <class name="header_nav"/>
         </style>

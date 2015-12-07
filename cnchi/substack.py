@@ -53,6 +53,7 @@ class SubStack(Gtk.Stack):
         self.title = title
         self.name = name
         self.in_group = False
+        self.can_show = False
 
     def get_prev_page(self):
         """ Returns previous screen """

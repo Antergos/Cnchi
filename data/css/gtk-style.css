@@ -1,6 +1,7 @@
 #main {
     font-family: 'Lato';
     font-size: 11px;
+    background-color: #F5F8FB
 }
 
 #location {
@@ -53,9 +54,10 @@ GtkWindow {
 }
 
 GtkProgressBar.progressbar {
-    color: #2EA3F2;
-    border-color: shade(#2EA3F2, 0.9);
-    background-image: linear-gradient(to bottom, #2EA3F2, #2EA3F2);
+    color: #FF4081;
+    border-color: shade(#FF4081, 0.8);
+    background-image: linear-gradient(to bottom, #FF4081, #FF4081);
+    box-shadow: none;
 }
 
 /*#fwd_btn, #bk_btn {
@@ -242,8 +244,12 @@ StateBox {
     box-shadow: none;
 }
 
-.header_nav .button:hover, .header_nav .button:checked {
+.header_nav .button:hover, .header_nav .button:selected, .header_nav .button:insensitive {
     background-color: #3F7AE4;
+    color: #ffffff;
+}
+.header_nav .button:insensitive .label {
+    color: #ffffff;
 }
 
 .logo {
@@ -263,6 +269,10 @@ StateBox {
     padding-right: 10px;
 }
 
-.main_stack {
+.main_stack, .main, .main_box {
     background-color: #F5F8FB
+}
+
+.logo_box {
+    padding: 20px;
 }

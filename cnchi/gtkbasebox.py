@@ -54,6 +54,7 @@ class GtkBaseBox(Gtk.Box):
         self.prev_page = prev_page
         self.next_page = next_page
         self.in_group = in_group
+        self.can_show = False
 
         super().__init__()
 
