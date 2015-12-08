@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  used_space.py
+# used_space.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Get partition used space """
@@ -101,19 +101,19 @@ def get_used_fat(part):
             logging.error(txt, part, str(err.output))
 
     if result:
-        bytes_per_cluster, cl, sbyte, ucl = (0, 0, 0, 0)
+        bytes_per_cluster, cluster, sbyte, ucl = (0, 0, 0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
-            if 'bytes per cluster' in line:
+            if 'bytes per ' in line:
                 bytes_per_cluster = int(line.split()[0].strip())
             elif 'Data area starts at' in line:
                 sbyte = int(line.split()[5])
             elif part in line:
-                cl = int(line.split()[3].split('/')[1])
+                cluster = int(line.split()[3].split('/')[1])
                 ucl = int(line.split()[3].split('/')[0])
         try:
-            used = (sbyte + (bytes_per_cluster * ucl)) / (bytes_per_cluster * cl)
+            used = (sbyte + (bytes_per_cluster * ucl)) / (bytes_per_cluster * cluster)
         except ZeroDivisionError as zero_error:
             logging.error("Error in get_used_fat: %s", zero_error)
 
@@ -183,9 +183,7 @@ def get_used_btrfs(part):
         result = subprocess.check_output(["btrfs", "filesystem", "show", part])
     except Exception as err:
         result = None
-        txt = _("Can't detect used space of BTRFS partition %s")
-        logging.error(txt, part)
-        logging.error(err)
+        logging.error("Can't detect used space of BTRFS partition %s: %s", part, err)
 
     if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)
@@ -196,18 +194,18 @@ def get_used_btrfs(part):
                  "G": 1000000000,
                  "T": 1000000000000,
                  "P": 1000000000000000}
-        for z in result:
-            if part in z:
-                vsize = z.split()[3]
-                usize = z.split()[5]
-                for i in szmap:
-                    if i in vsize:
-                        vmult = szmap[i]
-                    if i in usize:
-                        umult = szmap[i]
+        for params in result:
+            if part in params:
+                vsize = params.split()[3]
+                usize = params.split()[5]
+                for element in szmap:
+                    if element in vsize:
+                        vmult = szmap[element]
+                    if element in usize:
+                        umult = szmap[element]
                 usize = float(usize.strip("KMGTPBib")) * umult
                 vsize = float(vsize.strip("KMGTPBib")) * vmult
-        used = usize / vsize
+        used = int(usize / vsize)
 
     return used
 
@@ -217,8 +215,9 @@ def get_used_xfs(part):
     """ Gets used space in a XFS partition """
     used = 0
     try:
-        command = shlex.split("xfs_db -c 'sb 0' -c 'print dblocks' -c 'print fdblocks' -r {0}".format(part))
-        result = subprocess.check_output(command)
+        cmd = "xfs_db -c 'sb 0' -c 'print dblocks' -c 'print fdblocks' -r {0}"
+        cmd = cmd.format(part)
+        result = subprocess.check_output(shlex.split(cmd))
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of XFS partition %s")
@@ -241,6 +240,7 @@ def get_used_xfs(part):
 
 @misc.raise_privileges
 def get_used_f2fs(part):
+    """ Get f2fs partition used space """
     # TODO: Use a f2fs installation to check the output format when getting part info.
     used = 0
     return used
