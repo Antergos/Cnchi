@@ -54,6 +54,34 @@ class Process(multiprocessing.Process):
         self.settings = settings
         self.callback_queue = callback_queue
         self.install_screen = install_screen
+        self.pkg = None
+        self.down = None
+
+
+    def create_metalinks_list(self):
+        """ Create metalinks list """
+        self.pkg = pack.SelectPackages(self.settings, self.callback_queue)
+        self.pkg.create_package_list()
+
+        if not self.pkg.packages:
+            txt = _("Cannot create package list. Check log output for details.")
+            raise misc.InstallError(txt)
+
+        # Won't download anything here. It's just to create the metalinks list
+        self.down = download.DownloadPackages(
+            package_names=self.pkg.packages,
+            pacman_conf_file='/etc/pacman.conf',
+            pacman_cache_dir='/var/cache/pacman/pkg',
+            settings=self.settings,
+            callback_queue=self.callback_queue)
+
+        # Create metalinks list
+        self.down.create_metalinks_list()
+
+        if not self.down.metalinks:
+            txt = _("Cannot create download package list (metalinks). "
+                    "Check log output for details.")
+            raise misc.InstallError(txt)
 
     def run(self):
         """ Calculates download package list and then calls run_format and
@@ -63,34 +91,15 @@ class Process(multiprocessing.Process):
             # Before formatting, let's try to calculate package download list
             # this way, if something fails (a missing package, mostly) we have
             # not formatted anything yet.
+            self.create_metalinks_list()
 
-            pkg = pack.SelectPackages(self.settings, self.callback_queue)
-            pkg.create_package_list()
-
-            if not pkg.packages or len(pkg.packages) == 0:
-                txt = _("Cannot create package list. Check log output for details.")
-                raise misc.InstallError(txt)
-
-            # Won't download anything here. It's just to create the metalinks list
-            down = download.DownloadPackages(
-                package_names=pkg.packages,
-                pacman_conf_file='/etc/pacman.conf',
-                pacman_cache_dir='/var/cache/pacman/pkg',
-                settings=self.settings,
-                callback_queue=self.callback_queue)
-
-            # Create metalinks list
-            down.create_metalinks_list()
-
-            if not down.metalinks or len(down.metalinks) == 0:
-                txt = _("Cannot create download package list (metalinks). "
-                        "Check log output for details.")
-                raise misc.InstallError(txt)
-
-            # try except if pkg.packages is empty or down.metalinks is empty
+            self.queue_event('info', _("Getting your disk(s) ready for Antergos..."))
             with misc.raised_privileges():
                 self.install_screen.run_format()
-                self.install_screen.run_install(pkg.packages, down.metalinks)
+
+            self.queue_event('info', _("Installation will start now!"))
+            with misc.raised_privileges():
+                self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(
                 process_error.cmd,
