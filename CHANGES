@@ -1,3 +1,22 @@
+[2015-12-08 12:32:26 -0600]  yep..still working on UI                                               Dustin Falgout  {bd4ae4f}
+[2015-12-08 15:42:58 +0100]  pep8 used_space                                                            karasu      {d33272a}
+[2015-12-08 15:34:51 +0100]  pep8 partition_module                                                      karasu      {a79aa9a}
+[2015-12-08 15:11:32 +0100]  pep8 fs_module                                                             karasu      {e1d85e4}
+[2015-12-08 15:01:48 +0100]  pep8 pac.py                                                                karasu      {7d3ba9a}
+[2015-12-08 14:42:15 +0100]  pep8 pacman.conf                                                           karasu      {c463344}
+[2015-12-08 14:26:28 +0100]  pep8 on validation                                                         karasu      {ed09457}
+[2015-12-08 14:17:48 +0100]  pep8 on tz                                                                 karasu      {a486a62}
+[2015-12-08 13:58:54 +0100]  More pep8, now on timezonemap                                              karasu      {6d2155e}
+[2015-12-08 13:30:12 +0100]  pep8 on keyboard_widget and keyboard_names                                 karasu      {f8c0309}
+[2015-12-08 13:00:57 +0100]  pep8 on keyboard_names.py                                                  karasu      {3a0792b}
+[2015-12-08 12:50:43 +0100]  pep8 on i18n                                                               karasu      {55352b8}
+[2015-12-08 12:48:17 +0100]  pep8 on gtkwidgets.py                                                      karasu      {5c080cd}
+[2015-12-08 12:35:41 +0100]  pep8 on extra.py                                                           karasu      {b400a99}
+[2015-12-08 12:08:34 +0100]  pep8 camera.py (this module needs a lot of work)                           karasu      {ba071df}
+[2015-12-08 11:58:03 +0100]  Pep8 (and bugfixing) zfs.py                                                karasu      {c64fbd3}
+[2015-12-08 09:23:53 +0100]  pep8 on wrapper.py                                                         karasu      {03a4e0b}
+[2015-12-08 09:21:46 +0100]  pep8 on systemd_networkd                                                   karasu      {dde4bae}
+[2015-12-08 09:19:29 +0100]  More pep8                                                                  karasu      {6b6dbe7}
 [2015-12-07 02:37:22 -0600]  you guessed it..more work on UI                                        Dustin Falgout  {d74980c}
 [2015-12-06 07:17:28 -0600]  fix logo font                                                          Dustin Falgout  {3ae5469}
 [2015-12-06 05:48:05 -0600]  more progress                                                          Dustin Falgout  {fd6114a}

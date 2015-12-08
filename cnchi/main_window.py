@@ -306,7 +306,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
 
-        top_level_pages = ['check', 'location_group', 'desktop', 'features', 'disk_group',
+        top_level_pages = ['check', 'location_group', 'desktop_group', 'disk_group',
                            'user_info', 'summary']
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["check"] = check.Check(params=self.params)
@@ -318,16 +318,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["location_group"]["location"] = location.Location(params=self.params, in_group=True)
         self.pages["location_group"]["timezone"] = timezone.Timezone(params=self.params, in_group=True)
 
+        self.pages["desktop_group"] = {'title': 'Desktop Selection', 'prev_page': 'timezone',
+                                       'next_page': 'desktop', 'pages': ['desktop', 'features']}
+
         if self.settings.get('desktop_ask'):
             self.pages["location_group"]["keymap"] = keymap.Keymap(params=self.params, in_group=True)
-            self.pages["desktop"] = desktop.DesktopAsk(params=self.params)
-            self.pages["features"] = features.Features(params=self.params)
+            self.pages["desktop_group"]["desktop"] = desktop.DesktopAsk(params=self.params)
+            self.pages["desktop_group"]["features"] = features.Features(params=self.params)
         else:
             self.pages["location_group"]["keymap"] = keymap.Keymap(
                 self.params,
                 next_page='features',
                 in_group=True)
-            self.pages["features"] = features.Features(
+            self.pages["desktop_group"]["features"] = features.Features(
                 self.params,
                 prev_page='location_group')
 
@@ -616,6 +619,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     self.current_page.prepare('forwards')
                     self.current_page.can_show = True
                     self.current_stack.set_visible_child_name(self.current_page.get_name())
+                    self.header.set_subtitle('')
 
                     if self.current_page.get_prev_page() is not None:
                         # There is a previous page, show back button

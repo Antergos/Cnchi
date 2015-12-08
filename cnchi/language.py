@@ -95,6 +95,7 @@ class LanguageWidget(Gtk.Box):
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
+                    self.store_values()
                     if hasattr(self.main_window, 'popover'):
                         if not self.selecting_default_row and self.popover_is_visible:
                             self.main_window.popover.set_visible(False)
