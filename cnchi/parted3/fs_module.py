@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  fs_module.py
+# fs_module.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Functions to work with file systems """
@@ -37,11 +37,14 @@ import os
 import misc.extra as misc
 
 # constants
-NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'swap', 'xfs']
+NAMES = [
+    'btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs',
+    'reiserfs', 'swap', 'xfs']
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
 def get_uuid(part):
+    """ Get partition UUID """
     info = get_info(part)
     if "UUID" in info.keys():
         return info['UUID']
@@ -51,6 +54,7 @@ def get_uuid(part):
 
 
 def get_label(part):
+    """ Get partition label """
     info = get_info(part)
     if "LABEL" in info.keys():
         return info['LABEL']
@@ -68,7 +72,8 @@ def get_info(part):
     # Do not try to get extended partition info
     if part and not misc.is_partition_extended(part):
         try:
-            ret = subprocess.check_output(['blkid', '-c', '/dev/null', part]).decode().strip()
+            cmd = ['blkid', '-c', '/dev/null', part]
+            ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning(err)
 
@@ -257,8 +262,8 @@ def is_ssd(disk_path):
         txt = "Cannot verify if {0} is a Solid State Drive or not".format(disk_path)
         logging.warning(txt)
         return False
-    with open(filename) as f:
-        return f.read() == "0\n"
+    with open(filename) as my_file:
+        return my_file.read() == "0\n"
 
 
 # To shrink a partition:
@@ -290,7 +295,8 @@ def resize(part, fs_type, new_size_in_mb):
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     """ Resize a ntfs partition """
-    logging.debug("ntfsresize -P --size {0}M {1}".format(new_size_in_mb, part))
+    txt = "ntfsresize -P --size {0}M {1}".format(new_size_in_mb, part)
+    logging.debug(txt)
 
     try:
         cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
@@ -314,7 +320,8 @@ def resize_fat(part, new_size_in_mb):
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
     """ Resize an ext partition """
-    logging.debug("resize2fs {0} {1}M".format(part, new_size_in_mb))
+    txt = "resize2fs {0} {1}M".format(part, new_size_in_mb)
+    logging.debug(txt)
 
     try:
         cmd = ["resize2fs", part, "{0}M".format(new_size_in_mb)]
