@@ -86,6 +86,8 @@ class Download(object):
         # Stores last issued event (to prevent repeating events)
         self.last_event = {}
 
+        self.copy_to_cache_threads = []
+
     def is_hash_ok(self, element, dst_path):
         """ Checks file md5 hash """
         # Check the file's md5 hash
@@ -119,7 +121,11 @@ class Download(object):
         self.queue_event('downloads_progress_bar', 'show')
         self.queue_event('downloads_percent', '0')
 
-        copy_to_cache_threads = []
+        self.copy_to_cache_threads = []
+
+        logging.debug(
+            "Downloading packages to pacman cache dir '%s'",
+            self.pacman_cache_dir)
 
         while len(downloads) > 0:
             identity, element = downloads.popitem()
@@ -198,7 +204,7 @@ class Download(object):
             self.queue_event('downloads_percent', str(downloads_percent))
 
         # Wait until all xz packages are also copied to provided cache (if any)
-        for cache_thread in copy_to_cache_threads:
+        for cache_thread in self.copy_to_cache_threads:
             cache_thread.join()
 
         self.queue_event('downloads_progress_bar', 'hide')
@@ -271,7 +277,7 @@ class Download(object):
 
                     # Copy downloaded xz file to the cache the user has provided, too.
                     copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                    copy_to_cache_threads += [copy_to_cache_thread]
+                    self.copy_to_cache_threads += [copy_to_cache_thread]
                     copy_to_cache_thread.start()
 
                     # Get out of the for loop, as we managed
