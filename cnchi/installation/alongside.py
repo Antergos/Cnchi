@@ -418,16 +418,12 @@ class InstallationAlongside(GtkBaseBox):
         else:
             logging.info("Cnchi will not install any bootloader")
 
-        if not self.testing:
-            self.process = installation_process.InstallationProcess(
-                self.settings,
-                self.callback_queue,
-                mount_devices,
-                fs_devices)
-
-            self.process.start()
-        else:
-            logging.info("Testing mode. Cnchi will not change anything!")
+        self.process = installation_process.InstallationProcess(
+            self.settings,
+            self.callback_queue,
+            mount_devices,
+            fs_devices)
+        self.process.start()
         '''
 
 if __name__ == '__main__':

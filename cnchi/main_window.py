@@ -203,7 +203,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['checks_are_optional'] = cmd_line.no_check
         self.params['disable_tryit'] = cmd_line.disable_tryit
         self.params['disable_rank_mirrors'] = cmd_line.disable_rank_mirrors
-        self.params['testing'] = cmd_line.testing
 
         # Just load the first two screens (the other ones will be loaded later)
         # We do this so the user has not to wait for all the screens to be

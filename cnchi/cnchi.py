@@ -363,10 +363,6 @@ def parse_options():
                " Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
-        "-t", "--testing",
-        help=_("Do not perform any changes (useful for developers)"),
-        action="store_true")
-    parser.add_argument(
         "-u", "--update",
         help=_("Upgrade/downgrade Cnchi to the web version"),
         action="store_true")

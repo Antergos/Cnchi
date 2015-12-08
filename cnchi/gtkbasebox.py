@@ -45,7 +45,6 @@ class GtkBaseBox(Gtk.Box):
         self.header = params['header']
         self.main_progressbar = params['main_progressbar']
         self.settings = params['settings']
-        self.testing = params['testing']
         self.ui_dir = params['ui_dir']
         self.process_list = params['process_list']
         self.main_window = params['main_window']

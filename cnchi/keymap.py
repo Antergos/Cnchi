@@ -270,7 +270,7 @@ class Keymap(GtkBaseBox):
         # Fixes issue 75:
         # Won't pick/load the keyboard layout after selecting one
         # (sticks to qwerty)
-        if not self.testing and self.prepare_called:
+        if self.prepare_called:
             self.set_keymap()
         return True
 

@@ -136,7 +136,6 @@ def run(screen_name):
         'backwards_button': Gtk.Button.new(),
         'main_progressbar': Gtk.ProgressBar.new(),
         'header': Gtk.HeaderBar.new(),
-        'testing': True,
         'callback_queue': None,
         'alternate_package_list': "",
         'process_list': []}
