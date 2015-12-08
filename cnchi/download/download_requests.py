@@ -105,7 +105,7 @@ class Download(object):
             return True
 
         if md5hash != get_md5(dst_path):
-            logging.debug(
+            logging.warning(
                 "MD5 hash of file %s does not match what's in the repository database!",
                 element['filename'])
             return False
