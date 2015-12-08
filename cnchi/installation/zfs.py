@@ -18,6 +18,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" ZFS installation screen """
+
 import subprocess
 import os
 import logging
@@ -38,14 +40,9 @@ import parted3.fs_module as fs
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk
 
-try:
-    from gtkbasebox import GtkBaseBox
-except ImportError:
-    import sys
-    sys.path.append('/usr/share/cnchi/cnchi')
-    from gtkbasebox import GtkBaseBox
+from gtkbasebox import GtkBaseBox
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -66,6 +63,7 @@ MIN_ROOT_SIZE = 8000
 
 
 def is_int(num):
+    """ Checks if num is an integer """
     try:
         int(num)
         return True
@@ -74,6 +72,7 @@ def is_int(num):
 
 
 class InstallationZFS(GtkBaseBox):
+    """ ZFS installation screen class """
     def __init__(
             self, params, prev_page="installation_ask", next_page="summary", **kwargs):
         super().__init__(self, params, "zfs", prev_page, next_page, **kwargs)
@@ -91,6 +90,7 @@ class InstallationZFS(GtkBaseBox):
         self.prepare_device_list()
         self.device_list.set_hexpand(True)
 
+        self.installation = None
         self.ids = {}
 
         # Set zfs default options
@@ -129,14 +129,15 @@ class InstallationZFS(GtkBaseBox):
 
         if os.path.exists("/sys/firmware/efi"):
             # UEFI, use GPT by default
-            self.UEFI = True
+            self.uefi = True
             self.zfs_options["scheme"] = "GPT"
         else:
             # No UEFI, use MBR by default
-            self.UEFI = False
+            self.uefi = False
             self.zfs_options["scheme"] = "MBR"
 
     def on_use_device_toggled(self, widget, path):
+        """ Use device clicked """
         status = self.device_list_store[path][COL_USE_ACTIVE]
         self.device_list_store[path][COL_USE_ACTIVE] = not status
         self.forward_button.set_sensitive(self.check_pool_type())
@@ -221,6 +222,7 @@ class InstallationZFS(GtkBaseBox):
         self.device_list.set_model(self.device_list_store)
 
     def translate_ui(self):
+        """ Translate widgets """
         self.header.set_subtitle(_("ZFS Setup"))
 
         # Encrypt disk checkbox
@@ -357,6 +359,7 @@ class InstallationZFS(GtkBaseBox):
         return is_ok
 
     def show_pool_type_help(self, pool_type):
+        """ Show pool type help to the user """
         pool_types = list(self.pool_types.values())
         msg = ""
         if (pool_type in pool_types and
@@ -386,6 +389,7 @@ class InstallationZFS(GtkBaseBox):
                 show.message(self.get_toplevel(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
+        """ Show 4k help to the user """
         msg = _("Advanced Format (AF) is a new disk format which natively "
                 "uses a 4,096 byte instead of 512 byte sector size. To "
                 "maintain compatibility with legacy systems AF disks emulate "
@@ -398,9 +402,11 @@ class InstallationZFS(GtkBaseBox):
         show.message(self.get_toplevel(), msg)
 
     def on_encrypt_swap_btn_toggled(self, widget):
+        """ Swap encrypt button """
         self.zfs_options["encrypt_swap"] = not self.zfs_options["encrypt_swap"]
 
     def on_encrypt_disk_btn_toggled(self, widget):
+        """ Disk encrypt button """
         status = widget.get_active()
 
         names = [
@@ -414,21 +420,25 @@ class InstallationZFS(GtkBaseBox):
         self.settings.set('use_luks', status)
 
     def on_pool_name_btn_toggled(self, widget):
+        """ Use a specific pool name """
         obj = self.ui.get_object('pool_name_entry')
         status = not obj.get_sensitive()
         obj.set_sensitive(status)
         self.zfs_options["use_pool_name"] = status
 
     def on_force_4k_btn_toggled(self, widget):
+        """ Force 4k sector size """
         self.zfs_options["force_4k"] = not self.zfs_options["force_4k"]
 
     def on_partition_scheme_combo_changed(self, widget):
+        """ Select MBR or GPT """
         tree_iter = widget.get_active_iter()
         if tree_iter is not None:
             model = widget.get_model()
             self.zfs_options["scheme"] = model[tree_iter][0]
 
     def on_pool_type_combo_changed(self, widget):
+        """ Choose zfs pool type """
         tree_iter = widget.get_active_iter()
         if tree_iter is not None:
             model = widget.get_model()
@@ -437,6 +447,7 @@ class InstallationZFS(GtkBaseBox):
             self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare(self, direction):
+        """ Prepare screen """
         self.zfs_options['encrypt_disk'] = self.settings.get('use_luks')
 
         self.translate_ui()
@@ -479,6 +490,7 @@ class InstallationZFS(GtkBaseBox):
     # -------------------------------------------------------------------------
 
     def init_device(self, device_path, scheme="GPT"):
+        """ Initialize device """
         if scheme == "GPT":
             # Clean partition table to avoid issues!
             wrapper.sgdisk("zap-all", device_path)
@@ -507,6 +519,7 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(["sync"])
 
     def append_change(self, action_type, device, info=""):
+        """ Add change for summary screen """
         if action_type == "create":
             info = _("Create {0} on device {1}").format(info, device)
             encrypt = self.zfs_options["encrypt_disk"]
@@ -520,7 +533,7 @@ class InstallationZFS(GtkBaseBox):
         self.change_list.append(act)
 
     def get_changes(self):
-        """ Grab all changes for confirmation """
+        """ Grab all changes for confirmation in summary screen """
 
         self.change_list = []
         device_paths = self.zfs_options["device_paths"]
@@ -531,7 +544,7 @@ class InstallationZFS(GtkBaseBox):
 
         if self.zfs_options["scheme"] == "GPT":
             self.append_change("delete", device_path)
-            if not self.UEFI:
+            if not self.uefi:
                 self.append_change("create", device_path, "BIOS boot (2MB)")
                 self.append_change("create", device_path, "Antergos Boot (512MB)")
             else:
@@ -557,11 +570,12 @@ class InstallationZFS(GtkBaseBox):
         for device_path in device_paths[1:]:
             self.append_change("delete", device_path)
             msg = "Antergos ZFS pool ({0})".format(pool_name)
-            self.append_change("add", device_path,  msg)
+            self.append_change("add", device_path, msg)
 
         return self.change_list
 
     def run_format(self):
+        """ Create partitions and file systems """
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
         # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
 
@@ -576,7 +590,7 @@ class InstallationZFS(GtkBaseBox):
 
             part_num = 1
 
-            if not self.UEFI:
+            if not self.uefi:
                 # Create BIOS Boot Partition
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
@@ -588,7 +602,7 @@ class InstallationZFS(GtkBaseBox):
                 wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
                 fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                 self.devices['boot'] = "{0}{1}".format(device_path, part_num)
-                self.fs_devices[devices['boot']] = "ext4"
+                self.fs_devices[self.devices['boot']] = "ext4"
                 part_num += 1
             else:
                 # UEFI
@@ -614,7 +628,7 @@ class InstallationZFS(GtkBaseBox):
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
                     fs.create_fs(device_path + str(part_num), "vfat", "ANTERGOS_BOOT")
                     self.devices['boot'] = "{0}{1}".format(device_path, part_num)
-                    self.fs_devices[devices['boot']] = "vfat"
+                    self.fs_devices[self.devices['boot']] = "vfat"
                     self.mount_devices['/boot'] = self.devices['boot']
                     part_num += 1
 
@@ -634,26 +648,25 @@ class InstallationZFS(GtkBaseBox):
             # starts at 1 (first partition in disk)
             start = -1
             end = 512
-            part_num = "1"
+            part = "1"
             wrapper.parted_mkpart(device_path, "primary", start, end)
 
             # Set boot partition as bootable
-            wrapper.parted_set(device_path, part_num, "boot", "on")
+            wrapper.parted_set(device_path, part, "boot", "on")
 
             # Format the boot partition as well as any other system partitions.
             # Do not do anything to the Solaris partition nor to the BIOS boot
             # partition. ZFS will manage the first, and the bootloader the
             # second.
 
-            fs.create_fs(device_path + part_num, "ext4", "ANTERGOS_BOOT")
-            self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+            fs.create_fs(device_path + part, "ext4", "ANTERGOS_BOOT")
+            self.devices['boot'] = "{0}{1}".format(device_path, part)
             self.fs_devices[self.devices['boot']] = "ext4"
             self.mount_devices['/boot'] = self.devices['boot']
 
             # The rest will be solaris type
             start = end
-            end = "-1s"
-            wrapper.parted_mkpart(device_path, "primary", start, end)
+            wrapper.parted_mkpart(device_path, "primary", start, "-1s")
             solaris_partition_number = 2
 
             # Now init all other devices that will form part of the pool
@@ -678,7 +691,9 @@ class InstallationZFS(GtkBaseBox):
                 device = dest_path.split("/")[-1]
                 self.ids[device] = entry.name
 
-    def check_call(self, cmd):
+    @staticmethod
+    def check_call(cmd):
+        """ Helper function """
         try:
             # Convert list and get sure all items are converted to str
             cmd_line = ' '.join(str(x) for x in cmd)
@@ -690,7 +705,8 @@ class InstallationZFS(GtkBaseBox):
             txt = _("Command {0} has failed").format(process_error.cmd)
             raise InstallError(txt)
 
-    def zfs_export_pool(self, pool):
+    @staticmethod
+    def zfs_export_pool(pool):
         """ Makes the kernel to flush all pending data to disk, writes data to
             the disk acknowledging that the export was done, and removes all
             knowledge that the storage pool existed in the system """
@@ -712,7 +728,7 @@ class InstallationZFS(GtkBaseBox):
                 raise InstallError(txt)
 
     def get_home_size(self, pool_name):
-        """ Get recommended /home size """
+        """ Get recommended /home zvol size in GB """
         pool_size = self.get_pool_size(pool_name)
         home_size = 0
         if pool_size != 0:
@@ -724,19 +740,32 @@ class InstallationZFS(GtkBaseBox):
             home_size = pool_size - root_needs
         return home_size
 
-    def get_pool_size(self, pool_name):
-        """ Gets zfs pool size """
-        pool_size = 0
+    @staticmethod
+    def get_pool_size(pool_name):
+        """ Gets zfs pool size in GB """
         try:
             cmd_line = "zpool list -H -o size {0}".format(pool_name)
             logging.debug(cmd_line)
             cmd = cmd_line.split()
             pool_size = subprocess.check_output(cmd).decode()
+            # Force to use a point as float delimiter
+            # (everyone except English/Americans uses a comma)
+            pool_size = pool_size.replace(",", ".")
+            if 'M' in pool_size:
+                pool_size = int(pool_size[:-2]) // 1024
+            elif 'G' in pool_size:
+                pool_size = int(pool_size[:-2])
+            elif 'T' in pool_size:
+                pool_size = int(pool_size[:-2]) * 1024
+            elif 'P' in pool_size:
+                pool_size = int(pool_size[:-2]) * 1024 * 1024
         except subprocess.CalledProcessError as process_error:
-            logging.warning("Can't get zfs %s pool size", pool_name)
+            logging.warning(
+                "Can't get zfs %s pool size: %s",
+                pool_name,
+                process_error)
             pool_size = 0
-        finally:
-            return pool_size
+        return pool_size
 
     def get_swap_size(self, pool_name):
         """ Gets recommended swap size in GB """
@@ -769,21 +798,7 @@ class InstallationZFS(GtkBaseBox):
         # Swap size should not exceed 10% of all available pool size
 
         pool_size = self.get_pool_size(pool_name)
-        if pool_size and pool_size != 0:
-            # pool size will be in M, G, T or P
-            pool_size.replace(",", ".", 1)
-            try:
-                if 'M' in pool_size:
-                    pool_size = int(pool_size[:-2]) // 1024
-                elif 'G' in pool_size:
-                    pool_size = int(pool_size[:-2])
-                elif 'T' in pool_size:
-                    pool_size = int(pool_size[:-2]) * 1024
-                elif 'P' in pool_size:
-                    pool_size = int(pool_size[:-2]) * 1024 * 1024
-            except ValueError as value_error:
-                return swap_size
-
+        if pool_size > 0:
             # Max swap size is 10% of all available disk size
             max_swap = pool_size * 0.1
             if swap_size > max_swap:

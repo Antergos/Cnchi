@@ -36,20 +36,17 @@ import math
 import logging
 import os
 import queue
+import inspect
 
 try:
-    import pacman.alpm_events as alpm
-    import pacman.pkginfo as pkginfo
-    import pacman.pacman_conf as config
-except ImportError as err:
-    try:
-        import cnchi.pacman.alpm_events as alpm
-        import cnchi.pacman.pkginfo as pkginfo
-        import cnchi.pacman.pacman_conf as config
-        import gettext
-        _ = gettext.gettext
-    except ImportError as err:
-        logging.error(err)
+    _("x")
+except NameError:
+    import gettext
+    _ = gettext.gettext
+
+import pacman.alpm_events as alpm
+import pacman.pkginfo as pkginfo
+import pacman.pacman_conf as config
 
 try:
     import pyalpm
@@ -95,12 +92,15 @@ class Pac(object):
             raise pyalpm.error
 
     def get_handle(self):
+        """ Return alpm handle """
         return self.handle
 
     def get_config(self):
+        """ Get pacman.conf config """
         return self.config
 
     def initialize_alpm(self):
+        """ Set alpm setup """
         if self.config is not None:
             root_dir = self.config.options["RootDir"]
             db_path = self.config.options["DBPath"]
@@ -135,6 +135,7 @@ class Pac(object):
         self.handle.fetchcb = None
 
     def release(self):
+        """ Release alpm handle """
         if self.handle is not None:
             del self.handle
             self.handle = None
@@ -157,7 +158,7 @@ class Pac(object):
             logging.debug("Releasing alpm transaction...")
             transaction.release()
             logging.debug("Alpm transaction done.")
-            return all_ok
+        return all_ok
 
     def init_transaction(self, options=None):
         """ Transaction initialization """
@@ -165,67 +166,6 @@ class Pac(object):
             options = {}
 
         transaction = None
-
-        """
-        Transaction Options (-S, -R, -U):
-
-        nodeps: Skips dependency version checks. Package names are still checked.
-            Normally, pacman will always check a package’s dependency fields to
-            ensure that all dependencies are installed and there are no package
-            conflicts in the system. Specify this option twice to skip all
-            dependency checks.
-
-        dbonly: Adds/removes the database entry only, leaving all files in place.
-
-        Upgrade options (-S, -U):
-
-        force: Bypass file conflict checks and overwrite conflicting files.
-            If the package that is about to be installed contains files that are
-            already installed, this option will cause all those files to be
-            overwritten. Using --force will not allow overwriting a directory
-            with a file or installing packages with conflicting files and
-            directories. This option should be used with care, ideally not at
-            all.
-
-        needed: Do not reinstall the targets that are already up-to-date
-
-        asdeps: Install packages non-explicitly; in other words, fake their install
-            reason to be installed as a dependency. This is useful for makepkg
-            and other build-from-source tools that need to install dependencies
-            before building the package.
-
-        asexplicit: Install packages explicitly; in other words, fake their install
-            reason to be explicitly installed. This is useful if you want to
-            mark a dependency as explicitly installed so it will not be removed
-            by the --recursive remove operation.
-
-        Remove Options (-R):
-
-        cascade: Remove all target packages, as well as all packages that depend
-            on one or more target packages. This operation is recursive and must
-            be used with care, since it can remove many potentially needed packages.
-
-        nosave: Instructs pacman to ignore file backup designations. Normally, when
-            a file is removed from the system, the database is checked to see
-            if the file should be renamed with a .pacsave extension.
-
-        recursive : Remove each target specified including all of their dependencies,
-            provided that (A) they are not required by other packages; and (B)
-            they were not explicitly installed by the user. This operation is
-            recursive and analogous to a backwards --sync operation, and it
-            helps keep a clean system without orphans. If you want to omit
-            condition (B), pass this option twice.
-
-        unneeded: Removes targets that are not required by any other packages.
-            This is mostly useful when removing a group without using the -c
-            option, to avoid breaking any dependencies.
-
-        Sync Options (-S):
-
-        downloadonly: Retrieve all packages from the server, but do not
-            install/upgrade anything.
-
-        """
 
         try:
             transaction = self.handle.init_transaction(
@@ -243,8 +183,7 @@ class Pac(object):
                 downloadonly=options.get('downloadonly', False))
         except pyalpm.error as pyalpm_error:
             logging.error("Can't init alpm transaction: %s", pyalpm_error)
-        finally:
-            return transaction
+        return transaction
 
     def remove(self, pkg_names, options=None):
         """ Removes a list of package names """
@@ -254,9 +193,9 @@ class Pac(object):
 
         # Prepare target list
         targets = []
-        db = self.handle.get_localdb()
+        database = self.handle.get_localdb()
         for pkg_name in pkg_names:
-            pkg = db.get_pkg(pkg_name)
+            pkg = database.get_pkg(pkg_name)
             if pkg is None:
                 logging.error("Target %s not found", pkg_name)
                 return False
@@ -282,10 +221,10 @@ class Pac(object):
 
         force = True
         res = True
-        for db in self.handle.get_syncdbs():
+        for database in self.handle.get_syncdbs():
             transaction = self.init_transaction()
             if transaction:
-                db.update(force)
+                database.update(force)
                 transaction.release()
             else:
                 res = False
@@ -311,12 +250,12 @@ class Pac(object):
         # Discard duplicates
         pkgs = list(set(pkgs))
 
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
+        repos = dict((database.name, database) for database in self.handle.get_syncdbs())
 
         targets = []
         for name in pkgs:
-            ok, pkg = self.find_sync_package(name, repos)
-            if ok:
+            result_ok, pkg = self.find_sync_package(name, repos)
+            if result_ok:
                 # Check that added package is not in our conflicts list
                 if pkg.name not in conflicts:
                     targets.append(pkg.name)
@@ -358,8 +297,8 @@ class Pac(object):
             return False
 
         for i in range(0, num_targets):
-            ok, pkg = self.find_sync_package(targets.pop(), repos)
-            if ok:
+            result_ok, pkg = self.find_sync_package(targets.pop(), repos)
+            if result_ok:
                 transaction.add_pkg(pkg)
             else:
                 logging.warning(pkg)
@@ -407,8 +346,8 @@ class Pac(object):
         """ Finds a package name in a list of DBs
         :rtype : tuple (True/False, package or error message)
         """
-        for db in syncdbs.values():
-            pkg = db.get_pkg(pkgname)
+        for database in syncdbs.values():
+            pkg = database.get_pkg(pkgname)
             if pkg is not None:
                 return True, pkg
         return False, "Package '{0}' was not found.".format(pkgname)
@@ -431,13 +370,19 @@ class Pac(object):
             # Store info from all packages from all repos
             for repo in self.handle.get_syncdbs():
                 for pkg in repo.pkgcache:
-                    packages_info[pkg.name] = pkginfo.get_pkginfo(pkg, level=2, style='sync')
+                    packages_info[pkg.name] = pkginfo.get_pkginfo(
+                        pkg,
+                        level=2,
+                        style='sync')
         else:
-            repos = dict((db.name, db) for db in self.handle.get_syncdbs())
+            repos = dict((database.name, database) for database in self.handle.get_syncdbs())
             for pkg_name in pkg_names:
-                ok, pkg = self.find_sync_package(pkg_name, repos)
-                if ok:
-                    packages_info[pkg_name] = pkginfo.get_pkginfo(pkg, level=2, style='sync')
+                result_ok, pkg = self.find_sync_package(pkg_name, repos)
+                if result_ok:
+                    packages_info[pkg_name] = pkginfo.get_pkginfo(
+                        pkg,
+                        level=2,
+                        style='sync')
                 else:
                     packages_info = {}
                     logging.error(pkg)
@@ -445,9 +390,9 @@ class Pac(object):
 
     def get_package_info(self, pkg_name):
         """ Get information about packages like pacman -Si """
-        repos = dict((db.name, db) for db in self.handle.get_syncdbs())
-        ok, pkg = self.find_sync_package(pkg_name, repos)
-        if ok:
+        repos = dict((database.name, database) for database in self.handle.get_syncdbs())
+        result_ok, pkg = self.find_sync_package(pkg_name, repos)
+        if result_ok:
             info = pkginfo.get_pkginfo(pkg, level=2, style='sync')
         else:
             logging.error(pkg)
@@ -471,12 +416,15 @@ class Pac(object):
         if event_type == "error":
             # Format message to show file, function, and line where the
             # error was issued
-            import inspect
             # Get the previous frame in the stack, otherwise it would be
             # this function
             func = inspect.currentframe().f_back.f_code
             # Dump the message + the name of this function to the log.
-            event_text = "{0}: {1} in {2}:{3}".format(event_text, func.co_name, func.co_filename, func.co_firstlineno)
+            event_text = "{0}: {1} in {2}:{3}".format(
+                event_text,
+                func.co_name,
+                func.co_filename,
+                func.co_firstlineno)
 
         if self.callback_queue is None:
             if event_type == "error":
@@ -583,12 +531,12 @@ class Pac(object):
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
 
-    def cb_progress(self, target, percent, n, i):
+    def cb_progress(self, target, percent, total, current):
         """ Shows install progress """
         if target:
-            msg = _("Installing {0} ({1}/{2})").format(target, i, n)
+            msg = _("Installing {0} ({1}/{2})").format(target, current, total)
             self.queue_event('info', msg)
-            percent = i / n
+            percent = current / total
             self.queue_event('percent', percent)
         else:
             percent /= 100
@@ -634,8 +582,9 @@ class Pac(object):
                 self.queue_event('percent', progress)
 
     def is_package_installed(self, package_name):
-        db = self.handle.get_localdb()
-        pkgs = db.search(*[package_name])
+        """ Check if package is already installed """
+        database = self.handle.get_localdb()
+        pkgs = database.search(*[package_name])
         names = []
         for pkg in pkgs:
             names.append(pkg.name)
@@ -645,8 +594,8 @@ class Pac(object):
             return False
 
 
-''' Test case '''
-if __name__ == "__main__":
+def test():
+    """ Test case """
     import gettext
     _ = gettext.gettext
 
@@ -675,3 +624,6 @@ if __name__ == "__main__":
     pacman_options = {"downloadonly": True}
     # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()
+
+if __name__ == "__main__":
+    test()

@@ -313,5 +313,23 @@ def get_os_dict():
     return oses
 
 
+def windows_startup_folder(mount_path):
+    locations = [
+        # Windows 8
+        'ProgramData/Microsoft/Windows/Start Menu/Programs/StartUp',
+        # Windows 7
+        'ProgramData/Microsoft/Windows/Start Menu/Programs/Startup',
+        # Windows XP
+        'Documents and Settings/All Users/Start Menu/Programs/Startup',
+        # Windows NT
+        'Winnt/Profiles/All Users/Start Menu/Programs/Startup',
+    ]
+    for location in locations:
+        path = os.path.join(mount_path, location)
+        if os.path.exists(path):
+            return path
+    return ''
+
+
 if __name__ == '__main__':
     print(get_os_dict())

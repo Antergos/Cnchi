@@ -1,30 +1,30 @@
 #!/usr/bin/env python3
 #
-#  pacman_conf.py
+# pacman_conf.py
 #
-#  Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
-#  Copyright © 2013-2015 Antergos
+# Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ This module handles pacman.conf files """
@@ -38,14 +38,17 @@ import warnings
 class InvalidSyntax(Warning):
     """ Class to show warning when a pacman.conf parse error is issued """
     def __init__(self, filename, problem, arg):
+        super().__init__()
         self.filename = filename
         self.problem = problem
         self.arg = arg
 
     def __str__(self):
-        return "unable to parse {0}, {1}: {2}".format(self.filename, self.problem, self.arg)
+        error = "unable to parse {0}, {1}: {2}"
+        return error.format(self.filename, self.problem, self.arg)
 
-# Options that may occur several times in a section. Their values should be accumulated in a list.
+# Options that may occur several times in a section.
+# Their values should be accumulated in a list.
 LIST_OPTIONS = (
     'CacheDir',
     'HoldPkg',
@@ -84,15 +87,16 @@ BOOLEAN_OPTIONS = (
 
 
 def pacman_conf_enumerator(path):
+    """ Parse pacman.conf file """
     filestack = []
     current_section = None
     filestack.append(open(path))
     while len(filestack) > 0:
-        f = filestack[-1]
-        line = f.readline()
+        file_obj = filestack[-1]
+        line = file_obj.readline()
         if len(line) == 0:
             # end of file
-            f.close()
+            file_obj.close()
             filestack.pop()
             continue
 
@@ -105,7 +109,10 @@ def pacman_conf_enumerator(path):
             current_section = line[1:-1]
             continue
         if current_section is None:
-            raise InvalidSyntax(f.name, 'statement outside of a section', line)
+            raise InvalidSyntax(
+                file_obj.name,
+                'statement outside of a section',
+                line)
         # read key, value
         key, equal, value = [x.strip() for x in line.partition('=')]
 
@@ -118,7 +125,10 @@ def pacman_conf_enumerator(path):
             if key in ('Server', 'SigLevel', 'Usage') and equal == '=':
                 yield (current_section, key, value)
             else:
-                raise InvalidSyntax(f.name, 'invalid key for repository configuration', line)
+                raise InvalidSyntax(
+                    file_obj.name,
+                    'invalid key for repository configuration',
+                    line)
             continue
         if equal == '=':
             if key in LIST_OPTIONS:
@@ -127,15 +137,16 @@ def pacman_conf_enumerator(path):
             elif key in SINGLE_OPTIONS:
                 yield (current_section, key, value)
             else:
-                warnings.warn(InvalidSyntax(f.name, 'unrecognized option', key))
+                warnings.warn(InvalidSyntax(file_obj.name, 'unrecognized option', key))
         else:
             if key in BOOLEAN_OPTIONS:
                 yield (current_section, key, True)
             else:
-                warnings.warn(InvalidSyntax(f.name, 'unrecognized option', key))
+                warnings.warn(InvalidSyntax(file_obj.name, 'unrecognized option', key))
 
 
 class PacmanConfig(collections.OrderedDict):
+    """ Class to store all pacman.conf options """
     def __init__(self, conf=None, options=None):
         super(PacmanConfig, self).__init__()
         self['options'] = collections.OrderedDict()
@@ -152,6 +163,7 @@ class PacmanConfig(collections.OrderedDict):
             self.load_from_options(options)
 
     def load_from_file(self, filename):
+        """ Load pacman options from file (pacman.conf) """
         for section, key, value in pacman_conf_enumerator(filename):
             if section == 'options':
                 if key == 'Architecture' and value == 'auto':
@@ -168,7 +180,8 @@ class PacmanConfig(collections.OrderedDict):
             self.options["CacheDir"] = ["/var/cache/pacman/pkg"]
 
     def load_from_options(self, options):
-        global _logmask
+        """ Load options from 'options' variable """
+        global _LOGMASK
         if options.root is not None:
             self.options["RootDir"] = options.root
         if options.dbpath is not None:
@@ -182,9 +195,10 @@ class PacmanConfig(collections.OrderedDict):
         if options.cachedir is not None:
             self.options["CacheDir"] = [options.cachedir]
         if options.debug:
-            _logmask = 0xffff
+            _LOGMASK = 0xffff
 
     def apply(self, handle):
+        """ Apply stored options to alpm handle """
         # File paths
         handle.logfile = self.options["LogFile"]
         handle.gpgdir = self.options["GPGDir"]
@@ -205,22 +219,23 @@ class PacmanConfig(collections.OrderedDict):
 
         # set sync databases
         for repo, servers in self.repos.items():
-            db = handle.register_syncdb(repo, 0)
+            database = handle.register_syncdb(repo, 0)
             db_servers = []
             for raw_url in servers:
                 url = raw_url.replace("$repo", repo)
                 url = url.replace("$arch", self.options["Architecture"])
                 db_servers.append(url)
-            db.servers = db_servers
+            database.servers = db_servers
 
     def __str__(self):
+        """ Get a text representation of pacman.conf options """
         conf = ''
         for section, options in self.items():
             conf = '{0}[{1}]\n'.format(conf, section)
             for key, value in options.items():
                 if key in LIST_OPTIONS:
-                    for v in value:
-                        conf = '{0}{1} = {2}\n'.format(conf, key, v)
+                    for val in value:
+                        conf = '{0}{1} = {2}\n'.format(conf, key, val)
                 elif key in BOOLEAN_OPTIONS:
                     conf = '{0}{1}\n'.format(conf, key)
                 else:

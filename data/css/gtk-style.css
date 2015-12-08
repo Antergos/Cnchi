@@ -255,9 +255,16 @@ StateBox {
 .logo {
     padding-left: 3px;
 }
-.logo_text {
+/*.logo_text {
     font-family: 'Futura Md BT';
     font-size: 20px;
+    color: #ffffff;
+}*/
+
+.logo_text {
+    font-family: 'Raleway';
+    font-size: 17px;
+    font-weight: 500;
     color: #ffffff;
 }
 
@@ -275,4 +282,29 @@ StateBox {
 
 .logo_box {
     padding: 20px;
+}
+
+.sub_nav_box {
+    background-color: #ffffff;
+}
+.sub_nav_box GtkBox {
+    background-color: #ffffff;
+}
+.sub_nav_box .button {
+    background-color: #ffffff;
+    padding: 9px 45px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    transition: all 0.6s linear;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Open Sans';
+    border-color: transparent;
+    box-shadow: none;
+
+}
+.sub_nav_box .button:selected {
+    background-color: #F5F8FB;
+    color: #07A6ED;
+
 }

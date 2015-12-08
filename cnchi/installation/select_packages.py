@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  select_packages.py
+# select_packages.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
 
 """ Package list generation module. """
 
@@ -31,6 +31,11 @@ import sys
 import urllib.request
 import urllib.error
 
+try:
+    import xml.etree.cElementTree as eTree
+except ImportError as err:
+    import xml.etree.ElementTree as eTree
+
 import desktop_info
 import info
 from installation import chroot
@@ -39,22 +44,13 @@ import misc.extra as misc
 import pacman.pac as pac
 from misc.extra import InstallError
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError as err:
-    import xml.etree.ElementTree as eTree
-
-try:
-    import pyalpm
-except ImportError as err:
-    logging.error(err)
-
 import hardware.hardware as hardware
 
 DEST_DIR = "/install"
 
 
 def chroot_run(cmd):
+    """ Helper function """
     chroot.run(cmd, DEST_DIR)
 
 
@@ -62,8 +58,8 @@ def write_file(filecontents, filename):
     """ writes a string of data to disk """
     os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
 
-    with open(filename, "w") as fh:
-        fh.write(filecontents)
+    with open(filename, "w") as my_file:
+        my_file.write(filecontents)
 
 
 class SelectPackages(object):
@@ -76,10 +72,7 @@ class SelectPackages(object):
         self.settings = settings
         self.alternate_package_list = self.settings.get('alternate_package_list')
         self.desktop = self.settings.get('desktop')
-        if self.settings.get('partition_mode') == "installation_zfs":
-            self.zfs = True
-        else:
-            self.zfs = False
+        self.zfs = (self.settings.get('partition_mode') == "installation_zfs")
 
         # Set defaults
         self.desktop_manager = 'lightdm'
@@ -94,12 +87,13 @@ class SelectPackages(object):
         self.vbox = False
 
     def queue_fatal_event(self, txt):
-        """ Queues the fatal event and exits process """
+        """ Enqueues a fatal event and quits """
         self.queue_event('error', txt)
         # self.callback_queue.join()
         sys.exit(0)
 
     def queue_event(self, event_type, event_text=""):
+        """ Enqueue event """
         if self.callback_queue is not None:
             try:
                 self.callback_queue.put_nowait((event_type, event_text))
@@ -132,6 +126,7 @@ class SelectPackages(object):
 
     @misc.raise_privileges
     def refresh_pacman_databases(self):
+        """ Updates pacman databases """
         # Init pyalpm
         try:
             pacman = pac.Pac("/etc/pacman.conf", self.callback_queue)
@@ -166,17 +161,20 @@ class SelectPackages(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = 'http://install.antergos.com/packages-{0}.xml'.format(info.CNCHI_VERSION.rsplit('.')[-2])
+                url = 'http://install.antergos.com/packages-{0}.xml'.format(
+                    info.CNCHI_VERSION.rsplit('.')[-2])
                 logging.debug("Getting url %s...", url)
                 req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = urllib.request.urlopen(req, timeout=10)
             except urllib.error.URLError as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
-                if "production" == info.CNCHI_RELEASE_STAGE:
-                    logging.warning("%s. Can't retrieve remote package list, using the local file instead.", url_error)
+                msg = "{0}. Can't retrieve remote package list, using the local file instead."
+                msg = msg.format(url_error)
+                if info.CNCHI_RELEASE_STAGE == "production":
+                    logging.warning(msg)
                 else:
-                    logging.debug("%s. Can't retrieve remote package list, using the local file instead.", url_error)
+                    logging.debug(msg)
                 data_dir = self.settings.get("data")
                 packages_xml = os.path.join(data_dir, 'packages.xml')
                 logging.debug("Loading %s", packages_xml)
@@ -198,18 +196,21 @@ class SelectPackages(object):
                 # Add common graphical packages
                 if name == "graphic" and self.desktop != "base":
                     for pkg in edition.iter('pkgname'):
-                        # If package is Desktop Manager, save the name to activate the correct service later
+                        # If package is Desktop Manager, save the name to
+                        # activate the correct service later
                         if pkg.attrib.get('dm'):
                             self.desktop_manager = pkg.attrib.get('name')
                         plib = pkg.attrib.get('lib')
-                        if plib is None or (plib is not None and self.desktop in lib[plib]):
+                        if (plib is None or
+                                (plib is not None and self.desktop in lib[plib])):
                             self.packages.append(pkg.text)
 
                 # Add specific desktop packages
                 if name == self.desktop:
                     logging.debug("Adding %s desktop packages", self.desktop)
                     for pkg in edition.iter('pkgname'):
-                        # If package is Network Manager, save the name to activate the correct service later
+                        # If package is Network Manager, save the name to
+                        # activate the correct service later
                         if pkg.attrib.get('nm'):
                             self.network_manager = pkg.attrib.get('name')
                         # Stores conflicts packages in self.conflicts
@@ -242,12 +243,16 @@ class SelectPackages(object):
                 use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
             driver_names = hardware_install.get_found_driver_names()
             if len(driver_names) > 0:
-                logging.debug("Hardware module detected these drivers: %s", driver_names)
+                logging.debug(
+                    "Hardware module detected these drivers: %s",
+                    driver_names)
 
             # Add needed hardware packages to our list
             hardware_pkgs = hardware_install.get_packages()
             if len(hardware_pkgs) > 0:
-                logging.debug("Hardware module added these packages: %s", ", ".join(hardware_pkgs))
+                logging.debug(
+                    "Hardware module added these packages: %s",
+                    ", ".join(hardware_pkgs))
                 if 'virtualbox' in hardware_pkgs:
                     self.vbox = True
                 self.packages.extend(hardware_pkgs)
@@ -294,7 +299,7 @@ class SelectPackages(object):
                     bootloader_found = True
                     for pkg in child.iter('pkgname'):
                         self.packages.append(pkg.text)
-            if not bootloader_found and not 'gummiboot' == boot_loader:
+            if not bootloader_found and boot_loader != 'gummiboot':
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
 
@@ -321,6 +326,7 @@ class SelectPackages(object):
         logging.debug("Packages list: %s", ",".join(self.packages))
 
     def get_conflicts(self, conflicts):
+        """ Return list of conflicting packages """
         if conflicts:
             if ',' in conflicts:
                 for conflict in conflicts.split(','):
@@ -350,7 +356,8 @@ class SelectPackages(object):
                         # against our chosen desktop.
 
                         lib = pkg.attrib.get('lib')
-                        if lib is not None and self.desktop not in desktop_info.LIBS[lib]:
+                        if (lib is not None and
+                                self.desktop not in desktop_info.LIBS[lib]):
                             # Wrong lib (gtk/qt), so don't add it
                             continue
 
@@ -361,7 +368,10 @@ class SelectPackages(object):
 
                         self.get_conflicts(pkg.attrib.get('conflicts'))
 
-                        logging.debug("Selecting package %s for feature %s", pkg.text, feature)
+                        logging.debug(
+                            "Selecting package %s for feature %s",
+                            pkg.text,
+                            feature)
                         self.packages.append(pkg.text)
 
         # Add libreoffice language package

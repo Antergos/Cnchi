@@ -26,8 +26,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Helper module to run some disk/partition related utilities """
 
-import os
 import subprocess
 import logging
 
@@ -35,6 +35,7 @@ from misc.extra import InstallError
 
 
 def wipefs(device):
+    """ Wipe fs from device """
     try:
         subprocess.check_call(["wipefs", "-a", device])
     except subprocess.CalledProcessError as err:

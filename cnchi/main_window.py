@@ -90,7 +90,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.data_dir = self.settings.get('data')
         self.current_stack = None
         self.current_group = None
+        self.current_group_last = None
         self.nav_buttons = {}
+        self.sub_nav_buttons = {}
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -250,9 +252,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_box_wrapper = self.ui.get_object("main_box_wrapper")
         self.main_box = self.ui.get_object("main_box")
         self.main_stack = self.ui.get_object("main_stack")
+        self.sub_nav_box = self.ui.get_object("sub_nav_box")
 
-        self.progressbar = self.ui.get_object("main_progressbar")
-        self.progressbar.set_name('process_progressbar')
 
         self.header_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "header.ui")
@@ -262,7 +263,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_nav = self.header_ui.get_object("header_nav")
         self.language_menu_btn = self.header_ui.get_object('language_button')
 
+        self.progressbar = self.header_ui.get_object("main_progressbar")
+        self.progressbar.set_name('process_progressbar')
+
         self.logo = self.header_ui.get_object("logo")
+        self.logo_text = self.header_ui.get_object("logo_text")
         path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
         self.logo.set_from_file(path)
 
@@ -291,9 +296,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-        title = "Cnchi {0}".format(info.CNCHI_VERSION)
+       # title = "Cnchi {0}".format(info.CNCHI_VERSION)
+        title = "Cnchi Installer"
         self.set_title(title)
-        self.header.set_title(title)
+        self.logo_text.set_text(title)
+        # self.header.set_title(title)
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(False)
 
@@ -372,11 +379,24 @@ class MainWindow(Gtk.ApplicationWindow):
                                               title=page['title'],
                                               prev_page=page['prev_page'],
                                               next_page=page['next_page'])
+                self.sub_nav_buttons[page_name] = {
+                    'box': Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
+                }
+                self.sub_nav_buttons[page_name]['box'].set_halign(Gtk.Align.CENTER)
+                self.sub_nav_buttons[page_name]['box'].set_hexpand(True)
 
                 for sub_page_name in page['pages']:
                     sub_page = self.pages[page_name][sub_page_name]
                     if sub_page:
                         sub_stack.add_titled(sub_page, sub_page_name, sub_page.title)
+                        self.sub_nav_buttons[page_name][sub_page_name] = Gtk.Button.new_with_label(
+                                sub_page.title)
+                        self.sub_nav_buttons[page_name][sub_page_name].connect(
+                                'clicked',
+                                self.on_header_nav_button_clicked,
+                                page_name)
+                        self.sub_nav_buttons[page_name]['box'].add(
+                                self.sub_nav_buttons[page_name][sub_page_name])
 
                 self.pages[page_name]['group'] = page = sub_stack
 
@@ -387,7 +407,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.header_nav.add(self.nav_buttons[page_name])
 
         self.header_nav.show_all()
-        # self.header_nav.set_stack(self.main_stack)
         self.current_stack = self.main_stack
 
     def del_pages(self):
@@ -478,16 +497,25 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_header_nav_button_clicked(self, widget, data=None):
         page_name = data
-        page = self.current_stack.get_child_by_name(page_name)
-        can_show = page_name != self.current_page.name and page.can_show
         is_next = page_name == self.current_page.get_next_page()
 
         if is_next:
             self.on_forward_button_clicked(None)
             return
 
-        if can_show:
-            self.current_stack.set_visible_child(page)
+        page = self.current_stack.get_child_by_name(page_name)
+
+        if not page and self.current_group:
+            page = self.main_stack.get_child_by_name(page_name)
+            if page_name != self.current_page.name and page.can_show:
+                self.main_stack.set_visible_child(page)
+        else:
+            page = self.current_stack.get_child_by_name(page_name)
+            if page_name != self.current_page.name and page.can_show:
+                self.current_stack.set_visible_child(page)
+
+        if not page:
+            logging.error('page is none. should be %s', page_name)
 
     def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value
@@ -500,6 +528,23 @@ class MainWindow(Gtk.ApplicationWindow):
             self.progressbar.show()
         else:
             self.progressbar.hide()
+
+    def prepare_sub_nav_buttons(self, page):
+        btn_container = self.sub_nav_buttons[self.current_group]['box']
+        children = self.sub_nav_box.get_center_widget()
+        noop = False
+        if children and children[0] is not btn_container:
+            self.sub_nav_box.remove(children[0])
+        elif children and children[0] is btn_container:
+            noop = True
+
+        if not noop:
+            self.sub_nav_box.add(btn_container)
+
+        self.sub_nav_box.height_request = 48
+        self.sub_nav_box.show_all()
+        self.sub_nav_buttons[self.current_group][page].set_state_flags(
+                Gtk.StateFlags.SELECTED, True)
 
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """
@@ -518,29 +563,55 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.set_progressbar_step(self.progressbar_step)
                 if 'welcome' == self.current_page.get_name():
                     self.main_box.set_visible(False)
-                    # self.header_nav.set_stack(self.main_stack)
                     self.main_stack.set_visible(True)
-                else:
-                    self.nav_buttons[self.current_page.get_name()].set_state(Gtk.StateFlags.NORMAL)
+                    self.current_stack = self.main_stack
+                    self.current_stack.can_show = True
 
-                if self.current_group:
+                if self.current_group and not self.current_group_last:
+                    # We are currently viewing a non-top-level page (sub-stack)
                     self.current_page = self.pages[self.current_group][next_page]
+                    # Set state of the soon-to-be non-active page's tab to normal (for bg color)
+                    self.sub_nav_buttons[self.current_group][next_page].set_state_flags(
+                            Gtk.StateFlags.NORMAL, True)
                 else:
+                    # We are viewing a top-level page or a sub-stack container
+                    if 'welcome' != self.current_page.get_name():
+                        self.nav_buttons[self.current_page.get_name()].set_state_flags(
+                                Gtk.StateFlags.NORMAL, True)
                     self.current_page = self.pages[next_page]
+                    if self.current_group_last:
+                        self.current_group_last = False
 
                 if self.current_page is not None:
                     if isinstance(self.current_page, dict):
+                        # We are viewing a sub-stack container
                         self.current_stack.set_visible_child_name(next_page)
-                        self.current_stack.can_show = True
+                        # Set the current_group attr so we know we are in a sub-stack next time.
                         self.current_group = next_page
                         self.current_stack = self.current_page['group']
+                        self.current_stack.can_show = True
+
+                        # The sub-stack container itself is not a page. Let's proceed to
+                        # first page within the sub-stack (non-top-level page)
                         page_after_next = self.current_page['group'].get_next_page()
                         self.current_page = self.pages[next_page][page_after_next]
-                        self.nav_buttons[self.current_group].set_state(Gtk.StateFlags.SELECTED)
+                        # Set the state of our nav buttons so they appear properly highlighted
+                        self.nav_buttons[self.current_group].set_state_flags(
+                                Gtk.StateFlags.SELECTED, True)
+                        self.prepare_sub_nav_buttons(page_after_next)
+
+                    elif self.current_page.in_group:
+                        # We are viewing a non-top-level page (inside sub-stack container)
+                        self.sub_nav_buttons[self.current_group][next_page].set_state_flags(
+                                Gtk.StateFlags.SELECTED, True)
+                        # Check if we are the last page in this sub-stack group
+                        next_page = self.current_page.get_next_page()
+                        self.current_group_last = next_page not in self.pages[self.current_group]
                     elif not self.current_page.in_group:
                         self.current_stack = self.main_stack
                         self.current_group = None
-                        self.nav_buttons[self.current_page.get_name()].set_state(Gtk.StateFlags.SELECTED)
+                        pname = self.current_page.get_name()
+                        self.nav_buttons[pname].set_state_flags(Gtk.StateFlags.SELECTED, True)
 
                     self.current_page.prepare('forwards')
                     self.current_page.can_show = True
