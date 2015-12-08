@@ -567,6 +567,7 @@ class TimezoneMap(Gtk.Widget):
             x_value = max_value
         return x_value
 
+
 def test():
     win = Gtk.Window()
     tzmap = TimezoneMap()
