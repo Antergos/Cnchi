@@ -1,33 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  timezonemap.py
+# timezonemap.py
 #
-#  Original author: Thomas Wood <thomas.wood@intel.com>
-#  Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
-#  Written in C by Evan Dandrea <evand@ubuntu.com>
-#  Python port Copyright © 2013-2015 Antergos
+# Original author: Thomas Wood <thomas.wood@intel.com>
+# Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
+# Written in C by Evan Dandrea <evand@ubuntu.com>
+# Python port Copyright © 2013-2015 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Custom widget to show world time zones """
@@ -40,10 +40,13 @@ import logging
 
 import gi
 gi.require_version('PangoCairo', '1.0')
-
+gi.require_version('Gtk', '3.0')
 from gi.repository import GObject, GLib, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
 
-import misc.tz as tz
+try:
+    import misc.tz as tz
+except ImportError:
+    import tz
 
 try:
     import xml.etree.cElementTree as elementTree
@@ -61,8 +64,8 @@ OLSEN_MAP_TIMEZONES_PATH = "/usr/share/cnchi/data/locale/timezones.xml"
 
 BUBBLE_TEXT_FONT = "Sans 9"
 
-# color_codes is (offset, red, green, blue, alpha)
-color_codes = [
+# COLOR_CODES is (offset, red, green, blue, alpha)
+COLOR_CODES = [
     (-11.0, 43, 0, 0, 255),
     (-10.0, 85, 0, 0, 255),
     (-9.5, 102, 255, 0, 255),
@@ -104,6 +107,7 @@ color_codes = [
 
 
 class TimezoneMap(Gtk.Widget):
+    """ Widget that allows to select user's timezone """
     __gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
@@ -163,8 +167,8 @@ class TimezoneMap(Gtk.Widget):
         """ Retrieves a widget’s initial minimum and natural width. """
         width = self._orig_background.get_width()
 
-        # Images are bigger but we need this widget to stay small as Cnchi's window
-        # is small (so it works with low res systems)
+        # Images are bigger but we need this widget to stay small as
+        # Cnchi's window is small (so it works with low res systems)
         if width > 400:
             width = 400
 
@@ -174,8 +178,8 @@ class TimezoneMap(Gtk.Widget):
         """ Retrieves a widget’s initial minimum and natural height. """
         height = self._orig_background.get_height()
 
-        # Images are bigger but we need this widget to stay small as Cnchi's window
-        # is small (so it works with low res systems)
+        # Images are bigger but we need this widget to stay small as
+        # Cnchi's window is small (so it works with low res systems)
         if height > 200:
             height = 200
 
@@ -233,7 +237,10 @@ class TimezoneMap(Gtk.Widget):
         attr.x = allocation.x
         attr.y = allocation.y
         attr.visual = self.get_visual()
-        attr.event_mask = self.get_events() | Gdk.EventMask.EXPOSURE_MASK | Gdk.EventMask.BUTTON_PRESS_MASK
+        attr.event_mask = (
+            self.get_events() |
+            Gdk.EventMask.EXPOSURE_MASK |
+            Gdk.EventMask.BUTTON_PRESS_MASK)
         wat = Gdk.WindowAttributesType
         mask = wat.X | wat.Y | wat.VISUAL
         window = Gdk.Window(self.get_parent_window(), attr, mask)
@@ -248,13 +255,16 @@ class TimezoneMap(Gtk.Widget):
         self.set_window(window)
 
     def draw_text_bubble(self, cr, pointx, pointy):
-        corner_radius = 9.0
+        """ Draw bubble with information text """
         margin_top = 12.0
         margin_bottom = 12.0
         margin_left = 24.0
         margin_right = 24.0
 
-        if len(self._bubble_text) <= 0:
+        # Corner radius
+        rounded = 9.0
+
+        if not self._bubble_text:
             return
 
         alloc = self.get_allocation()
@@ -289,11 +299,10 @@ class TimezoneMap(Gtk.Widget):
 
         # Draw the bubble
         cr.new_sub_path()
-        cr.arc(width - corner_radius, corner_radius, corner_radius, math.radians(-90), math.radians(0))
-        cr.arc(width - corner_radius, height - corner_radius, corner_radius, math.radians(0), math.radians(90))
-        cr.arc(corner_radius, height - corner_radius, corner_radius, math.radians(90), math.radians(180))
-        cr.arc(corner_radius, corner_radius, corner_radius, math.radians(180), math.radians(270))
-
+        cr.arc(width - rounded, rounded, rounded, -math.pi / 2, 0)
+        cr.arc(width - rounded, height - rounded, rounded, 0, math.pi / 2)
+        cr.arc(rounded, height - rounded, rounded, math.pi / 2, math.pi)
+        cr.arc(rounded, rounded, rounded, math.pi, math.radians(270))
         cr.close_path()
 
         cr.set_source_rgba(0.2, 0.2, 0.2, 0.7)
@@ -306,6 +315,7 @@ class TimezoneMap(Gtk.Widget):
         cr.restore()
 
     def do_draw(self, cr):
+        """ Draw widget """
         alloc = self.get_allocation()
 
         # Paint background
@@ -369,6 +379,7 @@ class TimezoneMap(Gtk.Widget):
                 cr.paint()
 
     def set_location(self, tz_location):
+        """ Set map location """
         self._tz_location = tz_location
 
         if tz_location is not None:
@@ -380,7 +391,8 @@ class TimezoneMap(Gtk.Widget):
                 if info.get_daylight() == 1:
                     daylight_offset = -1.0
 
-            self._selected_offset = tz_location.get_utc_offset().total_seconds() / (60.0 * 60.0) + daylight_offset
+            seconds = tz_location.get_utc_offset().total_seconds()
+            self._selected_offset = seconds / 3600.0 + daylight_offset
 
             self.emit("location-changed", self._tz_location)
 
@@ -390,6 +402,7 @@ class TimezoneMap(Gtk.Widget):
             self._selected_offset = 0.0
 
     def get_loc_for_xy(self, x, y):
+        """ Get location from map position """
         rowstride = self._color_map.get_rowstride()
         pixels = self._color_map.get_pixels()
 
@@ -398,9 +411,12 @@ class TimezoneMap(Gtk.Widget):
         my_blue = pixels[int(rowstride * y + x * 4) + 2]
         my_alpha = pixels[int(rowstride * y + x * 4) + 3]
 
-        for color_code in color_codes:
+        for color_code in COLOR_CODES:
             (offset, red, green, blue, alpha) = color_code
-            if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
+            if (red == my_red and
+                    green == my_green and
+                    blue == my_blue and
+                    alpha == my_alpha):
                 self._selected_offset = offset
                 break
 
@@ -451,6 +467,7 @@ class TimezoneMap(Gtk.Widget):
         return True
 
     def set_timezone(self, time_zone):
+        """ Set timezone """
         real_tz = self.tzdb.get_loc(time_zone)
 
         ret = False
@@ -459,7 +476,9 @@ class TimezoneMap(Gtk.Widget):
             tz_to_compare = real_tz
 
             for tz_location in self.tzdb.get_locations():
-                if tz_location.get_property('zone') == tz_to_compare.get_property('zone'):
+                zone1 = tz_location.get_property('zone')
+                zone2 = tz_to_compare.get_property('zone')
+                if zone1 == zone2:
                     self.set_bubble_text(tz_location)
                     self.set_location(tz_location)
                     self.queue_draw()
@@ -469,19 +488,25 @@ class TimezoneMap(Gtk.Widget):
         return ret
 
     def set_bubble_text(self, location):
+        """ Set text that will be shown inside a bubble """
         tzinfo = location.get_info()
         dt_now = datetime.now(tzinfo)
         current_time = "%02d:%02d" % (dt_now.hour, dt_now.minute)
         city_name = location.get_info().tzname("").split("/")[1]
         city_name = city_name.replace("_", " ")
         country_name = location.get_property('human_country')
-        self._bubble_text = "{0}, {1}\n{2}".format(city_name, country_name, current_time)
+        self._bubble_text = "{0}, {1}\n{2}".format(
+            city_name,
+            country_name,
+            current_time)
         self.queue_draw()
 
     def get_location(self):
+        """ Return timezone location """
         return self._tz_location
 
     def get_timezone_at_coords(self, latitude, longitude):
+        """ Get timezone from latitude, longitude """
         x = int(2048.0 / 360.0 * (180.0 + longitude))
         y = int(1024.0 / 180.0 * (90.0 - latitude))
 
@@ -510,11 +535,13 @@ class TimezoneMap(Gtk.Widget):
 
     @staticmethod
     def convert_longitude_to_x(longitude, map_width):
+        """ Convert longitude to x coordinate """
         xdeg_offset = -6.0
-        return (map_width * (180.0 + longitude) / 360.0) + (map_width * xdeg_offset / 180.0)
+        return map_width * (0.5 + (longitude / 360.0) + (xdeg_offset / 180.0))
 
     @staticmethod
     def convert_latitude_to_y(latitude, map_height):
+        """ Convert latitude to y coordinate """
         bottom_lat = -59.0
         top_lat = 81.0
 
@@ -524,21 +551,23 @@ class TimezoneMap(Gtk.Widget):
 
         full_range = 4.6068250867599998
         top_offset = full_range * top_per
-        map_range = math.fabs(1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))) - top_offset)
+        tangent = math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))
+        map_range = math.fabs(1.25 * math.log(tangent) - top_offset)
         y = math.fabs(y - top_offset)
-        y /= map_range
+        y = y / map_range
         y = y * map_height
         return y
 
     @staticmethod
-    def clamp(x, min_value, max_value):
-        if x < min_value:
-            x = min_value
-        elif x > max_value:
-            x = max_value
-        return x
+    def clamp(x_value, min_value, max_value):
+        """ Set x_value inside limits """
+        if x_value < min_value:
+            x_value = min_value
+        elif x_value > max_value:
+            x_value = max_value
+        return x_value
 
-if __name__ == '__main__':
+def test():
     win = Gtk.Window()
     tzmap = TimezoneMap()
     win.add(tzmap)
@@ -555,3 +584,6 @@ if __name__ == '__main__':
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
+
+if __name__ == '__main__':
+    test()
