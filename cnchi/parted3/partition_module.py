@@ -75,6 +75,7 @@ PED_PARTITION_LEGACY_BOOT = 15
 
 @misc.raise_privileges
 def get_devices():
+    """ Get all devices """
     device_list = parted.getAllDevices()
     disk_dic = {}
 
@@ -114,7 +115,7 @@ def get_devices():
                 result = UNRECOGNISED_DISK_LABEL
             except Exception as general_error:
                 logging.error(general_error)
-                msg = _("Exception: {0}.\nFor more information take a look at /tmp/cnchi.log").format(general_error)
+                msg = _("Cannot get devices information: {0}").format(general_error)
                 show.error(None, msg)
                 result = UNKNOWN_ERROR
             finally:
@@ -124,6 +125,7 @@ def get_devices():
 
 
 def make_new_disk(dev_path, new_type):
+    """ Make a new disk """
     new_dev = parted.Device(dev_path)
     new_disk = parted.freshDisk(new_dev, new_type)
     return new_disk
@@ -131,6 +133,7 @@ def make_new_disk(dev_path, new_type):
 
 @misc.raise_privileges
 def get_partitions(diskob):
+    """ Get partitions from disk object """
     part_dic = {}
     # Do not let user specify more than this number of primary partitions
     # disk_max_pri = diskob.maxPrimaryPartitionCount
@@ -182,6 +185,7 @@ def get_partitions(diskob):
 
 @misc.raise_privileges
 def delete_partition(diskob, part):
+    """ Remove partition from disk object """
     try:
         diskob.deletePartition(part)
     except Exception as general_error:
@@ -193,6 +197,7 @@ def delete_partition(diskob, part):
 
 
 def get_partition_size(diskob, part):
+    """ Get disk object's partition size """
     dev = diskob.device
     sec_size = dev.sectorSize
     mbs = (sec_size * part.length) / 1000000
@@ -202,6 +207,7 @@ def get_partition_size(diskob, part):
 
 
 def get_size_txt(length, sector_size):
+    """ Get size string """
     size = length * sector_size
     size_txt = "%dk" % size
 
@@ -218,6 +224,7 @@ def get_size_txt(length, sector_size):
 
 @misc.raise_privileges
 def create_partition(diskob, part_type, geom):
+    """ Create a new partition """
     # A lot of this is similar to Anaconda, but customized to fit our needs
     nstart = geom.start
     nend = geom.end
@@ -251,16 +258,17 @@ def create_partition(diskob, part_type, geom):
 
 def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
                  beginning=True):
-    # OK, two new specs.  First, you must specify the first sector
-    # and the last sector of the free space.  This way we can prevent out of
-    # bound and math problems.  Currently, I use 5 sectors to 'round' to limits
-    # We can change later to be the minimum allowed size for partition
-    # However, if user is advanced and purposely wants to NOT include some
-    # area of disk between 5 and smallest allowed partition, we should let him.
-    #
-    # beginning defaults to True.  This starts partition at beginning of
-    # free space.  Specify to False to instead start at end
-    # let's use kb = 1000b, mb = 10000000b, etc etc
+    """ Helper function to calculate geometry.
+    OK, two new specs.  First, you must specify the first sector
+    and the last sector of the free space.  This way we can prevent out of
+    bound and math problems.  Currently, I use 5 sectors to 'round' to limits
+    We can change later to be the minimum allowed size for partition
+    However, if user is advanced and purposely wants to NOT include some
+    area of disk between 5 and smallest allowed partition, we should let him.
+
+    'beginning' defaults to True.  This starts partition at beginning of
+    free space.  Specify to False to instead start at end
+    let's use kb = 1000b, mb = 10000000b, etc etc """
 
     dev = diskob.device
     sec_size = dev.sectorSize
@@ -283,7 +291,7 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
 
 
 def check_mounted(part):
-    # Simple check to see if partition is mounted (or busy)
+    """" Simple check to see if partition is mounted (or busy) """
     if part.busy:
         return 1
     else:
@@ -291,10 +299,12 @@ def check_mounted(part):
 
 
 def get_used_space(part):
+    """ Get partition used space """
     return get_used_space_from_path(part.path)
 
 
 def get_used_space_from_path(path):
+    """ Get partition used space """
     try:
         cmd = ["df", "-H", path]
         result = subprocess.check_output(cmd).decode()
@@ -311,8 +321,8 @@ def get_used_space_from_path(path):
 
 
 def get_largest_size(diskob, part):
-    # Call this to set the initial size of new partition in frontend, but also
-    # the MAX to which user may enter.
+    """ Call this to set the initial size of new partition in frontend, but also
+    the MAX to which user may enter. """
     dev = diskob.device
     sec_size = dev.sectorSize
     mbs = (sec_size * part.length) / 1000000
@@ -324,33 +334,38 @@ def get_largest_size(diskob, part):
 
 
 def set_flag(flagno, part):
+    """ Set partition flag """
     ret = (0, None)
     try:
         part.setFlag(flagno)
-    except Exception as e:
-        ret = (1, e)
+    except Exception as general_error:
+        ret = (1, general_error)
     return ret
 
 
 def unset_flag(flagno, part):
+    """ Remove partition flag """
     ret = (0, None)
     try:
         part.setFlag(flagno)
-    except Exception as e:
-        ret = (1, e)
+    except Exception as general_error:
+        ret = (1, general_error)
     return ret
 
 
 def get_flags(part):
+    """ Get partition flags """
     return part.getFlagsAsString
 
 
 def get_flag(part, flag):
+    """ Get partition flag """
     return part.getFlag(flag)
 
 
 @misc.raise_privileges
 def finalize_changes(diskob):
+    """ Store all changes (we won't be able to undo them!) """
     try:
         diskob.commit()
     except parted._ped.IOException as io_error:
@@ -418,8 +433,6 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     create_partition(disk, 0, my_geometry)
 
     finalize_changes(disk)
-
-# ----------------------------------------------------------------------------
 
 
 def example():
