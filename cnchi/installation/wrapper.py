@@ -33,15 +33,17 @@ import logging
 
 from misc.extra import InstallError
 
-
 def wipefs(device):
     """ Wipe fs from device """
+    cmd = ["wipefs", "-a", device]
     try:
-        subprocess.check_call(["wipefs", "-a", device])
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
         txt = "Cannot wipe the filesystem of device %s. Command %s has failed: %s"
-        logging.warning(txt, device, err.cmd, err.output)
-
+        logging.error(txt, device, err.cmd, err.output)
+        txt = _("Cannot wipe the filesystem of device {0}. Command {1} has failed: {2}")
+        txt = txt.format(device, err.cmd, err.output)
+        raise InstallError(txt)
 
 def dd(input_device, output_device, bs=512, count=2048):
     """ Helper function to call dd """
@@ -61,17 +63,16 @@ def dd(input_device, output_device, bs=512, count=2048):
 def sgdisk(command, device):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk', "--{0}".format(command), device]
-    subprocess.check_call(cmd)
+    try:
+        subprocess.check_output(cmd).decode()
+    except subprocess.CalledProcessError as err:
+        logging.error("Command %s failed: %s", err.cmd, err.output)
+        txt = _("Command {0} failed: {1}").format(err.cmd, err.output)
+        raise InstallError(txt)
 
 
 def sgdisk_new(device, part_num, label, size, hex_code):
     """ Helper function to call sgdisk --new (GPT) """
-    cmd = [
-        'sgdisk',
-        '--new={0}:0:+{1}M'.format(part_num, size),
-        '--typecode={0}:{1}'.format(part_num, hex_code),
-        '--change-name={0}:{1}'.format(part_num, label),
-        device]
     # --new: Create a new partition, numbered partnum, starting at sector start
     #        and ending at sector end.
     # Parameters: partnum:start:end (zero in start or end means using default
@@ -83,10 +84,17 @@ def sgdisk_new(device, part_num, label, size, hex_code):
     # Parameters: partnum:hexcode
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
-    logging.debug(" ".join(cmd))
 
+    # logging.debug(" ".join(cmd))
+
+    cmd = [
+        'sgdisk',
+        '--new={0}:0:+{1}M'.format(part_num, size),
+        '--typecode={0}:{1}'.format(part_num, hex_code),
+        '--change-name={0}:{1}'.format(part_num, label),
+        device]
     try:
-        subprocess.check_call(cmd)
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
         txt = txt.format(device, err.cmd, err.output)
@@ -98,18 +106,11 @@ def sgdisk_new(device, part_num, label, size, hex_code):
 
 def parted_set(device, number, flag, state):
     """ Helper function to call set parted command """
+    cmd = [
+        'parted', '--align', 'optimal', '--script', device,
+        'set', number, flag, state]
     try:
-        cmd = [
-            'parted',
-            '--align',
-            'optimal',
-            '--script',
-            device,
-            'set',
-            number,
-            flag,
-            state]
-        subprocess.check_call(cmd)
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
         txt = "Cannot set flag {0} on device {1}. Command {2} has failed: {3}"
         txt = txt.format(flag, device, err.cmd, err.output)
@@ -131,26 +132,18 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         end_str = "{0}MiB".format(end)
 
     cmd = [
-        'parted',
-        '--align',
-        'optimal',
-        '--script',
-        device,
+        'parted', '--align', 'optimal', '--script', device,
         '--',
-        'mkpart',
-        ptype,
-        filesystem,
-        start_str,
-        end_str]
+        'mkpart', ptype, filesystem, start_str, end_str]
 
     try:
-        subprocess.check_call(cmd)
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
-        txt = txt.format(device, err.cmd, err.stderr)
+        txt = txt.format(device, err.cmd, err.output)
         logging.error(txt)
         txt = _("Cannot create a new partition on device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.stderr)
+        txt = txt.format(device, err.cmd, err.output)
         raise InstallError(txt)
 
 
@@ -158,20 +151,17 @@ def parted_mktable(device, table_type="msdos"):
     """ Helper function to call mktable parted command """
 
     cmd = [
-        "parted",
-        "--align",
-        "optimal",
-        "--script",
-        device,
-        "mktable",
-        table_type]
+        "parted", "--align", "optimal", "--script", device,
+        "mktable", table_type]
 
     try:
-        subprocess.check_call(cmd)
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
-        txt = "Cannot create a new partition table on device {0}. Command {1} failed: {2}"
-        txt = txt.format(device, err.cmd, err.stderr)
+        txt = ("Cannot create a new partition table on device {0}. "
+               "Command {1} failed: {2}")
+        txt = txt.format(device, err.cmd, err.output)
         logging.error(txt)
-        txt = _("Cannot create a new partition table on device {0}. Command {1} failed: {2}")
-        txt = txt.format(device, err.cmd, err.stderr)
+        txt = _("Cannot create a new partition table on device {0}. "
+                "Command {1} failed: {2}")
+        txt = txt.format(device, err.cmd, err.output)
         raise InstallError(txt)

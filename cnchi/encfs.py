@@ -139,8 +139,8 @@ def setup(username, dest_dir, password):
         encfs.communicate()
         if encfs.poll() != 0:
             logging.error("Can't run encfs. Bad password?")
-    except subprocess.CalledProcessError as process_error:
-        logging.error(process_error)
+    except subprocess.CalledProcessError as err:
+        logging.error("Error running %s: %s", err.cmd, err.output)
 
     # Restore user home files
     for name in os.listdir(backup_dir):

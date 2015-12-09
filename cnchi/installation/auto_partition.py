@@ -78,9 +78,9 @@ def unmount(directory):
     except subprocess.CalledProcessError:
         logging.debug("Unmounting %s failed. Trying lazy arg.", directory)
         try:
-            subprocess.call(["umount", "-l", directory])
-        except subprocess.CalledProcessError as process_error:
-            logging.warning("Unmounting %s failed: %s", directory, process_error)
+            subprocess.check_output(["umount", "-l", directory])
+        except subprocess.CalledProcessError as err:
+            logging.warning("Unmounting %s failed: %s", directory, err.output)
 
 
 def unmount_all_in_directory(dest_dir):
@@ -130,7 +130,7 @@ def unmount_all_in_device(device):
         swaps = subprocess.check_output(cmd).decode().split("\n")
         for name in filter(None, swaps):
             if "/dev/zram" not in name:
-                subprocess.check_call(["swapoff", name])
+                subprocess.check_output(["swapoff", name])
     except subprocess.CalledProcessError as err:
         logging.warning("Command %s failed: %s", err.cmd, err.output)
 
@@ -180,21 +180,30 @@ def remove_lvm(device):
             for pvolume in pvolumes:
                 pvolume = pvolume.strip(" ")
                 if device in pvolume:
-                    subprocess.check_call(["pvremove", "-ff", pvolume])
+                    subprocess.check_output(["pvremove", "-ff", pvolume])
     except subprocess.CalledProcessError as err:
-        logging.warning("Can't delete existent LVM volumes in device %s, command %s failed: %s", device, err.cmd, err.output)
+        logging.warning(
+            "Can't delete existent LVM volumes in device %s, command %s failed: %s",
+            device,
+            err.cmd,
+            err.output)
 
 def close_antergos_luks_devices():
     """ Close LUKS devices (they may have been left open because of a previous
     failed installation) """
 
+    volumes = ["/dev/mapper/cryptAntergos", "/dev/mapper/cryptAntergosHome"]
+
     try:
-        if os.path.exists("/dev/mapper/cryptAntergos"):
-            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergos"])
-        if os.path.exists("/dev/mapper/cryptAntergosHome"):
-            subprocess.check_call(["cryptsetup", "luksClose", "/dev/mapper/cryptAntergosHome"])
+        for volume in volumes:
+            if os.path.exists(volume):
+                cmd = ["cryptsetup", "luksClose", volume]
+                subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
-        logging.warning("Can't close already opened LUKS devices, command %s failed: %s", err.cmd, err.output)
+        logging.warning(
+            "Can't close already opened LUKS devices, command %s failed: %s",
+            err.cmd,
+            err.output)
 
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
@@ -221,11 +230,13 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         # Set up luks with a keyfile
         try:
-            cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
-            subprocess.check_call(cmd)
+            cmd = [
+                "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
+            subprocess.check_output(cmd)
 
-            cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
-            subprocess.check_call(cmd)
+            cmd = [
+                "cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
+            subprocess.check_output(cmd)
         except subprocess.CalledProcessError as err:
             txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(
                 luks_device, err.cmd, err.output)
@@ -243,12 +254,18 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         # aes-xts-plain
         # aes-cbc-essiv:sha256
         try:
-            cmd = ["cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device]
+            cmd = [
+                "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device]
             proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
             proc.communicate(input=luks_pass_bytes)
 
-            cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
-            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
+            cmd = [
+                "cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
             proc.communicate(input=luks_pass_bytes)
         except subprocess.CalledProcessError as err:
             txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(

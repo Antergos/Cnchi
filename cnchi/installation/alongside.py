@@ -69,17 +69,16 @@ def get_partition_size_info(partition_path, human=False):
         if not already_mounted:
             tmp_dir = tempfile.mkdtemp()
             cmd = ["mount", partition_path, tmp_dir]
-            subprocess.call(cmd)
+            subprocess.check_output(cmd)
         if human:
             cmd = ['df', '-h', partition_path]
         else:
             cmd = ['df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
         if not already_mounted:
-            subprocess.call(['umount', '-l', tmp_dir])
-    except subprocess.CalledProcessError as process_error:
-        txt = "Error running command %s: %s".format(" ".join(cmd), process_error)
-        logging.error(txt)
+            subprocess.check_output(['umount', '-l', tmp_dir])
+    except subprocess.CalledProcessError as err:
+        logging.error("Error running command %s: %s", err.cmd, err.output)
         return
 
     if os.path.exists(tmp_dir):

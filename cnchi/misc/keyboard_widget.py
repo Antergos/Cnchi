@@ -440,7 +440,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",
-                " ".join(cmd),
+                process_error.cmd,
                 process_error)
             return
 

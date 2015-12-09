@@ -157,16 +157,16 @@ class Hardware(object):
                 dest_dir,
                 self.class_name]
             try:
-                subprocess.check_call(cmd, timeout=300)
+                subprocess.check_output(cmd, timeout=300)
                 logging.debug("Script '%s' completed successfully.", script_path)
-            except subprocess.CalledProcessError as process_error:
+            except subprocess.CalledProcessError as err:
                 # Even though Post-install script call has failed we
                 # will try to continue with the installation.
                 logging.error(
-                    "Error running %s script, command %s failed. Output %s",
+                    "Error running %s script, command %s failed: %s",
                     script_path,
-                    process_error.cmd,
-                    process_error.output)
+                    err.cmd,
+                    err.output)
             except subprocess.TimeoutExpired as timeout_error:
                 logging.error(timeout_error)
 
@@ -221,10 +221,9 @@ class HardwareInstall(object):
         try:
             # Detect devices
             devices = self.get_devices()
-        except subprocess.CalledProcessError as process_error:
-            txt = "Unable scan devices, command {0} failed: {1}".format(
-                process_error.cmd,
-                process_error.output)
+        except subprocess.CalledProcessError as err:
+            txt = "Unable scan devices, command {0} failed: {1}"
+            txt = txt.format(err.cmd, err.output)
             logging.error(txt)
             return
 
