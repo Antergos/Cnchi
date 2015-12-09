@@ -138,7 +138,7 @@ class Download(object):
 
             self.queue_event('percent', '0')
 
-            txt = _("Downloading {0} {1} ({2}/{3})...").format(
+            txt = _("Fetching {0} {1} ({2}/{3})...").format(
                 element['identity'],
                 element['version'],
                 downloaded + 1,
@@ -156,8 +156,9 @@ class Download(object):
                 else:
                     needs_to_download = False
                     logging.debug(
-                        "File %s already exists, Cnchi will not overwrite it",
-                        element['filename'])
+                        "File %s found in %s cache, there is no need to download it",
+                        element['filename'],
+                        self.pacman_cache_dir)
             else:
                 needs_to_download = True
                 # Check all cache directories
@@ -171,12 +172,13 @@ class Download(object):
                         # We're lucky, the package is already downloaded
                         # in the cache the user has given us
                         # and its md5 checks out (if there is a md5)
-                        logging.debug(
-                            "%s found in suplied xz packages' cache. Copying...",
-                            element['filename'])
                         try:
                             shutil.copy(dst_xz_cache_path, dst_path)
                             needs_to_download = False
+                            logging.debug(
+                                "%s found in %s cache, there is no need to download it",
+                                element['filename'],
+                                xz_cache_dir)
                             # Get out of the cache for loop, as we managed
                             # to find the package in this cache directory
                             break
@@ -214,7 +216,8 @@ class Download(object):
     def download_package(self, element, dst_path):
         """ Package wasn't previously downloaded or its md5 was wrong
             We'll have to download it
-            Let's download our file using its url """
+            Let's download our file using its url
+            Checks all mirrors if necessary """
 
         logging.debug(
             "Looking for %s-%s in %d mirrors...",
@@ -228,7 +231,7 @@ class Download(object):
                 # Something bad has happened, let's try another mirror
                 download_ok = False
                 logging.debug(
-                    "Package %s v%s has an empty url for this mirror",
+                    "Package %s-%s has an empty url for this mirror",
                     element['identity'],
                     element['version'])
             else:
