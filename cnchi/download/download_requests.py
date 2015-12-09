@@ -88,29 +88,28 @@ class Download(object):
 
         self.copy_to_cache_threads = []
 
-    def is_element_hash_ok(self, element, dst_path):
-        """ Checks file md5 hash """
-        # element['hash'] is not always available
-        # that is why we use get() with default of False
-        return self.is_hash_ok(dst_path, element.get('hash', False))
 
-    def is_hash_ok(self, dst_path, md5hash):
+    def is_hash_ok(self, path, element=None, md5hash=None):
         """ Checks file md5 hash """
+        # Note: path must exist!
+
+        if element:
+            # element['hash'] is not always available
+            md5hash = element.get('hash', False)
+            identity = element['identity']
+            filename = element['filename']
+        elif md5hash:
+            identity = path
+            filename = path
 
         if not md5hash:
-            logging.debug(
-                    'Checksum unavailable for package: %s',
-                    element['identity'])
-            self.queue_event(
-                'cache_pkgs_md5_check_failed',
-                element['identity'])
-            # We can't check md5, let's suppose it's ok
+            logging.debug('Checksum unavailable for package: %s', identity)
+            self.queue_event('cache_pkgs_md5_check_failed', identity)
+            # We cannot check md5, let's assume it's ok
             return True
 
-        if md5hash != get_md5(dst_path):
-            logging.warning(
-                "MD5 hash of file %s does not match what's in the repository database!",
-                element['filename'])
+        if md5hash != get_md5(path):
+            logging.warning("MD5 hash of file %s does not match!", filename)
             return False
 
         # If we reach this point, md5 hash is ok
@@ -150,7 +149,7 @@ class Download(object):
             if os.path.exists(dst_path):
                 # File already exists in destination pacman's cache
                 # (previous install?). We check the file md5 hash.
-                if not self.is_element_hash_ok(element, dst_path):
+                if not self.is_hash_ok(path=dst_path, element=element):
                     # We're sure it's a wrong hash. Force to download it
                     needs_to_download = True
                 else:
@@ -168,7 +167,7 @@ class Download(object):
                         element['filename'])
 
                     if (os.path.exists(dst_xz_cache_path) and
-                            self.is_element_hash_ok(element, dst_xz_cache_path)):
+                            self.is_hash_ok(path=dst_xz_cache_path, element=element)):
                         # We're lucky, the package is already downloaded
                         # in the cache the user has given us
                         # and its md5 checks out (if there is a md5)
@@ -293,12 +292,8 @@ class Download(object):
                         self.queue_event('progress_bar_show_text', msg)
 
                 # Check hash of downloaded package
-                if md5hash and not self.is_hash_ok(dst_path, md5hash):
+                if md5hash and not self.is_hash_ok(path=dst_path, md5hash=md5hash):
                     # Wrong md5! Force to download it again
-                    logging.debug(
-                        "MD5 hash of file %s (%s) do not match!",
-                        element['filename'],
-                        url)
                     return False
         except (socket.timeout,
                 requests.exceptions.Timeout,
