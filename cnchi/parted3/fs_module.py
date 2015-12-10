@@ -59,7 +59,9 @@ def get_label(part):
     if "LABEL" in info.keys():
         return info['LABEL']
     else:
-        logging.debug("Can't get partition %s label (or it does not have any)", part)
+        logging.debug(
+            "Can't get partition %s label (or it does not have any)",
+            part)
         return ""
 
 
@@ -75,7 +77,7 @@ def get_info(part):
             cmd = ['blkid', '-c', '/dev/null', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
-            logging.warning(err)
+            logging.warning("Error running %s: %s", err.cmd, err.output)
 
         for info in ret.split():
             if '=' in info:
@@ -94,7 +96,7 @@ def get_type(part):
             cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
-            logging.warning(err)
+            logging.warning("Error running %s: %s", err.cmd, err.output)
 
     return ret
 
@@ -107,7 +109,7 @@ def get_pknames():
         cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
         info = subprocess.check_output(cmd).decode().strip().split('\n')
     except subprocess.CalledProcessError as err:
-        logging.warning(err)
+        logging.warning("Error running %s: %s", err.cmd, err.output)
 
     if info:
         # skip header
@@ -154,7 +156,7 @@ def label_fs(fstype, part, label):
             result = subprocess.check_output(cmd).decode()
             ret = (0, result)
         except subprocess.CalledProcessError as err:
-            logging.error(err)
+            logging.error("Error running %s: %s", err.cmd, err.output)
             ret = (1, err)
             # check_call returns exit code.  0 should mean success
     else:
@@ -178,8 +180,11 @@ def create_fs(part, fstype, label='', other_opts=''):
     # or exception message error if failure
 
     if not fstype:
-        logging.error("Cannot make a filesystem of type None in partition %s", part)
-        return True, _("Cannot make a filesystem of type None in partition {0}").format(part)
+        msg = "Cannot make a filesystem of type None in partition %s"
+        logging.error(msg, part)
+        msg = _("Cannot make a filesystem of type None in partition {0}")
+        msg = msg.format(part)
+        return True, msg
 
     fstype = fstype.lower()
 
@@ -199,11 +204,13 @@ def create_fs(part, fstype, label='', other_opts=''):
               'swap': 'mkswap'}
 
     if fstype not in comdic.keys():
-        return True, _("Unknown filesystem {0} for partition {1}").format(fstype, part)
+        msg = _("Unknown filesystem {0} for partition {1}")
+        msg = msg.format(fstype, part)
+        return True, msg
 
     cmd = comdic[fstype]
 
-    if len(label) > 0:
+    if label:
         lbldic = {'ext2': '-L "%(label)s"',
                   'ext3': '-L "%(label)s"',
                   'ext4': '-L "%(label)s"',
@@ -220,7 +227,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                   'swap': '-L "%(label)s"'}
         cmd += " " + lbldic[fstype]
 
-    if len(other_opts) == 0:
+    if not other_opts:
         default_opts = {'ext2': '-m 1',
                         'ext3': '-m 1 -O dir_index',
                         'ext4': '-m 1 -O dir_index',
@@ -237,7 +244,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                         'swap': ''}
         other_opts = default_opts[fstype]
 
-    if len(other_opts) > 0:
+    if other_opts:
         cmd += " %(other_opts)s"
 
     cmd += " %(part)s"
@@ -247,7 +254,7 @@ def create_fs(part, fstype, label='', other_opts=''):
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error("Error running %s: %s", err.cmd, err.output)
         ret = (True, err)
     return ret
 
@@ -302,8 +309,8 @@ def resize_ntfs(part, new_size_in_mb):
         cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
         result = subprocess.check_output(cmd)
         logging.debug(result)
-    except subprocess.CalledProcessError as process_error:
-        logging.error(process_error)
+    except subprocess.CalledProcessError as err:
+        logging.error("Error running %s: %s", err.cmd, err.output)
         return False
 
     return True
@@ -327,7 +334,7 @@ def resize_ext(part, new_size_in_mb):
         cmd = ["resize2fs", part, "{0}M".format(new_size_in_mb)]
         result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error("Error running %s: %s", err.cmd, err.output)
         return False
 
     logging.debug(result)
