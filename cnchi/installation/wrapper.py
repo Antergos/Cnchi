@@ -37,12 +37,12 @@ def wipefs(device):
     """ Wipe fs from device """
     cmd = ["wipefs", "-a", device]
     try:
-        output = subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd).decode()
     except subprocess.CalledProcessError as err:
         txt = "Cannot wipe the filesystem of device %s. Command %s has failed: %s"
-        logging.error(txt, device, err.cmd, output)
+        logging.error(txt, device, err.cmd, err.output)
         txt = _("Cannot wipe the filesystem of device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, output)
+        txt = txt.format(device, err.cmd, err.output)
         raise InstallError(txt)
 
 def dd(input_device, output_device, bs=512, count=2048):
