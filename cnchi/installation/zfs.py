@@ -749,7 +749,7 @@ class InstallationZFS(GtkBaseBox):
             pool_size = subprocess.check_output(cmd).decode()
             # Force to use a point as float delimiter
             # (everyone except English/Americans uses a comma)
-            pool_size = pool_size.replace(",", ".")
+            pool_size = float(pool_size.replace(",", "."))
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-2]) // 1024
             elif 'G' in pool_size:
