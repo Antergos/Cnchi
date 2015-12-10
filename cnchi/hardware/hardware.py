@@ -89,7 +89,13 @@ class Hardware(object):
             return False
 
         # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        try:
+            lines = subprocess.check_output(["lspci", "-n"], stderr=subprocess.STDOUT)
+            lines = lines.decode().split("\n")
+        except subprocess.CalledProcessError as err:
+            logging.warning("Cannot detect hardware components : %s", err.output.decode())
+            return False
+
         for line in lines:
             if len(line) > 0:
                 class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
@@ -222,8 +228,8 @@ class HardwareInstall(object):
             # Detect devices
             devices = self.get_devices()
         except subprocess.CalledProcessError as err:
-            txt = "Unable scan devices, command {0} failed: {1}"
-            txt = txt.format(err.cmd, err.output)
+            txt = "Unable to scan devices, command {0} failed: {1}"
+            txt = txt.format(err.cmd, err.output.decode())
             logging.error(txt)
             return
 
@@ -302,8 +308,10 @@ class HardwareInstall(object):
         devices = []
 
         # Get PCI devices
-        lines = subprocess.check_output(["/usr/bin/lspci", "-n"])
+        cmd = ["/usr/bin/lspci", "-n"]
+        lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         lines = lines.decode().split("\n")
+
         for line in lines:
             if len(line) > 0:
                 class_id = line.split()[1].rstrip(":")[0:2]
@@ -311,8 +319,10 @@ class HardwareInstall(object):
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
-        lines = subprocess.check_output(["/usr/bin/lsusb"])
+        cmd = ["/usr/bin/lsusb"]
+        lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         lines = lines.decode().split("\n")
+
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")

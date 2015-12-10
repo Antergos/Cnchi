@@ -1004,9 +1004,12 @@ class InstallationAdvanced(GtkBaseBox):
             logging.info("Unmounting %s...", part.path)
             cmd = ['umount', part.path]
             try:
-                subprocess.check_output(cmd)
+                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as err:
-                logging.error("Cannot unmount %s: %s", part.path, err.output)
+                logging.error(
+                    "Cannot unmount %s: %s",
+                    part.path,
+                    err.output.decode())
 
         # Is it worth to show some warning message here?
         # No, created delete list (self.to_be_deleted) as part of
@@ -1969,10 +1972,10 @@ class InstallationAdvanced(GtkBaseBox):
             # Unmount them without asking.
             try:
                 cmd = ['umount', '-l', partition_path]
-                subprocess.check_output(cmd)
+                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 logging.debug("%s unmounted", mount_point)
             except subprocess.CalledProcessError as err:
-                logging.error("Command %s failed: %s", err.cmd, err.output)
+                logging.error("Command %s failed: %s", err.cmd, err.output.decode())
         elif mounted:
             # unmount it!
             show.warning(self.get_toplevel(), msg)
@@ -1981,18 +1984,18 @@ class InstallationAdvanced(GtkBaseBox):
                     # cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
                     # subprocess.Popen(cmd, stdout=subprocess.PIPE)
                     cmd = ["swapoff", partition_path]
-                    subprocess.check_output(cmd)
+                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                     logging.debug("Swap partition %s unmounted", partition_path)
                 except subprocess.CalledProcessError as err:
-                    logging.error("Error running command %s: %s", err.cmd, err.output)
+                    logging.error("Error running command %s: %s", err.cmd, err.output.decode())
             else:
                 try:
                     cmd = ['umount', partition_path]
                     # subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                    subprocess.check_output(cmd)
+                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                     logging.debug("%s unmounted", mount_point)
                 except subprocess.CalledProcessError as err:
-                    logging.error("Error running command %s: %s", err.cmd, err.output)
+                    logging.error("Error running command %s: %s", err.cmd, err.output.decode())
         else:
             logging.warning(
                 "%s shows as mounted (busy) but it has no mount point",
@@ -2175,15 +2178,16 @@ class InstallationAdvanced(GtkBaseBox):
         # Sometimes a swap partition can still be active at this point
         cmd = ["swapon", "--show=NAME", "--noheadings"]
         try:
-            swaps = subprocess.check_output(cmd).decode().split("\n")
+            swaps = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            swaps = swaps.decode().split("\n")
             for name in filter(None, swaps):
                 if "/dev/zram" not in name:
                     # cmd = ['sh', '-c', 'swapoff {0}'.format(name)]
                     # subprocess.Popen(cmd, stdout=subprocess.PIPE)
                     cmd = ["swapoff", name]
-                    subprocess.check_output(cmd)
+                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            logging.error("Error running command %s: %s", err.cmd, err.output)
+            logging.error("Error running command %s: %s", err.cmd, err.output.decode())
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap

@@ -37,12 +37,12 @@ def wipefs(device):
     """ Wipe fs from device """
     cmd = ["wipefs", "-a", device]
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         txt = "Cannot wipe the filesystem of device %s. Command %s has failed: %s"
-        logging.error(txt, device, err.cmd, err.output)
+        logging.error(txt, device, err.cmd, err.output.decode())
         txt = _("Cannot wipe the filesystem of device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
 
 def dd(input_device, output_device, bs=512, count=2048):
@@ -55,7 +55,7 @@ def dd(input_device, output_device, bs=512, count=2048):
         'count={0}'.format(count),
         'status=noxfer']
     try:
-        subprocess.check_call(cmd)
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         logging.warning("Command %s failed: %s", err.cmd, err.output)
 
@@ -64,10 +64,10 @@ def sgdisk(command, device):
     """ Helper function to call sgdisk (GPT) """
     cmd = ['sgdisk', "--{0}".format(command), device]
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
-        logging.error("Command %s failed: %s", err.cmd, err.output)
-        txt = _("Command {0} failed: {1}").format(err.cmd, err.output)
+        logging.error("Command %s failed: %s", err.cmd, err.output.decode())
+        txt = _("Command {0} failed: {1}").format(err.cmd, err.output.decode())
         raise InstallError(txt)
 
 
@@ -94,13 +94,13 @@ def sgdisk_new(device, part_num, label, size, hex_code):
         '--change-name={0}:{1}'.format(part_num, label),
         device]
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         logging.error(txt)
         txt = _("Cannot create a new partition on device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
 
 
@@ -110,10 +110,10 @@ def parted_set(device, number, flag, state):
         'parted', '--align', 'optimal', '--script', device,
         'set', number, flag, state]
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         txt = "Cannot set flag {0} on device {1}. Command {2} has failed: {3}"
-        txt = txt.format(flag, device, err.cmd, err.output)
+        txt = txt.format(flag, device, err.cmd, err.output.decode())
         logging.error(txt)
 
 
@@ -137,13 +137,13 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         'mkpart', ptype, filesystem, start_str, end_str]
 
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         logging.error(txt)
         txt = _("Cannot create a new partition on device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
 
 
@@ -155,13 +155,13 @@ def parted_mktable(device, table_type="msdos"):
         "mktable", table_type]
 
     try:
-        subprocess.check_output(cmd).decode()
+        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         txt = ("Cannot create a new partition table on device {0}. "
                "Command {1} failed: {2}")
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         logging.error(txt)
         txt = _("Cannot create a new partition table on device {0}. "
                 "Command {1} failed: {2}")
-        txt = txt.format(device, err.cmd, err.output)
+        txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
