@@ -605,8 +605,10 @@ class Bootloader(object):
             logging.info("Systemd-boot install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         except subprocess.CalledProcessError as process_error:
-            logging.error('Command %s failed. Error output: %s', process_error.cmd),
-                          process_error.output)
+            logging.error(
+                'Command %s failed. Error output: %s',
+                process_error.cmd,
+                process_error.output)
             self.settings.set('bootloader_installation_successful', False)
         except subprocess.TimeoutExpired:
             logging.error('Command %s timed out.', " ".join(cmd))
