@@ -133,10 +133,10 @@ def _check_winxp(system_path):
 def _hexdump8081(partition):
     try:
         cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
-        hexdump = subprocess.check_output(cmd).decode()
+        hexdump = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
         return hexdump
-    except subprocess.CalledProcessError as process_error:
-        logging.warning("Error calling hexdump command: %s", process_error)
+    except subprocess.CalledProcessError as err:
+        logging.warning("Error calling hexdump command: %s", err.output.decode())
         return ""
 
 

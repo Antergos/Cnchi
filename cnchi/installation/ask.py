@@ -81,10 +81,12 @@ def load_zfs():
     cmd = ["modprobe", "zfs"]
     try:
         with misc.raised_privileges():
-            subprocess.check_call(cmd)
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug("ZFS kernel module loaded successfully.")
     except subprocess.CalledProcessError as err:
-        logging.debug("Can't load ZFS kernel module. ZFS won't be available")
+        logging.debug(
+            "Can't load ZFS kernel module: %s",
+            err.output.decode())
         return False
     return True
 

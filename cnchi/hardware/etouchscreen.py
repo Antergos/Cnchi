@@ -60,7 +60,10 @@ class ETouchScreen(Hardware):
     @staticmethod
     def post_install(dest_dir):
         """ Post install commands """
-        subprocess.check_call(["rmmod", "usbtouchscreen"])
+        try:
+            subprocess.check_call(["rmmod", "usbtouchscreen"])
+        except subprocess.CalledProcessError as err:
+            pass
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")
         with open(path, 'w') as conf_file:

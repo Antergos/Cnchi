@@ -148,7 +148,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             version = line[1]
             logging.debug('cryptsetup version is: %s', version)
         except subprocess.CalledProcessError as err:
-            logging.debug(err.output)
+            logging.debug(err)
             version = False
 
         # URL input queue.Queue
@@ -157,6 +157,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         q_out = queue.Queue()
 
         def worker():
+            """ worker thread. Retrieves data to test mirror speed """
             while True:
                 url = q_in.get()
                 if version:

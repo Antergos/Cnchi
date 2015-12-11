@@ -349,19 +349,16 @@ class InstallationAutomatic(GtkBaseBox):
 
         ssd = {self.auto_device: fs.is_ssd(self.auto_device)}
 
-        if not self.testing:
-            self.installation = install.Installation(
-                self.settings,
-                self.callback_queue,
-                packages,
-                metalinks,
-                self.mount_devices,
-                self.fs_devices,
-                ssd)
+        self.installation = install.Installation(
+            self.settings,
+            self.callback_queue,
+            packages,
+            metalinks,
+            self.mount_devices,
+            self.fs_devices,
+            ssd)
 
-            self.installation.start()
-        else:
-            logging.debug("Testing mode, not changing anything")
+        self.installation.start()
 
 # When testing, no _() is available
 try:

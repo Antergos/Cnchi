@@ -237,7 +237,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['checks_are_optional'] = self.cmd_line.no_check
         self.params['disable_tryit'] = self.cmd_line.disable_tryit
         self.params['disable_rank_mirrors'] = self.cmd_line.disable_rank_mirrors
-        self.params['testing'] = self.cmd_line.testing
 
     def initialize_gui(self):
         """

@@ -108,15 +108,15 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
     logging.debug('MODULES="%s"', ' '.join(modules))
 
     with open("/etc/mkinitcpio.conf") as mkinitcpio_file:
-        mklines = [x.strip() for x in mkinitcpio_file.readlines()]
+        mklines = mkinitcpio_file.readlines()
 
     path = os.path.join(dest_dir, "etc/mkinitcpio.conf")
     with open(path, "w") as mkinitcpio_file:
         for line in mklines:
-            if line.startswith("HOOKS"):
-                line = 'HOOKS="{0}"'.format(' '.join(hooks))
-            elif line.startswith("MODULES"):
-                line = 'MODULES="{0}"'.format(' '.join(modules))
+            if "HOOKS" in line:
+                line = 'HOOKS="{0}"\n'.format(' '.join(hooks))
+            elif "MODULES" in line:
+                line = 'MODULES="{0}"\n'.format(' '.join(modules))
             mkinitcpio_file.write(line)
 
 

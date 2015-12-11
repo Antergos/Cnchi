@@ -1,3 +1,4 @@
+[2015-12-08 12:51:50 -0600]  call store values everytime row selection event fires for language ..  Dustin Falgout  {d16cb58}
 [2015-12-08 12:32:26 -0600]  yep..still working on UI                                               Dustin Falgout  {bd4ae4f}
 [2015-12-08 15:42:58 +0100]  pep8 used_space                                                            karasu      {d33272a}
 [2015-12-08 15:34:51 +0100]  pep8 partition_module                                                      karasu      {a79aa9a}

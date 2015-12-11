@@ -750,7 +750,7 @@ class InstallationZFS(GtkBaseBox):
             pool_size = subprocess.check_output(cmd).decode()
             # Force to use a point as float delimiter
             # (everyone except English/Americans uses a comma)
-            pool_size = pool_size.replace(",", ".")
+            pool_size = float(pool_size.replace(",", "."))
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-2]) // 1024
             elif 'G' in pool_size:
@@ -759,11 +759,11 @@ class InstallationZFS(GtkBaseBox):
                 pool_size = int(pool_size[:-2]) * 1024
             elif 'P' in pool_size:
                 pool_size = int(pool_size[:-2]) * 1024 * 1024
-        except subprocess.CalledProcessError as process_error:
+        except (subprocess.CalledProcessError, ValueError) as err:
             logging.warning(
                 "Can't get zfs %s pool size: %s",
                 pool_name,
-                process_error)
+                err)
             pool_size = 0
         return pool_size
 
