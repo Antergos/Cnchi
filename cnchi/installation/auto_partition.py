@@ -746,22 +746,21 @@ class AutoPartition(object):
             # Create LVM volumes
             err_msg = "Error creating LVM logical volume"
 
-            try:
-                size = str(int(part_sizes['root']))
-                cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
-                call(cmd, msg=err_msg, fatal=True)
+            size = str(int(part_sizes['root']))
+            cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
+            call(cmd, msg=err_msg, fatal=True)
 
-                if not self.home:
-                    # Use the remainig space for our swap volume
-                    cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
-                    call(cmd, msg=err_msg, fatal=True)
-                else:
-                    size = str(int(part_sizes['swap']))
-                    cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
-                    call(cmd, msg=err_msg, fatal=True)
-                    # Use the remaining space for our home volume
-                    cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
-                    call(cmd, msg=err_msg, fatal=True)
+            if not self.home:
+                # Use the remainig space for our swap volume
+                cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
+                call(cmd, msg=err_msg, fatal=True)
+            else:
+                size = str(int(part_sizes['swap']))
+                cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
+                call(cmd, msg=err_msg, fatal=True)
+                # Use the remaining space for our home volume
+                cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
+                call(cmd, msg=err_msg, fatal=True)
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 

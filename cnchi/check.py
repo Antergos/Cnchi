@@ -41,7 +41,7 @@ import info
 import updater
 
 import misc.extra as misc
-
+from misc.run_cmd import call, popen
 from gtkbasebox import GtkBaseBox
 
 # Constants
@@ -169,8 +169,8 @@ class Check(GtkBaseBox):
     @staticmethod
     def has_enough_space():
         """ Check that we have a disk or partition with enough space """
-        lsblk = subprocess.Popen(["lsblk", "-lnb"], stdout=subprocess.PIPE)
-        output = lsblk.communicate()[0].decode("utf-8").split("\n")
+
+        output = call(["lsblk", "-lnb"]).split("\n")
 
         max_size = 0
 
