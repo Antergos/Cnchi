@@ -48,10 +48,11 @@ def call(cmd, warning=True, error=False, fatal=False, msg=""):
         output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         output = output.decode().strip('\n')
     except subprocess.CalledProcessError as err:
+        err_output = err.output.decode().strip("'").strip("\n")
         if not msg:
-            msg = "Error running {0}: {1}".format(err.cmd, err.output.decode())
+            msg = "Error running {0}: {1}".format(err.cmd, err_output)
         else:
-            msg = "{0}: {1}".format(msg, err.output.decode().strip('"'))
+            msg = "{0}: {1}".format(msg, err_output)
         if not error and not fatal:
             if not warning:
                 logging.debug(msg)
