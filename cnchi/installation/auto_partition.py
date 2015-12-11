@@ -34,7 +34,7 @@ import logging
 import math
 
 from misc.extra import InstallError
-
+import misc.run_cmd as run_cmd
 import parted3.fs_module as fs
 
 from installation import wrapper
@@ -59,7 +59,8 @@ MIN_ROOT_SIZE = 8000
 
 def check_output(cmd):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
-    return subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT).decode().strip("\n")
+    return run_cmd.check_output(cmd).strip('\n')
+    #return subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT).decode().strip("\n")
 
 
 def printk(enable):
@@ -72,6 +73,7 @@ def printk(enable):
 
 
 def unmount(directory):
+    """ Unmount """
     logging.debug("Unmounting %s", directory)
     try:
         subprocess.call(["umount", directory])
