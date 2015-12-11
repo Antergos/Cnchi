@@ -45,7 +45,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=""):
 
     output = None
     try:
-        output = subprocess.check_call(cmd, stderr=subprocess.STDOUT)
+        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         output = output.decode().strip('\n')
     except subprocess.CalledProcessError as err:
         if not msg:
