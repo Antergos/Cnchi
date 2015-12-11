@@ -78,7 +78,7 @@ def unmount_all_in_directory(dest_dir):
     # Unmount all swap devices
     cmd = ["swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
-    swaps = swaps.decode().split("\n")
+    swaps = swaps.split("\n")
     for name in filter(None, swaps):
         if "/dev/zram" not in name:
             call(["swapoff", name])
@@ -110,7 +110,7 @@ def unmount_all_in_device(device):
     # Unmount all swap
     cmd = ["swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
-    swaps = swaps.decode().split("\n")
+    swaps = swaps.split("\n")
     for name in filter(None, swaps):
         if "/dev/zram" not in name:
             call(["swapoff", name])
