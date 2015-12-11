@@ -57,11 +57,6 @@ MAX_ROOT_SIZE = 30000
 MIN_ROOT_SIZE = 8000
 
 
-def check_output(cmd):
-    """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
-    return call(cmd).strip('\n')
-
-
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
     with open("/proc/sys/kernel/printk", "w") as fpk:
@@ -169,7 +164,7 @@ def remove_lvm(device):
     if pvolumes:
         pvolumes = pvolumes.split("\n")
         for pvolume in pvolumes:
-            pvolume = pvolume.strip(" ")
+            pvolume = pvolume.strip()
             if device in pvolume:
                 cmd = ["pvremove", "-ff", pvolume]
                 call(cmd, msg=err_msg)
@@ -493,7 +488,7 @@ class AutoPartition(object):
             part_sizes['efi'] = 200
 
         cmd = ["grep", "MemTotal", "/proc/meminfo"]
-        mem_total = call(cmd).strip("\n")
+        mem_total = call(cmd)
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
 
@@ -557,7 +552,7 @@ class AutoPartition(object):
         # Partition sizes are expressed in MiB
         # Get just the disk size in MiB
         device = self.auto_device
-        device_name = check_output("basename {0}".format(device))
+        device_name = call(["basename", device])
         base_path = os.path.join("/sys/block", device_name)
         size_path = os.path.join(base_path, "size")
         if os.path.exists(size_path):
@@ -606,13 +601,8 @@ class AutoPartition(object):
             wrapper.sgdisk("clear", device)
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
-            try:
-                subprocess.check_call(["partprobe", device])
-            except subprocess.CalledProcessError as err:
-                txt = "Error informing the kernel of the partition change. Command {0} failed: {1}".format(err.cmd, err.output)
-                logging.error(txt)
-                txt = _("Error informing the kernel of the partition change. Command {0} failed: {1}").format(err.cmd, err.output)
-                raise InstallError(txt)
+            err_msg = "Error informing the kernel of the partition change."
+            call(["partprobe", device], msg=err_msg, fatal=True)
 
             part_num = 1
 
@@ -651,7 +641,8 @@ class AutoPartition(object):
                     part_num += 1
                 wrapper.sgdisk_new(device, part_num, "ANTERGOS_SWAP", 0, "8200")
 
-            logging.debug(check_output("sgdisk --print {0}".format(device)))
+            output = call(["sgdisk", "--print", device])
+            logging.debug(output)
         else:
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct alignment
@@ -706,7 +697,7 @@ class AutoPartition(object):
         printk(True)
 
         # Wait until /dev initialized correct devices
-        subprocess.check_call(["udevadm", "settle"])
+        call(["udevadm", "settle"])
 
         devices = self.get_devices()
 
@@ -729,31 +720,20 @@ class AutoPartition(object):
         if self.lvm:
             logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])
 
-            try:
-                cmd = ["pvcreate", "-f", "-y", devices['lvm']]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                txt = "Error creating LVM physical volume in device {0}. Command {1} failed: {2}"
-                txt = txt.format(devices['lvm'], err.cmd, err.output.decode())
-                logging.error(txt)
-                txt = _("Error creating LVM physical volume in device {0}. Command {1} failed: {2}")
-                txt = txt.format(devices['lvm'], err.cmd, err.output.decode())
-                raise InstallError(txt)
+            err_msg = "Error creating LVM physical volume in device {0}"
+            err_msg = err_msg.format(devices['lvm'])
+            cmd = ["pvcreate", "-f", "-y", devices['lvm']]
+            call(cmd, msg=err_msg, fatal=True)
 
-            try:
-                cmd = ["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                txt = "Error creating LVM volume group in device {0}. Command {1} failed: {2}"
-                txt = txt.format(devices['lvm'], err.cmd, err.output.decode())
-                logging.error(txt)
-                txt = _("Error creating LVM volume group in device {0}. Command {1} failed: {2}")
-                txt = txt.format(devices['lvm'], err.cmd, err.output.decode())
-                raise InstallError(txt)
+            err_msg = "Error creating LVM volume group in device {0}"
+            err_msg = err_msg.format(devices['lvm'])
+            cmd = ["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']]
+            call(cmd, msg=err_msg, fatal=True)
 
             # Fix issue 180
             # Check space we have now for creating logical volumes
-            vg_info = check_output("vgdisplay -c AntergosVG")
+            cmd = ["vgdisplay", "-c", "AntergosVG"]
+            vg_info = call(cmd, fatal=True)
             # Get column number 12: Size of volume group in kilobytes
             vg_size = int(vg_info.split(":")[11]) / 1024
             if part_sizes['lvm_pv'] > vg_size:
@@ -764,27 +744,24 @@ class AutoPartition(object):
                 self.log_part_sizes(part_sizes)
 
             # Create LVM volumes
+            err_msg = "Error creating LVM logical volume"
+
             try:
                 size = str(int(part_sizes['root']))
                 cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
-                subprocess.check_call(cmd)
+                call(cmd, msg=err_msg, fatal=True)
 
                 if not self.home:
                     # Use the remainig space for our swap volume
                     cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
-                    subprocess.check_call(cmd)
+                    call(cmd, msg=err_msg, fatal=True)
                 else:
                     size = str(int(part_sizes['swap']))
                     cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
-                    subprocess.check_call(cmd)
+                    call(cmd, msg=err_msg, fatal=True)
                     # Use the remaining space for our home volume
                     cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
-                    subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                txt = "Error creating LVM logical volume. Command {0} failed: {1}".format(err.cmd, err.output)
-                logging.error(txt)
-                txt = _("Error creating LVM logical volume. Command {0} failed: {1}").format(err.cmd, err.output)
-                raise InstallError(txt)
+                    call(cmd, msg=err_msg, fatal=True)
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
 
@@ -832,18 +809,17 @@ class AutoPartition(object):
             # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
             # (boot partition is not)
 
-            try:
-                os.chmod(key_files[0], 0o400)
-                cmd = ['mv', key_files[0], os.path.join(self.dest_dir, "boot")]
-                subprocess.check_call(cmd)
-                if self.home and not self.lvm:
-                    os.chmod(key_files[1], 0o400)
-                    luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
-                    os.makedirs(luks_dir, mode=0o755, exist_ok=True)
-                    subprocess.check_call(['mv', key_files[1], luks_dir])
-            except subprocess.CalledProcessError as err:
-                txt = "Can't copy LUKS keyfile to the installation device. Command {0} failed: {1}".format(err.cmd, err.output)
-                logging.warning(txt)
+            err_msg = "Can't copy LUKS keyfile to the installation device."
+            os.chmod(key_files[0], 0o400)
+            boot_path = os.path.join(self.dest_dir, "boot")
+            cmd = ['mv', key_files[0], boot_path]
+            call(cmd, msg=err_msg)
+            if self.home and not self.lvm:
+                os.chmod(key_files[1], 0o400)
+                luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
+                os.makedirs(luks_dir, mode=0o755, exist_ok=True)
+                cmd = ['mv', key_files[1], luks_dir]
+                call(cmd, msg=err_msg)
 
 
 if __name__ == '__main__':
