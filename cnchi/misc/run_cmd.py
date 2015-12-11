@@ -36,7 +36,7 @@ import subprocess
 from misc.extra import InstallError
 
 
-def call(cmd, warning=True, error=False, fatal=False, msg=""):
+def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
     """ Helper function to make a system call
     warning: If true will log a warning message if an error is detected
     error: If true will log an error message if an error is detected
@@ -45,9 +45,15 @@ def call(cmd, warning=True, error=False, fatal=False, msg=""):
 
     output = None
     try:
-        output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        output = subprocess.check_output(
+            cmd,
+            stderr=subprocess.STDOUT,
+            timeout=timeout)
         output = output.decode().strip('\n')
-    except subprocess.CalledProcessError as err:
+        if output:
+            logging.debug(output)
+        return output
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         err_output = err.output.decode().strip("'").strip("\n")
         if not msg:
             msg = "Error running {0}: {1}".format(err.cmd, err_output)
@@ -61,12 +67,49 @@ def call(cmd, warning=True, error=False, fatal=False, msg=""):
         else:
             logging.error(msg)
             if fatal:
-                # TODO: Fix this function so it translates msg
                 raise InstallError(msg)
-    return output
+        return False
 
 
-def popen(cmd, warning=True, error=False, fatal=False, msg=""):
+def call_chroot(cmd, chroot_dir, fatal=False, msg=None, timeout=None, stdin=None):
+    """ Runs command inside the chroot """
+    full_cmd = ['chroot', chroot_dir]
+
+    for element in cmd:
+        full_cmd.append(element)
+
+    try:
+        proc = subprocess.Popen(full_cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
+        output, errs = proc.communicate(timeout=timeout)
+        output = output.decode().strip()
+        if output:
+            logging.debug(output)
+        return output
+    except subprocess.TimeoutExpired as err:
+        if proc:
+            proc.kill()
+            proc.communicate()
+        logging.error("Timeout running the command %s", err.cmd)
+        if fatal:
+            raise InstallError(err.output)
+        else:
+            return False
+    except subprocess.CalledProcessError as err:
+        logging.error("Error running %s: %s", err.cmd, err.output)
+        if fatal:
+            raise InstallError(err.output)
+        else:
+            return False
+    except OSError as os_error:
+        logging.error("Error running %s: %s", " ".join(full_cmd), os_error)
+        if fatal:
+            raise InstallError(os_error)
+        else:
+            return False
+
+def popen(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
     """ Helper function that calls Popen (useful if we need to use pipes) """
     proc = None
     try:
@@ -74,8 +117,10 @@ def popen(cmd, warning=True, error=False, fatal=False, msg=""):
             cmd,
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
+            stderr=subprocess.STDOUT,
+            timeout=timeout)
+        return proc
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         if not msg:
             msg = "Error running {0}: {1}".format(err.cmd, err.output.decode())
         else:
@@ -88,6 +133,5 @@ def popen(cmd, warning=True, error=False, fatal=False, msg=""):
         else:
             logging.error(msg)
             if fatal:
-                # TODO: Fix this function so it translates msg
                 raise InstallError(msg)
-    return proc
+        return False

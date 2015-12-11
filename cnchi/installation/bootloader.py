@@ -40,6 +40,7 @@ import string
 import parted3.fs_module as fs
 
 from installation import chroot
+from misc.run_cmd import call
 
 # When testing, no _() is available
 try:
@@ -303,14 +304,15 @@ class Bootloader(object):
         logging.debug("Running grub-mkconfig...")
         locale = self.settings.get("locale")
         try:
-            cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
-            chroot.run(cmd, self.dest_dir, 300)
+            cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
+            cmd_sh = ['sh', '-c', cmd]
+            chroot.run(cmd_sh, self.dest_dir, 300)
         except subprocess.TimeoutExpired:
             msg = ("grub-mkconfig does not respond. Killing grub-mount and"
                    "os-prober so we can continue.")
             logging.error(msg)
-            subprocess.check_call(['killall', 'grub-mount'])
-            subprocess.check_call(['killall', 'os-prober'])
+            call(['killall', 'grub-mount'])
+            call(['killall', 'os-prober'])
         except subprocess.CalledProcessError as err:
             logging.error(err)
 
@@ -352,19 +354,8 @@ class Bootloader(object):
             '--recheck']
         load_module = ['modprobe', '-a', 'efivarfs']
 
-        try:
-            subprocess.call(load_module, timeout=15)
-            subprocess.check_call(grub_install, timeout=120)
-        except subprocess.CalledProcessError as process_error:
-            logging.error(
-                'Command grub-install failed. Error output: %s',
-                process_error.output)
-        except subprocess.TimeoutExpired:
-            logging.error('Command grub-install timed out.')
-        except Exception as general_error:
-            logging.error(
-                'Command grub-install failed. Unknown Error: %s',
-                general_error)
+        call(load_module, timeout=15)
+        call(grub_install, timeout=120)
 
         self.install_grub2_locales()
 
@@ -625,21 +616,16 @@ class Bootloader(object):
         # Details: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
         logging.debug("Installing and configuring rEFInd bootloader...")
         cmd = ["refind-install"]
-        try:
-            chroot.run(cmd, self.dest_dir, 300)
-            # This script will attempt to find the kernel in /boot and
-            # automatically generate refind_linux.conf.
-            # FIXME: The script will only set up the most basic kernel
-            # parameters, so be sure to check the file it created for
-            # correctness.
-            cmd = ["refind-mkrlconf"]
-            chroot.run(cmd, self.dest_dir, 300)
-            self.settings.set('bootloader_installation_successful', True)
-            logging.debug("rEFIind installed.")
-        except subprocess.CalledProcessError as process_error:
-            logging.error("command %s failed. Error output: %s", process_error.cmd,
-                          process_error.stderr)
-            self.settings.set('bootloader_installation_successful', False)
+        chroot.run(cmd, self.dest_dir, 300)
+        # This script will attempt to find the kernel in /boot and
+        # automatically generate refind_linux.conf.
+        # The script will only set up the most basic kernel
+        # parameters, so be sure to check the file it created for
+        # correctness.
+        cmd = ["refind-mkrlconf"]
+        chroot.run(cmd, self.dest_dir, 300)
+        self.settings.set('bootloader_installation_successful', True)
+        logging.debug("rEFIind installed.")
 
     def freeze_unfreeze_xfs(self):
         """ Freeze and unfreeze xfs, as hack for grub(2) installing """
@@ -649,27 +635,23 @@ class Bootloader(object):
         xfs_boot = False
         xfs_root = False
 
-        try:
-            subprocess.check_call(["sync"])
-            with open("/proc/mounts") as mounts_file:
-                mounts = mounts_file.readlines()
-            # We leave a blank space in the end as we want to search
-            # exactly for this mount points
-            boot_mount_point = self.dest_dir + "/boot "
-            root_mount_point = self.dest_dir + " "
-            for line in mounts:
-                if " xfs " in line:
-                    if boot_mount_point in line:
-                        xfs_boot = True
-                    elif root_mount_point in line:
-                        xfs_root = True
-            if xfs_boot:
-                boot_mount_point = boot_mount_point.rstrip()
-                subprocess.check_call(["xfs_freeze", "-f", boot_mount_point])
-                subprocess.check_call(["xfs_freeze", "-u", boot_mount_point])
-            if xfs_root:
-                subprocess.check_call(["xfs_freeze", "-f", self.dest_dir])
-                subprocess.check_call(["xfs_freeze", "-u", self.dest_dir])
-        except subprocess.CalledProcessError as process_error:
-            logging.warning("Can't freeze/unfreeze xfs system")
-            logging.warning(process_error)
+        call(["sync"])
+        with open("/proc/mounts") as mounts_file:
+            mounts = mounts_file.readlines()
+        # We leave a blank space in the end as we want to search
+        # exactly for this mount points
+        boot_mount_point = self.dest_dir + "/boot "
+        root_mount_point = self.dest_dir + " "
+        for line in mounts:
+            if " xfs " in line:
+                if boot_mount_point in line:
+                    xfs_boot = True
+                elif root_mount_point in line:
+                    xfs_root = True
+        if xfs_boot:
+            boot_mount_point = boot_mount_point.rstrip()
+            call(["xfs_freeze", "-f", boot_mount_point])
+            call(["xfs_freeze", "-u", boot_mount_point])
+        if xfs_root:
+            call(["xfs_freeze", "-f", self.dest_dir])
+            call(["xfs_freeze", "-u", self.dest_dir])

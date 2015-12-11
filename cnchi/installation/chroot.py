@@ -135,6 +135,7 @@ def run(cmd, dest_dir, timeout=None, stdin=None):
         txt = outs.decode().strip()
         if txt:
             logging.debug(txt)
+        return txt
     except subprocess.TimeoutExpired as timeout_error:
         if proc:
             proc.kill()

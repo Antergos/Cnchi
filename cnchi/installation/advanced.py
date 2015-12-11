@@ -30,13 +30,13 @@
 """ Installation advanced module. Custom partition screen """
 
 
-import subprocess
 import os
 import logging
 import re
 
 import misc.extra as misc
 import misc.validation as validation
+from misc.run_cmd import call
 
 import parted3.partition_module as pm
 import parted3.fs_module as fs
@@ -1002,14 +1002,9 @@ class InstallationAdvanced(GtkBaseBox):
         if pm.check_mounted(part):
             # We unmount the partition. Should we ask first?
             logging.info("Unmounting %s...", part.path)
+            err_msg = "Cannot unmount {0}".format(part.path)
             cmd = ['umount', part.path]
-            try:
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                logging.error(
-                    "Cannot unmount %s: %s",
-                    part.path,
-                    err.output.decode())
+            call(cmd, msg=err_msg)
 
         # Is it worth to show some warning message here?
         # No, created delete list (self.to_be_deleted) as part of
@@ -1970,32 +1965,20 @@ class InstallationAdvanced(GtkBaseBox):
             # If we're recovering from a failed/stopped
             # install, there'll be some mounted directories.
             # Unmount them without asking.
-            try:
-                cmd = ['umount', '-l', partition_path]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                logging.debug("%s unmounted", mount_point)
-            except subprocess.CalledProcessError as err:
-                logging.error("Command %s failed: %s", err.cmd, err.output.decode())
+            cmd = ['umount', '-l', partition_path]
+            call(cmd)
+            logging.debug("%s unmounted", mount_point)
         elif mounted:
             # unmount it!
             show.warning(self.get_toplevel(), msg)
             if swap_partition == partition_path:
-                try:
-                    # cmd = ['sh', '-c', 'swapoff {0}'.format(partition_path)]
-                    # subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                    cmd = ["swapoff", partition_path]
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                    logging.debug("Swap partition %s unmounted", partition_path)
-                except subprocess.CalledProcessError as err:
-                    logging.error("Error running command %s: %s", err.cmd, err.output.decode())
+                cmd = ["swapoff", partition_path]
+                call(cmd)
+                logging.debug("Swap partition %s unmounted", partition_path)
             else:
-                try:
-                    cmd = ['umount', partition_path]
-                    # subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                    logging.debug("%s unmounted", mount_point)
-                except subprocess.CalledProcessError as err:
-                    logging.error("Error running command %s: %s", err.cmd, err.output.decode())
+                cmd = ['umount', partition_path]
+                call(cmd)
+                logging.debug("%s unmounted", mount_point)
         else:
             logging.warning(
                 "%s shows as mounted (busy) but it has no mount point",
@@ -2177,17 +2160,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Sometimes a swap partition can still be active at this point
         cmd = ["swapon", "--show=NAME", "--noheadings"]
-        try:
-            swaps = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            swaps = swaps.decode().split("\n")
-            for name in filter(None, swaps):
-                if "/dev/zram" not in name:
-                    # cmd = ['sh', '-c', 'swapoff {0}'.format(name)]
-                    # subprocess.Popen(cmd, stdout=subprocess.PIPE)
-                    cmd = ["swapoff", name]
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            logging.error("Error running command %s: %s", err.cmd, err.output.decode())
+        swaps = call(cmd)
+        swaps = swaps.split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                cmd = ["swapoff", name]
+                call(cmd)
 
         # We'll use auto_partition.setup_luks if necessary
         from installation import auto_partition as ap
