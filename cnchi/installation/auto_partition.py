@@ -34,7 +34,7 @@ import logging
 import math
 
 from misc.extra import InstallError
-import misc.run_cmd as run_cmd
+from misc.run_cmd import call, popen
 import parted3.fs_module as fs
 
 from installation import wrapper
@@ -59,8 +59,7 @@ MIN_ROOT_SIZE = 8000
 
 def check_output(cmd):
     """ Calls subprocess.check_output, decodes its exit and removes trailing \n """
-    return run_cmd.check_output(cmd).strip('\n')
-    #return subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT).decode().strip("\n")
+    return call(cmd).strip('\n')
 
 
 def printk(enable):
@@ -75,37 +74,22 @@ def printk(enable):
 def unmount(directory):
     """ Unmount """
     logging.debug("Unmounting %s", directory)
-    try:
-        subprocess.call(["umount", directory])
-    except subprocess.CalledProcessError:
-        logging.debug("Unmounting %s failed. Trying lazy arg.", directory)
-        try:
-            subprocess.check_output(["umount", "-l", directory], stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            logging.warning("Unmounting %s failed: %s", directory, err.output.decode())
+    call(["umount", "-l", directory])
 
 
 def unmount_all_in_directory(dest_dir):
     """ Unmounts all devices that are mounted inside dest_dir """
 
     # Unmount all swap devices
-    try:
-        cmd = ["swapon", "--show=NAME", "--noheadings"]
-        swaps = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        swaps = swaps.decode().split("\n")
-        for name in filter(None, swaps):
-            if "/dev/zram" not in name:
-                subprocess.check_call(["swapoff", name], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        logging.warning("Command %s failed: %s", err.cmd, err.output.decode())
+    cmd = ["swapon", "--show=NAME", "--noheadings"]
+    swaps = call(cmd)
+    swaps = swaps.decode().split("\n")
+    for name in filter(None, swaps):
+        if "/dev/zram" not in name:
+            call(["swapoff", name])
 
     # Get all mounted devices
-    try:
-        mount_result = subprocess.check_output("mount", stderr=subprocess.STDOUT)
-        mount_result = mount_result.decode().split("\n")
-    except subprocess.CalledProcessError as err:
-        logging.warning("Command %s failed: %s", err.cmd, err.output.decode())
-        return
+    mount_result = call(["mount"]).split("\n")
 
     # Umount all devices mounted inside dest_dir (if any)
     dirs = []
@@ -129,23 +113,16 @@ def unmount_all_in_device(device):
     """ Unmounts all partitions from device """
 
     # Unmount all swap
-    try:
-        cmd = ["swapon", "--show=NAME", "--noheadings"]
-        swaps = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        swaps = swaps.decode().split("\n")
-        for name in filter(None, swaps):
-            if "/dev/zram" not in name:
-                subprocess.check_output(["swapoff", name], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        logging.warning("Command %s failed: %s", err.cmd, err.output.decode())
+    cmd = ["swapon", "--show=NAME", "--noheadings"]
+    swaps = call(cmd)
+    swaps = swaps.decode().split("\n")
+    for name in filter(None, swaps):
+        if "/dev/zram" not in name:
+            call(["swapoff", name])
 
     # Get all mounted devices
-    try:
-        mount_result = subprocess.check_output("mount", stderr=subprocess.STDOUT)
-        mount_result = mount_result.decode().split("\n")
-    except subprocess.CalledProcessError as err:
-        logging.warning("Command %s failed: %s", err.cmd, err.output.decode())
-        return
+    mount_result = call(["mount"])
+    mount_result = mount_result.split("\n")
 
     # Umount all partitions of device
     dirs = []
@@ -163,37 +140,39 @@ def unmount_all_in_device(device):
 def remove_lvm(device):
     """ Remove all previous LVM volumes
     (it may have been left created due to a previous failed installation) """
-    try:
-        lvolumes = check_output("lvs -o lv_name,vg_name,devices --noheadings").split("\n")
-        if lvolumes[0]:
-            for lvolume in lvolumes:
-                if len(lvolume) > 0:
-                    (lvolume, vgroup, ldevice) = lvolume.split()
-                    if device in ldevice:
-                        lvdev = "/dev/" + vgroup + "/" + lvolume
-                        subprocess.check_call(["wipefs", "-a", lvdev])
-                        subprocess.check_call(["lvremove", "-f", lvdev])
 
-        vgnames = check_output("vgs -o vg_name,devices --noheadings").split("\n")
-        if vgnames[0]:
-            for vgname in vgnames:
-                (vgname, vgdevice) = vgname.split()
-                if len(vgname) > 0 and device in vgdevice:
-                    subprocess.check_call(["vgremove", "-f", vgname])
+    err_msg = "Can't delete existent LVM volumes in device {0}".format(device)
 
-        pvolumes = check_output("pvs -o pv_name --noheadings").split("\n")
-        if pvolumes[0]:
-            for pvolume in pvolumes:
-                pvolume = pvolume.strip(" ")
-                if device in pvolume:
-                    cmd = ["pvremove", "-ff", pvolume]
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        logging.warning(
-            "Can't delete existent LVM volumes in device %s, command %s failed: %s",
-            device,
-            err.cmd,
-            err.output.decode())
+    cmd = ["lvs", "-o", "lv_name,vg_name,devices", "--noheadings"]
+    lvolumes = call(cmd, msg=err_msg)
+    if lvolumes:
+        lvolumes = lvolumes.split("\n")
+        for lvolume in lvolumes:
+            if len(lvolume) > 0:
+                (lvolume, vgroup, ldevice) = lvolume.split()
+                if device in ldevice:
+                    lvdev = "/dev/" + vgroup + "/" + lvolume
+                    call(["wipefs", "-a", lvdev], msg=err_msg)
+                    call(["lvremove", "-f", lvdev], msg=err_msg)
+
+    cmd = ["vgs", "-o", "vg_name,devices", "--noheadings"]
+    vgnames = call(cmd, msg=err_msg)
+    if vgnames:
+        vgnames = vgnames.split("\n")
+        for vgname in vgnames:
+            (vgname, vgdevice) = vgname.split()
+            if len(vgname) > 0 and device in vgdevice:
+                call(["vgremove", "-f", vgname], msg=err_msg)
+
+    cmd = ["pvs", "-o", "pv_name", "--noheadings"]
+    pvolumes = call(cmd, msg=err_msg)
+    if pvolumes:
+        pvolumes = pvolumes.split("\n")
+        for pvolume in pvolumes:
+            pvolume = pvolume.strip(" ")
+            if device in pvolume:
+                cmd = ["pvremove", "-ff", pvolume]
+                call(cmd, msg=err_msg)
 
 def close_antergos_luks_devices():
     """ Close LUKS devices (they may have been left open because of a previous
@@ -201,16 +180,12 @@ def close_antergos_luks_devices():
 
     volumes = ["/dev/mapper/cryptAntergos", "/dev/mapper/cryptAntergosHome"]
 
-    try:
-        for volume in volumes:
-            if os.path.exists(volume):
-                cmd = ["cryptsetup", "luksClose", volume]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        logging.warning(
-            "Can't close already opened LUKS devices, command %s failed: %s",
-            err.cmd,
-            err.output.decode())
+    err_msg = "Can't close already opened LUKS devices"
+
+    for volume in volumes:
+        if os.path.exists(volume):
+            cmd = ["cryptsetup", "luksClose", volume]
+            call(cmd, msg=err_msg)
 
 
 def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
@@ -231,27 +206,22 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # If in doubt, just be generous and overwrite the first 10MiB or so
     wrapper.dd("/dev/zero", luks_device, bs=512, count=20480)
 
+    err_msg = "Can't format and open the LUKS device {0}".format(luks_device)
+
     if luks_pass is None or luks_pass == "":
         # No key password given, let's create a random keyfile
         wrapper.dd("/dev/urandom", luks_key, bs=1024, count=4)
 
         # Set up luks with a keyfile
-        try:
-            cmd = [
-                "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain", "-s", "512", luks_device, luks_key]
-            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        cmd = [
+            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain",
+            "-s", "512", luks_device, luks_key]
+        call(cmd, msg=err_msg, fatal=True)
 
-            cmd = [
-                "cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file", luks_key]
-            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as err:
-            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(
-                luks_device, err.cmd, err.output.decode())
-            logging.error(txt)
-            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(
-                luks_device, err.cmd, err.output.decode())
-            raise InstallError(txt)
-
+        cmd = [
+            "cryptsetup", "luksOpen", luks_device, luks_name, "-q",
+            "--key-file", luks_key]
+        call(cmd, msg=err_msg, fatal=True)
     else:
         # Set up luks with a password key
 
@@ -260,32 +230,17 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         # https://code.google.com/p/cryptsetup/wiki/Cryptsetup160
         # aes-xts-plain
         # aes-cbc-essiv:sha256
-        try:
-            cmd = [
-                "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64", "-s", "512", "--key-file=-", luks_device]
-            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-            proc.communicate(input=luks_pass_bytes)
+        cmd = [
+            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
+            "-s", "512", "--key-file=-", luks_device]
+        proc = popen(cmd, msg=err_msg, fatal=True)
+        proc.communicate(input=luks_pass_bytes)
 
-            cmd = [
-                "cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
-            proc = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stdin=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
-            proc.communicate(input=luks_pass_bytes)
-        except subprocess.CalledProcessError as err:
-            txt = "Can't format and open the LUKS device {0}, command {1} failed: {2}".format(
-                luks_device, err.cmd, err.output)
-            logging.error(txt)
-            txt = _("Can't format and open the LUKS device {0}, command {1} failed: {2}").format(
-                luks_device, err.cmd, err.output)
-            raise InstallError(txt)
-
-
-
-
-''' AutoPartition Class '''
+        cmd = [
+            "cryptsetup", "luksOpen", luks_device, luks_name, "-q",
+            "--key-file=-"]
+        proc = popen(cmd, msg=err_msg, fatal=True)
+        proc.communicate(input=luks_pass_bytes)
 
 
 class AutoPartition(object):
@@ -344,20 +299,14 @@ class AutoPartition(object):
         """ We have two main cases: "swap" and everything else. """
         logging.debug("Will format device %s as %s", device, fs_type)
         if fs_type == "swap":
-            try:
-                cmd = ["swapon","-s"]
-                swap_devices = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                if device in swap_devices:
-                    cmd = ["swapoff", device]
-                    subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                cmd = ["mkswap", "-L", label_name, device]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-                cmd = ["swapon", device]
-                subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                txt = "Can't activate swap in {0}. Command {1} has failed: {2}"
-                txt = txt.format(device, err.cmd, err.output.decode())
-                logging.warning(txt)
+            err_msg = "Can't activate swap in {0}".format(device)
+            swap_devices = call(["swapon","-s"], msg=err_msg)
+            if device in swap_devices:
+                call(["swapoff", device], msg=err_msg)
+            cmd = ["mkswap", "-L", label_name, device]
+            call(cmd, msg=err_msg)
+            cmd = ["swapon", device]
+            call(cmd, msg=err_msg)
         else:
             mkfs = {"xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
                     "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
@@ -378,22 +327,11 @@ class AutoPartition(object):
 
             command = mkfs[fs_type]
 
-            try:
-                subprocess.check_call(command.split(), stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                txt = "Can't create filesystem {0}. Command {1} failed: {2}"
-                txt = txt.format(fs_type, err.cmd, err.output.decode())
-                logging.error(txt)
-                txt = _("Can't create filesystem {0}. Command {1} failed: {2}")
-                txt = txt.format(fs_type, err.cmd, err.output.decode())
-                raise InstallError(txt)
+            err_msg = "Can't create filesystem {0}".format(fs_type)
+            call(command.split(), msg=err_msg, fatal=True)
 
             # Flush filesystem buffers
-            try:
-                subprocess.check_call(["sync"], stderr=subprocess.STDOUT)
-            except subprocess.CalledProcessError as err:
-                txt = "Command {0} failed: {1}".format(err.cmd, err.output.decode())
-                logging.warning(txt)
+            call(["sync"])
 
             # Create our mount directory
             path = self.dest_dir + mount_point
@@ -407,14 +345,9 @@ class AutoPartition(object):
             elif fs_type == "btrfs":
                 mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
 
-            try:
-                cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                txt = "Error trying to mount {0} in {1}. Command {2} failed: {3}".format(device, path, err.cmd, err.output)
-                logging.error(txt)
-                txt = _("Error trying to mount {0} in {1}. Command {2} failed: {3}").format(device, path, err.cmd, err.output)
-                raise InstallError(txt)
+            err_msg = "Error trying to mount {0} in {1}".format(device, path)
+            cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
+            call(cmd, msg=err_msg, fatal=True)
 
             # Change permission of base directories to avoid btrfs issues
             if mount_point == "/tmp":
@@ -427,7 +360,8 @@ class AutoPartition(object):
 
         fs_uuid = fs.get_uuid(device)
         fs_label = fs.get_label(device)
-        logging.debug("Device details: %s UUID=%s LABEL=%s", device, fs_uuid, fs_label)
+        msg = "Device details: %s UUID=%s LABEL=%s"
+        logging.debug(msg, device, fs_uuid, fs_label)
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
@@ -558,7 +492,8 @@ class AutoPartition(object):
         if self.GPT and self.bootloader == "grub2":
             part_sizes['efi'] = 200
 
-        mem_total = check_output("grep MemTotal /proc/meminfo")
+        cmd = ["grep", "MemTotal", "/proc/meminfo"]
+        mem_total = call(cmd).strip("\n")
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
 

@@ -30,10 +30,11 @@
 """ Detects installed OSes (needs root privileges)"""
 
 import os
-import subprocess
 import re
 import tempfile
 import logging
+
+from misc.run_cmd import call
 
 try:
     import misc.extra as misc
@@ -131,13 +132,10 @@ def _check_winxp(system_path):
 
 @misc.raise_privileges
 def _hexdump8081(partition):
-    try:
-        cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
-        hexdump = subprocess.check_output(cmd, stderr=subprocess.STDOUT).decode()
-        return hexdump
-    except subprocess.CalledProcessError as err:
-        logging.warning("Error calling hexdump command: %s", err.output.decode())
-        return ""
+    """ Runs hexdump on partition to try to identify the boot sector """
+    cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
+    hexdump = call(cmd)
+    return hexdump
 
 
 def _get_partition_info(partition):
@@ -168,7 +166,7 @@ def _get_partition_info(partition):
 
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
-    elif len(bytes80_to_81) > 0:
+    elif bytes80_to_81:
         logging.debug("Unknown partition id %s", bytes80_to_81)
     return _("unknown")
 
@@ -285,24 +283,12 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-
-                    try:
-                        subprocess.call(
-                            ["mount", device, tmp_dir],
-                            stderr=subprocess.DEVNULL)
-                        oses[device] = _get_os(tmp_dir)
-                        subprocess.call(
-                            ["umount", "-l", tmp_dir],
-                            stderr=subprocess.DEVNULL)
-                    except AttributeError:
-                        subprocess.call(["mount", device, tmp_dir])
-                        oses[device] = _get_os(tmp_dir)
-                        subprocess.call(["umount", "-l", tmp_dir])
-
+                    call(["mount", device, tmp_dir])
+                    oses[device] = _get_os(tmp_dir)
+                    call(["umount", "-l", tmp_dir])
                     if oses[device] == _("unknown"):
                         # As a last resort, try reading partition info
                         # with hexdump
-                        # print(device, _get_partition_info(device))
                         oses[device] = _get_partition_info(device)
 
     try:

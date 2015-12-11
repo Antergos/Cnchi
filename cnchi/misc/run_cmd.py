@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# chroot.py
+# run_cmd.py
 #
 # Copyright © 2013-2015 Antergos
 #
@@ -36,26 +36,56 @@ import subprocess
 from misc.extra import InstallError
 
 
-def check_call(cmd, warning=True, error=False, fatal=True, msg=""):
-    check_output(cmd, warning, error, fatal, msg)
+def call(cmd, warning=True, error=False, fatal=False, msg=""):
+    """ Helper function to make a system call
+    warning: If true will log a warning message if an error is detected
+    error: If true will log an error message if an error is detected
+    fatal: If true will log an error message AND will raise an InstallError exception
+    msg: Error message to log (if empty the command called will be logged) """
 
-
-def check_output(cmd, warning=True, error=False, fatal=False, msg=""):
     output = None
     try:
         output = subprocess.check_call(cmd, stderr=subprocess.STDOUT).decode()
-    except subprocess.CalledProcessError as process_error:
+    except subprocess.CalledProcessError as err:
         if not msg:
             msg = "Error running {0}: {1}".format(err.cmd, err.output.decode())
         else:
             msg = "{0}: {1}".format(msg, err.output.decode())
-        if not error:
+        if not error and not fatal:
             if not warning:
                 logging.debug(msg)
             else:
                 logging.warning(msg)
         else:
             logging.error(msg)
-        if fatal:
-            raise InstallError(msg)
+            if fatal:
+                # TODO: Fix this function so it translates msg
+                raise InstallError(msg)
     return output
+
+
+def popen(cmd, warning=True, error=False, fatal=False, msg=""):
+    """ Helper function that calls Popen (useful if we need to use pipes) """
+    proc = None
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as err:
+        if not msg:
+            msg = "Error running {0}: {1}".format(err.cmd, err.output.decode())
+        else:
+            msg = "{0}: {1}".format(msg, err.output.decode())
+        if not error and not fatal:
+            if not warning:
+                logging.debug(msg)
+            else:
+                logging.warning(msg)
+        else:
+            logging.error(msg)
+            if fatal:
+                # TODO: Fix this function so it translates msg
+                raise InstallError(msg)
+    return proc
