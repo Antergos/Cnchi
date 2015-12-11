@@ -51,7 +51,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=""):
         if not msg:
             msg = "Error running {0}: {1}".format(err.cmd, err.output.decode())
         else:
-            msg = "{0}: {1}".format(msg, err.output.decode())
+            msg = "{0}: {1}".format(msg, err.output.decode().strip('"'))
         if not error and not fatal:
             if not warning:
                 logging.debug(msg)
