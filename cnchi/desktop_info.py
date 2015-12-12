@@ -143,7 +143,7 @@ DESCRIPTIONS = {
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    '': _("If you are looking for a familiar working environment, KDE's "
+    'kde': _("If you are looking for a familiar working environment, KDE's "
               "Plasma Desktop offers all the tools required for a modern desktop "
               "computing experience so you can be productive right from the start."),
 
