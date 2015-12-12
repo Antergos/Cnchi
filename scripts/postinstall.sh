@@ -224,14 +224,13 @@ kde_settings() {
 	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
 	# Force QtCurve to use our theme
-	rm -R ${CN_DESTDIR}/usr/share/apps/QtCurve/
+	rm -R ${CN_DESTDIR}/usr/share/kstyle/themes/qtcurve.themerc
 
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
 
 	# Setup root defaults
 	cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
-	cp -R ${CN_DESTDIR}/etc/skel/.kde4 ${CN_DESTDIR}/root
 	cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
 	chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
@@ -394,10 +393,10 @@ postinstall() {
 
 	for file in "${env_files[@]}"
 	do
-		echo "# >>>>BEGIN ADDED BY CNCHI INSTALLER<<<< #"
+		echo "# >>>>BEGIN ADDED BY CNCHI INSTALLER<<<< #" >> "${file}"
 		echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
 		echo "EDITOR=/usr/bin/nano" >> "${file}"
-		echo "# >>>>>END ADDED BY CNCHI INSTALLER<<<<< #"
+		echo "# >>>>>END ADDED BY CNCHI INSTALLER<<<<< #" >> "${file}"
 	done
 
 	# Configure makepkg so that it doesn't compress packages after building.
@@ -412,6 +411,7 @@ postinstall() {
 
 	# Start vbox client services if we are installed in vbox
 	if [[ ${CN_IS_VBOX} = "True" ]] || { [[ $(systemd-detect-virt) ]] && [[ 'oracle' = $(systemd-detect-virt -v) ]]; }; then
+		# TODO: This should be done differently
 		sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' "${CN_DESTDIR}/etc/lightdm/Xsession"
 	fi
 

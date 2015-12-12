@@ -88,8 +88,6 @@ class Installation(object):
         self.metalinks = metalinks
 
         self.method = self.settings.get('partition_mode')
-        msg = _("Installing using the '{0}' method").format(self.method)
-        self.queue_event('info', msg)
 
         self.desktop = self.settings.get('desktop').lower()
 
@@ -235,6 +233,9 @@ class Installation(object):
             with misc.raised_privileges():
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
 
+        msg = _("Installing using the '{0}' method").format(self.method)
+        self.queue_event('info', msg)
+
         # Mount needed partitions (in automatic it's already done)
         if self.method in ['alongside', 'advanced', 'zfs']:
             self.mount_partitions()
@@ -369,6 +370,9 @@ class Installation(object):
         """ Configures pacman and syncs db on destination system """
 
         self.create_pacman_conf_file()
+
+        msg = _("Updating package manager security. Please wait...")
+        self.queue_event('info', msg)
         self.prepare_pacman_keyring()
 
         # Init pyalpm
