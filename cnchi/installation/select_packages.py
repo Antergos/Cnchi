@@ -38,20 +38,15 @@ except ImportError as err:
 
 import desktop_info
 import info
-from installation import chroot
 
-import misc.extra as misc
+
 import pacman.pac as pac
+import misc.extra as misc
 from misc.extra import InstallError
 
 import hardware.hardware as hardware
 
 DEST_DIR = "/install"
-
-
-def chroot_run(cmd):
-    """ Helper function """
-    chroot.run(cmd, DEST_DIR)
 
 
 def write_file(filecontents, filename):

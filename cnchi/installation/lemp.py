@@ -38,17 +38,9 @@ part is taken care of.
 import os
 import logging
 
-try:
-    from installation import chroot
-except ImportError:
-    import chroot
+from misc.run_cmd import chroot_call
 
 DEST_DIR = '/install'
-
-
-def chroot_run(cmd):
-    """ Helper function """
-    chroot.run(cmd, DEST_DIR)
 
 
 def setup():
@@ -72,10 +64,10 @@ def mariadb_setup():
         "--user=mysql",
         "--basedir=/usr",
         "--datadir=/var/lib/mysql"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     cmd = ["systemctl", "enable", "mysqld"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
 
@@ -83,7 +75,7 @@ def mariadb_setup():
 def nginx_setup():
     """ Setup Nginx web server """
     cmd = ["systemctl", "enable", "nginx"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # We need to tell nginx to run php using php-fpm.
     path = os.path.join(DEST_DIR, "etc/nginx/nginx.conf")
@@ -140,7 +132,7 @@ def php_setup():
             php_ini.write(line)
 
     cmd = ["systemctl", "enable", "php-fpm"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
 
 if __name__ == '__main__':

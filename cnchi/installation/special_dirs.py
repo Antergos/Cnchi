@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# chroot.py
+# special_dirs.py
 #
 # Copyright © 2013-2015 Antergos
 #
@@ -27,7 +27,7 @@
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-""" Chroot related functions. Used in the installation process """
+""" Mount / Unmount /dev et al. Used in the installation process """
 
 import logging
 import os
@@ -43,7 +43,7 @@ except NameError as err:
 _SPECIAL_DIRS_MOUNTED = False
 
 
-def get_special_dirs():
+def _get_special_dirs():
     """ Get special dirs to be mounted or unmounted """
     special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]
     efi = "/sys/firmware/efi/efivars"
@@ -52,7 +52,7 @@ def get_special_dirs():
     return special_dirs
 
 
-def mount_special_dirs(dest_dir):
+def mount(dest_dir):
     """ Mount special directories for our chroot (bind them)"""
 
     global _SPECIAL_DIRS_MOUNTED
@@ -64,7 +64,7 @@ def mount_special_dirs(dest_dir):
         return
 
     special_dirs = []
-    special_dirs = get_special_dirs()
+    special_dirs = _get_special_dirs()
 
     for special_dir in special_dirs:
         mountpoint = os.path.join(dest_dir, special_dir[1:])
@@ -87,7 +87,7 @@ def mount_special_dirs(dest_dir):
     _SPECIAL_DIRS_MOUNTED = True
 
 
-def umount_special_dirs(dest_dir):
+def umount(dest_dir):
     """ Umount special directories for our chroot """
 
     global _SPECIAL_DIRS_MOUNTED
@@ -99,7 +99,7 @@ def umount_special_dirs(dest_dir):
         return
 
     special_dirs = []
-    special_dirs = get_special_dirs()
+    special_dirs = _get_special_dirs()
 
     for special_dir in reversed(special_dirs):
         mountpoint = os.path.join(dest_dir, special_dir[1:])
@@ -116,38 +116,3 @@ def umount_special_dirs(dest_dir):
                 logging.warning(txt)
 
     _SPECIAL_DIRS_MOUNTED = False
-
-
-def run(cmd, dest_dir, timeout=None, stdin=None):
-    """ Runs command inside the chroot """
-    full_cmd = ['chroot', dest_dir]
-
-    for element in cmd:
-        full_cmd.append(element)
-
-    proc = None
-    try:
-        proc = subprocess.Popen(full_cmd,
-                                stdin=stdin,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
-        outs, errs = proc.communicate(timeout=timeout)
-        txt = outs.decode().strip()
-        if txt:
-            logging.debug(txt)
-        return txt
-    except subprocess.TimeoutExpired as timeout_error:
-        if proc:
-            proc.kill()
-            proc.communicate()
-        logging.error("Timeout running the command %s", timeout_error.cmd)
-    except subprocess.CalledProcessError as process_error:
-        logging.error(
-            "Error running command %s: %s",
-            process_error.cmd,
-            process_error.output)
-    except OSError as os_error:
-        logging.error(
-            "Error running command %s: %s",
-            " ".join(full_cmd),
-            os_error)

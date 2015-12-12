@@ -32,7 +32,7 @@
 
 import logging
 
-from installation import chroot
+from misc.run_cmd import chroot_call
 
 try:
     import ufw
@@ -50,7 +50,7 @@ def run(params, dest_dir="/install"):
         # Could not import ufw module (missing?)
         # Will call ufw command directly
         try:
-            chroot.run(cmd, dest_dir)
+            chroot_call(cmd, dest_dir)
         except OSError as os_error:
             logging.warning(os_error)
         return
@@ -96,7 +96,7 @@ def run(params, dest_dir="/install"):
         # Error using ufw module
         # Will call ufw command directly
         try:
-            chroot.run(cmd, dest_dir)
+            chroot_call(cmd, dest_dir)
         except OSError as os_error:
             logging.warning(os_error)
         return

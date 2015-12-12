@@ -37,14 +37,10 @@ import os
 import subprocess
 import logging
 
-from installation import chroot
+from misc.run_cmd import chroot_call
 
 DEST_DIR = "/install"
 
-
-def chroot_run(cmd):
-    """ Helper function """
-    chroot.run(cmd, DEST_DIR)
 
 
 def setup(ssid=None, passphrase=None):
@@ -121,7 +117,7 @@ def setup(ssid=None, passphrase=None):
             except subprocess.CalledProcessError as process_error:
                 logging.warning(process_error)
             cmd = ["systemctl", "enable", "wpa_supplicant@{0}".format(link)]
-            chroot_run(cmd)
+            chroot_call(cmd)
             # cmd = ["systemctl", "enable", "dhcpcd@{0}".format(link)]
             # chroot_run(cmd)
 

@@ -39,8 +39,8 @@ import string
 
 import parted3.fs_module as fs
 
-from installation import chroot
-from misc.run_cmd import call
+from installation import special_dirs
+from misc.run_cmd import call, chroot_call
 
 # When testing, no _() is available
 try:
@@ -268,7 +268,7 @@ class Bootloader(object):
 
         # /dev and others need to be mounted (binded).
         # We call mount_special_dirs here just to be sure
-        chroot.mount_special_dirs(self.dest_dir)
+        special_dirs.mount(self.dest_dir)
 
         grub_install = ['grub-install',
                         '--directory=/usr/lib/grub/i386-pc',
@@ -282,18 +282,7 @@ class Bootloader(object):
 
         grub_install.append(grub_location)
 
-        try:
-            chroot.run(grub_install, self.dest_dir)
-        except subprocess.CalledProcessError as process_error:
-            logging.error(
-                'Command grub-install failed. Error output: %s',
-                process_error.output)
-        except subprocess.TimeoutExpired:
-            logging.error('Command grub-install timed out.')
-        except Exception as general_error:
-            logging.error(
-                'Command grub-install failed. Unknown Error: %s',
-                general_error)
+        chroot_call(grub_install, self.dest_dir)
 
         self.install_grub2_locales()
 
@@ -303,18 +292,15 @@ class Bootloader(object):
         # Run grub-mkconfig last
         logging.debug("Running grub-mkconfig...")
         locale = self.settings.get("locale")
-        try:
-            cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
-            cmd_sh = ['sh', '-c', cmd]
-            chroot.run(cmd_sh, self.dest_dir, 300)
-        except subprocess.TimeoutExpired:
+
+        cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
+        cmd_sh = ['sh', '-c', cmd]
+        if chroot_call(cmd_sh, self.dest_dir, timeout=300) is False:
             msg = ("grub-mkconfig does not respond. Killing grub-mount and"
                    "os-prober so we can continue.")
             logging.error(msg)
             call(['killall', 'grub-mount'])
             call(['killall', 'os-prober'])
-        except subprocess.CalledProcessError as err:
-            logging.error(err)
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_cfg:
@@ -397,24 +383,20 @@ class Bootloader(object):
 
         # /dev and others need to be mounted (binded).
         # We call mount_special_dirs here just to be sure
-        chroot.mount_special_dirs(self.dest_dir)
+        special_dirs.mount(self.dest_dir)
 
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
 
         logging.debug("Running grub-mkconfig...")
         locale = self.settings.get("locale")
-        try:
-            cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
-            chroot.run(cmd, self.dest_dir, 300)
-        except subprocess.TimeoutExpired:
+        cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
+        if chroot_call(cmd, self.dest_dir, timeout=300) is False:
             txt = ("grub-mkconfig appears to be hung. Killing grub-mount"
                    " and os-prober so we can continue.")
             logging.error(txt)
             subprocess.check_call(['killall', 'grub-mount'])
             subprocess.check_call(['killall', 'os-prober'])
-        except subprocess.CalledProcessError as err:
-            logging.error(err)
 
         paths = [
             os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
@@ -589,43 +571,27 @@ class Bootloader(object):
         # Install bootloader
         logging.debug("Installing systemd-boot bootloader...")
         cmd = ['bootctl', '--path=/boot', 'install']
-        try:
-            # chroot.mount_special_dirs(self.dest_dir)
-            chroot.run(cmd, self.dest_dir, 300)
-            # chroot.umount_special_dirs(self.dest_dir)
-            logging.info("Systemd-boot install completed successfully")
+        if chroot_call(cmd, self.dest_dir, 300) is False:
+            self.settings.set('bootloader_installation_successful', False)
+        else:
             self.settings.set('bootloader_installation_successful', True)
-        except subprocess.CalledProcessError as process_error:
-            logging.error(
-                'Command %s failed. Error output: %s',
-                process_error.cmd,
-                process_error.output)
-            self.settings.set('bootloader_installation_successful', False)
-        except subprocess.TimeoutExpired:
-            logging.error('Command %s timed out.', " ".join(cmd))
-            self.settings.set('bootloader_installation_successful', False)
-        except Exception as general_error:
-            logging.error(
-                'Command %s failed. Unknown Error: %s',
-                " ".join(cmd),
-                general_error)
-            self.settings.set('bootloader_installation_successful', False)
 
     def install_refind(self):
         """ Installs rEFInd boot loader """
         # Details: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
         logging.debug("Installing and configuring rEFInd bootloader...")
         cmd = ["refind-install"]
-        chroot.run(cmd, self.dest_dir, 300)
-        # This script will attempt to find the kernel in /boot and
-        # automatically generate refind_linux.conf.
-        # The script will only set up the most basic kernel
-        # parameters, so be sure to check the file it created for
-        # correctness.
-        cmd = ["refind-mkrlconf"]
-        chroot.run(cmd, self.dest_dir, 300)
-        self.settings.set('bootloader_installation_successful', True)
-        logging.debug("rEFIind installed.")
+        self.settings.set('bootloader_installation_successful', False)
+        if chroot_call(cmd, self.dest_dir, timeout=300) != False:
+            # This script will attempt to find the kernel in /boot and
+            # automatically generate refind_linux.conf.
+            # The script will only set up the most basic kernel
+            # parameters, so be sure to check the file it created for
+            # correctness.
+            cmd = ["refind-mkrlconf"]
+            if chroot_call(cmd, self.dest_dir, timeout=300) != False:
+                self.settings.set('bootloader_installation_successful', True)
+                logging.debug("rEFIind installed.")
 
     def freeze_unfreeze_xfs(self):
         """ Freeze and unfreeze xfs, as hack for grub(2) installing """

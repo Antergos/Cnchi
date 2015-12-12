@@ -41,11 +41,12 @@ import encfs
 from download import download
 
 from installation import auto_partition
-from installation import chroot
+from installation import special_dirs
 from installation import mkinitcpio
 from installation import firewall
 
 from misc.extra import InstallError
+from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
 import misc.extra as misc
@@ -64,11 +65,6 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-
-def chroot_run(cmd):
-    """ Helper function to run a command in chroot """
-    chroot.run(cmd, DEST_DIR)
 
 
 def write_file(filecontents, filename):
@@ -296,7 +292,7 @@ class Installation(object):
         self.download_packages()
 
         # This mounts (binds) /dev and others to /DEST_DIR/dev and others
-        chroot.mount_special_dirs(DEST_DIR)
+        special_dirs.mount(DEST_DIR)
 
         logging.debug("Installing packages...")
         self.install_packages()
@@ -305,7 +301,7 @@ class Installation(object):
         self.configure_system()
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
-        chroot.umount_special_dirs(DEST_DIR)
+        special_dirs.umount(DEST_DIR)
 
         # Finally, try to unmount DEST_DIR
         auto_partition.unmount_all_in_directory(DEST_DIR)

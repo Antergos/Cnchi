@@ -35,6 +35,8 @@ import subprocess
 
 from misc.extra import InstallError
 
+DEST_DIR = "/install"
+
 
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
     """ Helper function to make a system call
@@ -71,7 +73,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
         return False
 
 
-def call_chroot(cmd, chroot_dir, fatal=False, msg=None, timeout=None, stdin=None):
+def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None, stdin=None):
     """ Runs command inside the chroot """
     full_cmd = ['chroot', chroot_dir]
 
