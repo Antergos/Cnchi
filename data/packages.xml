@@ -385,7 +385,6 @@
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
 				<pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-				<pkgname>kdenetwork-filesharing</pkgname>
 				<pkgname>kdenetwork-kopete</pkgname>
 				<pkgname>kde-servicemenus-rootactions</pkgname>
 				<pkgname>kdesudo</pkgname>
@@ -426,6 +425,7 @@
 				<pkgname>xdg-user-dirs</pkgname>
 			</packages>
 		</edition>
+	</editions>
 
 	<!-- User desired features -->
 	<features>
@@ -460,8 +460,7 @@
 			<pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
 		</feature>
 		<feature name="firewall">
-			<pkgname lib='gtk'>gufw</pkgname>
-			<!--<pkgname lib='qt'>kcm-ufw</pkgname>-->
+			<pkgname>gufw</pkgname>
 			<pkgname>ufw</pkgname>
 		</feature>
 		<feature name="fonts">
