@@ -1,3 +1,21 @@
+[2015-12-11 00:27:37 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {2779a81}
+[2015-12-10 21:52:03 +0100]  Must rethink all this...                                                   karasu      {b505300}
+[2015-12-10 21:15:47 +0100]  Nope                                                                       karasu      {59adf50}
+[2015-12-10 21:14:10 +0100]  Trying something                                                           karasu      {e87c070}
+[2015-12-10 21:08:33 +0100]  zfs                                                                        karasu      {32c400e}
+[2015-12-10 21:06:20 +0100]  zfs (str to float and then to int, in this case)                           karasu      {62f31c8}
+[2015-12-10 20:44:33 +0100]  Fix indentation error in bootloader                                        karasu      {194189b}
+[2015-12-10 12:27:44 +0100]  Improve warning/error messages in fs_module.py                             karasu      {56f5caf}
+[2015-12-09 18:25:54 +0100]  Fix bug in mkinitcpio (introduced by myself xD)                            karasu      {0bda569}
+[2015-12-09 17:24:39 +0100]  Still working on download_requests                                         karasu      {abeb2bf}
+[2015-12-09 15:15:28 +0100]  Testing check_output to see if it caches command error messages (st..      karasu      {d96bd60}
+[2015-12-09 10:00:21 +0100]  more info                                                                  karasu      {98569ae}
+[2015-12-09 09:52:37 +0100]  Split in more functions download_requests                                  karasu      {98bb5dc}
+[2015-12-08 22:02:58 +0100]  Log a warning message when md5 sum does not match                          karasu      {39fe95d}
+[2015-12-08 21:53:08 +0100]  Hope this fixes download_requests hash check                               karasu      {dc25ad2}
+[2015-12-08 21:05:08 +0100]  fix download_requests.py                                                   karasu      {5feed4f}
+[2015-12-08 20:51:43 +0100]  Working on progress (user messages get stuck)                              karasu      {a3f5d44}
+[2015-12-08 20:41:58 +0100]  Some pep8. Remove testing option                                           karasu      {7910a8d}
 [2015-12-08 12:51:50 -0600]  call store values everytime row selection event fires for language ..  Dustin Falgout  {d16cb58}
 [2015-12-08 12:32:26 -0600]  yep..still working on UI                                               Dustin Falgout  {bd4ae4f}
 [2015-12-08 15:42:58 +0100]  pep8 used_space                                                            karasu      {d33272a}

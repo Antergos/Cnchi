@@ -278,7 +278,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_overlay.set_overlay_pass_through(self.header_nav, True)
         self.set_titlebar(self.header_overlay)
 
-
         # To honor our css
         self.header.set_name("header")
         self.logo.set_name("logo")
@@ -295,7 +294,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-       # title = "Cnchi {0}".format(info.CNCHI_VERSION)
+        # title = "Cnchi {0}".format(info.CNCHI_VERSION)
         title = "Cnchi Installer"
         self.set_title(title)
         self.logo_text.set_text(title)
@@ -305,70 +304,22 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
 
-        top_level_pages = ['check', 'location_group', 'desktop_group', 'disk_group',
-                           'user_info', 'summary']
-        if not os.path.exists('/home/antergos/.config/openbox'):
-            self.pages["check"] = check.Check(params=self.params)
+        top_level_pages = ['check', 'location_group', 'desktop_group',
+                           'disk_group', 'user_info', 'summary']
 
-        self.pages["location_group"] = {'title': 'Location',
-                                        'prev_page': 'check',
-                                        'next_page': 'location',
-                                        'pages': ['location', 'timezone', 'keymap']}
-        self.pages["location_group"]["location"] = location.Location(params=self.params, in_group=True)
-        self.pages["location_group"]["timezone"] = timezone.Timezone(params=self.params, in_group=True)
-
-        self.pages["desktop_group"] = {'title': 'Desktop Selection', 'prev_page': 'timezone',
-                                       'next_page': 'desktop', 'pages': ['desktop', 'features']}
-
-        if self.settings.get('desktop_ask'):
-            self.pages["location_group"]["keymap"] = keymap.Keymap(params=self.params, in_group=True)
-            self.pages["desktop_group"]["desktop"] = desktop.DesktopAsk(params=self.params)
-            self.pages["desktop_group"]["features"] = features.Features(params=self.params)
-        else:
-            self.pages["location_group"]["keymap"] = keymap.Keymap(
-                self.params,
-                next_page='features',
-                in_group=True)
-            self.pages["desktop_group"]["features"] = features.Features(
-                self.params,
-                prev_page='location_group')
-
-        self.pages["disk_group"] = {'title': 'Disk Setup',
-                                    'prev_page': 'features',
-                                    'next_page': 'installation_ask',
-                                    'pages': ['installation_ask', 'installation_automatic',
-                                              'installation_alongside', 'installation_advanced',
-                                              'installation_zfs']}
-        self.pages["disk_group"]["installation_ask"] = installation_ask.InstallationAsk(
-                params=self.params,
-                in_group=True)
-        self.pages["disk_group"]["installation_automatic"] = installation_automatic.InstallationAutomatic(
-                params=self.params,
-                in_group=True)
-
-        if self.settings.get("enable_alongside"):
-            self.pages["disk_group"]["installation_alongside"] = installation_alongside.InstallationAlongside(
-                    params=self.params,
-                    in_group=True)
-        else:
-            self.pages["disk_group"]["installation_alongside"] = None
-
-        self.pages["disk_group"]["installation_advanced"] = installation_advanced.InstallationAdvanced(
-                params=self.params,
-                in_group=True)
-        self.pages["disk_group"]["installation_zfs"] = installation_zfs.InstallationZFS(
-                params=self.params,
-                in_group=True)
-        self.pages["user_info"] = user_info.UserInfo(params=self.params)
-        self.pages["summary"] = summary.Summary(params=self.params)
-        self.pages["slides"] = slides.Slides(params=self.params)
+        self.initialize_pages_dict()
 
         diff = 2
         if os.path.exists('/home/antergos/.config/openbox'):
             # In minimal (openbox) we don't have a welcome screen
             diff = 3
 
-        num_pages = len(self.pages) - diff
+        top_pages = [p for p in self.pages if not isinstance(self.pages[p], dict)]
+        sub_pages = [p for x in self.pages for p in x if isinstance(self.pages[p], dict)]
+
+        num_pages = len(top_pages) + len(sub_pages)
+
+        logging.info((top_pages, sub_pages, num_pages))
 
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
@@ -410,6 +361,66 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.header_nav.show_all()
         self.current_stack = self.main_stack
+
+    def initialize_pages_dict(self):
+        if not os.path.exists('/home/antergos/.config/openbox'):
+            self.pages["check"] = check.Check(params=self.params)
+
+        self.pages["location_group"] = {'title': 'Location',
+                                        'prev_page': 'check',
+                                        'next_page': 'location',
+                                        'pages': ['location', 'timezone', 'keymap']}
+
+        self.pages["location_group"]["location"] = location.Location(params=self.params,
+                                                                     in_group=True)
+        self.pages["location_group"]["timezone"] = timezone.Timezone(params=self.params,
+                                                                     in_group=True)
+
+        self.pages["desktop_group"] = {'title': 'Desktop Selection',
+                                       'prev_page': 'timezone',
+                                       'next_page': 'desktop',
+                                       'pages': ['desktop', 'features']}
+
+        if self.settings.get('desktop_ask'):
+            self.pages["location_group"]["keymap"] = keymap.Keymap(params=self.params,
+                                                                   in_group=True)
+            self.pages["desktop_group"]["desktop"] = desktop.DesktopAsk(params=self.params)
+            self.pages["desktop_group"]["features"] = features.Features(params=self.params)
+        else:
+            self.pages["location_group"]["keymap"] = keymap.Keymap(self.params,
+                                                                   next_page='features',
+                                                                   in_group=True)
+            self.pages["desktop_group"]["features"] = features.Features(self.params,
+                                                                        prev_page='location_group')
+
+        self.pages["disk_group"] = {'title': 'Disk Setup',
+                                    'prev_page': 'features',
+                                    'next_page': 'installation_ask',
+                                    'pages': ['installation_ask', 'installation_automatic',
+                                              'installation_alongside', 'installation_advanced',
+                                              'installation_zfs']}
+
+        self.pages["disk_group"]["installation_ask"] = \
+            installation_ask.InstallationAsk(params=self.params, in_group=True)
+
+        self.pages["disk_group"]["installation_automatic"] = \
+            installation_automatic.InstallationAutomatic(params=self.params, in_group=True)
+
+        if self.settings.get("enable_alongside"):
+            self.pages["disk_group"]["installation_alongside"] = \
+                installation_alongside.InstallationAlongside(params=self.params, in_group=True)
+        else:
+            self.pages["disk_group"]["installation_alongside"] = None
+
+        self.pages["disk_group"]["installation_advanced"] = \
+            installation_advanced.InstallationAdvanced(params=self.params, in_group=True)
+
+        self.pages["disk_group"]["installation_zfs"] = \
+            installation_zfs.InstallationZFS(params=self.params, in_group=True)
+
+        self.pages["user_info"] = user_info.UserInfo(params=self.params)
+        self.pages["summary"] = summary.Summary(params=self.params)
+        self.pages["slides"] = slides.Slides(params=self.params)
 
     def del_pages(self):
         """ When we get to user_info page we can't go back
