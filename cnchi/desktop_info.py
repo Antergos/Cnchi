@@ -31,7 +31,7 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "gnome", "", "mate", "openbox", "xfce"]
 
 DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt", "plasma5"]
 
@@ -54,14 +54,14 @@ NAMES = {
     'xfce': "Xfce",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
-    'kde4': "KDE 4",
+    '': "KDE 4",
     'plasma5': "KDE Plasma 5",
     'lxqt': "LXQt",
     'mate': "MATE"}
 
 LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
-    'qt': ["kde4", "lxqt", "plasma5"]}
+    'qt': ["", "lxqt", "plasma5"]}
 
 ALL_FEATURES = [
     "aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
@@ -75,7 +75,7 @@ FEATURES = {
     'gnome': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"],
-    'kde4': [
+    '': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"],
     'plasma5': [
@@ -103,7 +103,7 @@ FEATURES = {
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'gnome': 'gnome',
-    'kde4': 'kde-plasma',
+    '': 'kde-plasma',
     'plasma5': 'kde-plasma',
     'mate': 'mate',
     'enlightenment': 'enlightenment',
@@ -143,7 +143,7 @@ DESCRIPTIONS = {
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    'kde4': _("If you are looking for a familiar working environment, KDE's "
+    '': _("If you are looking for a familiar working environment, KDE's "
               "Plasma Desktop offers all the tools required for a modern desktop "
               "computing experience so you can be productive right from the start."),
 

@@ -359,11 +359,13 @@
       </packages>
     </edition>
 
-    <edition name="KDE4" description="KDE 4 Desktop">
+    <edition name="KDE" description="KDE Desktop">
       <packages>
         <pkgname>antergos-kde-setup</pkgname>
         <pkgname>ark</pkgname>
         <pkgname>aspell-en</pkgname>
+        <pkgname>breeze</pkgname>
+        <pkgname>breeze-gtk</pkgname>
         <pkgname>breeze-kde4</pkgname>
         <pkgname>cdrdao</pkgname>
         <pkgname>clementine</pkgname>
@@ -376,34 +378,33 @@
         <pkgname>kate</pkgname>
         <pkgname>kcalc</pkgname>
         <pkgname>kde-gtk-config</pkgname>
-        <pkgname>kdeadmin-kuser</pkgname>
-        <pkgname>kdeartwork-desktopthemes</pkgname>
-        <pkgname>kdeartwork-iconthemes</pkgname>
-        <pkgname>kdeartwork-kscreensaver</pkgname>
-        <pkgname>kdeartwork-styles</pkgname>
         <pkgname>kdebase-kdepasswd</pkgname>
         <pkgname>kdebase-kdialog</pkgname>
         <pkgname>kdebase-kfind</pkgname>
-        <pkgname>konsole</pkgname>
-        <pkgname>kdebase-plasma</pkgname>
         <pkgname>kdegraphics-ksnapshot</pkgname>
         <pkgname>kdegraphics-okular</pkgname>
         <pkgname>kdegraphics-thumbnailers</pkgname>
         <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-        <pkgname>kdemultimedia-kmix</pkgname>
         <pkgname>kdenetwork-filesharing</pkgname>
         <pkgname>kdenetwork-kopete</pkgname>
         <pkgname>kde-servicemenus-rootactions</pkgname>
-        <pkgname>kdeplasma-addons-applets-lancelot</pkgname>
-        <pkgname nm='true' name='NetworkManager'>kdeplasma-applets-plasma-nm</pkgname>
         <pkgname>kdesudo</pkgname>
+        <pkgname>kf5</pkgname>
+        <pkgname>kf5-aids</pkgname>
+        <pkgname>khelpcenter</pkgname>
+        <pkgname>kinfocenter</pkgname>
+        <pkgname>kmenuedit</pkgname>
+        <pkgname>kmix</pkgname>
+        <pkgname>konsole</pkgname>
+        <pkgname>kscreen</pkgname>
         <pkgname>kwalletmanager</pkgname>
         <pkgname>kdeutils-sweeper</pkgname>
         <pkgname>kfaenza-icon-theme</pkgname>
         <pkgname>kipi-plugins</pkgname>
-        <pkgname>kwebkitpart</pkgname>
+        <pkgname>kwrited</pkgname>
         <pkgname>nm-connection-editor</pkgname>
-        <pkgname>numix-icon-theme-square-kde</pkgname>
+        <pkgname>numix-icon-theme-square</pkgname>
+        <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
         <pkgname>qtcurve-kde4</pkgname>
         <pkgname>qtcurve-qt4</pkgname>
         <pkgname>qtcurve-qt5</pkgname>
@@ -417,40 +418,8 @@
 
     <edition name="plasma5" description="KDE Desktop - Plasma 5">
         <packages>
-          <pkgname>antergos-kde-setup</pkgname>
-          <pkgname>ark</pkgname>
-          <pkgname>aspell-en</pkgname>
-          <pkgname>breeze-kde4</pkgname>
-          <pkgname>cdrdao</pkgname>
-          <pkgname>clementine</pkgname>
-          <pkgname>dolphin</pkgname>
-          <pkgname>dolphin-plugins</pkgname>
-          <pkgname>dvd+rw-tools</pkgname>
-          <pkgname>grub2-editor</pkgname>
-          <pkgname>k3b</pkgname>
-          <pkgname>gwenview</pkgname>
-          <pkgname>kate</pkgname>
-          <pkgname>kcalc</pkgname>
-          <pkgname>kdegraphics-ksnapshot</pkgname>
-          <pkgname>kdegraphics-okular</pkgname>
-          <pkgname>kdegraphics-thumbnailers</pkgname>
-          <pkgname>kdemultimedia-ffmpegthumbs</pkgname>
-          <pkgname>kmix</pkgname>
-          <pkgname>kdenetwork-filesharing</pkgname>
-          <pkgname>kdenetwork-kopete</pkgname>
-          <pkgname>kdesudo</pkgname>
-          <pkgname>kwalletmanager</pkgname>
-          <pkgname>kdeutils-sweeper</pkgname>
-          <pkgname>kf5</pkgname>
-          <pkgname>kf5-aids</pkgname>
-          <pkgname>kfaenza-icon-theme</pkgname>
-          <pkgname>kinfocenter</pkgname>
-          <pkgname>konsole</pkgname>
-          <pkgname>kwrited</pkgname>
-          <pkgname>nm-connection-editor</pkgname>
-          <pkgname>numix-icon-theme-square-kde</pkgname>
-          <pkgname>plasma</pkgname>  <!--plasma group-->
-          <pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
+
+
           <pkgname>transmission-qt</pkgname>
           <pkgname>vlc</pkgname>
           <pkgname>xdg-user-dirs</pkgname>
@@ -471,8 +440,7 @@
       <pkgname>pulseaudio-bluetooth</pkgname>
       <pkgname desktops='mate'>blueman</pkgname>
       <pkgname desktops='cinnamon'>blueberry</pkgname>
-      <pkgname desktops='kde4'>bluedevil4</pkgname>
-      <pkgname desktops='plasma5,lxqt'>bluedevil</pkgname>
+      <pkgname desktops='kde,lxqt'>bluedevil</pkgname>
       <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
       <pkgname desktops='mate'>python2-pybluez</pkgname>
     </feature>

@@ -214,7 +214,7 @@ class SelectPackages(object):
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
-        if self.desktop in ['kde4', 'plasma5']:
+        if self.desktop in ['', 'plasma5']:
             pkg = ""
             base_name = 'kde-l10n-'
             lang_name = self.settings.get("language_name").lower()

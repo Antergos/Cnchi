@@ -217,7 +217,7 @@ lxqt_settings() {
 	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
 }
 
-kde4_settings() {
+_settings() {
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
