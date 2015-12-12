@@ -128,8 +128,7 @@ def _(message):
 DESCRIPTIONS = {
     'gnome': _("GNOME 3 is an easy and elegant way to use your "
                "computer. It features the Activities Overview which "
-               "is an easy way to access all your basic tasks. GNOME 3 is "
-               "the default desktop in Antergos."),
+               "is an easy way to access all your basic tasks."),
 
     'cinnamon': _("Cinnamon is a Linux desktop which provides advanced, "
                   "innovative features and a traditional desktop user experience. "
