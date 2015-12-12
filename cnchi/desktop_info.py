@@ -31,9 +31,9 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "gnome", "", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "gnome", "kde", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt", "plasma5"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -54,62 +54,70 @@ NAMES = {
     'xfce': "Xfce",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
-    '': "KDE 4",
-    'plasma5': "KDE Plasma 5",
+    'kde': "KDE",
     'lxqt': "LXQt",
-    'mate': "MATE"}
+    'mate': "MATE"
+}
 
 LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
-    'qt': ["", "lxqt", "plasma5"]}
+    'qt': ["kde", "lxqt"]
+}
 
-ALL_FEATURES = [
-    "aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
-    "lamp", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
+                "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
+# TODO: Rework and simplify features logic by only storing excluded features for each each desktop.
 FEATURES = {
     'cinnamon': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'gnome': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
-    '': [
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
+    'kde': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
-    'plasma5': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'mate': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts",
-        "office", "games", "graphic_drivers", "smb"],
+        "office", "games", "graphic_drivers", "smb"
+    ],
     'enlightenment': [
         "aur", "bluetooth", "cups", "firefox", "firewall",
-        "fonts", "games", "graphic_drivers", "lts", "office", "smb"],
+        "fonts", "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'base': [
-        "aur", "cups", "fonts", "lamp", "lts"],
+        "aur", "cups", "fonts", "lamp", "lts"
+    ],
     'openbox': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb", "visual"],
+        "games", "graphic_drivers", "lts", "office", "smb", "visual"
+    ],
     'lxqt': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'xfce': [
         "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"]}
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ]
+}
 
 # Session names for lightDM setup
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'gnome': 'gnome',
-    '': 'kde-plasma',
-    'plasma5': 'kde-plasma',
+    'kde': 'kde-plasma',
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
     'lxqt': 'lx-session',
-    'xfce': 'xfce'}
+    'xfce': 'xfce'
+}
 
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
@@ -144,25 +152,22 @@ DESCRIPTIONS = {
                        "you create beautiful user interfaces with much less work"),
 
     'kde': _("If you are looking for a familiar working environment, KDE's "
-              "Plasma Desktop offers all the tools required for a modern desktop "
-              "computing experience so you can be productive right from the start."),
+             "Plasma Desktop offers all the tools required for a modern desktop "
+             "computing experience so you can be productive right from the start."),
 
-    'plasma5': _("Plasma 5.0 introduces a new major version of KDE's workspace offering. "
-                 "It provides a visually updated core desktop experience that is easy "
-                 "to use and familiar to the user."),
-
-    'lxqt': _("LXQt is an advanced, easy-to-use, and fast desktop environment "
-              "based on Qt technologies. It has been tailored for users who "
-              "value simplicity, speed, and an intuitive interface."),
+    'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop"
+              "Environment. It is lightweight, modular, blazing-fast, and"
+              "user-friendly."),
 
     'base': _("This option will install Antergos as command-line only system, "
               "without any type of graphical interface. After the installation you can "
               "customize Antergos by installing packages with the command-line package manager."),
 
-    'mate': _("An intuitive, attractive and lightweight desktop environment, fork of GNOME 2. "
-              "MATE is one of the best options for use on older computers or those with low "
-              "hardware specifications due to its lightweight yet very customizable set of "
-              "features.")}
+    'mate': _("MATE is an intuitive, attractive, and lightweight desktop "
+              "environment which provides a more traditional desktop "
+              "experience. Accelerated compositing is supported, but not "
+              "required to run MATE making it suitable for lower-end hardware.")
+}
 
 # Delete previous _() dummy declaration
 del _
