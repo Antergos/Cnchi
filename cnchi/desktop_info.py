@@ -131,21 +131,21 @@ DESCRIPTIONS = {
                "is an easy way to access all your basic tasks. GNOME 3 is "
                "the default desktop in Antergos."),
 
-    'cinnamon': _("Cinnamon is a fork of GNOME 3 developed "
-                  "by (and for) Linux Mint. It provides users a more traditional desktop "
-                  "interface along with the newest compositing techniques of GNOME 3. "
-                  "Cinnamon is for users of all experience levels. "),
+    'cinnamon': _("Cinnamon is a Linux desktop which provides advanced, "
+                  "innovative features and a traditional desktop user experience. "
+                  "Cinnamon aims to make users feel at home by providing them with "
+                  "an easy-to-use and comfortable desktop experience."),
 
     'xfce': _("Xfce is a lightweight desktop environment. It aims to "
               "be fast and low on system resources, while remaining visually "
-              "appealing and user friendly. It is a great option for use "
-              "on older computers or those with low hardware specifications. "),
+              "appealing and user friendly. It suitable for use on older "
+              "computers and those with lower-end hardware specifications. "),
 
-    'openbox': _("Openbox is a highly configurable, next generation window "
-                 "manager with extensive standards support. It's default theme "
-                 "is well known for its minimalistic appearance and flexibility. "
-                 "Your desktop becomes cleaner, faster. Perfect for low hardware "
-                 "specifications, too."),
+    'openbox': _("Not actually a desktop environment, Openbox is a highly "
+                 "configurable window manager. It is known for its"
+                 "minimalistic appearance and its flexibility. It is the most "
+                 "lightweight graphical option offered by antergos. Please "
+                 "Note: Openbox is not recommended for users who are new to Linux."),
 
     'enlightenment': _("Enlightenment is not just a window manager for Linux/X11 "
                        "and others, but also a whole suite of libraries to help "
@@ -155,8 +155,8 @@ DESCRIPTIONS = {
              "Plasma Desktop offers all the tools required for a modern desktop "
              "computing experience so you can be productive right from the start."),
 
-    'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop"
-              "Environment. It is lightweight, modular, blazing-fast, and"
+    'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
+              "Environment. It is lightweight, modular, blazing-fast, and "
               "user-friendly."),
 
     'base': _("This option will install Antergos as command-line only system, "
