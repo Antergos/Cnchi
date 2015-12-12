@@ -30,7 +30,6 @@
 """ Chroot related functions. Used in the installation process """
 
 import logging
-import os
 import subprocess
 
 from misc.extra import InstallError
@@ -73,7 +72,8 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
         return False
 
 
-def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None, stdin=None):
+def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
+                stdin=subprocess.PIPE):
     """ Runs command inside the chroot """
     full_cmd = ['chroot', chroot_dir]
 
@@ -81,9 +81,11 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None, s
         full_cmd.append(element)
 
     try:
-        proc = subprocess.Popen(full_cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
+        proc = subprocess.Popen(
+            full_cmd,
+            stdin=stdin,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
         output, errs = proc.communicate(timeout=timeout)
         output = output.decode().strip()
         if output:
@@ -99,28 +101,33 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None, s
         else:
             return False
     except subprocess.CalledProcessError as err:
-        logging.error("Error running %s: %s", err.cmd, err.output)
+        if msg:
+            logging.error("%s: %s", msg, err.output)
+        else:
+            logging.error("Error running %s: %s", err.cmd, err.output)
         if fatal:
             raise InstallError(err.output)
         else:
             return False
     except OSError as os_error:
-        logging.error("Error running %s: %s", " ".join(full_cmd), os_error)
+        if msg:
+            logging.error("%s: %s", msg, os_error)
+        else:
+            logging.error("Error running %s: %s", " ".join(full_cmd), os_error)
         if fatal:
             raise InstallError(os_error)
         else:
             return False
 
-def popen(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
+def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
     proc = None
     try:
         proc = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            timeout=timeout)
+            stdin=stdin,
+            stderr=subprocess.STDOUT)
         return proc
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         if not msg:
