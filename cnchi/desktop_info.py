@@ -141,7 +141,7 @@ DESCRIPTIONS = {
               "computers and those with lower-end hardware specifications. "),
 
     'openbox': _("Not actually a desktop environment, Openbox is a highly "
-                 "configurable window manager. It is known for its"
+                 "configurable window manager. It is known for its "
                  "minimalistic appearance and its flexibility. It is the most "
                  "lightweight graphical option offered by antergos. Please "
                  "Note: Openbox is not recommended for users who are new to Linux."),

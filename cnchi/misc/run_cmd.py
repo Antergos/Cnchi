@@ -119,6 +119,7 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
         else:
             return False
 
+
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
     proc = None

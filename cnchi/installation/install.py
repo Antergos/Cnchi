@@ -724,7 +724,7 @@ class Installation(object):
                 DEST_DIR,
                 "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
-                chroot_run(['systemctl', '-f', 'enable', name])
+                chroot_call(['systemctl', '-f', 'enable', name])
                 logging.debug("Service '%s' has been enabled.", name)
             else:
                 logging.warning("Can't find service %s", name)
@@ -733,7 +733,7 @@ class Installation(object):
     def change_user_password(user, new_password):
         """ Changes the user's password """
         shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
-        chroot_run(['usermod', '-p', shadow_password, user])
+        chroot_call(['usermod', '-p', shadow_password, user])
 
     @staticmethod
     def auto_timesetting():
@@ -936,11 +936,11 @@ class Installation(object):
         for alsa_command in alsa_commands:
             cmd = ["amixer", "-q", "-c", "0", "sset"]
             cmd.extend(alsa_command.split())
-            chroot_run(cmd)
+            chroot_call(cmd)
 
         # Save settings
         logging.debug("Saving ALSA settings...")
-        chroot_run(['alsactl', 'store'])
+        chroot_call(['alsactl', 'store'])
         logging.debug("ALSA settings saved.")
 
     @staticmethod
@@ -1106,13 +1106,13 @@ class Installation(object):
                                 "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
                 timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
                                 "0.fr.pool.ntp.org\n")
-            chroot_run(['timedatectl', 'set-ntp', 'true'])
+            chroot_call(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
         zoneinfo_path = os.path.join(
             "/usr/share/zoneinfo",
             self.settings.get("timezone_zone"))
-        chroot_run(['ln', '-s', zoneinfo_path, "/etc/localtime"])
+        chroot_call(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         logging.debug("Timezone set.")
 
         # Wait FOREVER until the user sets his params
@@ -1159,14 +1159,14 @@ class Installation(object):
 
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
-            chroot_run(['groupadd', 'vboxusers'])
+            chroot_call(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
             # Prepare system for autologin.
             # LightDM needs the user to be in the autologin group.
-            chroot_run(['groupadd', 'autologin'])
+            chroot_call(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
         cmd = [
@@ -1176,15 +1176,15 @@ class Installation(object):
             '-g', 'users',
             '-G', default_groups,
             username]
-        chroot_run(cmd)
+        chroot_call(cmd)
         logging.debug("User %s added.", username)
 
         self.change_user_password(username, password)
 
-        chroot_run(['chfn', '-f', fullname, username])
+        chroot_call(['chfn', '-f', fullname, username])
         home_dir = os.path.join("/home", username)
         cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
-        chroot_run(cmd)
+        chroot_call(cmd)
 
         # Set hostname
         hostname_path = os.path.join(DEST_DIR, "etc/hostname")
@@ -1202,7 +1202,7 @@ class Installation(object):
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales..."))
         self.uncomment_locale_gen(locale)
-        chroot_run(['locale-gen'])
+        chroot_call(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
             locale_conf.write('LANG={0}\n'.format(locale))
@@ -1223,7 +1223,7 @@ class Installation(object):
         self.set_console_conf()
 
         # Install configs for root
-        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
+        chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
 
         self.queue_event('info', _("Configuring hardware..."))
 
@@ -1240,7 +1240,7 @@ class Installation(object):
         # Set pulse
         path = os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")
         if os.path.exists(path):
-            chroot_run(['pulseaudio-ctl', 'normal'])
+            chroot_call(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
@@ -1250,7 +1250,7 @@ class Installation(object):
         # https://bugs.archlinux.org/task/45351
         # We have to kill gpg-agent because if it stays around we can't
         # reliably unmount the target partition.
-        chroot_run(['killall', '-9', 'gpg-agent'])
+        chroot_call(['killall', '-9', 'gpg-agent'])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1322,11 +1322,11 @@ class Installation(object):
 
         # Create an initial database for mandb
         # logging.debug("Updating man database")
-        # chroot_run(["mandb", "--quiet"])
+        # chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         # logging.debug("Updating pkgfile database")
-        # chroot_run(["pkgfile", "--update"])
+        # chroot_call(["pkgfile", "--update"])
 
         # Copy installer log to the new installation
         logging.debug("Copying install log to /var/log.")
