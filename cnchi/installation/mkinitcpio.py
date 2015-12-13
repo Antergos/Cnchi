@@ -78,6 +78,9 @@ def run(dest_dir, settings, mount_devices, blvm):
     if "swap" in mount_devices:
         hooks.append("resume")
 
+    if settings.get("zfs"):
+        modules.append("zfs")
+
     hooks.append("filesystems")
 
     if settings.get('btrfs') and cpu is not 'genuineintel':
