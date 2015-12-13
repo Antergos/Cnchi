@@ -438,8 +438,8 @@ class Installation(object):
                 subprocess.check_call(cmd, stdin=dev_null)
 
             # Refresh and update the signature keys
-            cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
-            subprocess.check_call(cmd)
+            # cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
+            # subprocess.check_call(cmd)
         except subprocess.CalledProcessError as process_error:
             txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(
                 process_error.cmd, process_error.output)
