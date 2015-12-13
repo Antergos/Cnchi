@@ -30,7 +30,6 @@ import logging
 import os
 import queue
 import shutil
-import subprocess
 import sys
 import time
 import re
@@ -170,11 +169,13 @@ class Installation(object):
         if root_partition:
             txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
             logging.debug(txt)
-            subprocess.check_call(['mount', root_partition, DEST_DIR])
+            cmd = ['mount', root_partition, DEST_DIR]
+            call(cmd, fatal=True)
         elif self.method == "zfs":
             # Mount /
             logging.debug("ZFS: Mounting root")
-            subprocess.check_call(["zfs", "mount", "-a"])
+            cmd = ["zfs", "mount", "-a"]
+            call(cmd)
 
         # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")
@@ -183,7 +184,8 @@ class Installation(object):
             txt = _("Mounting partition {0} into {1}/boot directory")
             txt = txt.format(boot_partition, boot_path)
             logging.debug(txt)
-            subprocess.check_call(['mount', boot_partition, boot_path])
+            cmd = ['mount', boot_partition, boot_path]
+            call(cmd, fatal=True)
 
         # In advanced mode, mount all partitions (root and boot are already mounted)
         if self.method == 'advanced':
@@ -203,21 +205,14 @@ class Installation(object):
                         txt = _("Mounting partition {0} into {1} directory")
                         txt = txt.format(mount_part, mount_dir)
                         logging.debug(txt)
-                        subprocess.check_call(['mount', mount_part, mount_dir])
-                    except subprocess.CalledProcessError as process_error:
-                        # We will continue as root and boot are already mounted
-                        txt = "Unable to mount {0}, command {1} failed: {2}".format(
-                            mount_part, process_error.cmd, process_error.output)
-                        logging.warning(txt)
+                        cmd = ['mount', mount_part, mount_dir]
+                        call(cmd)
+                    except OSError:
+                        logging.warning("Could not create %s directory", mount_dir)
                 elif mount_part == swap_partition:
-                    try:
-                        logging.debug("Activating swap in %s", mount_part)
-                        subprocess.check_call(['swapon', swap_partition])
-                    except subprocess.CalledProcessError as process_error:
-                        # We can continue even if no swap is on
-                        txt = "Unable to activate swap {0}, command {1} failed: {2}".format(
-                            mount_part, process_error.cmd, process_error.output)
-                        logging.warning(txt)
+                    logging.debug("Activating swap in %s", mount_part)
+                    cmd = ['swapon', swap_partition]
+                    call(cmd)
 
     @misc.raise_privileges
     def start(self):
@@ -401,49 +396,34 @@ class Installation(object):
         # haveged is a daemon that generates system entropy; this speeds up
         # critical operations in cryptographic programs such as gnupg
         # (including the generation of new keyrings)
-        try:
-            cmd = ["systemctl", "start", "haveged"]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Can't start haveged service, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["systemctl", "start", "haveged"]
+        call(cmd)
 
         # Delete old gnupg files
         dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
-        try:
-            cmd = ["rm", "-rf", dest_path]
-            subprocess.check_call(cmd)
-            os.mkdir(dest_path)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error deleting old gnupg files, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["rm", "-rf", dest_path]
+        call(cmd)
+        os.mkdir(dest_path)
 
         # Tell pacman-key to regenerate gnupg files
-        try:
-            # Initialize the pacman keyring
-            cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
-            subprocess.check_call(cmd)
+        # Initialize the pacman keyring
+        cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
+        call(cmd)
 
-            # Load the signature keys
-            cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
-            subprocess.check_call(cmd)
+        # Load the signature keys
+        cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+        call(cmd)
 
-            #path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
-            # Run dirmngr
-            # https://bbs.archlinux.org/viewtopic.php?id=190380
-            with open(os.devnull, 'r') as dev_null:
-                cmd = ["dirmngr"]
-                subprocess.check_call(cmd, stdin=dev_null)
+        # path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
+        # Run dirmngr
+        # https://bbs.archlinux.org/viewtopic.php?id=190380
+        with open(os.devnull, 'r') as dev_null:
+            cmd = ["dirmngr"]
+            call(cmd, stdin=dev_null)
 
-            # Refresh and update the signature keys
-            # cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
-            # subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        # Refresh and update the signature keys
+        # cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
+        # call(cmd)
 
     def install_packages(self):
         """ Start pacman installation of packages """
@@ -742,12 +722,8 @@ class Installation(object):
     @staticmethod
     def auto_timesetting():
         """ Set hardware clock """
-        try:
-            subprocess.check_call(["hwclock", "--systohc", "--utc"])
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error adjusting hardware clock, command {0} failed: {1}"
-            txt = txt.format(process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["hwclock", "--systohc", "--utc"]
+        call(cmd)
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     @staticmethod
@@ -793,11 +769,6 @@ class Installation(object):
                     gen.write(line)
         else:
             logging.error("Can't find locale.gen file")
-
-    @staticmethod
-    def check_output(command):
-        """ Helper function to run a command """
-        return subprocess.check_output(command.split()).decode().strip("\n")
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
@@ -1283,15 +1254,9 @@ class Installation(object):
         # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        try:
-            subprocess.check_call(cmd, timeout=300)
-            logging.debug("Post install script completed successfully.")
-        except subprocess.CalledProcessError as process_error:
-            # Even though Post-install script call has failed we will go on
-            txt = "Error running post-install script, command %s failed: %s"
-            logging.error(txt, process_error.cmd, process_error.output)
-        except subprocess.TimeoutExpired as timeout_error:
-            logging.error(timeout_error)
+
+        call(cmd, timeout=300)
+        logging.debug("Post install script completed successfully.")
 
         # Patch user-dirs-update-gtk.desktop
         self.patch_user_dirs_update_gtk()
