@@ -39,8 +39,9 @@ from gi.repository import Gtk
 import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
-
 from installation.process import Process
+
+from misc.extra import InstallError
 
 import show_message as show
 
@@ -60,6 +61,9 @@ class Summary(GtkBaseBox):
         super().__init__(self, params, "summary", prev_page, next_page)
 
         self.main_window = params['main_window']
+
+        if not main_window:
+            raise InstallError("Can't get main window")
 
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
@@ -152,10 +156,10 @@ class Summary(GtkBaseBox):
         try:
             install_screen = self.main_window.pages[page]
         except (AttributeError, KeyError) as page_error:
-            logging.error(
-                "Can't find installation page called %s: %s",
-                page,
-                page_error)
+            msg = "Can't find installation page called {0}: {1}"
+            msg = msg.format(page, page_error)
+            logging.error(msg)
+            raise InstallError(msg)
         return install_screen
 
     def prepare(self, direction):
