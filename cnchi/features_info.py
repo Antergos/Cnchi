@@ -45,7 +45,7 @@ ICON_NAMES = {
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
-    'flash' : 'flash',
+    'flash' : 'applications-adobe-flashplayer',
     'visual': 'video-display'}
 
 
