@@ -77,7 +77,7 @@ FEATURES = {
     'plasma5': ["aur", "bluetooth", "cups", "firefox", "flash", "firewall", "fonts", "games", "graphic_drivers", "lts",
                 "office", "smb"],
     'mate': ["aur", "bluetooth", "cups", "firefox", "flash", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
-    'enlightenment': ["aur", "bluetooth", "cups", "flash", "firefox", "flash", "firewall", "fonts", "games", "graphic_drivers", "lts",
+    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "flash", "firewall", "fonts", "games", "graphic_drivers", "lts",
                       "office", "smb"],
     'base': ["aur", "cups", "fonts", "lamp", "lts"],
     'openbox': ["aur", "bluetooth", "cups", "firefox", "flash", "firewall", "fonts", "games", "graphic_drivers", "lts",
