@@ -104,8 +104,8 @@ TOOLTIPS = {
                  "layout engine to render web pages, which implements current and\n"
                  "anticipated web standards."),
     'flash': _("Adobe Flash Player is freeware software for using content created\n"
-                "on the Adobe Flash platform, including viewing multimedia, executing rich internet applications\n" 
-                "and streaming video and audio."),
+                "on the Adobe Flash platform, including viewing multimedia, executing\n" 
+                "rich internet applications and streaming video and audio."),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
