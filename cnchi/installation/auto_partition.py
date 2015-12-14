@@ -166,7 +166,7 @@ def remove_lvm(device):
         for pvolume in pvolumes:
             pvolume = pvolume.strip()
             if device in pvolume:
-                cmd = ["pvremove", "-ff", pvolume]
+                cmd = ["pvremove", "-ff", "-y", pvolume]
                 call(cmd, msg=err_msg)
 
 def close_antergos_luks_devices():
