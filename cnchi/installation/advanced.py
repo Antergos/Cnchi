@@ -1973,7 +1973,8 @@ class InstallationAdvanced(GtkBaseBox):
             show.warning(self.get_toplevel(), msg)
             if swap_partition == partition_path:
                 cmd = ["swapoff", partition_path]
-                call(cmd)
+                with misc.raised_privileges():
+                    call(cmd)
                 logging.debug("Swap partition %s unmounted", partition_path)
             else:
                 cmd = ['umount', partition_path]
