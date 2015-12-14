@@ -132,10 +132,11 @@ class Timezone(GtkBaseBox):
 
     def set_timezone(self, timezone):
         """ Set timezone in tzmap """
-        self.timezone = timezone
-        res = self.tzmap.set_timezone(timezone)
-        # res will be False if the timezone is unrecognised
-        self.forward_button.set_sensitive(res)
+        if timezone:
+            self.timezone = timezone
+            res = self.tzmap.set_timezone(timezone)
+            # res will be False if the timezone is unrecognised
+            self.forward_button.set_sensitive(res)
 
     def on_zone_combobox_changed(self, widget):
         """ Zone changed """

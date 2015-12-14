@@ -403,6 +403,10 @@ class TimezoneMap(Gtk.Widget):
 
     def get_loc_for_xy(self, x, y):
         """ Get location from map position """
+
+        if not self._color_map:
+            return None
+
         rowstride = self._color_map.get_rowstride()
         pixels = self._color_map.get_pixels()
 
@@ -468,7 +472,10 @@ class TimezoneMap(Gtk.Widget):
 
     def set_timezone(self, time_zone):
         """ Set timezone """
-        real_tz = self.tzdb.get_loc(time_zone)
+        if time_zone:
+            real_tz = self.tzdb.get_loc(time_zone)
+        else:
+            real_tz = None
 
         ret = False
 
@@ -530,8 +537,11 @@ class TimezoneMap(Gtk.Widget):
             x = self.convert_longitude_to_x(longitude, alloc.width)
             y = self.convert_latitude_to_y(latitude, alloc.height)
             location = self.get_loc_for_xy(x, y)
-            zone = location.get_property('zone')
-            return zone
+            if location:
+                zone = location.get_property('zone')
+                return zone
+            else:
+                return None
 
     @staticmethod
     def convert_longitude_to_x(longitude, map_width):

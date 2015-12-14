@@ -115,6 +115,7 @@ class InstallationAlongside(GtkBaseBox):
     def get_new_device(device_to_shrink):
         """ Get new device where Cnchi will install Antergos
             returns an empty string if no device is available """
+        # TODO: Fix this for mmcblk devices
         number = int(device_to_shrink[len("/dev/sdX"):])
         disk = device_to_shrink[:len("/dev/sdX")]
 
@@ -284,6 +285,7 @@ class InstallationAlongside(GtkBaseBox):
         otherOS = row[COL_DETECTED_OS]
         fs_type = row[COL_FILESYSTEM]
 
+        # TODO: Fix this for mmcblk devices
         device_path = row[COL_DEVICE][:len("/dev/sdX")]
 
         new_size = self.new_size

@@ -279,7 +279,7 @@ class Bootloader(object):
                         '--boot-directory=/boot',
                         '--recheck']
 
-        # Use --force when installing in /dev/sdXY
+        # Use --force when installing in /dev/sdXY or in /dev/mmcblk
         if len(grub_location) > len("/dev/sdX"):
             grub_install.append("--force")
 
