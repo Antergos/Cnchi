@@ -49,7 +49,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     try:
         output = subprocess.check_output(
             cmd,
-            stdin=stdin
+            stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
         output = output.decode().strip('\n')
