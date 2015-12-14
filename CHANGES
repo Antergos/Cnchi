@@ -1,3 +1,12 @@
+[2015-12-14 09:46:36 +0100]  swapoff needs root privileges                                              karasu      {bbf0fbb}
+[2015-12-14 08:53:46 +0100]  Do not try to read Replay Protected Memory Block                           karasu      {e60dcf7}
+[2015-12-14 08:39:41 +0100]  Fix pvremove command                                                       karasu      {ee1d30f}
+[2015-12-14 08:35:11 +0100]  Typo                                                                       karasu      {a2c9349}
+[2015-12-14 08:34:47 +0100]  Allow to pass stdin to call in run_cmd                                     karasu      {f6c8a79}
+[2015-12-13 21:49:15 +0100]  Use our own call function in subprocess (easy to track errors)             karasu      {c5c2529}
+[2015-12-13 21:38:49 +0100]  Do not always refresh gpg keys (it's a too slow process)                   karasu      {e0167e2}
+[2015-12-13 18:24:35 +0100]  Add zfs hook to mkinitcpio                                                 karasu      {25de414}
+[2015-12-12 09:36:00 -0600]  needs more testing                                                     Dustin Falgout  {fda723a}
 [2015-12-12 08:23:32 -0600]  blah! :wink:                                                           Dustin Falgout  {b5dd036}
 [2015-12-12 07:29:29 -0600]  ...                                                                    Dustin Falgout  {6a2631c}
 [2015-12-12 07:19:03 -0600]  almost done                                                            Dustin Falgout  {85cfdb7}

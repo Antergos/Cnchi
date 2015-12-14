@@ -38,7 +38,7 @@ DEST_DIR = "/install"
 
 
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
-         stdin=subprocess.STDIN):
+         stdin=None):
     """ Helper function to make a system call
     warning: If true will log a warning message if an error is detected
     error: If true will log an error message if an error is detected
@@ -49,7 +49,6 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     try:
         output = subprocess.check_output(
             cmd,
-            stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
         output = output.decode().strip('\n')
@@ -75,7 +74,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
 
 
 def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
-                stdin=subprocess.PIPE):
+                stdin=None, input=None):
     """ Runs command inside the chroot """
     full_cmd = ['chroot', chroot_dir]
 
@@ -88,7 +87,7 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
             stdin=stdin,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
-        output, errs = proc.communicate(timeout=timeout)
+        output, errs = proc.communicate(timeout=timeout, input=input)
         output = output.decode().strip()
         if output:
             logging.debug(output)
