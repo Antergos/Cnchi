@@ -74,6 +74,7 @@ class Settings(object):
             'feature_lts': False,
             'feature_office': False,
             'feature_smb': False,
+            'feature_flash': False,
             'feature_visual': False,
             'fullname': '',
             'GRUB_CMDLINE_LINUX': '',
