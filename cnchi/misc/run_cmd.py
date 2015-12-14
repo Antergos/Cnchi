@@ -37,7 +37,8 @@ from misc.extra import InstallError
 DEST_DIR = "/install"
 
 
-def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
+def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
+         stdin=subprocess.STDIN):
     """ Helper function to make a system call
     warning: If true will log a warning message if an error is detected
     error: If true will log an error message if an error is detected
@@ -48,6 +49,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None):
     try:
         output = subprocess.check_output(
             cmd,
+            stdin=stdin
             stderr=subprocess.STDOUT,
             timeout=timeout)
         output = output.decode().strip('\n')
