@@ -1,3 +1,4 @@
+[2015-12-14 09:18:34 -0600]  fix syntax error                                                       Dustin Falgout  {ae4635e}
 [2015-12-14 09:11:50 -0600]  fix invalid attribute                                                  Dustin Falgout  {2387f78}
 [2015-12-14 09:46:36 +0100]  swapoff needs root privileges                                              karasu      {bbf0fbb}
 [2015-12-14 08:53:46 +0100]  Do not try to read Replay Protected Memory Block                           karasu      {e60dcf7}

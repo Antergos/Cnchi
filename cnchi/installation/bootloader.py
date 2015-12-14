@@ -221,19 +221,22 @@ class Bootloader(object):
             with open(default_grub) as grub_file:
                 lines = [x.strip() for x in grub_file.readlines()]
 
-            option_found = False
+            look_for = option + '='
 
-            with open(default_grub, 'w') as grub_file:
-                for line in lines:
-                    if option + "=" in line:
-                        # Option was already in file, update it
-                        option_found = True
-                        line = '{0}="{1}"\n'.format(option, cmd)
-                    grub_file.write(line)
+            if look_for in lines:
+                with open(default_grub, 'w', newline='\n') as grub_file:
+                    for line in lines:
+                        if look_for in line:
+                            # Option was already in file, update it
+                            line = '{0}="{1}"'.format(option, cmd)
+                        line += '\n'
+                        grub_file.write(line)
 
-                if not option_found:
-                    # Option was not found. Thus, append new option
-                    grub_file.write('{0}="{1}"\n'.format(option, cmd))
+            else:
+                # Option was not found. Thus, append new option
+                with open(default_grub, 'a', newline='\n') as grub_file:
+                    grub_file.write('{0}="{1}"'.format(option, cmd))
+                    grub_file.write('\n')
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as general_error:
