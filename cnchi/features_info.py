@@ -45,6 +45,7 @@ ICON_NAMES = {
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'smb': 'gnome-mime-x-directory-smb-share',
+    'flash' : 'flash',
     'visual': 'video-display'}
 
 
@@ -57,6 +58,7 @@ TITLES = {
     'bluetooth': _("Bluetooth Support"),
     'cups': _("Printing Support"),
     'firefox': _("Firefox Web Browser"),
+    'flash': _("Flash Player"),
     'firewall': _("Uncomplicated Firewall"),
     'fonts': _("Extra Truetype Fonts"),
     'games': _("Steam + PlayonLinux"),
@@ -80,6 +82,7 @@ DESCRIPTIONS = {
     'firewall': _("Control the incoming and outgoing network traffic."),
     'lts': _("Long term support (LTS) Linux kernel and modules."),
     'firefox': _("A popular open-source graphical web browser from Mozilla."),
+    'flash': _("Freeware software normally used for multimedia."),
     'smb': _("SMB provides shared access to files and printers.")}
 
 TOOLTIPS = {
@@ -100,6 +103,9 @@ TOOLTIPS = {
                  "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
                  "layout engine to render web pages, which implements current and\n"
                  "anticipated web standards."),
+    'flash': _("Adobe Flash Player is freeware software for using content created\n"
+                "on the Adobe Flash platform, including viewing multimedia, executing\n" 
+                "rich internet applications and streaming video and audio."),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
