@@ -38,6 +38,7 @@ ICON_NAMES = {
     'cups': 'printer',
     'firefox': 'firefox',
     'firewall': 'network-server',
+    'flash': 'applications-adobe-flashplayer',
     'fonts': 'preferences-desktop-font',
     'games': 'applications-games',
     'graphic_drivers': 'gnome-system',
@@ -58,6 +59,7 @@ TITLES = {
     'cups': _("Printing Support"),
     'firefox': _("Firefox Web Browser"),
     'firewall': _("Uncomplicated Firewall"),
+    'flash': _("Flash Player"),
     'fonts': _("Extra Truetype Fonts"),
     'games': _("Steam + PlayonLinux"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
@@ -70,6 +72,7 @@ TITLES = {
 DESCRIPTIONS = {
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
+    'flash': _("Freeware software normally used for multimedia."),
     'fonts': _("TrueType fonts from the Google Fonts project."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
@@ -103,6 +106,9 @@ TOOLTIPS = {
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
+    'flash': _("Adobe Flash Player is freeware software for using content created\n"
+               "on the Adobe Flash platform, including viewing multimedia, executing\n"
+               "rich internet applications and streaming video and audio."),
     'fonts': _("Fonts: adobe-source-code-pro, adobe-source-sans-pro, jsmath, lohit\n"
                "oldstand, openarch, otf-bitter, otf-goudy, andika, anonymous-pro\n"
                "cantarell, cardo, chromeos-fonts, comfortaa, droid, google-fonts\n"

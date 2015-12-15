@@ -64,45 +64,45 @@ LIBS = {
     'qt': ["kde", "lxqt"]
 }
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "flash", "fonts", "games", "graphic_drivers",
                 "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
 # TODO: Rework and simplify features logic by only storing excluded features for each each desktop.
 FEATURES = {
     'cinnamon': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"
     ],
     'gnome': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"
     ],
     'kde': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"
     ],
     'mate': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts",
-        "office", "games", "graphic_drivers", "smb"
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "lts", "office", "games", "graphic_drivers", "smb"
     ],
     'enlightenment': [
-        "aur", "bluetooth", "cups", "firefox", "firewall",
-        "fonts", "games", "graphic_drivers", "lts", "office", "smb"
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
     ],
     'base': [
         "aur", "cups", "fonts", "lamp", "lts"
     ],
     'openbox': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb", "visual"
     ],
     'lxqt': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"
     ],
     'xfce': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
         "games", "graphic_drivers", "lts", "office", "smb"
     ]
 }
