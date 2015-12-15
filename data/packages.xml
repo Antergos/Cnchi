@@ -488,8 +488,8 @@
         <pkgname conflicts="chromium">firefox</pkgname>
     </feature>
     <feature name="flash">
-        <pkgname conflicts="chromium-pepper-flash">flashplugin</pkgname>
-        <pkgname conflicts="flashplugin">chromium-pepper-flash</pkgname>
+        <pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
+        <pkgname conflicts="firefox,flashplugin">chromium-pepper-flash</pkgname>
     </feature>
     <feature name="firewall">
       <pkgname lib='gtk'>gufw</pkgname>
