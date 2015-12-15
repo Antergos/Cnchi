@@ -358,12 +358,20 @@ class AutoPartition(object):
         msg = "Device details: %s UUID=%s LABEL=%s"
         logging.debug(msg, device, fs_uuid, fs_label)
 
+    def get_partition_path(self, device, part_num):
+        """ This is awful and prone to fail. We should do some
+            type of test here """
+        if "mmcblk" in device:
+            return "{0}p{1}".format(device, part_num)
+        else:
+            return "{0}{1}".format(device, part_num)
+
     def get_devices(self):
         """ Set (and return) all partitions on the device """
         devices = {}
         device = self.auto_device
 
-        # device is of type /dev/sdX or /dev/hdX
+        # device is of type /dev/sdX or /dev/hdX or /dev/mmcblkX
 
         if self.GPT:
             if not self.UEFI:
@@ -374,23 +382,23 @@ class AutoPartition(object):
                 part_num = 1
 
             if self.bootloader == "grub2":
-                devices['efi'] = "{0}{1}".format(device, part_num)
+                devices['efi'] = self.get_partition_path(device, part_num)
                 part_num += 1
 
-            devices['boot'] = "{0}{1}".format(device, part_num)
+            devices['boot'] = self.get_partition_path(device, part_num)
             part_num += 1
-            devices['root'] = "{0}{1}".format(device, part_num)
+            devices['root'] = self.get_partition_path(device, part_num)
             part_num += 1
             if self.home:
-                devices['home'] = "{0}{1}".format(device, part_num)
+                devices['home'] = self.get_partition_path(device, part_num)
                 part_num += 1
-            devices['swap'] = "{0}{1}".format(device, part_num)
+            devices['swap'] = self.get_partition_path(device, part_num)
         else:
-            devices['boot'] = "{0}{1}".format(device, 1)
-            devices['root'] = "{0}{1}".format(device, 2)
+            devices['boot'] = self.get_partition_path(device, 1)
+            devices['root'] = self.get_partition_path(device, 2)
             if self.home:
-                devices['home'] = "{0}{1}".format(device, 3)
-            devices['swap'] = "{0}{1}".format(device, 5)
+                devices['home'] = self.get_partition_path(device, 3)
+            devices['swap'] = self.get_partition_path(device, 5)
 
         if self.luks:
             if self.lvm:
@@ -441,7 +449,10 @@ class AutoPartition(object):
         mount_devices['swap'] = devices['swap']
 
         for mount_device in mount_devices:
-            logging.debug("%s assigned to be mounted in %s", mount_devices[mount_device], mount_device)
+            logging.debug(
+                "%s assigned to be mounted in %s",
+                mount_devices[mount_device],
+                mount_device)
 
         return mount_devices
 
