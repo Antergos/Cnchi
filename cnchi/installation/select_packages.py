@@ -38,20 +38,15 @@ except ImportError as err:
 
 import desktop_info
 import info
-from installation import chroot
 
-import misc.extra as misc
+
 import pacman.pac as pac
+import misc.extra as misc
 from misc.extra import InstallError
 
 import hardware.hardware as hardware
 
 DEST_DIR = "/install"
-
-
-def chroot_run(cmd):
-    """ Helper function """
-    chroot.run(cmd, DEST_DIR)
 
 
 def write_file(filecontents, filename):
@@ -219,7 +214,7 @@ class SelectPackages(object):
                         self.packages.append(pkg.text)
 
         # Set KDE language pack
-        if self.desktop in ['kde4', 'plasma5']:
+        if self.desktop == 'kde':
             pkg = ""
             base_name = 'kde-l10n-'
             lang_name = self.settings.get("language_name").lower()

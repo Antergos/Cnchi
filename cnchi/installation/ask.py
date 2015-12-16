@@ -407,6 +407,7 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_luks_in_root', False)
             self.settings.set('luks_root_volume', "")
             self.settings.set('use_zfs', True)
+            self.settings.set('zfs', True)
             self.settings.set('use_home', use_home)
         else:
             # Set defaults. We don't know these yet.

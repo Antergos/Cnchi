@@ -649,7 +649,7 @@ class InstallError(Exception):
     def __init__(self, message):
         """ Initialize exception class """
         super().__init__(message)
-        self.message = message
+        self.message = str(message)
 
     def __repr__(self):
         """ Returns exception message """

@@ -30,7 +30,6 @@ import logging
 import os
 import queue
 import shutil
-import subprocess
 import sys
 import time
 import re
@@ -41,11 +40,12 @@ import encfs
 from download import download
 
 from installation import auto_partition
-from installation import chroot
+from installation import special_dirs
 from installation import mkinitcpio
 from installation import firewall
 
 from misc.extra import InstallError
+from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
 import misc.extra as misc
@@ -64,11 +64,6 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-
-def chroot_run(cmd):
-    """ Helper function to run a command in chroot """
-    chroot.run(cmd, DEST_DIR)
 
 
 def write_file(filecontents, filename):
@@ -92,8 +87,6 @@ class Installation(object):
         self.metalinks = metalinks
 
         self.method = self.settings.get('partition_mode')
-        msg = _("Installing using the '{0}' method").format(self.method)
-        self.queue_event('info', msg)
 
         self.desktop = self.settings.get('desktop').lower()
 
@@ -176,11 +169,13 @@ class Installation(object):
         if root_partition:
             txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
             logging.debug(txt)
-            subprocess.check_call(['mount', root_partition, DEST_DIR])
+            cmd = ['mount', root_partition, DEST_DIR]
+            call(cmd, fatal=True)
         elif self.method == "zfs":
             # Mount /
             logging.debug("ZFS: Mounting root")
-            subprocess.check_call(["zfs", "mount", "-a"])
+            cmd = ["zfs", "mount", "-a"]
+            call(cmd)
 
         # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")
@@ -189,7 +184,8 @@ class Installation(object):
             txt = _("Mounting partition {0} into {1}/boot directory")
             txt = txt.format(boot_partition, boot_path)
             logging.debug(txt)
-            subprocess.check_call(['mount', boot_partition, boot_path])
+            cmd = ['mount', boot_partition, boot_path]
+            call(cmd, fatal=True)
 
         # In advanced mode, mount all partitions (root and boot are already mounted)
         if self.method == 'advanced':
@@ -209,21 +205,14 @@ class Installation(object):
                         txt = _("Mounting partition {0} into {1} directory")
                         txt = txt.format(mount_part, mount_dir)
                         logging.debug(txt)
-                        subprocess.check_call(['mount', mount_part, mount_dir])
-                    except subprocess.CalledProcessError as process_error:
-                        # We will continue as root and boot are already mounted
-                        txt = "Unable to mount {0}, command {1} failed: {2}".format(
-                            mount_part, process_error.cmd, process_error.output)
-                        logging.warning(txt)
+                        cmd = ['mount', mount_part, mount_dir]
+                        call(cmd)
+                    except OSError:
+                        logging.warning("Could not create %s directory", mount_dir)
                 elif mount_part == swap_partition:
-                    try:
-                        logging.debug("Activating swap in %s", mount_part)
-                        subprocess.check_call(['swapon', swap_partition])
-                    except subprocess.CalledProcessError as process_error:
-                        # We can continue even if no swap is on
-                        txt = "Unable to activate swap {0}, command {1} failed: {2}".format(
-                            mount_part, process_error.cmd, process_error.output)
-                        logging.warning(txt)
+                    logging.debug("Activating swap in %s", mount_part)
+                    cmd = ['swapon', swap_partition]
+                    call(cmd)
 
     @misc.raise_privileges
     def start(self):
@@ -238,6 +227,9 @@ class Installation(object):
         if not os.path.exists(DEST_DIR):
             with misc.raised_privileges():
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
+
+        msg = _("Installing using the '{0}' method").format(self.method)
+        self.queue_event('info', msg)
 
         # Mount needed partitions (in automatic it's already done)
         if self.method in ['alongside', 'advanced', 'zfs']:
@@ -296,7 +288,7 @@ class Installation(object):
         self.download_packages()
 
         # This mounts (binds) /dev and others to /DEST_DIR/dev and others
-        chroot.mount_special_dirs(DEST_DIR)
+        special_dirs.mount(DEST_DIR)
 
         logging.debug("Installing packages...")
         self.install_packages()
@@ -305,7 +297,7 @@ class Installation(object):
         self.configure_system()
 
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
-        chroot.umount_special_dirs(DEST_DIR)
+        special_dirs.umount(DEST_DIR)
 
         # Finally, try to unmount DEST_DIR
         auto_partition.unmount_all_in_directory(DEST_DIR)
@@ -373,6 +365,9 @@ class Installation(object):
         """ Configures pacman and syncs db on destination system """
 
         self.create_pacman_conf_file()
+
+        msg = _("Updating package manager security. Please wait...")
+        self.queue_event('info', msg)
         self.prepare_pacman_keyring()
 
         # Init pyalpm
@@ -401,49 +396,34 @@ class Installation(object):
         # haveged is a daemon that generates system entropy; this speeds up
         # critical operations in cryptographic programs such as gnupg
         # (including the generation of new keyrings)
-        try:
-            cmd = ["systemctl", "start", "haveged"]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Can't start haveged service, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["systemctl", "start", "haveged"]
+        call(cmd)
 
         # Delete old gnupg files
         dest_path = os.path.join(DEST_DIR, "etc/pacman.d/gnupg")
-        try:
-            cmd = ["rm", "-rf", dest_path]
-            subprocess.check_call(cmd)
-            os.mkdir(dest_path)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error deleting old gnupg files, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["rm", "-rf", dest_path]
+        call(cmd)
+        os.mkdir(dest_path)
 
         # Tell pacman-key to regenerate gnupg files
-        try:
-            # Initialize the pacman keyring
-            cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
-            subprocess.check_call(cmd)
+        # Initialize the pacman keyring
+        cmd = ["pacman-key", "--init", "--gpgdir", dest_path]
+        call(cmd)
 
-            # Load the signature keys
-            cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
-            subprocess.check_call(cmd)
+        # Load the signature keys
+        cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+        call(cmd)
 
-            #path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
-            # Run dirmngr
-            # https://bbs.archlinux.org/viewtopic.php?id=190380
-            with open(os.devnull, 'r') as dev_null:
-                cmd = ["dirmngr"]
-                subprocess.check_call(cmd, stdin=dev_null)
+        # path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
+        # Run dirmngr
+        # https://bbs.archlinux.org/viewtopic.php?id=190380
+        with open(os.devnull, 'r') as dev_null:
+            cmd = ["dirmngr"]
+            call(cmd, stdin=dev_null)
 
-            # Refresh and update the signature keys
-            cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error regenerating gnupg files with pacman-key, command {0} failed: {1}".format(
-                process_error.cmd, process_error.output)
-            logging.warning(txt)
+        # Refresh and update the signature keys
+        # cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
+        # call(cmd)
 
     def install_packages(self):
         """ Start pacman installation of packages """
@@ -728,7 +708,7 @@ class Installation(object):
                 DEST_DIR,
                 "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
-                chroot_run(['systemctl', '-f', 'enable', name])
+                chroot_call(['systemctl', '-f', 'enable', name])
                 logging.debug("Service '%s' has been enabled.", name)
             else:
                 logging.warning("Can't find service %s", name)
@@ -737,17 +717,13 @@ class Installation(object):
     def change_user_password(user, new_password):
         """ Changes the user's password """
         shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
-        chroot_run(['usermod', '-p', shadow_password, user])
+        chroot_call(['usermod', '-p', shadow_password, user])
 
     @staticmethod
     def auto_timesetting():
         """ Set hardware clock """
-        try:
-            subprocess.check_call(["hwclock", "--systohc", "--utc"])
-        except subprocess.CalledProcessError as process_error:
-            txt = "Error adjusting hardware clock, command {0} failed: {1}"
-            txt = txt.format(process_error.cmd, process_error.output)
-            logging.warning(txt)
+        cmd = ["hwclock", "--systohc", "--utc"]
+        call(cmd)
         shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
 
     @staticmethod
@@ -793,11 +769,6 @@ class Installation(object):
                     gen.write(line)
         else:
             logging.error("Can't find locale.gen file")
-
-    @staticmethod
-    def check_output(command):
-        """ Helper function to run a command """
-        return subprocess.check_output(command.split()).decode().strip("\n")
 
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
@@ -940,11 +911,11 @@ class Installation(object):
         for alsa_command in alsa_commands:
             cmd = ["amixer", "-q", "-c", "0", "sset"]
             cmd.extend(alsa_command.split())
-            chroot_run(cmd)
+            chroot_call(cmd)
 
         # Save settings
         logging.debug("Saving ALSA settings...")
-        chroot_run(['alsactl', 'store'])
+        chroot_call(['alsactl', 'store'])
         logging.debug("ALSA settings saved.")
 
     @staticmethod
@@ -1110,13 +1081,13 @@ class Installation(object):
                                 "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
                 timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
                                 "0.fr.pool.ntp.org\n")
-            chroot_run(['timedatectl', 'set-ntp', 'true'])
+            chroot_call(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
         zoneinfo_path = os.path.join(
             "/usr/share/zoneinfo",
             self.settings.get("timezone_zone"))
-        chroot_run(['ln', '-s', zoneinfo_path, "/etc/localtime"])
+        chroot_call(['ln', '-s', zoneinfo_path, "/etc/localtime"])
         logging.debug("Timezone set.")
 
         # Wait FOREVER until the user sets his params
@@ -1163,14 +1134,14 @@ class Installation(object):
 
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
-            chroot_run(['groupadd', 'vboxusers'])
+            chroot_call(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
             self.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
             # Prepare system for autologin.
             # LightDM needs the user to be in the autologin group.
-            chroot_run(['groupadd', 'autologin'])
+            chroot_call(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
         cmd = [
@@ -1180,15 +1151,15 @@ class Installation(object):
             '-g', 'users',
             '-G', default_groups,
             username]
-        chroot_run(cmd)
+        chroot_call(cmd)
         logging.debug("User %s added.", username)
 
         self.change_user_password(username, password)
 
-        chroot_run(['chfn', '-f', fullname, username])
+        chroot_call(['chfn', '-f', fullname, username])
         home_dir = os.path.join("/home", username)
         cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
-        chroot_run(cmd)
+        chroot_call(cmd)
 
         # Set hostname
         hostname_path = os.path.join(DEST_DIR, "etc/hostname")
@@ -1206,7 +1177,7 @@ class Installation(object):
         locale = self.settings.get("locale")
         self.queue_event('info', _("Generating locales..."))
         self.uncomment_locale_gen(locale)
-        chroot_run(['locale-gen'])
+        chroot_call(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
         with open(locale_conf_path, "w") as locale_conf:
             locale_conf.write('LANG={0}\n'.format(locale))
@@ -1227,7 +1198,7 @@ class Installation(object):
         self.set_console_conf()
 
         # Install configs for root
-        chroot_run(['cp', '-av', '/etc/skel/.', '/root/'])
+        chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
 
         self.queue_event('info', _("Configuring hardware..."))
 
@@ -1244,7 +1215,7 @@ class Installation(object):
         # Set pulse
         path = os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")
         if os.path.exists(path):
-            chroot_run(['pulseaudio-ctl', 'normal'])
+            chroot_call(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
@@ -1254,7 +1225,7 @@ class Installation(object):
         # https://bugs.archlinux.org/task/45351
         # We have to kill gpg-agent because if it stays around we can't
         # reliably unmount the target partition.
-        chroot_run(['killall', '-9', 'gpg-agent'])
+        chroot_call(['killall', '-9', 'gpg-agent'])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1283,15 +1254,9 @@ class Installation(object):
         # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        try:
-            subprocess.check_call(cmd, timeout=300)
-            logging.debug("Post install script completed successfully.")
-        except subprocess.CalledProcessError as process_error:
-            # Even though Post-install script call has failed we will go on
-            txt = "Error running post-install script, command %s failed: %s"
-            logging.error(txt, process_error.cmd, process_error.output)
-        except subprocess.TimeoutExpired as timeout_error:
-            logging.error(timeout_error)
+
+        call(cmd, timeout=300)
+        logging.debug("Post install script completed successfully.")
 
         # Patch user-dirs-update-gtk.desktop
         self.patch_user_dirs_update_gtk()
@@ -1326,11 +1291,11 @@ class Installation(object):
 
         # Create an initial database for mandb
         # logging.debug("Updating man database")
-        # chroot_run(["mandb", "--quiet"])
+        # chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         # logging.debug("Updating pkgfile database")
-        # chroot_run(["pkgfile", "--update"])
+        # chroot_call(["pkgfile", "--update"])
 
         # Copy installer log to the new installation
         logging.debug("Copying install log to /var/log.")

@@ -31,9 +31,9 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "gnome", "kde4", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "gnome", "kde", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt", "plasma5"]
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -54,62 +54,70 @@ NAMES = {
     'xfce': "Xfce",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
-    'kde4': "KDE 4",
-    'plasma5': "KDE Plasma 5",
+    'kde': "KDE",
     'lxqt': "LXQt",
-    'mate': "MATE"}
+    'mate': "MATE"
+}
 
 LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
-    'qt': ["kde4", "lxqt", "plasma5"]}
+    'qt': ["kde", "lxqt"]
+}
 
-ALL_FEATURES = [
-    "aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers",
-    "lamp", "lts", "office", "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "flash", "fonts", "games", "graphic_drivers",
+                "lamp", "lts", "office", "visual", "firewall", "smb"]
 
 # Each desktop has its own available features
+# TODO: Rework and simplify features logic by only storing excluded features for each each desktop.
 FEATURES = {
     'cinnamon': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'gnome': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
-    'kde4': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
-    'plasma5': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
+    'kde': [
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'mate': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts",
-        "office", "games", "graphic_drivers", "smb"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "lts", "office", "games", "graphic_drivers", "smb"
+    ],
     'enlightenment': [
-        "aur", "bluetooth", "cups", "firefox", "firewall",
-        "fonts", "games", "graphic_drivers", "lts", "office", "smb"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'base': [
-        "aur", "cups", "fonts", "lamp", "lts"],
+        "aur", "cups", "fonts", "lamp", "lts"
+    ],
     'openbox': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb", "visual"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb", "visual"
+    ],
     'lxqt': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"],
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ],
     'xfce': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"]}
+        "aur", "bluetooth", "cups", "firefox", "firewall", "flash", "fonts",
+        "games", "graphic_drivers", "lts", "office", "smb"
+    ]
+}
 
 # Session names for lightDM setup
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'gnome': 'gnome',
-    'kde4': 'kde-plasma',
-    'plasma5': 'kde-plasma',
+    'kde': 'kde-plasma',
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
     'lxqt': 'lx-session',
-    'xfce': 'xfce'}
+    'xfce': 'xfce'
+}
 
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
@@ -120,49 +128,45 @@ def _(message):
 DESCRIPTIONS = {
     'gnome': _("GNOME 3 is an easy and elegant way to use your "
                "computer. It features the Activities Overview which "
-               "is an easy way to access all your basic tasks. GNOME 3 is "
-               "the default desktop in Antergos."),
+               "is an easy way to access all your basic tasks."),
 
-    'cinnamon': _("Cinnamon is a fork of GNOME 3 developed "
-                  "by (and for) Linux Mint. It provides users a more traditional desktop "
-                  "interface along with the newest compositing techniques of GNOME 3. "
-                  "Cinnamon is for users of all experience levels. "),
+    'cinnamon': _("Cinnamon is a Linux desktop which provides advanced, "
+                  "innovative features and a traditional desktop user experience. "
+                  "Cinnamon aims to make users feel at home by providing them with "
+                  "an easy-to-use and comfortable desktop experience."),
 
     'xfce': _("Xfce is a lightweight desktop environment. It aims to "
               "be fast and low on system resources, while remaining visually "
-              "appealing and user friendly. It is a great option for use "
-              "on older computers or those with low hardware specifications. "),
+              "appealing and user friendly. It suitable for use on older "
+              "computers and those with lower-end hardware specifications. "),
 
-    'openbox': _("Openbox is a highly configurable, next generation window "
-                 "manager with extensive standards support. It's default theme "
-                 "is well known for its minimalistic appearance and flexibility. "
-                 "Your desktop becomes cleaner, faster. Perfect for low hardware "
-                 "specifications, too."),
+    'openbox': _("Not actually a desktop environment, Openbox is a highly "
+                 "configurable window manager. It is known for its "
+                 "minimalistic appearance and its flexibility. It is the most "
+                 "lightweight graphical option offered by antergos. Please "
+                 "Note: Openbox is not recommended for users who are new to Linux."),
 
     'enlightenment': _("Enlightenment is not just a window manager for Linux/X11 "
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    'kde4': _("If you are looking for a familiar working environment, KDE's "
-              "Plasma Desktop offers all the tools required for a modern desktop "
-              "computing experience so you can be productive right from the start."),
+    'kde': _("If you are looking for a familiar working environment, KDE's "
+             "Plasma Desktop offers all the tools required for a modern desktop "
+             "computing experience so you can be productive right from the start."),
 
-    'plasma5': _("Plasma 5.0 introduces a new major version of KDE's workspace offering. "
-                 "It provides a visually updated core desktop experience that is easy "
-                 "to use and familiar to the user."),
-
-    'lxqt': _("LXQt is an advanced, easy-to-use, and fast desktop environment "
-              "based on Qt technologies. It has been tailored for users who "
-              "value simplicity, speed, and an intuitive interface."),
+    'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
+              "Environment. It is lightweight, modular, blazing-fast, and "
+              "user-friendly."),
 
     'base': _("This option will install Antergos as command-line only system, "
               "without any type of graphical interface. After the installation you can "
               "customize Antergos by installing packages with the command-line package manager."),
 
-    'mate': _("An intuitive, attractive and lightweight desktop environment, fork of GNOME 2. "
-              "MATE is one of the best options for use on older computers or those with low "
-              "hardware specifications due to its lightweight yet very customizable set of "
-              "features.")}
+    'mate': _("MATE is an intuitive, attractive, and lightweight desktop "
+              "environment which provides a more traditional desktop "
+              "experience. Accelerated compositing is supported, but not "
+              "required to run MATE making it suitable for lower-end hardware.")
+}
 
 # Delete previous _() dummy declaration
 del _

@@ -104,9 +104,12 @@ def get_devices():
         # print(dev.length)
         # Must create disk object to drill down
 
-        # Skip cd drive and special devices like LUKS and LVM
+        # Skip cd drive, special devices like LUKS and LVM and
+        # RPMB (Replay Protected Memory Block)
         disk_obj = None
-        if not dev.path.startswith("/dev/sr") and not dev.path.startswith("/dev/mapper"):
+        rpmb = (dev.path.startswith("/dev/mmcblk") and dev.path.endswith("rpmb"))
+        exclude = (dev.path.startswith("/dev/sr") or dev.path.startswith("/dev/mapper"))
+        if not rpmb and not exclude:
             try:
                 disk_obj = parted.Disk(dev)
                 result = OK

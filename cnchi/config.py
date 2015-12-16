@@ -65,6 +65,7 @@ class Settings(object):
             'feature_cups': False,
             'feature_firefox': False,
             'feature_firewall': False,
+            'feature_flash': False,
             'feature_fonts': False,
             'feature_games': False,
             'feature_lamp': False,
@@ -112,10 +113,12 @@ class Settings(object):
             'use_luks_in_root': False,
             'use_lvm': False,
             'use_timesyncd': True,
+            'use_zfs': False,
             'user_info_done': False,
             'username': '',
             'xz_cache': [],
-            'z_hidden': False})
+            'z_hidden': False,
+            'zfs': False})
 
     def _get_settings(self):
         """ Get a copy of our settings """

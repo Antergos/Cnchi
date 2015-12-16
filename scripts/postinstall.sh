@@ -217,36 +217,20 @@ lxqt_settings() {
 	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
 }
 
-kde4_settings() {
+kde_settings() {
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	echo "Session=kde-plasma" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
 	# Force QtCurve to use our theme
-	rm -R ${CN_DESTDIR}/usr/share/apps/QtCurve/
+	rm -R ${CN_DESTDIR}/usr/share/kstyle/themes/qtcurve.themerc
 
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
 
-	## # Get zip file from github, unzip it and copy all setup files in their right places.
-	## wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
-	## #xz -d -qq /tmp/master.tar.xz
-	## #cd ${CN_DESTDIR}
-	## cd /tmp
-	## tar xfJ /tmp/master.tar.xz
-	## chown -R root:root /tmp/etc
-	## chown -R root:root /tmp/usr
-	## cp -R /tmp/etc/* ${CN_DESTDIR}/etc
-	## cp -R /tmp/usr/* ${CN_DESTDIR}/usr
-
-	# Set User & Root environments
-	## cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## cp -R ${CN_DESTDIR}/etc/skel/.kde4 ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## chroot ${CN_DESTDIR} "ln -s /home/${CN_USER_NAME}/.gtkrc-2.0-kde4 /home/${CN_USER_NAME}/.gtkrc-2.0" ${CN_USER_NAME}
+	# Setup root defaults
 	cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
-	cp -R ${CN_DESTDIR}/etc/skel/.kde4 ${CN_DESTDIR}/root
 	cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
 	chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
@@ -269,49 +253,12 @@ kde4_settings() {
 
 	}
 
-	for i in konsole; do
-		link_config apps:${i};
-	done
-	for i in kdeglobals; do
-		link_config apps: conf:kdeglobals;
-	done
-
-	## Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
-}
-
-plasma5_settings() {
-	# Set KDE in .dmrc
-	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	echo "Session=plasma" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
-
-	# Force QtCurve to use our theme
-	#rm -R ${CN_DESTDIR}/usr/share/apps/QtCurve/
-
-	# Setup user defaults
-	chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
-
-	## # Get zip file from github, unzip it and copy all setup files in their right places.
-	## wget -q -O /tmp/master.tar.xz "https://github.com/Antergos/kde-setup/raw/master/kde-setup-2014-25-05.tar.xz"
-	## #xz -d -qq /tmp/master.tar.xz
-	## #cd ${CN_DESTDIR}
-	## cd /tmp
-	## tar xfJ /tmp/master.tar.xz
-	## chown -R root:root /tmp/etc
-	## chown -R root:root /tmp/usr
-	## cp -R /tmp/etc/* ${CN_DESTDIR}/etc
-	## cp -R /tmp/usr/* ${CN_DESTDIR}/usr
-
-	## # Set User & Root environments
-	## cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## cp -R ${CN_DESTDIR}/etc/skel/.kde4 ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/home/${CN_USER_NAME}
-	## chroot ${CN_DESTDIR} "ln -s /home/${CN_USER_NAME}/.gtkrc-2.0-kde4 /home/${CN_USER_NAME}/.gtkrc-2.0" ${CN_USER_NAME}
-	cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
-	cp -R ${CN_DESTDIR}/etc/skel/.kde4 ${CN_DESTDIR}/root
-	cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
-	chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
+	#for i in konsole; do
+	#	link_config apps:${i};
+	#done
+	#for i in kdeglobals; do
+	#	link_config apps: conf:kdeglobals;
+	#done
 
 	## Set default directories
 	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
@@ -417,12 +364,6 @@ postinstall() {
 	## Unmute alsa channels
 	chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
 
-	# Fix transmission leftover
-	# What is this for? I think its old code.
-	if [ -f "${CN_DESTDIR}/usr/lib/tmpfiles.d/transmission.conf" ]; then
-		mv "${CN_DESTDIR}/usr/lib/tmpfiles.d/transmission.conf" "${CN_DESTDIR}/usr/lib/tmpfiles.d/transmission.conf.backup"
-	fi
-
 	# Configure touchpad. Skip with base installs
 	if [[ base != "${CN_DESKTOP}" ]]; then
 		set_xorg
@@ -445,11 +386,17 @@ postinstall() {
 	"${CN_DESKTOP}_settings"
 
 	# Set some environment vars
-	for file in "${CN_DESTDIR}/etc/environment" "${CN_DESTDIR}/etc/skel/.bashrc" "${CN_DESTDIR}/etc/profile"
+	env_files=("${CN_DESTDIR}/etc/environment" \
+				"${CN_DESTDIR}/home/${CN_USER_NAME}/.bashrc" \
+				"${CN_DESTDIR}/etc/skel/.bashrc" \
+				"${CN_DESTDIR}/etc/profile")
+
+	for file in "${env_files[@]}"
 	do
-		echo "# >>>>ADDED BY CNCHI INSTALLER<<<< #"
+		echo "# >>>>BEGIN ADDED BY CNCHI INSTALLER<<<< #" >> "${file}"
 		echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
 		echo "EDITOR=/usr/bin/nano" >> "${file}"
+		echo "# >>>>>END ADDED BY CNCHI INSTALLER<<<<< #" >> "${file}"
 	done
 
 	# Configure makepkg so that it doesn't compress packages after building.
@@ -463,7 +410,8 @@ postinstall() {
 	chroot "${CN_DESTDIR}" chown -R "${CN_USER_NAME}:users" "/home/${CN_USER_NAME}"
 
 	# Start vbox client services if we are installed in vbox
-	if [[ ${CN_IS_VBOX} = "True" ]]; then
+	if [[ ${CN_IS_VBOX} = "True" ]] || { [[ $(systemd-detect-virt) ]] && [[ 'oracle' = $(systemd-detect-virt -v) ]]; }; then
+		# TODO: This should be done differently
 		sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' "${CN_DESTDIR}/etc/lightdm/Xsession"
 	fi
 

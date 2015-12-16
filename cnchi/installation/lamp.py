@@ -39,17 +39,9 @@ import os
 import logging
 import shutil
 
-try:
-    from installation import chroot
-except ImportError:
-    import chroot
+from misc.run_cmd import chroot_call
 
 DEST_DIR = '/install'
-
-
-def chroot_run(cmd):
-    """ Helper function to run a cmd inside chroot """
-    chroot.run(cmd, DEST_DIR)
 
 
 def setup():
@@ -73,10 +65,10 @@ def mariadb_setup():
         "--user=mysql",
         "--basedir=/usr",
         "--datadir=/var/lib/mysql"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     cmd = ["systemctl", "enable", "mysqld"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
 
@@ -123,10 +115,9 @@ def apache_setup():
         localhost_conf.write('</Directory>\n')
 
     # We activate the virtual localhost site
-    chroot_run(["a2ensite", "localhost"])
+    chroot_call(["a2ensite", "localhost"])
 
-    cmd = ["systemctl", "enable", "httpd"]
-    chroot_run(cmd)
+    chroot_call(["systemctl", "enable", "httpd"])
 
 
 def php_setup():

@@ -32,18 +32,13 @@ import subprocess
 import logging
 
 from misc.extra import InstallError
+from misc.run_cmd import call
 
 def wipefs(device):
     """ Wipe fs from device """
+    err_msg = "Cannot wipe the filesystem of device {0}".format(device)
     cmd = ["wipefs", "-a", device]
-    try:
-        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        txt = "Cannot wipe the filesystem of device %s. Command %s has failed: %s"
-        logging.error(txt, device, err.cmd, err.output.decode())
-        txt = _("Cannot wipe the filesystem of device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.output.decode())
-        raise InstallError(txt)
+    call(cmd, msg=err_msg, fatal=True)
 
 def dd(input_device, output_device, bs=512, count=2048):
     """ Helper function to call dd """
