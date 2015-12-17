@@ -459,7 +459,8 @@ def check_for_files():
     paths = [
         "/usr/share/cnchi",
         "/usr/share/cnchi/ui",
-        "/usr/share/cnchi/data"]
+        "/usr/share/cnchi/data",
+        "/usr/share/cnchi/data/locale"]
 
     for path in paths:
         if not os.path.exists(path):
