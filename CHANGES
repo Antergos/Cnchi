@@ -1,4 +1,41 @@
+[2015-12-16 00:37:15 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1c02887}
+[2015-12-15 20:41:40 +0100]  Fix automatic installation (auto_partition) in mmcblk devices (can'..      karasu      {5b57d49}
+[2015-12-15 10:28:53 +0100]  Add flash as a feature                                                     karasu      {93f5b47}
+[2015-12-14 10:28:02 -0600]  trying to fix issue with no newlines being output to /etc/default/g..  Dustin Falgout  {8d16661}
+[2015-12-14 09:18:34 -0600]  fix syntax error                                                       Dustin Falgout  {ae4635e}
+[2015-12-14 09:11:50 -0600]  fix invalid attribute                                                  Dustin Falgout  {2387f78}
+[2015-12-14 09:46:36 +0100]  swapoff needs root privileges                                              karasu      {bbf0fbb}
+[2015-12-14 08:53:46 +0100]  Do not try to read Replay Protected Memory Block                           karasu      {e60dcf7}
+[2015-12-14 08:39:41 +0100]  Fix pvremove command                                                       karasu      {ee1d30f}
+[2015-12-14 08:35:11 +0100]  Typo                                                                       karasu      {a2c9349}
+[2015-12-14 08:34:47 +0100]  Allow to pass stdin to call in run_cmd                                     karasu      {f6c8a79}
+[2015-12-13 21:49:15 +0100]  Use our own call function in subprocess (easy to track errors)             karasu      {c5c2529}
+[2015-12-13 21:38:49 +0100]  Do not always refresh gpg keys (it's a too slow process)                   karasu      {e0167e2}
+[2015-12-13 18:24:35 +0100]  Add zfs hook to mkinitcpio                                                 karasu      {25de414}
+[2015-12-12 09:36:00 -0600]  needs more testing                                                     Dustin Falgout  {fda723a}
+[2015-12-12 08:23:32 -0600]  blah! :wink:                                                           Dustin Falgout  {b5dd036}
+[2015-12-12 07:29:29 -0600]  ...                                                                    Dustin Falgout  {6a2631c}
+[2015-12-12 07:19:03 -0600]  almost done                                                            Dustin Falgout  {85cfdb7}
+[2015-12-12 06:49:18 -0600]  Maybe should have postponed this but it will be ok                     Dustin Falgout  {4af5ba7}
+[2015-12-12 06:28:19 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {1f92b55}
+[2015-12-12 06:28:05 -0600]  more kde changes                                                       Dustin Falgout  {9dbb8b9}
+[2015-12-12 12:58:12 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {6897b0b}
+[2015-12-12 12:57:53 +0100]  Fix some minor issues                                                      karasu      {f2770b1}
+[2015-12-12 05:55:55 -0600]  was moving a little too quickly :grimacing:                            Dustin Falgout  {f96ebe7}
+[2015-12-12 05:23:34 -0600]  ...                                                                    Dustin Falgout  {e6db815}
+[2015-12-12 05:10:57 -0600]  started working on dropping kde4                                       Dustin Falgout  {a34795e}
 [2015-12-12 04:47:35 -0600]  sync local                                                             Dustin Falgout  {c2bedcb}
+[2015-12-12 01:14:56 +0100]  OK, it seems that now we're getting all output info in our log file..      karasu      {385c4db}
+[2015-12-12 00:47:07 +0100]  Still fooling around with error messages (and still not finished)          karasu      {d22e3bb}
+[2015-12-11 23:57:22 +0100]  Trying to beautify error messages                                          karasu      {4ea2d8a}
+[2015-12-11 19:47:30 +0100]  Let's try new call function                                                karasu      {cd9e258}
+[2015-12-11 19:44:07 +0100]  Testing something (aesthetic)                                              karasu      {c9b8a1f}
+[2015-12-11 19:37:50 +0100]  More fixing                                                                karasu      {8cc0c8a}
+[2015-12-11 19:21:31 +0100]  Fix BIG typo                                                               karasu      {c2eb87b}
+[2015-12-11 12:30:59 +0100]  Fix typo in auto_partition                                                 karasu      {26818e6}
+[2015-12-11 12:23:35 +0100]  More work done in auto_partition                                           karasu      {eb71a44}
+[2015-12-11 11:01:55 +0100]  Trying to fix error logging once and for all (UNFINISHED)                  karasu      {8ef704d}
+[2015-12-11 09:00:26 +0100]  Working on subprocess                                                      karasu      {0c07038}
 [2015-12-11 00:27:37 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {2779a81}
 [2015-12-10 21:52:03 +0100]  Must rethink all this...                                                   karasu      {b505300}
 [2015-12-10 21:15:47 +0100]  Nope                                                                       karasu      {59adf50}

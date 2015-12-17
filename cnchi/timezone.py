@@ -49,10 +49,12 @@ NM_STATE_CONNECTED_GLOBAL = 70
 class Timezone(GtkBaseBox):
     """ Timezone screen """
     def __init__(self, params, prev_page="location", next_page="keymap", **kwargs):
-        super().__init__(self, params, "timezone", prev_page, next_page, **kwargs)
+        super().__init__(self, params, name="timezone", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.map_window = self.ui.get_object('timezone_map_window')
         self.title = _('Timezone')
+        self.in_group = True
 
         self.combobox_zone = self.ui.get_object('comboboxtext_zone')
         self.combobox_region = self.ui.get_object('comboboxtext_region')

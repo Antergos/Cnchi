@@ -44,8 +44,9 @@ import misc.extra as misc
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
 
-    def __init__(self, params, prev_page="location_group", next_page="features"):
-        super().__init__(self, params, "desktop", prev_page, next_page)
+    def __init__(self, params, prev_page="desktop_group", next_page="features", **kwargs):
+        super().__init__(self, params, name="desktop", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
@@ -55,6 +56,7 @@ class DesktopAsk(GtkBaseBox):
 
         self.desktop_image = None
         self.icon_desktop_image = None
+        self.in_group = True
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox_desktop")

@@ -49,8 +49,9 @@ from logging_utils import ContextFilter
 
 
 class Location(GtkBaseBox):
-    def __init__(self, params, prev_page="check", next_page="timezone", **kwargs):
-        super().__init__(self, params, "location", prev_page, next_page, **kwargs)
+    def __init__(self, params, prev_page="location_grp", next_page="timezone", **kwargs):
+        super().__init__(self, params, name="location", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
@@ -66,6 +67,7 @@ class Location(GtkBaseBox):
         self.selected_country = ""
 
         self.show_all_locations = False
+        self.in_group = True
 
         button = self.ui.get_object("show_all_locations_checkbutton")
         button.connect(

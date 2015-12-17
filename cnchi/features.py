@@ -51,9 +51,10 @@ COL_SWITCH = 3
 class Features(GtkBaseBox):
     """ Features screen class """
 
-    def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
+    def __init__(self, params, prev_page="desktop", next_page="disk_grp", **kwargs):
         """ Initializes features ui """
-        super().__init__(self, params, "features", prev_page, next_page)
+        super().__init__(self, params, name="features", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.listbox_rows = {}
         self.title = _("Features")

@@ -784,7 +784,7 @@
       <action-widget response="-5">create_partition_ok</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkBox" id="advanced">
+  <object class="GtkBox" id="installation_advanced">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>

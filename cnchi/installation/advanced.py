@@ -76,15 +76,16 @@ COL_ENCRYPTED = 15
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
 
-    def __init__(self, params, prev_page="installation_ask",
-                 next_page="summary", **kwargs):
+    def __init__(self, params, prev_page='installation_ask', next_page='user_info', **kwargs):
         # Call base class
-        super().__init__(self, params, "advanced", prev_page, next_page, **kwargs)
+        super().__init__(self, params, name="installation_advanced", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         # Init class vars
 
         self.blvm = False
         self.title = _('Advanced Mode')
+        self.in_group = True
 
         self.installation = None
         self.mount_devices = {}

@@ -45,8 +45,9 @@ ICON_WARNING = "dialog-warning"
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
 
-    def __init__(self, params, prev_page=None, next_page="slides"):
-        super().__init__(self, params, "user_info", prev_page, next_page)
+    def __init__(self, params, prev_page='disk_group', next_page="summary", **kwargs):
+        super().__init__(self, params, name="user_info", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
         self.title = _('User Account')
 
         self.image_is_ok = dict()

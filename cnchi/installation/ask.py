@@ -92,11 +92,13 @@ def load_zfs():
 
 
 class InstallationAsk(GtkBaseBox):
-    def __init__(self, params, prev_page="features", next_page=None, **kwargs):
-        super().__init__(self, params, "ask", prev_page, next_page, **kwargs)
+    def __init__(self, params, prev_page="disk_group", next_page=None, **kwargs):
+        super().__init__(self, params, name="installation_ask", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         data_dir = self.settings.get("data")
         self.title = _('Install Mode')
+        self.in_group = True
 
         partitioner_dir = os.path.join(
             data_dir,

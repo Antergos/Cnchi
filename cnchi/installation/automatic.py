@@ -49,13 +49,16 @@ import parted3.fs_module as fs
 
 DEST_DIR = "/install"
 
+
 class InstallationAutomatic(GtkBaseBox):
     """ Automatic Installation Screen """
-    def __init__(self, params, prev_page="installation_ask", next_page="summary", **kwargs):
-        super().__init__(self, params, "automatic", prev_page, next_page, **kwargs)
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info", **kwargs):
+        super().__init__(self, params, name="installation_automatic", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.auto_device = None
         self.title = _('Automatic Mode')
+        self.in_group = True
 
         self.device_store = self.ui.get_object('part_auto_select_drive')
         self.device_label = self.ui.get_object('part_auto_select_drive_label')
