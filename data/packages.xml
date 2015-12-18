@@ -381,7 +381,7 @@
 				<pkgname>kdebase-kdepasswd</pkgname>
 				<pkgname>kdebase-kdialog</pkgname>
 				<pkgname>kdebase-kfind</pkgname>
-				<pkgname>spectacle</pkgname>
+				<!--<pkgname>spectacle</pkgname>-->
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
 				<pkgname>kdemultimedia-ffmpegthumbs</pkgname>
