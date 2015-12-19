@@ -70,7 +70,7 @@ class Updater(object):
         self.force = force_update
 
         if not os.path.exists(_update_info):
-            logging.warning(
+            logging.debug(
                 "Cannot not find %s file. "
                 "Cnchi will not be able to update itself.",
                 _update_info)
