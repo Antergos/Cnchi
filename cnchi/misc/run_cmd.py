@@ -31,10 +31,22 @@
 
 import logging
 import subprocess
+import sys
+import traceback
 
 from misc.extra import InstallError
 
 DEST_DIR = "/install"
+
+
+def log_exception_info():
+    """ This function logs information about the exception that is currently
+        being handled. The information returned is specific both to the current
+        thread and to the current stack frame. """
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+    for line in trace:
+        logging.error(line.rstrip())
 
 
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
@@ -49,6 +61,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     try:
         output = subprocess.check_output(
             cmd,
+            stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
         output = output.decode().strip('\n')
@@ -66,15 +79,19 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
                 logging.debug(msg)
             else:
                 logging.warning(msg)
+                log_exception_info()
         else:
             logging.error(msg)
             if fatal:
                 raise InstallError(msg)
+            else:
+                log_exception_info()
+
         return False
 
 
 def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
-                stdin=None, input=None):
+                stdin=None):
     """ Runs command inside the chroot """
     full_cmd = ['chroot', chroot_dir]
 
@@ -87,37 +104,49 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
             stdin=stdin,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
-        output, errs = proc.communicate(timeout=timeout, input=input)
-        output = output.decode().strip()
-        if output:
-            logging.debug(output)
-        return output
+        stdout_data, stderr_data = proc.communicate(timeout=timeout)
+        stdout_data = stdout_data.decode().strip()
+        if stdout_data:
+            logging.debug(stdout_data)
+        return stdout_data
     except subprocess.TimeoutExpired as err:
         if proc:
+            # The child process is not killed if the timeout expires, so in
+            # order to cleanup let's kill the child process and finish communication
             proc.kill()
             proc.communicate()
-        logging.error("Timeout running the command %s", err.cmd)
+        msg = "Timeout running the command {0}".format(err.cmd)
+
+        logging.error(msg)
         if fatal:
             raise InstallError(err.output)
         else:
+            log_exception_info()
             return False
+
     except subprocess.CalledProcessError as err:
         if msg:
-            logging.error("%s: %s", msg, err.output)
+            msg = "{0}: {1}".format(msg, err.output)
         else:
-            logging.error("Error running %s: %s", err.cmd, err.output)
+            msg = "Error running {0}: {1}".format(err.cmd, err.output)
+
+        logging.error(msg)
         if fatal:
             raise InstallError(err.output)
         else:
+            log_exception_info()
             return False
     except OSError as os_error:
         if msg:
-            logging.error("%s: %s", msg, os_error)
+            msg = "{0}: {1}".format(msg, os_error)
         else:
-            logging.error("Error running %s: %s", " ".join(full_cmd), os_error)
+            msg = "Error running {0}: {1}".format(" ".join(full_cmd), os_error)
+
+        logging.error(msg)
         if fatal:
             raise InstallError(os_error)
         else:
+            log_exception_info()
             return False
 
 
@@ -141,8 +170,11 @@ def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subproces
                 logging.debug(msg)
             else:
                 logging.warning(msg)
+                log_exception_info()
         else:
             logging.error(msg)
             if fatal:
                 raise InstallError(msg)
-        return False
+            else:
+                log_exception_info()
+        return None
