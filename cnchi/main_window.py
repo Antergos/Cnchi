@@ -129,9 +129,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if my_desktop in desktop_info.DESKTOPS:
                 self.settings.set('desktop', my_desktop)
                 self.settings.set('desktop_ask', False)
-                logging.debug(
-                    "Cnchi will install the %s desktop environment",
-                    my_desktop)
+                logging.debug("Cnchi will install the %s desktop environment", my_desktop)
 
         # Create a queue. Will be used to report pacman messages
         # (pacman/pac.py) to the main thread (installation/process.py)
@@ -146,7 +144,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Prepare params dict to pass common parameters to all screens
         self.prepare_shared_parameters()
 
-        self.language_widget = language.LanguageWidget(self.params)
+        self.language_widget = language.LanguageWidget(self.params, button=self.language_menu_btn)
         self.popover = Gtk.Popover.new(self.language_menu_btn)
         self.popover.add(self.language_widget)
         self.popover.set_position(Gtk.PositionType.BOTTOM)
@@ -184,11 +182,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_geometry()
 
         # Set window icon
-        icon_path = os.path.join(
-            self.data_dir,
-            "images",
-            "antergos",
-            "antergos-ball.png")
+        icon_path = os.path.join(self.data_dir, "images", "antergos", "antergos-ball.png")
         self.set_icon_from_file(icon_path)
 
         # Use our css file
@@ -268,14 +262,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_overlay = self.header_ui.get_object("header_overlay")
         self.header_nav = self.header_ui.get_object("header_nav")
         self.language_menu_btn = self.header_ui.get_object('language_button')
+        self.next_prev_button_box = self.header_ui.get_object('nav_box')
 
         self.progressbar = self.header_ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
 
         self.logo = self.header_ui.get_object("logo")
         self.logo_text = self.header_ui.get_object("logo_text")
-        path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
-        self.logo.set_from_file(path)
+        img_path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
+        self.logo.set_from_file(img_path)
 
         self.header_overlay.add_overlay(self.header)
         self.header_overlay.add_overlay(self.header_nav)
@@ -334,6 +329,9 @@ class MainWindow(Gtk.ApplicationWindow):
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
 
+        self.nav_buttons['backwards_button'] = self.backwards_button
+        self.header_nav.add(self.nav_buttons['backwards_button'])
+
         for page_name in top_level_pages:
             page = self.pages[page_name]
             if isinstance(page, dict):
@@ -378,6 +376,9 @@ class MainWindow(Gtk.ApplicationWindow):
                 page.nav_button = self.nav_buttons[page_name]
 
             self.header_nav.add(self.nav_buttons[page_name])
+
+        self.nav_buttons['forward_button'] = self.forward_button
+        self.header_nav.add(self.nav_buttons['forward_button'])
 
         self.header_nav.show_all()
         self.current_stack = self.main_stack

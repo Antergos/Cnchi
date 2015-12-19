@@ -46,7 +46,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 
 class LanguageWidget(Gtk.Box):
-    def __init__(self, params=None, name='language'):
+    def __init__(self, params=None, name='language', button=None):
         super().__init__()
 
         self.settings = params['settings']
@@ -55,6 +55,7 @@ class LanguageWidget(Gtk.Box):
         self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
         self.ui.add_from_file(self.ui_file)
         self.main_window = params['main_window']
+        self.language_button = button
 
         # Connect UI signals
         self.ui.connect_signals(self)
@@ -96,6 +97,7 @@ class LanguageWidget(Gtk.Box):
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
                     self.store_values()
+                    self.language_button.set_label(lang_code.upper()[:2])
                     if hasattr(self.main_window, 'popover'):
                         if not self.selecting_default_row and self.popover_is_visible:
                             self.main_window.popover.set_visible(False)

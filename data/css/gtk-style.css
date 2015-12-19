@@ -1,63 +1,63 @@
 #main {
-    font-family: 'Lato';
-    font-size: 11px;
-    background-color: #F5F8FB
+	font-family: 'Lato';
+	font-size: 11px;
+	background-color: #F5F8FB
 }
 
 #location {
-    font-size: 11px;
+	font-size: 11px;
 }
 
 GtkWindow {
-    border-color: transparent;
+	border-color: transparent;
 }
 
 .title {
-    background-color: transparent;
-    color: #2EA3F2;
-    font-size: 11px;
-    font-weight: 600;
-    font-family: 'Lato';
-    text-shadow: 0px 1px 0px #222;
+	background-color: transparent;
+	color: #2EA3F2;
+	font-size: 11px;
+	font-weight: 600;
+	font-family: 'Lato';
+	text-shadow: 0px 1px 0px #222;
 }
 
 .label.subtitle,
 #header .subtitle,
 .subtitle {
-    font-size: 13px;
-    font-weight: 400;
-    font-family: 'Lato';
-    color: #eee;
+	font-size: 13px;
+	font-weight: 400;
+	font-family: 'Lato';
+	color: #eee;
 }
 
 #header {
-    /*background-image: url('/usr/share/cnchi/data/images/header.png');
-    background-position: top;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;*/
-    border-bottom: 0px;
-    border-color: transparent;
-    font-family: Lato;
-    padding: 8px 12px;
+	/*background-image: url('/usr/share/cnchi/data/images/header.png');
+	background-position: top;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;*/
+	border-bottom: 0px;
+	border-color: transparent;
+	font-family: Lato;
+	padding: 8px 12px;
 }
 
 #process_progressbar, #i_progressbar, #a_progressbar {
-    border-radius: 1px;
+	border-radius: 1px;
 }
 
 #process_progressbar {
-    -GtkProgressBar-min-horizontal-bar-height: 3;
+	-GtkProgressBar-min-horizontal-bar-height: 3;
 }
 
 #i_progressbar, #a_progressbar {
-    -GtkProgressBar-min-horizontal-bar-height: 12;
+	-GtkProgressBar-min-horizontal-bar-height: 12;
 }
 
 GtkProgressBar.progressbar {
-    color: #FF4081;
-    border-color: shade(#FF4081, 0.8);
-    background-image: linear-gradient(to bottom, #FF4081, #FF4081);
-    box-shadow: none;
+	color: #FF4081;
+	border-color: shade(#FF4081, 0.8);
+	background-image: linear-gradient(to bottom, #FF4081, #FF4081);
+	box-shadow: none;
 }
 
 /*#fwd_btn, #bk_btn {
@@ -68,77 +68,76 @@ GtkProgressBar.progressbar {
 }*/
 
 #fwd_btn, #bk_btn {
-    background-color: #2E8FE3;
+	background-color: transparent;
 }
 
 #fwd_btn {
-    border-radius: 0px 2px 2px 0px;
+	border-radius: 0px 2px 2px 0px;
 }
 
 #bk_btn {
-    border-radius: 2px 0px 0px 2px;
+	border-radius: 2px 0px 0px 2px;
 }
 
 #fwd_btn:hover, #bk_btn:hover {
-    color: #2EA3F2;
+	color: #2EA3F2;
 }
 
 #fwd_btn:active, #bk_btn:active {
-    color: #333A4C;
-    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
-    background-color: shade(@theme_bg_color, 1.08);
+	color: #333A4C;
+	box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
+	background-color: shade(@theme_bg_color, 1.08);
 }
 
 #fwd_btn .label {
-    font-size: 11px;
+	font-size: 11px;
 }
 
 #fwd_btn_install_now {
-    background-color: #2EA3F2;
-    color: #ffffff;
-    border-radius: 0px 2px 2px 0px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    border-color: #2e94e3;
-    border-width: 1px;
+	background-color: #2EA3F2;
+	color: #ffffff;
+	border-radius: 0px 2px 2px 0px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	border-color: #2e94e3;
+	border-width: 1px;
 }
 
 #fwd_btn_save {
-    background-color: #2EA3F2;
-    color: #ffffff;
-    border-radius: 0px 2px 2px 0px;
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    border-color: #2e94e3;
-    border-width: 1px;
+	background-color: #2EA3F2;
+	color: #ffffff;
+	border-radius: 0px 2px 2px 0px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	border-color: #2e94e3;
+	border-width: 1px;
 }
 
 #fwd_btn_install_now .label, #fwd_btn_save .label {
-    font-size: 10px;
-    font-weight: 500;
+	font-size: 10px;
+	font-weight: 500;
 }
 
 #fwd_btn_install_now:active, #fwd_btn_save:active {
-    color: #333A4C;
-    box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 0.4), inset 0 0px 3px rgba(95, 95, 95, 0.80);
+	color: #333A4C;
+	box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 0.4), inset 0 0px 3px rgba(95, 95, 95, 0.80);
 }
 
 #fwd_btn_install_now:hover, #fwd_btn_save:hover {
-    box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.4);
+	box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
 .header-bar .close_button {
-    padding-left: 5px;
-    padding-right: 0px;
+	padding-left: 5px;
+	padding-right: 0px;
 }
 
-
 .list {
-    background-color: #eee;
+	background-color: #eee;
 }
 
 /*GtkListBoxRow:active, .list-row:active, .list-row:selected {
@@ -146,115 +145,117 @@ GtkProgressBar.progressbar {
 }*/
 
 #tryit_btn, #graph_btn {
-    padding: 12px 20px;
-    border-radius: 3px;
-    border-color: #f0f0f0;
-    border-width: 2px;
-    background: rgba(255, 255, 255, 1);
-    font-size: 15px;
-    font-weight: 500;
-    color: #2EA3F2;
-    transition: all 0.1s ease-in;
+	padding: 12px 20px;
+	border-radius: 3px;
+	border-color: #f0f0f0;
+	border-width: 2px;
+	background: rgba(255, 255, 255, 1);
+	font-size: 15px;
+	font-weight: 500;
+	color: #2EA3F2;
+	transition: all 0.1s ease-in;
 }
 
 #tryit_btn:focused, #graph_btn:focused {
-    padding: 12px 20px;
-    border-radius: 3px;
-    border-color: #2EA3F2;
-    border-width: 2px;
-    background: rgba(255, 255, 255, 1);
-    font-size: 15px;
-    font-weight: 500;
-    color: #2EA3F2;
-    transition: all 0.1s ease-in;
+	padding: 12px 20px;
+	border-radius: 3px;
+	border-color: #2EA3F2;
+	border-width: 2px;
+	background: rgba(255, 255, 255, 1);
+	font-size: 15px;
+	font-weight: 500;
+	color: #2EA3F2;
+	transition: all 0.1s ease-in;
 }
 
 #tryit_btn:hover, #graph_btn:hover {
-    padding-top: 9px;
-    padding-bottom: 9px;
-    background: #2EA3F2;
-    color: #fff;
-    border-radius: 0px;
-    border-width: 0px;
-    border-bottom-width: 1px;
-    font-size: 20px;
+	padding-top: 9px;
+	padding-bottom: 9px;
+	background: #2EA3F2;
+	color: #fff;
+	border-radius: 0px;
+	border-width: 0px;
+	border-bottom-width: 1px;
+	font-size: 20px;
 }
 
 #tryit_label, #installit_label {
-    font-size: 11px;
+	font-size: 11px;
 }
 
 GtkSwitch.trough:active {
-    border-color: shade(#2EA3F2, 0.9);
-    background-color: #2EA3F2;
-    background-image: none;
+	border-color: shade(#2EA3F2, 0.9);
+	background-color: #2EA3F2;
+	background-image: none;
 }
 
 GtkTreeView row:selected {
-    background-color: #2EA3F2;
-    border-color: shade(#2EA3F2, 0.9);
+	background-color: #2EA3F2;
+	border-color: shade(#2EA3F2, 0.9);
 }
 
 #auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
-    font-size: 13px;
-    font-weight: 600;
+	font-size: 13px;
+	font-weight: 600;
 }
 
 #lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
-    font-size: 11px;
+	font-size: 11px;
 }
 
 #lvm_label, #enc_label, #zfs_label, #home_label {
-    font-size: 10px;
-    font-style: italic;
+	font-size: 10px;
+	font-style: italic;
 }
 
 #ask #intro_label {
-    font-size: 15px;
+	font-size: 15px;
 }
 
 #slides GtkScrolledWindow {
-    border: none;
+	border: none;
 }
 
 StateBox {
-    border-radius: 2px;
+	border-radius: 2px;
 }
 
 .header_bg_top {
-    background-color: #2E66B9;
+	background-color: #2E66B9;
 }
 
 .header_bg_bottom {
-    background-color: #3B70D0;
+	background-color: #3B70D0;
 }
 
 .header_bar {
-    background: transparent;
+	background: transparent;
 }
 
 .header_nav .button {
-    background-color: transparent;
-    border: none;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Open Sans';
-    padding: 15px 25px;
-    color: #ffffff;
-    box-shadow: none;
+	background-color: transparent;
+	border: none;
+	font-size: 13px;
+	font-weight: 500;
+	font-family: 'Open Sans';
+	padding: 15px 25px;
+	color: #ffffff;
+	box-shadow: none;
 }
 
 .header_nav .button:hover, .header_nav .button:selected, .header_nav .button:insensitive {
-    background-color: #3F7AE4;
-    color: #ffffff;
+	background-color: #3F7AE4;
+	color: #ffffff;
 }
+
 .header_nav .button:insensitive .label {
-    color: #ffffff;
+	color: #ffffff;
 }
 
 .logo {
-    padding-left: 3px;
+	padding-left: 3px;
 }
+
 /*.logo_text {
     font-family: 'Futura Md BT';
     font-size: 20px;
@@ -262,50 +263,85 @@ StateBox {
 }*/
 
 .logo_text {
-    font-family: 'Raleway';
-    font-size: 17px;
-    font-weight: 500;
-    color: #ffffff;
+	font-family: 'Raleway';
+	font-size: 17px;
+	font-weight: 500;
+	color: #ffffff;
 }
 
 .header_separator {
-    background-color: #3a5ab4;
-    color: #3a5ab4;
+	background-color: #3a5ab4;
+	color: #3a5ab4;
 }
+
 .nav_box {
-    padding-right: 10px;
+	padding-right: 10px;
 }
 
 .main_stack, .main, .main_box {
-    background-color: #F5F8FB
+	background-color: #eef1f4
 }
 
 .logo_box {
-    padding: 20px;
+	padding: 20px;
 }
 
 .sub_nav_box {
-    background-color: #ffffff;
+	background-color: #ffffff;
 }
+
 .sub_nav_box GtkBox {
-    background-color: #ffffff;
+	background-color: #ffffff;
 }
+
 .sub_nav_box .button {
-    background-color: #ffffff;
-    padding: 9px 45px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    transition: all 0.6s linear;
-    font-size: 10px;
-    font-weight: 600;
-    font-family: 'Open Sans';
-    border-color: transparent;
-    box-shadow: none;
-    color: #bec9d6;
-
+	background-color: #ffffff;
+	padding: 9px 45px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	transition: all 0.6s linear;
+	font-size: 10px;
+	font-weight: 600;
+	font-family: 'Open Sans';
+	border-color: transparent;
+	box-shadow: none;
+	color: #bec9d6;
 }
-.sub_nav_box .button:selected {
-    background-color: #F5F8FB;
-    color: #07A6ED;
 
+.sub_nav_box .button:selected {
+	background-color: #eef1f4;
+	color: #07A6ED;
+}
+
+#fwd_btn, #bk_btn, .language_button {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+	transition: .3s ease;
+	color: rgba(255, 255, 255, 0.8);
+}
+#bk_btn {
+	padding: 10px 15px;
+}
+#fwd_btn {
+	padding: 10px 16px;
+}
+
+#fwd_btn:insensitive, #bk_btn:insensitive {
+	color:rgba(255, 255, 255, 0.7);
+}
+
+#fwd_btn:prelight, #bk_btn:prelight {
+	background: #3F7AE4;
+	color: rgba(255, 64, 129, 0.87);
+}
+
+.language_button {
+	border-color: #FFFFFF;
+	border-width: 1px;
+	border-radius: 5px;
+	border-style: solid;
+	padding: 5px;
+	color: #ffffff;
+	font-family: "Open Sans", sans-serif;
 }

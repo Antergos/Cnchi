@@ -1,244 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <requires lib="gtk+" version="3.18"/>
-    <object class="GtkHeaderBar" id="header">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="valign">start</property>
-        <property name="height_request">65</property>
-        <child>
-            <object class="GtkBox" id="logo_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="hexpand">False</property>
-                <style>
-                    <class name="logo_box"/>
-                </style>
-                <child>
-                    <object class="GtkImage" id="logo">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="valign">center</property>
-                        <property name="height_request">26</property>
-                        <property name="width_request">26</property>
-                        <style>
-                            <class name="logo"/>
-                        </style>
-                    </object>
-                    <packing>
-                        <property name="pack_type">start</property>
-                    </packing>
-                </child>
-            </object>
-        </child>
-        <child>
-            <object class="GtkLabel" id="logo_text">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="no">antergos</property>
-                <property name="valign">center</property>
-                <style>
-                    <class name="logo_text"/>
-                </style>
-            </object>
-            <packing>
-                <property name="pack_type">start</property>
-            </packing>
-        </child>
-        <child>
-            <object class="GtkButton" id="language_button">
-                <property name="visible">True</property>
-                <property name="sensitive">True</property>
-                <property name="valign">center</property>
-                <style>
-                    <class name="button"/>
-                    <class name="image-button"/>
-                    <class name="language_button"/>
-                </style>
-                <child>
-                    <object class="GtkImage" id="language_button_icon">
-                        <property name="visible">True</property>
-                        <property name="icon-name">preferences-desktop-locale-symbolic</property>
-                        <property name="icon-size">1</property>
-                    </object>
-                </child>
-                <signal name="clicked" handler="on_language_button_clicked" swapped="no"/>
-            </object>
-            <packing>
-                <property name="pack-type">end</property>
-                <property name="position">3</property>
-            </packing>
-        </child>
-        <child>
-            <object class="GtkSeparator" id="header_separator">
-                <property name="orientation">vertical</property>
-                <property name="valign">center</property>
-                <property name="height_request">40</property>
-                <property name="width_request">12</property>
-                <style>
-                    <class name="header_separator"/>
-                </style>
-            </object>
-            <packing>
-                <property name="pack-type">end</property>
-                <property name="position">2</property>
-            </packing>
-        </child>
-        <child>
-            <object class="GtkBox" id="nav_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="hexpand">False</property>
-                <property name="margin-right">10</property>
-                <style>
-                    <class name="nav_box"/>
-                </style>
-                <child>
-                    <object class="GtkButton" id="backwards_button">
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="no_show_all">True</property>
-                        <property name="halign">center</property>
-                        <style>
-                            <class name="button"/>
-                            <class name="image-button"/>
-                        </style>
-                        <signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
-                        <child>
-                            <object class="GtkImage" id="back_icon">
-                                <property name="icon-name">go-previous-symbolic</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="icon-size">1</property>
-                            </object>
-                        </child>
-                    </object>
-                    <packing>
-                        <property name="pack_type">start</property>
-                        <property name="position">0</property>
-                        <!--<property name="non_homogeneous">True</property>-->
-                    </packing>
-                </child>
-                <child>
-                    <object class="GtkButton" id="forward_button">
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="sensitive">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="no_show_all">True</property>
-                        <property name="halign">center</property>
-                        <style>
-                            <class name="button"/>
-                            <class name="image-button"/>
-                        </style>
-                        <signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
-                        <child>
-                            <object class="GtkImage" id="forward_icon">
-                                <property name="icon-name">go-next-symbolic</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="icon-size">1</property>
-                            </object>
-                        </child>
-                    </object>
-                    <packing>
-                        <property name="pack_type">start</property>
-                        <property name="position">1</property>
-                        <!--<property name="non_homogeneous">True</property>-->
-                    </packing>
-                </child>
-            </object>
-            <packing>
-                <property name="pack_type">end</property>
-                <property name="position">2</property>
-            </packing>
-        </child>
-        <style>
-            <class name="header_bar"/>
-        </style>
-    </object>
-    <!--<object class="GtkStackSwitcher" id="header_nav">
-        <property name="height_request">58</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="valign">end</property>
-        <style>
-            <class name="header_nav"/>
-        </style>
-    </object>-->
-    <object class="GtkBox" id="header_nav">
-        <property name="height_request">58</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
-        <property name="valign">end</property>
-        <property name="orientation">horizontal</property>
-        <style>
-            <class name="header_nav"/>
-        </style>
-    </object>
+	<requires lib="gtk+" version="3.18"/>
+	<object class="GtkHeaderBar" id="header">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<property name="valign">start</property>
+		<property name="height_request">65</property>
+		<child>
+			<object class="GtkBox" id="logo_box">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="valign">center</property>
+				<property name="hexpand">False</property>
+				<style>
+					<class name="logo_box"/>
+				</style>
+				<child>
+					<object class="GtkImage" id="logo">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<property name="valign">center</property>
+						<property name="height_request">26</property>
+						<property name="width_request">26</property>
+						<style>
+							<class name="logo"/>
+						</style>
+					</object>
+					<packing>
+						<property name="pack_type">start</property>
+					</packing>
+				</child>
+			</object>
+		</child>
+		<child>
+			<object class="GtkLabel" id="logo_text">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="label" translatable="no">antergos</property>
+				<property name="valign">center</property>
+				<style>
+					<class name="logo_text"/>
+				</style>
+			</object>
+			<packing>
+				<property name="pack_type">start</property>
+			</packing>
+		</child>
+		<child>
+			<object class="GtkButton" id="language_button">
+				<property name="visible">True</property>
+				<property name="sensitive">True</property>
+				<property name="valign">center</property>
+				<style>
+					<class name="button"/>
+					<class name="image-button"/>
+					<class name="language_button"/>
+				</style>
+				<child>
+					<!--<object class="GtkImage" id="language_button_icon">
+						<property name="visible">True</property>
+						<property name="icon-name">text-html-symbolic</property>
+						<property name="pixel-size">18</property>
+					</object>-->
+					<object class="GtkLabel" id="language_button_label">
+						<property name="visible">True</property>
+						<property name="valign">center</property>
+					</object>
+				</child>
+				<signal name="clicked" handler="on_language_button_clicked" swapped="no"/>
+			</object>
+			<packing>
+				<property name="pack-type">end</property>
+				<property name="position">3</property>
+			</packing>
+		</child>
+		<child>
+			<object class="GtkSeparator" id="header_separator">
+				<property name="orientation">vertical</property>
+				<property name="valign">center</property>
+				<property name="height_request">40</property>
+				<property name="width_request">12</property>
+				<style>
+					<class name="header_separator"/>
+				</style>
+			</object>
+			<packing>
+				<property name="pack-type">end</property>
+				<property name="position">2</property>
+			</packing>
+		</child>
+		<style>
+			<class name="header_bar"/>
+		</style>
+	</object>
+	<object class="GtkButton" id="backwards_button">
+		<property name="use_action_appearance">False</property>
+		<property name="visible">True</property>
+		<property name="sensitive">True</property>
+		<property name="can_focus">True</property>
+		<property name="no_show_all">True</property>
+		<property name="halign">start</property>
+		<property name="valign">fill</property>
+		<property name="hexpand">True</property>
+		<style>
+			<class name="button"/>
+			<class name="image-button"/>
+		</style>
+		<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
+		<child>
+			<object class="GtkImage" id="back_icon">
+				<property name="icon-name">go-previous-symbolic</property>
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="pixel-size">20</property>
+			</object>
+		</child>
+	</object>
 
-    <object class="GtkProgressBar" id="main_progressbar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="valign">end</property>
-    </object>
+	<object class="GtkButton" id="forward_button">
+		<property name="use_action_appearance">False</property>
+		<property name="visible">True</property>
+		<property name="sensitive">True</property>
+		<property name="can_focus">True</property>
+		<property name="no_show_all">True</property>
+		<property name="halign">end</property>
+		<property name="valign">fill</property>
+		<property name="hexpand">True</property>
+		<style>
+			<class name="button"/>
+			<class name="image-button"/>
+		</style>
+		<signal name="clicked" handler="on_forward_button_clicked" swapped="no"/>
+		<child>
+			<object class="GtkImage" id="forward_icon">
+				<property name="icon-name">go-next-symbolic</property>
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="pixel-size">20</property>
+			</object>
+		</child>
+	</object>
 
-    <object class="GtkOverlay" id="header_overlay">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-            <object class="GtkBox" id="header_bg_wrapper">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="homogeneous">False</property>
-                <child>
-                    <object class="GtkLabel" id="header_bg_top">
-                        <property name="height_request">70</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <style>
-                            <class name="header_bg_top"/>
-                        </style>
-                    </object>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                    </packing>
-                </child>
-                <child>
-                    <object class="GtkLabel" id="header_bg_bottom">
-                        <property name="height_request">58</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <style>
-                            <class name="header_bg_bottom"/>
-                        </style>
-                    </object>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                    </packing>
-                </child>
-                <style>
-                    <class name="header_bg_wrapper"/>
-                </style>
-            </object>
-            <packing>
-                <property name="index">-1</property>
-            </packing>
-        </child>
-        <style>
-            <class name="header_overlay"/>
-        </style>
-    </object>
+	<!--<object class="GtkStackSwitcher" id="header_nav">
+		<property name="height_request">58</property>
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<property name="hexpand">True</property>
+		<property name="valign">end</property>
+		<style>
+			<class name="header_nav"/>
+		</style>
+	</object>-->
+	<object class="GtkBox" id="header_nav">
+		<property name="height_request">58</property>
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<property name="hexpand">True</property>
+		<property name="valign">end</property>
+		<property name="orientation">horizontal</property>
+		<style>
+			<class name="header_nav"/>
+		</style>
+	</object>
+
+	<object class="GtkProgressBar" id="main_progressbar">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<property name="valign">end</property>
+	</object>
+
+	<object class="GtkOverlay" id="header_overlay">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<child>
+			<object class="GtkBox" id="header_bg_wrapper">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="orientation">vertical</property>
+				<property name="homogeneous">False</property>
+				<child>
+					<object class="GtkLabel" id="header_bg_top">
+						<property name="height_request">70</property>
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<style>
+							<class name="header_bg_top"/>
+						</style>
+					</object>
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">True</property>
+						<property name="position">0</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkLabel" id="header_bg_bottom">
+						<property name="height_request">58</property>
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<style>
+							<class name="header_bg_bottom"/>
+						</style>
+					</object>
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">True</property>
+						<property name="position">1</property>
+					</packing>
+				</child>
+				<style>
+					<class name="header_bg_wrapper"/>
+				</style>
+			</object>
+			<packing>
+				<property name="index">-1</property>
+			</packing>
+		</child>
+		<style>
+			<class name="header_overlay"/>
+		</style>
+	</object>
 </interface>

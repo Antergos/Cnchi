@@ -1,0 +1,22 @@
+[Icon Theme]
+Name=Cnchi
+Comment=Icons for Cnchi
+
+Inherits=Numix,Faenza,Adwaita,gnome,hicolor
+
+Example=directory-x-normal
+
+# Directory list
+Directories=22x22/actions,scalable/actions
+
+[22x22/actions]
+Size=22
+Context=Actions
+Type=Fixed
+
+[scalable/actions]
+Size=22
+Context=Actions
+MinSize=8
+MaxSize=512
+Type=Scalable
