@@ -36,6 +36,8 @@ import os
 
 import misc.extra as misc
 
+from misc.run_cmd import call
+
 # constants
 NAMES = [
     'btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs',
@@ -73,8 +75,11 @@ def get_info(part):
     partdic = {}
     # Do not try to get extended partition info
     if part and not misc.is_partition_extended(part):
+        # -c /dev/null means no cache
+        cmd = ['blkid', '-c', '/dev/null', part]
+        call(cmd)
         try:
-            cmd = ['blkid', '-c', '/dev/null', part]
+
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning("Error running %s: %s", err.cmd, err.output)
