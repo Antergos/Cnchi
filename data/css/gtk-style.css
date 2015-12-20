@@ -222,7 +222,7 @@ StateBox {
 	font-size: 13px;
 	font-weight: 500;
 	font-family: 'Open Sans';
-	padding: 15px 25px;
+	padding: 15px 27px;
 	color: #ffffff;
 	box-shadow: none;
 }
@@ -297,7 +297,7 @@ StateBox {
 	color: #07A6ED;
 }
 
-#fwd_btn, #bk_btn, .language_button {
+#fwd_btn, #bk_btn {
 	background: transparent;
 	border: none;
 	box-shadow: none;
@@ -308,24 +308,35 @@ StateBox {
 	padding: 10px 15px;
 }
 #fwd_btn {
-	padding: 10px 16px;
+	padding: 10px 30px;
 }
 
 #fwd_btn:insensitive, #bk_btn:insensitive {
 	color:rgba(255, 255, 255, 0.7);
 }
 
-#fwd_btn:prelight, #bk_btn:prelight {
+#fwd_btn:prelight, #bk_btn:prelight, .language_button:prelight {
 	background: #3F7AE4;
+	color: #ffffff;
+
+}
+.language_button:prelight {
+	border-color: transparent;
 	color: #ffffff;
 }
 
 .language_button {
-	border-color: #FFFFFF;
+	border-color: transparent;
+	background-color: #ffffff;
+	transition: all 0.2s linear;
 	border-width: 1px;
-	border-radius: 3px;
+	border-radius: 2px;
 	border-style: solid;
-	padding: 3px 5px;
-	color: #ffffff;
+	padding: 3px 4px;
+	color: #2E66B9;
 	font-family: "Open Sans";
+}
+
+.sub_page {
+	padding-top: 20px;
 }

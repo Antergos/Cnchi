@@ -333,8 +333,8 @@ class MainWindow(Gtk.ApplicationWindow):
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
 
-        self.nav_buttons['backwards_button'] = self.backwards_button
-        self.header_nav.add(self.nav_buttons['backwards_button'])
+        # self.nav_buttons['backwards_button'] = self.backwards_button
+        # self.header_nav.add(self.nav_buttons['backwards_button'])
 
         for page_name in top_level_pages:
             page = self.pages[page_name]
@@ -344,6 +344,8 @@ class MainWindow(Gtk.ApplicationWindow):
                                               title=page['title'],
                                               prev_page=page['prev_page'],
                                               next_page=page['next_page'])
+
+                sub_stack.get_style_context().add_class('sub_page')
                 self.sub_nav_btns[page_name] = {
                     'box': Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
                 }

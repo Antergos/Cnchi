@@ -51,6 +51,7 @@
 				<property name="visible">True</property>
 				<property name="sensitive">True</property>
 				<property name="valign">center</property>
+				<property name="margin_right">20px</property>
 				<style>
 					<class name="button"/>
 					<class name="image-button"/>
