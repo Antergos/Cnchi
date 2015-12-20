@@ -48,13 +48,14 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 class Timezone(GtkBaseBox):
     """ Timezone screen """
-    def __init__(self, params, prev_page="location", next_page="keymap", **kwargs):
+    def __init__(self, params, prev_page="location", next_page="keymap", cnchi_main=None, **kwargs):
         super().__init__(self, params, name="timezone", prev_page=prev_page,
                          next_page=next_page, **kwargs)
 
         self.map_window = self.ui.get_object('timezone_map_window')
         self.title = _('Timezone')
         self.in_group = True
+        self.cnchi_main = cnchi_main
 
         self.combobox_zone = self.ui.get_object('comboboxtext_zone')
         self.combobox_region = self.ui.get_object('comboboxtext_region')
@@ -133,13 +134,14 @@ class Timezone(GtkBaseBox):
             else:
                 tree_iter = tree_model.iter_next(tree_iter)
 
-    def set_timezone(self, timezone):
+    def set_timezone(self, timezone, show=True):
         """ Set timezone in tzmap """
         if timezone:
             self.timezone = timezone
             res = self.tzmap.set_timezone(timezone)
             # res will be False if the timezone is unrecognised
-            self.forward_button.set_sensitive(res)
+            if show:
+                self.forward_button.set_sensitive(res)
 
     def on_zone_combobox_changed(self, widget):
         """ Zone changed """
@@ -185,18 +187,20 @@ class Timezone(GtkBaseBox):
                 tree_model.append([region, region])
             self.old_zone = selected_zone
 
-    def prepare(self, direction):
+    def prepare(self, direction=None, show=True):
         """ Prepare screen before showing it """
         self.translate_ui()
         self.populate_zones()
         self.timezone = None
-        self.forward_button.set_sensitive(False)
+        if show:
+            self.forward_button.set_sensitive(False)
 
         if self.autodetected_coords is None:
             try:
                 self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
             except queue.Empty:
                 logging.warning("Can't autodetect timezone coordinates")
+                return False
 
         if self.autodetected_coords:
             coords = self.autodetected_coords
@@ -204,13 +208,19 @@ class Timezone(GtkBaseBox):
                 latitude = float(coords[0])
                 longitude = float(coords[1])
                 timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
-                self.set_timezone(timezone)
-                self.forward_button.set_sensitive(True)
+                self.set_timezone(timezone, show=show)
+                self.store_values()
+                if self.cnchi_main is not None:
+                    self.cnchi_main.on_timezone_set()
             except ValueError as value_error:
                 self.autodetected_coords = None
                 logging.warning("Can't autodetect timezone coordinates: %s", value_error)
 
-        self.show_all()
+        if not self.autodetected_coords:
+            return False
+
+        if show:
+            self.show_all()
 
     def start_auto_timezone_process(self):
         """ Starts timezone thread """
@@ -243,6 +253,7 @@ class Timezone(GtkBaseBox):
         loc = self.tzdb.get_loc(self.timezone)
 
         if loc:
+            self.log_location(loc)
             self.settings.set("timezone_human_zone", loc.human_zone)
             self.settings.set("timezone_country", loc.country)
             self.settings.set("timezone_zone", loc.zone)

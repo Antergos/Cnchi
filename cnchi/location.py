@@ -178,6 +178,7 @@ class Location(GtkBaseBox):
         if not self.show_all_locations:
             lang_code = self.settings.get("language_code")
             for locale_name in self.locales:
+                logging.debug(locale_name)
                 if lang_code in locale_name:
                     areas.append(self.locales[locale_name])
             if len(areas) == 0:
@@ -200,10 +201,18 @@ class Location(GtkBaseBox):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
 
+        labels = []
+        country = self.settings.get('timezone_country')
         for area in areas:
             label = Gtk.Label.new()
             label.set_markup(area)
             label.show_all()
+            if country and '(' + country + ')' in area:
+                self.listbox.add(label)
+            else:
+                labels.append(label)
+
+        for label in labels:
             self.listbox.add(label)
 
         self.selected_country = areas[0]

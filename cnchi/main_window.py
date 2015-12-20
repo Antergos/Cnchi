@@ -31,6 +31,7 @@
 
 import os
 import sys
+import time
 import multiprocessing
 import logging
 import config
@@ -100,6 +101,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.all_pages = []
         self.pages_loaded = False
         self.stacks = []
+        self.cnchi_started = False
+        self.timezone_start_needed = False
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -156,24 +159,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 "Using '%s' file as package list",
                 self.settings.get('alternate_package_list'))
 
-        # Just load the first screen (the other ones will be loaded later)
-        # We do this to reduce Cnchi's initial startup time.
-        self.pages = dict()
-        if os.path.exists('/home/antergos/.config/openbox'):
-            # In minimal iso, load the system check screen now
-            self.pages["check"] = check.Check(self.params)
-            self.current_page = self.pages["check"]
-            self.settings.set('timezone_start', True)
-
-            # Fix buggy Gtk window size when using Openbox
-            #self._main_window_width = 960
-            #self._main_window_height = 600
-        else:
-            self.pages["welcome"] = welcome.Welcome(self.params)
-            self.current_page = self.pages["welcome"]
+        self.pre_load_pages()
 
         self.main_box.add(self.current_page)
 
+        self.settings.set('timezone_start', True)
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.on_key_release)
 
@@ -220,6 +210,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         misc.gtk_refresh()
 
+        self.cnchi_started = True
+        if self.timezone_start_needed:
+            self.on_has_internet_connection()
+
     def prepare_shared_parameters(self):
         """
         Parameters that are common to all screens
@@ -255,6 +249,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_box = self.ui.get_object("main_box")
         self.main_stack = self.ui.get_object("main_stack")
         self.sub_nav_box = self.ui.get_object("sub_nav_box")
+
+        self.main_stack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT_RIGHT)
 
         self.header_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "header.ui")
@@ -308,6 +304,24 @@ class MainWindow(Gtk.ApplicationWindow):
         # self.header.set_subtitle(welcome_msg)
         self.header.set_show_close_button(False)
 
+    def pre_load_pages(self):
+        # Just load the first two screens (the other ones will be loaded later)
+        # We do this to reduce Cnchi's initial startup time.
+        self.pages = dict()
+        self.pages["location_grp"] = {'title': 'Location',
+                                      'prev_page': 'check',
+                                      'next_page': 'location',
+                                      'pages': ['location', 'timezone', 'keymap']}
+        self.pages["check"] = check.Check(self.params, cnchi_main=self)
+        self.pages["check"].prepare('forwards', show=False)
+
+        if os.path.exists('/home/antergos/.config/openbox'):
+            # In minimal iso, load the system check screen now
+            self.current_page = self.pages["check"]
+        else:
+            self.pages["welcome"] = welcome.Welcome(self.params)
+            self.current_page = self.pages["welcome"]
+
     def load_pages(self):
 
         top_level_pages = ['check', 'location_grp', 'desktop_grp',
@@ -346,6 +360,7 @@ class MainWindow(Gtk.ApplicationWindow):
                                               next_page=page['next_page'])
 
                 sub_stack.get_style_context().add_class('sub_page')
+                sub_stack.set_transition_type(Gtk.StackTransitionType.OVER_UP_DOWN)
                 self.sub_nav_btns[page_name] = {
                     'box': Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
                 }
@@ -390,33 +405,28 @@ class MainWindow(Gtk.ApplicationWindow):
         self.current_stack = self.main_stack
 
     def initialize_pages_dict(self):
-        if not os.path.exists('/home/antergos/.config/openbox'):
-            self.pages["check"] = check.Check(params=self.params)
-
-        self.pages["location_grp"] = {'title': 'Location',
-                                      'prev_page': 'check',
-                                      'next_page': 'location',
-                                      'pages': ['location', 'timezone', 'keymap']}
 
         self.pages["location_grp"]["location"] = location.Location(params=self.params)
-        self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params)
+        if self.pages["location_grp"].get('timezone', False) is False:
+            self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
+                                                                       cnchi_main=self)
 
         self.pages["desktop_grp"] = {'title': 'Desktop Selection',
-                                       'prev_page': 'location_grp',
-                                       'next_page': 'desktop',
-                                       'pages': ['desktop', 'features']}
+                                     'prev_page': 'location_grp',
+                                     'next_page': 'desktop',
+                                     'pages': ['desktop', 'features']}
 
         if self.settings.get('desktop_ask') or True:
             self.pages["location_grp"]["keymap"] = keymap.Keymap(params=self.params, is_last=True)
             self.pages["desktop_grp"]["desktop"] = desktop.DesktopAsk(params=self.params)
             self.pages["desktop_grp"]["features"] = features.Features(params=self.params,
-                                                                        is_last=True)
+                                                                      is_last=True)
         else:
             self.pages["location_grp"]["keymap"] = keymap.Keymap(self.params, next_page='features',
                                                                  is_last=True)
             self.pages["desktop_grp"]["features"] = features.Features(self.params,
-                                                                        prev_page='location_grp',
-                                                                        is_last=True)
+                                                                      prev_page='location_grp',
+                                                                      is_last=True)
 
         self.pages["disk_grp"] = {'title': 'Disk Setup',
                                   'prev_page': 'desktop_grp',
@@ -568,19 +578,25 @@ class MainWindow(Gtk.ApplicationWindow):
             self.main_stack.set_visible(True)
             self.current_stack = self.main_stack
             self.current_stack.can_show = True
+            self.current_stack.show_all()
 
         self.set_progressbar_step(self.progressbar_step)
         self.current_page = page
 
         if not isinstance(self.current_page, gtkbasebox.GtkBaseBox):
+            self.main_stack.show_all()
             self.main_stack.set_visible_child_name(page_name)
             self.current_stack = self.pages[page_name]['group']
             self.current_stack.can_show = True
 
+            if self.nav_buttons.get('selected', False):
+                self.nav_buttons['selected'].set_state_flags(Gtk.StateFlags.NORMAL, True)
+            self.nav_buttons[page_name].set_state_flags(Gtk.StateFlags.SELECTED, True)
+            self.nav_buttons['selected'] = self.nav_buttons[page_name]
+
             # The sub-stack container itself is not a page. Let's proceed to
             # first page within the sub-stack (a non-top-level page)
-            page_after_next = self.current_stack.next_page
-            self.current_page = self.pages[page_name][page_after_next]
+            self.current_page = self.pages[page_name][self.current_stack.next_page]
 
             self.prepare_sub_nav_buttons({'name': self.current_page.name,
                                           'group': page_name,
@@ -638,6 +654,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.sub_nav_box.height_request = 48
         self.sub_nav_box.show_all()
+
+    def on_has_internet_connection(self):
+        if self.cnchi_started:
+            if self.pages["location_grp"].get('timezone', False) is False:
+                self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
+                                                                           cnchi_main=self)
+                time.sleep(1)
+                self.pages['location_grp']['timezone'].prepare(show=False)
+        else:
+            self.timezone_start_needed = True
+
+    def on_timezone_set(self):
+        logging.debug('TIMEZONE SET')
 
     def on_forward_button_clicked(self, widget, data=None):
         """ Show next screen """

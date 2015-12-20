@@ -55,7 +55,7 @@ MIN_ROOT_SIZE = 8000000000
 class Check(GtkBaseBox):
     """ Check class """
 
-    def __init__(self, params, prev_page="welcome", next_page="location_grp"):
+    def __init__(self, params, prev_page="welcome", next_page="location_grp", cnchi_main=None):
         """ Init class ui """
         super().__init__(self, params, "check", prev_page, next_page)
 
@@ -69,6 +69,8 @@ class Check(GtkBaseBox):
         self.timeout_id = None
         self.prepare_best_results = None
         self.updated = None
+        self.cnchi_main = cnchi_main
+        self.cnchi_notified = False
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -79,7 +81,7 @@ class Check(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        self.header.set_subtitle(self.title)
+        # self.header.set_subtitle(self.title)
 
         self.updated = self.ui.get_object("updated")
         txt = _("Cnchi is up to date")
@@ -118,6 +120,11 @@ class Check(GtkBaseBox):
         """ Check that all requirements are meet """
         has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
+
+        if has_internet and not self.cnchi_notified:
+            self.cnchi_main.on_has_internet_connection()
+            logging.debug('ON HAS INTERNET CONNECTION FIRED!')
+            self.cnchi_notified = True
 
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)
@@ -213,12 +220,13 @@ class Check(GtkBaseBox):
         self.forward_button.set_sensitive(True)
         return True
 
-    def prepare(self, direction):
+    def prepare(self, direction=None, show=True):
         """ Load screen """
         self.translate_ui()
-        self.show_all()
-
-        self.forward_button.set_sensitive(self.check_all())
+        result = self.check_all()
+        if result is not None and show:
+            self.show_all()
+            self.forward_button.set_sensitive(result)
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)

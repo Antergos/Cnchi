@@ -15,7 +15,7 @@ GtkWindow {
 .title {
 	background-color: transparent;
 	color: #ffffff;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 400;
 	font-family: 'Open Sans';
 }
@@ -110,12 +110,12 @@ GtkProgressBar.progressbar {
 }
 
 .list {
-	background-color: #eee;
+	background-color: #f9f9f9;
 }
 
-/*GtkListBoxRow:active, .list-row:active, .list-row:selected {
-    background-color: #2EA3F2;
-}*/
+GtkListBoxRow:active, .list-row:active, .list-row:selected {
+    background-color: #07A6ED;
+}
 
 .welcome_screen {
 	background-color: #eef1f4;
@@ -133,17 +133,17 @@ GtkProgressBar.progressbar {
 }
 
 #graph_btn {
-	color: #f281e2;
+	color: #f959b7;
 }
 #tryit_btn {
-	color: #9b7eff;
+	color: #795aff;
 }
 
 #graph_btn:focused {
-	border-color: #f281e2;
+	border-color: #f959b7;
 }
 #tryit_btn:focused {
-	border-color: #9b7eff;
+	border-color: #795aff;
 }
 
 #tryit_btn:hover, #graph_btn:hover {
@@ -156,10 +156,10 @@ GtkProgressBar.progressbar {
 	font-size: 20px;
 }
 #graph_btn:hover {
-	background: #f281e2;
+	background: #f959b7;
 }
 #tryit_btn:hover {
-	background: #9b7eff;
+	background: #795aff;
 }
 
 
@@ -263,7 +263,7 @@ StateBox {
 }
 
 .main_stack, .main, .main_box {
-	background-color: #eef1f4
+	background-color: #eaedf0
 }
 
 .logo_box {
@@ -271,19 +271,19 @@ StateBox {
 }
 
 .sub_nav_box {
-	background-color: #ffffff;
+	background-color: #f7fafd;
 }
 
 .sub_nav_box GtkBox {
-	background-color: #ffffff;
+	background-color: #f7fafd;
 }
 
 .sub_nav_box .button {
-	background-color: #ffffff;
-	padding: 9px 45px;
+	background-color: #f7fafd;
+	padding: 11px 45px;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
-	transition: all 0.6s linear;
+	transition: all 0.3s linear;
 	font-size: 10px;
 	font-weight: 600;
 	font-family: 'Open Sans';
@@ -293,7 +293,7 @@ StateBox {
 }
 
 .sub_nav_box .button:selected {
-	background-color: #eef1f4;
+	background-color: #eaedf0;
 	color: #07A6ED;
 }
 
@@ -332,7 +332,7 @@ StateBox {
 	border-width: 1px;
 	border-radius: 2px;
 	border-style: solid;
-	padding: 3px 4px;
+	padding: 2px 2px;
 	color: #2E66B9;
 	font-family: "Open Sans";
 }
