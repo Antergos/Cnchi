@@ -1,4 +1,11 @@
+[2015-12-18 04:26:18 -0600]  Update .landscape.yaml                                                 Dustin Falgout  {58b63c7}
+[2015-12-17 18:26:33 -0600]  new kde screenshots app not out of testing yet                         Dustin Falgout  {a7943d6}
+[2015-12-17 18:25:08 -0600]  Merge pull request #489 from Wyn10/patch-1                             Dustin Falgout  {df6d6f7}
+[2015-12-16 15:30:39 -0500]  Update packages.xml                                                          Wyn       {d842c62}
+[2015-12-14 12:55:56 -0600]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {7aea58f}
 [2015-12-14 12:54:27 -0600]  kde changes                                                            Dustin Falgout  {1c7de2b}
+[2015-12-13 21:05:52 +0100]  Merge pull request #486 from Wyn10/patch-1                                 karasu      {7ef7c86}
+[2015-12-13 14:41:28 -0500]  KDE4 package removed                                                         Wyn       {3b49e81}
 [2015-11-27 02:40:32 -0600]  Revert "change files owned by root to user 1000"                       Dustin Falgout  {31060ff}
 [2015-11-27 02:31:08 -0600]  change files owned by root to user 1000                                Dustin Falgout  {395e6ee}
 [2015-11-24 22:51:29 -0600]  fix typo (cherry picked from commit 0a5a7e1)                           Dustin Falgout  {f8521c6}

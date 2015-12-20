@@ -133,8 +133,8 @@ DESCRIPTIONS = {
                        "you create beautiful user interfaces with much less work"),
 
     'kde': _("If you are looking for a familiar working environment, KDE's "
-              "Plasma Desktop offers all the tools required for a modern desktop "
-              "computing experience so you can be productive right from the start."),
+             "Plasma Desktop offers all the tools required for a modern desktop "
+             "computing experience so you can be productive right from the start."),
 
     'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
               "Environment. It is lightweight, modular, blazing-fast, and "
