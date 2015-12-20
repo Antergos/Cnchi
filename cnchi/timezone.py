@@ -99,7 +99,7 @@ class Timezone(GtkBaseBox):
         txt = _("Use Network Time Protocol (NTP) for clock synchronization")
         label.set_markup(txt)
 
-        self.header.set_subtitle(_("Select Your Timezone"))
+        # self.header.set_subtitle(_("Select Your Timezone"))
 
     def on_location_changed(self, tzmap, tz_location):
         """ User changed its location """

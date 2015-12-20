@@ -21,14 +21,14 @@
 				<property name="margin_bottom">0</property>
 				<property name="spacing">40</property>
 				<property name="hexpand">True</property>
-				<property name="halign">center</property>
+				<property name="halign">fill</property>
 				<child>
 					<object class="GtkScrolledWindow" id="scrolledwindow1">
-						<property name="width_request">170</property>
-						<property name="height_request">80</property>
+						<!--<property name="width_request">170</property>-->
+						<!--<property name="height_request">80</property>-->
 						<property name="visible">True</property>
 						<property name="can_focus">True</property>
-						<property name="margin_end">10</property>
+						<property name="margin_right">40</property>
 						<property name="shadow_type">in</property>
 						<child>
 							<object class="GtkListBox" id="listbox_desktop">
@@ -38,8 +38,8 @@
 						</child>
 					</object>
 					<packing>
-						<property name="expand">False</property>
-						<property name="fill">False</property>
+						<property name="expand">True</property>
+						<property name="fill">True</property>
 						<property name="position">0</property>
 					</packing>
 				</child>
@@ -48,8 +48,8 @@
 						<property name="height_request">245</property>
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="valign">start</property>
-						<property name="margin_start">20</property>
+						<property name="valign">center</property>
+						<property name="margin_top">0</property>
 					</object>
 					<packing>
 						<property name="expand">False</property>
@@ -70,7 +70,7 @@
 				<property name="can_focus">False</property>
 				<!--<property name="margin_left">70</property>-->
 				<property name="margin_end">0</property>
-				<property name="margin_top">0</property>
+				<property name="margin_top">25</property>
 				<property name="label" translatable="yes">label</property>
 				<property name="wrap">True</property>
 				<property name="max_width_chars">74</property>

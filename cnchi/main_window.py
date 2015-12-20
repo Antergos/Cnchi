@@ -251,6 +251,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sub_nav_box = self.ui.get_object("sub_nav_box")
 
         self.main_stack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT_RIGHT)
+        self.main_stack.set_transition_duration(350)
 
         self.header_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "header.ui")
@@ -300,8 +301,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo_text.set_text(title)
 
         welcome_msg = _("Welcome To Antergos!")
-        self.header.set_title(welcome_msg)
-        # self.header.set_subtitle(welcome_msg)
+        label = Gtk.Label.new()
+        label.set_text(welcome_msg)
+        # self.header.set_title(welcome_msg)
+        self.header.set_custom_title(label)
+        self.header.get_custom_title().get_style_context().add_class('cnchi_title')
         self.header.set_show_close_button(False)
 
     def pre_load_pages(self):
@@ -360,7 +364,8 @@ class MainWindow(Gtk.ApplicationWindow):
                                               next_page=page['next_page'])
 
                 sub_stack.get_style_context().add_class('sub_page')
-                sub_stack.set_transition_type(Gtk.StackTransitionType.OVER_UP_DOWN)
+                sub_stack.set_transition_type(Gtk.StackTransitionType.OVER_DOWN_UP)
+                sub_stack.set_transition_duration(350)
                 self.sub_nav_btns[page_name] = {
                     'box': Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
                 }
@@ -611,17 +616,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.current_stack.set_visible_child_name(self.current_page.name)
         self.current_page.nav_button.set_state_flags(Gtk.StateFlags.SELECTED, True)
         self.header.set_subtitle('')
-
-        if self.current_page.prev_page:
-            # There is a previous page, show back button
-            self.backwards_button.show()
-            self.backwards_button.set_sensitive(True)
-        else:
-            # We can't go back, hide back button
-            self.backwards_button.hide()
-            if self.current_page == "slides":
-                # Show logo in slides screen
-                self.logo.show_all()
 
     def set_progressbar_step(self, add_value):
         new_value = self.progressbar.get_fraction() + add_value
