@@ -372,6 +372,7 @@
 				<pkgname>dolphin</pkgname>
 				<pkgname>dolphin-plugins</pkgname>
 				<pkgname>dvd+rw-tools</pkgname>
+				<pkgname>ffmpegthumbs</pkgname>
 				<pkgname>grub2-editor</pkgname>
 				<pkgname>gwenview</pkgname>
 				<pkgname>k3b</pkgname>
@@ -381,10 +382,8 @@
 				<pkgname>kdebase-kdepasswd</pkgname>
 				<pkgname>kdebase-kdialog</pkgname>
 				<pkgname>kdebase-kfind</pkgname>
-				<!--<pkgname>spectacle</pkgname>-->
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
-				<pkgname>kdemultimedia-ffmpegthumbs</pkgname>
 				<pkgname>kdenetwork-kopete</pkgname>
 				<pkgname>kde-servicemenus-rootactions</pkgname>
 				<pkgname>kdesudo</pkgname>
@@ -418,6 +417,7 @@
 				<pkgname>plasma-workspace-wallpapers</pkgname>
 				<pkgname>powerdevil</pkgname>
 				<pkgname>qtcurve</pkgname>
+				<pkgname>spectacle</pkgname>
 				<pkgname>systemsettings</pkgname>
 				<pkgname>transmission-qt</pkgname>
 				<pkgname>user-manager</pkgname>
