@@ -1,5 +1,11 @@
+[2015-12-19 21:42:54 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {66e631b}
+[2015-12-19 14:39:08 +0100]  Little modifications in run_cmd                                            karasu      {d012ef2}
+[2015-12-19 13:27:37 +0100]  Do not log as warning when update.info is missing                          karasu      {8deaa14}
+[2015-12-19 01:03:02 -0600]  more progress                                                          Dustin Falgout  {e8cf54f}
 [2015-12-18 20:43:33 -0600]  more progress                                                          Dustin Falgout  {7691c70}
+[2015-12-17 20:05:25 +0100]  Do not fail even if timezonemap.xml is not found                           karasu      {d13e689}
 [2015-12-17 02:40:46 -0600]  :triumphant:                                                           Dustin Falgout  {b72ae33}
+[2015-12-16 23:43:35 +0100]  Not needed                                                                 karasu      {e093b4a}
 [2015-12-16 00:37:15 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1c02887}
 [2015-12-15 20:41:40 +0100]  Fix automatic installation (auto_partition) in mmcblk devices (can'..      karasu      {5b57d49}
 [2015-12-15 10:28:53 +0100]  Add flash as a feature                                                     karasu      {93f5b47}

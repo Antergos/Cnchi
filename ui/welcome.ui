@@ -9,6 +9,9 @@
         <property name="valign">center</property>
         <property name="orientation">vertical</property>
         <property name="spacing">16</property>
+		<style>
+			<class name="welcome_screen"/>
+		</style>
         <child>
             <object class="GtkGrid" id="grid1">
                 <property name="visible">True</property>
@@ -59,7 +62,7 @@
                                 <property name="label" translatable="yes">Try it</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
+                                <property name="receives_default">False</property>
                                 <property name="margin-top">0</property>
                                 <signal name="clicked" handler="on_tryit_button_clicked" swapped="no"/>
                             </object>
@@ -117,6 +120,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="margin-top">10</property>
+                                <property name="receives_default">False</property>
                                 <signal name="clicked" handler="on_graph_button_clicked" swapped="no"/>
                             </object>
                             <packing>

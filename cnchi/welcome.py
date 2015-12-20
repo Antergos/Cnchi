@@ -103,9 +103,6 @@ class Welcome(GtkBaseBox):
         txt = _("Install It")
         self.buttons['graph'].set_label(txt)
 
-        txt = _("Welcome to Antergos!")
-        self.header.set_subtitle(txt)
-
     def quit_cnchi(self):
         misc.remove_temp_files()
         for proc in self.process_list:

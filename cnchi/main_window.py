@@ -166,12 +166,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.settings.set('timezone_start', True)
 
             # Fix buggy Gtk window size when using Openbox
-            self._main_window_width = 960
-            self._main_window_height = 600
+            #self._main_window_width = 960
+            #self._main_window_height = 600
         else:
             self.pages["welcome"] = welcome.Welcome(self.params)
             self.current_page = self.pages["welcome"]
-            self.main_box.add(self.current_page)
+
+        self.main_box.add(self.current_page)
 
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.on_key_release)
@@ -200,10 +201,10 @@ class MainWindow(Gtk.ApplicationWindow):
             Gtk.STYLE_PROVIDER_PRIORITY_USER
         )
 
+        self.current_page.prepare('forwards')
+
         # Show main window
         self.show_all()
-
-        self.current_page.prepare('forwards')
 
         # Hide backwards button
         self.backwards_button.hide()
@@ -211,11 +212,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Do not hide progress bar for minimal iso as it would break
-        # the widget alignment on language page.
+        # Hide the progress bar for default iso
         if not os.path.exists('/home/antergos/.config/openbox'):
-            # Hide progress bar
             self.progressbar.hide()
+
+        self.set_focus(None)
 
         misc.gtk_refresh()
 
@@ -241,9 +242,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def initialize_gui(self):
         """
-        Initial setup of our UI elements.
+        Initial setup of our UI elements. This must be called during __init__().
 
         """
+
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
         self.ui.add_from_file(path)
@@ -254,10 +256,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_stack = self.ui.get_object("main_stack")
         self.sub_nav_box = self.ui.get_object("sub_nav_box")
 
-
         self.header_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "header.ui")
         self.header_ui.add_from_file(path)
+
         self.header = self.header_ui.get_object("header")
         self.header_overlay = self.header_ui.get_object("header_overlay")
         self.header_nav = self.header_ui.get_object("header_nav")
@@ -297,11 +299,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_always_show_image(True)
 
         # title = "Cnchi {0}".format(info.CNCHI_VERSION)
-        title = "Cnchi Installer"
+        title = _("Cnchi Installer")
         self.set_title(title)
         self.logo_text.set_text(title)
-        # self.header.set_title(title)
-        self.header.set_subtitle(_("Antergos Installer"))
+
+        welcome_msg = _("Welcome To Antergos!")
+        self.header.set_title(welcome_msg)
+        # self.header.set_subtitle(welcome_msg)
         self.header.set_show_close_button(False)
 
     def load_pages(self):
@@ -555,6 +559,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         prev_page = self.current_page
         if 'welcome' != prev_page.name:
+            self.header.set_title('')
             prev_page.nav_button.set_state_flags(Gtk.StateFlags.NORMAL, True)
         else:
             self.main_box.set_visible(False)

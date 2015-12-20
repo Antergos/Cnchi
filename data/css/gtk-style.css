@@ -1,7 +1,7 @@
-#main {
-	font-family: 'Lato';
+#main, .main {
+	font-family: 'Open Sans';
 	font-size: 11px;
-	background-color: #F5F8FB
+	background-color: #f6f9fc
 }
 
 #location {
@@ -14,20 +14,10 @@ GtkWindow {
 
 .title {
 	background-color: transparent;
-	color: #2EA3F2;
-	font-size: 11px;
-	font-weight: 600;
-	font-family: 'Lato';
-	text-shadow: 0px 1px 0px #222;
-}
-
-.label.subtitle,
-#header .subtitle,
-.subtitle {
+	color: #ffffff;
 	font-size: 13px;
 	font-weight: 400;
-	font-family: 'Lato';
-	color: #eee;
+	font-family: 'Open Sans';
 }
 
 #header {
@@ -37,7 +27,7 @@ GtkWindow {
 	background-size: 100% 100%;*/
 	border-bottom: 0px;
 	border-color: transparent;
-	font-family: Lato;
+	font-family: 'Open Sans';
 	padding: 8px 12px;
 }
 
@@ -71,23 +61,6 @@ GtkProgressBar.progressbar {
 	background-color: transparent;
 }
 
-#fwd_btn {
-	border-radius: 0px 2px 2px 0px;
-}
-
-#bk_btn {
-	border-radius: 2px 0px 0px 2px;
-}
-
-#fwd_btn:hover, #bk_btn:hover {
-	color: #2EA3F2;
-}
-
-#fwd_btn:active, #bk_btn:active {
-	color: #333A4C;
-	box-shadow: inset 0px -3px 1px rgba(255, 255, 255, 1), inset 0 0px 3px rgba(95, 95, 95, 0.90);
-	background-color: shade(@theme_bg_color, 1.08);
-}
 
 #fwd_btn .label {
 	font-size: 11px;
@@ -144,6 +117,10 @@ GtkProgressBar.progressbar {
     background-color: #2EA3F2;
 }*/
 
+.welcome_screen {
+	background-color: #eef1f4;
+}
+
 #tryit_btn, #graph_btn {
 	padding: 12px 20px;
 	border-radius: 3px;
@@ -152,38 +129,45 @@ GtkProgressBar.progressbar {
 	background: rgba(255, 255, 255, 1);
 	font-size: 15px;
 	font-weight: 500;
-	color: #2EA3F2;
 	transition: all 0.1s ease-in;
 }
 
-#tryit_btn:focused, #graph_btn:focused {
-	padding: 12px 20px;
-	border-radius: 3px;
-	border-color: #2EA3F2;
-	border-width: 2px;
-	background: rgba(255, 255, 255, 1);
-	font-size: 15px;
-	font-weight: 500;
-	color: #2EA3F2;
-	transition: all 0.1s ease-in;
+#graph_btn {
+	color: #f281e2;
+}
+#tryit_btn {
+	color: #9b7eff;
+}
+
+#graph_btn:focused {
+	border-color: #f281e2;
+}
+#tryit_btn:focused {
+	border-color: #9b7eff;
 }
 
 #tryit_btn:hover, #graph_btn:hover {
 	padding-top: 9px;
 	padding-bottom: 9px;
-	background: #2EA3F2;
 	color: #fff;
 	border-radius: 0px;
 	border-width: 0px;
 	border-bottom-width: 1px;
 	font-size: 20px;
 }
+#graph_btn:hover {
+	background: #f281e2;
+}
+#tryit_btn:hover {
+	background: #9b7eff;
+}
+
 
 #tryit_label, #installit_label {
 	font-size: 11px;
 }
 
-GtkSwitch.trough:active {
+/*GtkSwitch.trough:active {
 	border-color: shade(#2EA3F2, 0.9);
 	background-color: #2EA3F2;
 	background-image: none;
@@ -192,7 +176,7 @@ GtkSwitch.trough:active {
 GtkTreeView row:selected {
 	background-color: #2EA3F2;
 	border-color: shade(#2EA3F2, 0.9);
-}
+}*/
 
 #auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
 	font-size: 13px;
@@ -333,15 +317,15 @@ StateBox {
 
 #fwd_btn:prelight, #bk_btn:prelight {
 	background: #3F7AE4;
-	color: rgba(255, 64, 129, 0.87);
+	color: #ffffff;
 }
 
 .language_button {
 	border-color: #FFFFFF;
 	border-width: 1px;
-	border-radius: 5px;
+	border-radius: 3px;
 	border-style: solid;
-	padding: 5px;
+	padding: 3px 5px;
 	color: #ffffff;
-	font-family: "Open Sans", sans-serif;
+	font-family: "Open Sans";
 }
