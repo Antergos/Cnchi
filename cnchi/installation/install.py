@@ -55,6 +55,8 @@ from mako.template import Template
 
 import hardware.hardware as hardware
 
+from installation.boot import loader
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
@@ -1280,8 +1282,8 @@ class Installation(object):
         if self.settings.get('bootloader_install'):
             try:
                 logging.debug("Installing bootloader...")
-                from installation import bootloader
-                boot_loader = bootloader.Bootloader(
+                from installation.boot import loader
+                boot_loader = loader.Bootloader(
                     DEST_DIR,
                     self.settings,
                     self.mount_devices)

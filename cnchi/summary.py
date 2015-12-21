@@ -173,10 +173,10 @@ class Summary(GtkBaseBox):
 
         # Hide features statebox if no features are selected
         if self.num_features == 0:
-            statebox = self.ui.get_object("features_statebox")
-            statebox.hide()
-            label = self.ui.get_object("features_label")
-            label.hide()
+            names = ["features_statebox", "features_label"]
+            for name in names:
+                widget = self.ui.get_object(name)
+                widget.hide()
 
     def store_values(self):
         """ User wants to continue """

@@ -141,7 +141,7 @@ class SelectPackages(object):
         except Exception as err:
             logging.error("Can't release pyalpm: %s", err)
             txt = _("Can't release pyalpm: {0}").format(err)
-            raise InstallError()
+            raise InstallError(txt)
 
     def select_packages(self):
         """ Get package list from the Internet """

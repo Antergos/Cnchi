@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# bootloader.py
+# grub2.py
 #
 # Copyright © 2013-2015 Antergos
 #
@@ -27,7 +27,7 @@
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-""" Bootloader installation """
+""" GRUB2 bootloader installation """
 
 import logging
 import os
@@ -50,56 +50,22 @@ except NameError as err:
         return message
 
 
-class Bootloader(object):
+class Grub2(object):
     """ Class to perform boot loader installation """
-    def __init__(self, dest_dir, settings, mount_devices):
-        self.dest_dir = dest_dir
-        self.settings = settings
-        self.mount_devices = mount_devices
-        self.method = settings.get("partition_mode")
-        self.root_device = self.mount_devices["/"]
+    def __init__(self, dest_dir, settings, boot_uuid, root_uuid, swap_uuid=None):
 
-        self.root_uuid = fs.get_uuid(self.root_device)
-
-        if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_uuid(swap_partition)
-
-        if "/boot" in self.mount_devices:
-            boot_device = self.mount_devices["/boot"]
-        else:
-            # No dedicated /boot partition
-            boot_device = self.mount_devices["/"]
-        self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
-        """ Installs the bootloader """
-
-        # Freeze and unfreeze xfs filesystems to enable bootloader
-        # installation on xfs filesystems
-        self.freeze_unfreeze_xfs()
-
-        bootloader = self.settings.get('bootloader').lower()
-        if bootloader == "grub2":
-            self.install_grub()
-        elif bootloader == "systemd-boot":
-            logging.debug("Cnchi will install the Systemd-boot (Gummiboot) loader")
-            self.install_systemd_boot()
-        elif bootloader == "refind":
-            logging.debug("Cnchi will install the rEFInd loader")
-            self.install_refind()
-
-    def install_grub(self):
         """ Install Grub2 bootloader """
         self.modify_grub_default()
         self.prepare_grub_d()
 
         if os.path.exists('/sys/firmware/efi'):
             logging.debug("Cnchi will install the Grub2 (efi) loader")
-            self.install_grub2_efi()
+            self.install_efi()
         else:
             logging.debug("Cnchi will install the Grub2 (bios) loader")
-            self.install_grub2_bios()
+            self.install_bios()
 
         self.check_root_uuid_in_grub()
 
@@ -231,7 +197,6 @@ class Bootloader(object):
                             line = '{0}="{1}"'.format(option, cmd)
                         line += '\n'
                         grub_file.write(line)
-
             else:
                 # Option was not found. Thus, append new option
                 with open(default_grub, 'a', newline='\n') as grub_file:
@@ -263,7 +228,7 @@ class Bootloader(object):
         else:
             logging.warning("Can't find script %s", script_path)
 
-    def install_grub2_bios(self):
+    def install_bios(self):
         """ Install Grub2 bootloader in a BIOS system """
         grub_location = self.settings.get('bootloader_device')
         txt = _("Installing GRUB(2) BIOS boot loader in {0}").format(grub_location)
@@ -287,7 +252,7 @@ class Bootloader(object):
 
         chroot_call(grub_install, self.dest_dir)
 
-        self.install_grub2_locales()
+        self.install_locales()
 
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
@@ -322,7 +287,7 @@ class Bootloader(object):
             for the UEFI bootloader_id """
         return ''.join(random.choice(chars) for x in range(size))
 
-    def install_grub2_efi(self):
+    def install_efi(self):
         """ Install Grub2 bootloader in a UEFI system """
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
@@ -346,7 +311,7 @@ class Bootloader(object):
         call(load_module, timeout=15)
         call(grub_install, timeout=120)
 
-        self.install_grub2_locales()
+        self.install_locales()
 
         # Copy grub into dirs known to be used as default by some OEMs
         # if they do not exist yet.
@@ -436,7 +401,7 @@ class Bootloader(object):
         else:
             logging.warning("Failed to patch 50mounted-tests, file not found.")
 
-    def install_grub2_locales(self):
+    def install_locales(self):
         """ Install Grub2 locales """
         logging.debug("Installing Grub2 locales.")
         dest_locale_dir = os.path.join(self.dest_dir, "boot/grub/locale")
@@ -454,173 +419,3 @@ class Bootloader(object):
         except FileExistsError:
             # Ignore if already exists
             pass
-
-    def install_systemd_boot(self):
-        """ Install Systemd-boot bootloader to the EFI System Partition """
-        # Setup bootloader menu
-        menu_dir = os.path.join(self.dest_dir, "boot/loader")
-        os.makedirs(menu_dir, mode=0o755, exist_ok=True)
-        menu_path = os.path.join(menu_dir, "loader.conf")
-        with open(menu_path, 'w') as menu_file:
-            menu_file.write("default antergos")
-
-        # Setup boot entries
-        conf = {}
-
-        if not self.settings.get('use_luks'):
-            conf['default'] = []
-            conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/vmlinuz-linux\n")
-            conf['default'].append("initrd\t/initramfs-linux.img\n")
-            conf['default'].append("options\troot=UUID={0}"
-                                   " rw quiet\n\n".format(self.root_uuid))
-
-            conf['fallback'] = []
-            conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/vmlinuz-linux\n")
-            conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
-            conf['fallback'].append("options\troot=UUID={0}"
-                                    " rw quiet\n\n".format(self.root_uuid))
-
-            if self.settings.get('feature_lts'):
-                conf['lts'] = []
-                conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
-                conf['lts'].append("options\troot=UUID={0}"
-                                   " rw quiet\n\n".format(self.root_uuid))
-
-                conf['lts_fallback'] = []
-                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
-                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf['lts_fallback'].append("options\troot=UUID={0}"
-                                            " rw quiet\n\n".format(self.root_uuid))
-        else:
-            luks_root_volume = self.settings.get('luks_root_volume')
-            mapper = "/dev/mapper/{0}".format(luks_root_volume)
-            luks_root_volume_uuid = fs.get_uuid(mapper)
-
-            # In automatic mode, root_device is in self.mount_devices
-            root_device = self.root_device
-
-            if (self.method == "advanced" and
-                    self.settings.get('use_luks_in_root')):
-                root_device = self.settings.get('luks_root_device')
-
-            root_uuid = fs.get_uuid(root_device)
-
-            key = ""
-            if self.settings.get("luks_root_password") == "":
-                key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
-
-            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
-            root_uuid_line = root_uuid_line.format(
-                root_uuid,
-                luks_root_volume,
-                key,
-                luks_root_volume_uuid)
-
-            conf['default'] = []
-            conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/vmlinuz-linux\n")
-            conf['default'].append("options\tinitrd=/initramfs-linux.img"
-                                   " {0}\n\n".format(root_uuid_line))
-
-            conf['fallback'] = []
-            conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/vmlinuz-linux\n")
-            conf['fallback'].append("options\tinitrd=/initramfs-linux-fallback.img"
-                                    " {0}\n\n".format(root_uuid_line))
-
-            if self.settings.get('feature_lts'):
-                conf['lts'] = []
-                conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts'].append("options\tinitrd=/initramfs-linux-lts.img"
-                                   " {0}\n\n".format(root_uuid_line))
-
-                conf['lts_fallback'] = []
-                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
-                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("options\tinitrd=/initramfs-linux-lts-fallback.img"
-                                            " {0}\n\n".format(root_uuid_line))
-
-        # Write boot entries
-        entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")
-        os.makedirs(entries_dir, mode=0o755, exist_ok=True)
-
-        entry_path = os.path.join(entries_dir, "antergos.conf")
-        with open(entry_path, 'w') as entry_file:
-            for line in conf['default']:
-                entry_file.write(line)
-
-        entry_path = os.path.join(entries_dir, "antergos-fallback.conf")
-        with open(entry_path, 'w') as entry_file:
-            for line in conf['fallback']:
-                entry_file.write(line)
-
-        if self.settings.get('feature_lts'):
-            entry_path = os.path.join(entries_dir, "antergos-lts.conf")
-            with open(entry_path, 'w') as entry_file:
-                for line in conf['lts']:
-                    entry_file.write(line)
-
-            entry_path = os.path.join(entries_dir, "antergos-lts-fallback.conf")
-            with open(entry_path, 'w') as entry_file:
-                for line in conf['lts_fallback']:
-                    entry_file.write(line)
-
-        # Install bootloader
-        logging.debug("Installing systemd-boot bootloader...")
-        cmd = ['bootctl', '--path=/boot', 'install']
-        if chroot_call(cmd, self.dest_dir, 300) is False:
-            self.settings.set('bootloader_installation_successful', False)
-        else:
-            self.settings.set('bootloader_installation_successful', True)
-
-    def install_refind(self):
-        """ Installs rEFInd boot loader """
-        # Details: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
-        logging.debug("Installing and configuring rEFInd bootloader...")
-        cmd = ["refind-install"]
-        self.settings.set('bootloader_installation_successful', False)
-        if chroot_call(cmd, self.dest_dir, timeout=300) != False:
-            # This script will attempt to find the kernel in /boot and
-            # automatically generate refind_linux.conf.
-            # The script will only set up the most basic kernel
-            # parameters, so be sure to check the file it created for
-            # correctness.
-            cmd = ["refind-mkrlconf"]
-            if chroot_call(cmd, self.dest_dir, timeout=300) != False:
-                self.settings.set('bootloader_installation_successful', True)
-                logging.debug("rEFIind installed.")
-
-    def freeze_unfreeze_xfs(self):
-        """ Freeze and unfreeze xfs, as hack for grub(2) installing """
-        if not os.path.exists("/usr/bin/xfs_freeze"):
-            return
-
-        xfs_boot = False
-        xfs_root = False
-
-        call(["sync"])
-        with open("/proc/mounts") as mounts_file:
-            mounts = mounts_file.readlines()
-        # We leave a blank space in the end as we want to search
-        # exactly for this mount points
-        boot_mount_point = self.dest_dir + "/boot "
-        root_mount_point = self.dest_dir + " "
-        for line in mounts:
-            if " xfs " in line:
-                if boot_mount_point in line:
-                    xfs_boot = True
-                elif root_mount_point in line:
-                    xfs_root = True
-        if xfs_boot:
-            boot_mount_point = boot_mount_point.rstrip()
-            call(["xfs_freeze", "-f", boot_mount_point])
-            call(["xfs_freeze", "-u", boot_mount_point])
-        if xfs_root:
-            call(["xfs_freeze", "-f", self.dest_dir])
-            call(["xfs_freeze", "-u", self.dest_dir])
