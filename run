@@ -17,5 +17,5 @@ if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML $1 $2 $3 $4
+sudo $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML $1 $2 $3 $4
 

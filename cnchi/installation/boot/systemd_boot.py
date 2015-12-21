@@ -31,23 +31,10 @@
 
 import logging
 import os
-import shutil
-import subprocess
-import re
-import random
-import string
 
 import parted3.fs_module as fs
 
-from installation import special_dirs
-from misc.run_cmd import call, chroot_call
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
+from misc.run_cmd import chroot_call
 
 
 class SystemdBoot(object):
@@ -56,6 +43,7 @@ class SystemdBoot(object):
         self.dest_dir = dest_dir
         self.settings = settings
         self.mount_devices = mount_devices
+
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
 

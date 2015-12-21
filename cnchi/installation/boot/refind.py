@@ -30,24 +30,10 @@
 """ rEFInd bootloader installation """
 
 import logging
-import os
-import shutil
-import subprocess
-import re
-import random
-import string
 
 import parted3.fs_module as fs
 
-from installation import special_dirs
-from misc.run_cmd import call, chroot_call
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
+from misc.run_cmd import chroot_call
 
 
 class REFInd(object):
@@ -56,6 +42,7 @@ class REFInd(object):
         self.dest_dir = dest_dir
         self.settings = settings
         self.mount_devices = mount_devices
+
         self.method = settings.get("partition_mode")
         self.root_device = self.mount_devices["/"]
 
@@ -73,9 +60,10 @@ class REFInd(object):
         self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
-        """ Installs rEFInd boot loader """
-        # Details: https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration
+        """ Installs rEFInd boot loader
+            https://wiki.archlinux.org/index.php/REFInd#Scripted_configuration """
         logging.debug("Installing and configuring rEFInd bootloader...")
+
         cmd = ["refind-install"]
         self.settings.set('bootloader_installation_successful', False)
         if chroot_call(cmd, self.dest_dir, timeout=300) != False:

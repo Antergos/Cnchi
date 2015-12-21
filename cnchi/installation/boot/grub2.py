@@ -52,7 +52,26 @@ except NameError as err:
 
 class Grub2(object):
     """ Class to perform boot loader installation """
-    def __init__(self, dest_dir, settings, boot_uuid, root_uuid, swap_uuid=None):
+    def __init__(self, dest_dir, settings, mount_devices):
+        self.dest_dir = dest_dir
+        self.settings = settings
+        self.mount_devices = mount_devices
+
+        self.method = settings.get("partition_mode")
+        self.root_device = self.mount_devices["/"]
+
+        self.root_uuid = fs.get_uuid(self.root_device)
+
+        if "swap" in self.mount_devices:
+            swap_partition = self.mount_devices["swap"]
+            self.swap_uuid = fs.get_uuid(swap_partition)
+
+        if "/boot" in self.mount_devices:
+            boot_device = self.mount_devices["/boot"]
+        else:
+            # No dedicated /boot partition
+            boot_device = self.mount_devices["/"]
+        self.boot_uuid = fs.get_uuid(boot_device)
 
 
     def install(self):
@@ -169,7 +188,9 @@ class Grub2(object):
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
-                cmd_linux += " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root".format(self.boot_uuid)
+                cryptkey = " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root"
+                cryptkey = cryptkey.format(self.boot_uuid)
+                cmd_linux += cryptkey
 
             # Store grub line in settings, we'll use it later in
             # check_root_uuid_in_grub()
