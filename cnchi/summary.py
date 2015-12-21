@@ -133,7 +133,7 @@ class Summary(GtkBaseBox):
             txt = ""
             statebox = self.ui.get_object("partitions_statebox")
             changes = install_screen.get_changes()
-            if changes == None or len(changes) == 0:
+            if not changes:
                 txt = _("Error getting changes from install screen")
                 logging.error("Error getting changes from install screen")
             else:
@@ -151,7 +151,7 @@ class Summary(GtkBaseBox):
         page = "installation_" + self.settings.get('partition_mode')
         install_screen = None
         try:
-            install_screen = self.main_window.pages[page]
+            install_screen = self.main_window.pages['disk_grp'][page]
         except (AttributeError, KeyError) as page_error:
             logging.error(
                 "Can't find installation page called %s: %s",
