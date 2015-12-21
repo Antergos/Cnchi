@@ -62,7 +62,7 @@ class Summary(GtkBaseBox):
 
         self.main_window = params['main_window']
 
-        if not main_window:
+        if not self.main_window:
             raise InstallError("Can't get main window")
 
         scrolled_window = self.ui.get_object("scrolled_window")
