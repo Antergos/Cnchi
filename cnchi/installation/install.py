@@ -1120,12 +1120,12 @@ class Installation(object):
                 os.path.join(DEST_DIR, 'etc/X11/xorg.conf'))
 
         # Configure ALSA
-        self.alsa_mixer_setup()
-        logging.debug("Updated Alsa mixer settings")
+        #self.alsa_mixer_setup()
+        #logging.debug("Updated Alsa mixer settings")
 
         # Set pulse
-        if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
-            chroot_run(['pulseaudio-ctl', 'normal'])
+        #if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
+        #    chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()
