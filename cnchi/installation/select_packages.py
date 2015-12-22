@@ -67,7 +67,7 @@ class SelectPackages(object):
         self.settings = settings
         self.alternate_package_list = self.settings.get('alternate_package_list')
         self.desktop = self.settings.get('desktop')
-        self.zfs = (self.settings.get('partition_mode') == "installation_zfs")
+        self.zfs = self.settings.get('zfs')
 
         # Set defaults
         self.desktop_manager = 'lightdm'
