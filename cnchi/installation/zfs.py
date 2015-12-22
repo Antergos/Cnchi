@@ -825,6 +825,15 @@ class InstallationZFS(GtkBaseBox):
             "{0}/{1}".format(pool_name, vol_name)]
         self.check_call(cmd)
 
+    @staticmethod
+    def set_zfs_mountpoint(zvol, mount_point):
+        """ Sets mount point of zvol and tries to mount it """
+        try:
+            cmd = ["zfs", "set", "mountpoint={0}".format(mount_point), zvol]
+            output = subprocess.check_output(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err.output)
+
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
 
@@ -892,7 +901,8 @@ class InstallationZFS(GtkBaseBox):
 
         # Set the mount point of the root filesystem
         # self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
-        self.check_call(["zfs", "set", "mountpoint=/", pool_name])
+        #self.check_call(["zfs", "set", "mountpoint=/", pool_name])
+        self.set_zfs_mountpoint(pool_name, "/")
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
@@ -910,8 +920,9 @@ class InstallationZFS(GtkBaseBox):
             home_size = self.get_home_size(pool_name)
             logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
             self.create_zfs_vol(pool_name, "home", home_size)
-            cmd = ["zfs", "set", "mountpoint=/home", "{0}/home".format(pool_name)]
-            self.check_call(cmd)
+            # cmd = ["zfs", "set", "mountpoint=/home", "{0}/home".format(pool_name)]
+            # self.check_call(cmd)
+            self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
 
         # Create swap zvol
         swap_size = self.get_swap_size(pool_name)
