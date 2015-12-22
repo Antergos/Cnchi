@@ -73,36 +73,10 @@ class SystemdBoot(object):
 
         # Setup boot entries
         conf = {}
+        options = ""
 
         if not self.settings.get('use_luks'):
-            conf['default'] = []
-            conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/vmlinuz-linux\n")
-            conf['default'].append("initrd\t/initramfs-linux.img\n")
-            conf['default'].append("options\troot=UUID={0}"
-                                   " rw quiet\n\n".format(self.root_uuid))
-
-            conf['fallback'] = []
-            conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/vmlinuz-linux\n")
-            conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
-            conf['fallback'].append("options\troot=UUID={0}"
-                                    " rw quiet\n\n".format(self.root_uuid))
-
-            if self.settings.get('feature_lts'):
-                conf['lts'] = []
-                conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
-                conf['lts'].append("options\troot=UUID={0}"
-                                   " rw quiet\n\n".format(self.root_uuid))
-
-                conf['lts_fallback'] = []
-                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n\n")
-                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
-                conf['lts_fallback'].append("options\troot=UUID={0}"
-                                            " rw quiet\n\n".format(self.root_uuid))
+            options = "root=UUID={0} rw quiet".format(self.root_uuid))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
             mapper = "/dev/mapper/{0}".format(luks_root_volume)
@@ -118,40 +92,44 @@ class SystemdBoot(object):
             root_uuid = fs.get_uuid(root_device)
 
             key = ""
-            if self.settings.get("luks_root_password") == "":
+            if not self.settings.get("luks_root_password"):
                 key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
 
-            root_uuid_line = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
-            root_uuid_line = root_uuid_line.format(
+            options = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
+            options = options.format(
                 root_uuid,
                 luks_root_volume,
                 key,
                 luks_root_volume_uuid)
 
-            conf['default'] = []
-            conf['default'].append("title\tAntergos\n")
-            conf['default'].append("linux\t/vmlinuz-linux\n")
-            conf['default'].append("options\tinitrd=/initramfs-linux.img"
-                                   " {0}\n\n".format(root_uuid_line))
+        if self.settings.get("zfs"):
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            options += ' zfs={0}'.format(zfs_pool_name)
 
-            conf['fallback'] = []
-            conf['fallback'].append("title\tAntergos (fallback)\n")
-            conf['fallback'].append("linux\t/vmlinuz-linux\n")
-            conf['fallback'].append("options\tinitrd=/initramfs-linux-fallback.img"
-                                    " {0}\n\n".format(root_uuid_line))
+        conf['default'] = []
+        conf['default'].append("title\tAntergos\n")
+        conf['default'].append("linux\t/vmlinuz-linux\n")
+        conf['default'].append("initrd\t/initramfs-linux.img\n")
+        conf['default'].append("options\t{0}\n\n".format(options))
 
-            if self.settings.get('feature_lts'):
-                conf['lts'] = []
-                conf['lts'].append("title\tAntergos LTS\n")
-                conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts'].append("options\tinitrd=/initramfs-linux-lts.img"
-                                   " {0}\n\n".format(root_uuid_line))
+        conf['fallback'] = []
+        conf['fallback'].append("title\tAntergos (fallback)\n")
+        conf['fallback'].append("linux\t/vmlinuz-linux\n")
+        conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
+        conf['fallback'].append("options\t{0}\n\n".format(options))
 
-                conf['lts_fallback'] = []
-                conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
-                conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
-                conf['lts_fallback'].append("options\tinitrd=/initramfs-linux-lts-fallback.img"
-                                            " {0}\n\n".format(root_uuid_line))
+        if self.settings.get('feature_lts'):
+            conf['lts'] = []
+            conf['lts'].append("title\tAntergos LTS\n")
+            conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+            conf['lts'].append("initrd\t/initramfs-linux-lts.img")
+            conf['lts'].append("options\t{0}\n\n".format(options))
+
+            conf['lts_fallback'] = []
+            conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
+            conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+            conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img")
+            conf['lts_fallback'].append("options\t{0}\n\n".format(options))
 
         # Write boot entries
         entries_dir = os.path.join(self.dest_dir, "boot/loader/entries")

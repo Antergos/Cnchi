@@ -477,6 +477,8 @@ class InstallationZFS(GtkBaseBox):
         if not txt:
             txt = "antergos"
         self.zfs_options["pool_name"] = txt
+        # Bootloader needs to know zpool name
+        self.settings.set("zfs_pool_name", txt)
 
         # Get password
         txt = self.ui.get_object("password_lbl").get_text()
@@ -710,20 +712,17 @@ class InstallationZFS(GtkBaseBox):
             the disk acknowledging that the export was done, and removes all
             knowledge that the storage pool existed in the system """
         try:
+            logging.debug("Exporting pool %s...", pool)
             cmd = ["zpool", "export", pool]
-            cmd_line = "zpool export {0}".format(pool)
-            logging.debug(cmd_line)
             subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
+        except subprocess.CalledProcessError as err:
             try:
                 cmd = ["zpool", "export", "-f", pool]
-                cmd_line = "zpool export -f {0}".format(pool)
-                logging.debug(cmd_line)
                 subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as process_error:
-                txt = "Command {0} has failed".format(process_error.cmd)
+            except subprocess.CalledProcessError as err:
+                txt = "Command {0} has failed".format(err.cmd)
                 logging.error(txt)
-                txt = _("Command {0} has failed").format(process_error.cmd)
+                txt = _("Command {0} has failed").format(err.cmd)
                 raise InstallError(txt)
 
     def get_home_size(self, pool_name):
@@ -878,7 +877,8 @@ class InstallationZFS(GtkBaseBox):
 
         pool_type = self.zfs_options["pool_type"]
 
-        # Command: zpool create zroot /dev/disk/by-id/id-to-partition
+        # Command zpool
+        # Create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
         logging.debug("Creating zfs pool %s", pool_name)
         cmd = ["zpool", "create", "-f"]
@@ -891,32 +891,37 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
-
-        if self.settings.get('use_home'):
-            home_size = self.get_home_size(pool_name)
-            logging.debug("Creating zfs vol 'home' (%dGB)", home_size)
-            self.create_zfs_vol(pool_name, "home", home_size)
-            cmd = [
-                "zfs", "set",
-                "mountpoint=/home",
-                "{0}/home".format(pool_name)]
-            self.check_call(cmd)
-
-        # Create swap zvol
-        swap_size = self.get_swap_size(pool_name)
-        logging.debug("Creating zfs vol 'swap' (%dGB)", swap_size)
-        self.create_zfs_vol(pool_name, "swap", swap_size)
+        # self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
+        self.check_call(["zfs", "set", "mountpoint=/", pool_name])
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
         cmd = ["zpool", "set", "bootfs={0}".format(pool_name), pool_name]
         self.check_call(cmd)
 
+        # Create zpool.cache file
+        cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
+        self.check_call(cmd)
+
+        # Create any zfs subvolumes
+
+        if self.settings.get('use_home'):
+            # Create home zvol
+            home_size = self.get_home_size(pool_name)
+            logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
+            self.create_zfs_vol(pool_name, "home", home_size)
+            cmd = ["zfs", "set", "mountpoint=/home", "{0}/home".format(pool_name)]
+            self.check_call(cmd)
+
+        # Create swap zvol
+        swap_size = self.get_swap_size(pool_name)
+        logging.debug("Creating zfs subvolume 'swap' (%dGB)", swap_size)
+        self.create_zfs_vol(pool_name, "swap", swap_size)
+
         # Export the pool
         self.zfs_export_pool(pool_name)
 
-        # Finally, re-import the pool
+        # Finally, re-import the pool by-id
         cmd = [
             "zpool", "import",
             "-d", "/dev/disk/by-id",
@@ -924,13 +929,13 @@ class InstallationZFS(GtkBaseBox):
             pool_name]
         self.check_call(cmd)
 
-        # Set the mount point of the root filesystem
-        cmd = ["zfs", "set", "mountpoint=/", pool_name]
-        self.check_call(cmd)
+        ## Set the mount point of the root filesystem
+        # cmd = ["zfs", "set", "mountpoint=/", pool_name]
+        # self.check_call(cmd)
 
-        # Create zpool.cache file
-        cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        self.check_call(cmd)
+        ## Create zpool.cache file
+        #cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
+        #self.check_call(cmd)
 
         # Copy created cache file to destination
         try:

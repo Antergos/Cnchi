@@ -152,6 +152,10 @@ class Grub2(object):
         else:
             cmd_linux_default = 'quiet {0}'.format(use_splash)
 
+        if self.settings.get("zfs"):
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            cmd_linux_default += ' zfs={0}'.format(zfs_pool_name)
+
         self.set_grub_option(
             "GRUB_THEME",
             "/boot/grub/themes/Antergos-Default/theme.txt")
