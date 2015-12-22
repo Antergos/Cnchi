@@ -1229,6 +1229,13 @@ class Installation(object):
         # reliably unmount the target partition.
         chroot_call(['killall', '-9', 'gpg-agent'])
 
+        # FIXME: Temporary workaround for spl and zfs packages
+        # This should be fixed. I use this here just for testing purposes
+        # hardcoding this here is a VERY bad idea :p
+        zfs_version = "0.6.5.3"
+        chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
+        chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
