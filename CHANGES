@@ -1,3 +1,4 @@
+[2015-12-20 19:39:39 -0600]  Fixes antergos/Cnchi#491                                               Dustin Falgout  {84ebc07}
 [2015-12-20 06:07:05 -0600]  its ready for some testing I think!                                    Dustin Falgout  {5cf9d58}
 [2015-12-20 04:40:40 -0600]  automatically select location based on detected timezone.              Dustin Falgout  {931f3bc}
 [2015-12-20 00:39:51 -0600]  ...                                                                    Dustin Falgout  {33bb652}

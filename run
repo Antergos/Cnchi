@@ -14,12 +14,28 @@ cleanup() {
 
 trap cleanup EXIT
 
+
 if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
 	sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
 fi
 
 cnchi_dir=`pwd`
 sudo ln -sf $cnchi_dir /usr/share/cnchi
+
+clear_fcache='False'
+for file in ${cnchi_dir}/data/fonts/OpenSans**
+do
+	file_name=$(basename ${file})
+	if ! [[ -f /usr/share/fonts/TTF/${file_name} ]]; then
+		sudo cp ${file} /usr/share/fonts/TTF
+		clear_fcache='True'
+	fi
+done
+
+if [[ 'True' = "${clear_fcache}" ]]; then
+	fc-cache -s -f -v
+fi
+
 
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
