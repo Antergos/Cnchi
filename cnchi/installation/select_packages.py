@@ -125,9 +125,11 @@ class SelectPackages(object):
         # Init pyalpm
         try:
             pacman = pac.Pac("/etc/pacman.conf", self.callback_queue)
-        except Exception:
-            logging.error("Can't initialize pyalpm.")
-            raise InstallError(_("Can't initialize pyalpm."))
+        except Exception as ex:
+            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
+            raise InstallError(message)
 
         # Refresh pacman databases
         if not pacman.refresh():
@@ -138,10 +140,11 @@ class SelectPackages(object):
         try:
             pacman.release()
             del pacman
-        except Exception as err:
-            logging.error("Can't release pyalpm: %s", err)
-            txt = _("Can't release pyalpm: {0}").format(err)
-            raise InstallError(txt)
+        except Exception as ex:
+            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
+            raise InstallError(message)
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -254,8 +257,10 @@ class SelectPackages(object):
 
             # Add conflicting hardware packages to our conflicts list
             self.conflicts.extend(hardware_install.get_conflicts())
-        except Exception as general_error:
-            logging.warning("Unknown error in hardware module. Output: %s", general_error)
+        except Exception as ex:
+            template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
         # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
         if self.vbox and self.desktop == "base":

@@ -579,8 +579,8 @@ def set_cursor(cursor_type):
             cursor = Gdk.Cursor.new_for_display(display, cursor_type)
             window.set_cursor(cursor)
             gtk_refresh()
-    except Exception as general_error:
-        logging.debug(general_error)
+    except Exception as ex:
+        logging.debug(ex)
 
 def partition_exists(partition):
     """ Check if a partition already exists """

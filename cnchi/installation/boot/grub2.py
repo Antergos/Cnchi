@@ -229,9 +229,10 @@ class Grub2(object):
                     grub_file.write('\n')
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
-        except Exception as general_error:
-            logging.error("Can't modify /etc/default/grub")
-            logging.error(general_error)
+        except Exception as ex:
+            template = "Can't modify /etc/default/grub. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
     def prepare_grub_d(self):
         """ Copies 10_antergos script into /etc/grub.d/ """
@@ -368,8 +369,10 @@ class Grub2(object):
                     logging.warning(msg_failed, _("File not found."))
                 except FileExistsError:
                     logging.warning(msg_failed, _("File already exists."))
-                except Exception as general_error:
-                    logging.warning(msg_failed, general_error)
+                except Exception as ex:
+                    template = "An exception of type {0} occured. Arguments:\n{1!r}"
+                    message = template.format(type(ex).__name__, ex.args)
+                    logging.error(message)
 
         # Run grub-mkconfig last
         logging.debug("Generating grub.cfg")

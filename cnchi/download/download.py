@@ -130,9 +130,11 @@ class DownloadPackages(object):
                 callback_queue=self.callback_queue)
             if pacman is None:
                 return None
-        except Exception as err:
-            logging.error("Can't initialize pyalpm: %s", err)
+        except Exception as ex:
             self.metalinks = None
+            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             return
 
         try:
@@ -169,17 +171,21 @@ class DownloadPackages(object):
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
-        except Exception as err:
-            logging.error("Can't create download set: %s", err)
+        except Exception as ex:
+            template = "Can't create download set. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             self.metalinks = None
             return
 
         try:
             pacman.release()
             del pacman
-        except Exception as err:
-            logging.error("Can't release pyalpm: %s", err)
+        except Exception as ex:
             self.metalinks = None
+            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             return
 
         # Overwrite last event (to clean up the last message)

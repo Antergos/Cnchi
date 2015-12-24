@@ -283,8 +283,10 @@ class Installation(object):
             self.hardware_install = hardware.HardwareInstall(
                 use_proprietary_graphic_drivers=proprietary)
             self.hardware_install.pre_install(DEST_DIR)
-        except Exception as general_error:
-            logging.warning("Unknown error in hardware module. Output: %s", general_error)
+        except Exception as ex:
+            template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
         logging.debug("Downloading packages...")
         self.download_packages()
@@ -375,10 +377,12 @@ class Installation(object):
         # Init pyalpm
         try:
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception:
+        except Exception as ex:
             self.pacman = None
-            logging.error("Can't initialize pyalpm.")
-            raise InstallError(_("Can't initialize pyalpm."))
+            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
+            raise InstallError(message)
 
         # Refresh pacman databases
         if not self.pacman.refresh():
@@ -1125,10 +1129,10 @@ class Installation(object):
             try:
                 logging.debug("Running hardware drivers post-install jobs...")
                 self.hardware_install.post_install(DEST_DIR)
-            except Exception as general_error:
-                logging.error(
-                    "Unknown error in hardware module. Output: %s",
-                    general_error)
+            except Exception as ex:
+                template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
 
         # Setup user
 
@@ -1295,16 +1299,18 @@ class Installation(object):
                     self.settings,
                     self.mount_devices)
                 boot_loader.install()
-            except Exception as general_error:
-                logging.warning("Cannot install bootloader: %s", general_error)
+            except Exception as ex:
+                template = "Cannot install bootloader. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
 
         # Create an initial database for mandb
-        # logging.debug("Updating man database")
-        # chroot_call(["mandb", "--quiet"])
+        logging.debug("Updating man database")
+        chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
-        # logging.debug("Updating pkgfile database")
-        # chroot_call(["pkgfile", "--update"])
+        logging.debug("Updating pkgfile database")
+        chroot_call(["pkgfile", "--update"])
 
         # Copy installer log to the new installation
         logging.debug("Copying install log to /var/log.")

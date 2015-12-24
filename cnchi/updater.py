@@ -161,8 +161,10 @@ class Updater(object):
             logging.debug("Uncompressing new version...")
             try:
                 self.unzip_and_copy(zip_path)
-            except Exception as err:
-                logging.error(err)
+            except Exception as ex:
+                template = "Cannot update Cnchi. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
                 return False
 
         return update_cnchi

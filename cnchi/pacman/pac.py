@@ -611,8 +611,8 @@ def test():
 
     try:
         pacman = Pac("/etc/pacman.conf")
-    except Exception as err:
-        print("Can't initialize pyalpm: ", err)
+    except Exception as ex:
+        print("Can't initialize pyalpm: ", ex)
         sys.exit(1)
 
     try:
