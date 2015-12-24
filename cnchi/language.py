@@ -157,7 +157,7 @@ class LanguageWidget(Gtk.Box):
                 self.select_default_row(current_language)
 
     def set_language(self, locale_code):
-        if locale_code is None:
+        if not locale_code:
             locale_code, encoding = locale.getdefaultlocale()
 
         try:

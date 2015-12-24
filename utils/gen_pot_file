@@ -1,2 +1,11 @@
-#!/bin/sh
-python2 utils/pygettext.py -a -d cnchi -p po -v cnchi.py cnchi/*.py cnchi/*/*.py
+#!/bin/bash
+
+cd ..
+
+/usr/lib/python3.5/Tools/i18n/pygettext.py -a -d cnchi_tmp -p /tmp -v cnchi/*.py cnchi/*/*.py
+python utils/rm_empty_strings_pot.py
+
+find . -type f -name '*.ui' -fprint /tmp/cnchi_files
+xgettext -a  --from-code UTF-8 -o /tmp/cnchi_ui.pot -d cnchi -f /tmp/cnchi_files --omit-header
+msgcat -o po/cnchi.pot /tmp/cnchi_tmp.pot /tmp/cnchi_ui.pot
+

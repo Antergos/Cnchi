@@ -38,6 +38,7 @@ from gtkbasebox import GtkBaseBox
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
+
 # import misc.camera as camera
 # camera.cheese_init()
 
@@ -45,35 +46,39 @@ ICON_WARNING = "dialog-warning"
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
 
-    def __init__(self, params, prev_page='disk_group', next_page="summary", **kwargs):
+    def __init__(self, params, prev_page="disk_group", next_page="summary", **kwargs):
         super().__init__(self, params, name="user_info", prev_page=prev_page,
                          next_page=next_page, **kwargs)
         self.title = _('User Account')
 
-        self.image_is_ok = dict()
-        self.image_is_ok['fullname'] = self.ui.get_object('fullname_ok')
-        self.image_is_ok['hostname'] = self.ui.get_object('hostname_ok')
-        self.image_is_ok['username'] = self.ui.get_object('username_ok')
-        self.image_is_ok['password'] = self.ui.get_object('password_ok')
+        self.image_is_ok = {
+            'fullname': self.ui.get_object('fullname_ok'),
+            'hostname': self.ui.get_object('hostname_ok'),
+            'username': self.ui.get_object('username_ok'),
+            'password': self.ui.get_object('password_ok')
+        }
 
-        self.error_label = dict()
-        self.error_label['hostname'] = self.ui.get_object('hostname_error_label')
-        self.error_label['username'] = self.ui.get_object('username_error_label')
-        self.error_label['password'] = self.ui.get_object('password_error_label')
+        self.error_label = {
+            'hostname': self.ui.get_object('hostname_error_label'),
+            'username': self.ui.get_object('username_error_label'),
+            'password': self.ui.get_object('password_error_label')
+        }
 
         self.password_strength = self.ui.get_object('password_strength')
 
-        self.entry = dict()
-        self.entry['fullname'] = self.ui.get_object('fullname')
-        self.entry['hostname'] = self.ui.get_object('hostname')
-        self.entry['username'] = self.ui.get_object('username')
-        self.entry['password'] = self.ui.get_object('password')
-        self.entry['verified_password'] = self.ui.get_object('verified_password')
+        self.entry = {
+            'fullname': self.ui.get_object('fullname'),
+            'hostname': self.ui.get_object('hostname'),
+            'username': self.ui.get_object('username'),
+            'password': self.ui.get_object('password'),
+            'verified_password': self.ui.get_object('verified_password')
+        }
 
-        self.login = dict()
-        self.login['auto'] = self.ui.get_object('login_auto')
-        self.login['pass'] = self.ui.get_object('login_pass')
-        self.login['encrypt'] = self.ui.get_object('login_encrypt')
+        self.login = {
+            'auto': self.ui.get_object('login_auto'),
+            'pass': self.ui.get_object('login_pass'),
+            'encrypt': self.ui.get_object('login_encrypt')
+        }
 
         self.require_password = True
         self.encrypt_home = False
@@ -96,81 +101,7 @@ class UserInfo(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        label = self.ui.get_object('fullname_label')
-        txt = _("Your name:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('fullname')
-        txt = _("Your name")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('hostname_label')
-        txt = _("Your computer's name:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('hostname')
-        txt = _("Hostname")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('username_label')
-        txt = _("Pick a username:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('username')
-        txt = _("Username")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('password_label')
-        txt = _("Choose a password:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('password')
-        txt = _("Password")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('verified_password_label')
-        txt = _("Confirm your password:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('verified_password')
-        txt = _("Confirm password")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('hostname_extra_label')
-        txt = _("Identifies your system to other computers and devices.")
-        txt = '<span size="small">{0}</span>'.format(txt)
-        label.set_markup(txt)
-
-        small_dark_red = '<small><span color="darkred">{0}</span></small>'
-
-        txt = _("You must enter a name")
-        txt = small_dark_red.format(txt)
-        self.error_label['hostname'].set_markup(txt)
-
-        txt = _("You must enter a username")
-        txt = small_dark_red.format(txt)
-        self.error_label['username'].set_markup(txt)
-
-        txt = _("You must enter a password")
-        txt = small_dark_red.format(txt)
-        self.error_label['password'].set_markup(txt)
-
-        self.login['auto'].set_label(_("Log in automatically"))
-        self.login['pass'].set_label(_("Require my password to log in"))
-        self.login['encrypt'].set_label(_("Encrypt my home folder"))
-
-        btn = self.ui.get_object('checkbutton_show_password')
-        btn.set_label(_("show password"))
-
-        self.header.set_subtitle(_("Create Your User Account"))
-
-        # Restore forward button text (from install now! to go-next)
-        # self.forward_button.set_label("")
-        # image1 = Gtk.Image.new_from_icon_name(
-        #   "go-next",
-        #   Gtk.IconSize.LARGE_TOOLBAR)
-        # self.forward_button.set_image(image1)
-        # self.forward_button.set_always_show_image(True)
+        pass
 
     def hide_widgets(self):
         """ Hide unused and message widgets """
@@ -255,22 +186,22 @@ class UserInfo(GtkBaseBox):
         """ Check that what the user is typing is ok """
         if len(value) == 0:
             self.image_is_ok[element].set_from_icon_name(
-                ICON_WARNING,
-                Gtk.IconSize.LARGE_TOOLBAR)
+                    ICON_WARNING,
+                    Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok[element].show()
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
             if not result:
                 self.image_is_ok[element].set_from_icon_name(
-                    ICON_OK,
-                    Gtk.IconSize.LARGE_TOOLBAR)
+                        ICON_OK,
+                        Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
                 self.image_is_ok[element].set_from_icon_name(
-                    ICON_WARNING,
-                    Gtk.IconSize.LARGE_TOOLBAR)
+                        ICON_WARNING,
+                        Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
@@ -294,12 +225,12 @@ class UserInfo(GtkBaseBox):
             fullname = self.entry['fullname'].get_text()
             if fullname:
                 self.image_is_ok['fullname'].set_from_icon_name(
-                    ICON_OK,
-                    Gtk.IconSize.LARGE_TOOLBAR)
+                        ICON_OK,
+                        Gtk.IconSize.LARGE_TOOLBAR)
             else:
                 self.image_is_ok['fullname'].set_from_icon_name(
-                    ICON_WARNING,
-                    Gtk.IconSize.LARGE_TOOLBAR)
+                        ICON_WARNING,
+                        Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok['fullname'].show()
 
         elif widget == self.entry['hostname']:
@@ -311,13 +242,13 @@ class UserInfo(GtkBaseBox):
             self.validate('username', username)
 
         elif (widget == self.entry['password'] or
-              widget == self.entry['verified_password']):
+                      widget == self.entry['verified_password']):
             validation.check_password(
-                self.entry['password'],
-                self.entry['verified_password'],
-                self.image_is_ok['password'],
-                self.error_label['password'],
-                self.password_strength)
+                    self.entry['password'],
+                    self.entry['verified_password'],
+                    self.image_is_ok['password'],
+                    self.error_label['password'],
+                    self.password_strength)
 
         # Check if all fields are filled and ok
         all_ok = True
@@ -334,4 +265,5 @@ class UserInfo(GtkBaseBox):
 
 if __name__ == '__main__':
     from test_screen import _, run
+
     run('UserInfo')

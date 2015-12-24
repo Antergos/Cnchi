@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interface>
+<interface domain="cnchi">
 	<requires lib="gtk+" version="3.18"/>
 	<object class="GtkGrid" id="user_info">
 		<property name="visible">True</property>
@@ -34,7 +34,7 @@
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="xalign">1</property>
-				<property name="label" translatable="yes">Pick a username:</property>
+				<property name="label" translatable="yes">Choose a username:</property>
 				<property name="justify">right</property>
 			</object>
 			<packing>
@@ -151,7 +151,7 @@
 						<property name="invisible_char">●</property>
 						<property name="activates_default">True</property>
 						<property name="width_chars">20</property>
-						<property name="placeholder_text">Password</property>
+						<property name="placeholder_text" translatable="yes">Password</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
 							<relation type="labelled-by" target="password_label"/>
@@ -167,8 +167,11 @@
 					<object class="GtkLabel" id="password_strength">
 						<property name="can_focus">False</property>
 						<property name="xalign">0</property>
-						<property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkgreen"&gt;Strong password&lt;/span&gt;&lt;/small&gt;</property>
-						<property name="use_markup">True</property>
+						<property name="label" translatable="yes">Strong password</property>
+						<property name="use_markup">False</property>
+						<style>
+							<class name="small"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">False</property>
@@ -197,7 +200,7 @@
 						<property name="invisible_char">●</property>
 						<property name="activates_default">True</property>
 						<property name="width_chars">20</property>
-						<property name="placeholder_text">Confirm password</property>
+						<property name="placeholder_text" translatable="yes">Confirm password</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
 							<relation type="labelled-by" target="verified_password_label"/>
@@ -224,8 +227,11 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="xalign">0</property>
-						<property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkred"&gt;You must enter a password&lt;/span&gt;&lt;/small&gt;</property>
-						<property name="use_markup">True</property>
+						<property name="label" translatable="yes">You must enter a password</property>
+						<property name="use_markup">False</property>
+					<style>
+							<class name="error"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">False</property>
@@ -253,7 +259,7 @@
 						<property name="invisible_char">•</property>
 						<property name="activates_default">True</property>
 						<property name="width_chars">30</property>
-						<property name="placeholder_text">Your name</property>
+						<property name="placeholder_text" translatable="yes">Your name</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
 							<relation type="labelled-by" target="fullname_label"/>
@@ -296,7 +302,7 @@
 						<property name="invisible_char">•</property>
 						<property name="activates_default">True</property>
 						<property name="width_chars">15</property>
-						<property name="placeholder_text">Username</property>
+						<property name="placeholder_text" translatable="yes">Username</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
 							<relation type="labelled-by" target="username_label"/>
@@ -323,9 +329,12 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="xalign">0</property>
-						<property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkred"&gt;You must enter a username&lt;/span&gt;&lt;/small&gt;</property>
-						<property name="use_markup">True</property>
+						<property name="label" translatable="yes">You must enter a username</property>
+						<property name="use_markup">False</property>
 						<property name="wrap">True</property>
+					<style>
+							<class name="error"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">False</property>
@@ -373,6 +382,7 @@
 								<property name="visible">True</property>
 								<property name="can_focus">True</property>
 								<property name="invisible_char">•</property>
+								<property name="placeholder_text" translatable="yes">Hostname</property>
 								<signal name="changed" handler="info_loop" swapped="no"/>
 								<accessibility>
 									<relation type="labelled-by" target="hostname_label"/>
@@ -399,9 +409,12 @@
 							<object class="GtkLabel" id="hostname_error_label">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
-								<property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkred"&gt;You must enter a name&lt;/span&gt;&lt;/small&gt;</property>
-								<property name="use_markup">True</property>
+								<property name="label" translatable="yes">You must enter a name</property>
+								<property name="use_markup">False</property>
 								<property name="wrap">True</property>
+								<style>
+							<class name="error"/>
+						</style>
 							</object>
 							<packing>
 								<property name="expand">False</property>
@@ -421,8 +434,11 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="xalign">0</property>
-						<property name="label" translatable="yes">&lt;span size="small"&gt;The name it uses when it talks to other computers.&lt;/span&gt;</property>
-						<property name="use_markup">True</property>
+						<property name="label" translatable="yes">The name it uses when it talks to other computers.</property>
+						<property name="use_markup">False</property>
+					<style>
+							<class name="small"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">False</property>

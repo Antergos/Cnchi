@@ -460,7 +460,7 @@ def init_cnchi():
     """ This function prepares for Cnchi's initialization """
 
     # Configures gettext to be able to translate messages, using _()
-    setup_gettext()
+    # setup_gettext()
 
     # Command line options
     global cmd_line
