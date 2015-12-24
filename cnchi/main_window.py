@@ -462,28 +462,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["summary"] = summary.Summary(params=self.params)
         self.pages["slides"] = slides.Slides(params=self.params)
 
-    def del_pages(self):
-        """ When we get to user_info page we can't go back
-        therefore we can delete all previous pages for good """
-        # FIXME: As there are more references, this does nothing
-        try:
-            del self.pages["welcome"]
-            del self.pages["language"]
-            del self.pages["location"]
-            del self.pages["check"]
-            del self.pages["desktop"]
-            del self.pages["features"]
-            del self.pages["keymap"]
-            del self.pages["timezone"]
-            del self.pages["installation_ask"]
-            del self.pages["installation_automatic"]
-            if self.pages["installation_alongside"] is not None:
-                del self.pages["installation_alongside"]
-            del self.pages["installation_advanced"]
-            del self.pages["installation_zfs"]
-        except KeyError as key_error:
-            pass
-
     def set_geometry(self):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)

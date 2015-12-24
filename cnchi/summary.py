@@ -39,8 +39,9 @@ from gi.repository import Gtk
 import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
-
 from installation.process import Process
+
+from misc.extra import InstallError
 
 import show_message as show
 
@@ -61,6 +62,9 @@ class Summary(GtkBaseBox):
                          next_page=next_page, **kwargs)
 
         self.main_window = params['main_window']
+
+        if not self.main_window:
+            raise InstallError("Can't get main window")
 
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
@@ -153,10 +157,10 @@ class Summary(GtkBaseBox):
         try:
             install_screen = self.main_window.pages['disk_grp'][page]
         except (AttributeError, KeyError) as page_error:
-            logging.error(
-                "Can't find installation page called %s: %s",
-                page,
-                page_error)
+            msg = "Can't find installation page called {0}: {1}"
+            msg = msg.format(page, page_error)
+            logging.error(msg)
+            raise InstallError(msg)
         return install_screen
 
     def prepare(self, direction):
@@ -170,10 +174,10 @@ class Summary(GtkBaseBox):
 
         # Hide features statebox if no features are selected
         if self.num_features == 0:
-            statebox = self.ui.get_object("features_statebox")
-            statebox.hide()
-            label = self.ui.get_object("features_label")
-            label.hide()
+            names = ["features_statebox", "features_label"]
+            for name in names:
+                widget = self.ui.get_object(name)
+                widget.hide()
 
     def store_values(self):
         """ User wants to continue """

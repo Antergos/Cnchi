@@ -55,6 +55,8 @@ from mako.template import Template
 
 import hardware.hardware as hardware
 
+from installation.boot import loader
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
@@ -1227,6 +1229,13 @@ class Installation(object):
         # reliably unmount the target partition.
         chroot_call(['killall', '-9', 'gpg-agent'])
 
+        # FIXME: Temporary workaround for spl and zfs packages
+        # This should be fixed. I use this here just for testing purposes
+        # hardcoding this here is a VERY bad idea :p
+        zfs_version = "0.6.5.3"
+        chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
+        chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
@@ -1280,8 +1289,8 @@ class Installation(object):
         if self.settings.get('bootloader_install'):
             try:
                 logging.debug("Installing bootloader...")
-                from installation import bootloader
-                boot_loader = bootloader.Bootloader(
+                from installation.boot import loader
+                boot_loader = loader.Bootloader(
                     DEST_DIR,
                     self.settings,
                     self.mount_devices)

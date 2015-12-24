@@ -67,7 +67,7 @@ class SelectPackages(object):
         self.settings = settings
         self.alternate_package_list = self.settings.get('alternate_package_list')
         self.desktop = self.settings.get('desktop')
-        self.zfs = (self.settings.get('partition_mode') == "installation_zfs")
+        self.zfs = self.settings.get('zfs')
 
         # Set defaults
         self.desktop_manager = 'lightdm'
@@ -141,7 +141,7 @@ class SelectPackages(object):
         except Exception as err:
             logging.error("Can't release pyalpm: %s", err)
             txt = _("Can't release pyalpm: {0}").format(err)
-            raise InstallError()
+            raise InstallError(txt)
 
     def select_packages(self):
         """ Get package list from the Internet """
