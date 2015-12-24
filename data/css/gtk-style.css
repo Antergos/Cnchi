@@ -292,6 +292,11 @@ StateBox {
 	color: #bec9d6;
 }
 
+.sub_nav_box .button:prelight {
+	background-color: #ffffff
+	color: #07A6ED;
+}
+
 .sub_nav_box .button:selected {
 	background-color: #eaedf0;
 	color: #07A6ED;

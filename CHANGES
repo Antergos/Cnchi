@@ -1,4 +1,14 @@
+[2015-12-24 02:55:09 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {d0d060b}
 [2015-12-23 00:13:35 -0600]  make sure our font is available                                        Dustin Falgout  {d7778af}
+[2015-12-22 18:58:54 +0100]  ugly and temporary fix just for testing zfs                                karasu      {3e44998}
+[2015-12-22 18:40:47 +0100]  zfs packages are not being installed on /install                           karasu      {a3206f9}
+[2015-12-22 17:46:05 +0100]  Setting mountpoint to / makes zfs try to mount it and fail.                karasu      {570b822}
+[2015-12-22 17:32:09 +0100]  Trying to fix zfs                                                          karasu      {4f6e792}
+[2015-12-22 00:28:12 +0100]  Add zfs hook                                                               karasu      {edbef3d}
+[2015-12-21 21:18:22 +0100]  Where does this symlink come from?                                         karasu      {c5be3ca}
+[2015-12-21 21:15:33 +0100]  More work in bootloaders                                                   karasu      {6fbd12c}
+[2015-12-21 19:46:04 +0100]  bootloader was too big and confusing. THIS IS NOT FINISHED                 karasu      {91bbf12}
+[2015-12-21 17:53:20 +0100]  Fix typo                                                                   karasu      {d15af7b}
 [2015-12-20 19:39:39 -0600]  Fixes antergos/Cnchi#491                                               Dustin Falgout  {84ebc07}
 [2015-12-20 06:07:05 -0600]  its ready for some testing I think!                                    Dustin Falgout  {5cf9d58}
 [2015-12-20 04:40:40 -0600]  automatically select location based on detected timezone.              Dustin Falgout  {931f3bc}
@@ -15,6 +25,8 @@
 [2015-12-16 00:37:15 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1c02887}
 [2015-12-15 20:41:40 +0100]  Fix automatic installation (auto_partition) in mmcblk devices (can'..      karasu      {5b57d49}
 [2015-12-15 10:28:53 +0100]  Add flash as a feature                                                     karasu      {93f5b47}
+[2015-12-14 21:19:58 +0100]  Merge branch 'master' of https://github.com/lots0logs/cnchi-dev            karasu      {c5d7ebb}
+[2015-12-14 21:19:04 +0100]  Fatal error if Cnchi can't get mainwindow screen (or installer scre..      karasu      {9a7db67}
 [2015-12-14 10:28:02 -0600]  trying to fix issue with no newlines being output to /etc/default/g..  Dustin Falgout  {8d16661}
 [2015-12-14 09:18:34 -0600]  fix syntax error                                                       Dustin Falgout  {ae4635e}
 [2015-12-14 09:11:50 -0600]  fix invalid attribute                                                  Dustin Falgout  {2387f78}
