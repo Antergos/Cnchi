@@ -30,8 +30,9 @@
 """ Bootloader installation """
 
 import os
-from misc.run_cmd import call
 
+from misc.run_cmd import call
+import parted3.fs_module as fs
 
 class Bootloader(object):
     """ Class to perform boot loader installation """
