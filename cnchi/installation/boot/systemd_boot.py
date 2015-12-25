@@ -39,26 +39,11 @@ from misc.run_cmd import chroot_call
 
 class SystemdBoot(object):
     """ Class to perform boot loader installation """
-    def __init__(self, dest_dir, settings, mount_devices):
+    def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
-        self.mount_devices = mount_devices
+        self.uuids = uuids
 
-        self.method = settings.get("partition_mode")
-        self.root_device = self.mount_devices["/"]
-
-        self.root_uuid = fs.get_uuid(self.root_device)
-
-        if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_uuid(swap_partition)
-
-        if "/boot" in self.mount_devices:
-            boot_device = self.mount_devices["/boot"]
-        else:
-            # No dedicated /boot partition
-            boot_device = self.mount_devices["/"]
-        self.boot_uuid = fs.get_uuid(boot_device)
 
     def install(self):
         """ Install Systemd-boot bootloader to the EFI System Partition """
@@ -76,28 +61,28 @@ class SystemdBoot(object):
         options = ""
 
         if not self.settings.get('use_luks'):
-            options = "root=UUID={0} rw quiet".format(self.root_uuid))
+            options = "root=UUID={0} rw quiet".format(self.uuids["/"]))
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
+            logging.debug("Luks Root Volume: %s", luks_root_volume)
             mapper = "/dev/mapper/{0}".format(luks_root_volume)
             luks_root_volume_uuid = fs.get_uuid(mapper)
 
-            # In automatic mode, root_device is in self.mount_devices
-            root_device = self.root_device
-
-            if (self.method == "advanced" and
+            if (self.settings.get("partition_mode") == "advanced" and
                     self.settings.get('use_luks_in_root')):
+                # In advanced, if using luks in root device,
+                # we store root device it in luks_root_device var
                 root_device = self.settings.get('luks_root_device')
-
-            root_uuid = fs.get_uuid(root_device)
+                self.uuids["/"] = root_device
 
             key = ""
             if not self.settings.get("luks_root_password"):
-                key = "cryptkey=UUID={0}:ext2:/.keyfile-root".format(self.boot_uuid)
+                key = "cryptkey=UUID={0}:ext2:/.keyfile-root"
+                key = key.format(self.uuids["/boot"])
 
             options = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
             options = options.format(
-                root_uuid,
+                self.uuids["/"],
                 luks_root_volume,
                 key,
                 luks_root_volume_uuid)

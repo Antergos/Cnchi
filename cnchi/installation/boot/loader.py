@@ -40,6 +40,24 @@ class Bootloader(object):
         self.settings = settings
         self.mount_devices = mount_devices
 
+        self.uuids = {}
+
+        if "/" in self.mount_devices:
+            self.uuids["/"] = fs.get_uuid(self.mount_devices["/"])
+        else:
+            logging.error("Cannot install bootloader, root device has not been specified!")
+
+        if "swap" in self.mount_devices:
+            self.uuids["swap"] = fs.get_uuid(self.mount_devices["swap"])
+
+        if "/boot" in self.mount_devices:
+            self.uuids["/boot"] = fs.get_uuid(self.mount_devices["/boot"])
+        elif "/" in self.mount_devices:
+            # No dedicated /boot partition
+            self.uuids["/boot"] = self.uuids["/"]
+        else:
+            logging.error("Cannot install bootloader, root device has not been specified!")
+
     def install(self):
         """ Installs the bootloader """
 
@@ -51,13 +69,13 @@ class Bootloader(object):
         boot = None
         if bootloader == "grub2":
             from installation.boot.grub2 import Grub2
-            boot = Grub2(self.dest_dir, self.settings, self.mount_devices)
+            boot = Grub2(self.dest_dir, self.settings, self.uuids)
         elif bootloader == "systemd-boot":
             from installation.boot.systemd_boot import SystemdBoot
-            boot = SystemdBoot(self.dest_dir, self.settings, self.mount_devices)
+            boot = SystemdBoot(self.dest_dir, self.settings, self.uuids)
         elif bootloader == "refind":
             from installation.boot.refind import REFInd
-            boot = REFInd(self.dest_dir, self.settings, self.mount_devices)
+            boot = REFInd(self.dest_dir, self.settings, self.uuids)
 
         if boot:
             boot.install()
