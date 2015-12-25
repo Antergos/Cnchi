@@ -69,6 +69,7 @@ class Check(GtkBaseBox):
         self.timeout_id = None
         self.prepare_best_results = None
         self.updated = None
+        self.latest_iso = None
         self.cnchi_main = cnchi_main
         self.cnchi_notified = False
 
@@ -84,37 +85,14 @@ class Check(GtkBaseBox):
         # self.header.set_subtitle(self.title)
 
         self.updated = self.ui.get_object("updated")
-        txt = _("Cnchi is up to date")
-        self.updated.set_property("label", txt)
+
+        self.latest_iso = self.ui.get_object("latest_iso")
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least {0}GB available storage space. (*)")
-        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
-        self.prepare_enough_space.set_property("label", txt)
-
-        txt = _("This highly depends on which desktop environment you choose, "
-                "so you might need more space.")
-        txt = "(*) <i>{0}</i>".format(txt)
-        self.label_space.set_markup(txt)
-        self.label_space.set_hexpand(False)
-        self.label_space.set_line_wrap(True)
-        self.label_space.set_max_width_chars(80)
 
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
-        txt = _("is plugged in to a power source")
-        self.prepare_power_source.set_property("label", txt)
 
         self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
-        txt = _("is connected to the Internet")
-        self.prepare_network_connection.set_property("label", txt)
-
-        self.prepare_best_results = self.ui.get_object("prepare_best_results")
-        txt = _("For best results, please ensure that this computer:")
-        txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
-        self.prepare_best_results.set_markup(txt)
-        self.prepare_best_results.set_hexpand(False)
-        self.prepare_best_results.set_line_wrap(True)
-        self.prepare_best_results.set_max_width_chars(80)
 
     def check_all(self):
         """ Check that all requirements are meet """
@@ -138,6 +116,7 @@ class Check(GtkBaseBox):
             updated = False
 
         self.updated.set_state(updated)
+        self.latest_iso.set_state(self.check_iso_version())
 
         if self.checks_are_optional:
             return True
@@ -200,6 +179,24 @@ class Check(GtkBaseBox):
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()
+
+    @staticmethod
+    def check_iso_version():
+        """ Hostname contains the ISO version """
+        # TODO: Make this actually check if iso version is recent
+        from socket import gethostname
+
+        hostname = gethostname()
+        # ant-year.month[-min]
+        prefix = "ant-"
+        if hostname.startswith(prefix):
+            # We're running form the ISO, register which version.
+            suffix = "-min" if hostname.endswith("-min") else ''
+            version = hostname[len(prefix):-len(suffix)]
+            logging.debug("Running from ISO version %s", version)
+        else:
+            logging.debug("Not running from ISO")
+        return True
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """

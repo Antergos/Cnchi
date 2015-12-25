@@ -291,22 +291,6 @@ def check_pyalpm_version():
     return True
 
 
-def check_iso_version():
-    """ Hostname contains the ISO version """
-    from socket import gethostname
-    hostname = gethostname()
-    # antergos-year.month-iso
-    prefix = "antergos-"
-    suffix = "-iso"
-    if hostname.startswith(prefix) and hostname.endswith(suffix):
-        # We're running form the ISO, register which version.
-        version = hostname[len(prefix):-len(suffix)]
-        logging.debug("Running from ISO version %s", version)
-    else:
-        logging.debug("Not running from ISO")
-    return True
-
-
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
 
@@ -492,8 +476,8 @@ def init_cnchi():
         sys.exit(1)
 
     # Check ISO version where Cnchi is running from
-    if not check_iso_version():
-        sys.exit(1)
+    # if not check_iso_version():
+    #    sys.exit(1)
 
     # if not cmd_line.disable_update:
         # update_cnchi()

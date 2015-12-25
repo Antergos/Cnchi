@@ -73,7 +73,7 @@ class StylizedFrame(Gtk.Bin):
     def __init__(self):
         # Gtk.Alignment.__init__(self)
         Gtk.Bin.__init__(self)
-        self.radius = 10
+        self.radius = 0
         self.width = 1
 
     def do_get_property(self, prop):
@@ -95,7 +95,7 @@ class StylizedFrame(Gtk.Bin):
 
     def paint_background(self, c):
         """ Draw widget background """
-        c.set_source_rgb(*gtk_to_cairo_color('#fbfbfb'))
+        c.set_source_rgb(*gtk_to_cairo_color('#ffffff'))
         alloc = self.get_allocation()
         draw_round_rect(c, self.radius,
                         self.width / 2, self.width / 2,
@@ -108,7 +108,8 @@ class StylizedFrame(Gtk.Bin):
         # Background
         self.paint_background(c)
         # Edge
-        c.set_source_rgb(*gtk_to_cairo_color('#c7c7c6'))
+        r, g, b = gtk_to_cairo_color('#c7c7c6')
+        c.set_source_rgba(r, g, b, 0.1)
         c.set_line_width(self.width)
         c.stroke()
         if self.get_child():
@@ -453,11 +454,8 @@ class StateBox(StylizedFrame):
         hbox.set_spacing(10)
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
-        self.image.set_margin_start(7)
+        self.image.set_margin_start(20)
         self.label = Gtk.Label(label=text)
-        self.label.set_margin_end(15)
-        self.label.set_margin_top(15)
-        self.label.set_margin_bottom(15)
         self.label.set_halign(Gtk.Align.START)
 
         hbox.pack_start(self.image, False, True, 0)

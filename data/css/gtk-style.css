@@ -117,10 +117,6 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
     background-color: #07A6ED;
 }
 
-.welcome_screen {
-	background-color: #eef1f4;
-}
-
 #tryit_btn, #graph_btn {
 	padding: 12px 20px;
 	border-radius: 3px;
@@ -345,3 +341,31 @@ StateBox {
 .sub_page {
 	padding-top: 20px;
 }
+
+.state_box_container {
+background-color: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.state_box, .state_box .horizontal {
+border-top:none;
+border-left: none;
+border-right: none;
+border-radius: 0px;
+outline-width: 0px;
+outline-color: transparent;
+outline-bottom-left-radius: 0px;
+outline-bottom-right-radius: 0px;
+outline-top-left-radius: 0px;
+outline-top-right-radius: 0px;
+outline-offset: 0px;
+border-image-width: 0px;
+}
+ .state_box .horizontal {
+border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+ padding: 15px 40px;
+}
+ .best_results_label {
+	 font-weight: 700;
+	 font-size: 15px;
+ }
