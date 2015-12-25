@@ -586,6 +586,8 @@ class InstallationZFS(GtkBaseBox):
         device_path = device_paths[0]
         solaris_partition_number = -1
 
+        self.settings.set('bootloader_device', device_path)
+
         if self.zfs_options["scheme"] == "GPT":
             self.init_device(device_path, "GPT")
 

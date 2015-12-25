@@ -257,24 +257,38 @@ class Grub2(object):
 
         self.install_locales()
 
-        # Add -l option to os-prober's umount call so that it does not hang
-        self.apply_osprober_patch()
+        grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
 
-        # Run grub-mkconfig last
-        logging.debug("Running grub-mkconfig...")
-        locale = self.settings.get("locale")
+        if self.settings.get("zfs"):
+            # grub-mkconfig does not properly detect the ZFS filesystem,
+            # so it is necessary to edit grub.cfg manually.
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            with open(grub_cfg_path, "w") as grub_cfg:
+                grub_cfg.write('set timeout=2\n')
+                grub_cfg.write('set default=0\n\n')
+                grub_cfg.write('# (0) Antergos Linux\n')
+                grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
+                grub_cfg.write('\tsearch --no-floppy --label --set=root zroot\n')
+                grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
+                grub_cfg.write('\tinitrd /initramfs-linux.img\n')
+                grub_cfg.write('}\n')
+        else:
+            # Add -l option to os-prober's umount call so that it does not hang
+            self.apply_osprober_patch()
 
-        cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
-        cmd_sh = ['sh', '-c', cmd]
-        if chroot_call(cmd_sh, self.dest_dir, timeout=300) is False:
-            msg = ("grub-mkconfig does not respond. Killing grub-mount and"
-                   "os-prober so we can continue.")
-            logging.error(msg)
-            call(['killall', 'grub-mount'])
-            call(['killall', 'os-prober'])
+            logging.debug("Running grub-mkconfig...")
+            locale = self.settings.get("locale")
 
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        with open(cfg) as grub_cfg:
+            cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
+            cmd_sh = ['sh', '-c', cmd]
+            if not chroot_call(cmd_sh, self.dest_dir, timeout=300):
+                msg = ("grub-mkconfig does not respond. Killing grub-mount and"
+                       "os-prober so we can continue.")
+                logging.error(msg)
+                call(['killall', 'grub-mount'])
+                call(['killall', 'os-prober'])
+
+        with open(grub_cfg_path) as grub_cfg:
             if "Antergos" in grub_cfg.read():
                 txt = _("GRUB(2) BIOS has been successfully installed.")
                 logging.info(txt)
