@@ -168,16 +168,16 @@ class Installation(object):
         # Mount root and boot partitions (only if it's needed)
         # Not doing this in automatic mode as AutoPartition class mounts
         # the root and boot devices itself.
-        if root_partition:
-            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
-            logging.debug(txt)
-            cmd = ['mount', root_partition, DEST_DIR]
-            call(cmd, fatal=True)
-        elif self.method == "zfs":
+        if self.method == "zfs":
             # Mount /
             logging.debug("ZFS: Mounting root")
             cmd = ["zfs", "mount", "-a"]
             call(cmd)
+        elif root_partition:
+            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
+            logging.debug(txt)
+            cmd = ['mount', root_partition, DEST_DIR]
+            call(cmd, fatal=True)
 
         # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")
