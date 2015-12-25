@@ -635,6 +635,9 @@ class InstallationZFS(GtkBaseBox):
 
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
             solaris_partition_number = part_num
+            self.devices['root'] = "{0}{1}".format(device_path, part_num)
+            # self.fs_devices[self.devices['root']] = "zfs"
+            self.mount_devices['/'] = self.devices['root']
 
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
@@ -669,6 +672,9 @@ class InstallationZFS(GtkBaseBox):
             start = end
             wrapper.parted_mkpart(device_path, "primary", start, "-1s")
             solaris_partition_number = 2
+            self.devices['root'] = "{0}{1}".format(device_path, 2)
+            # self.fs_devices[self.devices['root']] = "zfs"
+            self.mount_devices['/'] = self.devices['root']
 
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
