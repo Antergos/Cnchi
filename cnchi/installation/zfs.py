@@ -874,7 +874,7 @@ class InstallationZFS(GtkBaseBox):
                 first_disk = False
             else:
                 # Use full device for the other disks
-                id_path = device_id
+                id_path = "/dev/disk/by-id/{0}".format(device_id)
                 cmd = ["zpool", "labelclear", "-f", id_path]
                 self.check_call(cmd)
 
