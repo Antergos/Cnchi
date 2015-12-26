@@ -318,7 +318,6 @@ class InstallationZFS(GtkBaseBox):
             else:
                 is_ok = False
                 msg = _("You must select at least one drive")
-
         elif pool_type == "Stripe" or pool_type == "Mirror":
             if num_drives > 1:
                 is_ok = True
@@ -326,7 +325,6 @@ class InstallationZFS(GtkBaseBox):
                 is_ok = False
                 msg = _("For the {0} pool_type, you must select at least two "
                         "drives").format(pool_type)
-
         elif "RAID" in pool_type:
             min_drives = 3
             min_parity_drives = 1
@@ -334,7 +332,6 @@ class InstallationZFS(GtkBaseBox):
             if pool_type == "RAID-Z2":
                 min_drives = 4
                 min_parity_drives = 2
-
             elif pool_type == "RAID-Z3":
                 min_drives = 5
                 min_parity_drives = 3
@@ -905,14 +902,15 @@ class InstallationZFS(GtkBaseBox):
         # Command zpool
         # Create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
-        logging.debug("Creating zfs pool %s", pool_name)
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["-m", DEST_DIR, pool_name])
-        if pool_type != "None" and pool_type in self.pool_types.values():
+        if pool_type not in ["None", "Stripe"] and pool_type in self.pool_types.values():
+            pool_type = pool_type.lower().replace("-", "")
             cmd.append(pool_type)
         cmd.extend(devices_ids)
+        logging.debug("Creating zfs pool named %s of type %s", pool_name, pool_type)
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
