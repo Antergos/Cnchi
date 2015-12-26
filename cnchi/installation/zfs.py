@@ -503,7 +503,7 @@ class InstallationZFS(GtkBaseBox):
 
             # Clear all magic strings/signatures -
             # mdadm, lvm, partition tables etc.
-            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
+            wrapper.dd("/dev/zero", device_path, bs=512, count=20480)
             wrapper.wipefs(device_path)
 
             # Create fresh GPT
@@ -516,7 +516,7 @@ class InstallationZFS(GtkBaseBox):
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct
             # alignment. Clean partitiontable to avoid issues!
-            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
+            wrapper.dd("/dev/zero", device_path, bs=512, count=20480)
             wrapper.wipefs(device_path)
 
             # Create DOS MBR
