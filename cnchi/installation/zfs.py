@@ -753,10 +753,10 @@ class InstallationZFS(GtkBaseBox):
             cmd_line = "zpool list -H -o size {0}".format(pool_name)
             logging.debug(cmd_line)
             cmd = cmd_line.split()
-            pool_size = subprocess.check_output(cmd).decode()
+            output = subprocess.check_output(cmd)
+            pool_size = output.decode().strip('\n')
             # Force to use a point as float delimiter
-            # (everyone except English/Americans uses a comma)
-            pool_size = float(pool_size.replace(",", "."))
+            pool_size = pool_size.replace(",", ".")
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-2]) // 1024
             elif 'G' in pool_size:
@@ -838,9 +838,10 @@ class InstallationZFS(GtkBaseBox):
         """ Sets mount point of zvol and tries to mount it """
         try:
             cmd = ["zfs", "set", "mountpoint={0}".format(mount_point), zvol]
-            output = subprocess.check_output(cmd)
+            output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            logging.warning(err.output)
+            err_output = err.output.decode().strip("\n")
+            logging.warning(err_output)
 
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
