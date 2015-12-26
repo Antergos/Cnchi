@@ -689,8 +689,8 @@ class InstallationZFS(GtkBaseBox):
                 # wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
-        self.call(["udevadm", "settle"])
-        self.call(["sync"])
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         self.create_zfs_pool(solaris_partition_number)
 
