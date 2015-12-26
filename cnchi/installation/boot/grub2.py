@@ -248,7 +248,7 @@ class Grub2(object):
                 grub_cfg.write('set default=0\n\n')
                 grub_cfg.write('# (0) Antergos Linux\n')
                 grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
-                grub_cfg.write('\tsearch --no-floppy --label --set=root zroot\n')
+                grub_cfg.write('\tsearch --no-floppy --label --set=root {0}\n'.format(zfs_pool_name))
                 grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
                 grub_cfg.write('\tinitrd /initramfs-linux.img\n')
                 grub_cfg.write('}\n')
