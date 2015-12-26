@@ -473,6 +473,13 @@ class InstallationZFS(GtkBaseBox):
             self.zfs_options["swap_size"] = 8192
 
         # Get pool name
+
+        # TODO: The pool name must begin with a letter, and
+        # can only contain alphanumeric  characters  as  well  as  underscore
+        # ("_"),  dash ("-"), period ("."), colon (":"), and space (" "). The
+        # pool names "mirror", "raidz", "spare" and "log"  are  reserved,  as
+        # are  names beginning with the pattern "c[0-9]".
+
         txt = self.ui.get_object("pool_name_entry").get_text()
         if not txt:
             txt = "antergos"
