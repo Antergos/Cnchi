@@ -908,8 +908,6 @@ class InstallationZFS(GtkBaseBox):
         self.check_call(cmd)
 
         # Set the mount point of the root filesystem
-        # self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
-        #self.check_call(["zfs", "set", "mountpoint=/", pool_name])
         self.set_zfs_mountpoint(pool_name, "/")
 
         # Set the bootfs property on the descendant root filesystem so the
@@ -928,8 +926,6 @@ class InstallationZFS(GtkBaseBox):
             home_size = self.get_home_size(pool_name)
             logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
             self.create_zfs_vol(pool_name, "home", home_size)
-            # cmd = ["zfs", "set", "mountpoint=/home", "{0}/home".format(pool_name)]
-            # self.check_call(cmd)
             self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
 
         # Create swap zvol
@@ -948,19 +944,10 @@ class InstallationZFS(GtkBaseBox):
             pool_name]
         self.check_call(cmd)
 
-        ## Set the mount point of the root filesystem
-        # cmd = ["zfs", "set", "mountpoint=/", pool_name]
-        # self.check_call(cmd)
-
-        ## Create zpool.cache file
-        #cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        #self.check_call(cmd)
-
         # Copy created cache file to destination
         try:
             dst_dir = os.path.join(DEST_DIR, "etc/zfs")
             os.makedirs(dst_dir, mode=0o755, exist_ok=True)
-
             src = "/etc/zfs/zpool.cache"
             dst = os.path.join(dst_dir, "zpool.cache")
             shutil.copyfile(src, dst)
