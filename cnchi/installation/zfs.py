@@ -911,7 +911,7 @@ class InstallationZFS(GtkBaseBox):
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["-m", DEST_DIR, pool_name])
         if pool_type != "None" and pool_type in self.pool_types.values():
-            cmd.extend(pool_type)
+            cmd.append(pool_type)
         cmd.extend(devices_ids)
         self.check_call(cmd)
 
