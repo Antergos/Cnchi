@@ -30,6 +30,7 @@ import parted
 
 import misc.extra as misc
 from misc.extra import InstallError
+from misc.run_cmd import call
 
 import show_message as show
 from installation import action
@@ -510,7 +511,7 @@ class InstallationZFS(GtkBaseBox):
 
             # Inform the kernel of the partition change.
             # Needed if the hard disk had a MBR partition table.
-            self.check_call(["partprobe", device_path])
+            call(["partprobe", device_path])
         else:
             # DOS MBR partition table
             # Start at sector 1 for 4k drive compatibility and correct
@@ -521,7 +522,7 @@ class InstallationZFS(GtkBaseBox):
             # Create DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
 
-        self.check_call(["sync"])
+        call(["sync"])
 
     def append_change(self, action_type, device, info=""):
         """ Add change for summary screen """
@@ -688,8 +689,8 @@ class InstallationZFS(GtkBaseBox):
                 # wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
-        self.check_call(["udevadm", "settle"])
-        self.check_call(["sync"])
+        self.call(["udevadm", "settle"])
+        self.call(["sync"])
 
         self.create_zfs_pool(solaris_partition_number)
 
@@ -703,39 +704,6 @@ class InstallationZFS(GtkBaseBox):
                 dest_path = os.readlink(entry.path)
                 device = dest_path.split("/")[-1]
                 self.ids[device] = entry.name
-
-    @staticmethod
-    def check_call(cmd):
-        """ Helper function """
-        try:
-            # Convert list and get sure all items are converted to str
-            cmd_line = ' '.join(str(x) for x in cmd)
-            logging.debug(cmd_line)
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Command {0} has failed".format(process_error.cmd)
-            logging.error(txt)
-            txt = _("Command {0} has failed").format(process_error.cmd)
-            raise InstallError(txt)
-
-    @staticmethod
-    def zfs_export_pool(pool):
-        """ Makes the kernel to flush all pending data to disk, writes data to
-            the disk acknowledging that the export was done, and removes all
-            knowledge that the storage pool existed in the system """
-        try:
-            logging.debug("Exporting pool %s...", pool)
-            cmd = ["zpool", "export", pool]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
-            try:
-                cmd = ["zpool", "export", "-f", pool]
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                txt = "Command {0} has failed".format(err.cmd)
-                logging.error(txt)
-                txt = _("Command {0} has failed").format(err.cmd)
-                raise InstallError(txt)
 
     def get_home_size(self, pool_name):
         """ Get recommended /home zvol size in GB """
@@ -835,7 +803,7 @@ class InstallationZFS(GtkBaseBox):
             "-o", "checksum=off",
             "-o", "com.sun:auto-snapshot=false",
             "{0}/{1}".format(pool_name, vol_name)]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
     @staticmethod
     def set_zfs_mountpoint(zvol, mount_point):
@@ -856,7 +824,7 @@ class InstallationZFS(GtkBaseBox):
             raise InstallError(txt)
 
         # Make sure the ZFS modules are loaded
-        self.check_call(["modprobe", "zfs"])
+        call(["modprobe", "zfs"])
 
         first_disk = True
         devices_ids = []
@@ -880,7 +848,7 @@ class InstallationZFS(GtkBaseBox):
                 # Use full device for the other disks
                 id_path = "/dev/disk/by-id/{0}".format(device_id)
                 cmd = ["zpool", "labelclear", "-f", id_path]
-                self.check_call(cmd)
+                call(cmd)
 
             devices_ids.append(id_path)
 
@@ -906,12 +874,12 @@ class InstallationZFS(GtkBaseBox):
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["-m", DEST_DIR, pool_name])
-        if pool_type not in ["None", "Stripe"] and pool_type in self.pool_types.values():
+        if pool_type in self.pool_types.values() and pool_type not in ["None", "Stripe"]:
             pool_type = pool_type.lower().replace("-", "")
             cmd.append(pool_type)
         cmd.extend(devices_ids)
-        logging.debug("Creating zfs pool named %s of type %s", pool_name, pool_type)
-        self.check_call(cmd)
+        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
+        call(cmd, fatal=True)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
@@ -919,14 +887,13 @@ class InstallationZFS(GtkBaseBox):
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
         cmd = ["zpool", "set", "bootfs={0}".format(pool_name), pool_name]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
         # Create zpool.cache file
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
         # Create any zfs subvolumes
-
         if self.settings.get('use_home'):
             # Create home zvol
             home_size = self.get_home_size(pool_name)
@@ -940,7 +907,12 @@ class InstallationZFS(GtkBaseBox):
         self.create_zfs_vol(pool_name, "swap", swap_size)
 
         # Export the pool
-        self.zfs_export_pool(pool_name)
+        # Makes the kernel to flush all pending data to disk, writes data to
+        # the disk acknowledging that the export was done, and removes all
+        # knowledge that the storage pool existed in the system
+        logging.debug("Exporting pool %s...", pool_name)
+        cmd = ["zpool", "export", "-f", pool_name]
+        call(cmd, fatal=True)
 
         # Finally, re-import the pool by-id
         cmd = [
@@ -948,7 +920,7 @@ class InstallationZFS(GtkBaseBox):
             "-d", "/dev/disk/by-id",
             "-R", DEST_DIR,
             pool_name]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
         # Copy created cache file to destination
         try:
