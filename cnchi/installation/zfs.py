@@ -648,7 +648,7 @@ class InstallationZFS(GtkBaseBox):
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
                 self.init_device(device_path, "GPT")
-                wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
+                # wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
         else:
             # MBR
             self.init_device(device_path, "MBR")
@@ -685,7 +685,7 @@ class InstallationZFS(GtkBaseBox):
             # Now init all other devices that will form part of the pool
             for device_path in device_paths[1:]:
                 self.init_device(device_path, "MBR")
-                wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
+                # wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
         self.check_call(["udevadm", "settle"])
