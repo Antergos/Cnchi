@@ -78,10 +78,11 @@ def unmount_all_in_directory(dest_dir):
     # Unmount all swap devices
     cmd = ["swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
-    swaps = swaps.split("\n")
-    for name in filter(None, swaps):
-        if "/dev/zram" not in name:
-            call(["swapoff", name])
+    if swaps:
+        swaps = swaps.split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                call(["swapoff", name])
 
     # Get all mounted devices
     mount_result = call(["mount"]).split("\n")
