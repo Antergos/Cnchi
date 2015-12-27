@@ -808,7 +808,7 @@ class InstallationZFS(GtkBaseBox):
     @staticmethod
     def get_pool_id(pool_name):
         """ Get zpool id number """
-        output = call(["zpool", "import"], strip_eol=False)
+        output = call(["zpool", "import"])
         if not output:
             return None
 
