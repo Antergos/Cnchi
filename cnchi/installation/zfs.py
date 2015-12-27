@@ -719,8 +719,6 @@ class InstallationZFS(GtkBaseBox):
             cmd = cmd_line.split()
             output = subprocess.check_output(cmd)
             pool_size = output.decode().strip('\n')
-            # Force to use a point as float delimiter
-            pool_size = pool_size.replace(",", ".")
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-1]) // 1024
             elif 'G' in pool_size:
@@ -903,6 +901,10 @@ class InstallationZFS(GtkBaseBox):
         swap_size = self.get_swap_size(pool_name)
         logging.debug("Creating zfs subvolume 'swap' (%dGB)", swap_size)
         self.create_zfs_vol(pool_name, "swap", swap_size)
+
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         # Export the pool
         # Makes the kernel to flush all pending data to disk, writes data to
