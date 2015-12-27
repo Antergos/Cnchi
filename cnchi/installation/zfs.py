@@ -730,13 +730,13 @@ class InstallationZFS(GtkBaseBox):
             # Force to use a point as float delimiter
             pool_size = pool_size.replace(",", ".")
             if 'M' in pool_size:
-                pool_size = int(pool_size[:-2]) // 1024
+                pool_size = int(pool_size[:-1]) // 1024
             elif 'G' in pool_size:
-                pool_size = int(pool_size[:-2])
+                pool_size = int(pool_size[:-1])
             elif 'T' in pool_size:
-                pool_size = int(pool_size[:-2]) * 1024
+                pool_size = int(pool_size[:-1]) * 1024
             elif 'P' in pool_size:
-                pool_size = int(pool_size[:-2]) * 1024 * 1024
+                pool_size = int(pool_size[:-1]) * 1024 * 1024
         except (subprocess.CalledProcessError, ValueError) as err:
             logging.warning(
                 "Can't get zfs %s pool size: %s",
@@ -843,6 +843,8 @@ class InstallationZFS(GtkBaseBox):
                 id_path = "/dev/disk/by-id/{0}-part{1}".format(
                     device_id,
                     solaris_partition_number)
+                cmd = ["zpool", "labelclear", "-f", id_path]
+                call(cmd)
                 first_disk = False
             else:
                 # Use full device for the other disks
@@ -852,8 +854,12 @@ class InstallationZFS(GtkBaseBox):
 
             devices_ids.append(id_path)
 
-        line = " ".join(devices_ids)
+        line = ", ".join(devices_ids)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
+
+        # Just in case...
+        if os.path.exists("/etc/zfs/zpool.cache"):
+            os.remove("/etc/zfs/zpool.cache")
 
         try:
             os.mkdir(DEST_DIR, mode=0o755)
@@ -915,6 +921,7 @@ class InstallationZFS(GtkBaseBox):
         call(cmd, fatal=True)
 
         # Finally, re-import the pool by-id
+        logging.debug("Importing pool %s...", pool_name)
         cmd = [
             "zpool", "import",
             "-d", "/dev/disk/by-id",
