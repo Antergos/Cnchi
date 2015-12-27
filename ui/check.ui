@@ -8,6 +8,9 @@
 		<property name="orientation">vertical</property>
 		<property name="margin_top">35</property>
 		<property name="halign">center</property>
+		<style>
+					<class name="check_screen"/>
+				</style>
 		<child>
 			<object class="GtkLabel" id="prepare_best_results">
 				<property name="visible">True</property>
@@ -16,7 +19,7 @@
 				<property name="use_markup">False</property>
 				<property name="margin_bottom">10</property>
 				<property name="max_width_chars">80</property>
-				<property name="halign">start</property>
+				<property name="halign">center</property>
 				<style>
 					<class name="best_results_label"/>
 				</style>
@@ -28,54 +31,125 @@
 			</packing>
 		</child>
 		<child>
-			<object class="GtkBox" id="vbox1">
+			<object class="GtkBox" id="state_box_containers_wrapper">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="orientation">vertical</property>
-				<property name="spacing">0</property>
-				<property name="margin_bottom">20</property>
-				<property name="margin_top">10</property>
+				<property name="orientation">horizontal</property>
 				<property name="hexpand">True</property>
-				<property name="height_request">265</property>
-				<property name="width_request">600</property>
+				<property name="homogeneous">False</property>
 				<style>
-					<class name="state_box_container"/>
+					<class name="state_box_containers_wrapper"/>
 				</style>
 				<child>
-					<object class="StateBox" id="prepare_enough_space">
+					<object class="GtkBox" id="vbox1">
 						<property name="visible">True</property>
-						<property name="label" translatable="yes">This system has at least 10GB of available storage space.</property>
+						<property name="can_focus">False</property>
+						<property name="orientation">vertical</property>
+						<property name="spacing">0</property>
+						<property name="margin_bottom">20</property>
+						<property name="margin_top">10</property>
+						<property name="margin_right">25</property>
+						<property name="hexpand">True</property>
+						<property name="halign">center</property>
+						<property name="height_request">220</property>
+						<property name="width_request">400</property>
+						<property name="homogeneous">True</property>
 						<style>
-							<class name="state_box"/>
+							<class name="state_box_container"/>
 						</style>
+						<child>
+							<object class="StateBox" id="prepare_enough_space">
+								<property name="visible">True</property>
+								<property name="label" translatable="yes">This system has at least 10GB* of available storage space.</property>
+								<style>
+									<class name="state_box"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">True</property>
+								<property name="fill">True</property>
+								<property name="position">0</property>
+							</packing>
+						</child>
+						<child>
+							<object class="StateBox" id="prepare_power_source">
+								<property name="visible">True</property>
+								<property name="label" translatable="yes">This system is connected to a power source.</property>
+								<style>
+									<class name="state_box"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">True</property>
+								<property name="fill">True</property>
+								<property name="position">1</property>
+							</packing>
+						</child>
+						<child>
+							<object class="StateBox" id="prepare_network_connection">
+								<property name="visible">True</property>
+								<property name="label" translatable="yes">This system has access to a stable Internet connection.</property>
+								<style>
+									<class name="state_box"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">True</property>
+								<property name="fill">True</property>
+								<property name="position">2</property>
+							</packing>
+						</child>
 					</object>
 					<packing>
 						<property name="expand">True</property>
-						<property name="fill">True</property>
-						<property name="position">0</property>
-					</packing>
-				</child>
-				<child>
-					<object class="StateBox" id="prepare_power_source">
-						<property name="visible">True</property>
-						<property name="label" translatable="yes">This system is connected to a power source.</property>
-						<style>
-							<class name="state_box"/>
-						</style>
-					</object>
-					<packing>
-						<property name="expand">True</property>
-						<property name="fill">True</property>
+						<property name="fill">False</property>
 						<property name="position">1</property>
 					</packing>
 				</child>
 				<child>
-					<object class="StateBox" id="prepare_network_connection">
+					<object class="GtkBox" id="vbox2">
 						<property name="visible">True</property>
-						<property name="label" translatable="yes">This system has access to a stable Internet connection.</property>
+						<property name="can_focus">False</property>
+						<property name="orientation">vertical</property>
+						<property name="spacing">0</property>
+						<property name="margin_bottom">20</property>
+						<property name="margin_top">10</property>
+						<property name="hexpand">True</property>
+						<property name="valign">start</property>
+						<property name="halign">center</property>
+						<property name="height_request">146</property>
+						<property name="width_request">400</property>
 						<style>
-							<class name="state_box"/>
+							<class name="state_box_container"/>
 						</style>
+						<child>
+							<object class="StateBox" id="updated">
+								<property name="visible">True</property>
+								<property name="label" translatable="yes">Cnchi is up to date.</property>
+								<style>
+									<class name="state_box"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">True</property>
+								<property name="fill">True</property>
+								<property name="position">0</property>
+							</packing>
+						</child>
+						<child>
+							<object class="StateBox" id="latest_iso">
+								<property name="visible">True</property>
+								<property name="label" translatable="yes">You are using the latest install media.</property>
+								<style>
+									<class name="state_box"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">True</property>
+								<property name="fill">True</property>
+								<property name="position">1</property>
+							</packing>
+						</child>
 					</object>
 					<packing>
 						<property name="expand">True</property>
@@ -83,63 +157,33 @@
 						<property name="position">2</property>
 					</packing>
 				</child>
-				<child>
-					<object class="StateBox" id="updated">
-						<property name="visible">True</property>
-						<property name="label" translatable="yes">Cnchi is up to date.</property>
-						<style>
-							<class name="state_box"/>
-						</style>
-					</object>
-					<packing>
-						<property name="expand">True</property>
-						<property name="fill">True</property>
-						<property name="position">3</property>
-					</packing>
-				</child>
-				<child>
-					<object class="StateBox" id="latest_iso">
-						<property name="visible">True</property>
-						<property name="label" translatable="yes">You are using the latest install media.</property>
-						<style>
-							<class name="state_box"/>
-						</style>
-					</object>
-					<packing>
-						<property name="expand">True</property>
-						<property name="fill">True</property>
-						<property name="position">4</property>
-					</packing>
-				</child>
 			</object>
-			<packing>
-				<property name="expand">True</property>
-				<property name="fill">True</property>
-				<property name="position">1</property>
-			</packing>
 		</child>
+
 		<child>
 			<object class="GtkBox" id="third_party_vbox">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="orientation">vertical</property>
 				<property name="spacing">10</property>
+				<property name="halign">start</property>
+				<property name="hexpand">False</property>
 				<style>
 					<class name="check_disclaimer"/>
 				</style>
 				<child>
 					<object class="GtkLabel" id="label_space">
-						<property name="visible">True</property>
+						<property name="visible">False</property>
 						<property name="can_focus">False</property>
 						<property name="xalign">0</property>
 						<property name="label" translatable="yes">(*) This highly depends on which desktop environment and features you choose.</property>
 						<property name="use_markup">False</property>
 						<property name="wrap">True</property>
-						<property name="max_width_chars">80</property>
+						<property name="max_width_chars">50</property>
 					</object>
 					<packing>
 						<property name="expand">False</property>
-						<property name="fill">True</property>
+						<property name="fill">False</property>
 						<property name="position">0</property>
 					</packing>
 				</child>
@@ -160,7 +204,7 @@
 			<packing>
 				<property name="expand">True</property>
 				<property name="fill">True</property>
-				<property name="position">2</property>
+				<property name="position">3</property>
 			</packing>
 		</child>
 	</object>

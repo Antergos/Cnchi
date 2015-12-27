@@ -450,21 +450,34 @@ class StateBox(StylizedFrame):
 
     def __init__(self, text=''):
         StylizedFrame.__init__(self)
-        hbox = Gtk.Box()
-        hbox.set_spacing(10)
+        self.hbox = Gtk.Box()
+        self.hbox.set_spacing(10)
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
-        self.image.set_margin_start(20)
+        self.image.set_margin_start(15)
         self.label = Gtk.Label(label=text)
         self.label.set_halign(Gtk.Align.START)
+        self.label.set_xalign(0)
+        self.label.set_max_width_chars(40)
+        self.label.set_line_wrap(True)
 
-        hbox.pack_start(self.image, False, True, 0)
-        hbox.pack_start(self.label, True, True, 0)
+        self.hbox.pack_start(self.image, False, True, 0)
+        self.hbox.pack_start(self.label, True, True, 0)
 
-        self.add(hbox)
+        self.add(self.hbox)
         self.show_all()
 
         self.status = True
+
+    def setup_event_box(self, parent_page):
+        event_box = Gtk.EventBox.new()
+        event_box.connect("enter-notify-event", parent_page.on_space_state_box_hover)
+        event_box.connect("leave-notify-event", parent_page.on_space_state_box_leave)
+
+        self.remove(self.hbox)
+        event_box.add(self.hbox)
+        self.add(event_box)
+        self.show_all()
 
     def set_state(self, state):
         """ Set state. Show if it's ok or not """

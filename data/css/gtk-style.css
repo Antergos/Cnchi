@@ -341,7 +341,9 @@ StateBox {
 .sub_page {
 	padding-top: 20px;
 }
-
+.check_screen {
+	padding: 0px 40px;
+}
 .state_box_container {
 background-color: #ffffff;
     border-radius: 3px;
@@ -363,9 +365,12 @@ border-image-width: 0px;
 }
  .state_box .horizontal {
 border-bottom: 1px solid rgba(0, 0, 0, 0.1);
- padding: 15px 40px;
+ padding: 15px 20px;
 }
  .best_results_label {
 	 font-weight: 700;
 	 font-size: 15px;
+ }
+ .state_box:prelight {
+	 background-color: #dee3f8;
  }
