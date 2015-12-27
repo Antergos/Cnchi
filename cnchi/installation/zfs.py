@@ -690,7 +690,7 @@ class InstallationZFS(GtkBaseBox):
         call(["udevadm", "settle"])
         call(["sync"])
 
-        self.create_zfs_pool(solaris_partition_number)
+        self.create_zfs(solaris_partition_number)
 
     def get_ids(self):
         """ Get disk and partitions IDs """
@@ -833,8 +833,38 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, solaris_partition_number):
-        """ Create the root zpool """
+    def create_zfs_pool(self, pool_name, pool_type, devices_ids):
+        """ Create zpool """
+
+        if pool_type not in self.pool_types.values():
+            raise InstallError("Pool type {0} unknown".format(pool_type))
+
+        cmd = ["zpool", "create", "-f"]
+        if self.zfs_options["force_4k"]:
+            cmd.extend(["-o", "ashift=12"])
+        cmd.extend(["-m", DEST_DIR, pool_name])
+
+        pool_type = pool_type.lower().replace("-", "")
+
+        if pool_type in ["none", "stripe"]:
+            cmd.append(devices_ids[0])
+        elif pool_type == "mirror":
+            if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
+                for i,k in zip(devices_ids[0::2], devices_ids[1::2]):
+                    cmd.append(pool_type)
+                    cmd.extend([i, k])
+            else:
+                cmd.append(pool_type)
+                cmd.extend(devices_ids)
+        else:
+            cmd.append(pool_type)
+            cmd.extend(devices_ids)
+
+        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
+        call(cmd, fatal=True)
+
+    def create_zfs(self, solaris_partition_number):
+        """ Setup ZFS system """
 
         device_paths = self.zfs_options["device_paths"]
         if not device_paths:
@@ -891,19 +921,8 @@ class InstallationZFS(GtkBaseBox):
 
         pool_type = self.zfs_options["pool_type"]
 
-        # Command zpool
-        # Create zroot /dev/disk/by-id/id-to-partition
-        # This will be our / (root) system
-        cmd = ["zpool", "create", "-f"]
-        if self.zfs_options["force_4k"]:
-            cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["-m", DEST_DIR, pool_name])
-        if pool_type in self.pool_types.values() and pool_type not in ["None", "Stripe"]:
-            pool_type = pool_type.lower().replace("-", "")
-            cmd.append(pool_type)
-        cmd.extend(devices_ids)
-        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        call(cmd, fatal=True)
+        # Create zpool
+        self.create_zfs_pool(pool_name, pool_type, devices_ids)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
