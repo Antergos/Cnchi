@@ -72,10 +72,8 @@ class Check(GtkBaseBox):
         self.latest_iso = None
         self.cnchi_main = cnchi_main
         self.cnchi_notified = False
-        self.popover = None
-        self.popover_added = False
 
-        self.label_space = self.ui.get_object("label_space")
+        # self.label_space = self.ui.get_object("label_space")
 
         if 'checks_are_optional' in params:
             self.checks_are_optional = params['checks_are_optional']
@@ -95,17 +93,6 @@ class Check(GtkBaseBox):
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
 
         self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
-
-        self.popover = Gtk.Popover.new(self.prepare_enough_space)
-        self.label_space.unparent()
-        self.popover.add(self.label_space)
-        self.popover.set_position(Gtk.PositionType.TOP)
-
-    def on_space_state_box_hover(self, widget=None, event=None):
-        self.popover.show_all()
-
-    def on_space_state_box_leave(self, widget=None, event=None):
-        self.popover.hide()
 
     def check_all(self):
         """ Check that all requirements are meet """
@@ -237,10 +224,6 @@ class Check(GtkBaseBox):
         if result is not None and show:
             self.show_all()
             self.forward_button.set_sensitive(result)
-            if not self.popover_added:
-                self.popover_added = True
-                # self.get_toplevel().add(self.popover)
-                self.prepare_enough_space.setup_event_box(parent_page=self)
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)

@@ -17,7 +17,7 @@
 				<property name="can_focus">False</property>
 				<property name="label" translatable="yes">For best results, please ensure the following:</property>
 				<property name="use_markup">False</property>
-				<property name="margin_bottom">10</property>
+				<property name="margin_bottom">25</property>
 				<property name="max_width_chars">80</property>
 				<property name="halign">center</property>
 				<style>
@@ -117,7 +117,7 @@
 						<property name="hexpand">True</property>
 						<property name="valign">start</property>
 						<property name="halign">center</property>
-						<property name="height_request">146</property>
+						<property name="height_request">148</property>
 						<property name="width_request">400</property>
 						<style>
 							<class name="state_box_container"/>
@@ -171,7 +171,7 @@
 				<style>
 					<class name="check_disclaimer"/>
 				</style>
-				<child>
+				<!--<child>
 					<object class="GtkLabel" id="label_space">
 						<property name="visible">False</property>
 						<property name="can_focus">False</property>
@@ -186,7 +186,7 @@
 						<property name="fill">False</property>
 						<property name="position">0</property>
 					</packing>
-				</child>
+				</child>-->
 				<!--
 				<child>
 				  <object class="GtkImage" id="image1">

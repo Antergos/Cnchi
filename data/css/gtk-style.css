@@ -371,6 +371,6 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	 font-weight: 700;
 	 font-size: 15px;
  }
- .state_box:prelight {
-	 background-color: #dee3f8;
+ .state_box .horizontal:prelight {
+	 background-color: rgba(179, 199, 234, 0.67);
  }
