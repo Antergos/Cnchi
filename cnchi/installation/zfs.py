@@ -588,14 +588,17 @@ class InstallationZFS(GtkBaseBox):
         device_paths = self.zfs_options["device_paths"]
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
+        # Wipe all disks that will be part of the installation.
+        # This cannot be undone!
+        for device_path in device_paths:
+            self.init_device(device_path, self.zfs_options["scheme"])
+
         device_path = device_paths[0]
         solaris_partition_number = -1
 
         self.settings.set('bootloader_device', device_path)
 
         if self.zfs_options["scheme"] == "GPT":
-            self.init_device(device_path, "GPT")
-
             part_num = 1
 
             if not self.uefi:
@@ -645,14 +648,8 @@ class InstallationZFS(GtkBaseBox):
             self.devices['root'] = "{0}{1}".format(device_path, part_num)
             # self.fs_devices[self.devices['root']] = "zfs"
             self.mount_devices['/'] = self.devices['root']
-
-            # Now init all other devices that will form part of the pool
-            for device_path in device_paths[1:]:
-                self.init_device(device_path, "GPT")
-                # wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
         else:
             # MBR
-            self.init_device(device_path, "MBR")
 
             # Create boot partition (all sizes are in MiB)
             # if start is -1 wrapper.parted_mkpart assumes that our partition
@@ -682,11 +679,6 @@ class InstallationZFS(GtkBaseBox):
             self.devices['root'] = "{0}{1}".format(device_path, 2)
             # self.fs_devices[self.devices['root']] = "zfs"
             self.mount_devices['/'] = self.devices['root']
-
-            # Now init all other devices that will form part of the pool
-            for device_path in device_paths[1:]:
-                self.init_device(device_path, "MBR")
-                # wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
