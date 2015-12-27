@@ -417,19 +417,26 @@ def get_nm_state():
 
 def has_connection():
     """ Checks if we have an Internet connection """
-    try:
-        url = 'http://130.206.13.20'
-        urllib.request.urlopen(url, timeout=5)
-        return True
-    except (OSError, timeout, urllib.error.URLError) as url_err:
-        logging.warning(url_err)
-        # We can connect to that IP, let's ask NetworkManager
-        # In a Virtualbox VM this returns true even when the host OS has
-        # no connection
-        if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-            return True
-        return False
+    urls = [
+        'http://130.206.13.20',
+        'http://173.194.40.112',
+        'http://104.27.140.167']
 
+    for url in urls:
+        try:
+            urllib.request.urlopen(url, timeout=5)
+        except (OSError, timeout, urllib.error.URLError) as url_err:
+            logging.warning(url_err)
+        else:
+            return True
+
+    # We cannot connect to any url, let's ask NetworkManager
+    # Problem: In a Virtualbox VM this returns true even when
+    # the host OS has no connection
+    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+    #    return True
+
+    return False
 
 def add_connection_watch(func):
     """ Add connection watch to Networkmanager """

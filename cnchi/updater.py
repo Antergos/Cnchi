@@ -79,12 +79,12 @@ class Updater(object):
         # Get local info (local update.info)
         with open(_update_info, "r") as local_update_info:
             response = local_update_info.read()
-            if len(response) > 0:
+            if response:
                 update_info = json.loads(response)
                 self.local_files = update_info['files']
 
         try:
-            req = requests.get(_update_info_url, stream=True)
+            req = requests.get(_update_info_url, stream=True, timeout=5)
         except requests.exceptions.ConnectionError as conn_error:
             logging.error(conn_error)
             return
@@ -94,7 +94,7 @@ class Updater(object):
             for chunk in req.iter_content(1024):
                 if chunk:
                     txt += chunk.decode()
-            if len(txt) > 0:
+            if txt:
                 update_info = json.loads(txt)
                 self.remote_version = update_info['version']
                 for remote_file in update_info['files']:
@@ -106,7 +106,7 @@ class Updater(object):
         """ Returns true if the Internet version of Cnchi is
             newer than the local one """
 
-        if len(self.remote_version) < 1:
+        if not self.remote_version:
             return False
 
         # Version is always: x.y.z
