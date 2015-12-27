@@ -6,8 +6,8 @@
     <title>Cnchi by Antergos</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -29,29 +29,110 @@
       </header>
       <section>
         <h1>
-<a name="cnchi" class="anchor" href="#cnchi"><span class="octicon octicon-link"></span></a>Cnchi</h1>
+<a id="cnchi" class="anchor" href="#cnchi" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cnchi</h1>
 
-<p>Graphical Installer for Antergos Linux (FKA Cinnarch Linux)
-<img src="http://antergos.com/wp-content/uploads/2013/08/third.png" alt="Cnchi"></p>
+<p><strong>Graphical Installer for Antergos Linux</strong></p>
+
+<p><a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"></a></p>
+
+<p>You are viewing the <code>master</code> branch.</p>
 
 <h2>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+<a id="current-status" class="anchor" href="#current-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Current Status</h2>
+
+<p>This is the latest, officially released version of Cnchi, AKA: <strong>Cnchi Stable</strong>. </p>
+
+<table>
+<thead>
+<tr>
+<th>Development Stage</th>
+<th>Version</th>
+<th>Code State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Cnchi Legacy</em></td>
+<td><em>v0.10.33</em></td>
+<td><em>Frozen</em></td>
+</tr>
+<tr>
+<td><strong>Cnchi Stable</strong></td>
+<td><strong>v0.12.x</strong></td>
+<td><strong>Bug Fixes Only</strong></td>
+</tr>
+<tr>
+<td>Cnchi Next</td>
+<td>v0.13.x</td>
+<td>Active Development</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage:</h2>
+
+<pre><code>lang=sh
+sudo -E cnchi.py
+</code></pre>
+
+<p>To create logs to help debug problems:</p>
+
+<pre><code>lang=sh
+sudo -E cnchi.py -dv
+</code></pre>
+
+<h2>
+<a id="translations" class="anchor" href="#translations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Translations</h2>
+
+<p>We manage our translations in transifex:</p>
 
 <ul>
-<li>gtk 3</li>
-<li>python 3</li>
-<li>python-gobject 3</li>
-<li>python-dbus</li>
+<li><a href="https://www.transifex.com/projects/p/antergos/">https://www.transifex.com/projects/p/antergos/</a></li>
+</ul>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<ul>
+<li>gtk3</li>
+<li>python3</li>
 <li>python-cairo</li>
-<li>libtimezonemap</li>
-<li>webkitgtk3</li>
-<li>parted (dosfstools, mtools, ntfs-3g, ntfsprogs)</li>
-<li>py3parted (pyparted on python3) -&gt; <a href="https://github.com/antergos/antergos-packages/tree/master/py3parted">https://github.com/antergos/antergos-packages/tree/master/py3parted</a>
-</li>
-<li>pacman</li>
-<li>pyalpm</li>
-<li>hwinfo</li>
-<li>hdparm</li>
+<li>python-dbus</li>
+<li>python-gobject</li>
+<li>python-mako</li>
+<li>python-requests</li>
+<li>pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)</li>
+<li>pyalpm (alpm)</li>
+<li>libtimezonemap (needed by Cnchi 0.6.x and older versions)</li>
+<li>webkit2gtk</li>
+<li>hdparm (needed by Cnchi 0.8.35 and older versions)</li>
+<li>hwinfo (needed by Cnchi 0.6.x and older versions)</li>
+<li>upower</li>
+<li>encfs, pam_encfs</li>
+<li>iso-codes</li>
+<li>clutter, clutter-gtk, clutter-gst (user info screen)</li>
+<li>cheese</li>
+</ul>
+
+<h2>
+<a id="unit-tests" class="anchor" href="#unit-tests" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unit tests</h2>
+
+<ul>
+<li>python-mock</li>
+</ul>
+
+<h2>
+<a id="fonts-needed-by-the-keyboard-widget" class="anchor" href="#fonts-needed-by-the-keyboard-widget" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fonts needed by the keyboard widget</h2>
+
+<ul>
+<li>ttf-aboriginal-sans</li>
+<li>ttf-indic-otf</li>
+<li>ttf-khmer</li>
+<li>ttf-lohit-fonts</li>
+<li>ttf-myanmar3</li>
+<li>ttf-thaana-fonts</li>
+<li>ttf-tlwg</li>
 </ul>
       </section>
       <footer>
@@ -63,4 +144,3 @@
     
   </body>
 </html>
-
