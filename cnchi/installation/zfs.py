@@ -497,15 +497,27 @@ class InstallationZFS(GtkBaseBox):
 
     def init_device(self, device_path, scheme="GPT"):
         """ Initialize device """
+
+        offset = 20480
+
         if scheme == "GPT":
             # Clean partition table to avoid issues!
             wrapper.sgdisk("zap-all", device_path)
 
-            # Clear all magic strings/signatures -
-            # mdadm, lvm, partition tables etc.
-            wrapper.dd("/dev/zero", device_path, bs=512, count=20480)
-            wrapper.wipefs(device_path)
+        # Clear all magic strings/signatures -
+        # mdadm, lvm, partition tables etc.
+        wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
 
+        # Clear the end of disk (where zfs info is stored)
+        try:
+            seek = int(call(["blockdev", "--getsz", device_path])) - offset
+            wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
+        except ValueError as ex:
+            logging.warning(ex)
+
+        wrapper.wipefs(device_path)
+
+        if scheme == "GPT":
             # Create fresh GPT
             wrapper.sgdisk("clear", device_path)
 
@@ -513,13 +525,7 @@ class InstallationZFS(GtkBaseBox):
             # Needed if the hard disk had a MBR partition table.
             call(["partprobe", device_path])
         else:
-            # DOS MBR partition table
-            # Start at sector 1 for 4k drive compatibility and correct
-            # alignment. Clean partitiontable to avoid issues!
-            wrapper.dd("/dev/zero", device_path, bs=512, count=20480)
-            wrapper.wipefs(device_path)
-
-            # Create DOS MBR
+            # Create fresh DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
 
         call(["sync"])
