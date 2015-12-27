@@ -805,6 +805,28 @@ class InstallationZFS(GtkBaseBox):
             err_output = err.output.decode().strip("\n")
             logging.warning(err_output)
 
+    @staticmethod
+    def get_pool_id(pool_name):
+        """ Get zpool id number """
+        output = call(["zpool", "import"], strip_eol=False)
+        if not output:
+            return None
+
+        name = identifier = state = None
+        lines = output.split("\n")
+        for line in lines:
+            if "pool:" in line:
+                name = line.split(": ")[1]
+            elif "id:" in line:
+                identifier = line.split(": ")[1]
+            elif "state:" in line:
+                state = line.split(": ")[1]
+                if name == pool_name and state == "ONLINE":
+                    return identifier
+                else:
+                    name = identifier = state = None
+        return None
+
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
 
@@ -914,13 +936,17 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "export", "-f", pool_name]
         call(cmd, fatal=True)
 
+        # Because of previous installs, maybe there're two or more pools
+        # named "antergos". Let's get the id of the correct one
+        pool_id = self.get_pool_id(pool_name)
+
         # Finally, re-import the pool by-id
-        logging.debug("Importing pool %s...", pool_name)
+        logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
         cmd = [
             "zpool", "import",
             "-d", "/dev/disk/by-id",
             "-R", DEST_DIR,
-            pool_name]
+            pool_id]
         call(cmd, fatal=True)
 
         # Copy created cache file to destination
