@@ -333,8 +333,10 @@ class AutoTimezoneProcess(multiprocessing.Process):
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
-        except Exception as general_error:
-            logging.error(general_error)
+        except Exception as ex:
+            template = "Error getting timezone coordinates. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             coords = None
 
         if coords:

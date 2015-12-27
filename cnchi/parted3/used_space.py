@@ -181,9 +181,13 @@ def get_used_btrfs(part):
     used = 0
     try:
         result = subprocess.check_output(["btrfs", "filesystem", "show", part])
-    except Exception as err:
+    except Exception as ex:
         result = None
         logging.error("Can't detect used space of BTRFS partition %s: %s", part, err)
+        template = "An exception of type {0} occured. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        logging.error(message)
+
 
     if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)

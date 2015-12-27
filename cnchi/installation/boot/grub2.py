@@ -52,27 +52,10 @@ except NameError as err:
 
 class Grub2(object):
     """ Class to perform boot loader installation """
-    def __init__(self, dest_dir, settings, mount_devices):
+    def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
-        self.mount_devices = mount_devices
-
-        self.method = settings.get("partition_mode")
-        self.root_device = self.mount_devices["/"]
-
-        self.root_uuid = fs.get_uuid(self.root_device)
-
-        if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_uuid(swap_partition)
-
-        if "/boot" in self.mount_devices:
-            boot_device = self.mount_devices["/boot"]
-        else:
-            # No dedicated /boot partition
-            boot_device = self.mount_devices["/"]
-        self.boot_uuid = fs.get_uuid(boot_device)
-
+        self.uuids = uuids
 
     def install(self):
         """ Install Grub2 bootloader """
@@ -90,12 +73,13 @@ class Grub2(object):
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
-        if len(self.root_uuid) == 0:
-            logging.warning("'ruuid' variable is not set. I can't check root UUID"
-                            "in grub.cfg, let's hope it's ok")
+        if "/" not in self.uuids:
+            logging.warning(
+                "Root uuid variable is not set. I can't check root UUID"
+                "in grub.cfg, let's hope it's ok")
             return
 
-        ruuid_str = 'root=UUID={0}'.format(self.root_uuid)
+        ruuid_str = 'root=UUID={0}'.format(self.uuids["/"])
 
         cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
         if cmdline_linux is None:
@@ -145,9 +129,9 @@ class Grub2(object):
         else:
             use_splash = ""
 
-        if "swap" in self.mount_devices:
+        if "swap" in self.uuids:
             cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(
-                self.swap_uuid,
+                self.uuids["swap"],
                 use_splash)
         else:
             cmd_linux_default = 'quiet {0}'.format(use_splash)
@@ -165,35 +149,28 @@ class Grub2(object):
         if self.settings.get('use_luks'):
             # When using separate boot partition,
             # add GRUB_ENABLE_CRYPTODISK to grub.cfg
-            if self.root_uuid != self.boot_uuid:
+            if self.uuids["/"] != self.uuids["/boot"]:
                 self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
 
             # Let GRUB automatically add the kernel parameters for
             # root encryption
             luks_root_volume = self.settings.get('luks_root_volume')
-
             logging.debug("Luks Root Volume: %s", luks_root_volume)
 
-            root_device = self.root_device
-
-            if (self.method == "advanced" and
+            if (self.settings.get("partition_mode") == "advanced" and
                     self.settings.get('use_luks_in_root')):
-                # Special case, in advanced when using luks in root device,
-                # we store it in luks_root_device
+                # In advanced, if using luks in root device,
+                # we store root device it in luks_root_device var
                 root_device = self.settings.get('luks_root_device')
+                self.uuids["/"] = fs.get_uuid(root_device)
 
-            root_uuid = fs.get_uuid(root_device)
-
-            logging.debug("Root device: %s", root_device)
-
-            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}".format(
-                root_uuid,
-                luks_root_volume)
+            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}"
+            cmd_linux = cmd_linux.format(self.uuids["/"], luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
                 cryptkey = " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root"
-                cryptkey = cryptkey.format(self.boot_uuid)
+                cryptkey = cryptkey.format(self.uuids["/boot"])
                 cmd_linux += cryptkey
 
             # Store grub line in settings, we'll use it later in
@@ -229,9 +206,10 @@ class Grub2(object):
                     grub_file.write('\n')
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
-        except Exception as general_error:
-            logging.error("Can't modify /etc/default/grub")
-            logging.error(general_error)
+        except Exception as ex:
+            template = "Can't modify /etc/default/grub. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
     def prepare_grub_d(self):
         """ Copies 10_antergos script into /etc/grub.d/ """
@@ -252,6 +230,41 @@ class Grub2(object):
                 pass
         else:
             logging.warning("Can't find script %s", script_path)
+
+    def run_mkconfig(self):
+        """ Create grub.cfg file using grub-mkconfig """
+        logging.debug("Generating grub.cfg...")
+
+        # Make sure that /dev and others are mounted (binded).
+        special_dirs.mount(self.dest_dir)
+
+        if self.settings.get("zfs"):
+            # grub-mkconfig does not properly detect the ZFS filesystem,
+            # so it is necessary to edit grub.cfg manually.
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+            with open(grub_cfg_path, "w") as grub_cfg:
+                grub_cfg.write('set timeout=2\n')
+                grub_cfg.write('set default=0\n\n')
+                grub_cfg.write('# (0) Antergos Linux\n')
+                grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
+                grub_cfg.write('\tsearch --no-floppy --label --set=root {0}\n'.format(zfs_pool_name))
+                grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
+                grub_cfg.write('\tinitrd /initramfs-linux.img\n')
+                grub_cfg.write('}\n')
+        else:
+            # Add -l option to os-prober's umount call so that it does not hang
+            self.apply_osprober_patch()
+            logging.debug("Running grub-mkconfig...")
+            locale = self.settings.get("locale")
+            cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
+            cmd_sh = ['sh', '-c', cmd]
+            if not chroot_call(cmd_sh, self.dest_dir, timeout=300):
+                msg = ("grub-mkconfig does not respond. Killing grub-mount and"
+                       "os-prober so we can continue.")
+                logging.error(msg)
+                call(['killall', 'grub-mount'])
+                call(['killall', 'os-prober'])
 
     def install_bios(self):
         """ Install Grub2 bootloader in a BIOS system """
@@ -279,24 +292,10 @@ class Grub2(object):
 
         self.install_locales()
 
-        # Add -l option to os-prober's umount call so that it does not hang
-        self.apply_osprober_patch()
+        self.run_mkconfig()
 
-        # Run grub-mkconfig last
-        logging.debug("Running grub-mkconfig...")
-        locale = self.settings.get("locale")
-
-        cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
-        cmd_sh = ['sh', '-c', cmd]
-        if chroot_call(cmd_sh, self.dest_dir, timeout=300) is False:
-            msg = ("grub-mkconfig does not respond. Killing grub-mount and"
-                   "os-prober so we can continue.")
-            logging.error(msg)
-            call(['killall', 'grub-mount'])
-            call(['killall', 'os-prober'])
-
-        cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        with open(cfg) as grub_cfg:
+        grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+        with open(grub_cfg_path) as grub_cfg:
             if "Antergos" in grub_cfg.read():
                 txt = _("GRUB(2) BIOS has been successfully installed.")
                 logging.info(txt)
@@ -368,28 +367,12 @@ class Grub2(object):
                     logging.warning(msg_failed, _("File not found."))
                 except FileExistsError:
                     logging.warning(msg_failed, _("File already exists."))
-                except Exception as general_error:
-                    logging.warning(msg_failed, general_error)
+                except Exception as ex:
+                    template = "An exception of type {0} occured. Arguments:\n{1!r}"
+                    message = template.format(type(ex).__name__, ex.args)
+                    logging.error(message)
 
-        # Run grub-mkconfig last
-        logging.debug("Generating grub.cfg")
-
-        # /dev and others need to be mounted (binded).
-        # We call mount_special_dirs here just to be sure
-        special_dirs.mount(self.dest_dir)
-
-        # Add -l option to os-prober's umount call so that it does not hang
-        self.apply_osprober_patch()
-
-        logging.debug("Running grub-mkconfig...")
-        locale = self.settings.get("locale")
-        cmd = ['sh', '-c', 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)]
-        if chroot_call(cmd, self.dest_dir, timeout=300) is False:
-            txt = ("grub-mkconfig appears to be hung. Killing grub-mount"
-                   " and os-prober so we can continue.")
-            logging.error(txt)
-            subprocess.check_call(['killall', 'grub-mount'])
-            subprocess.check_call(['killall', 'os-prober'])
+        self.run_mkconfig()
 
         paths = [
             os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
@@ -399,7 +382,6 @@ class Grub2(object):
                 "grub{0}.efi".format(spec_uefi_arch))]
 
         exists = True
-
         for path in paths:
             if not os.path.exists(path):
                 exists = False

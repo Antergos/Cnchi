@@ -78,10 +78,11 @@ def unmount_all_in_directory(dest_dir):
     # Unmount all swap devices
     cmd = ["swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
-    swaps = swaps.split("\n")
-    for name in filter(None, swaps):
-        if "/dev/zram" not in name:
-            call(["swapoff", name])
+    if swaps:
+        swaps = swaps.split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                call(["swapoff", name])
 
     # Get all mounted devices
     mount_result = call(["mount"]).split("\n")
@@ -358,10 +359,17 @@ class AutoPartition(object):
         msg = "Device details: %s UUID=%s LABEL=%s"
         logging.debug(msg, device, fs_uuid, fs_label)
 
-    def get_partition_path(self, device, part_num):
+    @staticmethod
+    def get_partition_path(device, part_num):
         """ This is awful and prone to fail. We should do some
             type of test here """
-        if "mmcblk" in device:
+
+        # Remove /dev/
+        path = device.path[5:]
+        if (path.startswith('rd/') or device.startswith('ida/') or
+                path.startswith('cciss/') or path.startswith('sx8/') or
+                path.startswith('mapper/') or path.startswith('mmcblk') or
+                path.startswith('md') or path.startswith('nvme')):
             return "{0}p{1}".format(device, part_num)
         else:
             return "{0}{1}".format(device, part_num)

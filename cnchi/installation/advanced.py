@@ -240,7 +240,7 @@ class InstallationAdvanced(GtkBaseBox):
                             partition = part[i]
         try:
             dev_path = partition.disk.device.path
-        except Exception:
+        except Exception as ex:
             dev_path = path
 
         if partition:
@@ -840,7 +840,7 @@ class InstallationAdvanced(GtkBaseBox):
         '''
         try:
             disk, result = self.disks[disk_path]
-        except Exception:
+        except Exception as ex:
             disk = None
         '''
 
@@ -2305,10 +2305,12 @@ class InstallationAdvanced(GtkBaseBox):
                         self.orig_label_dic[partition_path] != lbl):
                     try:
                         fs.label_fs(fisy, partition_path, lbl)
-                    except Exception as label_error:
+                    except Exception as ex:
                         # Catch all exceptions because not being able to label
                         # a partition shouldn't be fatal
-                        logging.warning(label_error)
+                        template = "An exception of type {0} occured. Arguments:\n{1!r}"
+                        message = template.format(type(ex).__name__, ex.args)
+                        logging.warning(message)
 
     def finalize_changes(self, disk):
         try:

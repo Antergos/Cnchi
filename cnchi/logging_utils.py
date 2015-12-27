@@ -73,8 +73,8 @@ class ContextFilter(Singleton):
         try:
             r = requests.get(url, headers=headers)
             info = json.loads(r.json())
-        except Exception as err:
-            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(err)
+        except Exception as ex:
+            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(ex)
             return
 
         try:
@@ -123,6 +123,8 @@ class ContextFilter(Singleton):
                 headers = {'X-Cnchi-Installer': CNCHI_VERSION}
                 r = requests.get(url, headers=headers)
                 res = json.loads(r.json())
-        except Exception as err:
+        except Exception as ex:
             logger = logging.getLogger()
-            logger.error("Sending install result failed with Error: %s", err)
+            template = "Can't send install result. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logger.error(message)

@@ -146,8 +146,10 @@ class TimezoneMap(Gtk.Widget):
 
             self._pin = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
-        except Exception as err:
-            print(err)
+        except Exception as ex:
+            template = "Error loading timezone widget. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
             sys.exit(1)
 
         self.tzdb = tz.Database()
@@ -337,9 +339,9 @@ class TimezoneMap(Gtk.Widget):
         path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
         try:
             orig_highlight = GdkPixbuf.Pixbuf.new_from_file(path)
-        except Exception as err:
+        except Exception as ex:
             print("Can't load {0} image file".format(path))
-            print(err)
+            print(ex)
             return
 
         highlight = orig_highlight.scale_simple(

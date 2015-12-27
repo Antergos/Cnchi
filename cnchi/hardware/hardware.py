@@ -221,8 +221,11 @@ class HardwareInstall(object):
                     self.all_objects.append(obj)
                 except ImportError as err:
                     logging.error("Error importing %s from %s : %s", name, package, err)
-                except Exception as err:
-                    logging.error("Unexpected error importing %s: %s", package, err)
+                except Exception as ex:
+                    logging.error("Unexpected error importing %s", package)
+                    template = "An exception of type {0} occured. Arguments:\n{1!r}"
+                    message = template.format(type(ex).__name__, ex.args)
+                    logging.error(message)
 
         try:
             # Detect devices

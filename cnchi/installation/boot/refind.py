@@ -38,26 +38,10 @@ from misc.run_cmd import chroot_call
 
 class REFInd(object):
     """ Class to perform boot loader installation """
-    def __init__(self, dest_dir, settings, mount_devices):
+    def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
-        self.mount_devices = mount_devices
-
-        self.method = settings.get("partition_mode")
-        self.root_device = self.mount_devices["/"]
-
-        self.root_uuid = fs.get_uuid(self.root_device)
-
-        if "swap" in self.mount_devices:
-            swap_partition = self.mount_devices["swap"]
-            self.swap_uuid = fs.get_uuid(swap_partition)
-
-        if "/boot" in self.mount_devices:
-            boot_device = self.mount_devices["/boot"]
-        else:
-            # No dedicated /boot partition
-            boot_device = self.mount_devices["/"]
-        self.boot_uuid = fs.get_uuid(boot_device)
+        self.uuids = uuids
 
     def install(self):
         """ Installs rEFInd boot loader

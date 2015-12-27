@@ -30,6 +30,7 @@ import parted
 
 import misc.extra as misc
 from misc.extra import InstallError
+from misc.run_cmd import call
 
 import show_message as show
 from installation import action
@@ -319,7 +320,6 @@ class InstallationZFS(GtkBaseBox):
             else:
                 is_ok = False
                 msg = _("You must select at least one drive")
-
         elif pool_type == "Stripe" or pool_type == "Mirror":
             if num_drives > 1:
                 is_ok = True
@@ -327,7 +327,6 @@ class InstallationZFS(GtkBaseBox):
                 is_ok = False
                 msg = _("For the {0} pool_type, you must select at least two "
                         "drives").format(pool_type)
-
         elif "RAID" in pool_type:
             min_drives = 3
             min_parity_drives = 1
@@ -335,7 +334,6 @@ class InstallationZFS(GtkBaseBox):
             if pool_type == "RAID-Z2":
                 min_drives = 4
                 min_parity_drives = 2
-
             elif pool_type == "RAID-Z3":
                 min_drives = 5
                 min_parity_drives = 3
@@ -474,6 +472,13 @@ class InstallationZFS(GtkBaseBox):
             self.zfs_options["swap_size"] = 8192
 
         # Get pool name
+
+        # TODO: The pool name must begin with a letter, and
+        # can only contain alphanumeric  characters  as  well  as  underscore
+        # ("_"),  dash ("-"), period ("."), colon (":"), and space (" "). The
+        # pool names "mirror", "raidz", "spare" and "log"  are  reserved,  as
+        # are  names beginning with the pattern "c[0-9]".
+
         txt = self.ui.get_object("pool_name_entry").get_text()
         if not txt:
             txt = "antergos"
@@ -493,32 +498,38 @@ class InstallationZFS(GtkBaseBox):
 
     def init_device(self, device_path, scheme="GPT"):
         """ Initialize device """
+
+        offset = 20480
+
         if scheme == "GPT":
             # Clean partition table to avoid issues!
             wrapper.sgdisk("zap-all", device_path)
 
-            # Clear all magic strings/signatures -
-            # mdadm, lvm, partition tables etc.
-            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
-            wrapper.wipefs(device_path)
+        # Clear all magic strings/signatures -
+        # mdadm, lvm, partition tables etc.
+        wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
 
+        # Clear the end of disk (where zfs info is stored)
+        try:
+            seek = int(call(["blockdev", "--getsz", device_path])) - offset
+            wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
+        except ValueError as ex:
+            logging.warning(ex)
+
+        wrapper.wipefs(device_path)
+
+        if scheme == "GPT":
             # Create fresh GPT
             wrapper.sgdisk("clear", device_path)
 
             # Inform the kernel of the partition change.
             # Needed if the hard disk had a MBR partition table.
-            self.check_call(["partprobe", device_path])
+            call(["partprobe", device_path])
         else:
-            # DOS MBR partition table
-            # Start at sector 1 for 4k drive compatibility and correct
-            # alignment. Clean partitiontable to avoid issues!
-            wrapper.dd("/dev/zero", device_path, bs=512, count=2048)
-            wrapper.wipefs(device_path)
-
-            # Create DOS MBR
+            # Create fresh DOS MBR
             wrapper.parted_mktable(device_path, "msdos")
 
-        self.check_call(["sync"])
+        call(["sync"])
 
     def append_change(self, action_type, device, info=""):
         """ Add change for summary screen """
@@ -584,12 +595,17 @@ class InstallationZFS(GtkBaseBox):
         device_paths = self.zfs_options["device_paths"]
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
+        # Wipe all disks that will be part of the installation.
+        # This cannot be undone!
+        for device_path in device_paths:
+            self.init_device(device_path, self.zfs_options["scheme"])
+
         device_path = device_paths[0]
         solaris_partition_number = -1
 
-        if self.zfs_options["scheme"] == "GPT":
-            self.init_device(device_path, "GPT")
+        self.settings.set('bootloader_device', device_path)
 
+        if self.zfs_options["scheme"] == "GPT":
             part_num = 1
 
             if not self.uefi:
@@ -636,14 +652,11 @@ class InstallationZFS(GtkBaseBox):
 
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
             solaris_partition_number = part_num
-
-            # Now init all other devices that will form part of the pool
-            for device_path in device_paths[1:]:
-                self.init_device(device_path, "GPT")
-                wrapper.sgdisk_new(device_path, 1, "ANTERGOS_ZFS", 0, "BF00")
+            self.devices['root'] = "{0}{1}".format(device_path, part_num)
+            # self.fs_devices[self.devices['root']] = "zfs"
+            self.mount_devices['/'] = self.devices['root']
         else:
             # MBR
-            self.init_device(device_path, "MBR")
 
             # Create boot partition (all sizes are in MiB)
             # if start is -1 wrapper.parted_mkpart assumes that our partition
@@ -670,15 +683,13 @@ class InstallationZFS(GtkBaseBox):
             start = end
             wrapper.parted_mkpart(device_path, "primary", start, "-1s")
             solaris_partition_number = 2
-
-            # Now init all other devices that will form part of the pool
-            for device_path in device_paths[1:]:
-                self.init_device(device_path, "MBR")
-                wrapper.parted_mkpart(device_path, "primary", -1, "-1s")
+            self.devices['root'] = "{0}{1}".format(device_path, 2)
+            # self.fs_devices[self.devices['root']] = "zfs"
+            self.mount_devices['/'] = self.devices['root']
 
         # Wait until /dev initialized correct devices
-        self.check_call(["udevadm", "settle"])
-        self.check_call(["sync"])
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         self.create_zfs_pool(solaris_partition_number)
 
@@ -692,39 +703,6 @@ class InstallationZFS(GtkBaseBox):
                 dest_path = os.readlink(entry.path)
                 device = dest_path.split("/")[-1]
                 self.ids[device] = entry.name
-
-    @staticmethod
-    def check_call(cmd):
-        """ Helper function """
-        try:
-            # Convert list and get sure all items are converted to str
-            cmd_line = ' '.join(str(x) for x in cmd)
-            logging.debug(cmd_line)
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as process_error:
-            txt = "Command {0} has failed".format(process_error.cmd)
-            logging.error(txt)
-            txt = _("Command {0} has failed").format(process_error.cmd)
-            raise InstallError(txt)
-
-    @staticmethod
-    def zfs_export_pool(pool):
-        """ Makes the kernel to flush all pending data to disk, writes data to
-            the disk acknowledging that the export was done, and removes all
-            knowledge that the storage pool existed in the system """
-        try:
-            logging.debug("Exporting pool %s...", pool)
-            cmd = ["zpool", "export", pool]
-            subprocess.check_call(cmd)
-        except subprocess.CalledProcessError as err:
-            try:
-                cmd = ["zpool", "export", "-f", pool]
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as err:
-                txt = "Command {0} has failed".format(err.cmd)
-                logging.error(txt)
-                txt = _("Command {0} has failed").format(err.cmd)
-                raise InstallError(txt)
 
     def get_home_size(self, pool_name):
         """ Get recommended /home zvol size in GB """
@@ -746,18 +724,16 @@ class InstallationZFS(GtkBaseBox):
             cmd_line = "zpool list -H -o size {0}".format(pool_name)
             logging.debug(cmd_line)
             cmd = cmd_line.split()
-            pool_size = subprocess.check_output(cmd).decode()
-            # Force to use a point as float delimiter
-            # (everyone except English/Americans uses a comma)
-            pool_size = float(pool_size.replace(",", "."))
+            output = subprocess.check_output(cmd)
+            pool_size = output.decode().strip('\n')
             if 'M' in pool_size:
-                pool_size = int(pool_size[:-2]) // 1024
+                pool_size = int(pool_size[:-1]) // 1024
             elif 'G' in pool_size:
-                pool_size = int(pool_size[:-2])
+                pool_size = int(pool_size[:-1])
             elif 'T' in pool_size:
-                pool_size = int(pool_size[:-2]) * 1024
+                pool_size = int(pool_size[:-1]) * 1024
             elif 'P' in pool_size:
-                pool_size = int(pool_size[:-2]) * 1024 * 1024
+                pool_size = int(pool_size[:-1]) * 1024 * 1024
         except (subprocess.CalledProcessError, ValueError) as err:
             logging.warning(
                 "Can't get zfs %s pool size: %s",
@@ -824,16 +800,39 @@ class InstallationZFS(GtkBaseBox):
             "-o", "checksum=off",
             "-o", "com.sun:auto-snapshot=false",
             "{0}/{1}".format(pool_name, vol_name)]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
     @staticmethod
     def set_zfs_mountpoint(zvol, mount_point):
         """ Sets mount point of zvol and tries to mount it """
         try:
             cmd = ["zfs", "set", "mountpoint={0}".format(mount_point), zvol]
-            output = subprocess.check_output(cmd)
+            output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
-            logging.warning(err.output)
+            err_output = err.output.decode().strip("\n")
+            logging.warning(err_output)
+
+    @staticmethod
+    def get_pool_id(pool_name):
+        """ Get zpool id number """
+        output = call(["zpool", "import"])
+        if not output:
+            return None
+
+        name = identifier = state = None
+        lines = output.split("\n")
+        for line in lines:
+            if "pool:" in line:
+                name = line.split(": ")[1]
+            elif "id:" in line:
+                identifier = line.split(": ")[1]
+            elif "state:" in line:
+                state = line.split(": ")[1]
+                if name == pool_name and state == "ONLINE":
+                    return identifier
+                else:
+                    name = identifier = state = None
+        return None
 
     def create_zfs_pool(self, solaris_partition_number):
         """ Create the root zpool """
@@ -844,7 +843,7 @@ class InstallationZFS(GtkBaseBox):
             raise InstallError(txt)
 
         # Make sure the ZFS modules are loaded
-        self.check_call(["modprobe", "zfs"])
+        call(["modprobe", "zfs"])
 
         first_disk = True
         devices_ids = []
@@ -863,17 +862,23 @@ class InstallationZFS(GtkBaseBox):
                 id_path = "/dev/disk/by-id/{0}-part{1}".format(
                     device_id,
                     solaris_partition_number)
+                cmd = ["zpool", "labelclear", "-f", id_path]
+                call(cmd)
                 first_disk = False
             else:
                 # Use full device for the other disks
-                id_path = device_id
+                id_path = "/dev/disk/by-id/{0}".format(device_id)
                 cmd = ["zpool", "labelclear", "-f", id_path]
-                self.check_call(cmd)
+                call(cmd)
 
             devices_ids.append(id_path)
 
-        line = " ".join(devices_ids)
+        line = ", ".join(devices_ids)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
+
+        # Just in case...
+        if os.path.exists("/etc/zfs/zpool.cache"):
+            os.remove("/etc/zfs/zpool.cache")
 
         try:
             os.mkdir(DEST_DIR, mode=0o755)
@@ -890,39 +895,35 @@ class InstallationZFS(GtkBaseBox):
         # Command zpool
         # Create zroot /dev/disk/by-id/id-to-partition
         # This will be our / (root) system
-        logging.debug("Creating zfs pool %s", pool_name)
         cmd = ["zpool", "create", "-f"]
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
         cmd.extend(["-m", DEST_DIR, pool_name])
-        if pool_type != "None" and pool_type in self.pool_types.values():
-            cmd.extend(pool_type)
+        if pool_type in self.pool_types.values() and pool_type not in ["None", "Stripe"]:
+            pool_type = pool_type.lower().replace("-", "")
+            cmd.append(pool_type)
         cmd.extend(devices_ids)
-        self.check_call(cmd)
+        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
+        call(cmd, fatal=True)
 
         # Set the mount point of the root filesystem
-        # self.check_call(["zfs", "set", "mountpoint=legacy", pool_name])
-        #self.check_call(["zfs", "set", "mountpoint=/", pool_name])
         self.set_zfs_mountpoint(pool_name, "/")
 
         # Set the bootfs property on the descendant root filesystem so the
         # boot loader knows where to find the operating system.
         cmd = ["zpool", "set", "bootfs={0}".format(pool_name), pool_name]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
         # Create zpool.cache file
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        self.check_call(cmd)
+        call(cmd, fatal=True)
 
         # Create any zfs subvolumes
-
         if self.settings.get('use_home'):
             # Create home zvol
             home_size = self.get_home_size(pool_name)
             logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
             self.create_zfs_vol(pool_name, "home", home_size)
-            # cmd = ["zfs", "set", "mountpoint=/home", "{0}/home".format(pool_name)]
-            # self.check_call(cmd)
             self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
 
         # Create swap zvol
@@ -930,30 +931,35 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Creating zfs subvolume 'swap' (%dGB)", swap_size)
         self.create_zfs_vol(pool_name, "swap", swap_size)
 
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
+
         # Export the pool
-        self.zfs_export_pool(pool_name)
+        # Makes the kernel to flush all pending data to disk, writes data to
+        # the disk acknowledging that the export was done, and removes all
+        # knowledge that the storage pool existed in the system
+        logging.debug("Exporting pool %s...", pool_name)
+        cmd = ["zpool", "export", "-f", pool_name]
+        call(cmd, fatal=True)
+
+        # Because of previous installs, maybe there're two or more pools
+        # named "antergos". Let's get the id of the correct one
+        pool_id = self.get_pool_id(pool_name)
 
         # Finally, re-import the pool by-id
+        logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
         cmd = [
             "zpool", "import",
             "-d", "/dev/disk/by-id",
             "-R", DEST_DIR,
-            pool_name]
-        self.check_call(cmd)
-
-        ## Set the mount point of the root filesystem
-        # cmd = ["zfs", "set", "mountpoint=/", pool_name]
-        # self.check_call(cmd)
-
-        ## Create zpool.cache file
-        #cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        #self.check_call(cmd)
+            pool_id]
+        call(cmd, fatal=True)
 
         # Copy created cache file to destination
         try:
             dst_dir = os.path.join(DEST_DIR, "etc/zfs")
             os.makedirs(dst_dir, mode=0o755, exist_ok=True)
-
             src = "/etc/zfs/zpool.cache"
             dst = os.path.join(dst_dir, "zpool.cache")
             shutil.copyfile(src, dst)
