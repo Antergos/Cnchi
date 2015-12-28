@@ -363,7 +363,10 @@ class InstallationZFS(GtkBaseBox):
         msg = ""
         if (pool_type in pool_types and
                 pool_type not in self.pool_types_help_shown):
-            if pool_type == "Stripe":
+            if pool_type == "None":
+                msg = _("Use ZFS on one of your disks, but do not create any "
+                        "type of zfs pool with the other ones.")
+            elif pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
                         "space-balancing makes a span act like a RAID0 stripe. "
                         "The space is added together. Provided all the devices "
@@ -495,7 +498,7 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
-    # -------------------------------------------------------------------------
+    # ZFS Creation starts here -------------------------------------------------
 
     def init_device(self, device_path, scheme="GPT"):
         """ Initialize device """
@@ -874,7 +877,7 @@ class InstallationZFS(GtkBaseBox):
 
         if pool_type == "stripe":
             # Add the other devices.
-            cmd = ["zpool", "add"]
+            cmd = ["zpool", "add", "-f"]
             cmd.append(pool_name)
             cmd.extend(devices_ids[1:])
             call(cmd, fatal=True)
