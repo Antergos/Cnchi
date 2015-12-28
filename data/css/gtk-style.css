@@ -109,12 +109,15 @@ GtkProgressBar.progressbar {
 	padding-right: 0px;
 }
 
-.list {
+/*.list {
 	background-color: #f9f9f9;
-}
+}*/
 
 GtkListBoxRow:active, .list-row:active, .list-row:selected {
-    background-color: #07A6ED;
+    border-color: shade(#07A6ED, 0.8);
+	background-image: linear-gradient(to bottom, #07A6ED, #079fe6);
+	border-bottom: 1px solid rgba(150, 150, 150, 0.1);
+	border-top: 1px solid rgba(150, 150, 150, 0.1);
 }
 
 #tryit_btn, #graph_btn {
@@ -344,12 +347,12 @@ StateBox {
 .check_screen {
 	padding: 0px 40px;
 }
-.state_box_container {
-background-color: #ffffff;
+.state_box_container, .list_box {
+background-color: #f7fafd;
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-.state_box, .state_box .horizontal {
+.state_box, .state_box .horizontal, .list_box_row {
 border-top:none;
 border-left: none;
 border-right: none;
@@ -363,7 +366,7 @@ outline-top-right-radius: 0px;
 outline-offset: 0px;
 border-image-width: 0px;
 }
- .state_box .horizontal {
+ .state_box .horizontal, .list_box_row {
 border-bottom: 1px solid rgba(0, 0, 0, 0.1);
  padding: 15px 20px;
 }
@@ -373,4 +376,10 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.1);
  }
  .state_box .horizontal:prelight {
 	 background-color: rgba(179, 199, 234, 0.67);
+ }
+ .cn_bold_text {
+	 font-weight: 700;
+ }
+ .list_box_row .list_row_box {
+	 padding: 15px;
  }

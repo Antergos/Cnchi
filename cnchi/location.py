@@ -56,6 +56,7 @@ class Location(GtkBaseBox):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.listbox.get_style_context().add_class('list_box')
 
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
@@ -83,23 +84,7 @@ class Location(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("The location you select will be used to help determine the "
-                "system locale. It should normally be the country in which "
-                "you reside. Here is a shortlist of locations based on the "
-                "language you selected.")
-
-        self.label_help.set_text(txt)
-        self.label_help.set_name("label_help")
-
-        txt = _("Country, territory or area:")
-        txt = "<span weight='bold'>{0}</span>".format(txt)
-        self.label_choose_country.set_markup(txt)
-
-        check = self.ui.get_object('show_all_locations_checkbutton')
-        txt = _("Show all locations")
-        check.set_label(txt)
-
-        self.header.set_subtitle(_("Select your location"))
+        pass
 
     def select_first_listbox_item(self):
         listbox_row = self.listbox.get_children()[0]
@@ -206,11 +191,14 @@ class Location(GtkBaseBox):
         for area in areas:
             label = Gtk.Label.new()
             label.set_markup(area)
-            label.show_all()
+            list_box_row = Gtk.ListBoxRow.new()
+            list_box_row.get_style_context().add_class('list_box_row')
+            list_box_row.show_all()
+            list_box_row.add(label)
             if country and '(' + country + ')' in area:
-                self.listbox.add(label)
+                self.listbox.add(list_box_row)
             else:
-                labels.append(label)
+                labels.append(list_box_row)
 
         for label in labels:
             self.listbox.add(label)
