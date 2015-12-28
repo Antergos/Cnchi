@@ -317,6 +317,7 @@ class InstallationZFS(GtkBaseBox):
             if num_drives == 1:
                 is_ok = True
             else:
+                is_ok = False
                 msg = _("You must select one drive")
         elif pool_type in ["Stripe", "Mirror"]:
             if num_drives > 1:
@@ -348,6 +349,8 @@ class InstallationZFS(GtkBaseBox):
                             "drives for the parity. RAID-Z = 1 disk, RAIDZ-2 "
                             "= 2 disks, and so on.")
                     msg = msg.format(pool_type, min_parity_drives)
+                else:
+                    is_ok = True
 
         if not is_ok and show_warning:
             show.message(self.get_toplevel(), msg)
