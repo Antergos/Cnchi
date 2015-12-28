@@ -314,12 +314,11 @@ class InstallationZFS(GtkBaseBox):
                 num_drives += 1
 
         if pool_type == "None":
-            if num_drives > 0:
+            if num_drives == 1:
                 is_ok = True
             else:
-                is_ok = False
-                msg = _("You must select at least one drive")
-        elif pool_type == "Stripe" or pool_type == "Mirror":
+                msg = _("You must select one drive")
+        elif pool_type in ["Stripe", "Mirror"]:
             if num_drives > 1:
                 is_ok = True
             else:
@@ -382,7 +381,7 @@ class InstallationZFS(GtkBaseBox):
                         "which can fail while the pool remains operational.")
 
             self.pool_types_help_shown.append(pool_type)
-            if len(msg) > 0:
+            if msg:
                 show.message(self.get_toplevel(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
@@ -837,19 +836,26 @@ class InstallationZFS(GtkBaseBox):
         """ Create zpool """
 
         if pool_type not in self.pool_types.values():
-            raise InstallError("Pool type {0} unknown".format(pool_type))
+            raise InstallError("Unknown pool type: {0}".format(pool_type))
 
         cmd = ["zpool", "create", "-f"]
+
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["-m", DEST_DIR, pool_name])
+
+        cmd.extend(["-m", DEST_DIR])
+
+        cmd.append(pool_name)
 
         pool_type = pool_type.lower().replace("-", "")
 
         if pool_type in ["none", "stripe"]:
+            # If we add here all devices, zpool "sometimes" fails
             cmd.append(devices_ids[0])
         elif pool_type == "mirror":
             if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
+                # Try to mirror pair of devices
+                # (mirrors of two devices each)
                 for i,k in zip(devices_ids[0::2], devices_ids[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
@@ -862,6 +868,13 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
+
+        if pool_type == "stripe":
+            # Add the other devices.
+            cmd = ["zpool", "add"]
+            cmd.append(pool_name)
+            cmd.extend(devices_ids[1:])
+            call(cmd, fatal=True)
 
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
