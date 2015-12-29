@@ -134,6 +134,8 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.settings.set('desktop_ask', False)
                 logging.debug("Cnchi will install the %s desktop environment", my_desktop)
 
+        self.is_minimal = os.path.exists('/home/antergos/.config/openbox')
+
         # Create a queue. Will be used to report pacman messages
         # (pacman/pac.py) to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
@@ -202,18 +204,16 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
+        # Hide the progress bar for default iso.
+        if not os.path.exists('/home/antergos/.config/openbox'):
+            self.progressbar.hide()
+            self.set_focus(None)
+
         misc.gtk_refresh()
 
         self.cnchi_started = True
         if self.timezone_start_needed:
             self.on_has_internet_connection()
-
-        # Hide the progress bar for default iso. Skip the welcome screen for minimal iso.
-        if not os.path.exists('/home/antergos/.config/openbox'):
-            self.progressbar.hide()
-            self.set_focus(None)
-        else:
-            self.on_forward_button_clicked()
 
     def prepare_shared_parameters(self):
         """
@@ -232,7 +232,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['main_progressbar'] = self.progressbar
         self.params['process_list'] = self.process_list
         self.params['checks_are_optional'] = self.cmd_line.no_check
-        self.params['disable_tryit'] = self.cmd_line.disable_tryit
+        self.params['disable_tryit'] = self.cmd_line.disable_tryit if not self.is_minimal else True
         self.params['disable_rank_mirrors'] = self.cmd_line.disable_rank_mirrors
 
     def initialize_gui(self):
