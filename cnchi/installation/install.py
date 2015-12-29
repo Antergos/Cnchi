@@ -55,6 +55,8 @@ from mako.template import Template
 
 import hardware.hardware as hardware
 
+from installation.boot import loader
+
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
@@ -166,16 +168,16 @@ class Installation(object):
         # Mount root and boot partitions (only if it's needed)
         # Not doing this in automatic mode as AutoPartition class mounts
         # the root and boot devices itself.
-        if root_partition:
-            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
-            logging.debug(txt)
-            cmd = ['mount', root_partition, DEST_DIR]
-            call(cmd, fatal=True)
-        elif self.method == "zfs":
+        if self.method == "zfs":
             # Mount /
             logging.debug("ZFS: Mounting root")
             cmd = ["zfs", "mount", "-a"]
             call(cmd)
+        elif root_partition:
+            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
+            logging.debug(txt)
+            cmd = ['mount', root_partition, DEST_DIR]
+            call(cmd, fatal=True)
 
         # We also mount the boot partition if it's needed
         boot_path = os.path.join(DEST_DIR, "boot")
@@ -281,8 +283,10 @@ class Installation(object):
             self.hardware_install = hardware.HardwareInstall(
                 use_proprietary_graphic_drivers=proprietary)
             self.hardware_install.pre_install(DEST_DIR)
-        except Exception as general_error:
-            logging.warning("Unknown error in hardware module. Output: %s", general_error)
+        except Exception as ex:
+            template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
         logging.debug("Downloading packages...")
         self.download_packages()
@@ -373,10 +377,12 @@ class Installation(object):
         # Init pyalpm
         try:
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
-        except Exception:
+        except Exception as ex:
             self.pacman = None
-            logging.error("Can't initialize pyalpm.")
-            raise InstallError(_("Can't initialize pyalpm."))
+            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
+            raise InstallError(message)
 
         # Refresh pacman databases
         if not self.pacman.refresh():
@@ -1123,10 +1129,10 @@ class Installation(object):
             try:
                 logging.debug("Running hardware drivers post-install jobs...")
                 self.hardware_install.post_install(DEST_DIR)
-            except Exception as general_error:
-                logging.error(
-                    "Unknown error in hardware module. Output: %s",
-                    general_error)
+            except Exception as ex:
+                template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
 
         # Setup user
 
@@ -1227,6 +1233,13 @@ class Installation(object):
         # reliably unmount the target partition.
         chroot_call(['killall', '-9', 'gpg-agent'])
 
+        # FIXME: Temporary workaround for spl and zfs packages
+        # This should be fixed. I use this here just for testing purposes
+        # hardcoding this here is a VERY bad idea :p
+        zfs_version = "0.6.5.3"
+        chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
+        chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
@@ -1280,22 +1293,24 @@ class Installation(object):
         if self.settings.get('bootloader_install'):
             try:
                 logging.debug("Installing bootloader...")
-                from installation import bootloader
-                boot_loader = bootloader.Bootloader(
+                from installation.boot import loader
+                boot_loader = loader.Bootloader(
                     DEST_DIR,
                     self.settings,
                     self.mount_devices)
                 boot_loader.install()
-            except Exception as general_error:
-                logging.warning("Cannot install bootloader: %s", general_error)
+            except Exception as ex:
+                template = "Cannot install bootloader. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
 
         # Create an initial database for mandb
-        # logging.debug("Updating man database")
-        # chroot_call(["mandb", "--quiet"])
+        logging.debug("Updating man database")
+        chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
-        # logging.debug("Updating pkgfile database")
-        # chroot_call(["pkgfile", "--update"])
+        logging.debug("Updating pkgfile database")
+        chroot_call(["pkgfile", "--update"])
 
         # Copy installer log to the new installation
         logging.debug("Copying install log to /var/log.")

@@ -111,10 +111,10 @@ def create(alpm, package_name, pacman_conf_file):
 
     try:
         download_queue, not_found, missing_deps = build_download_queue(alpm, args=options)
-    except Exception as build_error:
-        msg = "Unable to create download queue for package {0}".format(package_name)
-        logging.error(msg)
-        logging.exception(build_error)
+    except Exception as ex:
+        template = "Unable to create download queue for package {0}. An exception of type {1} occured. Arguments:\n{2!r}"
+        message = template.format(package_name, type(ex).__name__, ex.args)
+        logging.error(message)
         return None
 
     if not_found:
@@ -321,8 +321,8 @@ def build_download_queue(alpm, args=None):
     try:
         conf_file = pargs.conf
         alpm = pac.Pac(conf_path=conf_file, callback_queue=None)
-    except Exception as err:
-        logging.error("Can't initialize pyalpm: %s", err)
+    except Exception as ex:
+        logging.error("Can't initialize pyalpm: %s", ex)
         return None, None, None
     '''
 
@@ -492,9 +492,10 @@ def test():
 
         pacman.release()
         del pacman
-
-    except Exception as err:
-        logging.error("Can't initialize pyalpm: %s", err)
+    except Exception as ex:
+        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        logging.error(message)
 
 ''' Test case '''
 if __name__ == '__main__':

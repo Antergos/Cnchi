@@ -64,8 +64,9 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
             stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
-        output = output.decode().strip('\n')
+        output = output.decode()
         if output:
+            output = output.strip('\n')
             logging.debug(output)
         return output
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:

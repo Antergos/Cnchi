@@ -79,15 +79,19 @@ def run(dest_dir, settings, mount_devices, blvm):
         hooks.append("resume")
 
     if settings.get("zfs"):
-        modules.append("zfs")
+        # the zfs hook must come before the filesystems hook
+        hooks.append("zfs")
 
     hooks.append("filesystems")
 
-    if settings.get('btrfs') and cpu is not 'genuineintel':
-        modules.append('crc32c')
-    elif settings.get('btrfs') and cpu is 'genuineintel':
-        modules.append('crc32c-intel')
-    else:
+    if settings.get('btrfs'):
+        if cpu is 'genuineintel':
+            modules.append('crc32c-intel')
+        else:
+            modules.append('crc32c')
+
+    if not settings.get('btrfs') and not settings.get("zfs"):
+        # Use the fsck hook only if not using btrfs or zfs
         hooks.append("fsck")
 
     set_hooks_and_modules(dest_dir, hooks, modules)

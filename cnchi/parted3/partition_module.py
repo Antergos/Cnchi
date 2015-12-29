@@ -116,10 +116,11 @@ def get_devices():
             except parted.DiskLabelException:
                 # logging.warning('Unrecognised disk label in device %s.', dev.path)
                 result = UNRECOGNISED_DISK_LABEL
-            except Exception as general_error:
-                logging.error(general_error)
-                msg = _("Cannot get devices information: {0}").format(general_error)
-                show.error(None, msg)
+            except Exception as ex:
+                template = "Cannot get devices information. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
+                show.error(None, message)
                 result = UNKNOWN_ERROR
             finally:
                 disk_dic[dev.path] = (disk_obj, result)
@@ -191,12 +192,11 @@ def delete_partition(diskob, part):
     """ Remove partition from disk object """
     try:
         diskob.deletePartition(part)
-    except Exception as general_error:
-        txt = _("Can't delete partition {0}").format(part)
-        logging.error(txt)
-        logging.error(general_error)
-        debug_txt = "{0}\n{1}".format(txt, general_error)
-        show.error(None, debug_txt)
+    except Exception as ex:
+        template = "Cannot delete partition {1}. An exception of type {1} occured. Arguments:\n{2!r}"
+        message = template.format(part, type(ex).__name__, ex.args)
+        logging.error(message)
+        show.error(None, message)
 
 
 def get_partition_size(diskob, part):
@@ -341,8 +341,8 @@ def set_flag(flagno, part):
     ret = (0, None)
     try:
         part.setFlag(flagno)
-    except Exception as general_error:
-        ret = (1, general_error)
+    except Exception as ex:
+        ret = (1, ex)
     return ret
 
 
@@ -351,8 +351,8 @@ def unset_flag(flagno, part):
     ret = (0, None)
     try:
         part.setFlag(flagno)
-    except Exception as general_error:
-        ret = (1, general_error)
+    except Exception as ex:
+        ret = (1, ex)
     return ret
 
 

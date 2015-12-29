@@ -110,9 +110,11 @@ def setup(username, dest_dir, password):
     try:
         backup_conf_files(dest_dir)
         setup_conf_files(dest_dir)
-    except Exception as general_error:
+    except Exception as ex:
         logging.error("Can't create and modify encfs configuration files.")
-        logging.error(general_error)
+        template = "An exception of type {0} occured. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        logging.error(message)
         logging.error("Home directory won't be encrypted.")
         return False
 

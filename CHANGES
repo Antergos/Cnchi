@@ -1,3 +1,4 @@
+[2015-12-29 17:51:36 -0600]  fix bug in auto_partition (cherry picked from commit 6d260a9)          Dustin Falgout  {acdb508}
 [2015-12-19 14:39:08 +0100]  Little modifications in run_cmd                                            karasu      {d012ef2}
 [2015-12-19 13:27:37 +0100]  Do not log as warning when update.info is missing                          karasu      {8deaa14}
 [2015-12-17 20:05:25 +0100]  Do not fail even if timezonemap.xml is not found                           karasu      {d13e689}

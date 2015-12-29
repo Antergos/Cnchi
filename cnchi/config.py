@@ -86,9 +86,9 @@ class Settings(object):
             'laptop': 'False',
             'locale': '',
             'log_file': '/tmp/cnchi.log',
-            'luks_root_password': "",
-            'luks_root_volume': "",
-            'luks_root_device': "",
+            'luks_root_password': '',
+            'luks_root_volume': '',
+            'luks_root_device': '',
             'partition_mode': 'automatic',
             'password': '',
             'rankmirrors_done': False,
@@ -118,7 +118,8 @@ class Settings(object):
             'username': '',
             'xz_cache': [],
             'z_hidden': False,
-            'zfs': False})
+            'zfs': False,
+            'zfs_pool_name': 'antergos'})
 
     def _get_settings(self):
         """ Get a copy of our settings """

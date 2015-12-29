@@ -40,7 +40,7 @@ def wipefs(device):
     cmd = ["wipefs", "-a", device]
     call(cmd, msg=err_msg, fatal=True)
 
-def dd(input_device, output_device, bs=512, count=2048):
+def dd(input_device, output_device, bs=512, count=2048, seek=0):
     """ Helper function to call dd """
     cmd = [
         'dd',
@@ -48,6 +48,7 @@ def dd(input_device, output_device, bs=512, count=2048):
         'of={0}'.format(output_device),
         'bs={0}'.format(bs),
         'count={0}'.format(count),
+        'seek={0}'.format(seek),
         'status=noxfer']
     try:
         subprocess.check_output(cmd, stderr=subprocess.STDOUT)
