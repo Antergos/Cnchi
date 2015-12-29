@@ -202,11 +202,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Hide the progress bar for default iso
+        # Hide the progress bar for default iso. Skip the welcome screen for minimal iso.
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.progressbar.hide()
-
-        self.set_focus(None)
+            self.set_focus(None)
+        else:
+            self.on_forward_button_clicked()
 
         misc.gtk_refresh()
 
@@ -317,15 +318,9 @@ class MainWindow(Gtk.ApplicationWindow):
                                       'next_page': 'location',
                                       'pages': ['location', 'timezone', 'keymap']}
         self.pages["check"] = check.Check(self.params, cnchi_main=self)
-
-        if os.path.exists('/home/antergos/.config/openbox'):
-            # In minimal iso, load the system check screen now
-            self.current_page = self.pages["check"]
-            self.pages["check"].prepare('forwards', show=True)
-        else:
-            self.pages["check"].prepare('forwards', show=False)
-            self.pages["welcome"] = welcome.Welcome(self.params)
-            self.current_page = self.pages["welcome"]
+        self.pages["check"].prepare('forwards', show=False)
+        self.pages["welcome"] = welcome.Welcome(self.params)
+        self.current_page = self.pages["welcome"]
 
     def load_pages(self):
 
@@ -641,7 +636,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_timezone_set(self):
         logging.debug('TIMEZONE SET')
 
-    def on_forward_button_clicked(self, widget, data=None):
+    def on_forward_button_clicked(self, widget=None, data=None):
         """ Show next screen """
 
         curr_page_name = self.current_page.name
