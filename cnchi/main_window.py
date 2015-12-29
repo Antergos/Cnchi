@@ -202,18 +202,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
+        misc.gtk_refresh()
+
+        self.cnchi_started = True
+        if self.timezone_start_needed:
+            self.on_has_internet_connection()
+
         # Hide the progress bar for default iso. Skip the welcome screen for minimal iso.
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.progressbar.hide()
             self.set_focus(None)
         else:
             self.on_forward_button_clicked()
-
-        misc.gtk_refresh()
-
-        self.cnchi_started = True
-        if self.timezone_start_needed:
-            self.on_has_internet_connection()
 
     def prepare_shared_parameters(self):
         """
