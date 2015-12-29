@@ -156,8 +156,8 @@ class UserInfo(GtkBaseBox):
         if self.settings.get('desktop') == "base":
             self.login['auto'].set_sensitive(False)
 
-        self.forward_button.set_label(_('Save'))
-        self.forward_button.set_name('fwd_btn_save')
+        # self.forward_button.set_label(_('Save'))
+        # self.forward_button.set_name('fwd_btn_save')
         self.forward_button.set_sensitive(False)
 
     def on_checkbutton_show_password_toggled(self, widget):

@@ -107,7 +107,7 @@
 			<class name="button"/>
 			<class name="image-button"/>
 		</style>
-		<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>
+		<!--<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>-->
 		<child>
 			<object class="GtkImage" id="back_icon">
 				<property name="icon-name">go-previous-symbolic</property>

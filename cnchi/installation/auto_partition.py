@@ -54,7 +54,7 @@ and then raise an InstallError exception.
 MAX_ROOT_SIZE = 30000
 
 # KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
-MIN_ROOT_SIZE = 8000
+MIN_ROOT_SIZE = 10000
 
 
 def printk(enable):
@@ -105,6 +105,7 @@ def unmount_all_in_directory(dest_dir):
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
     unmount(dest_dir)
 
+
 def unmount_all_in_device(device):
     """ Unmounts all partitions from device """
 
@@ -132,6 +133,7 @@ def unmount_all_in_device(device):
 
     for directory in dirs:
         unmount(directory)
+
 
 def remove_lvm(device):
     """ Remove all previous LVM volumes
@@ -169,6 +171,7 @@ def remove_lvm(device):
             if device in pvolume:
                 cmd = ["pvremove", "-ff", "-y", pvolume]
                 call(cmd, msg=err_msg)
+
 
 def close_antergos_luks_devices():
     """ Close LUKS devices (they may have been left open because of a previous
@@ -378,6 +381,7 @@ class AutoPartition(object):
         """ Set (and return) all partitions on the device """
         devices = {}
         device = self.auto_device
+        logging.debug(device)
 
         # device is of type /dev/sdX or /dev/hdX or /dev/mmcblkX
 

@@ -56,7 +56,7 @@ MIN_ROOT_SIZE = 6000000000
 class Summary(GtkBaseBox):
     """ Summary Screen """
 
-    def __init__(self, params, prev_page="", next_page="slides", **kwargs):
+    def __init__(self, params, prev_page="user_info", next_page="slides", **kwargs):
         """ Init class ui """
         super().__init__(self, params, name="summary", prev_page=prev_page,
                          next_page=next_page, **kwargs)
@@ -76,7 +76,7 @@ class Summary(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        self.header.set_subtitle(self.title)
+        # self.header.set_subtitle(self.title)
 
         items = {
             "location": _("Location"),
@@ -193,8 +193,8 @@ class Summary(GtkBaseBox):
 
     def get_prev_page(self):
         """ Gets previous page """
-        page = "installation_" + self.settings.get('partition_mode')
-        return page
+        # page = "installation_" + self.settings.get('partition_mode')
+        return self.prev_page
 
 
 if __name__ == '__main__':

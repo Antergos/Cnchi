@@ -180,8 +180,7 @@ class Check(GtkBaseBox):
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()
 
-    @staticmethod
-    def check_iso_version():
+    def check_iso_version(self):
         """ Hostname contains the ISO version """
         # TODO: Make this actually check if iso version is recent
         from socket import gethostname
@@ -194,6 +193,7 @@ class Check(GtkBaseBox):
             suffix = "-min" if hostname.endswith("-min") else ''
             version = hostname[len(prefix):-len(suffix)]
             logging.debug("Running from ISO version %s", version)
+            self.settings.set('is_iso', True)
         else:
             logging.debug("Not running from ISO")
         return True

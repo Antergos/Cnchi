@@ -95,11 +95,13 @@ class Process(multiprocessing.Process):
 
             self.queue_event('info', _("Getting your disk(s) ready for Antergos..."))
             with misc.raised_privileges():
-                self.install_screen.run_format()
+                if self.settings.get('is_iso'):
+                    self.install_screen.run_format()
 
             self.queue_event('info', _("Installation will start now!"))
             with misc.raised_privileges():
-                self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
+                if self.settings.get('is_iso'):
+                    self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(
                 process_error.cmd,

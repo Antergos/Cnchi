@@ -58,6 +58,7 @@ class Features(GtkBaseBox):
 
         self.listbox_rows = {}
         self.title = _("Features")
+        self.in_group = True
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
