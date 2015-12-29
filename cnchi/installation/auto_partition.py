@@ -368,11 +368,10 @@ class AutoPartition(object):
             type of test here """
 
         # Remove /dev/
-        path = device.path[5:]
-        if (path.startswith('rd/') or device.startswith('ida/') or
-                path.startswith('cciss/') or path.startswith('sx8/') or
-                path.startswith('mapper/') or path.startswith('mmcblk') or
-                path.startswith('md') or path.startswith('nvme')):
+        path = device.replace('/dev/', '')
+        partials = ['rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
+        found = [p for p in partials if path.startswith(p)]
+        if len(found) > 0:
             return "{0}p{1}".format(device, part_num)
         else:
             return "{0}{1}".format(device, part_num)
