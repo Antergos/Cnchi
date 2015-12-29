@@ -123,7 +123,11 @@
 						<property name="can_focus">True</property>
 						<property name="halign">start</property>
 						<property name="active">True</property>
+						<property name="width_request">200</property>
 						<signal name="activate" handler="on_switch_ntp_activate" swapped="no"/>
+						<style>
+							<class name="switch"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">True</property>

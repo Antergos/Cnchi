@@ -1,9 +1,14 @@
+[2015-12-29 05:23:55 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b7d3311}
 [2015-12-29 03:19:53 -0600]  lets go back tp disabling the try-it button instead                    Dustin Falgout  {c73d536}
 [2015-12-29 03:11:07 -0600]  fix page loading for minimal maybe                                     Dustin Falgout  {748f7d1}
 [2015-12-29 02:57:21 -0600]  fix page loading for minimal                                           Dustin Falgout  {8ab8ae6}
 [2015-12-29 02:48:02 -0600]  fix page loading for minimal                                           Dustin Falgout  {a2545f1}
+[2015-12-28 08:47:41 +0100]  Add -f (force) parameter to zpool add                                      karasu      {ae0525a}
+[2015-12-28 08:41:12 +0100]  check_pool_type() zfs                                                      karasu      {caff73e}
+[2015-12-28 08:34:14 +0100]  Try to create stripe pool in two steps to avoid zfs failing                karasu      {33f32cb}
 [2015-12-27 20:10:53 -0600]  location screen style tweaks                                           Dustin Falgout  {0dd3c72}
 [2015-12-27 16:20:55 -0600]  not really satisfied with the check screen style but I'm not fighti..  Dustin Falgout  {20daa53}
+[2015-12-27 22:43:10 +0100]  Try to fix zpool creation (cannot create 'antergos': no such pool o..      karasu      {1c54b6d}
 [2015-12-27 10:28:52 -0600]  popovers are annoying                                                  Dustin Falgout  {8b94b17}
 [2015-12-27 07:15:17 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {3b2d2d9}
 [2015-12-27 13:02:43 +0100]  Fix unmount_all_in_directory. Zfs with multiple disks is working.          karasu      {328396f}

@@ -163,12 +163,15 @@ class Features(GtkBaseBox):
             switch.set_property('margin_top', 10)
             switch.set_property('margin_bottom', 10)
             switch.set_property('margin_end', 10)
+            switch.get_style_context().add_class('switch')
+            switch.set_property('width_request', 200)
             self.listbox_rows[feature].append(switch)
             box.pack_end(switch, False, False, 0)
 
             # Add row to our gtklist
             self.listbox.add(box)
 
+        self.listbox.get_style_context().add_class('list_box')
         self.listbox.show_all()
 
     @staticmethod

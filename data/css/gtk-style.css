@@ -383,3 +383,26 @@ border-bottom: 1px solid rgba(0, 0, 0, 0.1);
  .list_box_row .list_row_box {
 	 padding: 15px;
  }
+
+ .switch {
+border-radius: 4px;
+padding: 5px;
+border: none;
+outline: none;
+transition: all 0.3s;
+}
+.trough:active {
+background-color: #008BDB;
+}
+.trough:insensitive {
+background-color: #F1F5F9;
+color: #8E969E;
+box-shadow: none;
+border: none;
+outline: none;
+}
+.switch.slider {
+box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+border: none;
+transition: all 0.3s;
+}

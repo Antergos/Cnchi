@@ -19,7 +19,7 @@
 			<object class="GtkLabel" id="label_help">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="label" translatable="yes">The location you select will be used to help determine the system locale. It should normally be the country in which you reside. Here is a shortlist of locations based on the language you selected.</property>
+				<property name="label" translatable="yes">The location you select will be used to help determine the system locale. It should normally be the country in which you reside.</property>
 				<property name="wrap">True</property>
 				<property name="max_width_chars">70</property>
 				<style>
