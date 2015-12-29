@@ -54,7 +54,7 @@ and then raise an InstallError exception.
 MAX_ROOT_SIZE = 30000
 
 # KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
-MIN_ROOT_SIZE = 8000
+MIN_ROOT_SIZE = 10000
 
 
 def printk(enable):
@@ -78,10 +78,11 @@ def unmount_all_in_directory(dest_dir):
     # Unmount all swap devices
     cmd = ["swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
-    swaps = swaps.split("\n")
-    for name in filter(None, swaps):
-        if "/dev/zram" not in name:
-            call(["swapoff", name])
+    if swaps:
+        swaps = swaps.split("\n")
+        for name in filter(None, swaps):
+            if "/dev/zram" not in name:
+                call(["swapoff", name])
 
     # Get all mounted devices
     mount_result = call(["mount"]).split("\n")
@@ -103,6 +104,7 @@ def unmount_all_in_directory(dest_dir):
 
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
     unmount(dest_dir)
+
 
 def unmount_all_in_device(device):
     """ Unmounts all partitions from device """
@@ -131,6 +133,7 @@ def unmount_all_in_device(device):
 
     for directory in dirs:
         unmount(directory)
+
 
 def remove_lvm(device):
     """ Remove all previous LVM volumes
@@ -168,6 +171,7 @@ def remove_lvm(device):
             if device in pvolume:
                 cmd = ["pvremove", "-ff", "-y", pvolume]
                 call(cmd, msg=err_msg)
+
 
 def close_antergos_luks_devices():
     """ Close LUKS devices (they may have been left open because of a previous
@@ -358,10 +362,16 @@ class AutoPartition(object):
         msg = "Device details: %s UUID=%s LABEL=%s"
         logging.debug(msg, device, fs_uuid, fs_label)
 
-    def get_partition_path(self, device, part_num):
+    @staticmethod
+    def get_partition_path(device, part_num):
         """ This is awful and prone to fail. We should do some
             type of test here """
-        if "mmcblk" in device:
+
+        # Remove /dev/
+        path = device.replace('/dev/', '')
+        partials = ['rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
+        found = [p for p in partials if path.startswith(p)]
+        if len(found) > 0:
             return "{0}p{1}".format(device, part_num)
         else:
             return "{0}{1}".format(device, part_num)
@@ -370,6 +380,7 @@ class AutoPartition(object):
         """ Set (and return) all partitions on the device """
         devices = {}
         device = self.auto_device
+        logging.debug(device)
 
         # device is of type /dev/sdX or /dev/hdX or /dev/mmcblkX
 
