@@ -315,12 +315,12 @@ class InstallationZFS(GtkBaseBox):
                 num_drives += 1
 
         if pool_type == "None":
-            if num_drives > 0:
+            if num_drives == 1:
                 is_ok = True
             else:
                 is_ok = False
-                msg = _("You must select at least one drive")
-        elif pool_type == "Stripe" or pool_type == "Mirror":
+                msg = _("You must select one drive")
+        elif pool_type in ["Stripe", "Mirror"]:
             if num_drives > 1:
                 is_ok = True
             else:
@@ -350,6 +350,8 @@ class InstallationZFS(GtkBaseBox):
                             "drives for the parity. RAID-Z = 1 disk, RAIDZ-2 "
                             "= 2 disks, and so on.")
                     msg = msg.format(pool_type, min_parity_drives)
+                else:
+                    is_ok = True
 
         if not is_ok and show_warning:
             show.message(self.get_toplevel(), msg)
@@ -362,7 +364,10 @@ class InstallationZFS(GtkBaseBox):
         msg = ""
         if (pool_type in pool_types and
                 pool_type not in self.pool_types_help_shown):
-            if pool_type == "Stripe":
+            if pool_type == "None":
+                msg = _("Use ZFS on one of your disks, but do not create any "
+                        "type of zfs pool with the other ones.")
+            elif pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
                         "space-balancing makes a span act like a RAID0 stripe. "
                         "The space is added together. Provided all the devices "
@@ -383,7 +388,7 @@ class InstallationZFS(GtkBaseBox):
                         "which can fail while the pool remains operational.")
 
             self.pool_types_help_shown.append(pool_type)
-            if len(msg) > 0:
+            if msg:
                 show.message(self.get_toplevel(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
@@ -494,7 +499,7 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
-    # -------------------------------------------------------------------------
+    # ZFS Creation starts here -------------------------------------------------
 
     def init_device(self, device_path, scheme="GPT"):
         """ Initialize device """
@@ -691,7 +696,7 @@ class InstallationZFS(GtkBaseBox):
         call(["udevadm", "settle"])
         call(["sync"])
 
-        self.create_zfs_pool(solaris_partition_number)
+        self.create_zfs(solaris_partition_number)
 
     def get_ids(self):
         """ Get disk and partitions IDs """
@@ -834,8 +839,52 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, solaris_partition_number):
-        """ Create the root zpool """
+    def create_zfs_pool(self, pool_name, pool_type, devices_ids):
+        """ Create zpool """
+
+        if pool_type not in self.pool_types.values():
+            raise InstallError("Unknown pool type: {0}".format(pool_type))
+
+        cmd = ["zpool", "create", "-f"]
+
+        if self.zfs_options["force_4k"]:
+            cmd.extend(["-o", "ashift=12"])
+
+        cmd.extend(["-m", DEST_DIR])
+
+        cmd.append(pool_name)
+
+        pool_type = pool_type.lower().replace("-", "")
+
+        if pool_type in ["none", "stripe"]:
+            # If we add here all devices, zpool "sometimes" fails
+            cmd.append(devices_ids[0])
+        elif pool_type == "mirror":
+            if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
+                # Try to mirror pair of devices
+                # (mirrors of two devices each)
+                for i,k in zip(devices_ids[0::2], devices_ids[1::2]):
+                    cmd.append(pool_type)
+                    cmd.extend([i, k])
+            else:
+                cmd.append(pool_type)
+                cmd.extend(devices_ids)
+        else:
+            cmd.append(pool_type)
+            cmd.extend(devices_ids)
+
+        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
+        call(cmd, fatal=True)
+
+        if pool_type == "stripe":
+            # Add the other devices.
+            cmd = ["zpool", "add", "-f"]
+            cmd.append(pool_name)
+            cmd.extend(devices_ids[1:])
+            call(cmd, fatal=True)
+
+    def create_zfs(self, solaris_partition_number):
+        """ Setup ZFS system """
 
         device_paths = self.zfs_options["device_paths"]
         if not device_paths:
@@ -892,19 +941,8 @@ class InstallationZFS(GtkBaseBox):
 
         pool_type = self.zfs_options["pool_type"]
 
-        # Command zpool
-        # Create zroot /dev/disk/by-id/id-to-partition
-        # This will be our / (root) system
-        cmd = ["zpool", "create", "-f"]
-        if self.zfs_options["force_4k"]:
-            cmd.extend(["-o", "ashift=12"])
-        cmd.extend(["-m", DEST_DIR, pool_name])
-        if pool_type in self.pool_types.values() and pool_type not in ["None", "Stripe"]:
-            pool_type = pool_type.lower().replace("-", "")
-            cmd.append(pool_type)
-        cmd.extend(devices_ids)
-        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        call(cmd, fatal=True)
+        # Create zpool
+        self.create_zfs_pool(pool_name, pool_type, devices_ids)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
