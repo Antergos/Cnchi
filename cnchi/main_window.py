@@ -317,12 +317,13 @@ class MainWindow(Gtk.ApplicationWindow):
                                       'next_page': 'location',
                                       'pages': ['location', 'timezone', 'keymap']}
         self.pages["check"] = check.Check(self.params, cnchi_main=self)
-        self.pages["check"].prepare('forwards', show=False)
 
         if os.path.exists('/home/antergos/.config/openbox'):
             # In minimal iso, load the system check screen now
             self.current_page = self.pages["check"]
+            self.pages["check"].prepare('forwards', show=True)
         else:
+            self.pages["check"].prepare('forwards', show=False)
             self.pages["welcome"] = welcome.Welcome(self.params)
             self.current_page = self.pages["welcome"]
 
