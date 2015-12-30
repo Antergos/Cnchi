@@ -593,9 +593,14 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.current_page.prepare('forwards')
         self.current_page.can_show = True
-        self.current_stack.set_visible_child_name(self.current_page.name)
-        self.current_page.nav_button.set_state_flags(Gtk.StateFlags.SELECTED, True)
-        self.header.set_subtitle('')
+        if self.current_page.name != self.current_stack.get_visible_child_name():
+            self.current_stack.set_visible_child_name(self.current_page.name)
+
+        if 'slides' != self.current_page.name:
+            self.current_page.nav_button.set_state_flags(Gtk.StateFlags.SELECTED, True)
+            self.header.set_subtitle('')
+        else:
+            self.header_nav.hide()
 
     def handle_nav_buttons_state(self, page_name):
         if self.nav_buttons.get('selected', False):
