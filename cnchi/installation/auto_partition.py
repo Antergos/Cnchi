@@ -265,13 +265,13 @@ class AutoPartition(object):
         self.percent = 0
 
         if os.path.exists("/sys/firmware/efi"):
-            # If UEFI use GPT by default
-            self.UEFI = True
-            self.GPT = True
+            # If UEFI use GPT
+            self.uefi = True
+            self.gpt = True
         else:
-            # If no UEFI, use MBR by default
-            self.UEFI = False
-            self.GPT = False
+            # If BIOS, use MBR
+            self.uefi = False
+            self.gpt = False
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
@@ -384,8 +384,8 @@ class AutoPartition(object):
 
         # device is of type /dev/sdX or /dev/hdX or /dev/mmcblkX
 
-        if self.GPT:
-            if not self.UEFI:
+        if self.gpt:
+            if not self.uefi:
                 # Skip BIOS Boot Partition
                 # We'll never get here as we use UEFI+GPT or BIOS+MBR
                 part_num = 2
@@ -443,7 +443,7 @@ class AutoPartition(object):
         devices = self.get_devices()
         mount_devices = {}
 
-        if self.GPT and self.bootloader == "grub2":
+        if self.gpt and self.bootloader == "grub2":
             mount_devices['/boot/efi'] = devices['efi']
 
         mount_devices['/boot'] = devices['boot']
@@ -474,13 +474,17 @@ class AutoPartition(object):
 
         fs_devices = {}
 
-        if self.GPT:
+        if self.gpt:
             if self.bootloader == "grub2":
                 fs_devices[devices['efi']] = "vfat"
+                fs_devices[devices['boot']] = "ext4"
             elif self.bootloader in ["systemd-boot", "refind"]:
                 fs_devices[devices['boot']] = "vfat"
         else:
-            fs_devices[devices['boot']] = "ext2"
+            if self.uefi:
+                fs_devices[devices['boot']] = "vfat"
+            else:
+                fs_devices[devices['boot']] = "ext4"
 
         fs_devices[devices['swap']] = "swap"
         fs_devices[devices['root']] = "ext4"
@@ -506,7 +510,7 @@ class AutoPartition(object):
     def get_part_sizes(self, disk_size, start_part_sizes=1):
         part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
-        if self.GPT and self.bootloader == "grub2":
+        if self.gpt and self.bootloader == "grub2":
             part_sizes['efi'] = 200
 
         cmd = ["grep", "MemTotal", "/proc/meminfo"]
@@ -555,7 +559,7 @@ class AutoPartition(object):
 
     def log_part_sizes(self, part_sizes):
         logging.debug("Total disk size: %dMiB", part_sizes['disk'])
-        if self.GPT and self.bootloader == "grub2":
+        if self.gpt and self.bootloader == "grub2":
             logging.debug("EFI System Partition (ESP) size: %dMiB", part_sizes['efi'])
         logging.debug("Boot partition size: %dMiB", part_sizes['boot'])
 
@@ -611,7 +615,7 @@ class AutoPartition(object):
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
-        if self.GPT:
+        if self.gpt:
             # Clean partition table to avoid issues!
             wrapper.sgdisk("zap-all", device)
 
@@ -628,7 +632,7 @@ class AutoPartition(object):
 
             part_num = 1
 
-            if not self.UEFI:
+            if not self.uefi:
                 # We don't allow BIOS+GPT right now, so this code will be never executed
                 # We leave here just for future reference
                 # Create BIOS Boot Partition
@@ -723,7 +727,7 @@ class AutoPartition(object):
 
         devices = self.get_devices()
 
-        if self.GPT and self.bootloader == "grub2":
+        if self.gpt and self.bootloader == "grub2":
             logging.debug("EFI: %s", devices['efi'])
 
         logging.debug("Boot: %s", devices['boot'])
@@ -806,14 +810,14 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
-        if self.GPT and self.bootloader in ["refind", "systemd-boot"]:
+        if self.gpt and self.bootloader in ["refind", "systemd-boot"]:
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
         else:
             self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
 
         # Note: Make sure the "boot" partition is defined before the "efi" one!
-        if self.GPT and self.bootloader == "grub2":
+        if self.gpt and self.bootloader == "grub2":
             # Format EFI System Partition (ESP) with vfat (fat32)
             self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
 
