@@ -31,6 +31,7 @@
 
 import os
 import sys
+import shutil
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -316,6 +317,10 @@ def check_iso_version():
         # We're running form the ISO, register which version.
         version = hostname[len(prefix):-len(suffix)]
         logging.debug("Running from ISO version %s", version)
+        # Delete user's chromium cache (just in case)
+        cache_dir = "/home/antergos/.cache/chromium"
+        if os.path.exists(cache_dir):
+            shutil.rmtree(cache_dir)
     else:
         logging.debug("Not running from ISO")
     return True
