@@ -542,7 +542,7 @@ class MainWindow(Gtk.ApplicationWindow):
             if page:
                 break
         else:
-            logging.debug('unable to find page in stacks')
+            logging.warning('unable to find page in stacks')
 
         if (not page or not page.can_show) and page_name != self.current_page.next_page:
             return

@@ -36,6 +36,7 @@ import subprocess
 import logging
 
 import os
+import shutil
 
 import info
 import updater
@@ -194,6 +195,9 @@ class Check(GtkBaseBox):
             version = hostname[len(prefix):-len(suffix)]
             logging.debug("Running from ISO version %s", version)
             self.settings.set('is_iso', True)
+            cache_dir = "/home/antergos/.cache/chromium"
+            if os.path.exists(cache_dir):
+                shutil.rmtree(cache_dir)
         else:
             logging.debug("Not running from ISO")
         return True
