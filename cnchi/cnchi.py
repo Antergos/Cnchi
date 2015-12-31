@@ -31,7 +31,6 @@
 
 import os
 import sys
-import shutil
 
 
 # Set initial value for "_" to appease PyCharm
@@ -71,6 +70,13 @@ try:
     BUGSNAG_ERROR = None
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
+
+try:
+    import main_window
+except ImportError as err:
+    msg = "Cannot create Cnchi main window: {0}".format(err)
+    logging.error(msg)
+    sys.exit(1)
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
