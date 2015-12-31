@@ -614,6 +614,7 @@ class InstallationZFS(GtkBaseBox):
             part_num = 1
 
             if not self.uefi:
+                # BIOS and GPT
                 # Create BIOS Boot Partition
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
@@ -626,10 +627,11 @@ class InstallationZFS(GtkBaseBox):
                 fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                 self.devices['boot'] = "{0}{1}".format(device_path, part_num)
                 self.fs_devices[self.devices['boot']] = "ext4"
+                self.mount_devices['/boot'] = self.devices['boot']
                 part_num += 1
             else:
-                # UEFI
-                if self.bootloader == "grub":
+                # UEFI and GPT
+                if self.bootloader == "grub2":
                     # Create EFI System Partition (ESP)
                     # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
                     wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
@@ -679,9 +681,14 @@ class InstallationZFS(GtkBaseBox):
             # partition. ZFS will manage the first, and the bootloader the
             # second.
 
-            fs.create_fs(device_path + part, "ext4", "ANTERGOS_BOOT")
+            if self.uefi:
+                fs_boot = "vfat"
+            else:
+                fs_boot = "ext4"
+
+            fs.create_fs(device_path + part, fs_boot, "ANTERGOS_BOOT")
             self.devices['boot'] = "{0}{1}".format(device_path, part)
-            self.fs_devices[self.devices['boot']] = "ext4"
+            self.fs_devices[self.devices['boot']] = fs_boot
             self.mount_devices['/boot'] = self.devices['boot']
 
             # The rest will be solaris type

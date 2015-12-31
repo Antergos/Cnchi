@@ -1,3 +1,4 @@
+[2015-12-29 19:15:57 -0600]  hide nav buttons on slides screen                                      Dustin Falgout  {bde1a6b}
 [2015-12-29 17:51:36 -0600]  fix bug in auto_partition                                              Dustin Falgout  {6d260a9}
 [2015-12-29 17:24:14 -0600]  fixed issue when changing screens after the user screen                Dustin Falgout  {c2f065d}
 [2015-12-29 06:26:02 -0600]  new styles for switches                                                Dustin Falgout  {7029e5e}

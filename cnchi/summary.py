@@ -181,11 +181,17 @@ class Summary(GtkBaseBox):
 
     def store_values(self):
         """ User wants to continue """
-        response = show.question(
-            self.get_toplevel(),
-            _("Are you REALLY sure you want to continue?"))
+        parent = self.get_toplevel()
+        msg = _("Are you REALLY sure you want to continue?")
+
+        try:
+            response = show.question(parent, msg)
+        except TypeError as ex:
+            response = show.question(None, msg)
+
         if response != Gtk.ResponseType.YES:
             return False
+
         install_screen = self.get_install_screen()
         self.process = Process(install_screen, self.settings, self.callback_queue)
         self.process.start()
