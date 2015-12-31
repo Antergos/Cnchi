@@ -364,8 +364,9 @@ class InstallationZFS(GtkBaseBox):
         if (pool_type in pool_types and
                 pool_type not in self.pool_types_help_shown):
             if pool_type == "None":
-                msg = _("Use ZFS on one of your disks, but do not create any "
-                        "type of zfs pool with the other ones.")
+                msg = _("None pool, selected by default, will use ZFS on the "
+                        "selected disk, but it will notnot create any type of "
+                        "zfs pool with the other ones.")
             elif pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
                         "space-balancing makes a span act like a RAID0 stripe. "
@@ -386,7 +387,11 @@ class InstallationZFS(GtkBaseBox):
                         "parity devices in the array and the number of disks "
                         "which can fail while the pool remains operational.")
 
-            self.pool_types_help_shown.append(pool_type)
+            if pool_type.startswith("RAID-Z"):
+                self.pool_types_help_shown.extend(["RAID-Z", "RAID-Z2", "RAID-Z3"])
+            else:
+                self.pool_types_help_shown.append(pool_type)
+
             if msg:
                 show.message(self.get_toplevel(), msg)
 
