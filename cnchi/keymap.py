@@ -87,7 +87,6 @@ class Keymap(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        self.header.set_subtitle(_("Select Your Keyboard Layout"))
 
         lbl = self.ui.get_object("label_layouts")
         if lbl:
@@ -238,6 +237,7 @@ class Keymap(GtkBaseBox):
         self.forward_button.set_sensitive(True)
         self.store_values()
         self.set_keyboard_widget_keymap()
+
 
     def store_values(self):
         """ Store selected values """

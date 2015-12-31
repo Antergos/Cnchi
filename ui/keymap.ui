@@ -5,13 +5,15 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">horizontal</property>
-		<property name="spacing">10</property>
-		<property name="margin_top">30px</property>
-		<property name="margin_bottom">30px</property>
-		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>
+		<property name="spacing">25</property>
+		<property name="margin_top">35px</property>
+		<property name="margin_bottom">35px</property>
+		<property name="margin_left">35px</property>
+		<property name="margin_right">35px</property>
+		<property name="valign">center</property>
 		<style>
 			<class name="sub_page_box"/>
+			<class name="keymap_screen"/>
 		</style>
 		<child>
 			<object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -20,6 +22,9 @@
 				<property name="hexpand">True</property>
 				<property name="vexpand">True</property>
 				<property name="shadow_type">in</property>
+				<style>
+					<class name="treeview_window"/>
+				</style>
 				<child>
 					<object class="GtkTreeView" id="keymap_treeview">
 						<property name="visible">True</property>
@@ -27,6 +32,9 @@
 						<property name="hexpand">True</property>
 						<property name="headers_visible">False</property>
 						<property name="headers_clickable">False</property>
+						<style>
+							<class name="treeview"/>
+						</style>
 						<child internal-child="selection">
 							<object class="GtkTreeSelection" id="treeview-selection1"/>
 						</child>
@@ -44,12 +52,14 @@
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="orientation">vertical</property>
-				<property name="spacing">10</property>
+				<property name="spacing">15</property>
+				<property name="valign">center</property>
 				<child>
 					<object class="GtkLabel" id="label_layouts">
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="label" translatable="yes">Keyboard Layouts</property>
+						<property name="margin_bottom">30</property>
 					</object>
 					<packing>
 						<property name="expand">True</property>

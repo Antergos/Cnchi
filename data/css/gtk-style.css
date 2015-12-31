@@ -61,7 +61,6 @@ GtkProgressBar.progressbar {
 	background-color: transparent;
 }
 
-
 #fwd_btn .label {
 	font-size: 11px;
 }
@@ -114,7 +113,7 @@ GtkProgressBar.progressbar {
 }*/
 
 GtkListBoxRow:active, .list-row:active, .list-row:selected {
-    border-color: shade(#07A6ED, 0.8);
+	border-color: shade(#07A6ED, 0.8);
 	background-image: linear-gradient(to bottom, #07A6ED, #079fe6);
 	border-bottom: 1px solid rgba(150, 150, 150, 0.1);
 	border-top: 1px solid rgba(150, 150, 150, 0.1);
@@ -134,6 +133,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 #graph_btn {
 	color: #f959b7;
 }
+
 #tryit_btn {
 	color: #795aff;
 }
@@ -141,6 +141,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 #graph_btn:focused {
 	border-color: #f959b7;
 }
+
 #tryit_btn:focused {
 	border-color: #795aff;
 }
@@ -154,13 +155,14 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	border-bottom-width: 1px;
 	font-size: 20px;
 }
+
 #graph_btn:hover {
 	background: #f959b7;
 }
+
 #tryit_btn:hover {
 	background: #795aff;
 }
-
 
 #tryit_label, #installit_label {
 	font-size: 11px;
@@ -308,22 +310,24 @@ StateBox {
 	transition: .3s ease;
 	color: rgba(255, 255, 255, 0.8);
 }
+
 #bk_btn {
 	padding: 10px 15px;
 }
+
 #fwd_btn {
 	padding: 10px 30px;
 }
 
 #fwd_btn:insensitive, #bk_btn:insensitive {
-	color:rgba(255, 255, 255, 0.7);
+	color: rgba(255, 255, 255, 0.7);
 }
 
 #fwd_btn:prelight, #bk_btn:prelight, .language_button:prelight {
 	background: #3F7AE4;
 	color: #ffffff;
-
 }
+
 .language_button:prelight {
 	border-color: transparent;
 	color: #ffffff;
@@ -344,65 +348,104 @@ StateBox {
 .sub_page {
 	padding-top: 20px;
 }
+
 .check_screen {
 	padding: 0px 40px;
 }
-.state_box_container, .list_box {
-background-color: #f7fafd;
-    border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-.state_box, .state_box .horizontal, .list_box_row {
-border-top:none;
-border-left: none;
-border-right: none;
-border-radius: 0px;
-outline-width: 0px;
-outline-color: transparent;
-outline-bottom-left-radius: 0px;
-outline-bottom-right-radius: 0px;
-outline-top-left-radius: 0px;
-outline-top-right-radius: 0px;
-outline-offset: 0px;
-border-image-width: 0px;
-}
- .state_box .horizontal, .list_box_row {
-border-bottom: 1px solid rgba(0, 0, 0, 0.1);
- padding: 15px 20px;
-}
- .best_results_label {
-	 font-weight: 700;
-	 font-size: 15px;
- }
- .state_box .horizontal:prelight {
-	 background-color: rgba(179, 199, 234, 0.67);
- }
- .cn_bold_text {
-	 font-weight: 700;
- }
- .list_box_row .list_row_box {
-	 padding: 15px;
- }
 
- .switch {
-border-radius: 4px;
-padding: 5px;
-border: none;
-outline: none;
-transition: all 0.3s;
+.state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row, .treeview_window {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0px;
+	outline-width: 0px;
+	outline-color: transparent;
+	outline-bottom-left-radius: 0px;
+	outline-bottom-right-radius: 0px;
+	outline-top-left-radius: 0px;
+	outline-top-right-radius: 0px;
+	outline-offset: 0px;
+	border-image-width: 0px;
+	border-width: 0px;
+	border-color: transparent;
+	outline-style: none;
 }
-.trough:active {
-background-color: #008BDB;
+.treeview_window {
+	outline-style: none;
+	background-color: #f7fafd;
+	border-radius: 3px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
+
+.view {
+	outline-style: none;
+}
+
+.state_box_container, .list_box {
+	background-color: #f7fafd;
+	border-radius: 3px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.state_box .horizontal, .list_box_row {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 15px 20px;
+}
+
+.treeview row {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 0px;
+}
+
+.best_results_label {
+	font-weight: 700;
+	font-size: 15px;
+}
+
+.state_box .horizontal:prelight {
+	background-color: rgba(179, 199, 234, 0.67);
+}
+
+.cn_bold_text {
+	font-weight: 700;
+}
+
+.list_box_row .list_row_box {
+	padding: 15px;
+}
+
+.switch {
+	border-radius: 4px;
+	padding: 5px;
+	border: none;
+	outline: none;
+	transition: all 0.3s;
+}
+
+.trough:active, .treeview row:selected {
+	background-color: #008BDB;
+}
+
 .trough:insensitive {
-background-color: #F1F5F9;
-color: #8E969E;
-box-shadow: none;
-border: none;
-outline: none;
+	background-color: #F1F5F9;
+	color: #8E969E;
+	box-shadow: none;
+	border: none;
+	outline: none;
 }
+
 .switch.slider {
-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
-border: none;
-transition: all 0.3s;
+	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+	border: none;
+	transition: all 0.3s;
 }
+.treeview {
+	-GtkTreeView-vertical-separator: 33;
+}
+
+.desktop_screen .scrolled_window {
+	border: none;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }

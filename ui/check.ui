@@ -6,18 +6,18 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">vertical</property>
-		<property name="margin_top">35</property>
+		<property name="margin_top">60</property>
 		<property name="halign">center</property>
 		<style>
-					<class name="check_screen"/>
-				</style>
+			<class name="check_screen"/>
+		</style>
 		<child>
 			<object class="GtkLabel" id="prepare_best_results">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
 				<property name="label" translatable="yes">For best results, please ensure the following:</property>
 				<property name="use_markup">False</property>
-				<property name="margin_bottom">25</property>
+				<property name="margin_bottom">35</property>
 				<property name="max_width_chars">80</property>
 				<property name="halign">center</property>
 				<style>

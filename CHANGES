@@ -1,3 +1,4 @@
+[2015-12-31 00:10:01 -0600]  also from merge conflicts                                              Dustin Falgout  {5c0a5d8}
 [2015-12-31 00:08:44 -0600]  missed this when I fixed conflicts in previous commit                  Dustin Falgout  {b5a7cae}
 [2015-12-30 23:53:22 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1a2ec84}
 [2015-12-30 23:15:15 +0100]  Fix zfs typos. Change var names in auto_partition (and set boot to ..      karasu      {2ee0a13}

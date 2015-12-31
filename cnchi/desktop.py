@@ -122,10 +122,6 @@ class DesktopAsk(GtkBaseBox):
                 else:
                     self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
-        if set_header:
-            # set header text
-            self.header.set_subtitle(self.title)
-
     def prepare(self, direction):
         """ Prepare screen """
         self.translate_ui(self.desktop_choice)
@@ -156,8 +152,11 @@ class DesktopAsk(GtkBaseBox):
                 label = Gtk.Label()
                 label.set_markup(desktop_info.NAMES[desktop])
                 box.pack_start(label, False, False, 2)
+                row = Gtk.ListBoxRow()
+                row.get_style_context().add_class('list_box_row')
+                row.add(box)
 
-                self.listbox.add(box)
+                self.listbox.add(row)
 
         # Set Gnome as default
         self.select_default_row(desktop_info.NAMES["gnome"])
