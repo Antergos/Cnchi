@@ -510,15 +510,14 @@ class InstallationZFS(GtkBaseBox):
 
         offset = 20480
 
-        if scheme == "GPT":
-            # Clean partition table to avoid issues!
-            wrapper.sgdisk("zap-all", device_path)
+        # Clean partition table to avoid issues!
+        wrapper.sgdisk("zap-all", device_path)
 
         # Clear all magic strings/signatures -
         # mdadm, lvm, partition tables etc.
         wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
 
-        # Clear the end of disk (where zfs info is stored)
+        # Clear the end of disk, too.
         try:
             seek = int(call(["blockdev", "--getsz", device_path])) - offset
             wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
@@ -870,9 +869,7 @@ class InstallationZFS(GtkBaseBox):
         pool_type = pool_type.lower().replace("-", "")
 
         if pool_type in ["none", "stripe"]:
-            # If we add here all devices, zpool "sometimes" fails
-            # (I have not found the reason behind this)
-            cmd.append(devices_ids[0])
+            cmd.extend(devices_ids)
         elif pool_type == "mirror":
             if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
                 # Try to mirror pair of devices
@@ -890,13 +887,6 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
         logging.debug("Pool %s created.", pool_name)
-
-        if pool_type == "stripe":
-            # Add the other devices.
-            cmd = ["zpool", "add"]
-            cmd.append(pool_name)
-            cmd.extend(devices_ids[1:])
-            call(cmd, fatal=True)
 
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
