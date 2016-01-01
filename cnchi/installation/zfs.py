@@ -851,38 +851,40 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, pool_name, pool_type, devices_ids):
+    def create_zfs_pool(self, pool_name, pool_type, device_paths_by_id):
         """ Create zpool """
 
         if pool_type not in self.pool_types.values():
             raise InstallError("Unknown pool type: {0}".format(pool_type))
+
+        for device_path in device_paths_by_id:
+            cmd = ["zpool", "labelclear", device_path]
+            call(cmd)
 
         cmd = ["zpool", "create", "-f"]
 
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
 
-        cmd.extend(["-m", DEST_DIR])
-
-        cmd.append(pool_name)
-
         pool_type = pool_type.lower().replace("-", "")
+
+        cmd.extend(["-m", DEST_DIR, pool_name, pool_type])
 
         if pool_type in ["none", "stripe"]:
             cmd.extend(devices_ids)
         elif pool_type == "mirror":
-            if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
+            if len(device_paths_by_id) > 2 and len(device_paths_by_id) % 2 == 0:
                 # Try to mirror pair of devices
                 # (mirrors of two devices each)
-                for i,k in zip(devices_ids[0::2], devices_ids[1::2]):
+                for i,k in zip(device_paths_by_id[0::2], device_paths_by_id[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
             else:
                 cmd.append(pool_type)
-                cmd.extend(devices_ids)
+                cmd.extend(device_paths_by_id)
         else:
             cmd.append(pool_type)
-            cmd.extend(devices_ids)
+            cmd.extend(device_paths_by_id)
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
@@ -900,7 +902,7 @@ class InstallationZFS(GtkBaseBox):
         call(["modprobe", "zfs"])
 
         first_disk = True
-        devices_ids = []
+        device_paths_by_id = []
 
         for device_path in device_paths:
             device = device_path.split("/")[-1]
@@ -916,18 +918,17 @@ class InstallationZFS(GtkBaseBox):
                 id_path = "/dev/disk/by-id/{0}-part{1}".format(
                     device_id,
                     solaris_partition_number)
-                cmd = ["zpool", "labelclear", "-f", id_path]
+                cmd = ["zpool", "labelclear", id_path]
                 call(cmd)
                 first_disk = False
             else:
                 # Use full device for the other disks
                 id_path = "/dev/disk/by-id/{0}".format(device_id)
-                cmd = ["zpool", "labelclear", "-f", id_path]
+                cmd = ["zpool", "labelclear", id_path]
                 call(cmd)
+            device_paths_by_id.append(id_path)
 
-            devices_ids.append(id_path)
-
-        line = ", ".join(devices_ids)
+        line = ", ".join(device_paths_by_id)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
         # Just in case...
@@ -947,7 +948,7 @@ class InstallationZFS(GtkBaseBox):
         pool_type = self.zfs_options["pool_type"]
 
         # Create zpool
-        self.create_zfs_pool(pool_name, pool_type, devices_ids)
+        self.create_zfs_pool(pool_name, pool_type, device_paths_by_id)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
@@ -1008,6 +1009,12 @@ class InstallationZFS(GtkBaseBox):
             shutil.copyfile(src, dst)
         except OSError as copy_error:
             logging.warning(copy_error)
+
+        # Store hostid
+        hostid = call(["hostid"])
+        if hostid:
+            with open("/install/etc/hostid", "w") as hostid_file:
+                hostid_file.write("{0}\n".format(hostid))
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
