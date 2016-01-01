@@ -869,6 +869,7 @@ class InstallationZFS(GtkBaseBox):
 
         if pool_type in ["none", "stripe"]:
             # If we add here all devices, zpool "sometimes" fails
+            # (I have not found the reason behind this)
             cmd.append(devices_ids[0])
         elif pool_type == "mirror":
             if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
@@ -890,7 +891,7 @@ class InstallationZFS(GtkBaseBox):
 
         if pool_type == "stripe":
             # Add the other devices.
-            cmd = ["zpool", "add", "-f"]
+            cmd = ["zpool", "add"]
             cmd.append(pool_name)
             cmd.extend(devices_ids[1:])
             call(cmd, fatal=True)
