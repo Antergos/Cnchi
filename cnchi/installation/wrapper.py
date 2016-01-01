@@ -143,12 +143,12 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         raise InstallError(txt)
 
 
-def parted_mktable(device, table_type="msdos"):
+def parted_mklabel(device, label_type="msdos"):
     """ Helper function to call mktable parted command """
 
     cmd = [
         "parted", "--align", "optimal", "--script", device,
-        "mktable", table_type]
+        "mklabel", label_type]
 
     try:
         subprocess.check_output(cmd, stderr=subprocess.STDOUT)

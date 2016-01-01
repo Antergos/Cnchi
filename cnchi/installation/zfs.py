@@ -530,13 +530,14 @@ class InstallationZFS(GtkBaseBox):
         if scheme == "GPT":
             # Create fresh GPT
             wrapper.sgdisk("clear", device_path)
+            wrapper.parted_mklabel(device_path, "gpt")
 
             # Inform the kernel of the partition change.
             # Needed if the hard disk had a MBR partition table.
             call(["partprobe", device_path])
         else:
             # Create fresh DOS MBR
-            wrapper.parted_mktable(device_path, "msdos")
+            wrapper.parted_mklabel(device_path, "msdos")
 
         call(["sync"])
 
