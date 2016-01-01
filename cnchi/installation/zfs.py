@@ -871,7 +871,7 @@ class InstallationZFS(GtkBaseBox):
         cmd.extend(["-m", DEST_DIR, pool_name, pool_type])
 
         if pool_type in ["none", "stripe"]:
-            cmd.extend(devices_ids)
+            cmd.extend(device_paths_by_id)
         elif pool_type == "mirror":
             if len(device_paths_by_id) > 2 and len(device_paths_by_id) % 2 == 0:
                 # Try to mirror pair of devices
