@@ -866,9 +866,9 @@ class InstallationZFS(GtkBaseBox):
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
 
-        pool_type = pool_type.lower().replace("-", "")
+        cmd.extend(["-m", DEST_DIR, pool_name])
 
-        cmd.extend(["-m", DEST_DIR, pool_name, pool_type])
+        pool_type = pool_type.lower().replace("-", "")
 
         if pool_type in ["none", "stripe"]:
             cmd.extend(device_paths_by_id)
