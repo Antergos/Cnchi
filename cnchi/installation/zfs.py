@@ -25,6 +25,8 @@ import os
 import logging
 import math
 import shutil
+import string
+import random
 
 import parted
 
@@ -72,6 +74,11 @@ def is_int(num):
         return False
 
 
+def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
+    """ Generates a random string to be used as pool name """
+    return ''.join(random.choice(chars) for x in range(size))
+
+
 class InstallationZFS(GtkBaseBox):
     """ ZFS installation screen class """
     def __init__(
@@ -93,6 +100,8 @@ class InstallationZFS(GtkBaseBox):
         self.installation = None
         self.ids = {}
 
+        pool_name = "antergos_{0}".format(random_generator())
+
         # Set zfs default options
         self.zfs_options = {
             "force_4k": False,
@@ -102,7 +111,7 @@ class InstallationZFS(GtkBaseBox):
             "scheme": "GPT",
             "pool_type": "None",
             "swap_size": 8192,
-            "pool_name": "antergos",
+            "pool_name": pool_name,
             "use_pool_name": False,
             "device_paths": []
         }
@@ -489,11 +498,11 @@ class InstallationZFS(GtkBaseBox):
         # are  names beginning with the pattern "c[0-9]".
 
         txt = self.ui.get_object("pool_name_entry").get_text()
-        if not txt:
-            txt = "antergos"
-        self.zfs_options["pool_name"] = txt
+        if txt:
+            self.zfs_options["pool_name"] = txt
+
         # Bootloader needs to know zpool name
-        self.settings.set("zfs_pool_name", txt)
+        self.settings.set("zfs_pool_name", self.zfs_options["pool_name"])
 
         # Get password
         txt = self.ui.get_object("password_lbl").get_text()
@@ -941,11 +950,7 @@ class InstallationZFS(GtkBaseBox):
         except OSError:
             pass
 
-        if self.zfs_options['use_pool_name']:
-            pool_name = self.zfs_options["pool_name"]
-        else:
-            pool_name = "antergos"
-
+        pool_name = self.zfs_options["pool_name"]
         pool_type = self.zfs_options["pool_type"]
 
         # Create zpool
@@ -988,8 +993,7 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "export", "-f", pool_name]
         call(cmd, fatal=True)
 
-        # Because of previous installs, maybe there're two or more pools
-        # named "antergos". Let's get the id of the correct one
+        # Let's get the id of the pool (to import it)
         pool_id = self.get_pool_id(pool_name)
 
         # Save pool id
