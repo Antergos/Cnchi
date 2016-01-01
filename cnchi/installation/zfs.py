@@ -606,8 +606,9 @@ class InstallationZFS(GtkBaseBox):
 
         # Wipe all disks that will be part of the installation.
         # This cannot be undone!
-        for device_path in device_paths:
-            self.init_device(device_path, self.zfs_options["scheme"])
+        self.init_device(device_path[0], self.zfs_options["scheme"])
+        for device_path in device_paths[1:]:
+            self.init_device(device_path, "GPT")
 
         device_path = device_paths[0]
         solaris_partition_number = -1
