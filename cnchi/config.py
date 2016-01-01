@@ -119,7 +119,8 @@ class Settings(object):
             'xz_cache': [],
             'z_hidden': False,
             'zfs': False,
-            'zfs_pool_name': 'antergos'})
+            'zfs_pool_name': 'antergos',
+            'zfs_pool_id': 0})
 
     def _get_settings(self):
         """ Get a copy of our settings """

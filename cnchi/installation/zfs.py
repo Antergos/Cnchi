@@ -743,6 +743,7 @@ class InstallationZFS(GtkBaseBox):
             cmd = cmd_line.split()
             output = subprocess.check_output(cmd)
             pool_size = output.decode().strip('\n')
+            pool_size = pool_size.replace(',', '.')
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-1]) // 1024
             elif 'G' in pool_size:
@@ -990,6 +991,9 @@ class InstallationZFS(GtkBaseBox):
         # Because of previous installs, maybe there're two or more pools
         # named "antergos". Let's get the id of the correct one
         pool_id = self.get_pool_id(pool_name)
+
+        # Save pool id
+        self.settings.set("zfs_pool_id", pool_id)
 
         # Finally, re-import the pool by-id
         logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
