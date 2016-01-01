@@ -365,7 +365,7 @@ class InstallationZFS(GtkBaseBox):
                 pool_type not in self.pool_types_help_shown):
             if pool_type == "None":
                 msg = _("None pool, selected by default, will use ZFS on the "
-                        "selected disk, but it will notnot create any type of "
+                        "selected disk, but it will not create any type of "
                         "zfs pool with the other ones.")
             elif pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
@@ -886,6 +886,7 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
+        logging.debug("Pool %s created.", pool_name)
 
         if pool_type == "stripe":
             # Add the other devices.
