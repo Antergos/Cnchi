@@ -1006,6 +1006,10 @@ class InstallationZFS(GtkBaseBox):
         # Let's get the id of the pool (to import it)
         pool_id = self.get_pool_id(pool_name)
 
+        if not pool_id:
+            # Something bad has happened.
+            pool_id = pool_name
+
         # Save pool id
         self.settings.set("zfs_pool_id", pool_id)
 
