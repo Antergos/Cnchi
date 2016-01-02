@@ -1,4 +1,26 @@
+[2016-01-02 08:22:25 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {795068f}
+[2016-01-02 14:18:24 +0100]  Added some debug messages. ZFS with more than one device seems to w..      karasu      {64bd34a}
+[2016-01-02 14:08:11 +0100]  Always use force option when creating pool                                 karasu      {dafd80b}
+[2016-01-02 14:06:18 +0100]  zfs no pool_id found                                                       karasu      {0a3ca41}
+[2016-01-02 13:20:15 +0100]  Desesperate try to make zfs realise a pool has been created before ..      karasu      {3c35759}
+[2016-01-02 12:18:06 +0100]  Back to the idea of creating pool in two fases                             karasu      {278bfd1}
+[2016-01-02 11:01:36 +0100]  zfs                                                                        karasu      {b0d06cd}
+[2016-01-02 10:42:39 +0100]  Do not use full path.                                                      karasu      {99a33bf}
+[2016-01-02 09:41:10 +0100]  Let's see if zpool can be created once and for all                         karasu      {47a6b2b}
+[2016-01-01 16:42:59 +0100]  Do not use always "antergos" as pool name (this will avoid problems..      karasu      {7a1f9ac}
+[2016-01-01 16:32:37 +0100]  Small zfs changes                                                          karasu      {f778308}
+[2016-01-01 15:13:17 +0100]  only mirror and raidz are valid pool types                                 karasu      {a747cbe}
+[2016-01-01 15:10:07 +0100]  typo                                                                       karasu      {034231b}
+[2016-01-01 15:07:18 +0100]  More zfs                                                                   karasu      {123a392}
+[2016-01-01 12:29:08 +0100]  hating zfs more and more...                                                karasu      {df4b86d}
+[2016-01-01 12:16:53 +0100]  Is mklabel not mktable!                                                    karasu      {f9e2587}
+[2016-01-01 12:05:51 +0100]  typo                                                                       karasu      {da05d18}
+[2016-01-01 12:05:06 +0100]  Do not write a MBR to zfs disks                                            karasu      {896bfd3}
+[2016-01-01 11:53:50 +0100]  Do not use force when adding new devices to the pool                       karasu      {aebf476}
+[2016-01-01 11:45:47 +0100]  Fix typo                                                                   karasu      {8a61b23}
 [2015-12-31 06:05:58 -0600]  worked on more styles                                                  Dustin Falgout  {fa3ddb5}
+[2015-12-31 10:45:32 +0100]  Show raid-z help just once                                                 karasu      {7056357}
+[2015-12-31 10:32:56 +0100]  Do not wait for rankmirrors (even if there's still a process going ..      karasu      {1960858}
 [2015-12-31 00:10:01 -0600]  also from merge conflicts                                              Dustin Falgout  {5c0a5d8}
 [2015-12-31 00:08:44 -0600]  missed this when I fixed conflicts in previous commit                  Dustin Falgout  {b5a7cae}
 [2015-12-30 23:53:22 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1a2ec84}

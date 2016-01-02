@@ -73,6 +73,10 @@ class Check(GtkBaseBox):
         self.latest_iso = None
         self.cnchi_main = cnchi_main
         self.cnchi_notified = False
+        self.has_space = False
+        self.has_internet = False
+        self.has_iso = False
+        self.is_updated = False
 
         # self.label_space = self.ui.get_object("label_space")
 
@@ -108,16 +112,18 @@ class Check(GtkBaseBox):
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)
 
-        space = self.has_enough_space()
+        space = self.has_enough_space() if not self.has_space else True
         self.prepare_enough_space.set_state(space)
 
-        if has_internet:
-            updated = self.is_updated()
+        if self.has_internet:
+            updated = self.is_updated_check() if not self.is_updated else True
         else:
             updated = False
 
         self.updated.set_state(updated)
-        self.latest_iso.set_state(self.check_iso_version())
+
+        iso_check = self.check_iso_version() if not self.has_iso else True
+        self.latest_iso.set_state(iso_check)
 
         if self.checks_are_optional:
             return True
@@ -153,8 +159,7 @@ class Check(GtkBaseBox):
                         return True
         return False
 
-    @staticmethod
-    def has_enough_space():
+    def has_enough_space(self):
         """ Check that we have a disk or partition with enough space """
 
         output = call(["lsblk", "-lnb"]).split("\n")
@@ -170,11 +175,12 @@ class Check(GtkBaseBox):
                         max_size = size
 
         if max_size >= MIN_ROOT_SIZE:
+            self.has_space = True
             return True
 
         return False
 
-    def is_updated(self):
+    def is_updated_check(self):
         """ Checks that cnchi version is, at least, latest stable """
         if self.updater is None:
             # Only call updater once
@@ -226,6 +232,7 @@ class Check(GtkBaseBox):
         self.translate_ui()
         result = self.check_all()
         if result is not None and show:
+            self.set_valign(Gtk.Align.START)
             self.show_all()
             self.forward_button.set_sensitive(result)
 

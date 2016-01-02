@@ -80,8 +80,8 @@ class MainWindow(Gtk.ApplicationWindow):
         super().__init__(title="Cnchi", application=app)
 
         self.cnchi_app = app
-        self._main_window_width = 960
-        self._main_window_height = 500
+        self._main_window_width = 1115
+        self._main_window_height = 690
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -199,9 +199,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Show main window
         self.show_all()
 
-        # Hide backwards button
-        self.backwards_button.hide()
-
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
@@ -227,7 +224,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['header'] = self.header
         self.params['ui_dir'] = self.ui_dir
         self.params['forward_button'] = self.forward_button
-        self.params['backwards_button'] = self.backwards_button
+        self.params['backwards_button'] = None
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
@@ -286,16 +283,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.forward_button = self.header_ui.get_object("forward_button")
-        self.backwards_button = self.header_ui.get_object("backwards_button")
-
         atk_set_image_description(self.forward_button, _("Next step"))
-        atk_set_image_description(self.backwards_button, _("Previous step"))
-
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_always_show_image(True)
-
-        self.backwards_button.set_name('bk_btn')
-        self.backwards_button.set_always_show_image(True)
 
         # title = "Cnchi {0}".format(info.CNCHI_VERSION)
         title = _("Cnchi Installer")
@@ -332,9 +322,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.stacks.append(self.main_stack)
 
         diff = 2
-        if os.path.exists('/home/antergos/.config/openbox'):
-            # In minimal (openbox) we don't have a welcome screen
-            diff = 3
 
         top_pages = [p for p in self.pages if not isinstance(self.pages[p], dict)]
         sub_stacks = [self.pages[p]['pages'] for p in self.pages if p not in top_pages]
@@ -347,9 +334,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
-
-        # self.nav_buttons['backwards_button'] = self.backwards_button
-        # self.header_nav.add(self.nav_buttons['backwards_button'])
 
         for page_name in self.top_level_pages:
             page = self.pages[page_name]
@@ -478,12 +462,7 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.width_inc = 0
         geom.height_inc = 0
 
-        hints = Gdk.WindowHints.MIN_SIZE | \
-            Gdk.WindowHints.MAX_SIZE | \
-            Gdk.WindowHints.BASE_SIZE | \
-            Gdk.WindowHints.RESIZE_INC
-
-        self.set_geometry_hints(self, geom, hints)
+        self.set_geometry_hints(self, geom, Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
 
     def on_key_release(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
@@ -637,7 +616,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if not noop:
             self.sub_nav_box.add(data['nav_button_box'])
 
-        self.sub_nav_box.height_request = 48
+        self.sub_nav_box.height_request = 43
         self.sub_nav_box.show_all()
 
     def on_has_internet_connection(self):

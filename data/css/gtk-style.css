@@ -220,10 +220,10 @@ StateBox {
 .header_nav .button {
 	background-color: transparent;
 	border: none;
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: 500;
 	font-family: 'Open Sans';
-	padding: 15px 27px;
+	padding: 13px 25px;
 	color: #ffffff;
 	box-shadow: none;
 }
@@ -268,7 +268,7 @@ StateBox {
 }
 
 .logo_box {
-	padding: 20px;
+	padding: 15px 20px;
 }
 
 .sub_nav_box {
@@ -316,7 +316,7 @@ StateBox {
 }
 
 #fwd_btn {
-	padding: 10px 30px;
+	padding: 10px 20px;
 }
 
 #fwd_btn:insensitive, #bk_btn:insensitive {
@@ -345,15 +345,15 @@ StateBox {
 	font-family: "Open Sans";
 }
 
-.sub_page {
+/*.sub_page {
 	padding-top: 20px;
-}
+}*/
 
 .check_screen {
 	padding: 0px 40px;
 }
 
-.state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row, .treeview_window {
+.state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row {
 	border-top: none;
 	border-left: none;
 	border-right: none;
@@ -371,14 +371,9 @@ StateBox {
 	outline-style: none;
 }
 .treeview_window {
-	outline-style: none;
 	background-color: #f7fafd;
 	border-radius: 3px;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.view {
-	outline-style: none;
 }
 
 .state_box_container, .list_box {
@@ -444,7 +439,6 @@ StateBox {
 }
 
 .desktop_screen .scrolled_window {
-	border: none;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 

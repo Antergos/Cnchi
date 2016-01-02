@@ -5,7 +5,7 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="valign">start</property>
-		<property name="height_request">65</property>
+		<property name="height_request">63</property>
 		<child>
 			<object class="GtkBox" id="logo_box">
 				<property name="visible">True</property>
@@ -94,7 +94,7 @@
 			<class name="header_bar"/>
 		</style>
 	</object>
-	<object class="GtkButton" id="backwards_button">
+	<!--<object class="GtkButton" id="backwards_button">
 		<property name="use_action_appearance">False</property>
 		<property name="visible">True</property>
 		<property name="sensitive">True</property>
@@ -107,7 +107,7 @@
 			<class name="button"/>
 			<class name="image-button"/>
 		</style>
-		<!--<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>-->
+		&lt;!&ndash;<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>&ndash;&gt;
 		<child>
 			<object class="GtkImage" id="back_icon">
 				<property name="icon-name">go-previous-symbolic</property>
@@ -116,7 +116,7 @@
 				<property name="pixel-size">20</property>
 			</object>
 		</child>
-	</object>
+	</object>-->
 
 	<object class="GtkButton" id="forward_button">
 		<property name="use_action_appearance">False</property>
@@ -126,7 +126,6 @@
 		<property name="no_show_all">True</property>
 		<property name="halign">end</property>
 		<property name="valign">fill</property>
-		<property name="hexpand">True</property>
 		<style>
 			<class name="button"/>
 			<class name="image-button"/>
@@ -153,7 +152,7 @@
 		</style>
 	</object>-->
 	<object class="GtkBox" id="header_nav">
-		<property name="height_request">58</property>
+		<property name="height_request">53</property>
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="hexpand">True</property>
@@ -181,7 +180,7 @@
 				<property name="homogeneous">False</property>
 				<child>
 					<object class="GtkLabel" id="header_bg_top">
-						<property name="height_request">70</property>
+						<property name="height_request">63</property>
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<style>
@@ -196,7 +195,7 @@
 				</child>
 				<child>
 					<object class="GtkLabel" id="header_bg_bottom">
-						<property name="height_request">58</property>
+						<property name="height_request">53</property>
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<style>

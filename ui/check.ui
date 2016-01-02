@@ -6,7 +6,7 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">vertical</property>
-		<property name="margin_top">60</property>
+		<property name="margin_top">40</property>
 		<property name="halign">center</property>
 		<style>
 			<class name="check_screen"/>
@@ -46,8 +46,8 @@
 						<property name="can_focus">False</property>
 						<property name="orientation">vertical</property>
 						<property name="spacing">0</property>
-						<property name="margin_bottom">20</property>
-						<property name="margin_top">10</property>
+						<!--<property name="margin_bottom">20</property>
+						<property name="margin_top">10</property>-->
 						<property name="margin_right">25</property>
 						<property name="hexpand">True</property>
 						<property name="halign">center</property>
@@ -112,8 +112,8 @@
 						<property name="can_focus">False</property>
 						<property name="orientation">vertical</property>
 						<property name="spacing">0</property>
-						<property name="margin_bottom">20</property>
-						<property name="margin_top">10</property>
+						<!--<property name="margin_bottom">20</property>
+						<property name="margin_top">10</property>-->
 						<property name="hexpand">True</property>
 						<property name="valign">start</property>
 						<property name="halign">center</property>

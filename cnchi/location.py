@@ -69,6 +69,7 @@ class Location(GtkBaseBox):
 
         self.show_all_locations = False
         self.in_group = True
+        self.context_filter = ContextFilter()
 
         button = self.ui.get_object("show_all_locations_checkbutton")
         button.connect(
@@ -106,10 +107,14 @@ class Location(GtkBaseBox):
 
         self.select_first_listbox_item()
         self.translate_ui()
+        self.set_valign(Gtk.Align.CENTER)
         self.show_all()
 
         self.forward_button.set_sensitive(True)
-        self.get_and_save_install_id()
+
+        if not self.context_filter.have_install_id:
+            logging.debug('Getting install_id from build server...')
+            self.get_and_save_install_id()
 
     def load_locales(self):
         data_dir = self.settings.get('data')
@@ -259,10 +264,8 @@ class Location(GtkBaseBox):
         self.settings.set('country_code', country_code)
         return True
 
-    @staticmethod
-    def get_and_save_install_id():
-        context_filter = ContextFilter()
-        context_filter.get_and_save_install_id(is_location_screen=True)
+    def get_and_save_install_id(self):
+        self.context_filter.get_and_save_install_id(is_location_screen=True)
 
 # When testing, no _() is available
 try:

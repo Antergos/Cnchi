@@ -41,6 +41,7 @@ import misc.tz as tz
 import misc.extra as misc
 import misc.timezonemap as timezonemap
 from gtkbasebox import GtkBaseBox
+from gi.repository import Gtk
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -83,6 +84,7 @@ class Timezone(GtkBaseBox):
         # Strip .UTF-8 from locale, icu doesn't parse it
         self.locale = os.environ['LANG'].rsplit('.', 1)[0]
         self.map_window.add(self.tzmap)
+        self.map_window.set_valign(Gtk.Align.START)
         self.tzmap.show()
 
     def translate_ui(self):

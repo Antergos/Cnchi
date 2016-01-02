@@ -5,13 +5,12 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="hexpand">True</property>
+		<property name="valign">center</property>
 		<property name="orientation">vertical</property>
-		<property name="spacing">30</property>
-		<property name="halign">fill</property>
-		<property name="margin_top">30px</property>
-		<property name="margin_bottom">30px</property>
+		<property name="spacing">20</property>
 		<property name="margin_left">50px</property>
 		<property name="margin_right">50px</property>
+		<property name="height_request">350</property>
 		<style>
 			<class name="sub_page_box"/>
 		</style>
