@@ -580,11 +580,7 @@ class InstallationZFS(GtkBaseBox):
         # Zero out all GPT and MBR data structures
         wrapper.sgdisk("zap-all", device_path)
 
-        # Clear all magic strings/signatures -
-        # mdadm, lvm, partition tables etc.
-        cmd = ["mdadm", "--zero-superblock", device_path]
-        call(cmd)
-
+        # Clear all magic strings/signatures
         # Wipe out first "offset" sectors
         wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
 
@@ -711,9 +707,9 @@ class InstallationZFS(GtkBaseBox):
             self.fs_devices[self.devices['boot']] = fs_boot
             self.mount_devices['/boot'] = self.devices['boot']
 
-            # The rest of the disk will be of zfs type
+            # The rest of the disk will be of solaris type
             start = end
-            wrapper.parted_mkpart(device_path, "primary", start, "-1s", "zfs")
+            wrapper.parted_mkpart(device_path, "primary", start, "-1s")
             solaris_partition_number = 2
             self.devices['root'] = "{0}{1}".format(device_path, 2)
             # self.fs_devices[self.devices['root']] = "zfs"
