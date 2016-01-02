@@ -87,7 +87,6 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
                 raise InstallError(msg)
             else:
                 log_exception_info()
-
         return False
 
 
@@ -136,7 +135,7 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
             raise InstallError(err.output)
         else:
             log_exception_info()
-            return False
+        return False
     except OSError as os_error:
         if msg:
             msg = "{0}: {1}".format(msg, os_error)
@@ -148,12 +147,11 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
             raise InstallError(os_error)
         else:
             log_exception_info()
-            return False
+        return False
 
 
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
-    proc = None
     try:
         proc = subprocess.Popen(
             cmd,

@@ -871,7 +871,7 @@ class InstallationZFS(GtkBaseBox):
             cmd = ["zpool", "labelclear", device_path]
             call(cmd)
 
-        cmd = ["zpool", "create", "-f"]
+        cmd = ["zpool", "create"]
 
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
@@ -897,7 +897,10 @@ class InstallationZFS(GtkBaseBox):
             cmd.extend(device_paths_by_id)
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        call(cmd, fatal=True)
+        if call(cmd) == False:
+            # Failed. Try using force option
+            cmd.insert(2, "-f")
+            call(cmd, fatal=True)
         logging.debug("Pool %s created.", pool_name)
 
     def create_zfs(self, solaris_partition_number):
