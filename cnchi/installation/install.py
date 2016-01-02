@@ -1231,11 +1231,13 @@ class Installation(object):
         # https://bugs.archlinux.org/task/45351
         # We have to kill gpg-agent because if it stays around we can't
         # reliably unmount the target partition.
+        logging.debug("Stopping gpg agent...")
         chroot_call(['killall', '-9', 'gpg-agent'])
 
         # FIXME: Temporary workaround for spl and zfs packages
         # This should be fixed. I use this here just for testing purposes
-        # hardcoding this here is a VERY bad idea :p
+        # hardcoding this here is an AWFUL idea :p
+        logging.debug("Installing zfs...")
         zfs_version = "0.6.5.3"
         chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
         chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])

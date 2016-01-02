@@ -106,6 +106,8 @@ class InstallationAsk(GtkBaseBox):
             "partitioner",
             "small")
 
+        self.disable_rank_mirrors = params["disable_rank_mirrors"]
+
         image = self.ui.get_object("automatic_image")
         path = os.path.join(partitioner_dir, "automatic.png")
         image.set_from_file(path)
@@ -459,7 +461,7 @@ class InstallationAsk(GtkBaseBox):
                 must_wait = True
                 break
 
-        if not must_wait:
+        if not must_wait or self.disable_rank_mirrors:
             return
 
         txt1 = _("Ranking mirrors")

@@ -625,6 +625,7 @@ class AutoPartition(object):
 
             # Create fresh GPT
             wrapper.sgdisk("clear", device)
+            wrapper.parted_mklabel(device_path, "gpt")
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             err_msg = "Error informing the kernel of the partition change."
@@ -677,7 +678,7 @@ class AutoPartition(object):
             wrapper.wipefs(device)
 
             # Create DOS MBR
-            wrapper.parted_mktable(device, "msdos")
+            wrapper.parted_mklabel(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
             # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)

@@ -25,6 +25,8 @@ import os
 import logging
 import math
 import shutil
+import string
+import random
 
 import parted
 
@@ -72,6 +74,11 @@ def is_int(num):
         return False
 
 
+def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
+    """ Generates a random string to be used as pool name """
+    return ''.join(random.choice(chars) for x in range(size))
+
+
 class InstallationZFS(GtkBaseBox):
     """ ZFS installation screen class """
     def __init__(
@@ -94,6 +101,8 @@ class InstallationZFS(GtkBaseBox):
         self.installation = None
         self.ids = {}
 
+        pool_name = "antergos_{0}".format(random_generator())
+
         # Set zfs default options
         self.zfs_options = {
             "force_4k": False,
@@ -103,7 +112,7 @@ class InstallationZFS(GtkBaseBox):
             "scheme": "GPT",
             "pool_type": "None",
             "swap_size": 8192,
-            "pool_name": "antergos",
+            "pool_name": pool_name,
             "use_pool_name": False,
             "device_paths": []
         }
@@ -365,8 +374,9 @@ class InstallationZFS(GtkBaseBox):
         if (pool_type in pool_types and
                 pool_type not in self.pool_types_help_shown):
             if pool_type == "None":
-                msg = _("Use ZFS on one of your disks, but do not create any "
-                        "type of zfs pool with the other ones.")
+                msg = _("None pool, selected by default, will use ZFS on the "
+                        "selected disk, but it will not create any type of "
+                        "zfs pool with the other ones.")
             elif pool_type == "Stripe":
                 msg = _("When created together, with equal capacity, ZFS "
                         "space-balancing makes a span act like a RAID0 stripe. "
@@ -387,7 +397,11 @@ class InstallationZFS(GtkBaseBox):
                         "parity devices in the array and the number of disks "
                         "which can fail while the pool remains operational.")
 
-            self.pool_types_help_shown.append(pool_type)
+            if pool_type.startswith("RAID-Z"):
+                self.pool_types_help_shown.extend(["RAID-Z", "RAID-Z2", "RAID-Z3"])
+            else:
+                self.pool_types_help_shown.append(pool_type)
+
             if msg:
                 show.message(self.get_toplevel(), msg)
 
@@ -485,11 +499,11 @@ class InstallationZFS(GtkBaseBox):
         # are  names beginning with the pattern "c[0-9]".
 
         txt = self.ui.get_object("pool_name_entry").get_text()
-        if not txt:
-            txt = "antergos"
-        self.zfs_options["pool_name"] = txt
+        if txt:
+            self.zfs_options["pool_name"] = txt
+
         # Bootloader needs to know zpool name
-        self.settings.set("zfs_pool_name", txt)
+        self.settings.set("zfs_pool_name", self.zfs_options["pool_name"])
 
         # Get password
         txt = self.ui.get_object("password_lbl").get_text()
@@ -500,41 +514,6 @@ class InstallationZFS(GtkBaseBox):
         return True
 
     # ZFS Creation starts here -------------------------------------------------
-
-    def init_device(self, device_path, scheme="GPT"):
-        """ Initialize device """
-
-        offset = 20480
-
-        if scheme == "GPT":
-            # Clean partition table to avoid issues!
-            wrapper.sgdisk("zap-all", device_path)
-
-        # Clear all magic strings/signatures -
-        # mdadm, lvm, partition tables etc.
-        wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
-
-        # Clear the end of disk (where zfs info is stored)
-        try:
-            seek = int(call(["blockdev", "--getsz", device_path])) - offset
-            wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
-        except ValueError as ex:
-            logging.warning(ex)
-
-        wrapper.wipefs(device_path)
-
-        if scheme == "GPT":
-            # Create fresh GPT
-            wrapper.sgdisk("clear", device_path)
-
-            # Inform the kernel of the partition change.
-            # Needed if the hard disk had a MBR partition table.
-            call(["partprobe", device_path])
-        else:
-            # Create fresh DOS MBR
-            wrapper.parted_mktable(device_path, "msdos")
-
-        call(["sync"])
 
     def append_change(self, action_type, device, info=""):
         """ Add change for summary screen """
@@ -592,6 +571,42 @@ class InstallationZFS(GtkBaseBox):
 
         return self.change_list
 
+    def init_device(self, device_path, scheme="GPT"):
+        """ Initialize device """
+
+        logging.debug("Zapping device %s...", device_path)
+
+        offset = 20480
+
+        # Zero out all GPT and MBR data structures
+        wrapper.sgdisk("zap-all", device_path)
+
+        # Clear all magic strings/signatures
+        # Wipe out first "offset" sectors
+        wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
+
+        # Clear the end "offset" sectors of the disk, too.
+        try:
+            seek = int(call(["blockdev", "--getsz", device_path])) - offset
+            wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
+        except ValueError as ex:
+            logging.warning(ex)
+
+        wrapper.wipefs(device_path)
+
+        if scheme == "GPT":
+            # Create fresh GPT table
+            wrapper.sgdisk("clear", device_path)
+
+            # Inform the kernel of the partition change.
+            # Needed if the hard disk had a MBR partition table.
+            call(["partprobe", device_path])
+        else:
+            # Create fresh MBR table
+            wrapper.parted_mklabel(device_path, "msdos")
+
+        call(["sync"])
+
     def run_format(self):
         """ Create partitions and file systems """
         # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
@@ -602,8 +617,9 @@ class InstallationZFS(GtkBaseBox):
 
         # Wipe all disks that will be part of the installation.
         # This cannot be undone!
-        for device_path in device_paths:
-            self.init_device(device_path, self.zfs_options["scheme"])
+        self.init_device(device_paths[0], self.zfs_options["scheme"])
+        for device_path in device_paths[1:]:
+            self.init_device(device_path, "GPT")
 
         device_path = device_paths[0]
         solaris_partition_number = -1
@@ -657,6 +673,7 @@ class InstallationZFS(GtkBaseBox):
                     self.mount_devices['/boot'] = self.devices['boot']
                     part_num += 1
 
+            # The rest of the disk will be of solaris type
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
             solaris_partition_number = part_num
             self.devices['root'] = "{0}{1}".format(device_path, part_num)
@@ -691,7 +708,7 @@ class InstallationZFS(GtkBaseBox):
             self.fs_devices[self.devices['boot']] = fs_boot
             self.mount_devices['/boot'] = self.devices['boot']
 
-            # The rest will be solaris type
+            # The rest of the disk will be of solaris type
             start = end
             wrapper.parted_mkpart(device_path, "primary", start, "-1s")
             solaris_partition_number = 2
@@ -738,6 +755,7 @@ class InstallationZFS(GtkBaseBox):
             cmd = cmd_line.split()
             output = subprocess.check_output(cmd)
             pool_size = output.decode().strip('\n')
+            pool_size = pool_size.replace(',', '.')
             if 'M' in pool_size:
                 pool_size = int(pool_size[:-1]) // 1024
             elif 'G' in pool_size:
@@ -846,49 +864,55 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, pool_name, pool_type, devices_ids):
+    def create_zfs_pool(self, pool_name, pool_type, device_ids):
         """ Create zpool """
 
         if pool_type not in self.pool_types.values():
             raise InstallError("Unknown pool type: {0}".format(pool_type))
+
+        #for device_path in device_ids:
+        #    cmd = ["zpool", "labelclear", device_path]
+        #    call(cmd)
 
         cmd = ["zpool", "create", "-f"]
 
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
 
-        cmd.extend(["-m", DEST_DIR])
-
-        cmd.append(pool_name)
+        cmd.extend(["-m", DEST_DIR, pool_name])
 
         pool_type = pool_type.lower().replace("-", "")
 
         if pool_type in ["none", "stripe"]:
-            # If we add here all devices, zpool "sometimes" fails
-            cmd.append(devices_ids[0])
+            # Add first device
+            cmd.append(device_ids[0])
         elif pool_type == "mirror":
-            if len(devices_ids) > 2 and len(devices_ids) % 2 == 0:
+            if len(device_ids) > 2 and len(device_ids) % 2 == 0:
                 # Try to mirror pair of devices
                 # (mirrors of two devices each)
-                for i,k in zip(devices_ids[0::2], devices_ids[1::2]):
+                for i,k in zip(device_ids[0::2], device_ids[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
             else:
                 cmd.append(pool_type)
-                cmd.extend(devices_ids)
+                cmd.extend(device_ids)
         else:
             cmd.append(pool_type)
-            cmd.extend(devices_ids)
+            cmd.extend(device_ids)
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
 
         if pool_type == "stripe":
-            # Add the other devices.
-            cmd = ["zpool", "add", "-f"]
-            cmd.append(pool_name)
-            cmd.extend(devices_ids[1:])
+            # Wait until /dev initialized correct devices
+            call(["udevadm", "settle"])
+            call(["sync"])
+            # Add the other devices that were left out
+            cmd = ["zpool", "add", pool_name]
+            cmd.extend(device_ids[1:])
             call(cmd, fatal=True)
+
+        logging.debug("Pool %s created.", pool_name)
 
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
@@ -902,7 +926,7 @@ class InstallationZFS(GtkBaseBox):
         call(["modprobe", "zfs"])
 
         first_disk = True
-        devices_ids = []
+        device_ids = []
 
         for device_path in device_paths:
             device = device_path.split("/")[-1]
@@ -915,21 +939,14 @@ class InstallationZFS(GtkBaseBox):
 
             if first_disk:
                 # In system disk (first one) use just one partition
-                id_path = "/dev/disk/by-id/{0}-part{1}".format(
-                    device_id,
-                    solaris_partition_number)
-                cmd = ["zpool", "labelclear", "-f", id_path]
-                call(cmd)
+                part_id = "{0}-part{1}".format(device_id, solaris_partition_number)
+                device_ids.append(part_id)
                 first_disk = False
             else:
                 # Use full device for the other disks
-                id_path = "/dev/disk/by-id/{0}".format(device_id)
-                cmd = ["zpool", "labelclear", "-f", id_path]
-                call(cmd)
+                device_ids.append(device_id)
 
-            devices_ids.append(id_path)
-
-        line = ", ".join(devices_ids)
+        line = ", ".join(device_ids)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
         # Just in case...
@@ -941,15 +958,11 @@ class InstallationZFS(GtkBaseBox):
         except OSError:
             pass
 
-        if self.zfs_options['use_pool_name']:
-            pool_name = self.zfs_options["pool_name"]
-        else:
-            pool_name = "antergos"
-
+        pool_name = self.zfs_options["pool_name"]
         pool_type = self.zfs_options["pool_type"]
 
         # Create zpool
-        self.create_zfs_pool(pool_name, pool_type, devices_ids)
+        self.create_zfs_pool(pool_name, pool_type, device_ids)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
@@ -988,9 +1001,15 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "export", "-f", pool_name]
         call(cmd, fatal=True)
 
-        # Because of previous installs, maybe there're two or more pools
-        # named "antergos". Let's get the id of the correct one
+        # Let's get the id of the pool (to import it)
         pool_id = self.get_pool_id(pool_name)
+
+        if not pool_id:
+            # Something bad has happened.
+            pool_id = pool_name
+
+        # Save pool id
+        self.settings.set("zfs_pool_id", pool_id)
 
         # Finally, re-import the pool by-id
         logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
@@ -1010,6 +1029,12 @@ class InstallationZFS(GtkBaseBox):
             shutil.copyfile(src, dst)
         except OSError as copy_error:
             logging.warning(copy_error)
+
+        # Store hostid
+        hostid = call(["hostid"])
+        if hostid:
+            with open("/install/etc/hostid", "w") as hostid_file:
+                hostid_file.write("{0}\n".format(hostid))
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
