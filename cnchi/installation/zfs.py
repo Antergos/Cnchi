@@ -906,6 +906,9 @@ class InstallationZFS(GtkBaseBox):
             call(cmd, fatal=True)
 
         if pool_type == "stripe":
+            # Wait until /dev initialized correct devices
+            call(["udevadm", "settle"])
+            call(["sync"])
             # Add the other devices that were left out
             cmd = ["zpool", "add", pool_name]
             cmd.extend(device_ids[1:])
