@@ -873,7 +873,7 @@ class InstallationZFS(GtkBaseBox):
         #    cmd = ["zpool", "labelclear", device_path]
         #    call(cmd)
 
-        cmd = ["zpool", "create"]
+        cmd = ["zpool", "create", "-f"]
 
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
@@ -900,10 +900,7 @@ class InstallationZFS(GtkBaseBox):
             cmd.extend(device_ids)
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        if call(cmd) == False:
-            # Failed. Try using force option
-            cmd.insert(2, "-f")
-            call(cmd, fatal=True)
+        call(cmd, fatal=True)
 
         if pool_type == "stripe":
             # Wait until /dev initialized correct devices
