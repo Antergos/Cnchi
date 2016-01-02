@@ -883,7 +883,8 @@ class InstallationZFS(GtkBaseBox):
         pool_type = pool_type.lower().replace("-", "")
 
         if pool_type in ["none", "stripe"]:
-            cmd.extend(device_ids)
+            # Add first device
+            cmd.append(device_ids[0])
         elif pool_type == "mirror":
             if len(device_ids) > 2 and len(device_ids) % 2 == 0:
                 # Try to mirror pair of devices
@@ -903,6 +904,13 @@ class InstallationZFS(GtkBaseBox):
             # Failed. Try using force option
             cmd.insert(2, "-f")
             call(cmd, fatal=True)
+
+        if pool_type == "stripe":
+            # Add the other devices that were left out
+            cmd = ["zpool", "add", pool_name]
+            cmd.extend(device_ids[1:])
+            call(cmd, fatal=True)
+
         logging.debug("Pool %s created.", pool_name)
 
     def create_zfs(self, solaris_partition_number):
