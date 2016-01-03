@@ -130,8 +130,6 @@ class InstallationZFS(GtkBaseBox):
             1: "MBR"
         }
 
-        self.pool_types_help_shown = []
-
         self.devices = {}
         self.fs_devices = {}
         self.mount_devices = {}
@@ -366,43 +364,41 @@ class InstallationZFS(GtkBaseBox):
 
         return is_ok
 
+    def on_pool_type_help_btn_clicked(self, widget):
+        """ User clicked pool type help button """
+        combo = self.ui.get_object('pool_type_combo')
+        tree_iter = combo.get_active_iter()
+        if tree_iter is not None:
+            model = combo.get_model()
+            self.show_pool_type_help(model[tree_iter][0])
+
     def show_pool_type_help(self, pool_type):
         """ Show pool type help to the user """
-        pool_types = list(self.pool_types.values())
         msg = ""
-        if (pool_type in pool_types and
-                pool_type not in self.pool_types_help_shown):
-            if pool_type == "None":
-                msg = _("None pool, selected by default, will use ZFS on the "
-                        "selected disk, but it will not create any type of "
-                        "zfs pool with the other ones.")
-            elif pool_type == "Stripe":
-                msg = _("When created together, with equal capacity, ZFS "
-                        "space-balancing makes a span act like a RAID0 stripe. "
-                        "The space is added together. Provided all the devices "
-                        "are of the same size, the stripe behavior will "
-                        "continue regardless of fullness level. If "
-                        "devices/vdevs are not equally sized, then they will "
-                        "fill mostly equally until one device/vdev is full.")
-            elif pool_type == "Mirror":
-                msg = _("A mirror consists of two or more devices, all data "
-                        "will be written to all member devices.")
-            elif pool_type.startswith("RAID-Z"):
-                msg = _("ZFS implements RAID-Z, a variation on standard "
-                        "RAID-5. ZFS supports three levels of RAID-Z which "
-                        "provide varying levels of redundancy in exchange for "
-                        "decreasing levels of usable storage. The types are "
-                        "named RAID-Z1 through RAID-Z3 based on the number of "
-                        "parity devices in the array and the number of disks "
-                        "which can fail while the pool remains operational.")
-
-            if pool_type.startswith("RAID-Z"):
-                self.pool_types_help_shown.extend(["RAID-Z", "RAID-Z2", "RAID-Z3"])
-            else:
-                self.pool_types_help_shown.append(pool_type)
-
-            if msg:
-                show.message(self.get_toplevel(), msg)
+        if pool_type == "None":
+            msg = _("'None' pool will use ZFS on a single selected disk.")
+        elif pool_type == "Stripe":
+            msg = _("When created together, with equal capacity, ZFS "
+                    "space-balancing makes a span act like a RAID0 stripe. "
+                    "The space is added together. Provided all the devices "
+                    "are of the same size, the stripe behavior will "
+                    "continue regardless of fullness level. If "
+                    "devices/vdevs are not equally sized, then they will "
+                    "fill mostly equally until one device/vdev is full.")
+        elif pool_type == "Mirror":
+            msg = _("A mirror consists of two or more devices, all data "
+                    "will be written to all member devices. Cnchi will "
+                    "try to group devices in groups of two.")
+        elif pool_type.startswith("RAID-Z"):
+            msg = _("ZFS implements RAID-Z, a variation on standard "
+                    "RAID-5. ZFS supports three levels of RAID-Z which "
+                    "provide varying levels of redundancy in exchange for "
+                    "decreasing levels of usable storage. The types are "
+                    "named RAID-Z1 through RAID-Z3 based on the number of "
+                    "parity devices in the array and the number of disks "
+                    "which can fail while the pool remains operational.")
+        if msg:
+            show.message(self.get_toplevel(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
         """ Show 4k help to the user """
@@ -459,7 +455,7 @@ class InstallationZFS(GtkBaseBox):
         if tree_iter is not None:
             model = widget.get_model()
             self.zfs_options["pool_type"] = model[tree_iter][0]
-            self.show_pool_type_help(model[tree_iter][0])
+            # self.show_pool_type_help(model[tree_iter][0])
             self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare(self, direction):
