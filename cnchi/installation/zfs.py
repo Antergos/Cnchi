@@ -921,6 +921,21 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Pool %s created.", pool_name)
 
+    @staticmethod
+    def get_partition_path(device, part_num):
+        """ This is awful and prone to fail. We should do some
+            type of test here """
+
+        # Remove /dev/
+        path = device.replace('/dev/', '')
+        partials = [
+            'rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
+        found = [p for p in partials if path.startswith(p)]
+        if found:
+            return "{0}p{1}".format(device, part_num)
+        else:
+            return "{0}{1}".format(device, part_num)
+
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
 
@@ -932,31 +947,14 @@ class InstallationZFS(GtkBaseBox):
         # Make sure the ZFS modules are loaded
         call(["modprobe", "zfs"])
 
+        # Using by-id (recommended) does not work atm
         # https://github.com/zfsonlinux/zfs/issues/3708
-        '''
-        first_disk = True
-        device_ids = []
 
-        for device_path in device_paths:
-            device = device_path.split("/")[-1]
-            device_id = self.ids.get(device, None)
+        # Can't use the whole first disk, just the dedicated zfs partition
+        device_paths[0] = self.get_partition_path(
+            device_paths[0],
+            solaris_partition_number)
 
-            if device_id is None:
-                txt = "Error while creating ZFS pool: Cannot find device {0}"
-                txt = txt.format(device)
-                raise InstallError(txt)
-
-            if first_disk:
-                # In system disk (first one) use just one partition
-                part_id = "{0}-part{1}".format(device_id, solaris_partition_number)
-                device_ids.append(part_id)
-                first_disk = False
-            else:
-                # Use full device for the other disks
-                device_ids.append(device_id)
-
-        line = ", ".join(device_ids)
-        '''
         line = ", ".join(device_paths)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
