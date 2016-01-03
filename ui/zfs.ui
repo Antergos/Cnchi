@@ -65,8 +65,6 @@
                 <signal name="clicked" handler="on_pool_type_help_btn_clicked" swapped="no"/>
               </object>
               <packing>
-                <property name="left_attach">4</property>
-                <property name="top_attach">0</property>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">2</property>
