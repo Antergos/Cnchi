@@ -895,6 +895,10 @@ class InstallationZFS(GtkBaseBox):
             cmd.append(pool_type)
             cmd.extend(device_ids)
 
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
+
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         call(cmd, fatal=True)
 
