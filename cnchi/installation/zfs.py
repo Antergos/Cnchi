@@ -860,13 +860,13 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, pool_name, pool_type, device_ids):
+    def create_zfs_pool(self, pool_name, pool_type, device_paths):
         """ Create zpool """
 
         if pool_type not in self.pool_types.values():
             raise InstallError("Unknown pool type: {0}".format(pool_type))
 
-        #for device_path in device_ids:
+        #for device_path in device_paths:
         #    cmd = ["zpool", "labelclear", device_path]
         #    call(cmd)
 
@@ -881,20 +881,20 @@ class InstallationZFS(GtkBaseBox):
 
         if pool_type in ["none", "stripe"]:
             # Add first device
-            cmd.append(device_ids[0])
+            cmd.append(device_paths[0])
         elif pool_type == "mirror":
-            if len(device_ids) > 2 and len(device_ids) % 2 == 0:
+            if len(device_paths) > 2 and len(device_paths) % 2 == 0:
                 # Try to mirror pair of devices
                 # (mirrors of two devices each)
-                for i,k in zip(device_ids[0::2], device_ids[1::2]):
+                for i,k in zip(device_paths[0::2], device_paths[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
             else:
                 cmd.append(pool_type)
-                cmd.extend(device_ids)
+                cmd.extend(device_paths)
         else:
             cmd.append(pool_type)
-            cmd.extend(device_ids)
+            cmd.extend(device_paths)
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
@@ -902,12 +902,11 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
         if call(cmd) == False:
-            # Wait 2 seconds and try again, now with -f
-            time.sleep(2)
+            # Try again, now with -f
             cmd.insert(2, "-f")
             if call(cmd) == False:
-                # Wait 2 seconds more and try again (last hope)
-                time.sleep(2)
+                # Wait 10 seconds more and try again (last hope)
+                time.sleep(10)
                 call(cmd, fatal=True)
 
         # Wait until /dev initialized correct devices
@@ -917,7 +916,7 @@ class InstallationZFS(GtkBaseBox):
         if pool_type == "stripe":
             # Add the other devices that were left out
             cmd = ["zpool", "add", pool_name]
-            cmd.extend(device_ids[1:])
+            cmd.extend(device_paths[1:])
             call(cmd, fatal=True)
 
         logging.debug("Pool %s created.", pool_name)
@@ -933,6 +932,8 @@ class InstallationZFS(GtkBaseBox):
         # Make sure the ZFS modules are loaded
         call(["modprobe", "zfs"])
 
+        # https://github.com/zfsonlinux/zfs/issues/3708
+        '''
         first_disk = True
         device_ids = []
 
@@ -955,6 +956,8 @@ class InstallationZFS(GtkBaseBox):
                 device_ids.append(device_id)
 
         line = ", ".join(device_ids)
+        '''
+        line = ", ".join(device_paths)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
         # Just in case...
@@ -970,7 +973,7 @@ class InstallationZFS(GtkBaseBox):
         pool_type = self.zfs_options["pool_type"]
 
         # Create zpool
-        self.create_zfs_pool(pool_name, pool_type, device_ids)
+        self.create_zfs_pool(pool_name, pool_type, device_paths)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
@@ -1013,7 +1016,7 @@ class InstallationZFS(GtkBaseBox):
         pool_id = self.get_pool_id(pool_name)
 
         if not pool_id:
-            # Something bad has happened.
+            # Something bad has happened. Will use the pool name instead.
             pool_id = pool_name
 
         # Save pool id
