@@ -24,9 +24,10 @@ import subprocess
 import os
 import logging
 import math
+import random
 import shutil
 import string
-import random
+import time
 
 import parted
 
@@ -900,12 +901,19 @@ class InstallationZFS(GtkBaseBox):
         call(["sync"])
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        call(cmd, fatal=True)
+        if call(cmd) == False:
+            # Wait 2 seconds and try again
+            time.sleep(2)
+            if call(cmd) == False:
+                # Wait 2 seconds more and try again (last hope)
+                time.sleep(2)
+                call(cmd, fatal=True)
+
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         if pool_type == "stripe":
-            # Wait until /dev initialized correct devices
-            call(["udevadm", "settle"])
-            call(["sync"])
             # Add the other devices that were left out
             cmd = ["zpool", "add", pool_name]
             cmd.extend(device_ids[1:])
