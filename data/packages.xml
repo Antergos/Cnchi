@@ -106,6 +106,7 @@
 				<pkgname>evince</pkgname>
 				<pkgname>eog</pkgname>
 				<pkgname>file-roller</pkgname>
+				<pkgname>p7z</pkgname>
 				<pkgname>gedit</pkgname>
 				<pkgname>gnome-backgrounds</pkgname>
 				<pkgname>gnome-calculator</pkgname>
@@ -168,6 +169,7 @@
 				<pkgname>eog</pkgname>
 				<pkgname>evince</pkgname>
 				<pkgname>file-roller</pkgname>
+				<pkgname>p7z</pkgname>
 				<pkgname>gedit</pkgname>
 				<pkgname>gnome-calculator</pkgname>
 				<pkgname>gnome-common</pkgname>
@@ -203,6 +205,7 @@
 				<pkgname>cdrkit</pkgname>
 				<pkgname>evince</pkgname>
 				<pkgname>file-roller</pkgname>
+				<pkgname>p7z</pkgname>
 				<pkgname>gamin</pkgname>
 				<pkgname>gnome-calculator</pkgname>
 				<pkgname>gnome-disk-utility</pkgname>
@@ -294,6 +297,7 @@
 				<pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
 				<pkgname>econnman</pkgname>
 				<pkgname>file-roller</pkgname>
+				<pkgname>p7z</pkgname>
 				<pkgname>gtk-theme-e17gtk</pkgname>
 				<pkgname>polkit-gnome</pkgname>
 				<pkgname>rage</pkgname> <!-- video player -->
@@ -310,6 +314,7 @@
 				<pkgname>conky</pkgname>
 				<pkgname>cdrkit</pkgname>
 				<pkgname>file-roller</pkgname>
+				<pkgname>p7z</pkgname>
 				<pkgname>galculator</pkgname>
 				<pkgname>gmrun</pkgname>
 				<pkgname>gnome-disk-utility</pkgname>
