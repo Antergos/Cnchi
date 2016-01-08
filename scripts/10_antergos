@@ -279,7 +279,9 @@ while [ "x$list" != "x" ] ; do
     linux_root_device_thisversion=${GRUB_DEVICE}
   fi
 
-  if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
+  # GRUB_DISABLE_SUBMENU=y is the documented value to disable the submenu, testing for true is for backwards compatibility with Antergos
+  # see https://wiki.archlinux.org/index.php/GRUB/Tips_and_tricks#Disable_submenu
+  if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ] && [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
     linux_entry "${OS}" "${version}" simple \
     "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 
