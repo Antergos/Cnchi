@@ -24,6 +24,7 @@
 				<pkgname>net-tools</pkgname>
 				<pkgname>ntfs-3g</pkgname>
 				<pkgname>openssh</pkgname>
+				<pkgname>p7zip</pkgname>
 				<pkgname>pkgfile</pkgname>
 				<pkgname>sudo</pkgname>
 				<pkgname>tar</pkgname>
@@ -417,7 +418,7 @@
 				<pkgname>plasma-workspace-wallpapers</pkgname>
 				<pkgname>powerdevil</pkgname>
 				<pkgname>qtcurve</pkgname>
-				<pkgname>spectacle</pkgname>
+				<!--<pkgname>spectacle</pkgname>-->
 				<pkgname>systemsettings</pkgname>
 				<pkgname>transmission-qt</pkgname>
 				<pkgname>user-manager</pkgname>
