@@ -1100,6 +1100,9 @@ class Installation(object):
             # The keyboard layout for Great Britain is "uk" in the cli and
             # "gb" (not uk) in X, just to make things more complicated.
             keyboard_layout_cli = "uk"
+        elif keyboard_layout == "latam":
+            # The keyboard layout for Latin America is "la-latin1" in X.
+            keyboard_layout_cli = "la-latin1"
         else:
             keyboard_layout_cli = keyboard_layout
 
