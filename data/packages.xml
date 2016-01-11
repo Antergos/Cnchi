@@ -295,7 +295,7 @@
 				<pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
 				<pkgname>econnman</pkgname>
 				<pkgname>file-roller</pkgname>
-				<pkgname>gtk-theme-e17gtk</pkgname>
+				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
 				<pkgname>polkit-gnome</pkgname>
 				<pkgname>rage</pkgname> <!-- video player -->
 				<pkgname>terminology</pkgname> <!-- terminal emulator -->
