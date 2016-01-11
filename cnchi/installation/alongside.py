@@ -151,7 +151,7 @@ class InstallationAlongside(GtkBaseBox):
             txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink) + "\n\n"
             txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
             txt += _("Install at your own risk!")
-            show.warning(self.get_toplevel(), txt)
+            show.warning(self.get_main_window(), txt)
             max_size = part_size
 
         # print(min_size, max_size, part_size)
@@ -255,7 +255,7 @@ class InstallationAlongside(GtkBaseBox):
                 self.choose_partition_label.hide()
                 self.choose_partition_combo.hide()
                 self.label.set_markup(txt)
-                show.error(self.get_toplevel(), txt)
+                show.error(self.get_main_window(), txt)
         elif len(devices) == 1:
             self.set_resize_widget(devices[0])
             self.show_all()
@@ -302,14 +302,14 @@ class InstallationAlongside(GtkBaseBox):
         else:
             txt = "Can't shrink {0}({1}) filesystem".format(otherOS, fs_type)
             logging.error(txt)
-            show.error(self.get_toplevel(), txt)
+            show.error(self.get_main_window(), txt)
             return
 
         # res is either False or a parted.Geometry for the new free space
         if res is None:
             txt = "Can't shrink {0}({1}) partition".format(otherOS, fs_type)
             logging.error(txt)
-            show.error(self.get_toplevel(), txt)
+            show.error(self.get_main_window(), txt)
             txt = "*** FILESYSTEM IN UNSAFE STATE ***"
             txt = txt + "\n"
             txt = txt + "Filesystem shrink succeeded but partition shrink failed."
@@ -335,7 +335,7 @@ class InstallationAlongside(GtkBaseBox):
                 # Less than 2GB RAM and no swap? No way.
                 logging.error("Cannot create new swap partition. Not enough free space")
                 txt = _("Cannot create new swap partition. Not enough free space")
-                show.error(self.get_toplevel(), txt)
+                show.error(self.get_main_window(), txt)
                 return
             else:
                 no_swap = True
@@ -345,7 +345,7 @@ class InstallationAlongside(GtkBaseBox):
             if npart is None:
                 logging.error("Cannot create new partition.")
                 txt = _("Cannot create new partition.")
-                show.error(self.get_toplevel(), txt)
+                show.error(self.get_main_window(), txt)
                 return
             pm.finalize_changes(disk)
             mount_devices["/"] = npart.path
@@ -381,7 +381,7 @@ class InstallationAlongside(GtkBaseBox):
             if swappart is None:
                 logging.error("Cannot create new swap partition.")
                 txt = _("Cannot create new swap partition.")
-                show.error(self.get_toplevel(), txt)
+                show.error(self.get_main_window(), txt)
                 return
 
             # Create new partition for /
@@ -393,7 +393,7 @@ class InstallationAlongside(GtkBaseBox):
             if npart is None:
                 logging.error("Cannot create new partition.")
                 txt = _("Cannot create new partition.")
-                show.error(self.get_toplevel(), txt)
+                show.error(self.get_main_window(), txt)
                 return
 
             pm.finalize_changes(disk)

@@ -275,7 +275,7 @@ class Features(GtkBaseBox):
         # LAMP: Ask user if he wants Apache or Nginx
         if self.settings.get("feature_lamp"):
             info = Gtk.MessageDialog(
-                transient_for=self.get_toplevel(),
+                transient_for=self.get_main_window(),
                 modal=True,
                 destroy_with_parent=True,
                 message_type=Gtk.MessageType.INFO,
@@ -315,7 +315,7 @@ class Features(GtkBaseBox):
         txt2 = "<i>{0}</i>".format(txt2)
 
         info = Gtk.MessageDialog(
-            transient_for=self.get_toplevel(),
+            transient_for=self.get_main_window(),
             modal=True,
             destroy_with_parent=True,
             message_type=Gtk.MessageType.INFO,

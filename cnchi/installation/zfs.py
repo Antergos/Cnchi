@@ -361,7 +361,7 @@ class InstallationZFS(GtkBaseBox):
                     is_ok = True
 
         if not is_ok and show_warning:
-            show.message(self.get_toplevel(), msg)
+            show.message(self.get_main_window(), msg)
 
         return is_ok
 
@@ -399,7 +399,7 @@ class InstallationZFS(GtkBaseBox):
                     "parity devices in the array and the number of disks "
                     "which can fail while the pool remains operational.")
         if msg:
-            show.message(self.get_toplevel(), msg)
+            show.message(self.get_main_window(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
         """ Show 4k help to the user """
@@ -412,7 +412,7 @@ class InstallationZFS(GtkBaseBox):
                 "will greatly degrade the pool performance. If that might be "
                 "your case, you can force ZFS to use a sector size of 4,096 "
                 "bytes by selecting this option.")
-        show.message(self.get_toplevel(), msg)
+        show.message(self.get_main_window(), msg)
 
     def on_encrypt_swap_btn_toggled(self, widget):
         """ Swap encrypt button """
