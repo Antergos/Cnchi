@@ -200,6 +200,7 @@ class InstallationAdvanced(GtkBaseBox):
             btn.set_always_show_image(True)
             btn.set_image(image)
 
+
     def initialize_widgets(self):
         # Initialize our create/edit partition dialogs filesystems combos.
         names = ['create_partition_use_combo', 'edit_partition_use_combo']
@@ -854,7 +855,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
-        self.edit_partition_dialog.set_transient_for(self.get_toplevel())
+        self.edit_partition_dialog.set_transient_for(self.get_main_window())
 
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
@@ -863,9 +864,9 @@ class InstallationAdvanced(GtkBaseBox):
             new_mount = mount_combo_entry.get_text().strip()
 
             if new_mount in self.diskdic['mounts'] and new_mount != row[COL_MOUNT_POINT]:
-                show.warning(self.get_toplevel(), _("Can't use same mount point twice."))
+                show.warning(self.get_main_window(), _("Can't use same mount point twice."))
             elif new_mount == "/" and not format_check.get_active():
-                show.warning(self.get_toplevel(), _('Root partition must be formatted.'))
+                show.warning(self.get_main_window(), _('Root partition must be formatted.'))
             else:
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
@@ -1133,12 +1134,12 @@ class InstallationAdvanced(GtkBaseBox):
             if primary_count == disk.maxPrimaryPartitionCount:
                 msg = _("Sorry, you already have {0} primary partitions created.")
                 msg = msg.format(primary_count)
-                show.warning(self.get_toplevel(), msg)
+                show.warning(self.get_main_window(), msg)
                 return
             elif primary_count >= (disk.maxPrimaryPartitionCount - 1) and extended:
                 msg = _("Sorry, you already have {0} primary and 1 extended partitions created.")
                 msg = msg.format(primary_count)
-                show.warning(self.get_toplevel(), msg)
+                show.warning(self.get_main_window(), msg)
                 return
 
         radio["begin"] = self.ui.get_object('create_partition_create_place_beginning')
@@ -1185,7 +1186,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
-        self.create_partition_dialog.set_transient_for(self.get_toplevel())
+        self.create_partition_dialog.set_transient_for(self.get_main_window())
 
         # Finally, show the create partition dialog
         response = self.create_partition_dialog.run()
@@ -1200,7 +1201,7 @@ class InstallationAdvanced(GtkBaseBox):
             mymount = mount_combo.get_text().strip()
             if mymount in self.diskdic['mounts']:
                 show.warning(
-                    self.get_toplevel(),
+                    self.get_main_window(),
                     _("Can't use same mount point twice..."))
             else:
                 if mymount:
@@ -1309,11 +1310,11 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
-        self.luks_dialog.set_transient_for(self.get_toplevel())
+        self.luks_dialog.set_transient_for(self.get_main_window())
 
         # Show warning message
         show.warning(
-            self.get_toplevel(),
+            self.get_main_window(),
             _("Using LUKS encryption will DELETE all partition contents!"))
 
         response = self.luks_dialog.run()
@@ -1327,7 +1328,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.tmp_luks_options = (use_luks, vol_name, password)
             else:
                 show.warning(
-                    self.get_toplevel(),
+                    self.get_main_window(),
                     _("LUKS passwords do not match!"))
 
         self.luks_dialog.hide()
@@ -1699,7 +1700,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
-        dialog.set_transient_for(self.get_toplevel())
+        dialog.set_transient_for(self.get_main_window())
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -1729,7 +1730,7 @@ class InstallationAdvanced(GtkBaseBox):
                         "to embed its core.img file due to lack of post-MBR "
                         "embed gap in GPT disks.\n\n"
                         "Cnchi will create this BIOS Boot Partition for you.")
-                    show.warning(self.get_toplevel(), msg)
+                    show.warning(self.get_main_window(), msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
         dialog.hide()
@@ -1757,7 +1758,7 @@ class InstallationAdvanced(GtkBaseBox):
             # BIOS GPT Boot partition must be the first one on the disk
             txt = "Can't create BIOS GPT Boot partition!"
             logging.error(txt)
-            show.error(self.get_toplevel(), _(txt))
+            show.error(self.get_main_window(), _(txt))
             return
 
         # max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
@@ -1791,7 +1792,7 @@ class InstallationAdvanced(GtkBaseBox):
             txt = "Couldn't create BIOS GPT Boot partition: {0}".format(myerr)
             logging.error(txt)
             txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(myerr)
-            show.error(self.get_toplevel(), txt)
+            show.error(self.get_main_window(), txt)
 
         # Store stage partition info in self.stage_opts
         old_parts = []
@@ -1972,7 +1973,7 @@ class InstallationAdvanced(GtkBaseBox):
             logging.debug("%s unmounted", mount_point)
         elif mounted:
             # unmount it!
-            show.warning(self.get_toplevel(), msg)
+            show.warning(self.get_main_window(), msg)
             if swap_partition == partition_path:
                 cmd = ["swapoff", partition_path]
                 with misc.raised_privileges():
@@ -2264,7 +2265,7 @@ class InstallationAdvanced(GtkBaseBox):
                             logging.error(txt)
                             txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(
                                 luks_device, lbl, fisy, msg)
-                            show.error(self.get_toplevel(), txt)
+                            show.error(self.get_main_window(), txt)
 
                         # Do not format (already done)
                         fmt = False
@@ -2300,7 +2301,7 @@ class InstallationAdvanced(GtkBaseBox):
                         logging.error(txt)
                         txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(
                             partition_path, lbl, fisy, msg)
-                        show.error(self.get_toplevel(), txt)
+                        show.error(self.get_main_window(), txt)
                 elif (partition_path in self.orig_label_dic and
                         self.orig_label_dic[partition_path] != lbl):
                     try:
@@ -2320,7 +2321,7 @@ class InstallationAdvanced(GtkBaseBox):
             msg = "Cannot commit your changes to disk: {0}".format(str(io_error))
             logging.error(msg)
             msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
-            show.error(self.get_toplevel(), msg)
+            show.error(self.get_main_window(), msg)
 
     def run_install(self, packages, metalinks):
         """ Start installation process """

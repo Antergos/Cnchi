@@ -24,6 +24,7 @@
 				<pkgname>net-tools</pkgname>
 				<pkgname>ntfs-3g</pkgname>
 				<pkgname>openssh</pkgname>
+				<pkgname>p7zip</pkgname>
 				<pkgname>pkgfile</pkgname>
 				<pkgname>sudo</pkgname>
 				<pkgname>tar</pkgname>
@@ -294,7 +295,7 @@
 				<pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
 				<pkgname>econnman</pkgname>
 				<pkgname>file-roller</pkgname>
-				<pkgname>gtk-theme-e17gtk</pkgname>
+				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
 				<pkgname>polkit-gnome</pkgname>
 				<pkgname>rage</pkgname> <!-- video player -->
 				<pkgname>terminology</pkgname> <!-- terminal emulator -->
@@ -381,7 +382,6 @@
 				<pkgname>kdebase-kdepasswd</pkgname>
 				<pkgname>kdebase-kdialog</pkgname>
 				<pkgname>kdebase-kfind</pkgname>
-				<pkgname>kdegraphics-ksnapshot</pkgname>
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
 				<pkgname>kdemultimedia-ffmpegthumbs</pkgname>
@@ -418,6 +418,7 @@
 				<pkgname>plasma-workspace-wallpapers</pkgname>
 				<pkgname>powerdevil</pkgname>
 				<pkgname>qtcurve</pkgname>
+				<!--<pkgname>spectacle</pkgname>-->
 				<pkgname>systemsettings</pkgname>
 				<pkgname>transmission-qt</pkgname>
 				<pkgname>user-manager</pkgname>

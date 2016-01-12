@@ -1,3 +1,4 @@
+[2016-01-02 10:37:56 -0600]  fighting with gtk over the window size :unamused:                      Dustin Falgout  {1c01073}
 [2016-01-02 08:22:25 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {795068f}
 [2016-01-02 14:18:24 +0100]  Added some debug messages. ZFS with more than one device seems to w..      karasu      {64bd34a}
 [2016-01-02 14:08:11 +0100]  Always use force option when creating pool                                 karasu      {dafd80b}

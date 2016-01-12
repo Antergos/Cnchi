@@ -24,9 +24,10 @@ import subprocess
 import os
 import logging
 import math
+import random
 import shutil
 import string
-import random
+import time
 
 import parted
 
@@ -130,8 +131,6 @@ class InstallationZFS(GtkBaseBox):
             0: "GPT",
             1: "MBR"
         }
-
-        self.pool_types_help_shown = []
 
         self.devices = {}
         self.fs_devices = {}
@@ -363,47 +362,45 @@ class InstallationZFS(GtkBaseBox):
                     is_ok = True
 
         if not is_ok and show_warning:
-            show.message(self.get_toplevel(), msg)
+            show.message(self.get_main_window(), msg)
 
         return is_ok
 
+    def on_pool_type_help_btn_clicked(self, widget):
+        """ User clicked pool type help button """
+        combo = self.ui.get_object('pool_type_combo')
+        tree_iter = combo.get_active_iter()
+        if tree_iter is not None:
+            model = combo.get_model()
+            self.show_pool_type_help(model[tree_iter][0])
+
     def show_pool_type_help(self, pool_type):
         """ Show pool type help to the user """
-        pool_types = list(self.pool_types.values())
         msg = ""
-        if (pool_type in pool_types and
-                pool_type not in self.pool_types_help_shown):
-            if pool_type == "None":
-                msg = _("None pool, selected by default, will use ZFS on the "
-                        "selected disk, but it will not create any type of "
-                        "zfs pool with the other ones.")
-            elif pool_type == "Stripe":
-                msg = _("When created together, with equal capacity, ZFS "
-                        "space-balancing makes a span act like a RAID0 stripe. "
-                        "The space is added together. Provided all the devices "
-                        "are of the same size, the stripe behavior will "
-                        "continue regardless of fullness level. If "
-                        "devices/vdevs are not equally sized, then they will "
-                        "fill mostly equally until one device/vdev is full.")
-            elif pool_type == "Mirror":
-                msg = _("A mirror consists of two or more devices, all data "
-                        "will be written to all member devices.")
-            elif pool_type.startswith("RAID-Z"):
-                msg = _("ZFS implements RAID-Z, a variation on standard "
-                        "RAID-5. ZFS supports three levels of RAID-Z which "
-                        "provide varying levels of redundancy in exchange for "
-                        "decreasing levels of usable storage. The types are "
-                        "named RAID-Z1 through RAID-Z3 based on the number of "
-                        "parity devices in the array and the number of disks "
-                        "which can fail while the pool remains operational.")
-
-            if pool_type.startswith("RAID-Z"):
-                self.pool_types_help_shown.extend(["RAID-Z", "RAID-Z2", "RAID-Z3"])
-            else:
-                self.pool_types_help_shown.append(pool_type)
-
-            if msg:
-                show.message(self.get_toplevel(), msg)
+        if pool_type == "None":
+            msg = _("'None' pool will use ZFS on a single selected disk.")
+        elif pool_type == "Stripe":
+            msg = _("When created together, with equal capacity, ZFS "
+                    "space-balancing makes a span act like a RAID0 stripe. "
+                    "The space is added together. Provided all the devices "
+                    "are of the same size, the stripe behavior will "
+                    "continue regardless of fullness level. If "
+                    "devices/vdevs are not equally sized, then they will "
+                    "fill mostly equally until one device/vdev is full.")
+        elif pool_type == "Mirror":
+            msg = _("A mirror consists of two or more devices, all data "
+                    "will be written to all member devices. Cnchi will "
+                    "try to group devices in groups of two.")
+        elif pool_type.startswith("RAID-Z"):
+            msg = _("ZFS implements RAID-Z, a variation on standard "
+                    "RAID-5. ZFS supports three levels of RAID-Z which "
+                    "provide varying levels of redundancy in exchange for "
+                    "decreasing levels of usable storage. The types are "
+                    "named RAID-Z1 through RAID-Z3 based on the number of "
+                    "parity devices in the array and the number of disks "
+                    "which can fail while the pool remains operational.")
+        if msg:
+            show.message(self.get_main_window(), msg)
 
     def on_force_4k_help_btn_clicked(self, widget):
         """ Show 4k help to the user """
@@ -416,7 +413,7 @@ class InstallationZFS(GtkBaseBox):
                 "will greatly degrade the pool performance. If that might be "
                 "your case, you can force ZFS to use a sector size of 4,096 "
                 "bytes by selecting this option.")
-        show.message(self.get_toplevel(), msg)
+        show.message(self.get_main_window(), msg)
 
     def on_encrypt_swap_btn_toggled(self, widget):
         """ Swap encrypt button """
@@ -460,7 +457,7 @@ class InstallationZFS(GtkBaseBox):
         if tree_iter is not None:
             model = widget.get_model()
             self.zfs_options["pool_type"] = model[tree_iter][0]
-            self.show_pool_type_help(model[tree_iter][0])
+            # self.show_pool_type_help(model[tree_iter][0])
             self.forward_button.set_sensitive(self.check_pool_type())
 
     def prepare(self, direction):
@@ -864,17 +861,17 @@ class InstallationZFS(GtkBaseBox):
                     name = identifier = state = None
         return None
 
-    def create_zfs_pool(self, pool_name, pool_type, device_ids):
+    def create_zfs_pool(self, pool_name, pool_type, device_paths):
         """ Create zpool """
 
         if pool_type not in self.pool_types.values():
             raise InstallError("Unknown pool type: {0}".format(pool_type))
 
-        #for device_path in device_ids:
+        #for device_path in device_paths:
         #    cmd = ["zpool", "labelclear", device_path]
         #    call(cmd)
 
-        cmd = ["zpool", "create", "-f"]
+        cmd = ["zpool", "create"]
 
         if self.zfs_options["force_4k"]:
             cmd.extend(["-o", "ashift=12"])
@@ -885,34 +882,60 @@ class InstallationZFS(GtkBaseBox):
 
         if pool_type in ["none", "stripe"]:
             # Add first device
-            cmd.append(device_ids[0])
+            cmd.append(device_paths[0])
         elif pool_type == "mirror":
-            if len(device_ids) > 2 and len(device_ids) % 2 == 0:
+            if len(device_paths) > 2 and len(device_paths) % 2 == 0:
                 # Try to mirror pair of devices
                 # (mirrors of two devices each)
-                for i,k in zip(device_ids[0::2], device_ids[1::2]):
+                for i,k in zip(device_paths[0::2], device_paths[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
             else:
                 cmd.append(pool_type)
-                cmd.extend(device_ids)
+                cmd.extend(device_paths)
         else:
             cmd.append(pool_type)
-            cmd.extend(device_ids)
+            cmd.extend(device_paths)
+
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        call(cmd, fatal=True)
+        if call(cmd) == False:
+            # Try again, now with -f
+            cmd.insert(2, "-f")
+            if call(cmd) == False:
+                # Wait 10 seconds more and try again (last hope)
+                time.sleep(10)
+                call(cmd, fatal=True)
+
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+        call(["sync"])
 
         if pool_type == "stripe":
-            # Wait until /dev initialized correct devices
-            call(["udevadm", "settle"])
-            call(["sync"])
             # Add the other devices that were left out
             cmd = ["zpool", "add", pool_name]
-            cmd.extend(device_ids[1:])
+            cmd.extend(device_paths[1:])
             call(cmd, fatal=True)
 
         logging.debug("Pool %s created.", pool_name)
+
+    @staticmethod
+    def get_partition_path(device, part_num):
+        """ This is awful and prone to fail. We should do some
+            type of test here """
+
+        # Remove /dev/
+        path = device.replace('/dev/', '')
+        partials = [
+            'rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
+        found = [p for p in partials if path.startswith(p)]
+        if found:
+            return "{0}p{1}".format(device, part_num)
+        else:
+            return "{0}{1}".format(device, part_num)
 
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
@@ -925,28 +948,15 @@ class InstallationZFS(GtkBaseBox):
         # Make sure the ZFS modules are loaded
         call(["modprobe", "zfs"])
 
-        first_disk = True
-        device_ids = []
+        # Using by-id (recommended) does not work atm
+        # https://github.com/zfsonlinux/zfs/issues/3708
 
-        for device_path in device_paths:
-            device = device_path.split("/")[-1]
-            device_id = self.ids.get(device, None)
+        # Can't use the whole first disk, just the dedicated zfs partition
+        device_paths[0] = self.get_partition_path(
+            device_paths[0],
+            solaris_partition_number)
 
-            if device_id is None:
-                txt = "Error while creating ZFS pool: Cannot find device {0}"
-                txt = txt.format(device)
-                raise InstallError(txt)
-
-            if first_disk:
-                # In system disk (first one) use just one partition
-                part_id = "{0}-part{1}".format(device_id, solaris_partition_number)
-                device_ids.append(part_id)
-                first_disk = False
-            else:
-                # Use full device for the other disks
-                device_ids.append(device_id)
-
-        line = ", ".join(device_ids)
+        line = ", ".join(device_paths)
         logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
         # Just in case...
@@ -962,7 +972,7 @@ class InstallationZFS(GtkBaseBox):
         pool_type = self.zfs_options["pool_type"]
 
         # Create zpool
-        self.create_zfs_pool(pool_name, pool_type, device_ids)
+        self.create_zfs_pool(pool_name, pool_type, device_paths)
 
         # Set the mount point of the root filesystem
         self.set_zfs_mountpoint(pool_name, "/")
@@ -1005,7 +1015,7 @@ class InstallationZFS(GtkBaseBox):
         pool_id = self.get_pool_id(pool_name)
 
         if not pool_id:
-            # Something bad has happened.
+            # Something bad has happened. Will use the pool name instead.
             pool_id = pool_name
 
         # Save pool id

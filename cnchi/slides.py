@@ -207,7 +207,7 @@ class Slides(GtkBaseBox):
                                   "troubleshooting information:\n"
                                   "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
                                   "Would you like to view the wiki page now?")
-                    response = show.question(self.get_toplevel(), boot_warn)
+                    response = show.question(self.get_main_window(), boot_warn)
                     if response == Gtk.ResponseType.YES:
                         import webbrowser
                         misc.drop_privileges()
@@ -216,7 +216,7 @@ class Slides(GtkBaseBox):
 
                 install_ok = _("Installation Complete!\n"
                                "Do you want to restart your system now?")
-                response = show.question(self.get_toplevel(), install_ok)
+                response = show.question(self.get_main_window(), install_ok)
                 misc.remove_temp_files()
                 logging.shutdown()
                 if response == Gtk.ResponseType.YES:
@@ -232,7 +232,7 @@ class Slides(GtkBaseBox):
                 self.empty_queue()
 
                 # Show the error
-                show.fatal_error(self.get_toplevel(), event[1])
+                show.fatal_error(self.get_main_window(), event[1])
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:

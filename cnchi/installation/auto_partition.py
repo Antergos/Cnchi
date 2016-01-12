@@ -369,9 +369,10 @@ class AutoPartition(object):
 
         # Remove /dev/
         path = device.replace('/dev/', '')
-        partials = ['rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
+        partials = [
+            'rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
         found = [p for p in partials if path.startswith(p)]
-        if len(found) > 0:
+        if found:
             return "{0}p{1}".format(device, part_num)
         else:
             return "{0}{1}".format(device, part_num)

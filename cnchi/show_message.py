@@ -54,6 +54,9 @@ def fatal_error(parent, my_message):
 def error(parent, my_message):
     """ Shows an error message """
 
+    if not isinstance(parent, Gtk.Window):
+        parent = None
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
@@ -68,6 +71,9 @@ def error(parent, my_message):
 
 def warning(parent, my_message):
     """ Shows a warning message """
+
+    if not isinstance(parent, Gtk.Window):
+        parent = None
 
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
@@ -84,6 +90,9 @@ def warning(parent, my_message):
 def message(parent, my_message):
     """ Show message """
 
+    if not isinstance(parent, Gtk.Window):
+        parent = None
+
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
                                    modal=True,
@@ -98,6 +107,9 @@ def message(parent, my_message):
 
 def question(parent, my_message):
     """ Shows a question message """
+
+    if not isinstance(parent, Gtk.Window):
+        parent = None
 
     my_message = str(my_message)
     msg_dialog = Gtk.MessageDialog(transient_for=parent,
