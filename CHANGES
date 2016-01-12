@@ -1,3 +1,17 @@
+[2016-01-11 23:48:13 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {a9d22e2}
+[2016-01-11 22:49:15 +0100]  Let's hope this fixes issue #417 once and for all.                         karasu      {aa1fc6a}
+[2016-01-11 21:38:51 +0100]  Testing Enlightenment                                                      karasu      {5c4d0a1}
+[2016-01-09 18:52:23 +0100]  backwards compatibility for GRUB_DISABLE_SUBMENU                           karasu      {60dca63}
+[2016-01-08 22:25:31 +0100]  Added p7zip                                                                karasu      {e0e295c}
+[2016-01-08 22:20:43 +0100]  ksnapshot retired                                                          karasu      {653f174}
+[2016-01-03 21:13:49 +0100]  Use only the partition, not the whole disk (first disk only)               karasu      {09a4bf3}
+[2016-01-03 21:01:11 +0100]  Use device paths instead of ids when creating pool : https://github..      karasu      {782f555}
+[2016-01-03 19:05:27 +0100]  Of course pool does not exist, I AM CREATING IT NOW! (wtf zfs?)            karasu      {64e811f}
+[2016-01-03 18:06:37 +0100]  Why insisting works?                                                       karasu      {d466578}
+[2016-01-03 15:22:43 +0100]  Wait                                                                       karasu      {fbef747}
+[2016-01-03 14:15:37 +0100]  Fix image buttons                                                          karasu      {d5f522d}
+[2016-01-03 12:06:56 +0100]  Remove unneeded code                                                       karasu      {906c69c}
+[2016-01-03 12:02:44 +0100]  Show pool type help only if asked by user                                  karasu      {5184b7b}
 [2016-01-02 10:37:56 -0600]  fighting with gtk over the window size :unamused:                      Dustin Falgout  {1c01073}
 [2016-01-02 08:22:25 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {795068f}
 [2016-01-02 14:18:24 +0100]  Added some debug messages. ZFS with more than one device seems to w..      karasu      {64bd34a}

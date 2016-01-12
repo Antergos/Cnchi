@@ -81,7 +81,10 @@ class Location(GtkBaseBox):
 
     def on_show_all_locations_checkbox_toggled(self, button, name):
         self.show_all_locations = button.get_active()
+        self.hide_all()
         self.fill_listbox()
+        self.select_first_listbox_item()
+        self.show_all()
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -165,19 +168,14 @@ class Location(GtkBaseBox):
     def get_areas(self):
         areas = []
 
-        if not self.show_all_locations:
-            lang_code = self.settings.get("language_code")
-            for locale_name in self.locales:
-                logging.debug(locale_name)
-                if lang_code in locale_name:
-                    areas.append(self.locales[locale_name])
-            if len(areas) == 0:
-                # When we don't find any country we put all language codes.
-                # This happens with Esperanto and Asturianu at least.
-                for locale_name in self.locales:
-                    areas.append(self.locales[locale_name])
-        else:
-            # Put all language codes (forced by the checkbox)
+        lang_code = self.settings.get("language_code")
+        for locale_name in self.locales:
+            logging.debug(locale_name)
+            if self.show_all_locations or lang_code in locale_name:
+                areas.append(self.locales[locale_name])
+        if len(areas) == 0:
+            # When we don't find any country we put all language codes.
+            # This happens with Esperanto and Asturianu at least.
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
 
