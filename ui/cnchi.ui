@@ -27,7 +27,12 @@
 			<object class="GtkBox" id="main_box_wrapper">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="halign">fill</property>
+				<property name="halign">center</property>
+				<property name="valign">center</property>
+				<property name="margin_top">35</property>
+				<property name="margin_bottom">35</property>
+				<property name="margin_left">40</property>
+				<property name="margin_right">40</property>
 				<property name="orientation">vertical</property>
 				<child>
 					<object class="GtkBox" id="main_box">
@@ -69,8 +74,8 @@
 				</style>
 			</object>
 			<packing>
-				<property name="expand">False</property>
-				<property name="fill">True</property>
+				<property name="expand">True</property>
+				<property name="fill">False</property>
 				<property name="position">2</property>
 			</packing>
 		</child>

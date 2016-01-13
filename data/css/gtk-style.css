@@ -349,9 +349,9 @@ StateBox {
 	padding-top: 20px;
 }*/
 
-.check_screen {
+/*.check_screen {
 	padding: 0px 40px;
-}
+}*/
 
 .state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row {
 	border-top: none;
@@ -382,9 +382,9 @@ StateBox {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.state_box .horizontal, .list_box_row {
+.state_box .statebox_item, .list_box_row {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-	padding: 15px 20px;
+	padding: 25px 20px;
 }
 
 .treeview row {

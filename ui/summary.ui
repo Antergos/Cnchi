@@ -5,10 +5,10 @@
 	<object class="GtkBox" id="summary">
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
-		<property name="margin_top">30px</property>
+		<!--<property name="margin_top">30px</property>
 		<property name="margin_bottom">30px</property>
 		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>
+		<property name="margin_right">50px</property>-->
 		<property name="orientation">vertical</property>
 		<child>
 			<object class="GtkScrolledWindow" id="scrolled_window">

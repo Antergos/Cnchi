@@ -10,8 +10,8 @@
 		<property name="spacing">12</property>
 		<!--<property name="margin_top">30px</property>
 		<property name="margin_bottom">30px</property>-->
-		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>
+		<!--<property name="margin_left">50px</property>
+		<property name="margin_right">50px</property>-->
 		<style>
 			<class name="sub_page_box"/>
 		</style>
@@ -19,8 +19,8 @@
 			<object class="GtkEventBox" id="timezone_map_window">
 				<property name="visible">True</property>
 				<property name="can_focus">True</property>
-				<property name="margin_start">10</property>
-				<property name="margin_end">10</property>
+				<!--<property name="margin_start">10</property>
+				<property name="margin_end">10</property>-->
 				<child>
 					<placeholder/>
 				</child>
@@ -52,7 +52,7 @@
 				</child>
 				<child>
 					<object class="GtkComboBoxText" id="comboboxtext_zone">
-						<property name="width_request">200</property>
+						<!--<property name="width_request">200</property>-->
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<signal name="changed" handler="on_zone_combobox_changed" swapped="no"/>
@@ -65,7 +65,7 @@
 				</child>
 				<child>
 					<object class="GtkComboBoxText" id="comboboxtext_region">
-						<property name="width_request">200</property>
+						<!--<property name="width_request">200</property>-->
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="margin_start">5</property>
@@ -99,7 +99,7 @@
 				<property name="expand">False</property>
 				<property name="fill">True</property>
 				<property name="position">1</property>
-				<property name="padding">15</property>
+				<!--<property name="padding">15</property>-->
 			</packing>
 		</child>
 		<child>
@@ -126,7 +126,7 @@
 						<property name="can_focus">True</property>
 						<property name="halign">start</property>
 						<property name="active">True</property>
-						<property name="width_request">200</property>
+						<!--<property name="width_request">200</property>-->
 						<signal name="activate" handler="on_switch_ntp_activate" swapped="no"/>
 						<style>
 							<class name="switch"/>
@@ -143,7 +143,7 @@
 				<property name="expand">False</property>
 				<property name="fill">True</property>
 				<property name="position">2</property>
-				<property name="padding">15</property>
+				<!--<property name="padding">15</property>-->
 			</packing>
 		</child>
 	</object>

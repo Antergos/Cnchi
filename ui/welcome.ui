@@ -9,10 +9,10 @@
 		<property name="valign">center</property>
 		<property name="orientation">vertical</property>
 		<property name="spacing">16</property>
-		<property name="margin_top">30px</property>
+		<!--<property name="margin_top">30px</property>
 		<property name="margin_bottom">30px</property>
 		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>
+		<property name="margin_right">50px</property>-->
 		<style>
 			<class name="welcome_screen"/>
 		</style>
@@ -36,8 +36,8 @@
 							<object class="GtkImage" id="tryit_image">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
-								<property name="margin_left">25</property>
-								<property name="margin_right">25</property>
+								<property name="margin_left">65</property>
+								<property name="margin_right">65</property>
 								<property name="margin_top">12</property>
 							</object>
 							<packing>

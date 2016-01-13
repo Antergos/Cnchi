@@ -6,6 +6,9 @@
 		<property name="can_focus">False</property>
 		<property name="valign">start</property>
 		<property name="height_request">63</property>
+		<style>
+			<class name="header_bar"/>
+		</style>
 		<child>
 			<object class="GtkBox" id="logo_box">
 				<property name="visible">True</property>
@@ -58,11 +61,6 @@
 					<class name="language_button"/>
 				</style>
 				<child>
-					<!--<object class="GtkImage" id="language_button_icon">
-						<property name="visible">True</property>
-						<property name="icon-name">text-html-symbolic</property>
-						<property name="pixel-size">18</property>
-					</object>-->
 					<object class="GtkLabel" id="language_button_label">
 						<property name="visible">True</property>
 						<property name="valign">center</property>
@@ -75,48 +73,7 @@
 				<property name="position">3</property>
 			</packing>
 		</child>
-		<!--<child>
-			<object class="GtkSeparator" id="header_separator">
-				<property name="orientation">vertical</property>
-				<property name="valign">center</property>
-				<property name="height_request">40</property>
-				<property name="width_request">12</property>
-				<style>
-					<class name="header_separator"/>
-				</style>
-			</object>
-			<packing>
-				<property name="pack-type">end</property>
-				<property name="position">2</property>
-			</packing>
-		</child>-->
-		<style>
-			<class name="header_bar"/>
-		</style>
 	</object>
-	<!--<object class="GtkButton" id="backwards_button">
-		<property name="use_action_appearance">False</property>
-		<property name="visible">True</property>
-		<property name="sensitive">True</property>
-		<property name="can_focus">True</property>
-		<property name="no_show_all">True</property>
-		<property name="halign">start</property>
-		<property name="valign">fill</property>
-		<property name="hexpand">True</property>
-		<style>
-			<class name="button"/>
-			<class name="image-button"/>
-		</style>
-		&lt;!&ndash;<signal name="clicked" handler="on_backwards_button_clicked" swapped="no"/>&ndash;&gt;
-		<child>
-			<object class="GtkImage" id="back_icon">
-				<property name="icon-name">go-previous-symbolic</property>
-				<property name="visible">True</property>
-				<property name="can_focus">False</property>
-				<property name="pixel-size">20</property>
-			</object>
-		</child>
-	</object>-->
 
 	<object class="GtkButton" id="forward_button">
 		<property name="use_action_appearance">False</property>
@@ -141,16 +98,6 @@
 		</child>
 	</object>
 
-	<!--<object class="GtkStackSwitcher" id="header_nav">
-		<property name="height_request">58</property>
-		<property name="visible">True</property>
-		<property name="can_focus">False</property>
-		<property name="hexpand">True</property>
-		<property name="valign">end</property>
-		<style>
-			<class name="header_nav"/>
-		</style>
-	</object>-->
 	<object class="GtkBox" id="header_nav">
 		<property name="height_request">53</property>
 		<property name="visible">True</property>
@@ -172,6 +119,9 @@
 	<object class="GtkOverlay" id="header_overlay">
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
+		<style>
+			<class name="header_overlay"/>
+		</style>
 		<child>
 			<object class="GtkBox" id="header_bg_wrapper">
 				<property name="visible">True</property>
@@ -216,8 +166,5 @@
 				<property name="index">-1</property>
 			</packing>
 		</child>
-		<style>
-			<class name="header_overlay"/>
-		</style>
 	</object>
 </interface>

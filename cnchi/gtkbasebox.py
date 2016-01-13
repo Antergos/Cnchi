@@ -41,6 +41,7 @@ class GtkBaseBox(Gtk.Box):
 
     def __init__(self, child=None, params=None, name=None, prev_page=None,
                  next_page=None, in_group=False, stack=None, is_last=False):
+        super().__init__()
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.disable_tryit = params['disable_tryit']
@@ -59,9 +60,6 @@ class GtkBaseBox(Gtk.Box):
         self.nav_button = None
         self.stack = None
         self.is_last = is_last
-
-
-        super().__init__()
 
         self.set_name(name)
         self.name = name

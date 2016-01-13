@@ -6,7 +6,7 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">vertical</property>
-		<property name="margin_top">40</property>
+		<!--<property name="margin_top">40</property>-->
 		<property name="halign">center</property>
 		<style>
 			<class name="check_screen"/>
@@ -36,7 +36,8 @@
 				<property name="can_focus">False</property>
 				<property name="orientation">horizontal</property>
 				<property name="hexpand">True</property>
-				<property name="homogeneous">False</property>
+				<property name="halign">center</property>
+				<property name="homogeneous">True</property>
 				<style>
 					<class name="state_box_containers_wrapper"/>
 				</style>
@@ -50,10 +51,11 @@
 						<property name="margin_top">10</property>-->
 						<property name="margin_right">25</property>
 						<property name="hexpand">True</property>
+						<property name="valign">start</property>
 						<property name="halign">center</property>
-						<property name="height_request">220</property>
-						<property name="width_request">400</property>
-						<property name="homogeneous">True</property>
+						<!--<property name="height_request">220</property>-->
+						<!--<property name="width_request">400</property>-->
+						<property name="homogeneous">False</property>
 						<style>
 							<class name="state_box_container"/>
 						</style>
@@ -86,9 +88,9 @@
 							</packing>
 						</child>
 						<child>
-							<object class="StateBox" id="prepare_network_connection">
+							<object class="StateBox" id="updated">
 								<property name="visible">True</property>
-								<property name="label" translatable="yes">This system has access to a stable Internet connection.</property>
+								<property name="label" translatable="yes">Cnchi is up to date.</property>
 								<style>
 									<class name="state_box"/>
 								</style>
@@ -102,8 +104,8 @@
 					</object>
 					<packing>
 						<property name="expand">True</property>
-						<property name="fill">False</property>
-						<property name="position">1</property>
+						<property name="fill">True</property>
+						<property name="position">0</property>
 					</packing>
 				</child>
 				<child>
@@ -117,15 +119,15 @@
 						<property name="hexpand">True</property>
 						<property name="valign">start</property>
 						<property name="halign">center</property>
-						<property name="height_request">148</property>
-						<property name="width_request">400</property>
+						<!--<property name="height_request">148</property>-->
+						<!--<property name="width_request">400</property>-->
 						<style>
 							<class name="state_box_container"/>
 						</style>
 						<child>
-							<object class="StateBox" id="updated">
+							<object class="StateBox" id="prepare_network_connection">
 								<property name="visible">True</property>
-								<property name="label" translatable="yes">Cnchi is up to date.</property>
+								<property name="label" translatable="yes">This system has access to a stable Internet connection.</property>
 								<style>
 									<class name="state_box"/>
 								</style>
@@ -154,13 +156,13 @@
 					<packing>
 						<property name="expand">True</property>
 						<property name="fill">True</property>
-						<property name="position">2</property>
+						<property name="position">1</property>
 					</packing>
 				</child>
 			</object>
 		</child>
 
-		<child>
+		<!--<child>
 			<object class="GtkBox" id="third_party_vbox">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
@@ -171,7 +173,7 @@
 				<style>
 					<class name="check_disclaimer"/>
 				</style>
-				<!--<child>
+				<child>
 					<object class="GtkLabel" id="label_space">
 						<property name="visible">False</property>
 						<property name="can_focus">False</property>
@@ -199,13 +201,13 @@
 					<property name="position">1</property>
 				  </packing>
 				</child>
-				-->
+
 			</object>
 			<packing>
 				<property name="expand">True</property>
 				<property name="fill">True</property>
 				<property name="position">3</property>
 			</packing>
-		</child>
+		</child> -->
 	</object>
 </interface>

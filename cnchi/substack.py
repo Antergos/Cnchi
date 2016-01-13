@@ -78,10 +78,21 @@ class SubStack(Gtk.Stack):
         """ Return screen name """
         return self.name
 
-    def get_toplevel(self):
+    def get_ancestor_window(self):
+        """ Returns first ancestor that is a Gtk Window """
+        return self.get_ancestor(Gtk.Window)
+
+    def get_toplevel_window(self):
         """ Returns top level window """
         top = self.main_window
         if isinstance(top, Gtk.Window):
             return top
+        else:
+            return None
+
+    def get_main_window(self):
+        """ Returns top level window (main window) """
+        if isinstance(self.main_window, Gtk.Window):
+            return self.main_window
         else:
             return None

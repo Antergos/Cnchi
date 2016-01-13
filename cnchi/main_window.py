@@ -80,8 +80,8 @@ class MainWindow(Gtk.ApplicationWindow):
         super().__init__(title="Cnchi", application=app)
 
         self.cnchi_app = app
-        self._main_window_width = 1115
-        self._main_window_height = 690
+        self._main_window_width = 1200
+        self._main_window_height = 782
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -202,10 +202,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Hide the progress bar for default iso.
-        if not os.path.exists('/home/antergos/.config/openbox'):
-            self.progressbar.hide()
-            self.set_focus(None)
+        self.progressbar.hide()
+        self.set_focus(None)
 
         misc.gtk_refresh()
 
@@ -447,10 +445,10 @@ class MainWindow(Gtk.ApplicationWindow):
     def set_geometry(self):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(False)
+        self.set_resizable(True)
         self.set_size_request(self._main_window_width, self._main_window_height)
         self.set_default_size(self._main_window_width, self._main_window_height)
-        self.set_property('height_request', self._main_window_height)
+        # self.set_property('height_request', self._main_window_height)
 
         geom = Gdk.Geometry()
         geom.min_width = self._main_window_width
@@ -462,7 +460,7 @@ class MainWindow(Gtk.ApplicationWindow):
         geom.width_inc = 0
         geom.height_inc = 0
 
-        self.set_geometry_hints(self, geom, Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE)
+        self.set_geometry_hints(self, geom, Gdk.WindowHints.MAX_SIZE)
 
     def on_key_release(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """

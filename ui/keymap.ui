@@ -5,11 +5,11 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">horizontal</property>
-		<property name="spacing">25</property>
-		<property name="margin_top">35px</property>
+		<property name="spacing">20</property>
+		<!--<property name="margin_top">35px</property>
 		<property name="margin_bottom">35px</property>
 		<property name="margin_left">35px</property>
-		<property name="margin_right">35px</property>
+		<property name="margin_right">35px</property>-->
 		<property name="valign">center</property>
 		<style>
 			<class name="sub_page_box"/>

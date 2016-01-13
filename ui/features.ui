@@ -5,10 +5,10 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="orientation">vertical</property>
-		<property name="margin_top">30px</property>
+		<!--<property name="margin_top">30px</property>
 		<property name="margin_bottom">30px</property>
 		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>
+		<property name="margin_right">50px</property>-->
 		<property name="hexpand">True</property>
 		<property name="vexpand">True</property>
 		<child>
