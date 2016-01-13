@@ -265,6 +265,11 @@ class Timezone(GtkBaseBox):
         # This way process.py will know that all info has been entered
         self.settings.set("timezone_done", True)
 
+        if self.settings.get('use_timesyncd'):
+            logging.debug("Cnchi will setup network time")
+        else:
+            logging.debug("Cnchi won't setup network time")
+
         return True
 
     def on_switch_ntp_activate(self, ntp_switch):
