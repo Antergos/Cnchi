@@ -38,6 +38,7 @@
 				<property name="hexpand">True</property>
 				<property name="halign">center</property>
 				<property name="homogeneous">True</property>
+				<property name="spacing">25</property>
 				<style>
 					<class name="state_box_containers_wrapper"/>
 				</style>
@@ -49,7 +50,6 @@
 						<property name="spacing">0</property>
 						<!--<property name="margin_bottom">20</property>
 						<property name="margin_top">10</property>-->
-						<property name="margin_right">25</property>
 						<property name="hexpand">True</property>
 						<property name="valign">start</property>
 						<property name="halign">center</property>

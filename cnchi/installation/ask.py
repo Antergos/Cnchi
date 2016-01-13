@@ -254,7 +254,7 @@ class InstallationAsk(GtkBaseBox):
 
         oses_str = self.get_os_list_str()
 
-        max_width_chars = 80
+        max_width_chars = 60
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
@@ -374,6 +374,10 @@ class InstallationAsk(GtkBaseBox):
         radio = self.ui.get_object("advanced_radiobutton")
         radio.set_label(_("Choose exactly where Antergos should be installed."))
         radio.set_name("advanced_radio_btn")
+        for child in radio.get_children():
+            if isinstance(child, Gtk.Label):
+                child.set_max_width_chars(50)
+                child.set_line_wrap(True)
 
         label = self.ui.get_object("advanced_description")
         txt = _("Edit partition table and choose mount points.")
