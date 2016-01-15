@@ -1081,12 +1081,15 @@ class Installation(object):
             timesyncd_path = os.path.join(
                 DEST_DIR,
                 "etc/systemd/timesyncd.conf")
-            with open(timesyncd_path, 'w') as timesyncd:
-                timesyncd.write("[Time]\n")
-                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org "
-                                "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
-                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
-                                "0.fr.pool.ntp.org\n")
+            try:
+                with open(timesyncd_path, 'w') as timesyncd:
+                    timesyncd.write("[Time]\n")
+                    timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org "
+                                    "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
+                    timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
+                                    "0.fr.pool.ntp.org\n")
+            except FileNotFoundError as err:
+                logging.warning("Can't find %s file.", timesyncd_path)
             chroot_call(['timedatectl', 'set-ntp', 'true'])
 
         # Set timezone
