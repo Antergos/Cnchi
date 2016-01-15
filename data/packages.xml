@@ -249,7 +249,7 @@
 				<pkgname>lxqt-runner</pkgname>
 				<pkgname>lxqt-session</pkgname>
 				<pkgname>openbox</pkgname>
-				<pkgname>pacmanfm-qt</pkgname>
+				<pkgname>pcmanfm-qt</pkgname>
 			</packages>
 		</edition>
 
