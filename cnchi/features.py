@@ -310,7 +310,8 @@ class Features(GtkBaseBox):
             # Ufw rules info
             txt1 = _("Uncomplicated Firewall will be installed with these rules:")
             toallow = misc.get_network()
-            txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\nufw allow SSH").format(toallow)
+            txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\n"
+                     "ufw allow SSH").format(toallow)
         else:
             # No message
             return
@@ -333,7 +334,9 @@ class Features(GtkBaseBox):
         """ Prepare features screen to get ready to show itself """
         # Each desktop has its own features
         desktop = self.settings.get('desktop')
-        self.features = desktop_info.FEATURES[desktop]
+        self.features = list(
+            set(desktop_info.ALL_FEATURES) -
+            set(desktop_info.EXCLUDED_FEATURES[desktop]))
         self.fill_listbox()
         self.translate_ui()
         self.show_all()
