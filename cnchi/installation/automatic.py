@@ -73,6 +73,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.installation = None
 
         self.bootloader = "grub2"
+        self.bootloader_device_toggle = self.ui.get_object('bootloader_device_check')
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
         self.bootloader_devices = {}
@@ -83,18 +84,6 @@ class InstallationAutomatic(GtkBaseBox):
 
     def translate_ui(self):
         """ Translate widgets """
-        txt = _("Select drive:")
-        self.device_label.set_markup(txt)
-
-        label = self.ui.get_object('text_automatic')
-        txt = _("WARNING! This will overwrite everything currently on your drive!")
-        txt = "<b>{0}</b>".format(txt)
-        label.set_markup(txt)
-
-        label = self.ui.get_object('info_label')
-        txt = _("Select the drive we should use to install Antergos and then "
-                "click above to start the process.")
-        label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password')
         txt = _("Encryption Password:")
@@ -110,13 +99,6 @@ class InstallationAutomatic(GtkBaseBox):
 
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
-
-        self.header.set_subtitle(_("Automatic Installation Mode"))
-
-        txt = _("Use the device below for boot loader installation:")
-        txt = "<span weight='bold' size='small'>{0}</span>".format(txt)
-        label = self.ui.get_object('bootloader_device_info_label')
-        label.set_markup(txt)
 
         txt = _("Bootloader:")
         label = self.ui.get_object('bootloader_label')
@@ -182,6 +164,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.show_all()
         self.fill_bootloader_entry()
+        self.bootloader_device_toggle.set_active(True)
 
         luks_grid = self.ui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
@@ -237,9 +220,10 @@ class InstallationAutomatic(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    def on_bootloader_device_check_toggled(self, checkbox):
+    def on_bootloader_device_check_toggled(self, switch):
         """ User wants to install (or not) boot loader """
-        status = checkbox.get_active()
+        status = switch.get_active()
+        sensitivity = Gtk.SensitivityType.ON if status else Gtk.SensitivityType.OFF
 
         widget_ids = [
             "bootloader_device_entry",
@@ -249,7 +233,10 @@ class InstallationAutomatic(GtkBaseBox):
 
         for widget_id in widget_ids:
             widget = self.ui.get_object(widget_id)
-            widget.set_sensitive(status)
+            try:
+                widget.set_button_sensitivity(sensitivity)
+            except Exception:
+                widget.set_sensitive(status)
 
         self.settings.set('bootloader_install', status)
 

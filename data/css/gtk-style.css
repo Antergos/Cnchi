@@ -176,7 +176,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	border-width: 2px;
 	color: #fff;
 	border-radius: 0px;
-	font-size: 20px;
+	font-size: 19px;
 }
 
 #graph_btn:hover, .automatic_radiobutton:hover {
@@ -470,5 +470,14 @@ StateBox {
 .ask_label_automatic {}
 
 .ask_label_advanced {}
+
+.warning_icon {
+	color: #dd0030;
+}
+
+.warning_label {
+	font-weight: 700;
+	font-size: 14px;
+}
 
 .undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }
