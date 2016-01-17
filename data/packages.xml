@@ -249,7 +249,7 @@
 				<pkgname>lxqt-runner</pkgname>
 				<pkgname>lxqt-session</pkgname>
 				<pkgname>openbox</pkgname>
-				<pkgname>pacmanfm-qt</pkgname>
+				<pkgname>pcmanfm-qt</pkgname>
 			</packages>
 		</edition>
 
@@ -396,7 +396,6 @@
 				<pkgname>khelpcenter</pkgname>
 				<pkgname>kinfocenter</pkgname>
 				<pkgname>kmenuedit</pkgname>
-				<pkgname>kmix</pkgname>
 				<pkgname>konsole</pkgname>
 				<pkgname>kscreen</pkgname>
 				<pkgname>ksshaskpass</pkgname>
