@@ -1,4 +1,8 @@
+[2016-01-17 06:40:31 -0600]  :delirious:                                                            Dustin Falgout  {3f0d764}
 [2016-01-16 02:27:11 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b7a7c5c}
+[2016-01-15 19:57:43 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {48823e4}
+[2016-01-15 19:56:24 +0100]  Fix package name                                                           karasu      {45d03d4}
+[2016-01-15 10:11:17 +0100]  Do not fail if timesyncd.conf file is not found                            karasu      {9bb613e}
 [2016-01-14 14:09:00 +0100]  Store excluded desktop features, not needed ones (looks cleaner).          karasu      {5433c9d}
 [2016-01-13 20:07:42 +0100]  Log if ntp is used or not                                                  karasu      {4463d92}
 [2016-01-13 06:43:53 -0600]  working on installation_ask screen                                     Dustin Falgout  {834a85e}

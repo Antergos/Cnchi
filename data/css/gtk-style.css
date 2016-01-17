@@ -119,7 +119,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	border-top: 1px solid rgba(150, 150, 150, 0.1);
 }
 
-#tryit_btn, #graph_btn {
+#tryit_btn, #graph_btn  {
 	padding: 12px 20px;
 	border-radius: 3px;
 	border-color: #f0f0f0;
@@ -130,24 +130,39 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	transition: all 0.1s ease-in;
 }
 
-#graph_btn {
+.advanced_radiobutton, .automatic_radiobutton {
+	padding: 12px 75px;
+	border-radius: 3px;
+	border-color: #f0f0f0;
+	border-width: 2px;
+	background: rgba(255, 255, 255, 1);
+	font-size: 15px;
+	font-weight: 500;
+	transition: all 0.1s linear;
+}
+
+#graph_btn, .automatic_radiobutton {
 	color: #f959b7;
 }
 
-#tryit_btn {
+#tryit_btn, .advanced_radiobutton {
 	color: #795aff;
 }
 
-#graph_btn:focused {
+#graph_btn:focused, .automatic_radiobutton:focused {
 	border-color: #f959b7;
 }
 
-#tryit_btn:focused {
+#tryit_btn:focused, .advanced_radiobutton:focused {
 	border-color: #795aff;
 }
 
+.automatic_radiobutton:focused, .advanced_radiobutton:focused {
+	border-width: 2px;
+}
+
 #tryit_btn:hover, #graph_btn:hover {
-	padding-top: 9px;
+	padding-top: 7px;
 	padding-bottom: 9px;
 	color: #fff;
 	border-radius: 0px;
@@ -156,12 +171,22 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	font-size: 20px;
 }
 
-#graph_btn:hover {
-	background: #f959b7;
+.automatic_radiobutton:hover, .advanced_radiobutton:hover {
+	padding: 7px 58px;
+	border-width: 2px;
+	color: #fff;
+	border-radius: 0px;
+	font-size: 20px;
 }
 
-#tryit_btn:hover {
+#graph_btn:hover, .automatic_radiobutton:hover {
+	background: #f959b7;
+	border-color: #f959b7;
+}
+
+#tryit_btn:hover, .advanced_radiobutton:hover {
 	background: #795aff;
+	border-color: #795aff;
 }
 
 #tryit_label, #installit_label {
@@ -179,10 +204,6 @@ GtkTreeView row:selected {
 	border-color: shade(#2EA3F2, 0.9);
 }*/
 
-#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
-	font-size: 13px;
-	font-weight: 600;
-}
 
 #lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
 	font-size: 11px;
@@ -194,7 +215,7 @@ GtkTreeView row:selected {
 }
 
 #ask #intro_label {
-	font-size: 15px;
+	font-size: 16px;
 }
 
 #slides GtkScrolledWindow {
@@ -392,7 +413,7 @@ StateBox {
 	border-radius: 0px;
 }
 
-.best_results_label {
+.best_results_label, .ask_intro_text {
 	font-weight: 700;
 	font-size: 15px;
 }
@@ -441,5 +462,13 @@ StateBox {
 .desktop_screen .scrolled_window {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
+
+.ask_label {
+	font-size: 13px;
+	padding-top: 20px;
+}
+.ask_label_automatic {}
+
+.ask_label_advanced {}
 
 .undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }

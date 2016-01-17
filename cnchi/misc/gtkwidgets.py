@@ -1,24 +1,35 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 #
-# gtkwidgets.py
+#  gtkwidgets.py
 #
-# Copyright (c) 2012 Canonical Ltd.
-# Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
-# (at your option) any later version.
+#  This file includes code by the following 3rd-parties:
+#  Copyright © 2015 Patrick Griffis <tingping@tingping.se>
+#  Copyright © 2014 Christian Hergert <christian@hergert.me>
+#  Copyright © 2012 Canonical Ltd.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  This file is part of Cnchi.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#  Cnchi is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Cnchi is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  The following additional terms are in effect as per Section 7 of the license:
+#
+#  The preservation of all legal notices and author attributions in
+#  the material or in the Appropriate Legal Notices displayed
+#  by works containing it is required.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 """ Additional GTK widgets (some are borrowed from Ubiquity) """
 
@@ -514,3 +525,65 @@ class Builder(Gtk.Builder):
 
     def get_object_ids(self):
         return self._widget_ids
+
+
+class CnchiScrolledWindow(Gtk.ScrolledWindow):
+    """ ScrolledWindow that sets a max size for the child to grow into. """
+
+    __gtype_name__ = "CnchiScrolledWindow"
+
+    max_content_height = GObject.Property(type=int, default=-1, nick="Max Content Height",
+                                          blurb="The maximum height request that can be made")
+    max_content_width = GObject.Property(type=int, default=-1, nick="Max Content Width",
+                                         blurb="The maximum width request that can be made")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.connect_after("notify::max-content-height", lambda obj, param: self.queue_resize())
+        self.connect_after("notify::max-content-width", lambda obj, param: self.queue_resize())
+
+    def set_max_content_height(self, value):
+        self.max_content_height = value
+
+    def set_max_content_width(self, value):
+        self.max_content_width = value
+
+    def get_max_content_height(self):
+        return self.max_content_height
+
+    def get_max_content_width(self):
+        return self.max_content_width
+
+    def do_get_preferred_height(self):
+        min_height, natural_height = Gtk.ScrolledWindow.do_get_preferred_height(self)
+        child = self.get_child()
+
+        if natural_height and self.max_content_height > -1 and child:
+
+            style = self.get_style_context()
+            border = style.get_border(style.get_state())
+            additional = border.top + border.bottom
+
+            child_min_height, child_nat_height = child.get_preferred_height()
+            if child_nat_height > natural_height and self.max_content_height > natural_height:
+                natural_height = min(self.max_content_height, child_nat_height) + additional;
+
+        return min_height, natural_height
+
+    def do_get_preferred_width(self):
+        min_width, natural_width = Gtk.ScrolledWindow.do_get_preferred_width(self)
+        child = self.get_child()
+
+        if natural_width and self.max_content_width > -1 and child:
+
+            style = self.get_style_context()
+            border = style.get_border(style.get_state())
+            additional = border.left + border.right + 1
+
+            child_min_width, child_nat_width = child.get_preferred_width()
+            if child_nat_width > natural_width and self.max_content_width > natural_width:
+                natural_width = min(self.max_content_width, child_nat_width) + additional;
+
+        return min_width, natural_width
+
+GObject.type_register(CnchiScrolledWindow)

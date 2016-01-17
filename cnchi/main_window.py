@@ -385,6 +385,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.nav_buttons['forward_button'] = self.forward_button
         self.header_nav.add(self.nav_buttons['forward_button'])
+        self.header_nav.child_set_property(self.nav_buttons['forward_button'], 'packing', 'end')
 
         self.header_nav.show_all()
         self.current_stack = self.main_stack

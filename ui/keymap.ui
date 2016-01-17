@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interface>
+<interface domain="cnchi">
 	<requires lib="gtk+" version="3.18"/>
+	<requires lib="gtkwidgets" version="0.0"/>
 	<object class="GtkBox" id="keymap">
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
@@ -16,12 +17,13 @@
 			<class name="keymap_screen"/>
 		</style>
 		<child>
-			<object class="GtkScrolledWindow" id="scrolledwindow1">
+			<object class="CnchiScrolledWindow" id="scrolledwindow1">
 				<property name="visible">True</property>
 				<property name="can_focus">True</property>
 				<property name="hexpand">True</property>
 				<property name="vexpand">True</property>
 				<property name="shadow_type">in</property>
+				<property name="max_content_height">300</property>
 				<style>
 					<class name="treeview_window"/>
 				</style>
