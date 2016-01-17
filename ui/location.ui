@@ -47,7 +47,7 @@
 						<property name="can_focus">True</property>
 						<property name="shadow_type">in</property>
 						<property name="hexpand">true</property>
-						<property name="max_content_height">300</property>
+						<property name="max_content_height">250</property>
 						<child>
 							<object class="GtkListBox" id="listbox">
 								<property name="visible">True</property>

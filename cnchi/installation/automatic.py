@@ -76,6 +76,8 @@ class InstallationAutomatic(GtkBaseBox):
         self.bootloader_device_toggle = self.ui.get_object('bootloader_device_check')
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
         self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
+        self.bootloader_label = self.ui.get_object('bootloader_label')
+        self.bootloader_device_label = self.ui.get_object('bootloader_device_label')
         self.bootloader_devices = {}
         self.bootloader_device = {}
 
@@ -99,14 +101,6 @@ class InstallationAutomatic(GtkBaseBox):
 
         btn = self.ui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
-
-        txt = _("Bootloader:")
-        label = self.ui.get_object('bootloader_label')
-        label.set_markup(txt)
-
-        txt = _("Device:")
-        label = self.ui.get_object('bootloader_device_label')
-        label.set_markup(txt)
 
     def on_checkbutton_show_password_toggled(self, widget):
         """ show/hide LUKS passwords """
@@ -220,7 +214,7 @@ class InstallationAutomatic(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    def on_bootloader_device_check_toggled(self, switch):
+    def on_bootloader_device_check_toggled(self, switch, *args):
         """ User wants to install (or not) boot loader """
         status = switch.get_active()
         sensitivity = Gtk.SensitivityType.ON if status else Gtk.SensitivityType.OFF
@@ -232,9 +226,10 @@ class InstallationAutomatic(GtkBaseBox):
             "bootloader_device_label"]
 
         for widget_id in widget_ids:
-            widget = self.ui.get_object(widget_id)
+            widget = getattr(self, widget_id)
             try:
                 widget.set_button_sensitivity(sensitivity)
+                widget.set_sensitive(status)
             except Exception:
                 widget.set_sensitive(status)
 

@@ -403,9 +403,14 @@ StateBox {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.state_box .statebox_item, .list_box_row {
+.state_box .statebox_item {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 25px 20px;
+}
+
+.list_box_row {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 18px 18px;
 }
 
 .treeview row {
@@ -472,7 +477,7 @@ StateBox {
 .ask_label_advanced {}
 
 .warning_icon {
-	color: #dd0030;
+	color: #dd113a;
 }
 
 .warning_label {

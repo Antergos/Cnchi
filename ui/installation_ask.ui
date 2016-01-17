@@ -187,7 +187,6 @@
 														<property name="receives_default">False</property>
 														<property name="halign">center</property>
 														<property name="width_request">200</property>
-														<signal name="activate" handler="on_automatic_encrypt_checkbutton_toggled" swapped="no"/>
 														<style>
 															<class name="switch"/>
 														</style>
@@ -217,7 +216,7 @@
 														<property name="receives_default">False</property>
 														<property name="halign">center</property>
 														<property name="width_request">200</property>
-														<signal name="activate" handler="on_automatic_lvm_checkbutton_toggled" swapped="no"/>
+														<signal name="notify::active" handler="on_automatic_lvm_checkbutton_toggled" swapped="no"/>
 														<style>
 															<class name="switch"/>
 														</style>
@@ -257,7 +256,7 @@
 														<property name="receives_default">False</property>
 														<property name="halign">center</property>
 														<property name="width_request">200</property>
-														<signal name="activate" handler="on_automatic_zfs_checkbutton_toggled" swapped="no"/>
+														<signal name="notify::active" handler="on_automatic_zfs_checkbutton_toggled" swapped="no"/>
 														<style>
 															<class name="switch"/>
 														</style>
@@ -287,7 +286,6 @@
 														<property name="receives_default">False</property>
 														<property name="halign">center</property>
 														<property name="width_request">200</property>
-														<signal name="activate" handler="on_automatic_home_checkbutton_toggled" swapped="no"/>
 														<style>
 															<class name="switch"/>
 														</style>

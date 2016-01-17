@@ -17,9 +17,9 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="halign">center</property>
-						<property name="pixel_size">24</property>
+						<property name="pixel_size">20</property>
+						<property name="margin_right">10</property>
 						<property name="icon_name">dialog-warning-symbolic</property>
-						<property name="icon_size">3</property>
 						<style>
 							<class name="warning_icon"/>
 						</style>
@@ -76,19 +76,6 @@
 				<property name="halign">center</property>
 				<property name="spacing">5</property>
 				<child>
-					<object class="GtkLabel" id="part_auto_select_drive_label">
-						<property name="visible">True</property>
-						<property name="can_focus">False</property>
-						<property name="halign">end</property>
-						<property name="label" translatable="yes">Select drive:</property>
-					</object>
-					<packing>
-						<property name="expand">False</property>
-						<property name="fill">True</property>
-						<property name="position">1</property>
-					</packing>
-				</child>
-				<child>
 					<object class="GtkComboBoxText" id="part_auto_select_drive">
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
@@ -131,7 +118,7 @@
 								<property name="receives_default">False</property>
 								<property name="halign">center</property>
 								<property name="width_request">200</property>
-								<signal name="activate" handler="on_bootloader_device_check_toggled" swapped="no"/>
+								<signal name="notify::active" handler="on_bootloader_device_check_toggled" swapped="no"/>
 								<style>
 									<class name="switch"/>
 								</style>
@@ -216,6 +203,7 @@
 				<property name="expand">False</property>
 				<property name="fill">True</property>
 				<property name="position">3</property>
+				<property name="padding">20</property>
 			</packing>
 		</child>
 		<child>

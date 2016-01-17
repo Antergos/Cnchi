@@ -41,6 +41,10 @@ try:
 except ImportError:
     import extra as misc
 
+import logging
+
+logger = logging.getLogger()
+
 
 def refresh():
     """ Tell Gtk loop to run pending events """
@@ -456,6 +460,9 @@ class StateBox(StylizedFrame):
         """ Set object property """
         if prop.name == 'label':
             self.label.set_text(value)
+            if len(value) <= 43:
+                self.label.set_size_request(-1, 40)
+                self.label.set_property('height-request', 40)
             return
         setattr(self, prop.name, value)
 
@@ -463,14 +470,17 @@ class StateBox(StylizedFrame):
         StylizedFrame.__init__(self)
         hbox = Gtk.Box()
         hbox_children_wrapper = Gtk.Box()
+
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         self.image.set_margin_right(20)
+
         self.label = Gtk.Label(label=text)
         self.label.set_halign(Gtk.Align.START)
         self.label.set_xalign(0)
         self.label.set_max_width_chars(40)
         self.label.set_line_wrap(True)
+
 
         hbox_children_wrapper.add(self.image)
         hbox_children_wrapper.add(self.label)
