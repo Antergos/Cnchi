@@ -870,9 +870,13 @@ class InstallationAdvanced(GtkBaseBox):
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
 
                 new_label = label_entry.get_text().replace(" ", "")
-                if len(new_label) > 0 and not new_label.isalpha():
-                    logging.debug("'%s' is not a valid label.", new_label)
-                    new_label = ""
+                if new_label:
+                    if len(new_label) > 16:
+                        new_label = new_label[:16]
+                    pattern = re.compile(r"\w+")
+                    if not pattern.fullmatch(new_label):
+                        logging.debug("'%s' is not a valid label.", new_label)
+                        new_label = ""
 
                 new_fs = combo.get_active_text()
                 new_format = format_check.get_active()
