@@ -6,20 +6,21 @@
 		<property name="can_focus">False</property>
 		<property name="halign">center</property>
 		<property name="valign">center</property>
-		<!--<property name="margin_start">140</property>-->
-		<!--<property name="margin_top">30px</property>
-		<property name="margin_bottom">30px</property>
-		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>-->
 		<property name="hexpand">True</property>
 		<property name="vexpand">True</property>
-		<property name="row_spacing">6</property>
-		<property name="column_spacing">6</property>
+		<property name="row_spacing">9</property>
+		<property name="column_spacing">60</property>
+		<property name="margin_left">25</property>
+		<property name="margin_right">25</property>
+		<style>
+			<class name="user_info"/>
+		</style>
 		<child>
 			<object class="GtkLabel" id="fullname_label">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="xalign">1</property>
+				<property name="justify">left</property>
+				<property name="xalign">0</property>
 				<property name="label" translatable="yes">Your name:</property>
 			</object>
 			<packing>
@@ -33,9 +34,9 @@
 			<object class="GtkLabel" id="username_label">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="xalign">1</property>
 				<property name="label" translatable="yes">Choose a username:</property>
-				<property name="justify">right</property>
+				<property name="justify">left</property>
+				<property name="xalign">0</property>
 			</object>
 			<packing>
 				<property name="left_attach">0</property>
@@ -48,9 +49,9 @@
 			<object class="GtkLabel" id="password_label">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="xalign">1</property>
 				<property name="label" translatable="yes">Choose a password:</property>
-				<property name="justify">right</property>
+				<property name="justify">left</property>
+				<property name="xalign">0</property>
 			</object>
 			<packing>
 				<property name="left_attach">0</property>
@@ -63,9 +64,9 @@
 			<object class="GtkLabel" id="verified_password_label">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="xalign">1</property>
 				<property name="label" translatable="yes">Confirm your password:</property>
-				<property name="justify">right</property>
+				<property name="justify">left</property>
+				<property name="xalign">0</property>
 			</object>
 			<packing>
 				<property name="left_attach">0</property>
@@ -150,7 +151,9 @@
 						<property name="visibility">False</property>
 						<property name="invisible_char">●</property>
 						<property name="activates_default">True</property>
+						<property name="height_request">38</property>
 						<property name="width_chars">20</property>
+						<property name="halign">fill</property>
 						<property name="placeholder_text" translatable="yes">Password</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
@@ -166,6 +169,7 @@
 				<child>
 					<object class="GtkLabel" id="password_strength">
 						<property name="can_focus">False</property>
+						<property name="justify">left</property>
 						<property name="xalign">0</property>
 						<property name="label" translatable="yes">Strong password</property>
 						<property name="use_markup">False</property>
@@ -199,7 +203,9 @@
 						<property name="visibility">False</property>
 						<property name="invisible_char">●</property>
 						<property name="activates_default">True</property>
+						<property name="height_request">38</property>
 						<property name="width_chars">20</property>
+						<property name="halign">fill</property>
 						<property name="placeholder_text" translatable="yes">Confirm password</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
@@ -226,10 +232,11 @@
 					<object class="GtkLabel" id="password_error_label">
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
+						<property name="justify">left</property>
 						<property name="xalign">0</property>
 						<property name="label" translatable="yes">You must enter a password</property>
 						<property name="use_markup">False</property>
-					<style>
+						<style>
 							<class name="error"/>
 						</style>
 					</object>
@@ -258,7 +265,9 @@
 						<property name="can_focus">True</property>
 						<property name="invisible_char">•</property>
 						<property name="activates_default">True</property>
+						<property name="height_request">38</property>
 						<property name="width_chars">30</property>
+						<property name="halign">fill</property>
 						<property name="placeholder_text" translatable="yes">Your name</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
@@ -301,7 +310,9 @@
 						<property name="max_length">32</property>
 						<property name="invisible_char">•</property>
 						<property name="activates_default">True</property>
+						<property name="height_request">38</property>
 						<property name="width_chars">15</property>
+						<property name="halign">fill</property>
 						<property name="placeholder_text" translatable="yes">Username</property>
 						<signal name="changed" handler="info_loop" swapped="no"/>
 						<accessibility>
@@ -328,11 +339,12 @@
 					<object class="GtkLabel" id="username_error_label">
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
-						<property name="xalign">0</property>
 						<property name="label" translatable="yes">You must enter a username</property>
 						<property name="use_markup">False</property>
+						<property name="justify">left</property>
+						<property name="xalign">0</property>
 						<property name="wrap">True</property>
-					<style>
+						<style>
 							<class name="error"/>
 						</style>
 					</object>
@@ -382,11 +394,12 @@
 								<property name="visible">True</property>
 								<property name="can_focus">True</property>
 								<property name="invisible_char">•</property>
+								<property name="height_request">38</property>
 								<property name="placeholder_text" translatable="yes">Hostname</property>
+								<property name="halign">fill</property>
 								<signal name="changed" handler="info_loop" swapped="no"/>
 								<accessibility>
 									<relation type="labelled-by" target="hostname_label"/>
-									<relation type="labelled-by" target="hostname_extra_label"/>
 								</accessibility>
 							</object>
 							<packing>
@@ -412,9 +425,11 @@
 								<property name="label" translatable="yes">You must enter a name</property>
 								<property name="use_markup">False</property>
 								<property name="wrap">True</property>
+								<property name="justify">left</property>
+								<property name="xalign">0</property>
 								<style>
-							<class name="error"/>
-						</style>
+									<class name="error"/>
+								</style>
 							</object>
 							<packing>
 								<property name="expand">False</property>
@@ -429,23 +444,6 @@
 						<property name="position">0</property>
 					</packing>
 				</child>
-				<child>
-					<object class="GtkLabel" id="hostname_extra_label">
-						<property name="visible">True</property>
-						<property name="can_focus">False</property>
-						<property name="xalign">0</property>
-						<property name="label" translatable="yes">The name it uses when it talks to other computers.</property>
-						<property name="use_markup">False</property>
-					<style>
-							<class name="small"/>
-						</style>
-					</object>
-					<packing>
-						<property name="expand">False</property>
-						<property name="fill">True</property>
-						<property name="position">1</property>
-					</packing>
-				</child>
 			</object>
 			<packing>
 				<property name="left_attach">1</property>
@@ -458,8 +456,9 @@
 			<object class="GtkLabel" id="hostname_label">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<property name="xalign">1</property>
 				<property name="margin_bottom">20</property>
+				<property name="justify">left</property>
+				<property name="xalign">0</property>
 				<property name="label" translatable="yes">Your computer's name:</property>
 			</object>
 			<packing>

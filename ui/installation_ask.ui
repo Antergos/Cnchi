@@ -5,7 +5,7 @@
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="halign">center</property>
-		<property name="valign">start</property>
+		<property name="valign">center</property>
 		<property name="hexpand">True</property>
 		<property name="orientation">vertical</property>
 		<property name="spacing">25</property>

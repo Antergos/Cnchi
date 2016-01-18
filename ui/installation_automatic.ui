@@ -17,7 +17,7 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="halign">center</property>
-						<property name="pixel_size">20</property>
+						<property name="pixel_size">22</property>
 						<property name="margin_right">10</property>
 						<property name="icon_name">dialog-warning-symbolic</property>
 						<style>
@@ -80,7 +80,11 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="halign">start</property>
+						<property name="height_request">38</property>
 						<signal name="changed" handler="on_select_drive_changed" swapped="no"/>
+						<style>
+							<class name="part_auto_drive"/>
+						</style>
 					</object>
 					<packing>
 						<property name="expand">False</property>
@@ -101,14 +105,17 @@
 				<property name="can_focus">False</property>
 				<property name="orientation">horizontal</property>
 				<property name="halign">center</property>
+				<property name="spacing">45</property>
 				<child>
 					<object class="GtkBox" id="bootloader_device_check_container">
 						<property name="orientation">vertical</property>
 						<property name="spacing">15</property>
 						<property name="halign">end</property>
+						<property name="valign">center</property>
 						<child>
 							<object class="GtkLabel" id="bootloader_device_check_label">
 								<property name="label" translatable="yes">Boot Loader Installation</property>
+								<property name="valign">center</property>
 							</object>
 						</child>
 						<child>
@@ -118,6 +125,7 @@
 								<property name="receives_default">False</property>
 								<property name="halign">center</property>
 								<property name="width_request">200</property>
+								<property name="valign">center</property>
 								<signal name="notify::active" handler="on_bootloader_device_check_toggled" swapped="no"/>
 								<style>
 									<class name="switch"/>
@@ -136,12 +144,13 @@
 						<property name="visible">True</property>
 						<property name="can_focus">False</property>
 						<property name="halign">center</property>
+						<property name="column_spacing">20</property>
+						<property name="row_spacing">15</property>
 						<child>
 							<object class="GtkLabel" id="bootloader_label">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 								<property name="halign">end</property>
-								<property name="margin_start">20</property>
 								<property name="label" translatable="yes">Bootloader:</property>
 							</object>
 							<packing>
@@ -154,7 +163,7 @@
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 								<property name="valign">center</property>
-								<property name="margin_start">5</property>
+								<property name="height_request">38</property>
 								<signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
 								<style>
 									<class name="bootloader_entry"/>
@@ -169,7 +178,6 @@
 							<object class="GtkLabel" id="bootloader_device_label">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
-								<property name="margin_start">20</property>
 								<property name="label" translatable="yes">Device:</property>
 								<property name="lines">0</property>
 							</object>
@@ -183,8 +191,11 @@
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 								<property name="valign">center</property>
-								<property name="margin_start">5</property>
+								<property name="height_request">38</property>
 								<signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+								<style>
+									<class name="bootloader_device_entry"/>
+								</style>
 							</object>
 							<packing>
 								<property name="left_attach">1</property>
@@ -203,7 +214,7 @@
 				<property name="expand">False</property>
 				<property name="fill">True</property>
 				<property name="position">3</property>
-				<property name="padding">20</property>
+				<property name="padding">15</property>
 			</packing>
 		</child>
 		<child>

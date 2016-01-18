@@ -485,4 +485,35 @@ StateBox {
 	font-size: 14px;
 }
 
+.bootloader_entry .button, .bootloader_device_entry .button,
+.part_auto_drive .button {
+	border-radius: 4px;
+	box-shadow: none;
+	background-color: #ffffff;
+	border-color: transparent;
+	color: #42474c;
+	transition: background .5s;
+}
+
+.bootloader_entry .button:hover, .bootloader_device_entry .button:hover,
+.bootloader_entry .button:focused, .bootloader_device_entry .button:focused,
+.part_auto_drive .button:hover, .part_auto_drive .button:focused {
+	background-color: #f7fafd;
+	border-color: #ecf0f4;
+}
+
+.user_info .entry {
+	border-radius: 4px;
+	border: none;
+	box-shadow: none;
+	padding: 10px;
+	background: #ffffff;
+	color: #42474c;
+}
+
+.user_info .entry:hover, .user_info .entry:focus {
+	background-color: #f7fafd;
+	border-color: #ecf0f4;
+}
+
 .undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }

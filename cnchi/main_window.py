@@ -81,7 +81,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.cnchi_app = app
         self._main_window_width = 1200
-        self._main_window_height = 782
+        self._main_window_height = 821
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 

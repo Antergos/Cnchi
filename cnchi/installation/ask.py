@@ -129,6 +129,16 @@ class InstallationAsk(GtkBaseBox):
         self.options_stack = self.ui.get_object('ask_stack_advanced')
         self.automatic_toggle_button = self.ui.get_object('automatic_radiobutton')
         self.advanced_toggle_button = self.ui.get_object('advanced_radiobutton')
+        self.stack_wrapper = self.ui.get_object('stack_wrapper')
+
+        self.stack_wrapper.show_all()
+        automatic_options = self.ui.get_object('automatic_options_wrapper')
+        advanced_options = self.ui.get_object('advanced_options_wrapper')
+        self.options_stack.child_set_property(automatic_options, 'name', 'automatic_wrapper')
+        self.options_stack.child_set_property(advanced_options, 'name', 'advanced_wrapper')
+        self.show_all()
+        self.options_stack.set_visible_child_name('advanced_wrapper')
+        self.stack_wrapper.hide()
 
         self.other_oses = []
 
@@ -210,13 +220,9 @@ class InstallationAsk(GtkBaseBox):
     def prepare(self, direction):
         """ Prepares screen """
         self.translate_ui()
-        automatic_options = self.ui.get_object('automatic_options_wrapper')
-        advanced_options = self.ui.get_object('advanced_options_wrapper')
-        self.options_stack.child_set_property(automatic_options, 'name', 'automatic_wrapper')
-        self.options_stack.child_set_property(advanced_options, 'name', 'advanced_wrapper')
         self.show_all()
-        self.options_stack.set_visible_child_name('advanced_wrapper')
         self.forward_button.set_sensitive(False)
+        self.stack_wrapper.hide()
 
     def hide_option(self, option):
         """ Hides widgets """
@@ -420,6 +426,7 @@ class InstallationAsk(GtkBaseBox):
         """ Automatic selected, enable all options """
         if widget.get_active():
             self.enable_automatic_options(True)
+            self.stack_wrapper.show_all()
             self.options_stack.set_visible_child_name('automatic_wrapper')
             self.forward_button.set_sensitive(True)
 
@@ -461,6 +468,7 @@ class InstallationAsk(GtkBaseBox):
             self.enable_automatic_options(False)
             self.forward_button.set_sensitive(True)
             self.options_stack.set_visible_child_name('advanced_wrapper')
+            self.stack_wrapper.hide()
 
             if self.automatic_toggle_button.get_active():
                 self.automatic_toggle_button.set_active(False)

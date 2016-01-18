@@ -77,8 +77,9 @@ class Check(GtkBaseBox):
         self.has_internet = False
         self.has_iso = False
         self.is_updated = False
+        self.header = params['header']
 
-        # self.label_space = self.ui.get_object("label_space")
+        self.header.set_title('')
 
         if 'checks_are_optional' in params:
             self.checks_are_optional = params['checks_are_optional']
