@@ -384,7 +384,7 @@
 				<pkgname>kdebase-kfind</pkgname>
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
-				<pkgname>kdemultimedia-ffmpegthumbs</pkgname>
+				<pkgname>ffmpegthumbs</pkgname>
 				<pkgname>kdenetwork-kopete</pkgname>
 				<pkgname>kde-servicemenus-rootactions</pkgname>
 				<pkgname>kdesudo</pkgname>
