@@ -83,6 +83,33 @@ class Hardware(object):
 
         return True
 
+    def detect(self):
+        """ Tries to guess if a device suitable for this driver is present,
+            used in features screen """
+
+        if not self.enabled:
+            return False
+
+        # Get PCI devices
+        try:
+            cmd = ["lspci", "-n"]
+            lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            lines = lines.decode().split("\n")
+        except subprocess.CalledProcessError as err:
+            logging.warning("Cannot detect hardware components : %s", err.output.decode())
+            return False
+
+        for line in lines:
+            if len(line) > 0:
+                class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
+                if class_id == self.class_id:
+                    dev = line.split()[2].split(":")
+                    vendor_id = "0x{0}".format(dev[0])
+                    product_id = "0x{0}".format(dev[1])
+                    if vendor_id == self.vendor_id and product_id in self.devices:
+                        return True
+        return False
+
     @staticmethod
     def is_proprietary():
         """ Proprietary drivers are drivers for your hardware devices
