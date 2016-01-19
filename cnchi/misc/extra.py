@@ -433,8 +433,8 @@ def has_connection():
     # We cannot connect to any url, let's ask NetworkManager
     # Problem: In a Virtualbox VM this returns true even when
     # the host OS has no connection
-    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-    #    return True
+    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+        return True
 
     return False
 
