@@ -38,7 +38,8 @@ _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
-    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1, enabled=True):
+    def __init__(self, class_name=None, class_id=None, vendor_id=None,
+                 devices=None, priority=-1, enabled=True):
         self.class_name = class_name
         self.class_id = class_id
         self.vendor_id = vendor_id
@@ -71,41 +72,16 @@ class Hardware(object):
         if not self.enabled:
             return False
 
-        if len(self.class_id) > 0 and class_id != self.class_id:
+        if self.class_id and class_id != self.class_id:
             return False
 
-        if len(self.vendor_id) > 0 and vendor_id != self.vendor_id:
+        if self.vendor_id and vendor_id != self.vendor_id:
             return False
 
-        if len(self.devices) > 0 and product_id not in self.devices:
+        if self.devices and product_id not in self.devices:
             return False
 
         return True
-
-    def detect(self):
-        """ Tries to guess if a device suitable for this driver is present """
-
-        if not self.enabled:
-            return False
-
-        # Get PCI devices
-        try:
-            lines = subprocess.check_output(["lspci", "-n"], stderr=subprocess.STDOUT)
-            lines = lines.decode().split("\n")
-        except subprocess.CalledProcessError as err:
-            logging.warning("Cannot detect hardware components : %s", err.output.decode())
-            return False
-
-        for line in lines:
-            if len(line) > 0:
-                class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
-                if class_id == self.class_id:
-                    dev = line.split()[2].split(":")
-                    vendor_id = "0x{0}".format(dev[0])
-                    product_id = "0x{0}".format(dev[1])
-                    if vendor_id == self.vendor_id and product_id in self.devices:
-                        return True
-        return False
 
     @staticmethod
     def is_proprietary():
@@ -246,11 +222,19 @@ class HardwareInstall(object):
         for obj in self.all_objects:
             for device in devices:
                 (class_id, vendor_id, product_id) = device
+                logging.debug(
+                    "Finding if driver %s is needed by (%s, %s, %s)...",
+                    obj.class_name, class_id, vendor_id, product_id)
+                print("Finding if driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                 check = obj.check_device(
                     class_id=class_id,
                     vendor_id=vendor_id,
                     product_id=product_id)
                 if check:
+                    logging.debug(
+                        "Driver %s is needed by (%s, %s, %s)",
+                        obj.class_name, class_id, vendor_id, product_id)
+                    print("Driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
