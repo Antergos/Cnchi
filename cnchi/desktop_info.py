@@ -86,7 +86,7 @@ EXCLUDED_FEATURES = {
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'gnome': 'gnome',
-    'kde': 'kde-plasma',
+    'kde': 'plasma',
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
