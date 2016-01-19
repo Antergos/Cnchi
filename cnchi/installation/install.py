@@ -1240,8 +1240,8 @@ class Installation(object):
         # FIXME: Temporary workaround for spl and zfs packages
         # This should be fixed. I use this here just for testing purposes
         # hardcoding this here is an AWFUL idea :p
-        logging.debug("Installing zfs...")
-        zfs_version = "0.6.5.3"
+        zfs_version = "0.6.5.4"
+        logging.debug("Installing zfs %s...", zfs_version)
         chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
         chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
 
