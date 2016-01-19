@@ -222,10 +222,6 @@ class HardwareInstall(object):
         for obj in self.all_objects:
             for device in devices:
                 (class_id, vendor_id, product_id) = device
-                logging.debug(
-                    "Finding if driver %s is needed by (%s, %s, %s)...",
-                    obj.class_name, class_id, vendor_id, product_id)
-                print("Finding if driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                 check = obj.check_device(
                     class_id=class_id,
                     vendor_id=vendor_id,
@@ -234,7 +230,7 @@ class HardwareInstall(object):
                     logging.debug(
                         "Driver %s is needed by (%s, %s, %s)",
                         obj.class_name, class_id, vendor_id, product_id)
-                    print("Driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
+                    # print("Driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
