@@ -292,7 +292,7 @@
 			<packages>
 				<pkgname>antergos-enlightenment-setup</pkgname>
 				<pkgname>enlightenment</pkgname>
-				<pkgname nm='true' name='NetworkManager' conflicts="networkmanager">connman</pkgname>
+				<pkgname nm='true' name='connman'>connman</pkgname>
 				<pkgname>econnman</pkgname>
 				<pkgname>file-roller</pkgname>
 				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->

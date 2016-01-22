@@ -103,9 +103,6 @@ class Installation(object):
 
         self.mount_devices = mount_devices
 
-        self.desktop_manager = 'lightdm'
-        self.network_manager = 'NetworkManager'
-
         self.fs_devices = fs_devices
 
         self.running = True
@@ -1029,7 +1026,7 @@ class Installation(object):
             logging.debug("SSD udev rule copied successfully")
 
         # Copy configured networks in Live medium to target system
-        if self.network_manager == 'NetworkManager':
+        if self.settings.get("network_manager") == "NetworkManager":
             self.copy_network_config()
 
         if self.desktop == "base":
@@ -1068,9 +1065,9 @@ class Installation(object):
         services = []
         if self.desktop != "base":
             # In base there's no desktop manager ;)
-            services.append(self.desktop_manager)
+            services.append(self.settings.get("desktop_manager"))
             # In base we use systemd-networkd (setup already done above)
-            services.append(self.network_manager)
+            services.append(self.settings.get("network_manager"))
         services.extend(["ModemManager", "haveged"])
         if self.method == "zfs":
             services.append("zfs")
