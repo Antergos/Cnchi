@@ -31,7 +31,7 @@ import uuid
 import requests
 import json
 import os
-from info import CNCHI_VERSION
+from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
 
 
 class Singleton(logging.Filter):
@@ -65,39 +65,50 @@ class ContextFilter(Singleton):
     def get_and_save_install_id(self, is_location_screen=False):
         if self.have_install_id:
             return
+
         if is_location_screen:
             self.after_location_screen = True
+
+        if 'development' == CNCHI_RELEASE_STAGE:
+            self.install = 'development'
+            self.id = '0.0.0.0'
+            self.have_install_id = True
+            return
+
         info = None
         url = self.get_url_for_id_request()
         headers = {'X-Cnchi-Installer': CNCHI_VERSION}
+
         try:
             r = requests.get(url, headers=headers)
             info = json.loads(r.json())
-        except Exception as ex:
-            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(ex)
+        except Exception as err:
+            logger = logging.getLogger()
+            msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
+            logger.error(msg)
             return
 
         try:
             self.id = info['ip']
             self.install = info['id']
             self.have_install_id = True
-        except TypeError:
+        except (TypeError, KeyError):
             self.have_install_id = False
 
     @staticmethod
     def get_bugsnag_api():
         config_path = '/etc/raven.conf'
         bugsnag_api = None
+
         if os.path.exists(config_path):
             with open(config_path) as bugsnag_conf:
                 bugsnag_api = bugsnag_conf.readline().strip()
-        else:
-            BUGSNAG_ERROR = "Cannot find /etc/raven.conf file"
+
         return bugsnag_api
 
     def get_url_for_id_request(self):
         build_server = None
-        if self.api_key:
+        if self.api_key and 'development' != CNCHI_RELEASE_STAGE:
             build_srv = ['http://build', 'antergos', 'com']
             build_srv_query = ['/hook', 'cnchi=', self.api_key]
             build_server = '.'.join(build_srv) + '?'.join(build_srv_query)

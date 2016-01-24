@@ -74,7 +74,7 @@ except ImportError as err:
 try:
     import main_window
 except ImportError as err:
-    msg = "Cannot create Cnchi main window: {0}".format(err)
+    msg = "Cannot create Cnchi main window: {0}".format(err.msg)
     logging.error(msg)
     sys.exit(1)
 

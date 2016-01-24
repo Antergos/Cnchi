@@ -1,9 +1,27 @@
+[2016-01-24 15:59:40 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {a43b53e}
+[2016-01-24 19:51:45 +0100]  Translate messages shown to the user                                       karasu      {48ce731}
+[2016-01-24 19:36:00 +0100]  Add more info messages (shown in the gui) to give a more accurate i..      karasu      {9eeedf7}
+[2016-01-24 08:12:38 +0100]  Load smbd service if smb (samba) is selected                               karasu      {c29237f}
+[2016-01-22 22:16:27 +0100]  Store network manager and desktop manager in config                        karasu      {fe6137b}
+[2016-01-19 19:52:27 +0100]  Fix kde session name                                                       karasu      {474b88e}
+[2016-01-19 19:50:06 +0100]  detect function is needed by features screen!                              karasu      {207ffd5}
+[2016-01-19 19:44:38 +0100]  Give vesafb the lowest priority                                            karasu      {04a3775}
+[2016-01-19 19:29:15 +0100]  ok. be less verbose                                                        karasu      {8b3c330}
+[2016-01-19 19:27:44 +0100]  Added a LOT of debugging messages to hardware (this must be removed..      karasu      {e4a3a5b}
+[2016-01-19 19:10:43 +0100]  extra symlink ¿?                                                           karasu      {fe2d9d9}
+[2016-01-19 17:17:48 +0100]  Fix kde package name                                                       karasu      {cbc7ce9}
+[2016-01-19 17:10:46 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {2f37742}
+[2016-01-19 17:09:44 +0100]  zfs is at version 0.6.5.4                                                  karasu      {919d8f0}
+[2016-01-19 09:29:49 +0100]  LUKS+ZFS is not done!                                                      karasu      {523634c}
+[2016-01-18 19:11:20 +0100]  Check against networkmanager                                               karasu      {77eac6c}
+[2016-01-18 19:09:47 +0100]  Best label handling                                                        karasu      {e356c9d}
 [2016-01-17 19:20:25 -0600]  even more work on ui                                                   Dustin Falgout  {288d56c}
 [2016-01-17 15:55:57 -0600]  more work on ui                                                        Dustin Falgout  {ae2d69b}
 [2016-01-17 09:10:20 -0600]  more work on ui                                                        Dustin Falgout  {1b51930}
 [2016-01-17 08:03:15 -0600]  add gettext domain to all ui files                                     Dustin Falgout  {5b2ac07}
 [2016-01-17 06:40:31 -0600]  :delirious:                                                            Dustin Falgout  {3f0d764}
 [2016-01-16 02:27:11 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b7a7c5c}
+[2016-01-15 20:15:47 +0100]  Not log constantly                                                         karasu      {e218a17}
 [2016-01-15 19:57:43 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {48823e4}
 [2016-01-15 19:56:24 +0100]  Fix package name                                                           karasu      {45d03d4}
 [2016-01-15 10:11:17 +0100]  Do not fail if timesyncd.conf file is not found                            karasu      {9bb613e}
