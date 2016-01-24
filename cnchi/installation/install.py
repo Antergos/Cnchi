@@ -1290,14 +1290,14 @@ class Installation(object):
         # Encrypt user's home directory if requested
         # FIXME: This is not working atm
         if self.settings.get('encrypt_home'):
-            self.queue_event('info', "Encrypting user home dir...")
+            self.queue_event('info', _("Encrypting user home dir..."))
             encfs.setup(username, DEST_DIR)
             logging.debug("User home dir encrypted")
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
-                self.queue_event('info', "Installing bootloader...")
+                self.queue_event('info', _("Installing bootloader..."))
                 from installation.boot import loader
                 boot_loader = loader.Bootloader(
                     DEST_DIR,
@@ -1310,7 +1310,7 @@ class Installation(object):
                 logging.error(message)
 
         # Create an initial database for mandb
-        self.queue_event('info', "Updating man pages...")
+        self.queue_event('info', _("Updating man pages..."))
         chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
