@@ -41,11 +41,14 @@ VENDOR_ID = ""
 # All modern cards support Vesa. This will be used as a fallback.
 DEVICES = []
 
+# Give this driver less priority than the others so it is never choosen instead.
+PRIORITY = -2
+
 
 class VesaFB(Hardware):
     """ Vesa (generic) graphics driver """
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():

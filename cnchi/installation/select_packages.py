@@ -69,10 +69,6 @@ class SelectPackages(object):
         self.desktop = self.settings.get('desktop')
         self.zfs = self.settings.get('zfs')
 
-        # Set defaults
-        self.desktop_manager = 'lightdm'
-        self.network_manager = 'NetworkManager'
-
         # Packages to be removed
         self.conflicts = []
 
@@ -194,10 +190,10 @@ class SelectPackages(object):
                 # Add common graphical packages
                 if name == "graphic" and self.desktop != "base":
                     for pkg in edition.iter('pkgname'):
-                        # If package is Desktop Manager, save the name to
+                        # If package is a Desktop Manager, save the name to
                         # activate the correct service later
                         if pkg.attrib.get('dm'):
-                            self.desktop_manager = pkg.attrib.get('name')
+                            self.settings.set("desktop_manager", pkg.attrib.get('name'))
                         plib = pkg.attrib.get('lib')
                         if (plib is None or
                                 (plib is not None and self.desktop in lib[plib])):
@@ -207,10 +203,10 @@ class SelectPackages(object):
                 if name == self.desktop:
                     logging.debug("Adding %s desktop packages", self.desktop)
                     for pkg in edition.iter('pkgname'):
-                        # If package is Network Manager, save the name to
+                        # If package is a Network Manager, save the name to
                         # activate the correct service later
                         if pkg.attrib.get('nm'):
-                            self.network_manager = pkg.attrib.get('name')
+                            self.settings.set("network_manager", pkg.attrib.get('name'))
                         # Stores conflicts packages in self.conflicts
                         self.get_conflicts(pkg.attrib.get('conflicts'))
                         # Finally, adds package name to our packages list

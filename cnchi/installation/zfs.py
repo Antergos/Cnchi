@@ -236,6 +236,9 @@ class InstallationZFS(GtkBaseBox):
 
         # Encrypt disk checkbox
         btn = self.ui.get_object("encrypt_disk_btn")
+        # TODO: Finnish LUKS+ZFS
+        self.zfs_options["encrypt_disk"] = False
+        btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_disk"])
 
         # Disable/Enable Encrypt disk options entries
@@ -245,6 +248,13 @@ class InstallationZFS(GtkBaseBox):
         for name in entries:
             entry = self.ui.get_object(name)
             entry.set_sensitive(self.zfs_options["encrypt_disk"])
+
+        # Encrypt swap
+        btn = self.ui.get_object('encrypt_swap_btn')
+        # TODO: Finnish LUKS+ZFS
+        self.zfs_options["encrypt_swap"] = False
+        btn.set_sensitive(False)
+        btn.set_active(self.zfs_options["encrypt_swap"])
 
         # Pool name checkbox
         btn = self.ui.get_object("pool_name_btn")
@@ -601,6 +611,17 @@ class InstallationZFS(GtkBaseBox):
         else:
             # Create fresh MBR table
             wrapper.parted_mklabel(device_path, "msdos")
+
+        """
+        if self.zfs_options["encrypt_disk"]:
+            from installation import auto_partition as ap
+            vol_name = device_path.split("/")[-1]
+            ap.setup_luks(
+                luks_device=device_path,
+                luks_name=vol_name,
+                luks_pass=self.zfs_options["encrypt_password"])
+            self.settings.set("use_luks", True)
+        """
 
         call(["sync"])
 

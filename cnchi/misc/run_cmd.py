@@ -50,7 +50,7 @@ def log_exception_info():
 
 
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
-         stdin=None):
+         stdin=None, debug=True):
     """ Helper function to make a system call
     warning: If true will log a warning message if an error is detected
     error: If true will log an error message if an error is detected
@@ -65,7 +65,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
             stderr=subprocess.STDOUT,
             timeout=timeout)
         output = output.decode()
-        if output:
+        if output and debug:
             output = output.strip('\n')
             logging.debug(output)
         return output

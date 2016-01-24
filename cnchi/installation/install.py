@@ -103,9 +103,6 @@ class Installation(object):
 
         self.mount_devices = mount_devices
 
-        self.desktop_manager = 'lightdm'
-        self.network_manager = 'NetworkManager'
-
         self.fs_devices = fs_devices
 
         self.running = True
@@ -787,6 +784,9 @@ class Installation(object):
             services.append('org.cups.cupsd')
             services.append('avahi-daemon')
 
+        if self.settings.get("feature_smb"):
+            services.append("smbd")
+
         if self.settings.get("feature_firewall"):
             logging.debug("Configuring firewall...")
             # Set firewall rules
@@ -1029,7 +1029,7 @@ class Installation(object):
             logging.debug("SSD udev rule copied successfully")
 
         # Copy configured networks in Live medium to target system
-        if self.network_manager == 'NetworkManager':
+        if self.settings.get("network_manager") == "NetworkManager":
             self.copy_network_config()
 
         if self.desktop == "base":
@@ -1068,9 +1068,9 @@ class Installation(object):
         services = []
         if self.desktop != "base":
             # In base there's no desktop manager ;)
-            services.append(self.desktop_manager)
+            services.append(self.settings.get("desktop_manager"))
             # In base we use systemd-networkd (setup already done above)
-            services.append(self.network_manager)
+            services.append(self.settings.get("network_manager"))
         services.extend(["ModemManager", "haveged"])
         if self.method == "zfs":
             services.append("zfs")
@@ -1240,8 +1240,8 @@ class Installation(object):
         # FIXME: Temporary workaround for spl and zfs packages
         # This should be fixed. I use this here just for testing purposes
         # hardcoding this here is an AWFUL idea :p
-        logging.debug("Installing zfs...")
-        zfs_version = "0.6.5.3"
+        zfs_version = "0.6.5.4"
+        logging.debug("Installing zfs %s...", zfs_version)
         chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
         chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
 
@@ -1290,14 +1290,14 @@ class Installation(object):
         # Encrypt user's home directory if requested
         # FIXME: This is not working atm
         if self.settings.get('encrypt_home'):
-            logging.debug("Encrypting user home dir...")
+            self.queue_event('info', _("Encrypting user home dir..."))
             encfs.setup(username, DEST_DIR)
             logging.debug("User home dir encrypted")
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
-                logging.debug("Installing bootloader...")
+                self.queue_event('info', _("Installing bootloader..."))
                 from installation.boot import loader
                 boot_loader = loader.Bootloader(
                     DEST_DIR,
@@ -1310,7 +1310,7 @@ class Installation(object):
                 logging.error(message)
 
         # Create an initial database for mandb
-        logging.debug("Updating man database")
+        self.queue_event('info', _("Updating man pages..."))
         chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database

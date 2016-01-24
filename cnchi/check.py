@@ -163,7 +163,7 @@ class Check(GtkBaseBox):
     def has_enough_space(self):
         """ Check that we have a disk or partition with enough space """
 
-        output = call(["lsblk", "-lnb"]).split("\n")
+        output = call(cmd=["lsblk", "-lnb"], debug=False).split("\n")
 
         max_size = 0
 
