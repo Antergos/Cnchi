@@ -2,14 +2,14 @@
 <!-- Generated with glade 3.18.3 -->
 <interface domain="cnchi">
 	<requires lib="gtk+" version="3.18"/>
+	<requires lib="gtkwidgets" version="0.0"/>
 	<object class="GtkBox" id="summary">
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
-		<!--<property name="margin_top">30px</property>
-		<property name="margin_bottom">30px</property>
-		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>-->
 		<property name="orientation">vertical</property>
+		<style>
+			<class name="summary"/>
+		</style>
 		<child>
 			<object class="GtkScrolledWindow" id="scrolled_window">
 				<property name="visible">True</property>
@@ -43,7 +43,7 @@
 									</packing>
 								</child>
 								<child>
-									<object class="StateBox" id="location_statebox">
+									<object class="SummaryScreenStateBox" id="location_statebox">
 										<property name="visible">True</property>
 										<property name="can_focus">False</property>
 									</object>
@@ -65,7 +65,7 @@
 									</packing>
 								</child>
 								<child>
-									<object class="StateBox" id="timezone_statebox">
+									<object class="SummaryScreenStateBox" id="timezone_statebox">
 										<property name="visible">True</property>
 										<property name="can_focus">False</property>
 									</object>
@@ -112,7 +112,7 @@
 									</packing>
 								</child>
 								<child>
-									<object class="StateBox" id="keyboard_statebox">
+									<object class="SummaryScreenStateBox" id="keyboard_statebox">
 										<property name="visible">True</property>
 										<property name="can_focus">False</property>
 									</object>
@@ -122,7 +122,7 @@
 									</packing>
 								</child>
 								<child>
-									<object class="StateBox" id="de_statebox">
+									<object class="SummaryScreenStateBox" id="de_statebox">
 										<property name="visible">True</property>
 										<property name="can_focus">False</property>
 									</object>
@@ -152,7 +152,7 @@
 							</packing>
 						</child>
 						<child>
-							<object class="StateBox" id="features_statebox">
+							<object class="SummaryScreenStateBox" id="features_statebox">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 							</object>
@@ -176,7 +176,7 @@
 							</packing>
 						</child>
 						<child>
-							<object class="StateBox" id="partitions_statebox">
+							<object class="SummaryScreenStateBox" id="partitions_statebox">
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 							</object>

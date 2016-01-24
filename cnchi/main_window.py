@@ -529,7 +529,7 @@ class MainWindow(Gtk.ApplicationWindow):
         stored = self.current_page.store_values()
 
         if not stored:
-            logging.warning('stored is required: %s', stored)
+            logging.warning('Unable to store page values: %s', stored)
             return
 
         prev_page = self.current_page
@@ -572,6 +572,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.current_page.prepare('forwards')
         self.current_page.can_show = True
         if self.current_page.name != self.current_stack.get_visible_child_name():
+            self.current_stack.show_all()
             self.current_stack.set_visible_child_name(self.current_page.name)
 
         if 'slides' != self.current_page.name:
@@ -605,6 +606,7 @@ class MainWindow(Gtk.ApplicationWindow):
         curr_btns = self.sub_nav_box.get_children()
         noop = False
         logging.debug('curr_btns is: %s ', curr_btns)
+        self.sub_nav_box.hide()
         if curr_btns and curr_btns[0] is not data['nav_button_box']:
             logging.debug('curr_btns is not btn_container')
             self.sub_nav_box.remove(curr_btns[0])

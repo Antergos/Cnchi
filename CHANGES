@@ -1,3 +1,4 @@
+[2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils                                Dustin Falgout  {723548d}
 [2016-01-24 15:59:40 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {a43b53e}
 [2016-01-24 19:51:45 +0100]  Translate messages shown to the user                                       karasu      {48ce731}
 [2016-01-24 19:36:00 +0100]  Add more info messages (shown in the gui) to give a more accurate i..      karasu      {9eeedf7}
