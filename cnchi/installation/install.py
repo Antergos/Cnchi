@@ -784,6 +784,9 @@ class Installation(object):
             services.append('org.cups.cupsd')
             services.append('avahi-daemon')
 
+        if self.settings.get("feature_smb"):
+            services.append("smbd")
+
         if self.settings.get("feature_firewall"):
             logging.debug("Configuring firewall...")
             # Set firewall rules
