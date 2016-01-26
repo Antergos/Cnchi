@@ -237,8 +237,8 @@ class SelectPackages(object):
                 lang_code = self.settings.get('language_code')
                 pkg_text = base_name + lang_code
             if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg)
-                self.packages.append(pkg)
+                logging.debug("Selected kde language pack: %s", pkg_text)
+                self.packages.append(pkg_text)
 
         try:
             # Detect which hardware drivers are needed
