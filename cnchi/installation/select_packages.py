@@ -219,7 +219,7 @@ class SelectPackages(object):
                 if name == self.desktop:
                     logging.debug("Adding %s desktop packages", self.desktop)
                     for pkg in edition.iter('pkgname'):
-                        self.add_packages(pkg)
+                        self.add_package(pkg)
 
         # Set KDE language pack
         if self.desktop == 'kde':
@@ -275,14 +275,14 @@ class SelectPackages(object):
         logging.debug("Adding filesystem packages")
         for child in xml_root.iter("filesystems"):
             for pkg in child.iter('pkgname'):
-                self.add_packages(pkg)
+                self.add_package(pkg)
 
         # Add ZFS filesystem
         if self.zfs:
             logging.debug("Adding zfs packages")
             for child in xml_root.iter("zfs"):
                 for pkg in child.iter('pkgname'):
-                    self.add_packages(pkg)
+                    self.add_package(pkg)
 
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
@@ -290,7 +290,7 @@ class SelectPackages(object):
             logging.debug("Selecting chinese fonts.")
             for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.add_packages(pkg)
+                    self.add_package(pkg)
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
@@ -303,7 +303,7 @@ class SelectPackages(object):
                     logging.debug(txt, boot_loader)
                     bootloader_found = True
                     for pkg in child.iter('pkgname'):
-                        self.add_packages(pkg)
+                        self.add_package(pkg)
             if not bootloader_found and boot_loader != 'gummiboot':
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
@@ -357,7 +357,7 @@ class SelectPackages(object):
                 if self.settings.get("feature_" + feature):
                     logging.debug("Adding packages for '%s' feature.", feature)
                     for pkg in xml_feature.iter('pkgname'):
-                        if self.add_packages(pkg):
+                        if self.add_package(pkg):
                             logging.debug(
                                 "Selecting package %s for feature %s",
                                 pkg.text,
