@@ -101,7 +101,7 @@ class InstallationAutomatic(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password_warning')
-        txt = _("LUKS Password. Do not use special characters or accents!")
+        txt = _("LUKS Password. We do not recommend using special characters or accents!")
         label.set_markup(txt)
 
         btn = self.ui.get_object('checkbutton_show_password')

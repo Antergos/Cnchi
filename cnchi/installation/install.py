@@ -990,7 +990,7 @@ class Installation(object):
             # Something bad must be happening, though.
             logging.error(io_error)
 
-    def set_console_conf(self):
+    def set_vconsole_conf(self):
         """ Set vconsole.conf for console keymap """
         match = {
             "ca": "us",
@@ -1204,7 +1204,7 @@ class Installation(object):
         if self.desktop != "base":
             self.set_keyboard_conf()
 
-        self.set_console_conf()
+        self.set_vconsole_conf()
 
         # Install configs for root
         chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
