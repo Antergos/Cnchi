@@ -174,6 +174,8 @@ class Language(GtkBaseBox):
         if lang:
             self.settings.set("language_name", display_map[lang][0])
             self.settings.set("language_code", display_map[lang][1])
+            logging.debug("language_name: %s", display_map[lang][0])
+            logging.debug("language_code: %s", display_map[lang][1])
 
         return True
 
