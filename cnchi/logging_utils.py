@@ -81,7 +81,8 @@ class ContextFilter(Singleton):
             self.id = info['ip']
             self.install = info['id']
             self.have_install_id = True
-        except TypeError:
+        except (TypeError, KeyError):
+            print(info)
             self.have_install_id = False
 
     @staticmethod
