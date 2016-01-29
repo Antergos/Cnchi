@@ -216,8 +216,19 @@ class Location(GtkBaseBox):
 
     def set_locale(self, mylocale):
         self.settings.set("locale", mylocale)
+
+        # LANG=en_US.UTF-8
+        locale_vars = [
+            locale.LC_CTYPE,
+            locale.LC_NUMERIC,
+            locale.LC_TIME,
+            locale.LC_COLLATE,
+            locale.LC_MONETARY,
+            locale.LC_MESSAGES]
+
         try:
-            locale.setlocale(locale.LC_ALL, mylocale)
+            for var in locale_vars:
+                locale.setlocale(var, mylocale)
             logging.debug("Locale changed to : %s", mylocale)
         except locale.Error as err:
             logging.warning("Cannot change to locale '%s': %s", mylocale, err)
@@ -225,7 +236,8 @@ class Location(GtkBaseBox):
                 # Try without the .UTF-8 trailing
                 mylocale = mylocale[:-len(".UTF-8")]
                 try:
-                    locale.setlocale(locale.LC_ALL, mylocale)
+                    for var in locale_vars:
+                        locale.setlocale(var, mylocale)
                     logging.debug("Locale changed to : %s", mylocale)
                     self.settings.set("locale", mylocale)
                 except locale.Error as err:

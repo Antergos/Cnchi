@@ -76,6 +76,7 @@ class SelectPackages(object):
         self.packages = []
 
         self.vbox = False
+        self.my_arch = os.uname()[-1]
 
     def queue_fatal_event(self, txt):
         """ Enqueues a fatal event and quits """
@@ -142,6 +143,30 @@ class SelectPackages(object):
             logging.error(message)
             raise InstallError(message)
 
+    def add_package(self, pkg):
+        """ Adds xml node text to our package list
+            returns TRUE if the package is added """
+        lib = desktop_info.LIBS
+        arch = pkg.attrib.get('arch')
+        added = False
+        if arch is None or arch == self.my_arch:
+            # If package is a Desktop Manager or a Network Manager,
+            # save the name to activate the correct service later
+            if pkg.attrib.get('dm'):
+                self.settings.set("desktop_manager", pkg.attrib.get('name'))
+            if pkg.attrib.get('nm'):
+                self.settings.set("network_manager", pkg.attrib.get('name'))
+            plib = pkg.attrib.get('lib')
+            if plib is None or (plib is not None and self.desktop in lib[plib]):
+                desktops = pkg.attrib.get('desktops')
+                if desktops is None or (desktops is not None and self.desktop in desktops):
+                    conflicts = pkg.attrib.get('conflicts')
+                    if conflicts:
+                        self.add_conflicts(pkg.attrib.get('conflicts'))
+                    self.packages.append(pkg.text)
+                    added = True
+        return added
+
     def select_packages(self):
         """ Get package list from the Internet """
         self.packages = []
@@ -176,8 +201,6 @@ class SelectPackages(object):
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
 
-        lib = desktop_info.LIBS
-
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
                 name = edition.attrib.get("name").lower()
@@ -185,36 +208,22 @@ class SelectPackages(object):
                 # Add common packages to all desktops (including base)
                 if name == "common":
                     for pkg in edition.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        self.add_package(pkg)
 
                 # Add common graphical packages
                 if name == "graphic" and self.desktop != "base":
                     for pkg in edition.iter('pkgname'):
-                        # If package is a Desktop Manager, save the name to
-                        # activate the correct service later
-                        if pkg.attrib.get('dm'):
-                            self.settings.set("desktop_manager", pkg.attrib.get('name'))
-                        plib = pkg.attrib.get('lib')
-                        if (plib is None or
-                                (plib is not None and self.desktop in lib[plib])):
-                            self.packages.append(pkg.text)
+                        self.add_package(pkg)
 
                 # Add specific desktop packages
                 if name == self.desktop:
                     logging.debug("Adding %s desktop packages", self.desktop)
                     for pkg in edition.iter('pkgname'):
-                        # If package is a Network Manager, save the name to
-                        # activate the correct service later
-                        if pkg.attrib.get('nm'):
-                            self.settings.set("network_manager", pkg.attrib.get('name'))
-                        # Stores conflicts packages in self.conflicts
-                        self.get_conflicts(pkg.attrib.get('conflicts'))
-                        # Finally, adds package name to our packages list
-                        self.packages.append(pkg.text)
+                        self.add_package(pkg)
 
         # Set KDE language pack
         if self.desktop == 'kde':
-            pkg = ""
+            pkg_text = ""
             base_name = 'kde-l10n-'
             lang_name = self.settings.get("language_name").lower()
             if lang_name == "english":
@@ -222,28 +231,28 @@ class SelectPackages(object):
                 lang_packs = ['en_gb']
                 locale = self.settings.get('locale').split('.')[0]
                 if locale in lang_packs:
-                    pkg = base_name + locale
+                    pkg_text = base_name + locale
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
-                pkg = base_name + lang_code
-            if len(pkg) > 0:
-                logging.debug("Selected kde language pack: %s", pkg)
-                self.packages.append(pkg)
+                pkg_text = base_name + lang_code
+            if pkg_text:
+                logging.debug("Selected kde language pack: %s", pkg_text)
+                self.packages.append(pkg_text)
 
         try:
             # Detect which hardware drivers are needed
             hardware_install = hardware.HardwareInstall(
                 use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
             driver_names = hardware_install.get_found_driver_names()
-            if len(driver_names) > 0:
+            if driver_names:
                 logging.debug(
                     "Hardware module detected these drivers: %s",
                     driver_names)
 
             # Add needed hardware packages to our list
             hardware_pkgs = hardware_install.get_packages()
-            if len(hardware_pkgs) > 0:
+            if hardware_pkgs:
                 logging.debug(
                     "Hardware module added these packages: %s",
                     ", ".join(hardware_pkgs))
@@ -266,14 +275,14 @@ class SelectPackages(object):
         logging.debug("Adding filesystem packages")
         for child in xml_root.iter("filesystems"):
             for pkg in child.iter('pkgname'):
-                self.packages.append(pkg.text)
+                self.add_package(pkg)
 
         # Add ZFS filesystem
         if self.zfs:
             logging.debug("Adding zfs packages")
             for child in xml_root.iter("zfs"):
                 for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+                    self.add_package(pkg)
 
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
@@ -281,7 +290,7 @@ class SelectPackages(object):
             logging.debug("Selecting chinese fonts.")
             for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
-                    self.packages.append(pkg.text)
+                    self.add_package(pkg)
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
@@ -294,7 +303,7 @@ class SelectPackages(object):
                     logging.debug(txt, boot_loader)
                     bootloader_found = True
                     for pkg in child.iter('pkgname'):
-                        self.packages.append(pkg.text)
+                        self.add_package(pkg)
             if not bootloader_found and boot_loader != 'gummiboot':
                 txt = _("Couldn't find %s bootloader packages!")
                 logging.warning(txt, boot_loader)
@@ -313,7 +322,7 @@ class SelectPackages(object):
         self.conflicts = [pkg for pkg in self.conflicts if pkg != '']
 
         # Remove any package from self.packages that is already in self.conflicts
-        if len(self.conflicts) > 0:
+        if self.conflicts:
             logging.debug("Conflicts list: %s", ", ".join(self.conflicts))
             for pkg in self.packages:
                 if pkg in self.conflicts:
@@ -321,8 +330,8 @@ class SelectPackages(object):
 
         logging.debug("Packages list: %s", ",".join(self.packages))
 
-    def get_conflicts(self, conflicts):
-        """ Return list of conflicting packages """
+    def add_conflicts(self, conflicts):
+        """ Maintains a list of conflicting packages """
         if conflicts:
             if ',' in conflicts:
                 for conflict in conflicts.split(','):
@@ -348,27 +357,11 @@ class SelectPackages(object):
                 if self.settings.get("feature_" + feature):
                     logging.debug("Adding packages for '%s' feature.", feature)
                     for pkg in xml_feature.iter('pkgname'):
-                        # If it's a specific gtk or qt package we have to check it
-                        # against our chosen desktop.
-
-                        lib = pkg.attrib.get('lib')
-                        if (lib is not None and
-                                self.desktop not in desktop_info.LIBS[lib]):
-                            # Wrong lib (gtk/qt), so don't add it
-                            continue
-
-                        desktops = pkg.attrib.get('desktops')
-                        if desktops is not None and self.desktop not in desktops:
-                            # Wrong desktop, so don't add it
-                            continue
-
-                        self.get_conflicts(pkg.attrib.get('conflicts'))
-
-                        logging.debug(
-                            "Selecting package %s for feature %s",
-                            pkg.text,
-                            feature)
-                        self.packages.append(pkg.text)
+                        if self.add_package(pkg):
+                            logging.debug(
+                                "Selecting package %s for feature %s",
+                                pkg.text,
+                                feature)
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
@@ -380,14 +373,14 @@ class SelectPackages(object):
                 locale = self.settings.get('locale').split('.')[0]
                 locale = locale.replace('_', '-')
                 if locale in lang_packs:
-                    pkg = "libreoffice-fresh-{0}".format(locale)
-                    self.packages.append(pkg)
+                    pkg_text = "libreoffice-fresh-{0}".format(locale)
+                    self.packages.append(pkg_text)
             else:
                 # All the other language packs use their language code
                 lang_code = self.settings.get('language_code')
                 lang_code = lang_code.replace('_', '-')
-                pkg = "libreoffice-fresh-{0}".format(lang_code)
-                self.packages.append(pkg)
+                pkg_text = "libreoffice-fresh-{0}".format(lang_code)
+                self.packages.append(pkg_text)
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
@@ -404,9 +397,9 @@ class SelectPackages(object):
                 'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
                 'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
 
-            logging.debug("Add libreoffice language package")
+            logging.debug("Add firefox language package")
             lang_code = self.settings.get('language_code')
             lang_code = lang_code.replace('_', '-')
             if lang_code in lang_codes:
-                pkg = "firefox-i18n-{0}".format(lang_code)
-                self.packages.append(pkg)
+                pkg_text = "firefox-i18n-{0}".format(lang_code)
+                self.packages.append(pkg_text)

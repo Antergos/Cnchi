@@ -990,7 +990,7 @@ class Installation(object):
             # Something bad must be happening, though.
             logging.error(io_error)
 
-    def set_console_conf(self):
+    def set_vconsole_conf(self):
         """ Set vconsole.conf for console keymap """
         match = {
             "ca": "us",
@@ -1008,6 +1008,14 @@ class Installation(object):
             vconsole_file.write("KEYMAP={0}\n".format(vconsole))
         logging.debug("Set vconsole to %s", vconsole)
 
+    def get_zfs_version(self):
+        """ Get installed zfs version """
+        zfs_version = "0.6.5.4"
+        path = "/install/usr/src"
+        for file_name in os.listdir(path):
+            if file_name.startswith("zfs") and not file_name.startswith("zfs-utils"):
+                zfs_version = file_name.split("-")[1]
+        return zfs_version
 
     def configure_system(self):
         """ Final install steps
@@ -1204,7 +1212,7 @@ class Installation(object):
         if self.desktop != "base":
             self.set_keyboard_conf()
 
-        self.set_console_conf()
+        self.set_vconsole_conf()
 
         # Install configs for root
         chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
@@ -1238,12 +1246,11 @@ class Installation(object):
         chroot_call(['killall', '-9', 'gpg-agent'])
 
         # FIXME: Temporary workaround for spl and zfs packages
-        # This should be fixed. I use this here just for testing purposes
-        # hardcoding this here is an AWFUL idea :p
-        zfs_version = "0.6.5.4"
-        logging.debug("Installing zfs %s...", zfs_version)
-        chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
-        chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+        if self.method == "zfs":
+            zfs_version = self.get_zfs_version()
+            logging.debug("Installing zfs modules v%s...", zfs_version)
+            chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
+            chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.

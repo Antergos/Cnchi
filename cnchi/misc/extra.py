@@ -525,30 +525,11 @@ def sort_list(my_list, my_locale=""):
         return my_list
 
     if my_locale != "":
-        set_locale(my_locale)
+        locale.setlocale(locale.LC_COLLATE, my_locale)
 
     sorted_list = sorted(my_list, key=functools.cmp_to_key(locale.strcoll))
 
     return sorted_list
-
-
-def set_locale(my_locale):
-    """ Set new locale """
-    try:
-        locale.setlocale(locale.LC_ALL, my_locale)
-        logging.info("Locale changed to: %s", my_locale)
-    except locale.Error as err:
-        logging.warning("Cannot change to locale '%s': %s", my_locale, err)
-        if my_locale.endswith(".UTF-8"):
-            # Try without the .UTF-8 trailing
-            my_locale = my_locale[:-len(".UTF-8")]
-            try:
-                locale.setlocale(locale.LC_ALL, my_locale)
-                logging.info("Locale changed to: %s", my_locale)
-            except locale.Error as err:
-                logging.warning("Can't change to locale '%s': %s", my_locale, err)
-        else:
-            logging.warning("Can't change to locale '%s'", my_locale)
 
 
 def gtk_refresh():
