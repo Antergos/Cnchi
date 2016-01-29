@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
 # Cnchi
 **Graphical Installer for Antergos Linux**
 
