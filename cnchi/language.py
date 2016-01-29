@@ -73,6 +73,16 @@ class Language(GtkBaseBox):
         self.rank_mirrors_launched = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
 
+    def get_lang(self):
+        return os.environ["LANG"].split(".")[0]
+
+    def get_locale(self):
+        default_locale = locale.getdefaultlocale()
+        if len(default_locale) > 1:
+            return default_locale[0] + "." + default_locale[1]
+        else:
+            return default_locale[0]
+
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
@@ -141,6 +151,8 @@ class Language(GtkBaseBox):
     def set_language(self, locale_code):
         if locale_code is None:
             locale_code, encoding = locale.getdefaultlocale()
+
+        os.environ["LANG"] = locale_code
 
         try:
             lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code])
