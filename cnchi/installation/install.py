@@ -1226,13 +1226,12 @@ class Installation(object):
             shutil.copy2(src, dst)
 
         # Configure ALSA
-        self.alsa_mixer_setup()
-        logging.debug("Updated Alsa mixer settings")
+        #self.alsa_mixer_setup()
+        #logging.debug("Updated Alsa mixer settings")
 
         # Set pulse
-        path = os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")
-        if os.path.exists(path):
-            chroot_call(['pulseaudio-ctl', 'normal'])
+        #if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
+        #    chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
         self.set_fluidsynth()

@@ -24,7 +24,6 @@
 				<pkgname>net-tools</pkgname>
 				<pkgname>ntfs-3g</pkgname>
 				<pkgname>openssh</pkgname>
-				<pkgname>p7zip</pkgname>
 				<pkgname>pkgfile</pkgname>
 				<pkgname>sudo</pkgname>
 				<pkgname>tar</pkgname>
@@ -45,7 +44,7 @@
 				<pkgname>antergos-wallpapers</pkgname>
 				<pkgname>antergos-welcome</pkgname>
 				<pkgname>chromium</pkgname>
-				<!--<pkgname>chromium-pepper-flash</pkgname>-->
+				<pkgname>chromium-pepper-flash</pkgname>
 				<pkgname>ffmpegthumbnailer</pkgname>
 				<pkgname>gst-libav</pkgname>
 				<pkgname>gst-plugins-bad</pkgname>
@@ -373,6 +372,7 @@
 				<pkgname>dolphin</pkgname>
 				<pkgname>dolphin-plugins</pkgname>
 				<pkgname>dvd+rw-tools</pkgname>
+				<pkgname>ffmpegthumbs</pkgname>
 				<pkgname>grub2-editor</pkgname>
 				<pkgname>gwenview</pkgname>
 				<pkgname>k3b</pkgname>
@@ -384,7 +384,6 @@
 				<pkgname>kdebase-kfind</pkgname>
 				<pkgname>kdegraphics-okular</pkgname>
 				<pkgname>kdegraphics-thumbnailers</pkgname>
-				<pkgname>ffmpegthumbs</pkgname>
 				<pkgname>kdenetwork-kopete</pkgname>
 				<pkgname>kde-servicemenus-rootactions</pkgname>
 				<pkgname>kdesudo</pkgname>
@@ -417,7 +416,7 @@
 				<pkgname>plasma-workspace-wallpapers</pkgname>
 				<pkgname>powerdevil</pkgname>
 				<pkgname>qtcurve</pkgname>
-				<!--<pkgname>spectacle</pkgname>-->
+				<pkgname>spectacle</pkgname>
 				<pkgname>systemsettings</pkgname>
 				<pkgname>transmission-qt</pkgname>
 				<pkgname>user-manager</pkgname>
@@ -456,7 +455,8 @@
 			<pkgname>splix</pkgname>
 		</feature>
 		<feature name="firefox">
-			<pkgname conflicts="chromium">firefox</pkgname>
+			<pkgname conflicts="chromium,chromium-pepper-flash">firefox</pkgname>
+			<pkgname conflicts="chromium,chromium-pepper-flash">flashplugin</pkgname>
 		</feature>
 		<feature name="firewall">
 			<pkgname>gufw</pkgname>
