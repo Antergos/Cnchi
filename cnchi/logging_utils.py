@@ -3,7 +3,7 @@
 #
 # logging_utils.py
 #
-# Copyright © 2015 Antergos
+# Copyright © 2015-2016 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -73,8 +73,8 @@ class ContextFilter(Singleton):
         try:
             r = requests.get(url, headers=headers)
             info = json.loads(r.json())
-        except Exception as ex:
-            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(ex)
+        except Exception as err:
+            BUGSNAG_ERROR = "Unable to get an Id for this installation. Error: {0}".format(err)
             return
 
         try:

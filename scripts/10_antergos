@@ -232,7 +232,7 @@ while [ "x$list" != "x" ] ; do
     artmp=($list)
     linux=${artmp[0]}
   fi
-  
+
   gettext_printf "Found linux image: %s\n" "$linux" >&2
   basename=`basename $linux`
   dirname=`dirname $linux`

@@ -229,7 +229,7 @@ class SelectPackages(object):
             if lang_name == "english":
                 # There're some English variants available but not all of them.
                 lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0]
+                locale = self.settings.get('locale').split('.')[0].lower()
                 if locale in lang_packs:
                     pkg_text = base_name + locale
             else:

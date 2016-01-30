@@ -1837,10 +1837,11 @@ class InstallationAdvanced(GtkBaseBox):
         return False
 
     def check_mount_points(self):
-        """ Check that all necessary mount points are specified.
-            At least root (/) partition must be defined and in UEFI systems
-            a fat partition mounted in /boot (Systemd-boot) or /boot/efi (grub2)
-            must be defined too. """
+        """
+        Check that all necessary mount points are specified.
+        At least root (/) partition must be defined and in UEFI systems
+        a fat partition mounted in /boot (Systemd-boot) or /boot/efi (grub2) must be defined too.
+        """
 
         check_parts = ["/", "/boot", "/boot/efi", "swap"]
 
