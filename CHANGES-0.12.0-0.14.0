@@ -1,11 +1,8 @@
-[2016-01-30 04:53:29 -0600]  a few stray commits                                                    Dustin Falgout  {a94d72f}
 [2016-01-30 04:37:20 -0600]  update readme                                                          Dustin Falgout  {34731df}
 [2016-01-30 04:11:04 -0600]  update translation strings                                             Dustin Falgout  {5458b0c}
 [2016-01-30 03:03:38 -0600]  prepping for release                                                   Dustin Falgout  {094c31c}
 [2016-01-30 02:41:32 -0600]  prepping for release                                                   Dustin Falgout  {f897ff1}
 [2016-01-29 16:39:03 +0100]  Minor changes                                                              karasu      {d1039a5}
-[2016-01-29 11:56:41 +0100]  Merge pull request #518 from waffle-iron/master                            karasu      {d3f8dd5}
-[2016-01-29 03:54:46 -0700]  add waffle.io badge                                                    Making GitHub Delicious {a54abd3}
 [2016-01-28 18:16:15 +0100]  Avoid failing if bugsnag returns msg                                       karasu      {fb17c69}
 [2016-01-27 23:40:07 +0100]  Try to detect zfs installed version                                        karasu      {705a4ea}
 [2016-01-27 23:26:16 +0100]  Thinking about what to do if user does not want the same language a..      karasu      {fea8895}
@@ -38,15 +35,8 @@
 [2016-01-11 22:49:15 +0100]  Let's hope this fixes issue #417 once and for all.                         karasu      {aa1fc6a}
 [2016-01-11 21:38:51 +0100]  Testing Enlightenment                                                      karasu      {5c4d0a1}
 [2016-01-09 18:52:23 +0100]  backwards compatibility for GRUB_DISABLE_SUBMENU                           karasu      {60dca63}
-[2016-01-08 17:13:25 -0600]  Merge pull request #501 from codyzu/master                             Dustin Falgout  {431ff81}
-[2016-01-08 23:01:02 +0100]  backwards compatibility for GRUB_DISABLE_SUBMENU                           codyzu      {1ed58b9}
 [2016-01-08 22:25:31 +0100]  Added p7zip                                                                karasu      {e0e295c}
 [2016-01-08 22:20:43 +0100]  ksnapshot retired                                                          karasu      {653f174}
-[2016-01-07 17:45:41 +0100]  Merge pull request #1 from codyzu/grub_disable_submenu                     codyzu      {04f3473}
-[2016-01-07 17:37:06 +0100]  fix GRUB_DISABLE_SUBMENU check to be standard                              codyzu      {fb10d84}
-[2016-01-06 17:44:21 -0600]  Fix pkgname typo from previous commit                                  Dustin Falgout  {768f1f2}
-[2016-01-06 12:36:59 -0600]  Merge pull request #499 from artur9010/patch-3                         Dustin Falgout  {265bfab}
-[2016-01-06 19:10:16 +0100]  .7z support                                                             Artur Motyka   {a0dd6f5}
 [2016-01-03 21:13:49 +0100]  Use only the partition, not the whole disk (first disk only)               karasu      {09a4bf3}
 [2016-01-03 21:01:11 +0100]  Use device paths instead of ids when creating pool : https://github..      karasu      {782f555}
 [2016-01-03 19:05:27 +0100]  Of course pool does not exist, I AM CREATING IT NOW! (wtf zfs?)            karasu      {64e811f}
@@ -116,13 +106,11 @@
 [2015-12-22 18:40:47 +0100]  zfs packages are not being installed on /install                           karasu      {a3206f9}
 [2015-12-22 17:46:05 +0100]  Setting mountpoint to / makes zfs try to mount it and fail.                karasu      {570b822}
 [2015-12-22 17:32:09 +0100]  Trying to fix zfs                                                          karasu      {4f6e792}
-[2015-12-22 16:12:06 +0100]  Some users have reported problems when setting alsa mixer options. ..      karasu      {5a150aa}
 [2015-12-22 00:28:12 +0100]  Add zfs hook                                                               karasu      {edbef3d}
 [2015-12-21 21:18:22 +0100]  Where does this symlink come from?                                         karasu      {c5be3ca}
 [2015-12-21 21:15:33 +0100]  More work in bootloaders                                                   karasu      {6fbd12c}
 [2015-12-21 19:46:04 +0100]  bootloader was too big and confusing. THIS IS NOT FINISHED                 karasu      {91bbf12}
 [2015-12-21 17:53:20 +0100]  Fix typo                                                                   karasu      {d15af7b}
-[2015-12-20 06:36:27 -0600]  Update packages.xml                                                    Dustin Falgout  {ad044d0}
 [2015-12-19 21:40:32 -0600]  fix indent error                                                       Dustin Falgout  {84ae72b}
 [2015-12-19 14:39:08 +0100]  Little modifications in run_cmd                                            karasu      {d012ef2}
 [2015-12-19 13:27:37 +0100]  Do not log as warning when update.info is missing                          karasu      {8deaa14}
