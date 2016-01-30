@@ -3,7 +3,7 @@
 #
 #  lvm.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -32,9 +32,9 @@
 import subprocess
 import logging
 
-import misc.misc as misc
 import show_message as show
 
+import misc.extra as misc
 
 @misc.raise_privileges
 def get_lvm_partitions():
@@ -113,7 +113,7 @@ def remove_volume_group(volume_group):
 def remove_physical_volume(physical_volume):
     """ Removes a physical volume """
     try:
-        subprocess.check_call(["pvremove", "-f", physical_volume])
+        subprocess.check_call(["pvremove", "-ff", physical_volume])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove physical volume {0}").format(physical_volume)
         logging.error(txt)

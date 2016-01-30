@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  updater.py
+# updater.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Module to update Cnchi """
@@ -34,9 +34,9 @@ import hashlib
 import os
 import logging
 import shutil
-import uuid
 
-import misc.misc as misc
+import misc.extra as misc
+
 import requests
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
@@ -68,41 +68,45 @@ class Updater(object):
         self.md5s = {}
 
         self.force = force_update
-        self.local_files = []
 
-        # if not os.path.exists(_update_info):
-        #     logging.warning("Cannot not find %s file. Cnchi will not be able to update itself.", _update_info)
-        #     return
+        if not os.path.exists(_update_info):
+            logging.debug(
+                "Cannot not find %s file. "
+                "Cnchi will not be able to update itself.",
+                _update_info)
+            return
 
         # Get local info (local update.info)
-        # with open(_update_info, "r") as local_update_info:
-        #     response = local_update_info.read()
-        #     if len(response) > 0:
-        #         update_info = json.loads(response)
-        #         self.local_files = update_info['files']
+        with open(_update_info, "r") as local_update_info:
+            response = local_update_info.read()
+            if response:
+                update_info = json.loads(response)
+                self.local_files = update_info['files']
 
         try:
-            r = requests.get(_update_info_url, stream=True)
+            req = requests.get(_update_info_url, stream=True, timeout=5)
         except requests.exceptions.ConnectionError as conn_error:
             logging.error(conn_error)
             return
 
-        if r.status_code == requests.codes.ok:
+        if req.status_code == requests.codes.ok:
             txt = ""
-            for chunk in r.iter_content(1024):
+            for chunk in req.iter_content(1024):
                 if chunk:
                     txt += chunk.decode()
-            if len(txt) > 0:
+            if txt:
                 update_info = json.loads(txt)
                 self.remote_version = update_info['version']
                 for remote_file in update_info['files']:
                     self.md5s[remote_file['name']] = remote_file['md5']
                 logging.info("Internet version: %s", self.remote_version)
+                self.force = force_update
 
     def is_remote_version_newer(self):
-        """ Returns true if the Internet version of Cnchi is newer than the local one """
+        """ Returns true if the Internet version of Cnchi is
+            newer than the local one """
 
-        if len(self.remote_version) < 1:
+        if not self.remote_version:
             return False
 
         # Version is always: x.y.z
@@ -124,9 +128,12 @@ class Updater(object):
         return False
 
     def should_update_local_file(self, remote_name, remote_md5):
-        """ Checks if remote file is different from the local one (just compares md5)"""
+        """ Checks if remote file is different from the local one
+            (just compares md5)"""
         for local_file in self.local_files:
-            if local_file['name'] == remote_name and local_file['md5'] != remote_md5 and '__' not in local_file['name']:
+            if (local_file['name'] == remote_name and
+                    local_file['md5'] != remote_md5 and
+                    '__' not in local_file['name']):
                 return True
         return False
 
@@ -154,8 +161,10 @@ class Updater(object):
             logging.debug("Uncompressing new version...")
             try:
                 self.unzip_and_copy(zip_path)
-            except Exception as err:
-                logging.error(err)
+            except Exception as ex:
+                template = "Cannot update Cnchi. An exception of type {0} occured. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                logging.error(message)
                 return False
 
         return update_cnchi
@@ -163,10 +172,10 @@ class Updater(object):
     @staticmethod
     def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
-        r = requests.get(_master_zip_url, stream=True)
-        if r.status_code == requests.codes.ok:
+        req = requests.get(_master_zip_url, stream=True)
+        if req.status_code == requests.codes.ok:
             with open(zip_path, 'wb') as zip_file:
-                for data in r.iter_content(1024):
+                for data in req.iter_content(1024):
                     if not data:
                         break
                     zip_file.write(data)
@@ -193,9 +202,11 @@ class Updater(object):
                     full_path.split("/tmp/Cnchi-master/")[1])
                 if os.path.isfile(dst_full_path):
                     if dst_full_path in self.md5s:
-                        if "update.info" not in dst_full_path and self.md5s[dst_full_path] != get_md5_from_file(full_path):
+                        if ("update.info" not in dst_full_path and
+                                self.md5s[dst_full_path] != get_md5_from_file(full_path)):
                             logging.warning(
-                                _("Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"),
+                                _("Wrong md5 (%s). Bad download or wrong file, "
+                                  "Cnchi won't update itself"),
                                 member.filename)
                             all_md5_ok = False
                             break

@@ -3,7 +3,7 @@
 #
 #  bootinfo.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -30,12 +30,16 @@
 """ Detects installed OSes (needs root privileges)"""
 
 import os
-import subprocess
 import re
 import tempfile
 import logging
 
-import misc.misc as misc
+from misc.run_cmd import call
+
+try:
+    import misc.extra as misc
+except ImportError:
+    import extra as misc
 
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
@@ -66,44 +70,72 @@ OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
-    # FIXME: Windows Vista/7 detection does not work! ##############################################################
 
     detected_os = _("unknown")
+    paths = []
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
-            # Search for Windows Vista and 7
-            for name in WINLOAD_NAMES:
-                path = os.path.join(mount_name, windows, system, name)
-                if os.path.exists(path):
-                    with open(path, "rb") as system_file:
-                        lines = system_file.readlines()
-                    for line in lines:
-                        for vista_mark in VISTA_MARKS:
-                            if vista_mark.encode('utf-8') in line:
-                                detected_os = "Windows Vista"
-                    if detected_os == _("unknown"):
-                        for line in lines:
-                            for seven_mark in SEVEN_MARKS:
-                                if seven_mark.encode('utf-8') in line:
-                                    detected_os = "Windows 7"
-            # Search for Windows XP
-            if detected_os == _("unknown"):
-                for name in SECEVENT_NAMES:
-                    path = os.path.join(mount_name, windows, system, "config", name)
-                    if os.path.exists(path):
-                        detected_os = "Windows XP"
+            paths.append(os.path.join(mount_name, windows, system))
+
+    for path in paths:
+        if _check_vista(path):
+            detected_os = "Windows Vista"
+        elif _check_win7(path):
+            detected_os = "Windows 7"
+        elif _check_winxp(path):
+            detected_os = "Win XP"
+        else:
+            detected_os = _("unknown")
+
     return detected_os
+
+
+def _check_vista(system_path):
+    """ Searches for Windows Vista """
+
+    for name in WINLOAD_NAMES:
+        path = os.path.join(system_path, name)
+        if os.path.exists(path):
+            with open(path, "rb") as system_file:
+                lines = system_file.readlines()
+            for line in lines:
+                for vista_mark in VISTA_MARKS:
+                    if vista_mark.encode('utf-8') in line:
+                        return True
+    return False
+
+
+def _check_win7(system_path):
+    """ Searches for Windows 7 """
+
+    for name in WINLOAD_NAMES:
+        path = os.path.join(system_path, name)
+        if os.path.exists(path):
+            with open(path, "rb") as system_file:
+                lines = system_file.readlines()
+                for line in lines:
+                    for seven_mark in SEVEN_MARKS:
+                        if seven_mark.encode('utf-8') in line:
+                            return True
+    return False
+
+
+def _check_winxp(system_path):
+    """ Searches for Windows XP """
+
+    for name in SECEVENT_NAMES:
+        path = os.path.join(system_path, "config", name)
+        if os.path.exists(path):
+            return True
+    return False
 
 
 @misc.raise_privileges
 def _hexdump8081(partition):
-    try:
-        cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
-        hexdump = subprocess.check_output(cmd).decode()
-        return hexdump
-    except subprocess.CalledProcessError as process_error:
-        logging.warning("Error calling hexdump command: %s", process_error)
-        return ""
+    """ Runs hexdump on partition to try to identify the boot sector """
+    cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
+    hexdump = call(cmd)
+    return hexdump
 
 
 def _get_partition_info(partition):
@@ -134,7 +166,7 @@ def _get_partition_info(partition):
 
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
-    elif len(bytes80_to_81) > 0:
+    elif bytes80_to_81:
         logging.debug("Unknown partition id %s", bytes80_to_81)
     return _("unknown")
 
@@ -151,13 +183,17 @@ def _check_reactos(mount_name):
 def _check_dos(mount_name):
     """ Checks for DOS and W9x """
     detected_os = _("unknown")
+    paths = []
     for name in DOS_NAMES:
         path = os.path.join(mount_name, name)
         if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                for mark in DOS_MARKS:
-                    if mark in system_file:
-                        detected_os = mark
+            paths.append(path)
+
+    for path in paths:
+        with open(path, "rb") as system_file:
+            for mark in DOS_MARKS:
+                if mark in system_file:
+                    detected_os = mark
     return detected_os
 
 
@@ -165,41 +201,52 @@ def _check_linux(mount_name):
     """ Checks for linux """
     detected_os = _("unknown")
 
+    paths = []
     for os_release in OS_RELEASE_PATHS:
         path = os.path.join(mount_name, os_release)
         if os.path.exists(path):
-            with open(path, 'r') as os_release_file:
-                lines = os_release_file.readlines()
-            for line in lines:
-                if line.startswith("PRETTY_NAME"):
-                    os_pretty_name = line[len("PRETTY_NAME="):]
-                elif line.startswith("ID"):
-                    os_id = line[len("ID="):]
-                elif line.startswith("VERSION"):
-                    os_version = line[len("VERSION="):]
+            paths.append(path)
 
-            if len(os_pretty_name) > 0:
-                detected_os = os_pretty_name
-            elif len(os_id) > 0:
-                detected_os = os_id
-                if len(os_version) > 0:
-                    detected_os = "{0} {1}".format(detected_os, os_version)
+    for path in paths:
+        with open(path, 'r') as os_release_file:
+            lines = os_release_file.readlines()
+        os_info = {
+            "pretty_name": "",
+            "id": "",
+            "version": ""}
+        for line in lines:
+            if line.startswith("PRETTY_NAME"):
+                os_info["pretty_name"] = line[len("PRETTY_NAME="):]
+            elif line.startswith("ID"):
+                os_info["id"] = line[len("ID="):]
+            elif line.startswith("VERSION"):
+                os_info["version"] = line[len("VERSION="):]
+
+        if os_info["pretty_name"]:
+            detected_os = os_info["pretty_name"]
+        elif os_info["id"]:
+            detected_os = os_info["id"]
+            if os_info["version"]:
+                detected_os = "{0} {1}".format(detected_os, os_info["version"])
 
     detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
     if detected_os == _("unknown"):
+        paths = []
         for name in LINUX_NAMES:
             path = os.path.join(mount_name, "etc", name)
             if os.path.exists(path):
-                with open(path, 'r') as system_file:
-                    line = system_file.readline()
-                textlist = line.split()
-                text = ""
-                for element in textlist:
-                    if "\\" not in element:
-                        text += element
-                detected_os = text
+                paths.append(path)
+        for path in paths:
+            with open(path, 'r') as system_file:
+                line = system_file.readline()
+            textlist = line.split()
+            text = ""
+            for element in textlist:
+                if "\\" not in element:
+                    text += element
+            detected_os = text
     return detected_os
 
 
@@ -236,19 +283,12 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-
-                    try:
-                        subprocess.call(["mount", device, tmp_dir], stderr=subprocess.DEVNULL)
-                        oses[device] = _get_os(tmp_dir)
-                        subprocess.call(["umount", "-l", tmp_dir], stderr=subprocess.DEVNULL)
-                    except AttributeError:
-                        subprocess.call(["mount", device, tmp_dir])
-                        oses[device] = _get_os(tmp_dir)
-                        subprocess.call(["umount", "-l", tmp_dir])
-
+                    call(["mount", device, tmp_dir])
+                    oses[device] = _get_os(tmp_dir)
+                    call(["umount", "-l", tmp_dir])
                     if oses[device] == _("unknown"):
-                        # As a last resort, try reading partition info with hexdump
-                        # print(device, _get_partition_info(device))
+                        # As a last resort, try reading partition info
+                        # with hexdump
                         oses[device] = _get_partition_info(device)
 
     try:
@@ -257,6 +297,24 @@ def get_os_dict():
         pass
 
     return oses
+
+
+def windows_startup_folder(mount_path):
+    locations = [
+        # Windows 8
+        'ProgramData/Microsoft/Windows/Start Menu/Programs/StartUp',
+        # Windows 7
+        'ProgramData/Microsoft/Windows/Start Menu/Programs/Startup',
+        # Windows XP
+        'Documents and Settings/All Users/Start Menu/Programs/Startup',
+        # Windows NT
+        'Winnt/Profiles/All Users/Start Menu/Programs/Startup',
+    ]
+    for location in locations:
+        path = os.path.join(mount_path, location)
+        if os.path.exists(path):
+            return path
+    return ''
 
 
 if __name__ == '__main__':

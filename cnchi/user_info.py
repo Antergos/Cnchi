@@ -1,31 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  user_info.py
+# user_info.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" User info screen """
 
 from gi.repository import Gtk
 
@@ -33,8 +34,6 @@ import misc.validation as validation
 import show_message as show
 
 from gtkbasebox import GtkBaseBox
-
-import logging
 
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
@@ -88,7 +87,8 @@ class UserInfo(GtkBaseBox):
             self.camera.show()
         else:
             pass
-            # We do not have camera. Move all fields to the right (to center them).
+            # We don't have a camera.
+            # Move all fields to the right (to center them).
             # user_info_grid = self.ui.get_object('user_info_grid')
             # user_info_grid.set_property('margin_start', 140)
 
@@ -164,7 +164,9 @@ class UserInfo(GtkBaseBox):
 
         # Restore forward button text (from install now! to go-next)
         # self.forward_button.set_label("")
-        # image1 = Gtk.Image.new_from_icon_name("go-next", Gtk.IconSize.LARGE_TOOLBAR)
+        # image1 = Gtk.Image.new_from_icon_name(
+        #   "go-next",
+        #   Gtk.IconSize.LARGE_TOOLBAR)
         # self.forward_button.set_image(image1)
         # self.forward_button.set_always_show_image(True)
 
@@ -180,7 +182,8 @@ class UserInfo(GtkBaseBox):
 
         self.password_strength.hide()
 
-        # Hide encryption if using LUKS encryption (user must use one or the other but not both)
+        # Hide encryption if using LUKS encryption (user must use one or
+        # the other but not both)
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
 
@@ -192,15 +195,6 @@ class UserInfo(GtkBaseBox):
         """ Store all user values in self.settings """
         # For developer testing
         # Do not use this, is confusing for others when testing dev version
-        '''
-        if self.settings.get('z_hidden'):
-            self.settings.set('fullname', 'Antergos Testing')
-            self.settings.set('hostname', 'Testing Machine')
-            self.settings.set('username', 'antergos')
-            self.settings.set('password', 'testing')
-            self.settings.set('require_password', True)
-        else:
-        '''
         self.settings.set('fullname', self.entry['fullname'].get_text())
         self.settings.set('hostname', self.entry['hostname'].get_text())
         self.settings.set('username', self.entry['username'].get_text())
@@ -210,7 +204,7 @@ class UserInfo(GtkBaseBox):
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
             message = _("Are you sure you want to encrypt your home directory?")
-            res = show.question(self.get_toplevel(), message)
+            res = show.question(self.get_main_window(), message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
 
@@ -258,32 +252,37 @@ class UserInfo(GtkBaseBox):
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
         if len(value) == 0:
-            self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
+            self.image_is_ok[element].set_from_icon_name(
+                ICON_WARNING,
+                Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok[element].show()
             self.error_label[element].show()
         else:
             result = validation.check(element, value)
-            if len(result) == 0:
-                self.image_is_ok[element].set_from_icon_name(ICON_OK, Gtk.IconSize.LARGE_TOOLBAR)
+            if not result:
+                self.image_is_ok[element].set_from_icon_name(
+                    ICON_OK,
+                    Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
-                self.image_is_ok[element].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
+                self.image_is_ok[element].set_from_icon_name(
+                    ICON_WARNING,
+                    Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
 
                 if validation.NAME_BADCHAR in result:
                     txt = _("Invalid characters entered")
-                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
-                    self.error_label[element].set_markup(txt)
                 elif validation.NAME_BADDOTS in result:
                     txt = _("Username can't contain dots")
-                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
-                    self.error_label[element].set_markup(txt)
                 elif validation.NAME_LENGTH in result:
                     txt = _("Too many characters")
-                    txt = "<small><span color='darkred'>{0}</span></small>".format(txt)
-                    self.error_label[element].set_markup(txt)
+                else:
+                    txt = _("Unknown error")
 
+                my_format = "<small><span color='darkred'>{0}</span></small>"
+                txt = my_format.format(txt)
+                self.error_label[element].set_markup(txt)
                 self.error_label[element].show()
 
     def info_loop(self, widget):
@@ -291,12 +290,15 @@ class UserInfo(GtkBaseBox):
 
         if widget == self.entry['fullname']:
             fullname = self.entry['fullname'].get_text()
-            if len(fullname) > 0:
-                self.image_is_ok['fullname'].set_from_icon_name(ICON_OK, Gtk.IconSize.LARGE_TOOLBAR)
-                self.image_is_ok['fullname'].show()
+            if fullname:
+                self.image_is_ok['fullname'].set_from_icon_name(
+                    ICON_OK,
+                    Gtk.IconSize.LARGE_TOOLBAR)
             else:
-                self.image_is_ok['fullname'].set_from_icon_name(ICON_WARNING, Gtk.IconSize.LARGE_TOOLBAR)
-                self.image_is_ok['fullname'].show()
+                self.image_is_ok['fullname'].set_from_icon_name(
+                    ICON_WARNING,
+                    Gtk.IconSize.LARGE_TOOLBAR)
+            self.image_is_ok['fullname'].show()
 
         elif widget == self.entry['hostname']:
             hostname = self.entry['hostname'].get_text()
@@ -306,7 +308,8 @@ class UserInfo(GtkBaseBox):
             username = self.entry['username'].get_text()
             self.validate('username', username)
 
-        elif widget == self.entry['password'] or widget == self.entry['verified_password']:
+        elif (widget == self.entry['password'] or
+              widget == self.entry['verified_password']):
             validation.check_password(
                 self.entry['password'],
                 self.entry['verified_password'],
@@ -321,21 +324,12 @@ class UserInfo(GtkBaseBox):
             for ok_widget in ok_widgets:
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()
-                # logging.info('icon_name is: %s. visible is: %s', icon_name, visible)
                 if not visible or icon_name == ICON_WARNING:
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
 
 
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
 if __name__ == '__main__':
     from test_screen import _, run
-
     run('UserInfo')

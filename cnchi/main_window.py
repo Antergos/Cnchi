@@ -1,35 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  main_window.py
+# main_window.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Main Cnchi Window """
-
-from gi.repository import Gtk, Gdk, Atk
 
 import os
 import sys
@@ -48,17 +46,25 @@ import timezone
 import user_info
 import slides
 import summary
-import misc.misc as misc
 import info
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, Atk
+
 import show_message as show
+import misc.extra as misc
+
 from installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
+from installation import zfs as installation_zfs
 
 
 def atk_set_image_description(widget, description):
-    """ Sets the textual description for a widget that displays image/pixmap information onscreen. """
+    """ Sets the textual description for a widget that displays image/pixmap
+        information onscreen. """
     atk_widget = widget.get_accessible()
     if atk_widget is not None:
         atk_widget.set_image_description(description)
@@ -70,8 +76,8 @@ class MainWindow(Gtk.ApplicationWindow):
     def __init__(self, app, cmd_line):
         Gtk.ApplicationWindow.__init__(self, title="Cnchi", application=app)
 
-        self.MAIN_WINDOW_WIDTH = 875
-        self.MAIN_WINDOW_HEIGHT = 550
+        self._main_window_width = 875
+        self._main_window_height = 550
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
@@ -90,9 +96,21 @@ class MainWindow(Gtk.ApplicationWindow):
 
             self.ui_dir = self.settings.get('ui')
 
-        if cmd_line.cache:
-            logging.debug("Cnchi will use '%s' as a source directory for cached xz packages", cmd_line.cache)
-            self.settings.set('cache', cmd_line.cache)
+        # By default, always try to use local /var/cache/pacman/pkg
+        xz_cache = ["/var/cache/pacman/pkg"]
+
+        # Check command line
+        if cmd_line.cache and cmd_line.cache not in xz_cache:
+            xz_cache.append(cmd_line.cache)
+
+        # Log cache dirs
+        for xz in xz_cache:
+            logging.debug(
+                "Cnchi will use '%s' as a source for cached xz packages",
+                xz)
+
+        # Store cache dirs in config
+        self.settings.set('xz_cache', xz_cache)
 
         data_dir = self.settings.get('data')
 
@@ -106,11 +124,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.settings.set("desktops", desktop_info.DESKTOPS)
 
         if cmd_line.environment:
-            desktop = cmd_line.environment.lower()
-            if desktop in desktop_info.DESKTOPS:
-                self.settings.set('desktop', desktop)
+            my_desktop = cmd_line.environment.lower()
+            if my_desktop in desktop_info.DESKTOPS:
+                self.settings.set('desktop', my_desktop)
                 self.settings.set('desktop_ask', False)
-                logging.debug("Cnchi will install the %s desktop environment", desktop)
+                logging.debug(
+                    "Cnchi will install the %s desktop environment",
+                    my_desktop)
 
         self.ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
@@ -124,7 +144,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header = self.header_ui.get_object("header")
 
         self.logo = self.header_ui.get_object("logo")
-        path = os.path.join(data_dir, "images", "antergos", "antergos-logo-mini2.png")
+        path = os.path.join(
+            data_dir,
+            "images",
+            "antergos",
+            "antergos-logo-mini2.png")
         self.logo.set_from_file(path)
 
         # To honor our css
@@ -149,25 +173,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-        # Create a queue. Will be used to report pacman messages (pacman/pac.py)
-        # to the main thread (installation/process.py)
+        # Create a queue. Will be used to report pacman messages
+        # (pacman/pac.py) to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # This list will have all processes (rankmirrors, autotimezone...)
         self.process_list = []
 
-        # Save in config which download method we have to use
-        if cmd_line.download_module:
-            self.settings.set("download_module", cmd_line.download_module)
-        else:
-            # Use requests by default
-            self.settings.set("download_module", 'requests')
-
-        logging.info("Using %s to download packages", self.settings.get("download_module"))
-
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
-            logging.info("Using '%s' file as package list", self.settings.get('alternate_package_list'))
+            logging.info(
+                "Using '%s' file as package list",
+                self.settings.get('alternate_package_list'))
 
         self.set_titlebar(self.header)
 
@@ -186,10 +203,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['checks_are_optional'] = cmd_line.no_check
         self.params['disable_tryit'] = cmd_line.disable_tryit
         self.params['disable_rank_mirrors'] = cmd_line.disable_rank_mirrors
-        self.params['testing'] = cmd_line.testing
 
         # Just load the first two screens (the other ones will be loaded later)
-        # We do this so the user has not to wait for all the screens to be loaded
+        # We do this so the user has not to wait for all the screens to be
+        # loaded
         self.pages = dict()
         self.pages["welcome"] = welcome.Welcome(self.params)
 
@@ -198,11 +215,11 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["language"] = language.Language(self.params)
 
             # Fix bugy Gtk window size when using Openbox
-            self.MAIN_WINDOW_WIDTH = 750
-            self.MAIN_WINDOW_HEIGHT = 450
+            self._main_window_width = 750
+            self._main_window_height = 450
 
         self.connect('delete-event', self.on_exit_button_clicked)
-        self.connect('key-release-event', self.check_escape)
+        self.connect('key-release-event', self.on_key_release)
 
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
@@ -216,7 +233,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_geometry()
 
         # Set window icon
-        icon_path = os.path.join(data_dir, "images", "antergos", "antergos-icon.png")
+        icon_path = os.path.join(
+            data_dir,
+            "images",
+            "antergos",
+            "antergos-icon.png")
         self.set_icon_from_file(icon_path)
 
         # Set the first page to show
@@ -256,7 +277,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.set_fraction(0)
         self.progressbar_step = 0
 
-        # Do not hide progress bar for minimal iso as it would break the widget alignment on language page.
+        # Do not hide progress bar for minimal iso as it would break
+        # the widget alignment on language page.
         if not os.path.exists('/home/antergos/.config/openbox'):
             # Hide progress bar
             self.progressbar.hide()
@@ -266,6 +288,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["language"] = language.Language(self.params)
+
         self.pages["check"] = check.Check(self.params)
         self.pages["location"] = location.Location(self.params)
         self.pages["timezone"] = timezone.Timezone(self.params)
@@ -275,8 +298,12 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["desktop"] = desktop.DesktopAsk(self.params)
             self.pages["features"] = features.Features(self.params)
         else:
-            self.pages["keymap"] = keymap.Keymap(self.params, next_page='features')
-            self.pages["features"] = features.Features(self.params, prev_page='keymap')
+            self.pages["keymap"] = keymap.Keymap(
+                self.params,
+                next_page='features')
+            self.pages["features"] = features.Features(
+                self.params,
+                prev_page='keymap')
 
         self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
         self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
@@ -287,6 +314,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["installation_alongside"] = None
 
         self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
+        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(self.params)
         self.pages["summary"] = summary.Summary(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -301,51 +329,33 @@ class MainWindow(Gtk.ApplicationWindow):
         if num_pages > 0:
             self.progressbar_step = 1.0 / num_pages
 
-    def del_pages(self):
-        """ When we get to user_info page we can't go back
-        therefore we can delete all previous pages for good """
-        # FIXME: As there are more references, this does nothing
-        try:
-            del self.pages["welcome"]
-            del self.pages["language"]
-            del self.pages["location"]
-            del self.pages["check"]
-            del self.pages["desktop"]
-            del self.pages["features"]
-            del self.pages["keymap"]
-            del self.pages["timezone"]
-            del self.pages["installation_ask"]
-            del self.pages["installation_automatic"]
-            if self.pages["installation_alongside"] is not None:
-                del self.pages["installation_alongside"]
-            del self.pages["installation_advanced"]
-        except KeyError as key_error:
-            pass
-
     def set_geometry(self):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
-        self.set_size_request(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
-        self.set_default_size(self.MAIN_WINDOW_WIDTH, self.MAIN_WINDOW_HEIGHT)
+        self.set_size_request(self._main_window_width, self._main_window_height)
+        self.set_default_size(self._main_window_width, self._main_window_height)
 
         geom = Gdk.Geometry()
-        geom.min_width = self.MAIN_WINDOW_WIDTH
-        geom.min_height = self.MAIN_WINDOW_HEIGHT
-        geom.max_width = self.MAIN_WINDOW_WIDTH
-        geom.max_height = self.MAIN_WINDOW_HEIGHT
-        geom.base_width = self.MAIN_WINDOW_WIDTH
-        geom.base_height = self.MAIN_WINDOW_HEIGHT
+        geom.min_width = self._main_window_width
+        geom.min_height = self._main_window_height
+        geom.max_width = self._main_window_width
+        geom.max_height = self._main_window_height
+        geom.base_width = self._main_window_width
+        geom.base_height = self._main_window_height
         geom.width_inc = 0
         geom.height_inc = 0
 
-        hints = Gdk.WindowHints.MIN_SIZE | Gdk.WindowHints.MAX_SIZE | Gdk.WindowHints.BASE_SIZE | Gdk.WindowHints.RESIZE_INC
+        hints = (Gdk.WindowHints.MIN_SIZE |
+                 Gdk.WindowHints.MAX_SIZE |
+                 Gdk.WindowHints.BASE_SIZE |
+                 Gdk.WindowHints.RESIZE_INC)
 
         self.set_geometry_hints(None, geom, hints)
 
-    def check_escape(self, widget, event, data=None):
+    def on_key_release(self, widget, event, data=None):
         """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
-        if event.keyval == 65307:
+        if event.keyval == Gdk.keyval_from_name('Escape'):
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:
                 self.on_exit_button_clicked(self)
@@ -408,8 +418,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.current_page = self.pages[next_page]
 
                 if self.current_page is not None:
-                    # if next_page == "user_info":
-                    #    self.del_pages()
                     self.current_page.prepare('forwards')
                     self.main_box.add(self.current_page)
                     if self.current_page.get_prev_page() is not None:

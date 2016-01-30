@@ -1,34 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  test_screen.py
+# test_screen.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Test screen (simulates main window to test a ui screen) """
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 
@@ -87,10 +89,15 @@ def get_screen(screen_name, params):
     elif screen_name == "InstallationAutomatic":
         import automatic
         screen = automatic.InstallationAutomatic(params)
+    elif screen_name == "zfs":
+        import zfs
+        screen = zfs.InstallationZFS(params)
     return screen
 
 
 def run(screen_name):
+    """ Run screen to be able to test it """
+
     window = Gtk.Window()
     window.connect('destroy', Gtk.main_quit)
     # window.set_size_request(600, 500)
@@ -121,7 +128,7 @@ def run(screen_name):
 
     params = {
         'title': "Cnchi",
-	'main_window': window,
+        'main_window': window,
         'ui_dir': "/usr/share/cnchi/ui",
         'disable_tryit': False,
         'settings': settings,
@@ -129,7 +136,6 @@ def run(screen_name):
         'backwards_button': Gtk.Button.new(),
         'main_progressbar': Gtk.ProgressBar.new(),
         'header': Gtk.HeaderBar.new(),
-        'testing': True,
         'callback_queue': None,
         'alternate_package_list': "",
         'process_list': []}

@@ -3,7 +3,7 @@
 #
 #  via.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -43,15 +43,18 @@ DEVICES = []
 
 
 class Via(Hardware):
+    """ VIA graphics driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["xf86-video-openchrome"]
 
     @staticmethod
     def post_install(dest_dir):
+        """ Post install commands """
         path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/10-via.conf")
         with open(path, 'w') as video:
             video.write('Section "Device"\n')
@@ -59,3 +62,8 @@ class Via(Hardware):
             video.write('\tDriver         "openchrome"\n')
             video.write('\tVendorName     "VIA"\n')
             video.write('EndSection\n')
+
+    @staticmethod
+    def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
+        return False

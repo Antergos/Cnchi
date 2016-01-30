@@ -1,10 +1,9 @@
 #!/usr/bin/bash
-
 # -*- coding: utf-8 -*-
 #
 #  postinstall.sh
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -419,12 +418,13 @@ postinstall() {
 }
 
 touch /tmp/.postinstall.lock
-echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6]" > /tmp/postinstall.log
+echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6] [$7]" > /tmp/postinstall.log
 CN_USER_NAME=$1
 CN_DESTDIR=$2
 CN_DESKTOP=$3
-CN_IS_VBOX=$4
-CN_KEYBOARD_LAYOUT=$5
-CN_KEYBOARD_VARIANT=$6
+CN_LOCALE=$4
+CN_IS_VBOX=$5
+CN_KEYBOARD_LAYOUT=$6
+CN_KEYBOARD_VARIANT=$7
 { postinstall; } >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock

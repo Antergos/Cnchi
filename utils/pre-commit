@@ -13,43 +13,42 @@
 # a file called CHANGES (under the title of the new version
 # number) and create a GIT tag.
 
-if [ -f src/info.py ]; then
-	INFO_PY="src/info.py"
-elif [ -f cnchi/info.py ]; then
-	INFO_PY="cnchi/info.py"
-else
-	INFO_PY="False"
-fi
+
+INFO_PY="cnchi/info.py"
 
 
-if [[ ${INFO_PY} != "False" ]]; then
+
+if [[ -e "${INFO_PY}" ]]; then
 	BASE_STRING=$(python ${INFO_PY})
-	BASE_LIST=($(echo $BASE_STRING | tr '.' ' ' ))
+	BASE_LIST=($(echo $BASE_STRING | tr '.' ' '))
 	V_MAJOR=${BASE_LIST[0]}
 	V_MINOR=${BASE_LIST[1]}
 	V_PATCH=${BASE_LIST[2]}
 	echo "Current version : $BASE_STRING"
-	if [[ $V_PATCH = '' ]]; then
-		V_PATCH=0
-	else
-		V_PATCH=$((V_PATCH + 1))
-	fi
+	V_PATCH=$((V_PATCH + 1))
 	SUGGESTED_VERSION="$V_MAJOR.$V_MINOR.$V_PATCH"
 
 	echo "Will set new version to be $SUGGESTED_VERSION"
 	sed -i "s|$BASE_STRING|$SUGGESTED_VERSION|g" ${INFO_PY}
-	git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.10.0"...HEAD > CHANGES
-	
-        python utils/generate_update_info.py
+	git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.12.0"...HEAD > CHANGES
 
-        git add CHANGES ${INFO_PY} update.info
-	#git commit -m "Version bump to $INPUT_STRING"
-	#git tag -a -m "Tagging version $INPUT_STRING" "v$INPUT_STRING"
-	#git push origin
+	echo "updating update.info..."
+	python utils/generate_update_info.py
+
+	echo "checking file permissions..."
+	utils/fix-permissions.sh
+
+	echo "checking for changes to pre-commit hook..."
+	if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
+		echo "updating pre-commit hook..."
+		cp utils/pre-commit .git/hooks
+	fi
+
+	git add CHANGES ${INFO_PY} update.info
+
 	exit 0;
 else
 	echo "Could not find a VERSION file"
+	exit 1;
 
 fi
-
-exit 1;

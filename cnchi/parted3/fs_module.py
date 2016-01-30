@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  fs_module.py
+# fs_module.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Functions to work with file systems """
@@ -33,14 +33,20 @@ import subprocess
 import shlex
 import logging
 import os
-import misc.misc as misc
+
+import misc.extra as misc
+
+from misc.run_cmd import call
 
 # constants
-NAMES = ['btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs', 'reiserfs', 'swap', 'xfs']
+NAMES = [
+    'btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs',
+    'reiserfs', 'swap', 'xfs']
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
 def get_uuid(part):
+    """ Get partition UUID """
     info = get_info(part)
     if "UUID" in info.keys():
         return info['UUID']
@@ -50,11 +56,14 @@ def get_uuid(part):
 
 
 def get_label(part):
+    """ Get partition label """
     info = get_info(part)
     if "LABEL" in info.keys():
         return info['LABEL']
     else:
-        logging.debug("Can't get partition %s label (or it does not have any)", part)
+        logging.debug(
+            "Can't get partition %s label (or it does not have any)",
+            part)
         return ""
 
 
@@ -66,10 +75,14 @@ def get_info(part):
     partdic = {}
     # Do not try to get extended partition info
     if part and not misc.is_partition_extended(part):
+        # -c /dev/null means no cache
+        cmd = ['blkid', '-c', '/dev/null', part]
+        call(cmd)
         try:
-            ret = subprocess.check_output(['blkid', '-c', '/dev/null', part]).decode().strip()
+
+            ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
-            logging.warning(err)
+            logging.warning("Error running %s: %s", err.cmd, err.output)
 
         for info in ret.split():
             if '=' in info:
@@ -88,7 +101,7 @@ def get_type(part):
             cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
-            logging.warning(err)
+            logging.warning("Error running %s: %s", err.cmd, err.output)
 
     return ret
 
@@ -101,7 +114,7 @@ def get_pknames():
         cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
         info = subprocess.check_output(cmd).decode().strip().split('\n')
     except subprocess.CalledProcessError as err:
-        logging.warning(err)
+        logging.warning("Error running %s: %s", err.cmd, err.output)
 
     if info:
         # skip header
@@ -148,7 +161,7 @@ def label_fs(fstype, part, label):
             result = subprocess.check_output(cmd).decode()
             ret = (0, result)
         except subprocess.CalledProcessError as err:
-            logging.error(err)
+            logging.error("Error running %s: %s", err.cmd, err.output)
             ret = (1, err)
             # check_call returns exit code.  0 should mean success
     else:
@@ -172,14 +185,17 @@ def create_fs(part, fstype, label='', other_opts=''):
     # or exception message error if failure
 
     if not fstype:
-        logging.error("Cannot make a filesystem of type None in partition %s", part)
-        return True, _("Cannot make a filesystem of type None in partition {0}").format(part)
+        msg = "Cannot make a filesystem of type None in partition %s"
+        logging.error(msg, part)
+        msg = _("Cannot make a filesystem of type None in partition {0}")
+        msg = msg.format(part)
+        return True, msg
 
     fstype = fstype.lower()
 
-    comdic = {'ext2': 'mkfs.ext2 -q',
-              'ext3': 'mkfs.ext3 -q',
-              'ext4': 'mkfs.ext4 -q',
+    comdic = {'ext2': 'mkfs.ext2 -F -q',
+              'ext3': 'mkfs.ext3 -F -q',
+              'ext4': 'mkfs.ext4 -F -q',
               'f2fs': 'mkfs.f2fs',
               'fat': 'mkfs.vfat -F 32',
               'fat16': 'mkfs.vfat -F 16',
@@ -193,11 +209,13 @@ def create_fs(part, fstype, label='', other_opts=''):
               'swap': 'mkswap'}
 
     if fstype not in comdic.keys():
-        return True, _("Unknown filesystem {0} for partition {1}").format(fstype, part)
+        msg = _("Unknown filesystem {0} for partition {1}")
+        msg = msg.format(fstype, part)
+        return True, msg
 
     cmd = comdic[fstype]
 
-    if len(label) > 0:
+    if label:
         lbldic = {'ext2': '-L "%(label)s"',
                   'ext3': '-L "%(label)s"',
                   'ext4': '-L "%(label)s"',
@@ -214,7 +232,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                   'swap': '-L "%(label)s"'}
         cmd += " " + lbldic[fstype]
 
-    if len(other_opts) == 0:
+    if not other_opts:
         default_opts = {'ext2': '-m 1',
                         'ext3': '-m 1 -O dir_index',
                         'ext4': '-m 1 -O dir_index',
@@ -231,7 +249,7 @@ def create_fs(part, fstype, label='', other_opts=''):
                         'swap': ''}
         other_opts = default_opts[fstype]
 
-    if len(other_opts) > 0:
+    if other_opts:
         cmd += " %(other_opts)s"
 
     cmd += " %(part)s"
@@ -241,7 +259,7 @@ def create_fs(part, fstype, label='', other_opts=''):
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error("Error running %s: %s", err.cmd, err.output)
         ret = (True, err)
     return ret
 
@@ -256,8 +274,8 @@ def is_ssd(disk_path):
         txt = "Cannot verify if {0} is a Solid State Drive or not".format(disk_path)
         logging.warning(txt)
         return False
-    with open(filename) as f:
-        return f.read() == "0\n"
+    with open(filename) as my_file:
+        return my_file.read() == "0\n"
 
 
 # To shrink a partition:
@@ -289,14 +307,15 @@ def resize(part, fs_type, new_size_in_mb):
 @misc.raise_privileges
 def resize_ntfs(part, new_size_in_mb):
     """ Resize a ntfs partition """
-    logging.debug("ntfsresize -P --size {0}M {1}".format(new_size_in_mb, part))
+    txt = "ntfsresize -P --size {0}M {1}".format(new_size_in_mb, part)
+    logging.debug(txt)
 
     try:
         cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
         result = subprocess.check_output(cmd)
         logging.debug(result)
-    except subprocess.CalledProcessError as process_error:
-        logging.error(process_error)
+    except subprocess.CalledProcessError as err:
+        logging.error("Error running %s: %s", err.cmd, err.output)
         return False
 
     return True
@@ -313,13 +332,14 @@ def resize_fat(part, new_size_in_mb):
 @misc.raise_privileges
 def resize_ext(part, new_size_in_mb):
     """ Resize an ext partition """
-    logging.debug("resize2fs {0} {1}M".format(part, new_size_in_mb))
+    txt = "resize2fs {0} {1}M".format(part, new_size_in_mb)
+    logging.debug(txt)
 
     try:
         cmd = ["resize2fs", part, "{0}M".format(new_size_in_mb)]
         result = subprocess.check_output(cmd)
     except subprocess.CalledProcessError as err:
-        logging.error(err)
+        logging.error("Error running %s: %s", err.cmd, err.output)
         return False
 
     logging.debug(result)

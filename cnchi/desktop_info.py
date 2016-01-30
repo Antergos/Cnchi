@@ -3,7 +3,7 @@
 #
 #  desktop_info.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -56,50 +56,43 @@ NAMES = {
     'enlightenment': "Enlightenment",
     'kde': "KDE",
     'lxqt': "LXQt",
-    'mate': "MATE"}
+    'mate': "MATE"
+}
 
 LIBS = {
     'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
     'qt': ["kde", "lxqt"]
 }
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
-                "visual", "firewall", "smb"]
+ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "firewall", "flash",
+                "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
+                "visual", "smb"]
 
-# Each desktop has its own available features
-# TODO: Rework and simplify features logic by only storing excluded features for each each desktop.
-FEATURES = {
-    'cinnamon': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                 "office", "smb"],
-    'gnome': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"
-    ],
-    'kde': [
-        "aur", "bluetooth", "cups", "firefox", "firewall", "fonts",
-        "games", "graphic_drivers", "lts", "office", "smb"
-    ],
-    'mate': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "lts", "office", "games", "graphic_drivers", "smb"],
-    'enlightenment': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                      "office", "smb"],
-    'base': ["aur", "cups", "fonts", "lamp", "lts"],
-    'openbox': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-                "office", "smb", "visual"],
-    'lxqt': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-             "office", "smb"],
-    'xfce': ["aur", "bluetooth", "cups", "firefox", "firewall", "fonts", "games", "graphic_drivers", "lts",
-             "office", "smb"]}
+# Not all desktops have all features
+EXCLUDED_FEATURES = {
+    'cinnamon': ["lamp", "visual"],
+    'gnome': ["lamp", "visual"],
+    'kde': ["lamp", "visual"],
+    'mate': ["lamp", "visual"],
+    'enlightenment': ["lamp", "visual"],
+    'base': ["bluetooth", "firefox", "firewall", "flash", "games",
+             "graphic_drivers", "office", "smb", "visual"],
+    'openbox': ["lamp"],
+    'lxqt': ["lamp", "visual"],
+    'xfce': ["lamp", "visual"]
+}
 
 # Session names for lightDM setup
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'gnome': 'gnome',
-    'kde': 'kde-plasma',
+    'kde': 'plasma',
     'mate': 'mate',
     'enlightenment': 'enlightenment',
     'openbox': 'openbox',
     'lxqt': 'lx-session',
-    'xfce': 'xfce'}
+    'xfce': 'xfce'
+}
 
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"

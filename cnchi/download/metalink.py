@@ -4,7 +4,7 @@
 #  metalink.py
 #
 #  Code from pm2ml Copyright (C) 2012-2013 Xyne
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -111,10 +111,10 @@ def create(alpm, package_name, pacman_conf_file):
 
     try:
         download_queue, not_found, missing_deps = build_download_queue(alpm, args=options)
-    except Exception as build_error:
-        msg = "Unable to create download queue for package {0}".format(package_name)
-        logging.error(msg)
-        logging.exception(build_error)
+    except Exception as ex:
+        template = "Unable to create download queue for package {0}. An exception of type {1} occured. Arguments:\n{2!r}"
+        message = template.format(package_name, type(ex).__name__, ex.args)
+        logging.error(message)
         return None
 
     if not_found:
@@ -136,16 +136,17 @@ def create(alpm, package_name, pacman_conf_file):
     return metalink
 
 
-# From here comes modified code from pm2ml
-# pm2ml is Copyright (C) 2012-2013 Xyne
-# More info: http://xyne.archlinux.ca/projects/pm2ml
+""" From here comes modified code from pm2ml
+    pm2ml is Copyright (C) 2012-2013 Xyne
+    More info: http://xyne.archlinux.ca/projects/pm2ml """
 
 
 def download_queue_to_metalink(download_queue):
+    """ Converts a download_queue object to a metalink """
     metalink = Metalink()
 
-    for db, sigs in download_queue.dbs:
-        metalink.add_db(db, sigs)
+    for database, sigs in download_queue.dbs:
+        metalink.add_db(database, sigs)
 
     for pkg, urls, sigs in download_queue.sync_pkgs:
         metalink.add_sync_pkg(pkg, urls, sigs)
@@ -154,6 +155,7 @@ def download_queue_to_metalink(download_queue):
 
 
 class Metalink(object):
+    """ Metalink class """
     def __init__(self):
         self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
         self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
@@ -163,6 +165,7 @@ class Metalink(object):
     #    self.doc.unlink()
 
     def __str__(self):
+        """ Get a string representation of a metalink """
         return re.sub(
             r'(?<=>)\n\s*([^\s<].*?)\s*\n\s*',
             r'\1',
@@ -224,6 +227,7 @@ class PkgSet(object):
 
     def __init__(self, pkgs=None):
         """ Init our internal self.pkgs dict with all given packages in pkgs """
+
         self.pkgs = dict()
         if pkgs:
             for pkg in pkgs:
@@ -317,8 +321,8 @@ def build_download_queue(alpm, args=None):
     try:
         conf_file = pargs.conf
         alpm = pac.Pac(conf_path=conf_file, callback_queue=None)
-    except Exception as err:
-        logging.error("Can't initialize pyalpm: %s", err)
+    except Exception as ex:
+        logging.error("Can't initialize pyalpm: %s", ex)
         return None, None, None
     '''
 
@@ -438,20 +442,19 @@ def needs_sig(siglevel, insistence, prefix):
     """ Determines if a signature should be downloaded.
         The siglevel is the pacman.conf SigLevel for the given repo.
         The insistence is an integer. Anything below 1 will return false,
-            anything above 1 will return true, and 1 will check if the
-            siglevel is required or optional.
+        anything above 1 will return true, and 1 will check if the
+        siglevel is required or optional.
         The prefix is either "Database" or "Package". """
+
     if insistence > 1:
         return True
     elif insistence == 1 and siglevel:
-        for sl in ('Required', 'Optional'):
-            if siglevel == sl or siglevel == prefix + sl:
+        for sl_type in ('Required', 'Optional'):
+            if siglevel == sl_type or siglevel == prefix + sl_type:
                 return True
     return False
 
-
-''' Test case '''
-if __name__ == '__main__':
+def test():
     import gettext
 
     _ = gettext.gettext
@@ -471,19 +474,29 @@ if __name__ == '__main__':
     import cnchi.pacman.pac as pac
 
     try:
-        pacman = pac.Pac(conf_path="/etc/pacman.conf", callback_queue=None)
+        pacman = pac.Pac(
+            conf_path="/etc/pacman.conf",
+            callback_queue=None)
 
-        for i in range(1, 10000):
+        for index in range(1, 10000):
             print("Creating metalink...")
-            meta4 = create(alpm=pacman, package_name="gnome", pacman_conf_file="/etc/pacman.conf")
+            meta4 = create(
+                alpm=pacman,
+                package_name="gnome",
+                pacman_conf_file="/etc/pacman.conf")
             print(get_info(meta4))
             meta4 = None
-            n = gc.collect()
-            print("Unreachable objects: ", n)
+            objects = gc.collect()
+            print("Unreachable objects: ", objects)
             print("Remaining garbage: ", pprint.pprint(gc.garbage))
 
         pacman.release()
         del pacman
+    except Exception as ex:
+        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        logging.error(message)
 
-    except Exception as err:
-        logging.error("Can't initialize pyalpm: %s", err)
+''' Test case '''
+if __name__ == '__main__':
+    test()

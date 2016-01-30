@@ -5,7 +5,7 @@
 #  Copyright (C) 2010 Canonical Ltd.
 #  Written by Evan Dandrea <evan.dandrea@canonical.com>
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@
 
 import dbus
 
-from misc import misc, nm
+import misc.extra as misc
+import misc.nm as nm
+
 from gtkbasebox import GtkBaseBox
 
 

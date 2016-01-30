@@ -1,25 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  tz.py
+# tz.py
 #
-#  Copyright (C) 2006, 2007 Canonical Ltd.
-#  Written by Colin Watson <cjwatson@ubuntu.com>.
-#  New modifications Copyright © 2013-2015 Antergos
+# Copyright (C) 2006, 2007 Canonical Ltd.
+# Written by Colin Watson <cjwatson@ubuntu.com>.
+# New modifications Copyright © 2013-2016 Antergos
 #
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+""" Timezone and location information (used by timezonemap)"""
 
 from __future__ import print_function
 
@@ -28,7 +30,6 @@ import datetime
 import time
 import xml.dom.minidom
 import hashlib
-import sys
 import logging
 
 from gi.repository import GObject, GLib
@@ -37,16 +38,18 @@ TZ_DATA_FILE = '/usr/share/zoneinfo/zone.tab'
 ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
 
 
-def _seconds_since_epoch(dt):
+def _seconds_since_epoch(my_datetime):
     # TODO cjwatson 2006-02-23: %s escape is not portable
-    return int(dt.replace(tzinfo=None).strftime('%s'))
+    return int(my_datetime.replace(tzinfo=None).strftime('%s'))
 
 
 class SystemTzInfo(datetime.tzinfo):
+    """ Class that represents current timezone info """
     def __init__(self, tz=None):
         self.tz = tz
 
     def _select_tz(self):
+        """ Select timezone """
         tzbackup = None
         if 'TZ' in os.environ:
             tzbackup = os.environ['TZ']
@@ -57,6 +60,7 @@ class SystemTzInfo(datetime.tzinfo):
 
     @staticmethod
     def _restore_tz(tzbackup):
+        """ Restore timezone """
         if tzbackup is None:
             if 'TZ' in os.environ:
                 del os.environ['TZ']
@@ -65,30 +69,33 @@ class SystemTzInfo(datetime.tzinfo):
         time.tzset()
 
     def utcoffset(self, dt):
+        """ Get utc offset (taking dst into account) """
         tzbackup = self._select_tz()
         try:
             if time.daylight == 0:
-                # no DST information
-                dstminutes = -time.timezone / 60
+                # no Daylight Saving Time (DST) information
+                dst_minutes = -time.timezone / 60
             else:
                 localtime = time.localtime(_seconds_since_epoch(dt))
                 if localtime.tm_isdst != 1:
                     # not in DST
-                    dstminutes = -time.timezone / 60
+                    dst_minutes = -time.timezone / 60
                 else:
                     # in DST
-                    dstminutes = -time.altzone / 60
-            return datetime.timedelta(minutes=int(dstminutes))
+                    dst_minutes = -time.altzone / 60
+            return datetime.timedelta(minutes=int(dst_minutes))
         finally:
             self._restore_tz(tzbackup)
 
     def get_daylight(self):
+        """ Get daylight """
         tzbackup = self._select_tz()
         daylight = time.daylight
         self._restore_tz(tzbackup)
         return daylight
 
     def is_dst(self, dt):
+        """ Are we in DST? """
         tzbackup = self._select_tz()
         localtime = time.localtime(_seconds_since_epoch(dt))
         isdst = localtime.tm_isdst
@@ -96,14 +103,16 @@ class SystemTzInfo(datetime.tzinfo):
         return isdst
 
     def rawutcoffset(self, unused_dt):
+        """ Get UTC offset """
         tzbackup = self._select_tz()
         try:
-            dstminutes = -time.timezone / 60
-            return datetime.timedelta(minutes=int(dstminutes))
+            dst_minutes = -time.timezone / 60
+            return datetime.timedelta(minutes=int(dst_minutes))
         finally:
             self._restore_tz(tzbackup)
 
     def dst(self, dt):
+        """ Get Daylight Saving Time delta """
         tzbackup = self._select_tz()
         try:
             if time.daylight == 0:
@@ -116,24 +125,27 @@ class SystemTzInfo(datetime.tzinfo):
                     # not in DST
                     return datetime.timedelta(0)
                 else:
-                    dstminutes = (time.timezone - time.altzone) / 60
-                    return datetime.timedelta(minutes=int(dstminutes))
+                    dst_minutes = (time.timezone - time.altzone) / 60
+                    return datetime.timedelta(minutes=int(dst_minutes))
         finally:
             self._restore_tz(tzbackup)
 
     def tzname(self, unused_dt):
+        """ Return timezone """
         return self.tz
 
-    def tzname_letters(self, dt):
+    def tzname_letters(self, my_datetime):
+        """ Get localtime """
         tzbackup = self._select_tz()
         try:
-            localtime = time.localtime(_seconds_since_epoch(dt))
+            localtime = time.localtime(_seconds_since_epoch(my_datetime))
             return time.strftime('%Z', localtime)
         finally:
             self._restore_tz(tzbackup)
 
 
 class Iso3166(object):
+    """ Read Iso 3166 xml file """
     def __init__(self):
         self.names = {}
         document = xml.dom.minidom.parse(ISO_3166_FILE)
@@ -141,10 +153,12 @@ class Iso3166(object):
         self.handle_entries(entries)
 
     def handle_entries(self, entries):
+        """ Handle file entries """
         for entry in entries.getElementsByTagName('iso_3166_entry'):
             self.handle_entry(entry)
 
     def handle_entry(self, entry):
+        """ Handle a file entry """
         if (entry.hasAttribute('alpha_2_code') and
                 (entry.hasAttribute('common_name') or
                  entry.hasAttribute('name'))):
@@ -174,23 +188,32 @@ def _parse_position(position, wholedigits):
 
 
 class Location(object):
+    """ Class to store a location """
     __gtype_name__ = "Location"
     __gproperties__ = {
-        'zone': (GObject.TYPE_STRING, 'zone', None, 'zone', GObject.ParamFlags.READWRITE),
-        'latitude': (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0, GLib.MAXFLOAT, 1, GObject.ParamFlags.READWRITE),
-        'longitude': (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0, GLib.MAXFLOAT, 1, GObject.ParamFlags.READWRITE),
-        'human_country': (GObject.TYPE_STRING, 'human_country', None, 'human_country', GObject.ParamFlags.READWRITE)}
+        'zone': (GObject.TYPE_STRING, 'zone', None, 'zone',
+                 GObject.ParamFlags.READWRITE),
+        'latitude': (GObject.TYPE_FLOAT, 'latitude', 'latitude', 0,
+                     GLib.MAXFLOAT, 1, GObject.ParamFlags.READWRITE),
+        'longitude': (GObject.TYPE_FLOAT, 'longitude', 'longitude', 0,
+                      GLib.MAXFLOAT, 1, GObject.ParamFlags.READWRITE),
+        'human_country': (GObject.TYPE_STRING, 'human_country', None, 'human_country',
+                          GObject.ParamFlags.READWRITE)}
 
     def get_info(self):
+        """ Get location info """
         return self.info
 
     def is_dst(self):
+        """ Is DST on """
         return self.isdst
 
     def get_utc_offset(self):
+        """ Get UTC offset (checks DST)"""
         return self.utc_offset
 
     def get_raw_utc_offset(self):
+        """ Get UTC offset """
         return self.raw_utc_offset
 
     def __init__(self, zonetab_line, iso3166):
@@ -247,13 +270,16 @@ class Location(object):
         self.isdst = self.info.is_dst(today)
 
     def get_property(self, prop):
+        """ Get object property (see above) """
         return getattr(self, prop)
 
     def set_property(self, prop, value):
+        """ Set object property (see above) """
         setattr(self, prop, value)
 
 
 class _Database(object):
+    """ Store all ISO 3166 information """
     def __init__(self):
         self.locations = []
         iso3166 = Iso3166()
@@ -275,6 +301,7 @@ class _Database(object):
                 self.cc_to_locs[loc.country] = [loc]
 
     def get_loc(self, tz):
+        """ Get timezone's location """
         try:
             return self.tz_to_loc[tz]
         except:
@@ -300,6 +327,7 @@ class _Database(object):
             return None
 
     def get_locations(self):
+        """ Return all locations """
         return self.locations
 
 
@@ -307,6 +335,7 @@ _database = None
 
 
 def Database():
+    """ Class to store a timezone/location database globaly """
     global _database
     if not _database:
         _database = _Database()

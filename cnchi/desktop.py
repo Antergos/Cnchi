@@ -3,7 +3,7 @@
 #
 #  desktop.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,13 +29,16 @@
 
 """ Desktop screen """
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
 import os
 import logging
 
 import desktop_info
-import misc.misc as misc
 from gtkbasebox import GtkBaseBox
+
+import misc.extra as misc
 
 
 class DesktopAsk(GtkBaseBox):
@@ -97,7 +100,9 @@ class DesktopAsk(GtkBaseBox):
                 if icon_exists:
                     self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
                 else:
-                    self.icon_desktop_image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
+                    self.icon_desktop_image = Gtk.Image.new_from_icon_name(
+                        "image-missing",
+                        Gtk.IconSize.DIALOG)
 
             overlay = self.ui.get_object("image_overlay")
             overlay.add_overlay(self.icon_desktop_image)
@@ -141,7 +146,9 @@ class DesktopAsk(GtkBaseBox):
                     if os.path.exists(icon_path):
                         image = Gtk.Image.new_from_file(icon_path)
                     else:
-                        image = Gtk.Image.new_from_icon_name("image-missing", Gtk.IconSize.LARGE_TOOLBAR)
+                        image = Gtk.Image.new_from_icon_name(
+                            "image-missing",
+                            Gtk.IconSize.LARGE_TOOLBAR)
                 box.pack_start(image, False, False, 2)
 
                 label = Gtk.Label()
@@ -157,7 +164,8 @@ class DesktopAsk(GtkBaseBox):
     def listbox_sort_by_name(row1, row2, user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
-            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE
+            CHANGED ACCORDINGLY. """
         box1 = row1.get_child()
         label1 = box1.get_children()[1]
 
@@ -177,7 +185,8 @@ class DesktopAsk(GtkBaseBox):
 
     def select_default_row(self, desktop_name):
         """ Selects default row
-            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE
+            CHANGED ACCORDINGLY. """
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[1]
@@ -195,7 +204,8 @@ class DesktopAsk(GtkBaseBox):
 
     def on_listbox_row_selected(self, listbox, listbox_row):
         """ Someone selected a different row of the listbox
-            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+            WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE
+            CHANGED ACCORDINGLY. """
         if listbox_row is not None:
             for vbox in listbox_row:
                 label = vbox.get_children()[1]
@@ -205,7 +215,9 @@ class DesktopAsk(GtkBaseBox):
     def store_values(self):
         """ Store desktop """
         self.settings.set('desktop', self.desktop_choice.lower())
-        logging.info("Cnchi will install Antergos with the '%s' desktop", self.desktop_choice.lower())
+        logging.info(
+            "Cnchi will install Antergos with the '%s' desktop",
+            self.desktop_choice.lower())
         return True
 
     @staticmethod

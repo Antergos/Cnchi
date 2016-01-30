@@ -1,47 +1,47 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  summary.py
+# summary.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Summary screen (last chance for the user) """
 
 
-from gi.repository import Gtk, GLib
-import subprocess
-import os
 import logging
 
-import misc.misc as misc
-import misc.gtkwidgets as gtkwidgets
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 import desktop_info
 import features_info
 from gtkbasebox import GtkBaseBox
-
 from installation.process import Process
+
+from misc.extra import InstallError
 
 import show_message as show
 
@@ -61,6 +61,9 @@ class Summary(GtkBaseBox):
         super().__init__(self, params, "summary", prev_page, next_page)
 
         self.main_window = params['main_window']
+
+        if not self.main_window:
+            raise InstallError("Can't get main window")
 
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
@@ -121,7 +124,8 @@ class Summary(GtkBaseBox):
         self.num_features = 0
         for feature in features_info.TITLES:
             if self.settings.get("feature_" + feature):
-                txt += "{0}\n".format(features_info.TITLES[feature])
+                feature_title = _(features_info.TITLES[feature])
+                txt += "{0}\n".format(feature_title)
                 self.num_features += 1
         txt = txt[:-1]
         statebox.set_property("label", txt)
@@ -129,20 +133,33 @@ class Summary(GtkBaseBox):
         # Partitions
         install_screen = self.get_install_screen()
         if install_screen:
-            changes = install_screen.get_changes()
-            statebox = self.ui.get_object("partitions_statebox")
             txt = ""
-            for action in changes:
-                txt += "{0}\n".format(str(action))
-            txt = txt[:-1]
-            statebox.set_property("label", txt)
+            statebox = self.ui.get_object("partitions_statebox")
+            changes = install_screen.get_changes()
+            if changes == None or len(changes) == 0:
+                txt = _("Error getting changes from install screen")
+                logging.error("Error getting changes from install screen")
+            else:
+                for action in changes:
+                    txt += "{0}\n".format(_(str(action)))
+                txt = txt[:-1]
+        else:
+            txt = _("Error getting changes from install screen")
+            logging.error("Error getting changes from install screen")
+
+        statebox.set_property("label", txt)
 
     def get_install_screen(self):
+        """ Returns installation screen page """
         page = "installation_" + self.settings.get('partition_mode')
+        install_screen = None
         try:
             install_screen = self.main_window.pages[page]
-        except AttributeError:
-            install_screen = None
+        except (AttributeError, KeyError) as page_error:
+            msg = "Can't find installation page called {0}: {1}"
+            msg = msg.format(page, page_error)
+            logging.error(msg)
+            raise InstallError(msg)
         return install_screen
 
     def prepare(self, direction):
@@ -156,33 +173,34 @@ class Summary(GtkBaseBox):
 
         # Hide features statebox if no features are selected
         if self.num_features == 0:
-            statebox = self.ui.get_object("features_statebox")
-            statebox.hide()
-            label = self.ui.get_object("features_label")
-            label.hide()
+            names = ["features_statebox", "features_label"]
+            for name in names:
+                widget = self.ui.get_object(name)
+                widget.hide()
 
     def store_values(self):
-        response = show.question(
-            self.get_toplevel(),
-            _("Are you REALLY sure you want to continue?"))
+        """ User wants to continue """
+        parent = self.get_toplevel()
+        msg = _("Are you REALLY sure you want to continue?")
+
+        try:
+            response = show.question(parent, msg)
+        except TypeError as ex:
+            response = show.question(None, msg)
+
         if response != Gtk.ResponseType.YES:
             return False
+
         install_screen = self.get_install_screen()
         self.process = Process(install_screen, self.settings, self.callback_queue)
         self.process.start()
         return True
 
     def get_prev_page(self):
+        """ Gets previous page """
         page = "installation_" + self.settings.get('partition_mode')
         return page
 
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
 
 if __name__ == '__main__':
     from test_screen import _, run

@@ -3,7 +3,7 @@
 #
 #  etouchscreen.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -48,16 +48,22 @@ DEVICES = ['0x0001']
 
 
 class ETouchScreen(Hardware):
+    """ eGalax Touch Screen driver """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["xinput_calibrator", "xournal"]
 
     @staticmethod
     def post_install(dest_dir):
-        subprocess.check_call(["rmmod", "usbtouchscreen"])
+        """ Post install commands """
+        try:
+            subprocess.check_call(["rmmod", "usbtouchscreen"])
+        except subprocess.CalledProcessError as err:
+            pass
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
         path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")
         with open(path, 'w') as conf_file:

@@ -3,7 +3,7 @@
 #
 #  catalyst.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #  Based on code by Wayne Hartmann
@@ -42,6 +42,9 @@ CLASS_ID = "0x03"
 VENDOR_ID = "0x1002"
 # Give this driver more priority so it is chosen instead of catalyst-legacy
 PRIORITY = 1
+
+# Disable this driver
+ENABLED = False
 
 """
 Since Catalyst 12.4, AMD has separated its development for Radeon HD 2xxx,
@@ -100,11 +103,13 @@ DEVICES = [
     "0x6784", "0x6788", "0x678a", "0x692f", "0x692b", "0x6929", "0x68f2"]
 
 class Catalyst(Hardware):
+    """ AMD ATI Catalyst graphics driver """
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         pkgs = ["catalyst-hook", "catalyst-libgl", "catalyst-utils", "acpid", "qt4"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-catalyst-libgl", "lib32-catalyst-utils", "lib32-opencl-catalyst"])
@@ -113,44 +118,49 @@ class Catalyst(Hardware):
     @staticmethod
     def add_repositories(path):
         """ Adds [xorg116] and [catalyst] repos to pacman.conf """
+        txt = (
+            "[xorg116]\n"
+            "Server = http://catalyst.wirephire.com/repo/xorg116/$arch\n"
+            "SigLevel = Optional TrustAll\n"
+            "## Mirrors, if the primary server does not work or is too slow:\n"
+            "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg116/$arch\n"
+            "#Server = http://mirror.hactar.bz/Vi0L0/xorg116/$arch\n\n"
+            "[catalyst]\n"
+            "Server = http://catalyst.wirephire.com/repo/catalyst/$arch\n"
+            "SigLevel = Optional TrustAll\n"
+            "## Mirrors, if the primary server does not work or is too slow:\n"
+            "#Server = http://70.239.162.206/catalyst-mirror/repo/catalyst/$arch\n"
+            "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/catalyst/$arch\n"
+            "#Server = http://mirror.hactar.bz/Vi0L0/catalyst/$arch\n\n")
+
         with open(path, 'r') as pacman_conf:
             lines = pacman_conf.readlines()
         with open(path, "w") as pacman_conf:
             for line in lines:
                 # xorg11x needs to be present before core repository
                 if "[core]" in line:
-                    line = "[xorg116]\n"
-                    line += "Server = http://catalyst.wirephire.com/repo/xorg116/$arch\n"
-                    line += "SigLevel = Optional TrustAll\n"
-                    line += "## Mirrors, if the primary server does not work or is too slow:\n"
-                    line += "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/xorg116/$arch\n"
-                    line += "#Server = http://mirror.hactar.bz/Vi0L0/xorg116/$arch\n\n"
-                    line += "[catalyst]\n"
-                    line += "Server = http://catalyst.wirephire.com/repo/catalyst/$arch\n"
-                    line += "SigLevel = Optional TrustAll\n"
-                    line += "## Mirrors, if the primary server does not work or is too slow:\n"
-                    line += "#Server = http://70.239.162.206/catalyst-mirror/repo/catalyst/$arch\n"
-                    line += "#Server = http://mirror.rts-informatique.fr/archlinux-catalyst/repo/catalyst/$arch\n"
-                    line += "#Server = http://mirror.hactar.bz/Vi0L0/catalyst/$arch\n\n"
-                    line += "[core]\n"
+                    line = txt + "[core]\n"
                 pacman_conf.write(line)
 
     def pre_install(self, dest_dir):
+        """ Pre install commands """
         # Catalyst needs an extra repository and a downgraded Xorg
         # Cnchi uses /tmp/pacman.conf to do the installation
         self.add_repositories("/tmp/pacman.conf")
 
     def post_install(self, dest_dir):
+        """ Post install commands """
         # Add repos to user's pacman.conf
         path = os.path.join(dest_dir, "etc/pacman.conf")
         self.add_repositories(path)
 
-        super().chroot(["systemctl", "enable", "atieventsd"])
-        super().chroot(["systemctl", "enable", "catalyst-hook"])
-        super().chroot(["systemctl", "enable", "temp-links-catalyst"])
+        Hardware.chroot(["systemctl", "enable", "atieventsd"])
+        Hardware.chroot(["systemctl", "enable", "catalyst-hook"])
+        Hardware.chroot(["systemctl", "enable", "temp-links-catalyst"])
 
-        super().chroot(["aticonfig", "--initial"], dest_dir)
+        Hardware.chroot(["aticonfig", "--initial"], dest_dir)
 
     @staticmethod
     def is_proprietary():
+        """ Returns True if the driver is a proprietary one """
         return True

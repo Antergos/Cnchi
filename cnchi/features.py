@@ -3,7 +3,7 @@
 #
 #  features.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -28,13 +28,16 @@
 
 
 """ Features screen """
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
 import subprocess
 import logging
 import desktop_info
 import features_info
-import misc.misc as misc
+
+import misc.extra as misc
 
 from gtkbasebox import GtkBaseBox
 
@@ -76,11 +79,11 @@ class Features(GtkBaseBox):
         from hardware.nvidia import Nvidia
         if Nvidia().detect():
             return True
-        from hardware.nvidia_340xx import Nvidia_340xx
-        if Nvidia_340xx().detect():
+        from hardware.nvidia_340xx import Nvidia340xx
+        if Nvidia340xx().detect():
             return True
-        from hardware.nvidia_304xx import Nvidia_304xx
-        if Nvidia_304xx().detect():
+        from hardware.nvidia_304xx import Nvidia304xx
+        if Nvidia304xx().detect():
             return True
         return False
 
@@ -107,12 +110,12 @@ class Features(GtkBaseBox):
 
         # Only add graphic-driver feature if an AMD or Nvidia is detected
         # FIXME: Conflict between lib32-nvidia-libgl and lib32-mesa-libgl
-        #if "graphic_drivers" in self.features:
-        #    if not self.amd_detected() and not self.nvidia_detected():
-        #        logging.debug("Neither nvidia nor amd have been detected. Removing proprietary graphic driver feature")
-        #        self.features.remove("graphic_drivers")
         if "graphic_drivers" in self.features:
-            self.features.remove("graphic_drivers")
+            if not self.amd_detected() and not self.nvidia_detected():
+                logging.debug("Neither NVidia nor AMD have been detected.")
+                self.features.remove("graphic_drivers")
+        #if "graphic_drivers" in self.features:
+        #    self.features.remove("graphic_drivers")
 
         for feature in self.features:
             box = Gtk.Box(spacing=20)
@@ -170,7 +173,8 @@ class Features(GtkBaseBox):
     def listbox_sort_by_name(row1, row2, user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
-            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
+            WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE
+            CHANGED ACCORDINGLY. """
         box1 = row1.get_child()
         txt_box1 = box1.get_children()[1]
         label1 = txt_box1.get_children()[0]
@@ -226,15 +230,20 @@ class Features(GtkBaseBox):
         if 'bluetooth' in self.features:
             try:
                 process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
-                process2 = subprocess.Popen(["grep", "-i", "bluetooth"], stdin=process1.stdout, stdout=subprocess.PIPE)
+                process2 = subprocess.Popen(
+                    ["grep", "-i", "bluetooth"],
+                    stdin=process1.stdout,
+                    stdout=subprocess.PIPE)
                 process1.stdout.close()
                 out, process_error = process2.communicate()
                 if out.decode() is not '':
                     row = self.listbox_rows['bluetooth']
                     row[COL_SWITCH].set_active(True)
-            except subprocess.CalledProcessError as process_error:
-                logging.warning("Error checking bluetooth presence. Command %s failed: %s",
-                                process_error.cmd, process_error.output)
+            except subprocess.CalledProcessError as err:
+                logging.warning(
+                    "Error checking bluetooth presence. Command %s failed: %s",
+                    err.cmd,
+                    err.output)
 
         if 'cups' in self.features:
             row = self.listbox_rows['cups']
@@ -266,7 +275,7 @@ class Features(GtkBaseBox):
         # LAMP: Ask user if he wants Apache or Nginx
         if self.settings.get("feature_lamp"):
             info = Gtk.MessageDialog(
-                transient_for=self.get_toplevel(),
+                transient_for=self.get_main_window(),
                 modal=True,
                 destroy_with_parent=True,
                 message_type=Gtk.MessageType.INFO,
@@ -297,15 +306,17 @@ class Features(GtkBaseBox):
             # Ufw rules info
             txt1 = _("Uncomplicated Firewall will be installed with these rules:")
             toallow = misc.get_network()
-            txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\nufw allow SSH").format(toallow)
+            txt2 = _("ufw default deny\nufw allow from {0}\nufw allow Transmission\n"
+                     "ufw allow SSH").format(toallow)
         else:
-            txt1 = txt2 = ""
+            # No message
+            return
 
         txt1 = "<big>{0}</big>".format(txt1)
         txt2 = "<i>{0}</i>".format(txt2)
 
         info = Gtk.MessageDialog(
-            transient_for=self.get_toplevel(),
+            transient_for=self.get_main_window(),
             modal=True,
             destroy_with_parent=True,
             message_type=Gtk.MessageType.INFO,
@@ -319,7 +330,9 @@ class Features(GtkBaseBox):
         """ Prepare features screen to get ready to show itself """
         # Each desktop has its own features
         desktop = self.settings.get('desktop')
-        self.features = desktop_info.FEATURES[desktop]
+        self.features = list(
+            set(desktop_info.ALL_FEATURES) -
+            set(desktop_info.EXCLUDED_FEATURES[desktop]))
         self.fill_listbox()
         self.translate_ui()
         self.show_all()

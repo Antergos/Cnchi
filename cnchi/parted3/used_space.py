@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  used_space.py
+# used_space.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Get partition used space """
@@ -33,7 +33,7 @@ import subprocess
 import shlex
 import logging
 
-import misc.misc as misc
+import misc.extra as misc
 
 
 @misc.raise_privileges
@@ -49,18 +49,14 @@ def get_used_ntfs(part):
         logging.error(err)
 
     if result:
-        csize, vsize, fsize = (0, 0, 0)
+        vsize, fsize = (0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
-            if 'Cluster Size:' in line:
-                # csize = int(line.split(':')[-1].strip())
-                pass
-            elif 'Volume Size in Clusters' in line:
+            if 'Volume Size in Clusters' in line:
                 vsize = int(line.split(':')[-1].strip())
             elif 'Free Clusters:' in line:
                 fsize = int(line.strip().split()[2])
-        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
 
@@ -78,7 +74,7 @@ def get_used_ext(part):
         logging.error(err)
 
     if result:
-        csize, vsize, fsize = (0, 0, 0)
+        vsize, fsize = (0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
@@ -86,10 +82,6 @@ def get_used_ext(part):
                 vsize = int(line.split(':')[-1].strip())
             elif "Free blocks:" in line:
                 fsize = int(line.split(':')[-1].strip())
-            elif "Block size:" in line:
-                # csize = int(line.split(':')[-1].strip())
-                pass
-        # FIXME: Is this ok? csize is never used!
         used = (vsize - fsize) / vsize
     return used
 
@@ -99,32 +91,32 @@ def get_used_fat(part):
     """ Gets used space in a FAT partition """
     used = 0
     try:
-        result = subprocess.check_output(["dosfsck", "-n", "-v", part])
+        result = subprocess.check_output(["fsck.fat", "-n", "-v", part])
     except subprocess.CalledProcessError as err:
         if b'Dirty bit is set' in err.output:
             result = err.output
         else:
             result = None
-            txt = _("Can't detect used space of FAT partition %s")
-            logging.error(txt, part)
-            logging.error(err)
+            txt = _("Can't detect used space of FAT partition %s : %s")
+            logging.error(txt, part, str(err.output))
 
     if result:
-        bperc = 0
-        cl = 0
-        sbyte = 0
-        ucl = 0
+        bytes_per_cluster, cluster, sbyte, ucl = (0, 0, 0, 0)
         result = result.decode()
         lines = result.split('\n')
         for line in lines:
-            if 'bytes per cluster' in line:
-                bperc = int(line.split()[0].strip())
+            if 'bytes per ' in line:
+                bytes_per_cluster = int(line.split()[0].strip())
             elif 'Data area starts at' in line:
                 sbyte = int(line.split()[5])
             elif part in line:
-                cl = int(line.split()[3].split('/')[1])
+                cluster = int(line.split()[3].split('/')[1])
                 ucl = int(line.split()[3].split('/')[0])
-        used = (sbyte + (bperc * ucl)) / (bperc * cl)
+        try:
+            used = (sbyte + (bytes_per_cluster * ucl)) / (bytes_per_cluster * cluster)
+        except ZeroDivisionError as zero_error:
+            logging.error("Error in get_used_fat: %s", zero_error)
+
     return used
 
 
@@ -150,6 +142,7 @@ def get_used_jfs(part):
             elif "kilobytes are available for use" in line:
                 fsize = int(line.split()[0].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
@@ -178,6 +171,7 @@ def get_used_reiser(part):
             elif "Free blocks (count of blocks" in line:
                 fsize = int(line.split()[-1].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
@@ -187,11 +181,13 @@ def get_used_btrfs(part):
     used = 0
     try:
         result = subprocess.check_output(["btrfs", "filesystem", "show", part])
-    except Exception as err:
+    except Exception as ex:
         result = None
-        txt = _("Can't detect used space of BTRFS partition %s")
-        logging.error(txt, part)
-        logging.error(err)
+        logging.error("Can't detect used space of BTRFS partition %s: %s", part, err)
+        template = "An exception of type {0} occured. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        logging.error(message)
+
 
     if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)
@@ -202,18 +198,19 @@ def get_used_btrfs(part):
                  "G": 1000000000,
                  "T": 1000000000000,
                  "P": 1000000000000000}
-        for z in result:
-            if part in z:
-                vsize = z.split()[3]
-                usize = z.split()[5]
-                for i in szmap:
-                    if i in vsize:
-                        vmult = szmap[i]
-                    if i in usize:
-                        umult = szmap[i]
+        for params in result:
+            if part in params:
+                vsize = params.split()[3]
+                usize = params.split()[5]
+                for element in szmap:
+                    if element in vsize:
+                        vmult = szmap[element]
+                    if element in usize:
+                        umult = szmap[element]
                 usize = float(usize.strip("KMGTPBib")) * umult
                 vsize = float(vsize.strip("KMGTPBib")) * vmult
-        used = usize / vsize
+        used = int(usize / vsize)
+
     return used
 
 
@@ -222,8 +219,9 @@ def get_used_xfs(part):
     """ Gets used space in a XFS partition """
     used = 0
     try:
-        command = shlex.split("xfs_db -c 'sb 0' -c 'print dblocks' -c 'print fdblocks' -r {0}".format(part))
-        result = subprocess.check_output(command)
+        cmd = "xfs_db -c 'sb 0' -c 'print dblocks' -c 'print fdblocks' -r {0}"
+        cmd = cmd.format(part)
+        result = subprocess.check_output(shlex.split(cmd))
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of XFS partition %s")
@@ -240,11 +238,13 @@ def get_used_xfs(part):
             elif "dblocks" in line:
                 vsize = int(line.split()[-1].strip())
         used = (vsize - fsize) / vsize
+
     return used
 
 
 @misc.raise_privileges
 def get_used_f2fs(part):
+    """ Get f2fs partition used space """
     # TODO: Use a f2fs installation to check the output format when getting part info.
     used = 0
     return used
@@ -282,4 +282,5 @@ def get_used_space(part, part_type):
         space = get_used_f2fs(part)
     else:
         space = 0
+
     return space

@@ -3,29 +3,28 @@
 #
 # download.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
-
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 """ Module to download packages """
 
@@ -33,22 +32,11 @@ import os
 import logging
 import queue
 
-if __name__ == '__main__':
-    import sys
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test
-    base_dir = os.path.dirname(__file__) or '.'
-    parent_dir = os.path.join(base_dir, '..')
-    sys.path.insert(0, parent_dir)
-
 import pacman.pac as pac
-
 import download.metalink as ml
-import download.download_urllib as download_urllib
-import download.download_aria2 as download_aria2
 import download.download_requests as download_requests
 
-import misc.misc as misc
+import misc.extra as misc
 
 
 class DownloadPackages(object):
@@ -61,34 +49,24 @@ class DownloadPackages(object):
     def __init__(
             self,
             package_names,
-            download_module='requests',
-            pacman_conf_file=None,
-            pacman_cache_dir=None,
-            cache_dir=None,
+            pacman_conf_file,
+            pacman_cache_dir,
             settings=None,
             callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
-        if pacman_conf_file is None:
-            self.pacman_conf_file = "/etc/pacman.conf"
-        else:
-            self.pacman_conf_file = pacman_conf_file
+        self.package_names = package_names
 
-        if pacman_cache_dir is None:
-            self.pacman_cache_dir = "/install/var/cache/pacman/pkg"
-        else:
-            self.pacman_cache_dir = pacman_cache_dir
+        self.pacman_conf_file = pacman_conf_file
+        self.pacman_cache_dir = pacman_cache_dir
 
-        if cache_dir is None or not os.path.exists(cache_dir):
-            # Try to use liveCD cache if none provided
-            self.cache_dir = "/var/cache/pacman/pkg"
+        self.settings = settings
+        if self.settings:
+            self.xz_cache_dirs = self.settings.get('xz_cache')
         else:
-            self.cache_dir = cache_dir
+            self.xz_cache_dirs = []
 
         self.callback_queue = callback_queue
-        self.settings = settings
-        self.download_module = download_module
-        self.package_names = package_names
 
         # Create pacman cache dir (it's ok if it already exists)
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
@@ -101,6 +79,7 @@ class DownloadPackages(object):
         self.metalinks = None
 
     def start(self, metalinks=None):
+        """ Begin download """
         if metalinks:
             self.metalinks = metalinks
 
@@ -113,36 +92,18 @@ class DownloadPackages(object):
             txt = _("Can't create download package list. Check log output for details")
             raise misc.InstallError(txt)
 
-        logging.debug("Using %s module to download packages", self.download_module)
-
-        if self.download_module == "aria2":
-            download = download_aria2.Download(
-                self.pacman_cache_dir,
-                self.cache_dir,
-                self.callback_queue)
-        elif self.download_module == "urllib":
-            download = download_urllib.Download(
-                self.pacman_cache_dir,
-                self.cache_dir,
-                self.callback_queue)
-        else:
-            if self.download_module != "requests":
-                logging.debug("Unknown module '%s', Cnchi will use the 'requests' one as default", self.download_module)
-            download = download_requests.Download(
-                self.pacman_cache_dir,
-                self.cache_dir,
-                self.callback_queue)
+        download = download_requests.Download(
+            self.pacman_cache_dir,
+            self.xz_cache_dirs,
+            self.callback_queue)
 
         if not download.start(self.metalinks):
-            self.settings.set('failed_download', True)
-            # New: When we can't download (even one package), we stop right here
-            # Pros: The user will be prompted immediately when a package fails
-            # to download
-            # Cons: We won't let alpm to try to download the package itself
+            # When we can't download (even one package), we stop right here
             txt = _("Can't download needed packages. Cnchi can't continue.")
             raise misc.InstallError(txt)
 
     def url_sort_helper(self, url):
+        """ helper method for sorting mirror urls """
         if not url:
             return 9999
         # Use the mirrorlist we created earlier to determine a url's priority
@@ -169,48 +130,62 @@ class DownloadPackages(object):
                 callback_queue=self.callback_queue)
             if pacman is None:
                 return None
-        except Exception as err:
-            logging.error("Can't initialize pyalpm: %s", err)
+        except Exception as ex:
             self.metalinks = None
+            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             return
 
         try:
             for package_name in self.package_names:
                 metalink = ml.create(pacman, package_name, self.pacman_conf_file)
                 if metalink is None:
-                    logging.error("Error creating metalink for package %s. Installation will stop", package_name)
-                    txt = _("Error creating metalink for package {0}. Installation will stop").format(package_name)
+                    txt = "Error creating metalink for package %s. Installation will stop"
+                    logging.error(txt, package_name)
+                    txt = _("Error creating metalink for package {0}. "
+                            "Installation will stop").format(package_name)
                     raise misc.InstallError(txt)
 
                 # Get metalink info
                 metalink_info = ml.get_info(metalink)
 
-                # Update downloads list with the new info from the processed metalink
+                # Update downloads list with the new info from
+                # the processed metalink
                 for key in metalink_info:
                     if key not in self.metalinks:
-                        urls = metalink_info[key]['urls']
-                        # Sort urls based on the mirrorlist we created earlier
-                        sorted_urls = sorted(urls, key=self.url_sort_helper)
                         self.metalinks[key] = metalink_info[key]
-                        # logging.debug(self.metalinks[key])
-                        self.metalinks[key]['urls'] = sorted_urls
-                        # logging.debug(self.metalinks[key])
+                        urls = metalink_info[key]['urls']
+                        if self.settings:
+                            # Sort urls based on the mirrorlist
+                            # we created earlier
+                            sorted_urls = sorted(
+                                urls,
+                                key=self.url_sort_helper)
+                            self.metalinks[key]['urls'] = sorted_urls
+                        else:
+                            # When testing, settings is not available
+                            self.metalinks[key]['urls'] = urls
 
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
-        except Exception as err:
-            logging.error("Can't create download set: %s", err)
+        except Exception as ex:
+            template = "Can't create download set. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             self.metalinks = None
             return
 
         try:
             pacman.release()
             del pacman
-        except Exception as err:
-            logging.error("Can't release pyalpm: %s", err)
+        except Exception as ex:
             self.metalinks = None
+            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             return
 
         # Overwrite last event (to clean up the last message)
@@ -221,7 +196,7 @@ class DownloadPackages(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug("{0}:{1}".format(event_type, event_text))
+                logging.debug("%s:%s", event_type, event_text)
             return
 
         if event_type in self.last_event:
@@ -238,8 +213,8 @@ class DownloadPackages(object):
             pass
 
 
-''' Test case '''
-if __name__ == '__main__':
+def test():
+    """ Test function """
     import gettext
 
     _ = gettext.gettext
@@ -254,9 +229,13 @@ if __name__ == '__main__':
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    dp = DownloadPackages(
+    download_packages = DownloadPackages(
         package_names=["gedit"],
-        download_module="requests",
-        cache_dir="",
-        pacman_cache_dir="/tmp/pkg")
-    dp.start()
+        pacman_conf_file="/etc/pacman.conf",
+        pacman_cache_dir="/tmp/pkg",
+        settings=None,
+        callback_queue=None)
+    download_packages.start()
+
+if __name__ == '__main__':
+    test()

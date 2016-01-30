@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  lemp.py
+# lemp.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """
@@ -38,19 +38,13 @@ part is taken care of.
 import os
 import logging
 
-try:
-    from installation import chroot
-except ImportError:
-    import chroot
+from misc.run_cmd import chroot_call
 
 DEST_DIR = '/install'
 
 
-def chroot_run(cmd):
-    chroot.run(cmd, DEST_DIR)
-
-
 def setup():
+    """ Main configuration function """
     try:
         logging.debug("Doing Mariadb setup...")
         mariadb_setup()
@@ -64,22 +58,24 @@ def setup():
 
 
 def mariadb_setup():
+    """ Setup MariaDB database server """
     cmd = [
         "mysql_install_db",
         "--user=mysql",
         "--basedir=/usr",
         "--datadir=/var/lib/mysql"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     cmd = ["systemctl", "enable", "mysqld"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
 
 
 def nginx_setup():
+    """ Setup Nginx web server """
     cmd = ["systemctl", "enable", "nginx"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # We need to tell nginx to run php using php-fpm.
     path = os.path.join(DEST_DIR, "etc/nginx/nginx.conf")
@@ -108,13 +104,14 @@ def nginx_setup():
 
 
 def php_setup():
-    # Setup /etc/php/php.ini
+    """ Setup /etc/php/php.ini """
     php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
     with open(php_ini_path, 'r') as php_ini:
         lines = php_ini.readlines()
 
     # PHP extensions that will be activated
-    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
+    so_extensions = [
+        "mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
 
     php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
     with open(php_ini_path, 'r') as php_ini:
@@ -130,11 +127,12 @@ def php_setup():
             # Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
             # to make sure PHP can access and read files under those directories
             if "open_basedir =" in line:
-                line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
+                line = ("open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:"
+                        "/usr/share/webapps/:/etc/webapps/\n")
             php_ini.write(line)
 
     cmd = ["systemctl", "enable", "php-fpm"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
 
 if __name__ == '__main__':

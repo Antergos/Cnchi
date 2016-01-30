@@ -1,46 +1,50 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  keymap.py
+# keymap.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
-from gi.repository import Gtk, GLib
+""" Keymap screen """
 
 import os
 import logging
 import subprocess
 
-import misc.misc as misc
+import misc.extra as misc
 import misc.keyboard_names as keyboard_names
 import misc.keyboard_widget as keyboard_widget
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GLib
 
 from gtkbasebox import GtkBaseBox
 
 
 class Keymap(GtkBaseBox):
+    """ Keymap screen """
     def __init__(self, params, prev_page="timezone", next_page="desktop"):
         super().__init__(self, params, "keymap", prev_page, next_page)
 
@@ -65,7 +69,9 @@ class Keymap(GtkBaseBox):
         column.add_attribute(cell, "text", 0)
 
         self.keymap_treeview.set_activate_on_single_click(True)
-        self.keymap_treeview.connect("row-activated", self.on_keymap_row_activated)
+        self.keymap_treeview.connect(
+            "row-activated",
+            self.on_keymap_row_activated)
 
     def clear(self):
         """ Clears treeview model """
@@ -73,8 +79,8 @@ class Keymap(GtkBaseBox):
         if tree_store:
             tree_store.clear()
 
-        self.keyboard_layout = { 'code': None, 'description': None }
-        self.keyboard_variant  = { 'code': None, 'description': None }
+        self.keyboard_layout = {'code': None, 'description': None}
+        self.keyboard_variant = {'code': None, 'description': None}
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -93,10 +99,11 @@ class Keymap(GtkBaseBox):
             lbl.set_max_width_chars(50)
 
     def prepare(self, direction):
+        """ Prepare screen """
         self.translate_ui()
 
         if self.keyboard_layout['code'] is None:
-            country_code =  self.settings.get("country_code")
+            country_code = self.settings.get("country_code")
             self.clear()
 
             self.populate_keymap_treeview()
@@ -110,13 +117,19 @@ class Keymap(GtkBaseBox):
                 # specific variant cases
                 country_name = self.settings.get("country_name")
                 language_name = self.settings.get("language_name")
-                language_code = self.settings.get("language_code")
+                # language_code = self.settings.get("language_code")
                 if country_name == "Spain" and language_name == "Catalan":
                     self.keyboard_variant['code'] = "cat"
-                    self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "cat")
+                    variant_desc = self.kbd_names.get_variant_description(
+                        country_code,
+                        "cat")
+                    self.keyboard_variant['description'] = variant_desc
                 elif country_name == "Canada" and language_name == "English":
                     self.keyboard_variant['code'] = "eng"
-                    self.keyboard_variant['description'] = self.kbd_names.get_variant_description(country_code, "eng")
+                    variant_desc = self.kbd_names.get_variant_description(
+                        country_code,
+                        "eng")
+                    self.keyboard_variant['description'] = variant_desc
 
                 self.select_in_treeview(
                     self.keymap_treeview,
@@ -137,6 +150,7 @@ class Keymap(GtkBaseBox):
         self.show_all()
 
     def populate_keymap_treeview(self):
+        """ Fills keymap treeview """
         # Clear our model
         tree_store = self.keymap_treeview.get_model()
         tree_store.clear()
@@ -193,6 +207,7 @@ class Keymap(GtkBaseBox):
 
     @staticmethod
     def scroll_to_cell(treeview, path):
+        """ Move scroll in treeview """
         treeview.scroll_to_cell(path)
         return False
 
@@ -248,10 +263,14 @@ class Keymap(GtkBaseBox):
                 self.keyboard_variant['code'] = variant_name
                 self.keyboard_variant['description'] = variant_description
             else:
-                logging.warning("Unknown variant description: %s", variant_description)
+                logging.warning(
+                    "Unknown variant description: %s",
+                    variant_description)
 
-        # This fixes issue 75: Won't pick/load the keyboard layout after selecting one (sticks to qwerty)
-        if not self.testing and self.prepare_called:
+        # Fixes issue 75:
+        # Won't pick/load the keyboard layout after selecting one
+        # (sticks to qwerty)
+        if self.prepare_called:
             self.set_keymap()
         return True
 
@@ -261,29 +280,27 @@ class Keymap(GtkBaseBox):
             self.settings.set("keyboard_layout", self.keyboard_layout['code'])
             self.settings.set("keyboard_variant", self.keyboard_variant['code'])
 
+            # setxkbmap sets the keyboard layout for the current X session only
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
 
             if self.keyboard_variant['code']:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
-
-            try:
-                subprocess.check_call(cmd)
-            except subprocess.CalledProcessError as process_error:
-                logging.warning(process_error)
-
-            # Show logs to inform of keymap change
-            if self.keyboard_variant['code']:
-                cmd.extend(["-variant", self.keyboard_variant['code']])
-                txt = _("Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})").format(
+                txt = _("Set keyboard to '{0}' ({1}), wvariant '{2}' ({3})")
+                txt = txt.format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'],
                     self.keyboard_variant['description'],
                     self.keyboard_variant['code'])
             else:
-                txt = _("Set keyboard to layout name '{0}' ({1})").format(
+                txt = _("Set keyboard to '{0}' ({1})").format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'])
-            logging.debug(txt)
+
+            try:
+                subprocess.check_call(cmd)
+                logging.debug(txt)
+            except (OSError, subprocess.CalledProcessError) as setxkbmap_error:
+                logging.warning(setxkbmap_error)
 
     def set_keyboard_widget_keymap(self):
         """ Pass current keyboard layout to the keyboard widget. """

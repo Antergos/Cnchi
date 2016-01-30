@@ -3,7 +3,7 @@
 #
 #  pacman_conf.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -49,24 +49,24 @@ class Settings(object):
             'bootloader_install': True,
             'bootloader_installation_successful': False,
             'btrfs': False,
-            'cache': '',
+            'cache_pkgs_md5_check_failed': [],
             'cnchi': '/usr/share/cnchi/',
             'country_name': '',
             'country_code': '',
             'data': '/usr/share/cnchi/data/',
             'desktop': 'gnome',
             'desktop_ask': True,
+            'desktop_manager': 'lightdm',
             'desktops': [],
-            'download_module': 'requests',
             'enable_alongside': True,
             'encrypt_home': False,
             'f2fs': False,
-            'failed_download': False,
             'feature_aur': False,
             'feature_bluetooth': False,
             'feature_cups': False,
             'feature_firefox': False,
             'feature_firewall': False,
+            'feature_flash': False,
             'feature_fonts': False,
             'feature_games': False,
             'feature_lamp': False,
@@ -87,12 +87,14 @@ class Settings(object):
             'laptop': 'False',
             'locale': '',
             'log_file': '/tmp/cnchi.log',
-            'luks_root_password': "",
-            'luks_root_volume': "",
-            'luks_root_device': "",
-            'partition_mode': 'easy',
+            'luks_root_password': '',
+            'luks_root_volume': '',
+            'luks_root_device': '',
+            'network_manager': 'NetworkManager',
+            'partition_mode': 'automatic',
             'password': '',
             'rankmirrors_done': False,
+            'rankmirrors_result': '',
             'require_password': True,
             'ruuid': '',
             'sentry_dsn': '',
@@ -113,9 +115,14 @@ class Settings(object):
             'use_luks_in_root': False,
             'use_lvm': False,
             'use_timesyncd': True,
+            'use_zfs': False,
             'user_info_done': False,
             'username': '',
-            'z_hidden': False})
+            'xz_cache': [],
+            'z_hidden': False,
+            'zfs': False,
+            'zfs_pool_name': 'antergos',
+            'zfs_pool_id': 0})
 
     def _get_settings(self):
         """ Get a copy of our settings """
@@ -140,5 +147,12 @@ class Settings(object):
     def set(self, key, value):
         """ Set one setting's value """
         settings = self._get_settings()
-        settings[key] = value
+        current = settings.get(key, 'keyerror')
+        exists = 'keyerror' != current
+
+        if exists and current and isinstance(current, list) and not isinstance(value, list):
+            settings[key].append(value)
+        else:
+            settings[key] = value
+
         self._update_settings(settings)

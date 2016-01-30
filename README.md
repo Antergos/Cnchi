@@ -1,39 +1,43 @@
 # Cnchi
 **Graphical Installer for Antergos Linux**
 
-
-<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a>
+<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a> &nbsp;&nbsp;&nbsp;[![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
 
 You are viewing the `master` branch.
 
 ## Current Status
 
-This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**. 
+This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
-|*Cnchi Legacy*|*v0.10.33*|*Frozen*|
-|**Cnchi Stable**|**v0.12.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.13.x | Active Development|
+|*Cnchi Legacy*|*v0.12.46*|*Frozen*|
+|**Cnchi Stable**|**v0.14.x**|**Bug Fixes Only**|
+|Cnchi Next | v0.15.x | Active Development|
+
 
 ## Usage:
 
-```
-lang=sh
+```sh
 sudo -E cnchi.py
 ```
 
 To create logs to help debug problems:
+```sh
+sudo -E cnchi.py -dv -s bugsnag
 ```
-lang=sh
-sudo -E cnchi.py -dv
-```
+
+## Reporting bugs:
+
+Please report any issues with Cnchi in the issue tracker. Provide all log files along with a detailed description:
+
+* /tmp/cnchi.log
+* /tmp/postinstall.log (if it exists)
+* /tmp/pacman.log (if it exists)
 
 ## Translations
 
-We manage our translations in transifex:
-
- - https://www.transifex.com/projects/p/antergos/
+We manage our translations via [Transifex](https://www.transifex.com/projects/p/antergos)
 
 ## Dependencies
 
@@ -46,14 +50,11 @@ We manage our translations in transifex:
  - python-requests
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
- - libtimezonemap (needed by Cnchi 0.6.x and older versions)
  - webkit2gtk
- - hdparm (needed by Cnchi 0.8.35 and older versions)
- - hwinfo (needed by Cnchi 0.6.x and older versions)
  - upower
  - encfs, pam_encfs
  - iso-codes
- - clutter, clutter-gtk, clutter-gst (user info screen)
+ - clutter, clutter-gtk, clutter-gst
  - cheese
 
 ## Unit tests

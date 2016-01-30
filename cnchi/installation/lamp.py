@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  lamp.py
+# lamp.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """
@@ -39,19 +39,13 @@ import os
 import logging
 import shutil
 
-try:
-    from installation import chroot
-except ImportError:
-    import chroot
+from misc.run_cmd import chroot_call
 
 DEST_DIR = '/install'
 
 
-def chroot_run(cmd):
-    chroot.run(cmd, DEST_DIR)
-
-
 def setup():
+    """ Runs lamp setup """
     try:
         logging.debug("Doing Mariadb setup...")
         mariadb_setup()
@@ -65,20 +59,22 @@ def setup():
 
 
 def mariadb_setup():
+    """ Runs MariaDB setup """
     cmd = [
         "mysql_install_db",
         "--user=mysql",
         "--basedir=/usr",
         "--datadir=/var/lib/mysql"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     cmd = ["systemctl", "enable", "mysqld"]
-    chroot_run(cmd)
+    chroot_call(cmd)
 
     # TODO: Warn user to run mysql_secure_installation
 
 
 def apache_setup():
+    """ Configure Apache web server """
     # Allow site virtualization
     httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
     with open(httpd_path, 'a') as httpd_conf:
@@ -119,13 +115,13 @@ def apache_setup():
         localhost_conf.write('</Directory>\n')
 
     # We activate the virtual localhost site
-    chroot_run(["a2ensite", "localhost"])
+    chroot_call(["a2ensite", "localhost"])
 
-    cmd = ["systemctl", "enable", "httpd"]
-    chroot_run(cmd)
+    chroot_call(["systemctl", "enable", "httpd"])
 
 
 def php_setup():
+    """ Setup PHP """
     # Comment mpm_event_module
     httpd_path = os.path.join(DEST_DIR, 'etc/httpd/conf/httpd.conf')
     with open(httpd_path, 'r') as load_module:
@@ -160,7 +156,8 @@ def php_setup():
             # Add PhpMyAdmin system path (/etc/webapps/ and /usr/share/webapps/)
             # to make sure PHP can access and read files under those directories
             if "open_basedir =" in line:
-                line = 'open_basedir = /srv/http/:/home/:/tmp/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n'
+                line = ("open_basedir = /srv/http/:/home/:/tmp/:"
+                        "/usr/share/pear/:/usr/share/webapps/:/etc/webapps/\n")
             php_ini.write(line)
 
     # Create a symlink (sites-enabled/localhost.conf) to sites-available/localhost.conf

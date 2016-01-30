@@ -1,30 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  ask.py
+# ask.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Asks which type of installation the user wants to perform """
@@ -32,26 +32,19 @@
 import os
 import sys
 import queue
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    # Insert the parent directory at the front of the path.
-    # This is used only when we want to test this screen
-    BASE_DIR = os.path.dirname(__file__) or '.'
-    PARENT_DIR = os.path.join(BASE_DIR, '..')
-    sys.path.insert(0, PARENT_DIR)
+import time
+import logging
+import subprocess
 
 import bootinfo
-import logging
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from gtkbasebox import GtkBaseBox
-import misc.misc as misc
+
+import misc.extra as misc
 
 
 def check_alongside_disk_layout():
@@ -84,13 +77,33 @@ def check_alongside_disk_layout():
     return False
 
 
+def load_zfs():
+    cmd = ["modprobe", "zfs"]
+    try:
+        with misc.raised_privileges():
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        logging.debug("ZFS kernel module loaded successfully.")
+    except subprocess.CalledProcessError as err:
+        logging.debug(
+            "Can't load ZFS kernel module: %s",
+            err.output.decode())
+        return False
+    return True
+
+
 class InstallationAsk(GtkBaseBox):
     def __init__(self, params, prev_page="features", next_page=None):
         super().__init__(self, params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
 
-        partitioner_dir = os.path.join(data_dir, "images", "partitioner", "small")
+        partitioner_dir = os.path.join(
+            data_dir,
+            "images",
+            "partitioner",
+            "small")
+
+        self.disable_rank_mirrors = params["disable_rank_mirrors"]
 
         image = self.ui.get_object("automatic_image")
         path = os.path.join(partitioner_dir, "automatic.png")
@@ -117,9 +130,13 @@ class InstallationAsk(GtkBaseBox):
             msg = "Cnchi will NOT enable the 'alongside' installation mode."
         logging.debug(msg)
         '''
-
         # By default, select automatic installation
         self.next_page = "installation_automatic"
+        self.settings.set("partition_mode", "automatic")
+
+        self.is_zfs_available = load_zfs()
+
+        self.enable_automatic_options(True)
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
@@ -137,10 +154,11 @@ class InstallationAsk(GtkBaseBox):
             self.other_oses = []
             for key in oses:
                 # We only check the first hard disk
-                if "sda" in key and oses[key] not in ["unknown", "Swap", "Data or Swap"] and oses[key] not in self.other_oses:
+                non_valid = ["unknown", "Swap", "Data or Swap", self.other_oses]
+                if "sda" in key and oses[key] not in non_valid:
                     self.other_oses.append(oses[key])
 
-            if len(self.other_oses) > 0:
+            if self.other_oses:
                 for detected_os in self.other_oses:
                     if "windows" in detected_os.lower():
                         logging.debug("Windows(tm) OS detected.")
@@ -153,7 +171,8 @@ class InstallationAsk(GtkBaseBox):
                 enable_alongside = False
 
             if not check_alongside_disk_layout():
-                logging.debug("Unsuported disk layout for the 'alongside' installation mode")
+                msg = "Unsuported disk layout for the 'alongside' installation mode"
+                logging.debug(msg)
                 enable_alongside = False
 
         return enable_alongside
@@ -172,20 +191,29 @@ class InstallationAsk(GtkBaseBox):
             obj = self.ui.get_object(name)
             obj.set_sensitive(status)
 
+        names = ["zfs_checkbutton", "zfs_label"]
+        for name in names:
+            obj = self.ui.get_object(name)
+            obj.set_sensitive(status and self.is_zfs_available)
+
     def prepare(self, direction):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
 
         if not self.settings.get('enable_alongside'):
-            self.hide_alongside_option()
+            self.hide_option("alongside")
 
-    def hide_alongside_option(self):
-        """ Hides alongisde widgets """
-        widgets = [
-            "alongside_radiobutton",
-            "alongside_description",
-            "alongside_image"]
+        self.forward_button.set_sensitive(True)
+
+    def hide_option(self, option):
+        """ Hides widgets """
+        widgets = []
+        if option == "alongside":
+            widgets = [
+                "alongside_radiobutton",
+                "alongside_description",
+                "alongside_image"]
 
         for name in widgets:
             widget = self.ui.get_object(name)
@@ -193,6 +221,7 @@ class InstallationAsk(GtkBaseBox):
                 widget.hide()
 
     def get_os_list_str(self):
+        """ Get string with the detected os names """
         os_str = ""
         len_other_oses = len(self.other_oses)
         if len_other_oses > 0:
@@ -251,7 +280,8 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("encrypt_label")
-        txt = _("You will be asked to create an encryption password in the next step.")
+        txt = _("You will be asked to create an encryption password in the "
+                "next step.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("enc_label")
@@ -268,10 +298,28 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("lvm_label")
-        txt = _("This will setup LVM and allow you to easily manage partitions and create snapshots.")
+        txt = _("This will setup LVM and allow you to easily manage "
+                "partitions and create snapshots.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("lvm_label")
+        label.set_hexpand(False)
+        label.set_line_wrap(True)
+        label.set_max_width_chars(max_width_chars)
+
+        button = self.ui.get_object("zfs_checkbutton")
+        txt = _("Use ZFS with this installation.")
+        button.set_label(txt)
+        button.set_name("zfs_btn")
+        button.set_hexpand(False)
+        # button.set_line_wrap(True)
+        # button.set_max_width_chars(max_width_chars)
+
+        label = self.ui.get_object("zfs_label")
+        txt = _("This will setup ZFS on your drive(s).")
+        # txt = description_style.format(txt)
+        label.set_text(txt)
+        label.set_name("zfs_label")
         label.set_hexpand(False)
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
@@ -285,7 +333,8 @@ class InstallationAsk(GtkBaseBox):
         # button.set_max_width_chars(max_width_chars)
 
         label = self.ui.get_object("home_label")
-        txt = _("This will setup you /home directory in a different partition or volume.")
+        txt = _("This will setup your /home directory in a different "
+                "partition or volume.")
         # txt = description_style.format(txt)
         label.set_text(txt)
         label.set_name("home_label")
@@ -340,6 +389,9 @@ class InstallationAsk(GtkBaseBox):
         check = self.ui.get_object("lvm_checkbutton")
         use_lvm = check.get_active()
 
+        check = self.ui.get_object("zfs_checkbutton")
+        use_zfs = check.get_active()
+
         check = self.ui.get_object("home_checkbutton")
         use_home = check.get_active()
 
@@ -348,6 +400,15 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_luks', use_luks)
             self.settings.set('use_luks_in_root', True)
             self.settings.set('luks_root_volume', "cryptAntergos")
+            self.settings.set('use_zfs', False)
+            self.settings.set('use_home', use_home)
+        elif self.next_page == "installation_zfs":
+            self.settings.set('use_lvm', False)
+            self.settings.set('use_luks', use_luks)
+            self.settings.set('use_luks_in_root', False)
+            self.settings.set('luks_root_volume', "")
+            self.settings.set('use_zfs', True)
+            self.settings.set('zfs', True)
             self.settings.set('use_home', use_home)
         else:
             # Set defaults. We don't know these yet.
@@ -355,17 +416,24 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('use_luks', False)
             self.settings.set('use_luks_in_root', False)
             self.settings.set('luks_root_volume', "")
+            self.settings.set('use_zfs', False)
             self.settings.set('use_home', False)
 
-        if self.settings.get('use_luks'):
-            logging.info("Antergos installation will be encrypted using LUKS")
-
-        if self.settings.get('use_lvm'):
-            logging.info("Antergos will be installed using LVM volumes")
+        if not self.settings.get('use_zfs'):
+            if self.settings.get('use_luks'):
+                logging.info("Antergos installation will be encrypted using LUKS")
+            if self.settings.get('use_lvm'):
+                logging.info("Antergos will be installed using LVM volumes")
+                if self.settings.get('use_home'):
+                    logging.info("Antergos will be installed using a separate /home volume.")
+            elif self.settings.get('use_home'):
+                logging.info("Antergos will be installed using a separate /home partition.")
+        else:
+            logging.info("Antergos will be installed using ZFS")
+            if self.settings.get('use_luks'):
+                logging.info("Antergos ZFS installation will be encrypted")
             if self.settings.get('use_home'):
                 logging.info("Antergos will be installed using a separate /home volume.")
-        elif self.settings.get('use_home'):
-            logging.info("Antergos will be installed using a separate /home partition.")
 
         if self.next_page == "installation_alongside":
             self.settings.set('partition_mode', 'alongside')
@@ -373,62 +441,76 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('partition_mode', 'advanced')
         elif self.next_page == "installation_automatic":
             self.settings.set('partition_mode', 'automatic')
+        elif self.next_page == "installation_zfs":
+            self.settings.set('partition_mode', 'zfs')
 
         # Check if there are still processes running...
+        self.wait()
+
+        return True
+
+    def wait(self):
+        """ Check if there are still processes running and
+            waits for them to finish """
         must_wait = False
         for proc in self.process_list:
             if proc.is_alive():
                 must_wait = True
                 break
 
-        if must_wait:
-            from gi.repository import Gtk
-            txt1 = _("Ranking mirrors")
-            txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
-            txt2 += "\n\n"
-            txt2 += _("Please be patient...")
-            txt1 = "<big>{0}</big>".format(txt1)
-            txt2 = "<i>{0}</i>".format(txt2)
-            wait_ui = Gtk.Builder()
-            ui_file = os.path.join(self.ui_dir, "wait.ui")
-            wait_ui.add_from_file(ui_file)
-            lbl1 = wait_ui.get_object("label1")
-            lbl1.set_markup(txt1)
-            lbl2 = wait_ui.get_object("label2")
-            lbl2.set_markup(txt2)
-            progress_bar = wait_ui.get_object("progressbar")
-            wait_window = wait_ui.get_object("wait_window")
-            wait_window.set_modal(True)
-            wait_window.set_transient_for(self.get_toplevel())
-            wait_window.set_default_size(320, 240)
-            wait_window.set_position(Gtk.WindowPosition.CENTER)
-            wait_window.show_all()
+        if not must_wait or self.disable_rank_mirrors:
+            return
 
-            ask_box = self.ui.get_object("ask")
-            if ask_box:
-                ask_box.set_sensitive(False)
+        txt1 = _("Ranking mirrors")
+        txt1 = "<big>{0}</big>".format(txt1)
 
-            import time
-            logging.debug("Waiting for all external processes to finish...")
-            while must_wait:
-                must_wait = False
-                for proc in self.process_list:
-                    # This waits until process finishes, no matter the time.
-                    if proc.is_alive():
-                        must_wait = True
-                # Just wait...
-                time.sleep(0.1)
-                # Update our progressbar dialog
-                progress_bar.pulse()
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-            logging.debug("All external processes are finished. Installation can go on")
-            wait_window.hide()
+        txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
+        txt2 += "\n\n"
+        txt2 += _("Please be patient...")
+        txt2 = "<i>{0}</i>".format(txt2)
 
-            if ask_box:
-                ask_box.set_sensitive(True)
+        wait_ui = Gtk.Builder()
+        ui_file = os.path.join(self.ui_dir, "wait.ui")
+        wait_ui.add_from_file(ui_file)
 
-        return True
+        lbl1 = wait_ui.get_object("label1")
+        lbl1.set_markup(txt1)
+
+        lbl2 = wait_ui.get_object("label2")
+        lbl2.set_markup(txt2)
+
+        progress_bar = wait_ui.get_object("progressbar")
+
+        wait_window = wait_ui.get_object("wait_window")
+        wait_window.set_modal(True)
+        wait_window.set_transient_for(self.get_main_window())
+        wait_window.set_default_size(320, 240)
+        wait_window.set_position(Gtk.WindowPosition.CENTER)
+        wait_window.show_all()
+
+        ask_box = self.ui.get_object("ask")
+        if ask_box:
+            ask_box.set_sensitive(False)
+
+        logging.debug("Waiting for all external processes to finish...")
+        while must_wait:
+            must_wait = False
+            for proc in self.process_list:
+                # This waits until process finishes, no matter the time.
+                if proc.is_alive():
+                    must_wait = True
+            # Just wait...
+            time.sleep(0.1)
+            # Update our progressbar dialog
+            progress_bar.pulse()
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+        logging.debug(
+            "All external processes are finished. Installation can go on")
+        wait_window.hide()
+
+        if ask_box:
+            ask_box.set_sensitive(True)
 
     def get_next_page(self):
         return self.next_page
@@ -436,8 +518,28 @@ class InstallationAsk(GtkBaseBox):
     def on_automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """
         if widget.get_active():
-            self.next_page = "installation_automatic"
+            check = self.ui.get_object("zfs_checkbutton")
+            if check.get_active():
+                self.next_page = "installation_zfs"
+            else:
+                self.next_page = "installation_automatic"
             self.enable_automatic_options(True)
+
+    def on_automatic_lvm_checkbutton_toggled(self, widget):
+        if widget.get_active():
+            self.next_page = "installation_automatic"
+            check = self.ui.get_object("zfs_checkbutton")
+            if check.get_active():
+                check.set_active(False)
+
+    def on_automatic_zfs_checkbutton_toggled(self, widget):
+        if widget.get_active():
+            self.next_page = "installation_zfs"
+            check = self.ui.get_object("lvm_checkbutton")
+            if check.get_active():
+                check.set_active(False)
+        else:
+            self.next_page = "installation_automatic"
 
     def on_alongside_radiobutton_toggled(self, widget):
         """ Alongside selected, disable all automatic options """

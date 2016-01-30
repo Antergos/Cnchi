@@ -1,33 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  timezone.py
+# timezone.py
 #
-#  Copyright © 2013-2015 Antergos
+# Copyright © 2013-2016 Antergos
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
-from gi.repository import Gtk, Gdk
+""" Timezone screen """
 
 import os
 import multiprocessing
@@ -39,7 +38,7 @@ import logging
 import hashlib
 
 import misc.tz as tz
-import misc.misc as misc
+import misc.extra as misc
 import misc.timezonemap as timezonemap
 from gtkbasebox import GtkBaseBox
 
@@ -48,6 +47,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 
 class Timezone(GtkBaseBox):
+    """ Timezone screen """
     def __init__(self, params, prev_page="location", next_page="keymap"):
         super().__init__(self, params, "timezone", prev_page, next_page)
 
@@ -98,6 +98,7 @@ class Timezone(GtkBaseBox):
         self.header.set_subtitle(_("Select Your Timezone"))
 
     def on_location_changed(self, tzmap, tz_location):
+        """ User changed its location """
         # loc = self.tzdb.get_loc(self.timezone)
         if not tz_location:
             self.timezone = None
@@ -109,6 +110,7 @@ class Timezone(GtkBaseBox):
             self.forward_button.set_sensitive(True)
 
     def update_comboboxes(self, timezone):
+        """ Location has changed, update comboboxes """
         zone, region = timezone.split('/', 1)
         self.select_combobox_item(self.combobox_zone, zone)
         self.populate_cities(zone)
@@ -116,6 +118,7 @@ class Timezone(GtkBaseBox):
 
     @staticmethod
     def select_combobox_item(combobox, item):
+        """ Make combobox select an item """
         tree_model = combobox.get_model()
         tree_iter = tree_model.get_iter_first()
 
@@ -128,17 +131,21 @@ class Timezone(GtkBaseBox):
                 tree_iter = tree_model.iter_next(tree_iter)
 
     def set_timezone(self, timezone):
-        self.timezone = timezone
-        res = self.tzmap.set_timezone(timezone)
-        # res will be False if the timezone is unrecognised
-        self.forward_button.set_sensitive(res)
+        """ Set timezone in tzmap """
+        if timezone:
+            self.timezone = timezone
+            res = self.tzmap.set_timezone(timezone)
+            # res will be False if the timezone is unrecognised
+            self.forward_button.set_sensitive(res)
 
     def on_zone_combobox_changed(self, widget):
+        """ Zone changed """
         new_zone = self.combobox_zone.get_active_text()
         if new_zone is not None:
             self.populate_cities(new_zone)
 
     def on_region_combobox_changed(self, widget):
+        """ Region changed """
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
         if new_zone is not None and new_region is not None:
@@ -148,6 +155,7 @@ class Timezone(GtkBaseBox):
                 self.set_timezone(new_timezone)
 
     def populate_zones(self):
+        """ Get all zones and fill our model """
         zones = []
         for loc in self.tzdb.locations:
             zone = loc.zone.split('/', 1)[0]
@@ -160,6 +168,7 @@ class Timezone(GtkBaseBox):
             tree_model.append([zone, zone])
 
     def populate_cities(self, selected_zone):
+        """ Get all cities and populate our model """
         if self.old_zone != selected_zone:
             regions = []
             for loc in self.tzdb.locations:
@@ -174,6 +183,7 @@ class Timezone(GtkBaseBox):
             self.old_zone = selected_zone
 
     def prepare(self, direction):
+        """ Prepare screen before showing it """
         self.translate_ui()
         self.populate_zones()
         self.timezone = None
@@ -200,6 +210,7 @@ class Timezone(GtkBaseBox):
         self.show_all()
 
     def start_auto_timezone_process(self):
+        """ Starts timezone thread """
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
         proc.name = "timezone"
@@ -209,6 +220,7 @@ class Timezone(GtkBaseBox):
 
     @staticmethod
     def log_location(loc):
+        """ Log selected location """
         logging.debug("timezone human zone: %s", loc.human_zone)
         logging.debug("timezone country: %s", loc.country)
         logging.debug("timezone zone: %s", loc.zone)
@@ -224,6 +236,7 @@ class Timezone(GtkBaseBox):
             logging.debug("timezone longitude: %s", loc.longitude)
 
     def store_values(self):
+        """ The user clicks 'next' """
         loc = self.tzdb.get_loc(self.timezone)
 
         if loc:
@@ -252,19 +265,27 @@ class Timezone(GtkBaseBox):
         # This way process.py will know that all info has been entered
         self.settings.set("timezone_done", True)
 
+        if self.settings.get('use_timesyncd'):
+            logging.debug("Cnchi will setup network time")
+        else:
+            logging.debug("Cnchi won't setup network time")
+
         return True
 
     def on_switch_ntp_activate(self, ntp_switch):
-        self.settings['use_timesyncd'] = ntp_switch.get_active()
+        """ activated/deactivated ntp switch """
+        self.settings.set('use_timesyncd', ntp_switch.get_active())
 
 
 class AutoTimezoneProcess(multiprocessing.Process):
+    """ Thread that asks our server for user's location """
     def __init__(self, coords_queue, settings):
         super(AutoTimezoneProcess, self).__init__()
         self.coords_queue = coords_queue
         self.settings = settings
 
     def run(self):
+        """ main thread method """
         # Calculate logo hash
         logo = "data/images/antergos/antergos-logo-mini2.png"
         logo_path = os.path.join(self.settings.get("cnchi"), logo)
@@ -276,14 +297,16 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
         # Wait until there is an Internet connection available
         if not misc.has_connection():
-            logging.warning("Can't get network status. Cnchi will try again in a moment")
+            logging.warning(
+                "Can't get network status. Cnchi will try again in a moment")
             while not misc.has_connection():
                 time.sleep(4)  # Wait 4 seconds and try again
 
         logging.debug("A working network connection has been detected.")
 
-        # Do not start looking for our timezone until we've reached the language screen
-        # (welcome.py sets timezone_start to true when next is clicked)
+        # Do not start looking for our timezone until we've reached the
+        # language screen (welcome.py sets timezone_start to true when
+        # next is clicked)
         while not self.settings.get('timezone_start'):
             time.sleep(2)
 
@@ -301,8 +324,10 @@ class AutoTimezoneProcess(multiprocessing.Process):
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
-        except Exception as general_error:
-            logging.error(general_error)
+        except Exception as ex:
+            template = "Error getting timezone coordinates. An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
             coords = None
 
         if coords:
@@ -312,9 +337,3 @@ class AutoTimezoneProcess(multiprocessing.Process):
                 coords[0],
                 coords[1])
             self.coords_queue.put(coords)
-
-if __name__ == '__main__':
-    def _(x): return x
-
-    from test_screen import _, run
-    run('Timezone')

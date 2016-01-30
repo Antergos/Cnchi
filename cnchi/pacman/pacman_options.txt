@@ -1,0 +1,58 @@
+
+Transaction Options (-S, -R, -U):
+
+nodeps: Skips dependency version checks. Package names are still checked.
+    Normally, pacman will always check a package’s dependency fields to
+    ensure that all dependencies are installed and there are no package
+    conflicts in the system. Specify this option twice to skip all
+    dependency checks.
+
+dbonly: Adds/removes the database entry only, leaving all files in place.
+
+Upgrade options (-S, -U):
+
+force: Bypass file conflict checks and overwrite conflicting files.
+    If the package that is about to be installed contains files that are
+    already installed, this option will cause all those files to be
+    overwritten. Using --force will not allow overwriting a directory
+    with a file or installing packages with conflicting files and
+    directories. This option should be used with care, ideally not at
+    all.
+
+needed: Do not reinstall the targets that are already up-to-date
+
+asdeps: Install packages non-explicitly; in other words, fake their install
+    reason to be installed as a dependency. This is useful for makepkg
+    and other build-from-source tools that need to install dependencies
+    before building the package.
+
+asexplicit: Install packages explicitly; in other words, fake their install
+    reason to be explicitly installed. This is useful if you want to
+    mark a dependency as explicitly installed so it will not be removed
+    by the --recursive remove operation.
+
+Remove Options (-R):
+
+cascade: Remove all target packages, as well as all packages that depend
+    on one or more target packages. This operation is recursive and must
+    be used with care, since it can remove many potentially needed packages.
+
+nosave: Instructs pacman to ignore file backup designations. Normally, when
+    a file is removed from the system, the database is checked to see
+    if the file should be renamed with a .pacsave extension.
+
+recursive : Remove each target specified including all of their dependencies,
+    provided that (A) they are not required by other packages; and (B)
+    they were not explicitly installed by the user. This operation is
+    recursive and analogous to a backwards --sync operation, and it
+    helps keep a clean system without orphans. If you want to omit
+    condition (B), pass this option twice.
+
+unneeded: Removes targets that are not required by any other packages.
+    This is mostly useful when removing a group without using the -c
+    option, to avoid breaking any dependencies.
+
+Sync Options (-S):
+
+downloadonly: Retrieve all packages from the server, but do not
+    install/upgrade anything.

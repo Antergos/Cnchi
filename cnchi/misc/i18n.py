@@ -17,13 +17,14 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" Internationalisation helper functions (read languagelist.data) """
 
-def utf8(s, errors="strict"):
-    """Decode a string as UTF-8 if it isn't already Unicode."""
-    if isinstance(s, str):
-        return s
+def utf8(my_string, errors="strict"):
+    """ Decode a string as UTF-8 if it isn't already Unicode. """
+    if isinstance(my_string, str):
+        return my_string
     else:
-        return str(s, "utf-8", errors)
+        return str(my_string, "utf-8", errors)
 
 
 def get_languages(language_list="data/languagelist.data.gz", current_language_index=-1):
@@ -70,17 +71,17 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
 
     collator = None
 
-    def compare_choice(x):
-        if language_display_map[x][1] == 'C':
+    def compare_choice(position):
+        if language_display_map[position][1] == 'C':
             return None  # place C first
         if collator:
             try:
-                return collator.getCollationKey(x).getByteArray()
+                return collator.getCollationKey(position).getByteArray()
             except Exception:
                 pass
         # Else sort by unicode code point, which isn't ideal either,
         # but also has the virtue of sorting like-glyphs together
-        return x
+        return position
 
     sorted_choices = sorted(language_display_map, key=compare_choice)
 

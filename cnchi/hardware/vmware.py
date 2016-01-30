@@ -3,7 +3,7 @@
 #
 #  vmware.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -41,14 +41,16 @@ DEVICES = ["0x0405", "0x0710"]
 
 
 class Vmware(Hardware):
-    """ Vmware class definition """
+    """ Vmware tools and drivers """
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
     @staticmethod
     def get_packages():
+        """ Get all required packages """
         return ["xf86-video-vmware", "xf86-input-vmmouse", "open-vm-tools"]
 
     @staticmethod
     def post_install(dest_dir):
-        super().chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)
+        """ Post install commands """
+        Hardware.chroot(["systemctl", "enable", "vmtoolsd"], dest_dir)

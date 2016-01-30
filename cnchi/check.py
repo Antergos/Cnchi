@@ -3,7 +3,7 @@
 #
 #  check.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -33,13 +33,15 @@
 from gi.repository import GLib
 
 import subprocess
-import os
 import logging
+
+import os
 
 import info
 import updater
-import misc.misc as misc
 
+import misc.extra as misc
+from misc.run_cmd import call, popen
 from gtkbasebox import GtkBaseBox
 
 # Constants
@@ -47,7 +49,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
-MIN_ROOT_SIZE = 6000000000
+MIN_ROOT_SIZE = 8000000000
 
 
 class Check(GtkBaseBox):
@@ -84,10 +86,12 @@ class Check(GtkBaseBox):
         self.updated.set_property("label", txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least {0}GB available storage space. (*)").format(MIN_ROOT_SIZE / 1000000000)
+        txt = _("has at least {0}GB available storage space. (*)")
+        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
         self.prepare_enough_space.set_property("label", txt)
 
-        txt = _("This highly depends on which desktop environment you choose, so you might need more space.")
+        txt = _("This highly depends on which desktop environment you choose, "
+                "so you might need more space.")
         txt = "(*) <i>{0}</i>".format(txt)
         self.label_space.set_markup(txt)
         self.label_space.set_hexpand(False)
@@ -148,6 +152,7 @@ class Check(GtkBaseBox):
         return False
 
     def has_battery(self):
+        """ Checks if latptop is connected to a power supply """
         # UPower doesn't seem to have an interface for this.
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
@@ -164,8 +169,8 @@ class Check(GtkBaseBox):
     @staticmethod
     def has_enough_space():
         """ Check that we have a disk or partition with enough space """
-        lsblk = subprocess.Popen(["lsblk", "-lnb"], stdout=subprocess.PIPE)
-        output = lsblk.communicate()[0].decode("utf-8").split("\n")
+
+        output = call(cmd=["lsblk", "-lnb"], debug=False).split("\n")
 
         max_size = 0
 
@@ -184,7 +189,7 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
-        if not self.updater:
+        if self.updater is None:
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()

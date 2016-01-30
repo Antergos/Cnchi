@@ -3,7 +3,7 @@
 #
 #  hardware.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -38,12 +38,14 @@ _HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
-    def __init__(self, class_name, class_id, vendor_id, devices, priority=-1):
+    def __init__(self, class_name=None, class_id=None, vendor_id=None,
+                 devices=None, priority=-1, enabled=True):
         self.class_name = class_name
         self.class_id = class_id
         self.vendor_id = vendor_id
         self.devices = devices
         self.priority = priority
+        self.enabled = enabled
 
         self.product_id = ""
 
@@ -51,13 +53,14 @@ class Hardware(object):
         """ Returns all necessary packages to install """
         raise NotImplementedError("get_packages is not implemented")
 
-    def get_conflicts(self):
+    @staticmethod
+    def get_conflicts():
         """ Returns a list with all conflicting packages """
         return []
 
     def post_install(self, dest_dir):
         """ This method runs commands that need to be run AFTER installing the driver """
-        raise NotImplementedError("post_install is not implemented")
+        pass
 
     def pre_install(self, dest_dir):
         """ This method runs commands that need to run BEFORE installing the driver """
@@ -65,21 +68,37 @@ class Hardware(object):
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device """
-        if len(self.class_id) > 0 and class_id != self.class_id:
+
+        if not self.enabled:
             return False
 
-        if len(self.vendor_id) > 0 and vendor_id != self.vendor_id:
+        if self.class_id and class_id != self.class_id:
             return False
 
-        if len(self.devices) > 0 and product_id not in self.devices:
+        if self.vendor_id and vendor_id != self.vendor_id:
+            return False
+
+        if self.devices and product_id not in self.devices:
             return False
 
         return True
 
     def detect(self):
-        """ Tries to guess if a device suitable for this driver is present """
+        """ Tries to guess if a device suitable for this driver is present,
+            used in features screen """
+
+        if not self.enabled:
+            return False
+
         # Get PCI devices
-        lines = subprocess.check_output(["lspci", "-n"]).decode().split("\n")
+        try:
+            cmd = ["lspci", "-n"]
+            lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            lines = lines.decode().split("\n")
+        except subprocess.CalledProcessError as err:
+            logging.warning("Cannot detect hardware components : %s", err.output.decode())
+            return False
+
         for line in lines:
             if len(line) > 0:
                 class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
@@ -106,9 +125,11 @@ class Hardware(object):
             return False
 
     def get_name(self):
+        """ Returns class name """
         return self.class_name
 
     def get_priority(self):
+        """ Get module (driver) priority """
         return self.priority
 
     @staticmethod
@@ -136,24 +157,25 @@ class Hardware(object):
             self.vendor_id,
             self.product_id)
 
-    @staticmethod
     def call_script(self, script_path, dest_dir):
-        if os.path.exists(path):
+        """ Helper function that will run a script """
+        if os.path.exists(script_path):
             cmd = [
                 "/usr/bin/bash",
                 script_path,
                 dest_dir,
                 self.class_name]
             try:
-                subprocess.check_call(cmd, timeout=300)
+                subprocess.check_output(cmd, timeout=300)
                 logging.debug("Script '%s' completed successfully.", script_path)
-            except subprocess.CalledProcessError as process_error:
-                # Even though Post-install script call has failed we will try to continue with the installation.
+            except subprocess.CalledProcessError as err:
+                # Even though Post-install script call has failed we
+                # will try to continue with the installation.
                 logging.error(
-                    "Error running %s script, command %s failed. Output %s",
+                    "Error running %s script, command %s failed: %s",
                     script_path,
-                    process_error.cmd,
-                    process_error.output)
+                    err.cmd,
+                    err.output)
             except subprocess.TimeoutExpired as timeout_error:
                 logging.error(timeout_error)
 
@@ -161,9 +183,10 @@ class Hardware(object):
 class HardwareInstall(object):
     """ This class checks user's hardware
 
-    If 'use_proprietary_graphic_drivers' is True, this module will try to install the proprietary
-    variants of the graphic drivers available (only if the hardware is detected).
-    For non graphical drivers, the open one is always choosen as default.
+    If 'use_proprietary_graphic_drivers' is True, this module will try to
+    install the proprietary variants of the graphic drivers available
+    (only if the hardware is detected). For non graphical drivers,
+    the open one is always choosen as default.
     """
 
     def __init__(self, use_proprietary_graphic_drivers=False):
@@ -172,7 +195,8 @@ class HardwareInstall(object):
         # All available objects
         self.all_objects = []
 
-        # All objects that support devices found (can have more than one object for each device)
+        # All objects that support devices found
+        # (can have more than one object for each device)
         self.objects_found = {}
 
         # All objects that are really used
@@ -181,7 +205,8 @@ class HardwareInstall(object):
         dirs = os.listdir(_HARDWARE_PATH)
 
         # We scan the folder for py files.
-        # This is unsafe, but we don't care if somebody wants Cnchi to run code arbitrarily.
+        # This is unsafe, but we don't care if
+        # somebody wants Cnchi to run code arbitrarily.
         for filename in dirs:
             non_valid = ["__init__.py", "hardware.py"]
             if filename.endswith(".py") and filename not in non_valid:
@@ -199,14 +224,18 @@ class HardwareInstall(object):
                     self.all_objects.append(obj)
                 except ImportError as err:
                     logging.error("Error importing %s from %s : %s", name, package, err)
-                except Exception as err:
-                    logging.error("Unexpected error importing %s: %s", package, err)
+                except Exception as ex:
+                    logging.error("Unexpected error importing %s", package)
+                    template = "An exception of type {0} occured. Arguments:\n{1!r}"
+                    message = template.format(type(ex).__name__, ex.args)
+                    logging.error(message)
 
         try:
             # Detect devices
             devices = self.get_devices()
-        except subprocess.CalledProcessError as process_error:
-            txt = "Unable scan devices, command {0} failed: {1}".format(process_error.cmd, process_error.output)
+        except subprocess.CalledProcessError as err:
+            txt = "Unable to scan devices, command {0} failed: {1}"
+            txt = txt.format(err.cmd, err.output.decode())
             logging.error(txt)
             return
 
@@ -225,6 +254,10 @@ class HardwareInstall(object):
                     vendor_id=vendor_id,
                     product_id=product_id)
                 if check:
+                    logging.debug(
+                        "Driver %s is needed by (%s, %s, %s)",
+                        obj.class_name, class_id, vendor_id, product_id)
+                    # print("Driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
@@ -281,10 +314,14 @@ class HardwareInstall(object):
 
     @staticmethod
     def get_devices():
+        """ Gets a list of all pci/usb devices """
         devices = []
 
         # Get PCI devices
-        lines = subprocess.check_output(["/usr/bin/lspci", "-n"]).decode().split("\n")
+        cmd = ["/usr/bin/lspci", "-n"]
+        lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        lines = lines.decode().split("\n")
+
         for line in lines:
             if len(line) > 0:
                 class_id = line.split()[1].rstrip(":")[0:2]
@@ -292,7 +329,10 @@ class HardwareInstall(object):
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
 
         # Get USB devices
-        lines = subprocess.check_output(["/usr/bin/lsusb"]).decode().split("\n")
+        cmd = ["/usr/bin/lsusb"]
+        lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        lines = lines.decode().split("\n")
+
         for line in lines:
             if len(line) > 0:
                 dev = line.split()[5].split(":")
@@ -319,6 +359,7 @@ class HardwareInstall(object):
         return packages
 
     def get_found_driver_names(self):
+        """ Returns a list of found driver names """
         driver_names = []
         for obj in self.objects_used:
             driver_names.append(obj.get_name())
@@ -334,10 +375,12 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             obj.post_install(dest_dir)
 
+def test():
+    """ Test module function """
+    def _(text):
+        """ Helper function """
+        return text
 
-''' Test case '''
-if __name__ == "__main__":
-    def _(x): return x
     hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
     # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
     hardware_pkgs = hardware_install.get_packages()
@@ -347,21 +390,5 @@ if __name__ == "__main__":
         print("Hardware module added these packages :")
         print(txt)
 
-    """
-    from nvidia import Nvidia
-    if Nvidia().detect():
-        print("Nvidia detected")
-    # Nvidia().post_install("/")
-
-    from nvidia_340xx import Nvidia_340xx
-    if Nvidia_340xx().detect():
-        print("Nvidia-340xx detected")
-
-    from nvidia_304xx import Nvidia_304xx
-    if Nvidia_304xx().detect():
-        print("nvidia-304xx detected")
-
-    from catalyst import Catalyst
-    if Catalyst().detect():
-        print("Catalyst detected")
-    """
+if __name__ == "__main__":
+    test()

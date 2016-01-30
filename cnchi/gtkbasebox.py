@@ -3,7 +3,7 @@
 #
 #  gtkbasebox.py
 #
-#  Copyright © 2013-2015 Antergos
+#  Copyright © 2013-2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -26,15 +26,18 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Cnchi's base class for screens """
 
-from gi.repository import Gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk
 
 import os
 import logging
 
-
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
+
     def __init__(self, child, params, name, prev_page, next_page):
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
@@ -43,10 +46,9 @@ class GtkBaseBox(Gtk.Box):
         self.header = params['header']
         self.main_progressbar = params['main_progressbar']
         self.settings = params['settings']
-        self.testing = params['testing']
         self.ui_dir = params['ui_dir']
         self.process_list = params['process_list']
-
+        self.main_window = params['main_window']
         self.prev_page = prev_page
         self.next_page = next_page
 
@@ -67,19 +69,44 @@ class GtkBaseBox(Gtk.Box):
         child.add(self.ui.get_object(name))
 
     def get_prev_page(self):
+        """ Returns previous screen """
         return self.prev_page
 
     def get_next_page(self):
+        """ Returns next screen """
         return self.next_page
 
     def translate_ui(self):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def prepare(self, direction):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def store_values(self):
+        """ This must be implemented by childen """
         raise NotImplementedError
 
     def get_name(self):
+        """ Return screen name """
         return self.name
+
+    def get_ancestor_window(self):
+        """ Returns first ancestor that is a Gtk Window """
+        return self.get_ancestor(Gtk.Window)
+
+    def get_toplevel_window(self):
+        """ Returns top level window """
+        top = self.main_window
+        if isinstance(top, Gtk.Window):
+            return top
+        else:
+            return None
+
+    def get_main_window(self):
+        """ Returns top level window (main window) """
+        if isinstance(self.main_window, Gtk.Window):
+            return self.main_window
+        else:
+            return None

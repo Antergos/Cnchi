@@ -1,40 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  keyboard_widget.py
+# keyboard_widget.py
 #
-#  Copyright 2013 Manjaro (QT version)
-#  Copyright © 2013-2015 Antergos (GTK version)
+# Copyright © 2013 Manjaro (QT version)
+# Copyright © 2013-2016 Antergos (this GTK version)
 #
-#  This file is part of Cnchi.
+# This file is part of Cnchi.
 #
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  The following additional terms are in effect as per Section 7 of the license:
+# The following additional terms are in effect as per Section 7 of the license:
 #
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
 """ Keyboard widget that shows keyboard layout and variant types to the user """
 
-from gi.repository import Gtk, GObject
-import cairo
 import subprocess
 import math
 import logging
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
+
+import cairo
 
 
 def unicode_to_string(raw):
@@ -47,6 +51,7 @@ def unicode_to_string(raw):
 
 
 class KeyboardWidget(Gtk.DrawingArea):
+    """ Draws a keyboard widget """
     __gtype_name__ = 'KeyboardWidget'
 
     kb_104 = {
@@ -95,6 +100,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         self.kb = None
 
     def set_layout(self, layout):
+        """ Set keymap layout """
         self.layout = layout
 
     def set_font(self):
@@ -152,24 +158,23 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         # Font: TSCu Times
         lst = ["tam_TAB", "tam_TSCII", "tam_unicode"]
-        for i in lst:
-            if self.variant == i:
-                self.font = "TSCu_Times"
+        if self.variant in lst:
+            self.font = "TSCu_Times"
 
         # Font: Telugu
         if self.variant == "tel":
             self.font = "Lohit Telugu"
 
         # Font: Oriya
-        lst = ["af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il", "la", "ma", "pk", "lk", "sy"]
-        for i in lst:
-            if self.layout == i:
-                self.font = "Oriya"
+        lst = [
+            "af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il",
+            "la", "ma", "pk", "lk", "sy"]
+        if self.layout in lst:
+            self.font = "Oriya"
 
         lst = ["geo", "urd-phonetic3", "urd-phonetic", "urd-winkeys"]
-        for i in lst:
-            if self.variant == i:
-                self.font = "Oriya"
+        if self.variant in lst:
+            self.font = "Oriya"
 
         if self.variant == "ori":
             self.font = "Lohit Oriya"
@@ -187,6 +192,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             self.font = "Tlwg Mono"
 
     def set_variant(self, variant):
+        """ Set keymap layout variant """
         self.variant = variant
         self.load_codes()
         self.load_info()
@@ -195,6 +201,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         self.queue_draw()
 
     def load_info(self):
+        """ Get keyboard keys based on keymap layout """
         kbl_104 = ["us", "th"]
         kbl_106 = ["jp"]
 
@@ -213,8 +220,8 @@ class KeyboardWidget(Gtk.DrawingArea):
         degrees = math.pi / 180.0
 
         cr.new_sub_path()
-        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0 * degrees)
-        cr.arc(x + width - radius, y + height - radius, radius, 0 * degrees, 90 * degrees)
+        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
+        cr.arc(x + width - radius, y + height - radius, radius, 0, 90 * degrees)
         cr.arc(x + radius, y + height - radius, radius, 90 * degrees, 180 * degrees)
         cr.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
         cr.close_path()
@@ -262,6 +269,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         # cr.rectangle(0, 0, real_width, real_height)
 
         def draw_row(row, sx, sy, last_end=False):
+            """ Draw a row of the keyboard """
             x = sx
             y = sy
             keys = row
@@ -278,10 +286,13 @@ class KeyboardWidget(Gtk.DrawingArea):
                 px = rect[0] + 5
                 py = rect[1] + rect[3] - (rect[3] / 4)
 
-                if len(self.codes) > 0:
+                if self.codes and len(self.codes) > 0:
                     # Draw lower character
                     cr.set_source_rgb(1.0, 1.0, 1.0)
-                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                    cr.select_font_face(
+                        self.font,
+                        cairo.FONT_SLANT_NORMAL,
+                        cairo.FONT_WEIGHT_BOLD)
                     cr.set_font_size(10)
                     cr.move_to(px, py)
                     cr.show_text(self.regular_text(k))
@@ -291,7 +302,10 @@ class KeyboardWidget(Gtk.DrawingArea):
 
                     # Draw upper character
                     cr.set_source_rgb(0.82, 0.82, 0.82)
-                    cr.select_font_face(self.font, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                    cr.select_font_face(
+                        self.font,
+                        cairo.FONT_SLANT_NORMAL,
+                        cairo.FONT_WEIGHT_NORMAL)
                     cr.set_font_size(8)
                     cr.move_to(px, py)
                     cr.show_text(self.shift_text(k))
@@ -356,7 +370,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             cr.line_to(x1 + w1 - rx, y1)
             cr.arc(x1 + w1 - rx, y1 + rx, rx, -90 * degrees, 0)
             cr.line_to(x1 + w1, y2 + kw - rx)
-            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0 * degrees, 90 * degrees)
+            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0, 90 * degrees)
             cr.line_to(x2 + rx, y2 + kw)
             cr.arc(x2 + rx, y2 + kw - rx, rx, 90 * degrees, 180 * degrees)
             cr.line_to(x2, y1 + kw)
@@ -377,30 +391,35 @@ class KeyboardWidget(Gtk.DrawingArea):
             self.rounded_rectangle(cr, x, y, remaining_widths[2], kw)
 
     def regular_text(self, index):
+        """ Get regular key code  """
         try:
             return self.codes[index - 1][0]
         except IndexError:
             return " "
 
     def shift_text(self, index):
+        """ Get key code when shift is pressed """
         try:
             return self.codes[index - 1][1]
         except IndexError:
             return " "
 
     def ctrl_text(self, index):
+        """ Get key code when ctrl is pressed """
         try:
             return self.codes[index - 1][2]
         except IndexError:
             return " "
 
     def alt_text(self, index):
+        """ Get key code when alt is pressed """
         try:
             return self.codes[index - 1][3]
         except IndexError:
             return " "
 
     def load_codes(self):
+        """ Load keyboard codes """
         if self.layout is None:
             return
 
@@ -417,11 +436,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            # pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=None)
-            # cfile = pipe.communicate()[0].decode("utf-8").split('\n')
             cfile = subprocess.check_output(cmd).decode().split('\n')
         except subprocess.CalledProcessError as process_error:
-            logging.error(process_error)
+            logging.error(
+                "Error running command %s: %s",
+                process_error.cmd,
+                process_error)
             return
 
         # Clear current codes
