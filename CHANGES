@@ -1,3 +1,4 @@
+[2016-01-30 03:03:38 -0600]  prepping for release                                                   Dustin Falgout  {094c31c}
 [2016-01-30 02:41:32 -0600]  prepping for release                                                   Dustin Falgout  {f897ff1}
 [2016-01-29 16:39:03 +0100]  Minor changes                                                              karasu      {d1039a5}
 [2016-01-28 18:16:15 +0100]  Avoid failing if bugsnag returns msg                                       karasu      {fb17c69}
