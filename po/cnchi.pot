@@ -36,6 +36,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 
 #: cnchi/bootinfo.py:74 cnchi/bootinfo.py:88 cnchi/bootinfo.py:171
@@ -71,14 +72,6 @@ msgstr ""
 
 #: cnchi/check.py:110
 msgid "For best results, please ensure that this computer:"
-msgstr ""
-
-#: cnchi/check.py:228 cnchi/desktop.py:231 cnchi/features.py:357
-#: cnchi/installation/advanced.py:2390 cnchi/installation/automatic.py:364
-#: cnchi/installation/install.py:65 cnchi/installation/special_dirs.py:38
-#: cnchi/installation/zfs.py:1083 cnchi/keymap.py:313 cnchi/language.py:214
-#: cnchi/location.py:281 cnchi/show_message.py:127 cnchi/wireless.py:161
-msgid ""
 msgstr ""
 
 #: cnchi/cnchi.py:103
@@ -1696,4 +1689,3 @@ msgstr ""
 #: cnchi/wireless.py:73
 msgid "Display password"
 msgstr ""
-
