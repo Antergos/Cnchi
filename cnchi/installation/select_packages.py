@@ -234,7 +234,7 @@ class SelectPackages(object):
                     pkg_text = base_name + locale
             else:
                 # All the other language packs use their language code
-                lang_code = self.settings.get('language_code')
+                lang_code = self.settings.get('language_code').lower()
                 pkg_text = base_name + lang_code
             if pkg_text:
                 logging.debug("Selected kde language pack: %s", pkg_text)
