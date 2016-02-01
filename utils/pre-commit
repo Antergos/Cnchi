@@ -30,7 +30,7 @@ if [[ -e "${INFO_PY}" ]]; then
 
 	echo "Will set new version to be $SUGGESTED_VERSION"
 	sed -i "s|$BASE_STRING|$SUGGESTED_VERSION|g" ${INFO_PY}
-	git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.12.0"...HEAD > CHANGES
+	git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.14.0"...HEAD > CHANGES
 
 	echo "updating update.info..."
 	python utils/generate_update_info.py
