@@ -283,6 +283,8 @@ class MainWindow(Gtk.ApplicationWindow):
             # Hide progress bar
             self.progressbar.hide()
 
+        self.set_focus(None)
+
         misc.gtk_refresh()
 
     def load_pages(self):

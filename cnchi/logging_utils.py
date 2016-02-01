@@ -34,21 +34,27 @@ import os
 from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
 
 
-class Singleton(logging.Filter):
+class Singleton(type):
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __call__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super(Singleton, cls).__new__(cls, *args)
-            cls._instance.id = None
-            cls._instance.install = None
-            cls._instance.api_key = None
-            cls._instance.have_install_id = False
-            cls._instance.after_location_screen = False
+            cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
+
         return cls._instance
 
+    def __new__(cls, *args, **kwargs):
+        obj = super().__new__(cls, *args, **kwargs)
+        obj.ip = None
+        obj.install_id = None
+        obj.api_key = None
+        obj.have_install_id = False
+        obj.after_location_screen = False
 
-class ContextFilter(Singleton):
+        return obj
+
+
+class ContextFilter(logging.Filter, metaclass=Singleton):
     def __init__(self):
         super().__init__()
 
@@ -58,8 +64,8 @@ class ContextFilter(Singleton):
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
         record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        record.id = self.id
-        record.install = self.install
+        record.ip = self.ip
+        record.install_id = self.install_id
         return True
 
     def get_and_save_install_id(self, is_location_screen=False):
@@ -70,8 +76,8 @@ class ContextFilter(Singleton):
             self.after_location_screen = True
 
         if 'development' == CNCHI_RELEASE_STAGE:
-            self.install = 'development'
-            self.id = '0.0.0.0'
+            self.install_id = 'development'
+            self.ip = '0.0.0.0'
             self.have_install_id = True
             return
 
@@ -89,8 +95,8 @@ class ContextFilter(Singleton):
             return
 
         try:
-            self.id = info['ip']
-            self.install = info['id']
+            self.ip = info['ip']
+            self.install_id = info['id']
             self.have_install_id = True
         except (TypeError, KeyError):
             self.have_install_id = False
@@ -120,9 +126,9 @@ class ContextFilter(Singleton):
                 self.get_and_save_install_id()
 
             notification.user = {
-                "id": self.id,
+                "id": self.ip,
                 "name": "Antergos User",
-                "install_id": self.install}
+                "install_id": self.install_id}
             return notification
 
     def send_install_result(self, result):
@@ -130,12 +136,13 @@ class ContextFilter(Singleton):
             build_server = self.get_url_for_id_request()
             if build_server:
                 url = "{0}&install_id={1}&result={2}"
-                url = url.format(build_server, self.install, result)
+                url = url.format(build_server, self.install_id, result)
                 headers = {'X-Cnchi-Installer': CNCHI_VERSION}
                 r = requests.get(url, headers=headers)
                 res = json.loads(r.json())
         except Exception as ex:
             logger = logging.getLogger()
-            template = "Can't send install result. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't send install result. An exception of type {0} occured. "
+            template += "Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logger.error(message)
