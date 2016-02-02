@@ -1,2 +1,3 @@
+[2016-02-01 09:11:12 -0600]  minor changes to logging context handler                               Dustin Falgout  {ced7869}
 [2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils (cherry picked from commit ..  Dustin Falgout  {3489a66}
 [2016-02-01 08:20:17 -0600]  update precommit hook                                                  Dustin Falgout  {a73314a}
