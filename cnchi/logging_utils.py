@@ -43,13 +43,16 @@ class Singleton(type):
 
         return cls._instance
 
-    def __new__(cls, *args, **kwargs):
-        obj = super().__new__(cls, *args, **kwargs)
+    def __new__(mcs, *args, **kwargs):
+        obj = super().__new__(mcs, *args, **kwargs)
         obj.ip = None
         obj.install_id = None
         obj.api_key = None
         obj.have_install_id = False
         obj.after_location_screen = False
+        obj.name = 'Cnchi'
+        obj.description = 'Installer'
+        obj.key = 'X-{}-{}'.format(obj.name, obj.description)
 
         return obj
 
@@ -83,7 +86,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
         info = None
         url = self.get_url_for_id_request()
-        headers = {'X-Cnchi-Installer': CNCHI_VERSION}
+        headers = {self.key: CNCHI_VERSION}
 
         try:
             r = requests.get(url, headers=headers)
@@ -103,7 +106,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
     @staticmethod
     def get_bugsnag_api():
-        config_path = '/etc/raven.conf'
+        config_path = '/etc/cnchi.conf'
         bugsnag_api = None
 
         if os.path.exists(config_path):
@@ -115,9 +118,20 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
     def get_url_for_id_request(self):
         build_server = None
         if self.api_key and 'development' != CNCHI_RELEASE_STAGE:
-            build_srv = ['http://build', 'antergos', 'com']
-            build_srv_query = ['/hook', 'cnchi=', self.api_key]
-            build_server = '.'.join(build_srv) + '?'.join(build_srv_query)
+            parts = {
+                1: 'com',
+                2: 'http',
+                3: 'hook',
+                4: 'build',
+                5: 'antergos',
+                6: 'cnchi',
+                7: '://'
+            }
+            build_server = '{}{}{}.{}.{}/{}?{}={}'.format(
+                parts[2], parts[7], parts[4], parts[5],
+                parts[1], parts[3], parts[6], self.api_key
+            )
+
         return build_server
 
     def bugsnag_before_notify_callback(self, notification=None):
@@ -134,10 +148,10 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
     def send_install_result(self, result):
         try:
             build_server = self.get_url_for_id_request()
-            if build_server:
+            if build_server and self.install_id:
                 url = "{0}&install_id={1}&result={2}"
                 url = url.format(build_server, self.install_id, result)
-                headers = {'X-Cnchi-Installer': CNCHI_VERSION}
+                headers = {self.key: CNCHI_VERSION}
                 r = requests.get(url, headers=headers)
                 res = json.loads(r.json())
         except Exception as ex:
