@@ -43,9 +43,9 @@ def handle_match(match):
 
 
 if __name__ == '__main__':
-    with open('/tmp/cnchi_tmp.pot', 'r') as pot_file:
+    with open('/tmp/cnchi_py.pot', 'r') as pot_file:
         contents = pot_file.read()
-        cleaned = re.sub('msgid ""\nmsgstr ""', handle_match, contents)
-        cleaned = re.sub('"Project-Id-Version: PACKAGE VERSION\\\\n"', version_string, cleaned)
-    with open('/tmp/cnchi_tmp.pot', 'w') as cleaned_file:
+        cleaned = re.sub(r'msgid ""\nmsgstr ""', handle_match, contents)
+        cleaned = re.sub(r'"Project-Id-Version: PACKAGE VERSION\\\\n"', version_string, cleaned)
+    with open('/tmp/cnchi_py.pot', 'w') as cleaned_file:
         cleaned_file.write(cleaned)

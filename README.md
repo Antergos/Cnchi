@@ -7,13 +7,13 @@ You are viewing the `master` branch.
 
 ## Current Status
 
-This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
+This is the latest, unreleased version of Cnchi code, AKA: **Cnchi Next**.
 
 |Development Stage|Version| Code State|
 ----------------- | -------------- | -------- |
 |*Cnchi Legacy*|*v0.12.46*|*Frozen*|
-|**Cnchi Stable**|**v0.14.x**|**Bug Fixes Only**|
-|Cnchi Next | v0.15.x | Active Development|
+|Cnchi Stable|v0.14.x|Bug Fixes Only|
+|**Cnchi Next** | **v0.15.x** | **Active Development**|
 
 
 ## Usage:
