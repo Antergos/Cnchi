@@ -43,7 +43,7 @@ _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
 
 if [ -f /usr/bin/python3 ]; then
-    _PYTHON="/usr/bin/python3"
+	_PYTHON="/usr/bin/python3"
 fi
 
 sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1

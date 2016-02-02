@@ -83,10 +83,11 @@ def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
 class InstallationZFS(GtkBaseBox):
     """ ZFS installation screen class """
     def __init__(
-            self, params, prev_page="installation_ask", next_page="summary"):
-        super().__init__(self, params, "zfs", prev_page, next_page)
+            self, params, prev_page="installation_ask", next_page="summary", **kwargs):
+        super().__init__(self, params, "zfs", prev_page, next_page, **kwargs)
 
         self.page = self.ui.get_object('zfs')
+        self.title = _('ZFS Setup')
 
         self.disks = None
         self.diskdic = {}

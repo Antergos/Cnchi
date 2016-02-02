@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  info.py
+#  poodle.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2015 Antergos
 #
-#  This file is part of Cnchi.
+#  This file is part of Antergos Package Assistant, (Poodle).
 #
-#  Cnchi is free software; you can redistribute it and/or modify
+#  Poodle is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
+#  Poodle is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -26,12 +26,26 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+import re
+import info
 
-""" Set some Cnchi global constants """
+version_string = '"Project-Id-Version: CNCHI ' + info.CNCHI_VERSION + '\\\\n"'
+first = True
 
-CNCHI_VERSION = "0.15.2"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
+
+def handle_match(match):
+    global first
+    if first:
+        first = False
+        return match.group(0)
+
+    return ''
+
 
 if __name__ == '__main__':
-    print(CNCHI_VERSION)
+    with open('/tmp/cnchi_tmp.pot', 'r') as pot_file:
+        contents = pot_file.read()
+        cleaned = re.sub('msgid ""\nmsgstr ""', handle_match, contents)
+        cleaned = re.sub('"Project-Id-Version: PACKAGE VERSION\\\\n"', version_string, cleaned)
+    with open('/tmp/cnchi_tmp.pot', 'w') as cleaned_file:
+        cleaned_file.write(cleaned)

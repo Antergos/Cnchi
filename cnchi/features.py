@@ -51,11 +51,14 @@ COL_SWITCH = 3
 class Features(GtkBaseBox):
     """ Features screen class """
 
-    def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
+    def __init__(self, params, prev_page="desktop", next_page="disk_grp", **kwargs):
         """ Initializes features ui """
-        super().__init__(self, params, "features", prev_page, next_page)
+        super().__init__(self, params, name="features", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.listbox_rows = {}
+        self.title = _("Features")
+        self.in_group = True
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
@@ -161,12 +164,15 @@ class Features(GtkBaseBox):
             switch.set_property('margin_top', 10)
             switch.set_property('margin_bottom', 10)
             switch.set_property('margin_end', 10)
+            switch.get_style_context().add_class('switch')
+            switch.set_property('width_request', 200)
             self.listbox_rows[feature].append(switch)
             box.pack_end(switch, False, False, 0)
 
             # Add row to our gtklist
             self.listbox.add(box)
 
+        self.listbox.get_style_context().add_class('list_box')
         self.listbox.show_all()
 
     @staticmethod
@@ -208,9 +214,7 @@ class Features(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
 
-        desktop = self.settings.get('desktop')
-        txt = desktop_info.NAMES[desktop] + " - " + _("Feature Selection")
-        self.header.set_subtitle(txt)
+        self.header.set_subtitle(self.title)
 
         for feature in self.features:
             if feature == "graphic_drivers":

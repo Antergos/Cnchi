@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<interface>
+<interface domain="cnchi">
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkGrid" id="grid1">
     <property name="visible">True</property>

@@ -56,9 +56,10 @@ MIN_ROOT_SIZE = 6000000000
 class Summary(GtkBaseBox):
     """ Summary Screen """
 
-    def __init__(self, params, prev_page="", next_page="user_info"):
+    def __init__(self, params, prev_page="user_info", next_page="slides", **kwargs):
         """ Init class ui """
-        super().__init__(self, params, "summary", prev_page, next_page)
+        super().__init__(self, params, name="summary", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.main_window = params['main_window']
 
@@ -71,11 +72,11 @@ class Summary(GtkBaseBox):
 
         self.num_features = 0
         self.process = None
+        self.title = _("Review")
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("Installation Summary")
-        self.header.set_subtitle(txt)
+        # self.header.set_subtitle(self.title)
 
         items = {
             "location": _("Location"),
@@ -136,7 +137,7 @@ class Summary(GtkBaseBox):
             txt = ""
             statebox = self.ui.get_object("partitions_statebox")
             changes = install_screen.get_changes()
-            if changes == None or len(changes) == 0:
+            if not changes:
                 txt = _("Error getting changes from install screen")
                 logging.error("Error getting changes from install screen")
             else:
@@ -154,7 +155,7 @@ class Summary(GtkBaseBox):
         page = "installation_" + self.settings.get('partition_mode')
         install_screen = None
         try:
-            install_screen = self.main_window.pages[page]
+            install_screen = self.main_window.pages['disk_grp'][page]
         except (AttributeError, KeyError) as page_error:
             msg = "Can't find installation page called {0}: {1}"
             msg = msg.format(page, page_error)
@@ -198,8 +199,8 @@ class Summary(GtkBaseBox):
 
     def get_prev_page(self):
         """ Gets previous page """
-        page = "installation_" + self.settings.get('partition_mode')
-        return page
+        # page = "installation_" + self.settings.get('partition_mode')
+        return self.prev_page
 
 
 if __name__ == '__main__':

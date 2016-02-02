@@ -1,3 +1,4 @@
+[2016-02-01 22:39:59 -0600]  start v0.15 dev cycle                                                  Dustin Falgout  {ebc1964}
 [2016-02-01 20:41:39 -0600]  further obfuscate the url and api key to avoid spam bots harvesting..  Dustin Falgout  {8ac523c}
 [2016-02-01 09:11:12 -0600]  minor changes to logging context handler                               Dustin Falgout  {ced7869}
 [2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils (cherry picked from commit ..  Dustin Falgout  {3489a66}

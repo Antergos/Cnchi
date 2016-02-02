@@ -40,7 +40,7 @@ from gi.repository import GdkPixbuf
 
 class Welcome(GtkBaseBox):
     """ Welcome screen class """
-    def __init__(self, params, prev_page=None, next_page="language"):
+    def __init__(self, params, prev_page=None, next_page="check"):
         super().__init__(self, params, "welcome", prev_page, next_page)
 
         data_dir = self.settings.get('data')
@@ -102,9 +102,6 @@ class Welcome(GtkBaseBox):
 
         txt = _("Install It")
         self.buttons['graph'].set_label(txt)
-
-        txt = _("Welcome to Antergos!")
-        self.header.set_subtitle(txt)
 
     def quit_cnchi(self):
         misc.remove_temp_files()

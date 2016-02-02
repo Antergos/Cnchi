@@ -51,9 +51,10 @@ SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
 
 
 class Slides(GtkBaseBox):
-    def __init__(self, params, prev_page=None, next_page=None):
+    def __init__(self, params, prev_page=None, next_page=None, **kwargs):
         """ Initialize class and its vars """
-        super().__init__(self, params, "slides", prev_page, next_page)
+        super().__init__(self, params,
+                         name="slides", prev_page=prev_page, next_page=next_page, **kwargs)
 
         self.progress_bar = self.ui.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
@@ -64,6 +65,7 @@ class Slides(GtkBaseBox):
         self.downloads_progress_bar.set_name('a_progressbar')
 
         self.info_label = self.ui.get_object("info_label")
+        self.title = _('Install')
 
         self.fatal_error = False
         self.should_pulse = False
@@ -79,8 +81,6 @@ class Slides(GtkBaseBox):
         if len(self.info_label.get_label()) <= 0:
             self.set_message(_("Please wait..."))
 
-        self.header.set_subtitle(_("Installing Antergos..."))
-
     def prepare(self, direction):
         """ Prepare slides screen """
         # We don't load webkit until we reach this screen
@@ -94,7 +94,7 @@ class Slides(GtkBaseBox):
 
             self.scrolled_window.add(self.web_view)
             self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-            self.scrolled_window.set_size_request(800, 335)
+            # self.scrolled_window.set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
@@ -105,13 +105,8 @@ class Slides(GtkBaseBox):
         # Also hide total downloads progress bar
         self.downloads_progress_bar.hide()
 
-        # Hide backwards and forwards buttons
-        self.backwards_button.hide()
+        # Hide forwards buttons
         self.forward_button.hide()
-
-        # Hide close button (we've reached the point of no return)
-        self.header.set_show_close_button(False)
-
 
     @staticmethod
     def store_values():
@@ -148,7 +143,7 @@ class Slides(GtkBaseBox):
             GLib.timeout_add(100, pbar_pulse)
 
     def manage_events_from_cb_queue(self):
-        """ We should be quick here and do as less as possible """
+        """ We should be quick here and do as little as possible """
 
         if self.fatal_error:
             return False

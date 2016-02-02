@@ -1,43 +1,18 @@
-#  cnchi.pot
-#
-#  Copyright © 2013-2016 Antergos
-#
-#  This file is part of Cnchi.
-#
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  The following additional terms are in effect as per Section 7 of the license:
-#
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Cnchi 0.14.0\n"
-"POT-Creation-Date: 2016-01-30 04:04-0600\n"
+"Project-Id-Version: CNCHI 0.13.367\n"
+"POT-Creation-Date: 2015-12-24 15:19-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: English (http://www.transifex.com/faidoc/antergos/language/en/)\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-
 
 #: cnchi/bootinfo.py:74 cnchi/bootinfo.py:88 cnchi/bootinfo.py:171
 #: cnchi/bootinfo.py:176 cnchi/bootinfo.py:185 cnchi/bootinfo.py:202
@@ -46,36 +21,45 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: cnchi/check.py:81
+#: cnchi/check.py:63
 msgid "System Check"
 msgstr ""
 
-#: cnchi/check.py:85
+#: cnchi/check.py:87
 msgid "Cnchi is up to date"
 msgstr ""
 
-#: cnchi/check.py:89
+#: cnchi/check.py:91
 msgid "has at least {0}GB available storage space. (*)"
 msgstr ""
 
-#: cnchi/check.py:93
-msgid "This highly depends on which desktop environment you choose, so you might need more space."
+#: cnchi/check.py:95
+msgid ""
+"This highly depends on which desktop environment you choose, so you might "
+"need more space."
 msgstr ""
 
-#: cnchi/check.py:102
+#: cnchi/check.py:104
 msgid "is plugged in to a power source"
 msgstr ""
 
-#: cnchi/check.py:106
+#: cnchi/check.py:108
 msgid "is connected to the Internet"
 msgstr ""
 
-#: cnchi/check.py:110
+#: cnchi/check.py:112
 msgid "For best results, please ensure that this computer:"
 msgstr ""
 
+#: cnchi/check.py:236 cnchi/desktop.py:233 cnchi/features.py:354
+#: cnchi/installation/advanced.py:2385 cnchi/installation/automatic.py:368
+#: cnchi/installation/install.py:65 cnchi/installation/special_dirs.py:38
+#: cnchi/installation/zfs.py:977 cnchi/keymap.py:316 cnchi/language.py:220
+#: cnchi/location.py:281 cnchi/show_message.py:115 cnchi/wireless.py:161
 #: cnchi/cnchi.py:103
-msgid "This installer must be run with administrative privileges, and cannot continue without them."
+msgid ""
+"This installer must be run with administrative privileges, and cannot "
+"continue without them."
 msgstr ""
 
 #: cnchi/cnchi.py:110
@@ -89,112 +73,144 @@ msgid ""
 "Offending file: '{0}'"
 msgstr ""
 
-#: cnchi/cnchi.py:334
+#: cnchi/cnchi.py:315
 msgid "Cnchi v{0} - Antergos Installer"
 msgstr ""
 
-#: cnchi/cnchi.py:339
+#: cnchi/cnchi.py:320
 msgid "Use pre-downloaded xz packages when possible"
 msgstr ""
 
-#: cnchi/cnchi.py:343
+#: cnchi/cnchi.py:324
 msgid "Sets Cnchi log level to 'debug'"
 msgstr ""
 
-#: cnchi/cnchi.py:347
+#: cnchi/cnchi.py:328
 msgid "Sets the Desktop Environment that will be installed"
 msgstr ""
 
-#: cnchi/cnchi.py:351
+#: cnchi/cnchi.py:332
 msgid "Runs cnchi even if it detects that another instance is running"
 msgstr ""
 
-#: cnchi/cnchi.py:355
+#: cnchi/cnchi.py:336
 msgid "Disables first screen's 'try it' option"
 msgstr ""
 
-#: cnchi/cnchi.py:359
+#: cnchi/cnchi.py:340
 msgid "Makes checks optional in check screen"
 msgstr ""
 
-#: cnchi/cnchi.py:363
-msgid "Install the packages referenced by a local xml instead of the default ones"
+#: cnchi/cnchi.py:344
+msgid ""
+"Install the packages referenced by a local xml instead of the default ones"
 msgstr ""
 
-#: cnchi/cnchi.py:367
-msgid "Choose to which log server send Cnchi logs. Expects a hostname or an IP address"
+#: cnchi/cnchi.py:348
+msgid ""
+"Choose to which log server send Cnchi logs. Expects a hostname or an IP "
+"address"
 msgstr ""
 
-#: cnchi/cnchi.py:372
+#: cnchi/cnchi.py:353
 msgid "Upgrade/downgrade Cnchi to the web version"
 msgstr ""
 
-#: cnchi/cnchi.py:376
+#: cnchi/cnchi.py:357
 msgid "Do not search for new Cnchi versions online"
 msgstr ""
 
-#: cnchi/cnchi.py:380
+#: cnchi/cnchi.py:361
 msgid "Do not try to rank Arch and Antergos mirrors"
 msgstr ""
 
-#: cnchi/cnchi.py:384
+#: cnchi/cnchi.py:365
 msgid "Show logging messages to stdout"
 msgstr ""
 
-#: cnchi/cnchi.py:388
+#: cnchi/cnchi.py:369
 msgid "Show Cnchi version and quit"
 msgstr ""
 
-#: cnchi/cnchi.py:392
+#: cnchi/cnchi.py:373
 msgid "Show options in development (for developers only, do not use this!)"
 msgstr ""
 
-#: cnchi/cnchi.py:472
+#: cnchi/cnchi.py:453
 msgid "Cnchi files not found. Please, install Cnchi using pacman"
 msgstr ""
 
-#: cnchi/cnchi.py:493
+#: cnchi/cnchi.py:470
 msgid "Cnchi (Antergos Installer) version {0}"
 msgstr ""
 
-#: cnchi/desktop.py:124
-msgid "Choose Your Desktop"
+#: cnchi/desktop.py:53
+msgid "Desktop Selection"
 msgstr ""
 
-#: cnchi/desktop_info.py:104
-msgid "GNOME 3 is an easy and elegant way to use your computer. It features the Activities Overview which is an easy way to access all your basic tasks."
+#: cnchi/desktop_info.py:129
+msgid ""
+"GNOME 3 is an easy and elegant way to use your computer. It features the "
+"Activities Overview which is an easy way to access all your basic tasks."
 msgstr ""
 
-#: cnchi/desktop_info.py:108
-msgid "Cinnamon is a Linux desktop which provides advanced, innovative features and a traditional desktop user experience. Cinnamon aims to make users feel at home by providing them with an easy-to-use and comfortable desktop experience."
+#: cnchi/desktop_info.py:133
+msgid ""
+"Cinnamon is a Linux desktop which provides advanced, innovative features and "
+"a traditional desktop user experience. Cinnamon aims to make users feel at "
+"home by providing them with an easy-to-use and comfortable desktop "
+"experience."
 msgstr ""
 
-#: cnchi/desktop_info.py:113
-msgid "Xfce is a lightweight desktop environment. It aims to be fast and low on system resources, while remaining visually appealing and user friendly. It suitable for use on older computers and those with lower-end hardware specifications. "
+#: cnchi/desktop_info.py:138
+msgid ""
+"Xfce is a lightweight desktop environment. It aims to be fast and low on "
+"system resources, while remaining visually appealing and user friendly. It "
+"suitable for use on older computers and those with lower-end hardware "
+"specifications. "
 msgstr ""
 
-#: cnchi/desktop_info.py:118
-msgid "Not actually a desktop environment, Openbox is a highly configurable window manager. It is known for its minimalistic appearance and its flexibility. It is the most lightweight graphical option offered by antergos. Please Note: Openbox is not recommended for users who are new to Linux."
+#: cnchi/desktop_info.py:143
+msgid ""
+"Not actually a desktop environment, Openbox is a highly configurable window "
+"manager. It is known for its minimalistic appearance and its flexibility. It "
+"is the most lightweight graphical option offered by antergos. Please Note: "
+"Openbox is not recommended for users who are new to Linux."
 msgstr ""
 
-#: cnchi/desktop_info.py:124
-msgid "Enlightenment is not just a window manager for Linux/X11 and others, but also a whole suite of libraries to help you create beautiful user interfaces with much less work"
+#: cnchi/desktop_info.py:149
+msgid ""
+"Enlightenment is not just a window manager for Linux/X11 and others, but "
+"also a whole suite of libraries to help you create beautiful user interfaces "
+"with much less work"
 msgstr ""
 
-#: cnchi/desktop_info.py:128
-msgid "If you are looking for a familiar working environment, KDE's Plasma Desktop offers all the tools required for a modern desktop computing experience so you can be productive right from the start."
+#: cnchi/desktop_info.py:153
+msgid ""
+"If you are looking for a familiar working environment, KDE's Plasma Desktop "
+"offers all the tools required for a modern desktop computing experience so "
+"you can be productive right from the start."
 msgstr ""
 
-#: cnchi/desktop_info.py:132
-msgid "LXQt is the next-generation of LXDE, the Lightweight Desktop Environment. It is lightweight, modular, blazing-fast, and user-friendly."
+#: cnchi/desktop_info.py:157
+msgid ""
+"LXQt is the next-generation of LXDE, the Lightweight Desktop Environment. It "
+"is lightweight, modular, blazing-fast, and user-friendly."
 msgstr ""
 
-#: cnchi/desktop_info.py:136
-msgid "This option will install Antergos as command-line only system, without any type of graphical interface. After the installation you can customize Antergos by installing packages with the command-line package manager."
+#: cnchi/desktop_info.py:161
+msgid ""
+"This option will install Antergos as command-line only system, without any "
+"type of graphical interface. After the installation you can customize "
+"Antergos by installing packages with the command-line package manager."
 msgstr ""
 
-#: cnchi/desktop_info.py:140
-msgid "MATE is an intuitive, attractive, and lightweight desktop environment which provides a more traditional desktop experience. Accelerated compositing is supported, but not required to run MATE making it suitable for lower-end hardware."
+#: cnchi/desktop_info.py:165
+msgid ""
+"MATE is an intuitive, attractive, and lightweight desktop environment which "
+"provides a more traditional desktop experience. Accelerated compositing is "
+"supported, but not required to run MATE making it suitable for lower-end "
+"hardware."
 msgstr ""
 
 #: cnchi/download/download.py:92
@@ -209,7 +225,7 @@ msgstr ""
 msgid "Creating the list of packages to download..."
 msgstr ""
 
-#: cnchi/download/download.py:146
+#: cnchi/download/download.py:144
 msgid "Error creating metalink for package {0}. Installation will stop"
 msgstr ""
 
@@ -217,8 +233,8 @@ msgstr ""
 msgid "Fetching {0} {1} ({2}/{3})..."
 msgstr ""
 
-#: cnchi/features.py:212
-msgid "Feature Selection"
+#: cnchi/features.py:60 cnchi/summary.py:86
+msgid "Features"
 msgstr ""
 
 #: cnchi/features.py:284
@@ -525,259 +541,268 @@ msgstr ""
 msgid "and not encrypted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:280 cnchi/installation/advanced.py:667
-#: cnchi/installation/advanced.py:681
+#: cnchi/installation/advanced.py:87
+msgid "Advanced Mode"
+msgstr ""
+
+#: cnchi/installation/advanced.py:281 cnchi/installation/advanced.py:668
+#: cnchi/installation/advanced.py:682
 msgid "free space"
 msgstr ""
 
-#: cnchi/installation/advanced.py:431 cnchi/installation/zfs.py:183
+#: cnchi/installation/advanced.py:432 cnchi/installation/zfs.py:175
 msgid "Device"
 msgstr ""
 
-#: cnchi/installation/advanced.py:434
+#: cnchi/installation/advanced.py:435
 msgid "Type"
 msgstr ""
 
-#: cnchi/installation/advanced.py:437
+#: cnchi/installation/advanced.py:438
 msgid "Mount point"
 msgstr ""
 
-#: cnchi/installation/advanced.py:440
+#: cnchi/installation/advanced.py:441
 msgid "Label"
 msgstr ""
 
-#: cnchi/installation/advanced.py:447
+#: cnchi/installation/advanced.py:448
 msgid "Format"
 msgstr ""
 
-#: cnchi/installation/advanced.py:454
+#: cnchi/installation/advanced.py:455
 msgid "Size"
 msgstr ""
 
-#: cnchi/installation/advanced.py:457
+#: cnchi/installation/advanced.py:458
 msgid "Used"
 msgstr ""
 
-#: cnchi/installation/advanced.py:460
+#: cnchi/installation/advanced.py:461
 msgid "Flags"
 msgstr ""
 
-#: cnchi/installation/advanced.py:467
+#: cnchi/installation/advanced.py:468
 msgid "SSD"
 msgstr ""
 
-#: cnchi/installation/advanced.py:649
+#: cnchi/installation/advanced.py:650
 msgid "none"
 msgstr ""
 
-#: cnchi/installation/advanced.py:706
+#: cnchi/installation/advanced.py:707
 msgid "Unknown"
 msgstr ""
 
-#: cnchi/installation/advanced.py:865
+#: cnchi/installation/advanced.py:866
 msgid "Can't use same mount point twice."
 msgstr ""
 
-#: cnchi/installation/advanced.py:867
+#: cnchi/installation/advanced.py:868
 msgid "Root partition must be formatted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1137
+#: cnchi/installation/advanced.py:1134
 msgid "Sorry, you already have {0} primary partitions created."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1142
+#: cnchi/installation/advanced.py:1139
 msgid "Sorry, you already have {0} primary and 1 extended partitions created."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1207
+#: cnchi/installation/advanced.py:1204
 msgid "Can't use same mount point twice..."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1320
+#: cnchi/installation/advanced.py:1317
 msgid "Using LUKS encryption will DELETE all partition contents!"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1334
+#: cnchi/installation/advanced.py:1331
 msgid "LUKS passwords do not match!"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1466
+#: cnchi/installation/advanced.py:1463
 msgid "Advanced Installation Mode"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1468 cnchi/installation/automatic.py:112
+#: cnchi/installation/advanced.py:1465 cnchi/installation/automatic.py:116
 msgid "Use the device below for boot loader installation:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1473 cnchi/installation/automatic.py:117
+#: cnchi/installation/advanced.py:1470 cnchi/installation/automatic.py:121
+#: ui/installation_automatic.ui:150 ui/installation_advanced.ui:1050
 msgid "Bootloader:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1477 cnchi/installation/automatic.py:121
+#: cnchi/installation/advanced.py:1474 cnchi/installation/automatic.py:125
+#: ui/installation_automatic.ui:175 ui/installation_advanced.ui:1076
 msgid "Device:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1481
+#: cnchi/installation/advanced.py:1478
 msgid "Mount Checklist:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1487
+#: cnchi/installation/advanced.py:1484
 msgid "Root"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1491
+#: cnchi/installation/advanced.py:1488 ui/bootloader.ui:7
 msgid "Boot"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1495
+#: cnchi/installation/advanced.py:1492
 msgid "EFI"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1499
+#: cnchi/installation/advanced.py:1496
 msgid "Swap"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1509
+#: cnchi/installation/advanced.py:1506
 msgid "Undo"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1512
+#: cnchi/installation/advanced.py:1509
 msgid "New"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1515
+#: cnchi/installation/advanced.py:1512
 msgid "Delete"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1518
+#: cnchi/installation/advanced.py:1515
 msgid "Edit..."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1521
+#: cnchi/installation/advanced.py:1518
 msgid "New partition table"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1532
+#: cnchi/installation/advanced.py:1529
 msgid "_Cancel"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1543
+#: cnchi/installation/advanced.py:1540
 msgid "_Apply"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1547
+#: cnchi/installation/advanced.py:1544 ui/installation_advanced.ui:383
 msgid "Create partition"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1549
+#: cnchi/installation/advanced.py:1546 ui/installation_advanced.ui:422
 msgid "Location:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1553
+#: cnchi/installation/advanced.py:1550 ui/installation_advanced.ui:406
 msgid "Size:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1557
+#: cnchi/installation/advanced.py:1554 ui/installation_advanced.ui:605
 msgid "Type:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1561
+#: cnchi/installation/advanced.py:1558 ui/installation_advanced.ui:622
 msgid "Primary"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1565
+#: cnchi/installation/advanced.py:1562 ui/installation_advanced.ui:641
 msgid "Logical"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1569
+#: cnchi/installation/advanced.py:1566 ui/installation_advanced.ui:659
 msgid "Extended"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1573
+#: cnchi/installation/advanced.py:1570 ui/installation_advanced.ui:510
 msgid "Beginning of this space"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1577
+#: cnchi/installation/advanced.py:1574 ui/installation_advanced.ui:529
 msgid "End of this space"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1581 cnchi/installation/advanced.py:1598
+#: cnchi/installation/advanced.py:1578 cnchi/installation/advanced.py:1595
 msgid "Use As:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1585 cnchi/installation/advanced.py:1602
+#: cnchi/installation/advanced.py:1582 cnchi/installation/advanced.py:1599
 msgid "Mount Point:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1589 cnchi/installation/advanced.py:1606
+#: cnchi/installation/advanced.py:1586 cnchi/installation/advanced.py:1603
+#: ui/installation_advanced.ui:252 ui/installation_advanced.ui:688
 msgid "Label (optional):"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1593 cnchi/installation/advanced.py:1614
+#: cnchi/installation/advanced.py:1590 cnchi/installation/advanced.py:1611
 msgid "Encryption Options..."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1610
+#: cnchi/installation/advanced.py:1607 ui/installation_advanced.ui:279
 msgid "Format:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1619
+#: cnchi/installation/advanced.py:1616
 msgid "Partition Table Type:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1624
+#: cnchi/installation/advanced.py:1621
 msgid "Create Partition Table"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1628
+#: cnchi/installation/advanced.py:1625 ui/installation_advanced.ui:1115
 msgid "Encryption properties"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1630
+#: cnchi/installation/advanced.py:1627 ui/installation_advanced.ui:1230
 msgid "Use LUKS encryption:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1634
+#: cnchi/installation/advanced.py:1631 ui/installation_advanced.ui:1181
 msgid "LUKS volume name:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1638 cnchi/wireless.py:72
+#: cnchi/installation/advanced.py:1635 cnchi/wireless.py:72 ui/zfs.ui:202
+#: ui/installation_advanced.ui:1193
 msgid "Password:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1642
+#: cnchi/installation/advanced.py:1639 ui/installation_advanced.ui:1205
 msgid "Confirm password:"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1730
+#: cnchi/installation/advanced.py:1727
 msgid ""
-"GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
+"GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img "
+"file due to lack of post-MBR embed gap in GPT disks.\n"
 "\n"
 "Cnchi will create this BIOS Boot Partition for you."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1796
+#: cnchi/installation/advanced.py:1793
 msgid "Couldn't create BIOS GPT Boot partition: {0}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1961
+#: cnchi/installation/advanced.py:1958
 msgid "{0} is already mounted as swap, to continue it will be unmounted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1965
+#: cnchi/installation/advanced.py:1962
 msgid "{0} is already mounted in {1}, to continue it will be unmounted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:2268
+#: cnchi/installation/advanced.py:2265
 msgid "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:2304
+#: cnchi/installation/advanced.py:2301
 msgid "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:2325
+#: cnchi/installation/advanced.py:2320
 msgid "Cannot commit your changes to disk: {0}"
 msgstr ""
 
@@ -786,11 +811,15 @@ msgid "Cnchi recommends at least 6.5GB free to install Antergos."
 msgstr ""
 
 #: cnchi/installation/alongside.py:151
-msgid "New partition {0} resulting of shrinking {1} will not have enough free space for a full installation."
+msgid ""
+"New partition {0} resulting of shrinking {1} will not have enough free space "
+"for a full installation."
 msgstr ""
 
 #: cnchi/installation/alongside.py:152
-msgid "You can still install Antergos, but be carefull on which DE you choose as it might not fit in."
+msgid ""
+"You can still install Antergos, but be carefull on which DE you choose as it "
+"might not fit in."
 msgstr ""
 
 #: cnchi/installation/alongside.py:153
@@ -815,135 +844,151 @@ msgid ""
 "Alongside installation can't continue."
 msgstr ""
 
-#: cnchi/installation/ask.py:230
+#: cnchi/installation/ask.py:100
+msgid "Install Mode"
+msgstr ""
+
+#: cnchi/installation/ask.py:231
 msgid " and "
 msgstr ""
 
-#: cnchi/installation/ask.py:244
+#: cnchi/installation/ask.py:245
 msgid "Installation Type"
 msgstr ""
 
-#: cnchi/installation/ask.py:259
+#: cnchi/installation/ask.py:260
 msgid "Replace {0} with Antergos"
 msgstr ""
 
-#: cnchi/installation/ask.py:261
+#: cnchi/installation/ask.py:262
 msgid "Erase disk and install Antergos"
 msgstr ""
 
-#: cnchi/installation/ask.py:266
+#: cnchi/installation/ask.py:267
 msgid "Warning: This will erase ALL data on your disk."
 msgstr ""
 
-#: cnchi/installation/ask.py:275
+#: cnchi/installation/ask.py:276
 msgid "Encrypt this installation for increased security."
 msgstr ""
 
-#: cnchi/installation/ask.py:283
+#: cnchi/installation/ask.py:284
 msgid "You will be asked to create an encryption password in the next step."
 msgstr ""
 
-#: cnchi/installation/ask.py:293
+#: cnchi/installation/ask.py:294
 msgid "Use LVM with this installation."
 msgstr ""
 
-#: cnchi/installation/ask.py:301
-msgid "This will setup LVM and allow you to easily manage partitions and create snapshots."
+#: cnchi/installation/ask.py:302
+msgid ""
+"This will setup LVM and allow you to easily manage partitions and create "
+"snapshots."
 msgstr ""
 
-#: cnchi/installation/ask.py:311
+#: cnchi/installation/ask.py:312
 msgid "Use ZFS with this installation."
 msgstr ""
 
-#: cnchi/installation/ask.py:319
+#: cnchi/installation/ask.py:320
 msgid "This will setup ZFS on your drive(s)."
 msgstr ""
 
-#: cnchi/installation/ask.py:328
+#: cnchi/installation/ask.py:329
 msgid "Set your Home in a different partition/volume"
 msgstr ""
 
-#: cnchi/installation/ask.py:336
-msgid "This will setup your /home directory in a different partition or volume."
+#: cnchi/installation/ask.py:337
+msgid ""
+"This will setup your /home directory in a different partition or volume."
 msgstr ""
 
-#: cnchi/installation/ask.py:360
+#: cnchi/installation/ask.py:361
 msgid "How would you like to proceed?"
 msgstr ""
 
-#: cnchi/installation/ask.py:372
+#: cnchi/installation/ask.py:373
 msgid "Choose exactly where Antergos should be installed."
 msgstr ""
 
-#: cnchi/installation/ask.py:376
+#: cnchi/installation/ask.py:377
 msgid "Edit partition table and choose mount points."
 msgstr ""
 
-#: cnchi/installation/ask.py:464
+#: cnchi/installation/ask.py:465
 msgid "Ranking mirrors"
 msgstr ""
 
-#: cnchi/installation/ask.py:467
+#: cnchi/installation/ask.py:468
 msgid "Cnchi is still updating and optimizing your mirror lists."
 msgstr ""
 
-#: cnchi/installation/ask.py:469
+#: cnchi/installation/ask.py:470
 msgid "Please be patient..."
 msgstr ""
 
-#: cnchi/installation/auto_partition.py:324
+#: cnchi/installation/auto_partition.py:320
 msgid "Unknown filesystem type {0}"
 msgstr ""
 
-#: cnchi/installation/auto_partition.py:594
-msgid "Setup cannot detect size of your device, please use advanced installation routine for partitioning and mounting devices."
+#: cnchi/installation/auto_partition.py:578
+msgid ""
+"Setup cannot detect size of your device, please use advanced installation "
+"routine for partitioning and mounting devices."
 msgstr ""
 
-#: cnchi/installation/automatic.py:82
+#: cnchi/installation/automatic.py:60
+msgid "Automatic Mode"
+msgstr ""
+
+#: cnchi/installation/automatic.py:86 ui/installation_automatic.ui:82
 msgid "Select drive:"
 msgstr ""
 
-#: cnchi/installation/automatic.py:86
+#: cnchi/installation/automatic.py:90
 msgid "WARNING! This will overwrite everything currently on your drive!"
 msgstr ""
 
-#: cnchi/installation/automatic.py:91
-msgid "Select the drive we should use to install Antergos and then click above to start the process."
+#: cnchi/installation/automatic.py:95
+msgid ""
+"Select the drive we should use to install Antergos and then click above to "
+"start the process."
 msgstr ""
 
-#: cnchi/installation/automatic.py:96
+#: cnchi/installation/automatic.py:100 ui/installation_automatic.ui:224
 msgid "Encryption Password:"
 msgstr ""
 
-#: cnchi/installation/automatic.py:100 cnchi/user_info.py:130
+#: cnchi/installation/automatic.py:104 ui/installation_automatic.ui:304
+#: ui/user_info.ui:67
 msgid "Confirm your password:"
 msgstr ""
 
-#: cnchi/installation/automatic.py:104
-msgid "LUKS Password. We do not recommend using special characters or accents!"
+#: cnchi/installation/automatic.py:108
+msgid "LUKS Password. Do not use special characters or accents!"
 msgstr ""
 
-#: cnchi/installation/automatic.py:108
+#: cnchi/installation/automatic.py:112
 msgid "Show password"
 msgstr ""
 
-#: cnchi/installation/automatic.py:110
+#: cnchi/installation/automatic.py:114
 msgid "Automatic Installation Mode"
 msgstr ""
 
-#: cnchi/installation/automatic.py:289
+#: cnchi/installation/automatic.py:293
 msgid "Device {0} will be created ({1} filesystem) as {2}"
 msgstr ""
 
-#: cnchi/installation/automatic.py:292
+#: cnchi/installation/automatic.py:296
 msgid "Device {0} will be created ({1} filesystem)"
 msgstr ""
 
-#: cnchi/installation/automatic.py:338
+#: cnchi/installation/automatic.py:342
 msgid "Antergos will install the bootloader '{0}' in device '{1}'"
 msgstr ""
 
-#: cnchi/installation/automatic.py:344
+#: cnchi/installation/automatic.py:348
 msgid "Cnchi will install Antergos on device %s"
 msgstr ""
 
@@ -951,84 +996,76 @@ msgstr ""
 msgid "Aborted"
 msgstr ""
 
-#: cnchi/installation/install.py:183
+#: cnchi/installation/install.py:186
 msgid "Mounting partition {0} into {1}/boot directory"
 msgstr ""
 
-#: cnchi/installation/install.py:204
+#: cnchi/installation/install.py:207
 msgid "Mounting partition {0} into {1} directory"
 msgstr ""
 
-#: cnchi/installation/install.py:230
+#: cnchi/installation/install.py:233
 msgid "Installing using the '{0}' method"
 msgstr ""
 
-#: cnchi/installation/install.py:309
+#: cnchi/installation/install.py:310
 msgid "Installation finished"
 msgstr ""
 
-#: cnchi/installation/install.py:353
+#: cnchi/installation/install.py:354
 msgid "Creating a temporary pacman.conf for {0} architecture"
 msgstr ""
 
-#: cnchi/installation/install.py:370
+#: cnchi/installation/install.py:371
 msgid "Updating package manager security. Please wait..."
 msgstr ""
 
-#: cnchi/installation/install.py:387 cnchi/installation/select_packages.py:134
+#: cnchi/installation/install.py:381 cnchi/installation/select_packages.py:130
+msgid "Can't initialize pyalpm."
+msgstr ""
+
+#: cnchi/installation/install.py:386 cnchi/installation/select_packages.py:135
 msgid "Can't refresh pacman databases."
 msgstr ""
 
-#: cnchi/installation/install.py:460
+#: cnchi/installation/install.py:459
 msgid "Can't install necessary packages. Cnchi can't continue."
 msgstr ""
 
-#: cnchi/installation/install.py:828
+#: cnchi/installation/install.py:824
 msgid "Configuring LightDM desktop manager..."
 msgstr ""
 
-#: cnchi/installation/install.py:862
+#: cnchi/installation/install.py:858
 msgid "LightDM display manager configuration completed."
 msgstr ""
 
-#: cnchi/installation/install.py:865
+#: cnchi/installation/install.py:861
 msgid "Error while trying to configure the LightDM display manager"
 msgstr ""
 
-#: cnchi/installation/install.py:1029
+#: cnchi/installation/install.py:1017
 msgid "Configuring your new system"
 msgstr ""
 
-#: cnchi/installation/install.py:1195
+#: cnchi/installation/install.py:1180
 msgid "Generating locales..."
 msgstr ""
 
-#: cnchi/installation/install.py:1207
+#: cnchi/installation/install.py:1192
 msgid "Adjusting hardware clock..."
 msgstr ""
 
-#: cnchi/installation/install.py:1210
+#: cnchi/installation/install.py:1195
 msgid "Configuring keymap..."
 msgstr ""
 
-#: cnchi/installation/install.py:1220
+#: cnchi/installation/install.py:1205
 msgid "Configuring hardware..."
 msgstr ""
 
-#: cnchi/installation/install.py:1259
+#: cnchi/installation/install.py:1243
 msgid "Configuring System Startup..."
-msgstr ""
-
-#: cnchi/installation/install.py:1300
-msgid "Encrypting user home dir..."
-msgstr ""
-
-#: cnchi/installation/install.py:1307
-msgid "Installing bootloader..."
-msgstr ""
-
-#: cnchi/installation/install.py:1320
-msgid "Updating man pages..."
 msgstr ""
 
 #: cnchi/installation/process.py:67
@@ -1036,7 +1073,9 @@ msgid "Cannot create package list. Check log output for details."
 msgstr ""
 
 #: cnchi/installation/process.py:82
-msgid "Cannot create download package list (metalinks). Check log output for details."
+msgid ""
+"Cannot create download package list (metalinks). Check log output for "
+"details."
 msgstr ""
 
 #: cnchi/installation/process.py:96
@@ -1051,15 +1090,19 @@ msgstr ""
 msgid "Error running command {0}: {1}"
 msgstr ""
 
-#: cnchi/installation/select_packages.py:180
+#: cnchi/installation/select_packages.py:143
+msgid "Can't release pyalpm: {0}"
+msgstr ""
+
+#: cnchi/installation/select_packages.py:156
 msgid "Getting package list..."
 msgstr ""
 
-#: cnchi/installation/select_packages.py:302
+#: cnchi/installation/select_packages.py:292
 msgid "Adding '%s' bootloader packages"
 msgstr ""
 
-#: cnchi/installation/select_packages.py:308
+#: cnchi/installation/select_packages.py:298
 msgid "Couldn't find %s bootloader packages!"
 msgstr ""
 
@@ -1071,127 +1114,155 @@ msgstr ""
 msgid "Special dirs are not mounted. Skipping."
 msgstr ""
 
-#: cnchi/installation/wrapper.py:66
+#: cnchi/installation/wrapper.py:65
 msgid "Command {0} failed: {1}"
 msgstr ""
 
-#: cnchi/installation/wrapper.py:98 cnchi/installation/wrapper.py:141
-msgid "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
+#: cnchi/installation/wrapper.py:97 cnchi/installation/wrapper.py:140
+msgid ""
+"Cannot create a new partition on device {0}. Command {1} has failed: {2}"
 msgstr ""
 
-#: cnchi/installation/wrapper.py:160
-msgid "Cannot create a new partition table on device {0}. Command {1} failed: {2}"
+#: cnchi/installation/wrapper.py:159
+msgid ""
+"Cannot create a new partition table on device {0}. Command {1} failed: {2}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:162
-msgid "Use"
-msgstr ""
-
-#: cnchi/installation/zfs.py:171
-msgid "Disk"
-msgstr ""
-
-#: cnchi/installation/zfs.py:177
-msgid "Size (GB)"
-msgstr ""
-
-#: cnchi/installation/zfs.py:189
-msgid "Disk ID"
-msgstr ""
-
-#: cnchi/installation/zfs.py:234
+#: cnchi/installation/zfs.py:81 cnchi/installation/zfs.py:226
 msgid "ZFS Setup"
 msgstr ""
 
-#: cnchi/installation/zfs.py:268
+#: cnchi/installation/zfs.py:154
+msgid "Use"
+msgstr ""
+
+#: cnchi/installation/zfs.py:163
+msgid "Disk"
+msgstr ""
+
+#: cnchi/installation/zfs.py:169
+msgid "Size (GB)"
+msgstr ""
+
+#: cnchi/installation/zfs.py:181
+msgid "Disk ID"
+msgstr ""
+
+#: cnchi/installation/zfs.py:250
 msgid "Pool type"
 msgstr ""
 
-#: cnchi/installation/zfs.py:282
+#: cnchi/installation/zfs.py:264
 msgid "Partition scheme"
 msgstr ""
 
-#: cnchi/installation/zfs.py:296
+#: cnchi/installation/zfs.py:278
 msgid "Validate password"
 msgstr ""
 
-#: cnchi/installation/zfs.py:299 cnchi/user_info.py:126
+#: cnchi/installation/zfs.py:281 ui/user_info.ui:154
 msgid "Password"
 msgstr ""
 
-#: cnchi/installation/zfs.py:302
+#: cnchi/installation/zfs.py:284
 msgid "Swap size (MB)"
 msgstr ""
 
-#: cnchi/installation/zfs.py:306
+#: cnchi/installation/zfs.py:288
 msgid "Encrypt swap"
 msgstr ""
 
-#: cnchi/installation/zfs.py:309
+#: cnchi/installation/zfs.py:291
 msgid "Encrypt disk"
 msgstr ""
 
-#: cnchi/installation/zfs.py:312
+#: cnchi/installation/zfs.py:294
 msgid "Pool name"
 msgstr ""
 
-#: cnchi/installation/zfs.py:315
+#: cnchi/installation/zfs.py:297 ui/zfs.ui:273
 msgid "Force ZFS 4k block size"
 msgstr ""
 
-#: cnchi/installation/zfs.py:339
-msgid "You must select one drive"
+#: cnchi/installation/zfs.py:321
+msgid "You must select at least one drive"
 msgstr ""
 
-#: cnchi/installation/zfs.py:345
+#: cnchi/installation/zfs.py:328
 msgid "For the {0} pool_type, you must select at least two drives"
 msgstr ""
 
-#: cnchi/installation/zfs.py:360
+#: cnchi/installation/zfs.py:345
 msgid "You must select at least {0} drives"
 msgstr ""
 
-#: cnchi/installation/zfs.py:365
-msgid "For the {0} pool type, you must use a 'power of two' (2,4,8,...) plus the appropriate number of drives for the parity. RAID-Z = 1 disk, RAIDZ-2 = 2 disks, and so on."
+#: cnchi/installation/zfs.py:350
+msgid ""
+"For the {0} pool type, you must use a 'power of two' (2,4,8,...) plus the "
+"appropriate number of drives for the parity. RAID-Z = 1 disk, RAIDZ-2 = 2 "
+"disks, and so on."
 msgstr ""
 
-#: cnchi/installation/zfs.py:390
-msgid "'None' pool will use ZFS on a single selected disk."
+#: cnchi/installation/zfs.py:368
+msgid ""
+"When created together, with equal capacity, ZFS space-balancing makes a span "
+"act like a RAID0 stripe. The space is added together. Provided all the "
+"devices are of the same size, the stripe behavior will continue regardless "
+"of fullness level. If devices/vdevs are not equally sized, then they will "
+"fill mostly equally until one device/vdev is full."
 msgstr ""
 
-#: cnchi/installation/zfs.py:392
-msgid "When created together, with equal capacity, ZFS space-balancing makes a span act like a RAID0 stripe. The space is added together. Provided all the devices are of the same size, the stripe behavior will continue regardless of fullness level. If devices/vdevs are not equally sized, then they will fill mostly equally until one device/vdev is full."
+#: cnchi/installation/zfs.py:376
+msgid ""
+"A mirror consists of two or more devices, all data will be written to all "
+"member devices."
 msgstr ""
 
-#: cnchi/installation/zfs.py:400
-msgid "A mirror consists of two or more devices, all data will be written to all member devices. Cnchi will try to group devices in groups of two."
+#: cnchi/installation/zfs.py:379
+msgid ""
+"ZFS implements RAID-Z, a variation on standard RAID-5. ZFS supports three "
+"levels of RAID-Z which provide varying levels of redundancy in exchange for "
+"decreasing levels of usable storage. The types are named RAID-Z1 through "
+"RAID-Z3 based on the number of parity devices in the array and the number of "
+"disks which can fail while the pool remains operational."
 msgstr ""
 
-#: cnchi/installation/zfs.py:404
-msgid "ZFS implements RAID-Z, a variation on standard RAID-5. ZFS supports three levels of RAID-Z which provide varying levels of redundancy in exchange for decreasing levels of usable storage. The types are named RAID-Z1 through RAID-Z3 based on the number of parity devices in the array and the number of disks which can fail while the pool remains operational."
+#: cnchi/installation/zfs.py:393
+msgid ""
+"Advanced Format (AF) is a new disk format which natively uses a 4,096 byte "
+"instead of 512 byte sector size. To maintain compatibility with legacy "
+"systems AF disks emulate a sector size of 512 bytes. By default, ZFS will "
+"automatically detect the sector size of the drive. This combination will "
+"result in poorly aligned disk access which will greatly degrade the pool "
+"performance. If that might be your case, you can force ZFS to use a sector "
+"size of 4,096 bytes by selecting this option."
 msgstr ""
 
-#: cnchi/installation/zfs.py:416
-msgid "Advanced Format (AF) is a new disk format which natively uses a 4,096 byte instead of 512 byte sector size. To maintain compatibility with legacy systems AF disks emulate a sector size of 512 bytes. By default, ZFS will automatically detect the sector size of the drive. This combination will result in poorly aligned disk access which will greatly degrade the pool performance. If that might be your case, you can force ZFS to use a sector size of 4,096 bytes by selecting this option."
-msgstr ""
-
-#: cnchi/installation/zfs.py:527
+#: cnchi/installation/zfs.py:526
 msgid "Create {0} on device {1}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:531
+#: cnchi/installation/zfs.py:530
 msgid "Add device {0} to {1}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:965
+#: cnchi/installation/zfs.py:707 cnchi/installation/zfs.py:726
+msgid "Command {0} has failed"
+msgstr ""
+
+#: cnchi/installation/zfs.py:843
 msgid "No devices were selected for the ZFS pool"
 msgstr ""
 
-#: cnchi/keymap.py:87
+#: cnchi/keymap.py:53
+msgid "Keyboard Layout"
+msgstr ""
+
+#: cnchi/keymap.py:90
 msgid "Select Your Keyboard Layout"
 msgstr ""
 
-#: cnchi/keymap.py:92
+#: cnchi/keymap.py:95
 msgid ""
 "Choose your keyboard layout and variant (if applies).\n"
 "For instance, the default Slovak variant is qwertz, but you\n"
@@ -1201,48 +1272,57 @@ msgid ""
 "layout selection."
 msgstr ""
 
-#: cnchi/keymap.py:144
+#: cnchi/keymap.py:147
 msgid "Can't match a keymap for country code '%s'"
 msgstr ""
 
-#: cnchi/keymap.py:288
+#: cnchi/keymap.py:291
 msgid "Set keyboard to '{0}' ({1}), wvariant '{2}' ({3})"
 msgstr ""
 
-#: cnchi/keymap.py:295
+#: cnchi/keymap.py:298
 msgid "Set keyboard to '{0}' ({1})"
 msgstr ""
 
-#: cnchi/language.py:100
+#: cnchi/language.py:72
+msgid "Language"
+msgstr ""
+
+#: cnchi/language.py:108
 msgid "Notice: The Cnchi Installer is beta software."
 msgstr ""
 
-#: cnchi/language.py:103
+#: cnchi/language.py:111
 msgid ""
 "<span weight='bold'>{0}</span>\n"
 "\n"
-"Cnchi is pre-release beta software that is under active development. It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible!\n"
+"Cnchi is pre-release beta software that is under active development. It does "
+"not yet properly handle RAID, btrfs subvolumes, or other advanced setups. "
+"Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at <a href='{1}'>{1}</a>"
 msgstr ""
 
-#: cnchi/language.py:119
-msgid "Choose your language"
+#: cnchi/location.py:65 cnchi/summary.py:82
+msgid "Location"
 msgstr ""
 
-#: cnchi/location.py:83
-msgid "The location you select will be used to help determine the system locale. It should normally be the country in which you reside. Here is a shortlist of locations based on the language you selected."
+#: cnchi/location.py:86
+msgid ""
+"The location you select will be used to help determine the system locale. It "
+"should normally be the country in which you reside. Here is a shortlist of "
+"locations based on the language you selected."
 msgstr ""
 
-#: cnchi/location.py:91
+#: cnchi/location.py:94
 msgid "Country, territory or area:"
 msgstr ""
 
-#: cnchi/location.py:96
+#: cnchi/location.py:99
 msgid "Show all locations"
 msgstr ""
 
-#: cnchi/location.py:99
+#: cnchi/location.py:102
 msgid "Select your location"
 msgstr ""
 
@@ -1250,19 +1330,23 @@ msgstr ""
 msgid "Can't get country code from %s location"
 msgstr ""
 
-#: cnchi/main_window.py:167
+#: cnchi/main_window.py:289
 msgid "Next step"
 msgstr ""
 
-#: cnchi/main_window.py:168
+#: cnchi/main_window.py:290
 msgid "Previous step"
 msgstr ""
 
-#: cnchi/main_window.py:230
-msgid "Antergos Installer"
+#: cnchi/main_window.py:299
+msgid "Cnchi Installer"
 msgstr ""
 
-#: cnchi/main_window.py:371
+#: cnchi/main_window.py:303
+msgid "Welcome To Antergos!"
+msgstr ""
+
+#: cnchi/main_window.py:504
 msgid "Do you really want to quit the installer?"
 msgstr ""
 
@@ -1282,7 +1366,7 @@ msgstr ""
 msgid "Good password"
 msgstr ""
 
-#: cnchi/misc/validation.py:148
+#: cnchi/misc/validation.py:148 ui/user_info.ui:170
 msgid "Strong password"
 msgstr ""
 
@@ -1394,6 +1478,14 @@ msgstr ""
 msgid "Can't remove physical volume {0}"
 msgstr ""
 
+#: cnchi/parted3/partition_module.py:121
+msgid "Cannot get devices information: {0}"
+msgstr ""
+
+#: cnchi/parted3/partition_module.py:195
+msgid "Can't delete partition {0}"
+msgstr ""
+
 #: cnchi/parted3/partition_module.py:251
 msgid "Partition is too large!"
 msgstr ""
@@ -1422,7 +1514,7 @@ msgstr ""
 msgid "Can't detect used space of REISERFS partition %s"
 msgstr ""
 
-#: cnchi/parted3/used_space.py:227
+#: cnchi/parted3/used_space.py:223
 msgid "Can't detect used space of XFS partition %s"
 msgstr ""
 
@@ -1438,33 +1530,40 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-#: cnchi/show_message.py:66
+#: cnchi/show_message.py:63
 msgid "Antergos Installer - Error"
 msgstr ""
 
-#: cnchi/show_message.py:84
+#: cnchi/show_message.py:78
 msgid "Antergos Installer - Warning"
 msgstr ""
 
-#: cnchi/show_message.py:102
+#: cnchi/show_message.py:93
 msgid "Antergos Installer - Information"
 msgstr ""
 
-#: cnchi/show_message.py:120
+#: cnchi/show_message.py:108
 msgid "Antergos Installer - Confirmation"
 msgstr ""
 
-#: cnchi/slides.py:80
+#: cnchi/slides.py:67
+msgid "Install"
+msgstr ""
+
+#: cnchi/slides.py:81
 msgid "Please wait..."
 msgstr ""
 
-#: cnchi/slides.py:82
+#: cnchi/slides.py:83
 msgid "Installing Antergos..."
 msgstr ""
 
-#: cnchi/slides.py:205
+#: cnchi/slides.py:206
 msgid ""
-"IMPORTANT: There may have been a problem with the bootloader installation which could prevent your system from booting properly. Before rebooting, you may want to verify whether or not the bootloader is installed and configured.\n"
+"IMPORTANT: There may have been a problem with the bootloader installation "
+"which could prevent your system from booting properly. Before rebooting, you "
+"may want to verify whether or not the bootloader is installed and "
+"configured.\n"
 "\n"
 "The Arch Linux Wiki contains troubleshooting information:\n"
 "\thttps://wiki.archlinux.org/index.php/GRUB\n"
@@ -1472,181 +1571,105 @@ msgid ""
 "Would you like to view the wiki page now?"
 msgstr ""
 
-#: cnchi/slides.py:222
+#: cnchi/slides.py:223
 msgid ""
 "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr ""
 
-#: cnchi/summary.py:77
-msgid "Installation Summary"
+#: cnchi/summary.py:75
+msgid "Review"
 msgstr ""
 
-#: cnchi/summary.py:81
-msgid "Location"
-msgstr ""
-
-#: cnchi/summary.py:82
+#: cnchi/summary.py:83 cnchi/timezone.py:56
 msgid "Timezone"
 msgstr ""
 
-#: cnchi/summary.py:83
+#: cnchi/summary.py:84
 msgid "Keyboard"
 msgstr ""
 
-#: cnchi/summary.py:84
+#: cnchi/summary.py:85
 msgid "Desktop Environment"
 msgstr ""
 
-#: cnchi/summary.py:85
-msgid "Features"
-msgstr ""
-
-#: cnchi/summary.py:86
+#: cnchi/summary.py:87
 msgid "Partitions"
 msgstr ""
 
-#: cnchi/summary.py:110
+#: cnchi/summary.py:111
 msgid "Layout: {0}"
 msgstr ""
 
-#: cnchi/summary.py:112
+#: cnchi/summary.py:113
 msgid "Variant: {0}"
 msgstr ""
 
-#: cnchi/summary.py:140 cnchi/summary.py:147
+#: cnchi/summary.py:141 cnchi/summary.py:148
 msgid "Error getting changes from install screen"
 msgstr ""
 
-#: cnchi/summary.py:184
+#: cnchi/summary.py:186
 msgid "Are you REALLY sure you want to continue?"
 msgstr ""
 
-#: cnchi/timezone.py:87
+#: cnchi/timezone.py:91 ui/timezone.ui:43
 msgid "Zone:"
 msgstr ""
 
-#: cnchi/timezone.py:91
+#: cnchi/timezone.py:95 ui/timezone.ui:86
 msgid "Region:"
 msgstr ""
 
-#: cnchi/timezone.py:95
+#: cnchi/timezone.py:99
 msgid "Use Network Time Protocol (NTP) for clock synchronization"
 msgstr ""
 
-#: cnchi/timezone.py:98
-msgid "Select Your Timezone"
-msgstr ""
-
-#: cnchi/timezone.py:336
+#: cnchi/timezone.py:343
 msgid "Timezone (latitude %s, longitude %s) detected."
 msgstr ""
 
-#: cnchi/updater.py:208
+#: cnchi/updater.py:206
 msgid "Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"
 msgstr ""
 
-#: cnchi/updater.py:215
+#: cnchi/updater.py:213
 msgid "File %s is not in md5 signatures list"
 msgstr ""
 
-#: cnchi/updater.py:229
+#: cnchi/updater.py:227
 msgid "Copying %s to %s..."
 msgstr ""
 
-#: cnchi/updater.py:235
+#: cnchi/updater.py:233
 msgid "Can't copy %s to %s"
 msgstr ""
 
-#: cnchi/user_info.py:98
-msgid "Your name:"
+#: cnchi/user_info.py:52
+msgid "User Account"
 msgstr ""
 
-#: cnchi/user_info.py:102
-msgid "Your name"
-msgstr ""
-
-#: cnchi/user_info.py:106
-msgid "Your computer's name:"
-msgstr ""
-
-#: cnchi/user_info.py:110
-msgid "Hostname"
-msgstr ""
-
-#: cnchi/user_info.py:114
-msgid "Pick a username:"
-msgstr ""
-
-#: cnchi/user_info.py:118
-msgid "Username"
-msgstr ""
-
-#: cnchi/user_info.py:122
-msgid "Choose a password:"
-msgstr ""
-
-#: cnchi/user_info.py:134
-msgid "Confirm password"
-msgstr ""
-
-#: cnchi/user_info.py:138
-msgid "Identifies your system to other computers and devices."
-msgstr ""
-
-#: cnchi/user_info.py:144
-msgid "You must enter a name"
-msgstr ""
-
-#: cnchi/user_info.py:148
-msgid "You must enter a username"
-msgstr ""
-
-#: cnchi/user_info.py:152
-msgid "You must enter a password"
-msgstr ""
-
-#: cnchi/user_info.py:156
-msgid "Log in automatically"
-msgstr ""
-
-#: cnchi/user_info.py:157
-msgid "Require my password to log in"
-msgstr ""
-
-#: cnchi/user_info.py:158
-msgid "Encrypt my home folder"
-msgstr ""
-
-#: cnchi/user_info.py:161
-msgid "show password"
-msgstr ""
-
-#: cnchi/user_info.py:163
-msgid "Create Your User Account"
-msgstr ""
-
-#: cnchi/user_info.py:206
+#: cnchi/user_info.py:139
 msgid "Are you sure you want to encrypt your home directory?"
 msgstr ""
 
-#: cnchi/user_info.py:226
+#: cnchi/user_info.py:159
 msgid "Save"
 msgstr ""
 
-#: cnchi/user_info.py:275
+#: cnchi/user_info.py:208
 msgid "Invalid characters entered"
 msgstr ""
 
-#: cnchi/user_info.py:277
+#: cnchi/user_info.py:210
 msgid "Username can't contain dots"
 msgstr ""
 
-#: cnchi/user_info.py:279
+#: cnchi/user_info.py:212
 msgid "Too many characters"
 msgstr ""
 
-#: cnchi/user_info.py:281
+#: cnchi/user_info.py:214
 msgid "Unknown error"
 msgstr ""
 
@@ -1666,11 +1689,7 @@ msgstr ""
 msgid "Install It"
 msgstr ""
 
-#: cnchi/welcome.py:106
-msgid "Welcome to Antergos!"
-msgstr ""
-
-#: cnchi/welcome.py:132
+#: cnchi/welcome.py:129
 msgid "Loading, please wait..."
 msgstr ""
 
@@ -1678,14 +1697,235 @@ msgstr ""
 msgid "Connecting this computer to a wi-fi network"
 msgstr ""
 
-#: cnchi/wireless.py:67
+#: cnchi/wireless.py:67 ui/wireless.ui:33
 msgid "I don't want to connect to a wi-fi network right now"
 msgstr ""
 
-#: cnchi/wireless.py:70
+#: cnchi/wireless.py:70 ui/wireless.ui:54
 msgid "Connect to this network"
 msgstr ""
 
 #: cnchi/wireless.py:73
 msgid "Display password"
+msgstr ""
+
+#: ui/check.ui:16
+msgid ""
+"<span weight=\"bold\" size=\"large\">For best results, please ensure that "
+"this computer:</span>"
+msgstr ""
+
+#: ui/check.ui:96
+msgid ""
+"(*) This highly depends on which desktop environment you choose, so you "
+"might need more space (for instance, KDE needs 6.5GB)."
+msgstr ""
+
+#: ui/wait.ui:7
+msgid "Cnchi"
+msgstr ""
+
+#: ui/wait.ui:30 ui/wait.ui:42 ui/pac.ui:84 ui/installation_advanced.ui:943
+#: ui/desktop.ui:74
+msgid "label"
+msgstr ""
+
+#: ui/bootloader.ui:69
+msgid "What is your boot system type?"
+msgstr ""
+
+#: ui/bootloader.ui:98
+msgid "BIOS (Common)"
+msgstr ""
+
+#: ui/bootloader.ui:120
+msgid "x86_64 UEFI"
+msgstr ""
+
+#: ui/bootloader.ui:142
+msgid "i386 UEFI"
+msgstr ""
+
+#: ui/bootloader.ui:169
+msgid "Choose 'cancel' if you don't want to install a boot loader"
+msgstr ""
+
+#: ui/pac.ui:7 ui/pac.ui:104 ui/pac.ui:147 ui/pac.ui:179
+msgid " "
+msgstr ""
+
+#: ui/pac.ui:43
+msgid "Progress"
+msgstr ""
+
+#: ui/wireless.ui:15
+msgid "Connecting this computer to a wi-fi network helps with"
+msgstr ""
+
+#: ui/timezone.ui:112
+msgid "Use Network Time Protocol for clock synchronization:"
+msgstr ""
+
+#: ui/keymap.ui:52
+msgid "Keyboard Layouts"
+msgstr ""
+
+#: ui/installation_automatic.ui:39
+msgid ""
+"<b>WARNING! This installation mode will overwrite everything in your drive!</"
+"b>"
+msgstr ""
+
+#: ui/installation_automatic.ui:61
+msgid ""
+"Please choose the drive where you want to install Antergos and click the "
+"button below to start the process."
+msgstr ""
+
+#: ui/installation_automatic.ui:129 ui/installation_advanced.ui:1031
+msgid "Use this device for boot loader installation:"
+msgstr ""
+
+#: ui/installation_automatic.ui:272 ui/user_info.ui:474
+msgid "show password"
+msgstr ""
+
+#: ui/installation_automatic.ui:291
+msgid "LUKS Password. Do not use special chars or chars with accents!"
+msgstr ""
+
+#: ui/zfs.ui:34
+msgid "Pool Type:"
+msgstr ""
+
+#: ui/zfs.ui:48
+msgid "None"
+msgstr ""
+
+#: ui/zfs.ui:75
+msgid "Partition Scheme:"
+msgstr ""
+
+#: ui/zfs.ui:89
+msgid "GPT"
+msgstr ""
+
+#: ui/zfs.ui:90
+msgid "MBR"
+msgstr ""
+
+#: ui/zfs.ui:149
+msgid "Check Password:"
+msgstr ""
+
+#: ui/zfs.ui:171
+msgid "Encrypt Swap"
+msgstr ""
+
+#: ui/zfs.ui:211
+msgid "Encrypt Disk"
+msgstr ""
+
+#: ui/zfs.ui:228
+msgid "Swap Size (MB):"
+msgstr ""
+
+#: ui/zfs.ui:247
+msgid "Pool Name:"
+msgstr ""
+
+#: ui/welcome.ui:67
+msgid "Try it"
+msgstr ""
+
+#: ui/welcome.ui:124
+msgid "Graphical Installer"
+msgstr ""
+
+#: ui/installation_advanced.ui:84
+msgid "Partition table type:"
+msgstr ""
+
+#: ui/installation_advanced.ui:159
+msgid "Edit partition"
+msgstr ""
+
+#: ui/installation_advanced.ui:182 ui/installation_advanced.ui:437
+msgid "Use as:"
+msgstr ""
+
+#: ui/installation_advanced.ui:215 ui/installation_advanced.ui:470
+msgid "Mount point:"
+msgstr ""
+
+#: ui/installation_advanced.ui:318 ui/installation_advanced.ui:724
+msgid "Encryption options..."
+msgstr ""
+
+#: ui/installation_advanced.ui:582
+msgid "MB"
+msgstr ""
+
+#: ui/installation_advanced.ui:1295
+msgid "<small><span color=\"darkgreen\">Strong password</span></small>"
+msgstr ""
+
+#: ui/user_info.ui:23
+msgid "Your name:"
+msgstr ""
+
+#: ui/user_info.ui:37
+msgid "Choose a username:"
+msgstr ""
+
+#: ui/user_info.ui:52
+msgid "Choose a password:"
+msgstr ""
+
+#: ui/user_info.ui:85
+msgid "Log in automatically"
+msgstr ""
+
+#: ui/user_info.ui:102
+msgid "Require my password to log in"
+msgstr ""
+
+#: ui/user_info.ui:118
+msgid "Encrypt my home folder"
+msgstr ""
+
+#: ui/user_info.ui:203
+msgid "Confirm password"
+msgstr ""
+
+#: ui/user_info.ui:230
+msgid "You must enter a password"
+msgstr ""
+
+#: ui/user_info.ui:262
+msgid "Your name"
+msgstr ""
+
+#: ui/user_info.ui:305
+msgid "Username"
+msgstr ""
+
+#: ui/user_info.ui:332
+msgid "You must enter a username"
+msgstr ""
+
+#: ui/user_info.ui:385
+msgid "Hostname"
+msgstr ""
+
+#: ui/user_info.ui:412
+msgid "You must enter a name"
+msgstr ""
+
+#: ui/user_info.ui:437
+msgid "The name it uses when it talks to other computers."
+msgstr ""
+
+#: ui/user_info.ui:463
+msgid "Your computer's name:"
 msgstr ""

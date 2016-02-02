@@ -45,10 +45,13 @@ from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
     """ Keymap screen """
-    def __init__(self, params, prev_page="timezone", next_page="desktop"):
-        super().__init__(self, params, "keymap", prev_page, next_page)
+    def __init__(self, params, prev_page="timezone", next_page="desktop_grp", **kwargs):
+        super().__init__(self, params, name="keymap", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.prepare_called = False
+        self.title = _('Keyboard Layout')
+        self.in_group = True
 
         self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
         self.keyboard_widget = self.ui.get_object("keyboard_widget")
@@ -84,7 +87,6 @@ class Keymap(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        self.header.set_subtitle(_("Select Your Keyboard Layout"))
 
         lbl = self.ui.get_object("label_layouts")
         if lbl:
@@ -235,6 +237,7 @@ class Keymap(GtkBaseBox):
         self.forward_button.set_sensitive(True)
         self.store_values()
         self.set_keyboard_widget_keymap()
+
 
     def store_values(self):
         """ Store selected values """

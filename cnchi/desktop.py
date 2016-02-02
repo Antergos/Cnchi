@@ -44,16 +44,19 @@ import misc.extra as misc
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """
 
-    def __init__(self, params, prev_page="keymap", next_page="features"):
-        super().__init__(self, params, "desktop", prev_page, next_page)
+    def __init__(self, params, prev_page="desktop_group", next_page="features", **kwargs):
+        super().__init__(self, params, name="desktop", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
+        self.title = _("Desktop Selection")
 
         self.desktop_info = self.ui.get_object("desktop_info")
 
         self.desktop_image = None
         self.icon_desktop_image = None
+        self.in_group = True
 
         # Set up list box
         self.listbox = self.ui.get_object("listbox_desktop")
@@ -119,11 +122,6 @@ class DesktopAsk(GtkBaseBox):
                 else:
                     self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
 
-        if set_header:
-            # set header text
-            txt = _("Choose Your Desktop")
-            self.header.set_subtitle(txt)
-
     def prepare(self, direction):
         """ Prepare screen """
         self.translate_ui(self.desktop_choice)
@@ -154,8 +152,11 @@ class DesktopAsk(GtkBaseBox):
                 label = Gtk.Label()
                 label.set_markup(desktop_info.NAMES[desktop])
                 box.pack_start(label, False, False, 2)
+                row = Gtk.ListBoxRow()
+                row.get_style_context().add_class('list_box_row')
+                row.add(box)
 
-                self.listbox.add(box)
+                self.listbox.add(row)
 
         # Set Gnome as default
         self.select_default_row(desktop_info.NAMES["gnome"])

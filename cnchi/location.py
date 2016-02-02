@@ -49,22 +49,27 @@ from logging_utils import ContextFilter
 
 
 class Location(GtkBaseBox):
-    def __init__(self, params, prev_page="check", next_page="timezone"):
-        super().__init__(self, params, "location", prev_page, next_page)
+    def __init__(self, params, prev_page="location_grp", next_page="timezone", **kwargs):
+        super().__init__(self, params, name="location", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         self.listbox = self.ui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        self.listbox.get_style_context().add_class('list_box')
 
         self.label_choose_country = self.ui.get_object("label_choose_country")
         self.label_help = self.ui.get_object("label_help")
 
         self.locales = {}
         self.load_locales()
+        self.title = _('Location')
 
         self.selected_country = ""
 
         self.show_all_locations = False
+        self.in_group = True
+        self.context_filter = ContextFilter()
 
         button = self.ui.get_object("show_all_locations_checkbutton")
         button.connect(
@@ -76,27 +81,14 @@ class Location(GtkBaseBox):
 
     def on_show_all_locations_checkbox_toggled(self, button, name):
         self.show_all_locations = button.get_active()
+        self.hide_all()
         self.fill_listbox()
+        self.select_first_listbox_item()
+        self.show_all()
 
     def translate_ui(self):
         """ Translates all ui elements """
-        txt = _("The location you select will be used to help determine the "
-                "system locale. It should normally be the country in which "
-                "you reside. Here is a shortlist of locations based on the "
-                "language you selected.")
-
-        self.label_help.set_text(txt)
-        self.label_help.set_name("label_help")
-
-        txt = _("Country, territory or area:")
-        txt = "<span weight='bold'>{0}</span>".format(txt)
-        self.label_choose_country.set_markup(txt)
-
-        check = self.ui.get_object('show_all_locations_checkbutton')
-        txt = _("Show all locations")
-        check.set_label(txt)
-
-        self.header.set_subtitle(_("Select your location"))
+        pass
 
     def select_first_listbox_item(self):
         listbox_row = self.listbox.get_children()[0]
@@ -118,10 +110,14 @@ class Location(GtkBaseBox):
 
         self.select_first_listbox_item()
         self.translate_ui()
+        self.set_valign(Gtk.Align.CENTER)
         self.show_all()
 
         self.forward_button.set_sensitive(True)
-        self.get_and_save_install_id()
+
+        if not self.context_filter.have_install_id:
+            logging.debug('Getting install_id from build server...')
+            self.get_and_save_install_id()
 
     def load_locales(self):
         data_dir = self.settings.get('data')
@@ -172,18 +168,14 @@ class Location(GtkBaseBox):
     def get_areas(self):
         areas = []
 
-        if not self.show_all_locations:
-            lang_code = self.settings.get("language_code")
-            for locale_name in self.locales:
-                if lang_code in locale_name:
-                    areas.append(self.locales[locale_name])
-            if len(areas) == 0:
-                # When we don't find any country we put all language codes.
-                # This happens with Esperanto and Asturianu at least.
-                for locale_name in self.locales:
-                    areas.append(self.locales[locale_name])
-        else:
-            # Put all language codes (forced by the checkbox)
+        lang_code = self.settings.get("language_code")
+        for locale_name in self.locales:
+            logging.debug(locale_name)
+            if self.show_all_locations or lang_code in locale_name:
+                areas.append(self.locales[locale_name])
+        if len(areas) == 0:
+            # When we don't find any country we put all language codes.
+            # This happens with Esperanto and Asturianu at least.
             for locale_name in self.locales:
                 areas.append(self.locales[locale_name])
 
@@ -197,10 +189,21 @@ class Location(GtkBaseBox):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
 
+        labels = []
+        country = self.settings.get('timezone_country')
         for area in areas:
             label = Gtk.Label.new()
             label.set_markup(area)
-            label.show_all()
+            list_box_row = Gtk.ListBoxRow.new()
+            list_box_row.get_style_context().add_class('list_box_row')
+            list_box_row.show_all()
+            list_box_row.add(label)
+            if country and '(' + country + ')' in area:
+                self.listbox.add(list_box_row)
+            else:
+                labels.append(list_box_row)
+
+        for label in labels:
             self.listbox.add(label)
 
         self.selected_country = areas[0]
@@ -271,10 +274,8 @@ class Location(GtkBaseBox):
         self.settings.set('country_code', country_code)
         return True
 
-    @staticmethod
-    def get_and_save_install_id():
-        context_filter = ContextFilter()
-        context_filter.get_and_save_install_id(is_location_screen=True)
+    def get_and_save_install_id(self):
+        self.context_filter.get_and_save_install_id(is_location_screen=True)
 
 # When testing, no _() is available
 try:

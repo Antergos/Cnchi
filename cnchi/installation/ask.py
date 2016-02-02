@@ -92,10 +92,13 @@ def load_zfs():
 
 
 class InstallationAsk(GtkBaseBox):
-    def __init__(self, params, prev_page="features", next_page=None):
-        super().__init__(self, params, "ask", prev_page, next_page)
+    def __init__(self, params, prev_page="disk_group", next_page=None, **kwargs):
+        super().__init__(self, params, name="installation_ask", prev_page=prev_page,
+                         next_page=next_page, **kwargs)
 
         data_dir = self.settings.get("data")
+        self.title = _('Install Mode')
+        self.in_group = True
 
         partitioner_dir = os.path.join(
             data_dir,
@@ -105,17 +108,37 @@ class InstallationAsk(GtkBaseBox):
 
         self.disable_rank_mirrors = params["disable_rank_mirrors"]
 
-        image = self.ui.get_object("automatic_image")
-        path = os.path.join(partitioner_dir, "automatic.png")
-        image.set_from_file(path)
+        self.ui_elements = {
+            'automatic_image': '',
+            'advanced_image': '',
+            'automatic_radiobutton': '',
+            'automatic_description': '',
+            'encrypt_checkbutton': '',
+            'encrypt_label': '',
+            'lvm_checkbutton': '',
+            'lvm_label': '',
+            'zfs_checkbutton': '',
+            'zfs_label': '',
+            'home_checkbutton': '',
+            'home_label': '',
+            'introduction': '',
+            'advanced_radiobutton': '',
+            'advanced_description': ''
+        }
 
-        # image = self.ui.get_object("alongside_image")
-        # path = os.path.join(partitioner_dir, "alongside.png")
-        # image.set_from_file(path)
+        self.options_stack = self.ui.get_object('ask_stack_advanced')
+        self.automatic_toggle_button = self.ui.get_object('automatic_radiobutton')
+        self.advanced_toggle_button = self.ui.get_object('advanced_radiobutton')
+        self.stack_wrapper = self.ui.get_object('stack_wrapper')
 
-        image = self.ui.get_object("advanced_image")
-        path = os.path.join(partitioner_dir, "advanced.png")
-        image.set_from_file(path)
+        self.stack_wrapper.show_all()
+        automatic_options = self.ui.get_object('automatic_options_wrapper')
+        advanced_options = self.ui.get_object('advanced_options_wrapper')
+        self.options_stack.child_set_property(automatic_options, 'name', 'automatic_wrapper')
+        self.options_stack.child_set_property(advanced_options, 'name', 'advanced_wrapper')
+        self.show_all()
+        self.options_stack.set_visible_child_name('advanced_wrapper')
+        self.stack_wrapper.hide()
 
         self.other_oses = []
 
@@ -135,8 +158,6 @@ class InstallationAsk(GtkBaseBox):
         self.settings.set("partition_mode", "automatic")
 
         self.is_zfs_available = load_zfs()
-
-        self.enable_automatic_options(True)
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
@@ -200,11 +221,8 @@ class InstallationAsk(GtkBaseBox):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
-
-        if not self.settings.get('enable_alongside'):
-            self.hide_option("alongside")
-
-        self.forward_button.set_sensitive(True)
+        self.forward_button.set_sensitive(False)
+        self.stack_wrapper.hide()
 
     def hide_option(self, option):
         """ Hides widgets """
@@ -241,106 +259,11 @@ class InstallationAsk(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates screen before showing it """
-        self.header.set_subtitle(_("Installation Type"))
-
-        self.forward_button.set_always_show_image(True)
-        self.forward_button.set_sensitive(True)
-
-        description_style = '<span style="italic">{0}</span>'
-        bold_style = '<span weight="bold">{0}</span>'
 
         oses_str = self.get_os_list_str()
 
-        max_width_chars = 80
+        max_width_chars = 60
 
-        # Automatic Install
-        radio = self.ui.get_object("automatic_radiobutton")
-        if len(oses_str) > 0:
-            txt = _("Replace {0} with Antergos").format(oses_str)
-        else:
-            txt = _("Erase disk and install Antergos")
-        radio.set_label(txt)
-        radio.set_name('auto_radio_btn')
-
-        label = self.ui.get_object("automatic_description")
-        txt = _("Warning: This will erase ALL data on your disk.")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("automatic_desc")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
-
-        button = self.ui.get_object("encrypt_checkbutton")
-        txt = _("Encrypt this installation for increased security.")
-        button.set_label(txt)
-        button.set_name("enc_btn")
-        button.set_hexpand(False)
-        # button.set_line_wrap(True)
-        # button.set_max_width_chars(max_width_chars)
-
-        label = self.ui.get_object("encrypt_label")
-        txt = _("You will be asked to create an encryption password in the "
-                "next step.")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("enc_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
-
-        button = self.ui.get_object("lvm_checkbutton")
-        txt = _("Use LVM with this installation.")
-        button.set_label(txt)
-        button.set_name("lvm_btn")
-        button.set_hexpand(False)
-        # button.set_line_wrap(True)
-        # button.set_max_width_chars(max_width_chars)
-
-        label = self.ui.get_object("lvm_label")
-        txt = _("This will setup LVM and allow you to easily manage "
-                "partitions and create snapshots.")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("lvm_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
-
-        button = self.ui.get_object("zfs_checkbutton")
-        txt = _("Use ZFS with this installation.")
-        button.set_label(txt)
-        button.set_name("zfs_btn")
-        button.set_hexpand(False)
-        # button.set_line_wrap(True)
-        # button.set_max_width_chars(max_width_chars)
-
-        label = self.ui.get_object("zfs_label")
-        txt = _("This will setup ZFS on your drive(s).")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("zfs_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
-
-        button = self.ui.get_object("home_checkbutton")
-        txt = _("Set your Home in a different partition/volume")
-        button.set_label(txt)
-        button.set_name("home_btn")
-        button.set_hexpand(False)
-        # button.set_line_wrap(True)
-        # button.set_max_width_chars(max_width_chars)
-
-        label = self.ui.get_object("home_label")
-        txt = _("This will setup your /home directory in a different "
-                "partition or volume.")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("home_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
 
         # Alongside Install (For now, only works with Windows)
         # if len(oses_str) > 0:
@@ -357,29 +280,13 @@ class InstallationAsk(GtkBaseBox):
         #     intro_txt = _("This computer has {0} installed.").format(oses_str)
         #     intro_txt = intro_txt + "\n" + _("What do you want to do?")
         # else:
-        intro_txt = _("How would you like to proceed?")
-
-        intro_label = self.ui.get_object("introduction")
-        # intro_txt = bold_style.format(intro_txt)
-        intro_label.set_text(intro_txt)
-        intro_label.set_name("intro_label")
-        intro_label.set_hexpand(False)
-        intro_label.set_line_wrap(True)
-        intro_label.set_max_width_chars(max_width_chars)
 
         # Advanced Install
-        radio = self.ui.get_object("advanced_radiobutton")
-        radio.set_label(_("Choose exactly where Antergos should be installed."))
-        radio.set_name("advanced_radio_btn")
-
-        label = self.ui.get_object("advanced_description")
-        txt = _("Edit partition table and choose mount points.")
-        # txt = description_style.format(txt)
-        label.set_text(txt)
-        label.set_name("adv_desc_label")
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(max_width_chars)
+        # radio = self.ui.get_object("advanced_radiobutton")
+        # for child in radio.get_children():
+        #     if isinstance(child, Gtk.Label):
+        #         child.set_max_width_chars(50)
+        #         child.set_line_wrap(True)
 
     def store_values(self):
         """ Store selected values """
@@ -518,12 +425,19 @@ class InstallationAsk(GtkBaseBox):
     def on_automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """
         if widget.get_active():
+            self.enable_automatic_options(True)
+            self.stack_wrapper.show_all()
+            self.options_stack.set_visible_child_name('automatic_wrapper')
+            self.forward_button.set_sensitive(True)
+
+            if self.advanced_toggle_button.get_active():
+                self.advanced_toggle_button.set_active(False)
+
             check = self.ui.get_object("zfs_checkbutton")
             if check.get_active():
                 self.next_page = "installation_zfs"
             else:
                 self.next_page = "installation_automatic"
-            self.enable_automatic_options(True)
 
     def on_automatic_lvm_checkbutton_toggled(self, widget):
         if widget.get_active():
@@ -552,6 +466,12 @@ class InstallationAsk(GtkBaseBox):
         if widget.get_active():
             self.next_page = "installation_advanced"
             self.enable_automatic_options(False)
+            self.forward_button.set_sensitive(True)
+            self.options_stack.set_visible_child_name('advanced_wrapper')
+            self.stack_wrapper.hide()
+
+            if self.automatic_toggle_button.get_active():
+                self.automatic_toggle_button.set_active(False)
 
 
 if __name__ == '__main__':

@@ -35,10 +35,13 @@ from gi.repository import Gtk, Gdk
 import os
 import logging
 
+
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
 
-    def __init__(self, child, params, name, prev_page, next_page):
+    def __init__(self, child=None, params=None, name=None, prev_page=None,
+                 next_page=None, in_group=False, stack=None, is_last=False):
+        super().__init__()
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
         self.disable_tryit = params['disable_tryit']
@@ -51,8 +54,12 @@ class GtkBaseBox(Gtk.Box):
         self.main_window = params['main_window']
         self.prev_page = prev_page
         self.next_page = next_page
-
-        Gtk.Box.__init__(self)
+        self.in_group = in_group
+        self.can_show = False
+        self.nav_button_box = None
+        self.nav_button = None
+        self.stack = None
+        self.is_last = is_last
 
         self.set_name(name)
         self.name = name

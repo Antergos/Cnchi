@@ -45,16 +45,31 @@ APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
 
-class Language(GtkBaseBox):
-    def __init__(self, params, prev_page="welcome", next_page="check"):
-        super().__init__(self, params, "language", prev_page, next_page)
+class LanguageWidget(Gtk.Box):
+    def __init__(self, params=None, name='language', button=None):
+        super().__init__()
+
+        self.settings = params['settings']
+        self.ui_dir = params['ui_dir']
+        self.ui = Gtk.Builder()
+        self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
+        self.ui.add_from_file(self.ui_file)
+        self.main_window = params['main_window']
+        self.language_button = button
+
+        # Connect UI signals
+        self.ui.connect_signals(self)
+
+        self.contents = self.ui.get_object('language_box')
+        self.add(self.contents)
 
         # Set up list box
-        self.listbox = self.ui.get_object("listbox")
+        self.listbox = self.ui.get_object('listbox')
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
         data_dir = self.settings.get('data')
+        self.title = _('Language')
 
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
@@ -63,15 +78,12 @@ class Language(GtkBaseBox):
             "languagelist.txt.gz")
         self.set_languages_list()
 
-        image1 = self.ui.get_object("image1")
-        image1.set_from_file(os.path.join(data_dir, "images/languages.png"))
-
-        label = self.ui.get_object("welcome_label")
-        label.set_name("WelcomeMessage")
-
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
+        self.selecting_default_row = False
+        self.popover_is_visible = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
+        self.show_all()
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]
@@ -94,6 +106,12 @@ class Language(GtkBaseBox):
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
+                    self.store_values()
+                    self.language_button.set_label(lang_code.upper()[:2])
+                    if hasattr(self.main_window, 'popover'):
+                        if not self.selecting_default_row and self.popover_is_visible:
+                            self.main_window.popover.set_visible(False)
+                            self.popover_is_visible = False
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -109,15 +127,15 @@ class Language(GtkBaseBox):
                 "<a href='{1}'>{1}</a>")
         url = "http://bugs.antergos.com"
         txt = txt.format(txt_bold, url)
-        label = self.ui.get_object("welcome_label")
-        label.set_markup(txt)
-
-        label.set_hexpand(False)
-        label.set_line_wrap(True)
-        label.set_max_width_chars(50)
-
-        txt = _("Choose your language")
-        self.header.set_subtitle(txt)
+        # label = self.ui.get_object("welcome_label")
+        # label.set_markup(txt)
+        #
+        # label.set_hexpand(False)
+        # label.set_line_wrap(True)
+        # label.set_max_width_chars(50)
+        #
+        # txt = _("Choose your language")
+        # self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
@@ -149,7 +167,7 @@ class Language(GtkBaseBox):
                 self.select_default_row(current_language)
 
     def set_language(self, locale_code):
-        if locale_code is None:
+        if not locale_code:
             locale_code, encoding = locale.getdefaultlocale()
 
         os.environ["LANG"] = locale_code
@@ -164,11 +182,13 @@ class Language(GtkBaseBox):
                 locale_code)
 
     def select_default_row(self, language):
+        self.selecting_default_row = True
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[0]
                 if language == label.get_text():
                     self.listbox.select_row(listbox_row)
+                    self.selecting_default_row = False
                     return
 
     def store_values(self):
@@ -194,7 +214,7 @@ class Language(GtkBaseBox):
     def prepare(self, direction):
         self.translate_ui()
         # Enable forward button
-        self.forward_button.set_sensitive(True)
+        # self.forward_button.set_sensitive(True)
         self.show_all()
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists

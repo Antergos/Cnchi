@@ -31,7 +31,10 @@
 
 import os
 import sys
-import shutil
+
+
+# Set initial value for "_" to appease PyCharm
+_ = lambda x: x
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -68,6 +71,13 @@ try:
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
+try:
+    import main_window
+except ImportError as err:
+    msg = "Cannot create Cnchi main window: {0}".format(err.msg)
+    logging.error(msg)
+    sys.exit(1)
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
@@ -83,29 +93,19 @@ class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
 
     def __init__(self):
-        """ Constructor. Call base class """
-        Gtk.Application.__init__(self,
-                                 application_id="com.antergos.cnchi",
-                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
+        super().__init__(application_id="com.antergos.cnchi",
+                         flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.TMP_RUNNING = "/tmp/.setup-running"
 
     def do_activate(self):
-        """ Override the 'activate' signal of GLib.Application. """
-        try:
-            import main_window
-        except ImportError as err:
-            msg = "Cannot create Cnchi main window: {0}".format(err)
-            logging.error(msg)
-            sys.exit(1)
-
-        # Check if we have administrative privileges
-        if os.getuid() != 0:
+        # Make sure we have administrative privileges
+        if os.getuid() != 0 and not cmd_line.z_hidden:
             msg = _('This installer must be run with administrative privileges, '
                     'and cannot continue without them.')
             show.error(None, msg)
             return
 
-        # Check if we're already running
+        # Make sure we're not already running
         if self.already_running():
             msg = _("You cannot run two instances of this installer.\n\n"
                     "If you are sure that the installer is not already running\n"
@@ -116,29 +116,14 @@ class CnchiApp(Gtk.Application):
             return
 
         window = main_window.MainWindow(self, cmd_line)
-        self.add_window(window)
-        window.show()
+        window.show_all()
 
         with open(self.TMP_RUNNING, "w") as tmp_file:
             txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
             tmp_file.write(txt)
 
-        # This is unnecessary as show_all is called in MainWindow
-        # window.show_all()
-
-        # def do_startup(self):
-        # """ Override the 'startup' signal of GLib.Application. """
-        # Gtk.Application.do_startup(self)
-
-        # Application main menu (we don't need one atm)
-        # Leaving this here for future reference
-        # menu = Gio.Menu()
-        # menu.append("About", "win.about")
-        # menu.append("Quit", "app.quit")
-        # self.set_app_menu(menu)
-
     def already_running(self):
-        """ Check if we're already running """
+        """ Check to see if we're already running """
         if os.path.exists(self.TMP_RUNNING):
             logging.debug("File %s already exists.", self.TMP_RUNNING)
             with open(self.TMP_RUNNING) as setup:
@@ -306,26 +291,6 @@ def check_pyalpm_version():
     return True
 
 
-def check_iso_version():
-    """ Hostname contains the ISO version """
-    from socket import gethostname
-    hostname = gethostname()
-    # antergos-year.month-iso
-    prefix = "antergos-"
-    suffix = "-iso"
-    if hostname.startswith(prefix) and hostname.endswith(suffix):
-        # We're running form the ISO, register which version.
-        version = hostname[len(prefix):-len(suffix)]
-        logging.debug("Running from ISO version %s", version)
-        # Delete user's chromium cache (just in case)
-        cache_dir = "/home/antergos/.cache/chromium"
-        if os.path.exists(cache_dir):
-            shutil.rmtree(cache_dir)
-    else:
-        logging.debug("Not running from ISO")
-    return True
-
-
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
 
@@ -476,10 +441,7 @@ def check_for_files():
 
 
 def init_cnchi():
-    """ This function initialises Cnchi """
-
-    # Sets SIGTERM handler, so Cnchi can clean up before exiting
-    # signal.signal(signal.SIGTERM, sigterm_handler)
+    """ This function prepares for Cnchi's initialization """
 
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
@@ -487,7 +449,6 @@ def init_cnchi():
     # Command line options
     global cmd_line
     cmd_line = parse_options()
-
 
     if cmd_line.version:
         print(_("Cnchi (Antergos Installer) version {0}").format(info.CNCHI_VERSION))
@@ -515,14 +476,14 @@ def init_cnchi():
         sys.exit(1)
 
     # Check ISO version where Cnchi is running from
-    if not check_iso_version():
-        sys.exit(1)
+    # if not check_iso_version():
+    #    sys.exit(1)
 
     # if not cmd_line.disable_update:
         # update_cnchi()
 
     # Init PyObject Threads
-    threads_init()
+    # threads_init()
 
 
 if __name__ == '__main__':
