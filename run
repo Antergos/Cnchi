@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # WARNING:
 # This script is a helper that the developers use to call Cnchi (testing purposes only)

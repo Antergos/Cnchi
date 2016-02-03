@@ -41,7 +41,10 @@ import argparse
 
 from collections import deque
 
-import pyalpm
+try:
+    import pyalpm
+except ImportError:
+    pass
 
 try:
     import xml.etree.cElementTree as eTree

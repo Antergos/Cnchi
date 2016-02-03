@@ -36,7 +36,10 @@ import struct
 import fcntl
 import termios
 
-import pyalpm
+try:
+    import pyalpm
+except ImportError:
+    pass
 
 ATTRNAME_FORMAT = '%-14s : '
 ATTR_INDENT = 17 * ' '
