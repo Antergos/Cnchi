@@ -270,8 +270,7 @@ class Download(object):
                 except TypeError:
                     total_length = 0
                     logging.debug(
-                        "Metalink for package %s has no size info",
-                        element['identity'])
+                        "Metalink for package %s has no size info", url)
 
                 with open(dst_path, 'wb') as xz_file:
                     for data in req.iter_content(io.DEFAULT_BUFFER_SIZE):
