@@ -1,3 +1,4 @@
+[2016-02-01 23:10:19 -0600]  update readme. update pot file                                         Dustin Falgout  {3729edf}
 [2016-02-01 22:46:41 -0600]  merge branch playing into master                                       Dustin Falgout  {2adc641}
 [2016-02-01 22:39:59 -0600]  start v0.15 dev cycle                                                  Dustin Falgout  {ebc1964}
 [2016-02-01 20:41:39 -0600]  further obfuscate the url and api key to avoid spam bots harvesting..  Dustin Falgout  {8ac523c}
