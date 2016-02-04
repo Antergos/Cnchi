@@ -472,8 +472,8 @@ def init_cnchi():
         sys.exit(1)
 
     # Check installed pyalpm and libalpm versions
-    if not check_pyalpm_version():
-        sys.exit(1)
+    #if not check_pyalpm_version():
+    #    sys.exit(1)
 
     # Check ISO version where Cnchi is running from
     # if not check_iso_version():

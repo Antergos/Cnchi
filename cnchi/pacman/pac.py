@@ -51,8 +51,6 @@ import pacman.pacman_conf as config
 try:
     import pyalpm
 except ImportError as err:
-    # This is already logged elsewhere
-    # logging.error(err)
     pass
 
 _DEFAULT_ROOT_DIR = "/"

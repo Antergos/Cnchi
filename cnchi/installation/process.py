@@ -36,7 +36,10 @@ import logging
 import sys
 import queue
 
-import pyalpm
+try:
+    import pyalpm
+except ImportError:
+    pass
 
 import misc.extra as misc
 
