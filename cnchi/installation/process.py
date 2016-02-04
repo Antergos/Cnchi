@@ -97,6 +97,12 @@ class Process(multiprocessing.Process):
             with misc.raised_privileges():
                 self.install_screen.run_format()
 
+            path = "/var/tmp/.cnchi_partitioning_completed"
+            with open(path, 'w') as part_file:
+                part_file.write("# File created by Cnchi to force\n")
+                part_file.write("# users to reboot before retry\n")
+                part_file.write("# formatting their hard disk(s)\n")
+
             self.queue_event('info', _("Installation will start now!"))
             with misc.raised_privileges():
                 self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
