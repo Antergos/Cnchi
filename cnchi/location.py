@@ -224,26 +224,30 @@ class Location(GtkBaseBox):
             locale.LC_MESSAGES]
 
         try:
-            for var in locale_vars:
-                locale.setlocale(var, mylocale)
-            logging.debug("Locale changed to : %s", mylocale)
+            locale.setlocale(locale.LC_ALL, mylocale)
         except locale.Error as err:
-            logging.warning("Cannot change to locale '%s': %s", mylocale, err)
-            if mylocale.endswith(".UTF-8"):
-                # Try without the .UTF-8 trailing
-                mylocale = mylocale[:-len(".UTF-8")]
-                try:
-                    for var in locale_vars:
-                        locale.setlocale(var, mylocale)
-                    logging.debug("Locale changed to : %s", mylocale)
-                    self.settings.set("locale", mylocale)
-                except locale.Error as err:
-                    logging.warning(
-                        "Cannot change to locale '%s': %s",
-                        mylocale,
-                        err)
-            else:
-                logging.warning("Cannot change to locale '%s'", mylocale)
+            logging.debug('Unable to set locale for all categories at once.')
+            try:
+                for var in locale_vars:
+                    locale.setlocale(var, mylocale)
+                logging.debug("Locale changed to : %s", mylocale)
+            except locale.Error as err:
+                logging.warning("Cannot change to locale '%s': %s", mylocale, err)
+                if mylocale.endswith(".UTF-8"):
+                    # Try without the .UTF-8 trailing
+                    mylocale = mylocale[:-len(".UTF-8")]
+                    try:
+                        for var in locale_vars:
+                            locale.setlocale(var, mylocale)
+                        logging.debug("Locale changed to : %s", mylocale)
+                        self.settings.set("locale", mylocale)
+                    except locale.Error as err:
+                        logging.warning(
+                            "Cannot change to locale '%s': %s",
+                            mylocale,
+                            err)
+                else:
+                    logging.warning("Cannot change to locale '%s'", mylocale)
 
     def store_values(self):
         location = self.selected_country

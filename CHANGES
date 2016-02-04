@@ -1,3 +1,4 @@
+[2016-02-04 07:30:14 -0600]  just needed to bump ver                                                Dustin Falgout  {7398ce9}
 [2016-02-04 03:10:41 -0600]  fix file permissions (cherry picked from commit d211fa8)               Dustin Falgout  {4ebb065}
 [2016-02-01 22:36:46 -0600]  fix version                                                            Dustin Falgout  {066e57e}
 [2016-02-01 21:02:36 -0600]  further obfuscate the url and api key to avoid spam bots harvesting..  Dustin Falgout  {1e7d94a}
