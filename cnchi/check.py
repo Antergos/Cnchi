@@ -45,6 +45,8 @@ import misc.extra as misc
 from misc.run_cmd import call, popen
 from gtkbasebox import GtkBaseBox
 
+import show_message as show
+
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -102,6 +104,11 @@ class Check(GtkBaseBox):
 
     def check_all(self):
         """ Check that all requirements are meet """
+        path = "/var/tmp/.cnchi_partitioning_completed"
+        if os.path.exists(path):
+            show.error(_("You must reboot before retrying again."))
+            return False
+
         has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
 
