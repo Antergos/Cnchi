@@ -56,6 +56,7 @@ class Grub2(object):
         self.dest_dir = dest_dir
         self.settings = settings
         self.uuids = uuids
+        self.default_grub_lines = []
 
     def install(self):
         """ Install Grub2 bootloader """
@@ -186,14 +187,15 @@ class Grub2(object):
         try:
             default_grub = os.path.join(self.dest_dir, "etc/default", "grub")
 
-            with open(default_grub) as grub_file:
-                lines = [x.strip() for x in grub_file.readlines()]
+            if not self.default_grub_lines:
+                with open(default_grub) as grub_file:
+                    self.default_grub_lines = [x.strip() for x in grub_file.readlines()]
 
             look_for = option + '='
 
-            if look_for in lines:
-                with open(default_grub, 'w', newline='\n') as grub_file:
-                    for line in lines:
+            if look_for in self.default_grub_lines:
+                with open(default_grub, 'r+', newline='\n') as grub_file:
+                    for line in grub_file:
                         if look_for in line:
                             # Option was already in file, update it
                             line = '{0}="{1}"'.format(option, cmd)
@@ -207,7 +209,9 @@ class Grub2(object):
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as ex:
-            template = "Can't modify /etc/default/grub. An exception of type {0} occured. Arguments:\n{1!r}"
+            tpl1 = "Can't modify /etc/default/grub."
+            tpl2 = "An exception of type {0} occured. Arguments:\n{1!r}"
+            template = '{0} {1}'.format(tpl1, tpl2)
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
@@ -238,33 +242,33 @@ class Grub2(object):
         # Make sure that /dev and others are mounted (binded).
         special_dirs.mount(self.dest_dir)
 
-        if self.settings.get("zfs"):
-            # grub-mkconfig does not properly detect the ZFS filesystem,
-            # so it is necessary to edit grub.cfg manually.
-            zfs_pool_name = self.settings.get("zfs_pool_name")
-            grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-            with open(grub_cfg_path, "w") as grub_cfg:
-                grub_cfg.write('set timeout=2\n')
-                grub_cfg.write('set default=0\n\n')
-                grub_cfg.write('# (0) Antergos Linux\n')
-                grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
-                # grub_cfg.write('\tsearch --no-floppy --label --set=root {0}\n'.format(zfs_pool_name))
-                grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
-                grub_cfg.write('\tinitrd /initramfs-linux.img\n')
-                grub_cfg.write('}\n')
-        else:
-            # Add -l option to os-prober's umount call so that it does not hang
-            self.apply_osprober_patch()
-            logging.debug("Running grub-mkconfig...")
-            locale = self.settings.get("locale")
-            cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
-            cmd_sh = ['sh', '-c', cmd]
-            if not chroot_call(cmd_sh, self.dest_dir, timeout=300):
-                msg = ("grub-mkconfig does not respond. Killing grub-mount and"
-                       "os-prober so we can continue.")
-                logging.error(msg)
-                call(['killall', 'grub-mount'])
-                call(['killall', 'os-prober'])
+        # if self.settings.get("zfs"):
+        #     # grub-mkconfig does not properly detect the ZFS filesystem,
+        #     # so it is necessary to edit grub.cfg manually.
+        #     zfs_pool_name = self.settings.get("zfs_pool_name")
+        #     grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
+        #     with open(grub_cfg_path, "w") as grub_cfg:
+        #         grub_cfg.write('set timeout=2\n')
+        #         grub_cfg.write('set default=0\n\n')
+        #         grub_cfg.write('# (0) Antergos Linux\n')
+        #         grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
+        #         # grub_cfg.write('\tsearch --no-floppy --label --set=root {0}\n'.format(zfs_pool_name))
+        #         grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
+        #         grub_cfg.write('\tinitrd /initramfs-linux.img\n')
+        #         grub_cfg.write('}\n')
+        # else:
+        # Add -l option to os-prober's umount call so that it does not hang
+        self.apply_osprober_patch()
+        logging.debug("Running grub-mkconfig...")
+        locale = self.settings.get("locale")
+        cmd = 'LANG={0} grub-mkconfig -o /boot/grub/grub.cfg'.format(locale)
+        cmd_sh = ['sh', '-c', cmd]
+        if not chroot_call(cmd_sh, self.dest_dir, timeout=300):
+            msg = ("grub-mkconfig does not respond. Killing grub-mount and"
+                   "os-prober so we can continue.")
+            logging.error(msg)
+            call(['killall', 'grub-mount'])
+            call(['killall', 'os-prober'])
 
     def install_bios(self):
         """ Install Grub2 bootloader in a BIOS system """
