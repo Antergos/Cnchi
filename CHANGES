@@ -1,3 +1,4 @@
+[2016-02-04 18:43:34 +0100]  Fixes issue #527                                                           karasu      {b6da70c}
 [2016-02-04 08:02:51 -0600]  Fixes half issue #524 (cherry picked from commit 08f82e9)              Dustin Falgout  {053e4c5}
 [2016-02-04 08:01:10 -0600]  trying to fix issue with setting locale that I found while testing ..  Dustin Falgout  {a318d29}
 [2016-02-04 07:30:14 -0600]  just needed to bump ver                                                Dustin Falgout  {7398ce9}
