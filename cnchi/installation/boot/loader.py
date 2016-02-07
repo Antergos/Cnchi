@@ -33,6 +33,7 @@ import os
 
 from misc.run_cmd import call
 import parted3.fs_module as fs
+import logging
 
 class Bootloader(object):
     """ Class to perform boot loader installation """
