@@ -139,10 +139,23 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             if self.after_location_screen and not self.have_install_id:
                 self.get_and_save_install_id()
 
-            notification.user = {
-                "id": self.ip,
-                "name": "Antergos User",
-                "install_id": self.install_id}
+            notification.user = {"id": self.ip,
+                                 "name": "Antergos User",
+                                 "install_id": self.install_id}
+
+            logs = ['/tmp/{0}.log'.format(n) for n in ['cnchi', 'pacman', 'postinstall']]
+            missing = [f for f in logs if not os.path.exists(f)]
+            if missing:
+                for log in missing:
+                    open(log, 'a').close()
+
+            with open(logs[0], 'r') as cnchi:
+                with open(logs[1], 'r') as pacman:
+                    with open(logs[2], 'r') as postinstall:
+                        log_dict = {'cnchi': cnchi, 'pacman': pacman, 'postinstall': postinstall}
+                        parse = {log: [line.strip() for line in log_dict[log]] for log in log_dict}
+                        notification.logs = parse
+
             return notification
 
     def send_install_result(self, result):
