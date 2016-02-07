@@ -104,9 +104,8 @@ class Check(GtkBaseBox):
 
     def check_all(self):
         """ Check that all requirements are meet """
-        path = "/var/tmp/.cnchi_partitioning_completed"
-        if os.path.exists(path):
-            show.error(_("You must reboot before retrying again."))
+        if os.path.exists("/var/tmp/.cnchi_partitioning_completed"):
+            show.fatal_error(self.main_window, _("You must reboot before retrying again."))
             return False
 
         has_internet = misc.has_connection()

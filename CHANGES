@@ -1,3 +1,4 @@
+[2016-02-18 23:03:50 -0600]  fix flash icon and iso version detection (cherry picked from commit..  Dustin Falgout  {e14a477}
 [2016-02-04 18:40:20 +0100]  Fixes issue #527                                                           karasu      {fe0d6d8}
 [2016-02-04 07:59:11 -0600]  trying to fix issue with setting locale that I found while testing ..  Dustin Falgout  {c90e40b}
 [2016-02-04 07:40:07 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {9942b93}
