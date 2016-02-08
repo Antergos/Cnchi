@@ -59,10 +59,12 @@ DEST_DIR = "/install"
 
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
+MAX_ROOT_SIZE_GB = MAX_ROOT_SIZE // 1024
 
 # KDE (with all features) needs 8 GB for its files
 # (including pacman cache xz files).
 MIN_ROOT_SIZE = 8000
+MIN_ROOT_SIZE_GB = MIN_ROOT_SIZE // 1024
 
 
 def is_int(num):
@@ -758,12 +760,13 @@ class InstallationZFS(GtkBaseBox):
         """ Get recommended /home zvol size in GB """
         pool_size = self.get_pool_size(pool_name)
         home_size = 0
+
         if pool_size != 0:
             root_needs = pool_size // 5
-            if root_needs > MAX_ROOT_SIZE:
-                root_needs = MAX_ROOT_SIZE
-            elif root_needs < MIN_ROOT_SIZE:
-                root_needs = MIN_ROOT_SIZE
+            if root_needs > MAX_ROOT_SIZE_GB:
+                root_needs = MAX_ROOT_SIZE_GB
+            elif root_needs < MIN_ROOT_SIZE_GB:
+                root_needs = MIN_ROOT_SIZE_GB
             home_size = pool_size - root_needs
         return home_size
 
