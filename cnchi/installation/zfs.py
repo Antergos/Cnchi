@@ -24,15 +24,14 @@ import subprocess
 import os
 import logging
 import math
-import random
 import shutil
-import string
 import time
+import re
 
 import parted
 
 import misc.extra as misc
-from misc.extra import InstallError
+from misc.extra import InstallError, random_generator
 from misc.run_cmd import call
 
 import show_message as show
@@ -73,11 +72,6 @@ def is_int(num):
         return True
     except ValueError:
         return False
-
-
-def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
-    """ Generates a random string to be used as pool name """
-    return ''.join(random.choice(chars) for x in range(size))
 
 
 class InstallationZFS(GtkBaseBox):
@@ -332,28 +326,25 @@ class InstallationZFS(GtkBaseBox):
                 num_drives += 1
 
         if pool_type == "None":
-            if num_drives == 1:
-                is_ok = True
-            else:
-                is_ok = False
+            is_ok = num_drives == 1
+            if not is_ok:
                 msg = _("You must select one drive")
+
         elif pool_type in ["Stripe", "Mirror"]:
-            if num_drives > 1:
-                is_ok = True
-            else:
-                is_ok = False
+            is_ok = num_drives > 1
+            if not is_ok:
                 msg = _("For the {0} pool_type, you must select at least two "
                         "drives").format(pool_type)
-        elif "RAID" in pool_type:
-            min_drives = 3
-            min_parity_drives = 1
 
-            if pool_type == "RAID-Z2":
-                min_drives = 4
-                min_parity_drives = 2
-            elif pool_type == "RAID-Z3":
-                min_drives = 5
-                min_parity_drives = 3
+        elif "RAID" in pool_type:
+            pool_types = {
+                'RAID-Z': {'min_drives': 3, 'min_parity_drives': 1},
+                'RAID-Z2': {'min_drives': 4, 'min_parity_drives': 2},
+                'RAID-Z3': {'min_drives': 5, 'min_parity_drives': 3}
+            }
+
+            min_drives = pool_types[pool_type]['min_drives']
+            min_parity_drives = pool_types[pool_type]['min_parity_drives']
 
             if num_drives < min_drives:
                 is_ok = False
@@ -367,8 +358,13 @@ class InstallationZFS(GtkBaseBox):
                             "drives for the parity. RAID-Z = 1 disk, RAIDZ-2 "
                             "= 2 disks, and so on.")
                     msg = msg.format(pool_type, min_parity_drives)
+                    is_ok = False
                 else:
                     is_ok = True
+        else:
+            # If we get here, something is wrong.
+            msg = _('An unknown error occurred while processing chosen ZFS options.')
+            is_ok = False
 
         if not is_ok and show_warning:
             show.message(self.get_main_window(), msg)
@@ -505,7 +501,7 @@ class InstallationZFS(GtkBaseBox):
         # are  names beginning with the pattern "c[0-9]".
 
         txt = self.ui.get_object("pool_name_entry").get_text()
-        if txt:
+        if txt and :
             self.zfs_options["pool_name"] = txt
 
         # Bootloader needs to know zpool name
@@ -518,6 +514,21 @@ class InstallationZFS(GtkBaseBox):
         # self.set_bootloader()
 
         return True
+
+    @staticmethod
+    def is_valid_pool_name(name):
+        allowed = re.search(r'([a-zA-Z0-9_\-\.: ])+', name)
+        reserved = re.match(r'c[0-9]([a-zA-Z0-9_\-\.: ])+', name)
+
+        reserved = ['mirror', 'raidz', 'spare', 'log'] if not reserved else []
+        valid = False
+
+        if allowed and reserved and name not in reserved:
+            valid = True
+
+        return valid
+
+
 
     # ZFS Creation starts here -------------------------------------------------
 
@@ -860,9 +871,9 @@ class InstallationZFS(GtkBaseBox):
             logging.warning(err_output)
 
     @staticmethod
-    def get_pool_id(pool_name):
+    def get_pool_id(pool_name, include_offline=False):
         """ Get zpool id number """
-        output = call(["zpool", "import"])
+        output = call(["zpool", "import", "-d", "/dev/disk/by-id"])
         if not output:
             return None
 
@@ -875,11 +886,11 @@ class InstallationZFS(GtkBaseBox):
                 identifier = line.split(": ")[1]
             elif "state:" in line:
                 state = line.split(": ")[1]
-                if name == pool_name and state == "ONLINE":
-                    return identifier
-                else:
-                    name = identifier = state = None
-        return None
+
+        if not name or (name == pool_name and state != "ONLINE" and not include_offline):
+            name = identifier = state = None
+
+        return name, identifier, state
 
     def create_zfs_pool(self, pool_name, pool_type, device_paths):
         """ Create zpool """
@@ -922,13 +933,23 @@ class InstallationZFS(GtkBaseBox):
         call(["sync"])
 
         logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
-        if call(cmd) == False:
+        if call(cmd) is False:
             # Try again, now with -f
             cmd.insert(2, "-f")
-            if call(cmd) == False:
-                # Wait 10 seconds more and try again (last hope)
+            if call(cmd) is False:
+                # Wait 10 seconds more and try again.
                 time.sleep(10)
-                call(cmd, fatal=True)
+                if call(cmd) is False:
+                    # There is probably an existing pool on this disk.
+                    # Destroy it and then try one last time.
+                    existing_pool = self.get_pool_id('_', include_offline=True)
+                    destroy_cmd = ['zpool', 'destroy', existing_pool]
+
+                    if call(destroy_cmd, fatal=True):
+                        time.sleep(2)
+                        call(cmd, fatal=True)
+
+
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
@@ -991,6 +1012,15 @@ class InstallationZFS(GtkBaseBox):
         pool_name = self.zfs_options["pool_name"]
         pool_type = self.zfs_options["pool_type"]
 
+        if not self.pool_name_is_valid(pool_name):
+            txt = _(
+                "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
+                "hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' "
+                "followed by a number (c[0-9]) are not allowed. The following names are also not "
+                "allowed: 'mirror', 'raidz', 'spare', 'log'."
+            )
+            raise InstallError(txt)
+
         # Create zpool
         self.create_zfs_pool(pool_name, pool_type, device_paths)
 
@@ -1032,7 +1062,7 @@ class InstallationZFS(GtkBaseBox):
         call(cmd, fatal=True)
 
         # Let's get the id of the pool (to import it)
-        pool_id = self.get_pool_id(pool_name)
+        _, pool_id, _n = self.get_pool_id(pool_name)
 
         if not pool_id:
             # Something bad has happened. Will use the pool name instead.
