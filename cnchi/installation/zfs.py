@@ -870,7 +870,7 @@ class InstallationZFS(GtkBaseBox):
     @staticmethod
     def get_pool_id(pool_name, include_offline=False):
         """ Get zpool id number """
-        output = call(["zpool", "import", "-d", "/dev/disk/by-id"])
+        output = call(["zpool", "import"])
         if not output:
             return None
 
@@ -957,9 +957,9 @@ class InstallationZFS(GtkBaseBox):
 
     def do_destroy_zfs_pool(self, fatal=False):
         existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
-        destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
-
-        return call(destroy_cmd, fatal=fatal)
+        if existing_pool:
+            destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
+            return call(destroy_cmd, fatal=fatal)
 
 
     @staticmethod
