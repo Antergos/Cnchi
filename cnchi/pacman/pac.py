@@ -524,7 +524,7 @@ class Pac(object):
         elif level & pyalpm.LOG_DEBUG == pyalpm.LOG_DEBUG:
             # There are a lot of "extracting" messages (not very useful), so we
             # do not log them.
-            if " error " in line and "error 0" not in line:
+            if " error " in line and "error 0" not in line and "error 32" not in line:
                 logging.debug(line)
             elif "extracting" not in line and "extract: skipping dir extraction" not in line:
                 logging.debug(line)
