@@ -154,7 +154,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                     with open(logs[2], 'r') as postinstall:
                         log_dict = {'cnchi': cnchi, 'pacman': pacman, 'postinstall': postinstall}
                         parse = {log: [line.strip() for line in log_dict[log]] for log in log_dict}
-                        notification.logs = parse
+                        notification.add_tab('logs', parse)
+                        logging.debug(str(notification.logs))
 
             return notification
 
