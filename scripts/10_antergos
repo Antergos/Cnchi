@@ -137,11 +137,11 @@ linux_entry ()
                 title="$(gettext_printf "%s, with %s Kernel - Fallback" "${os}" "${version}")"
           	fi
         fi
-            
+
   		os="$title"
 	fi
 	echo "menuentry '$(echo "$os" | grub_quote)' ${CLASS} \$menuentry_id_option 'gnulinux-simple-$boot_device_id' {" | sed "s/^/$submenu_indentation/"
-  fi      
+  fi
   if [ x$type != xrecovery ] && [ x$type != xfallback ] ; then
       save_default_entry | grub_add_tab
   fi
@@ -201,7 +201,7 @@ case "x$machine" in
 	list=`for i in /boot/vmlinuz-* /vmlinuz-* /boot/kernel-* ; do
                   if grub_file_is_not_garbage "$i" ; then echo -n "$i " ; fi
               done` ;;
-    *) 
+    *)
 	list=`for i in /boot/vmlinuz-* /boot/vmlinux-* /vmlinuz-* /vmlinux-* /boot/kernel-* ; do
                   if grub_file_is_not_garbage "$i" ; then echo -n "$i " ; fi
 	     done` ;;
@@ -286,7 +286,7 @@ while [ "x$list" != "x" ] ; do
     "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
 
     submenu_indentation="$grub_tab"
-    
+
     if [ -z "$boot_device_id" ]; then
 	boot_device_id="$(grub_get_device_id "${GRUB_DEVICE}")"
     fi

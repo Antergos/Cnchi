@@ -604,7 +604,7 @@ class InstallationZFS(GtkBaseBox):
         if not wrapper.wipefs(device_path, fatal=False):
             pname, pid, _n = self.get_pool_id('_', include_offline=True)
 
-            if self.do_destroy_zfs_pool(fatal=True):
+            if self.do_destroy_zfs_pool():
                 wrapper.wipefs(device_path, fatal=True)
 
         if scheme == "GPT":
@@ -939,7 +939,7 @@ class InstallationZFS(GtkBaseBox):
                 # Wait 10 seconds more and try again.
                 time.sleep(10)
                 if call(cmd) is False:
-                    if self.do_destroy_zfs_pool(fatal=True):
+                    if self.do_destroy_zfs_pool():
                         time.sleep(2)
                         call(cmd, fatal=True)
 
@@ -957,11 +957,11 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Pool %s created.", pool_name)
 
-    def do_destroy_zfs_pool(self, fatal=False):
+    def do_destroy_zfs_pool(self):
         existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
         if existing_pool:
             destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
-            return call(destroy_cmd, fatal=fatal)
+            return call(destroy_cmd)
 
     @staticmethod
     def get_partition_path(device, part_num):
