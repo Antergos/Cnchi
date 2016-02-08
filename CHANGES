@@ -1,3 +1,4 @@
+[2016-02-07 22:44:19 -0600]  working on #531 and #524                                               Dustin Falgout  {dd38aca}
 [2016-02-07 20:54:47 -0600]  adjustments to previous commit for sending logs to bugsnag             Dustin Falgout  {6af3e73}
 [2016-02-07 17:47:19 -0600]  include logs in exception data sent to bugsnag                         Dustin Falgout  {3d85bfa}
 [2016-02-07 01:33:12 -0600]  fix grub install with zfs                                              Dustin Falgout  {7595d90}

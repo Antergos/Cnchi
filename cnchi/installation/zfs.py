@@ -501,7 +501,7 @@ class InstallationZFS(GtkBaseBox):
         # are  names beginning with the pattern "c[0-9]".
 
         txt = self.ui.get_object("pool_name_entry").get_text()
-        if txt and :
+        if txt:
             self.zfs_options["pool_name"] = txt
 
         # Bootloader needs to know zpool name
@@ -516,7 +516,7 @@ class InstallationZFS(GtkBaseBox):
         return True
 
     @staticmethod
-    def is_valid_pool_name(name):
+    def pool_name_is_valid(name):
         allowed = re.search(r'([a-zA-Z0-9_\-\.: ])+', name)
         reserved = re.match(r'c[0-9]([a-zA-Z0-9_\-\.: ])+', name)
 
