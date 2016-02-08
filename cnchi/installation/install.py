@@ -637,7 +637,7 @@ class Installation(object):
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
 
-            txt = "Device list : %s".format(self.ssd)
+            txt = "Device list : {0}".format(self.ssd)
             logging.debug(txt)
             device = re.sub("[0-9]+$", "", partition_path)
             is_ssd = self.ssd.get(device)

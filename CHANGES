@@ -1,3 +1,4 @@
+[2016-02-08 03:30:55 -0600]  handle when size is a float string                                     Dustin Falgout  {61a7dfc}
 [2016-02-08 01:48:39 -0600]  tweaked pyalpm callback logging                                        Dustin Falgout  {fd53900}
 [2016-02-08 01:09:40 -0600]  :unamused:                                                             Dustin Falgout  {fd17728}
 [2016-02-08 00:31:25 -0600]  still working on zfs                                                   Dustin Falgout  {81741e8}
