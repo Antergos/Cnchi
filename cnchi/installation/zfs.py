@@ -67,11 +67,7 @@ MIN_ROOT_SIZE = 8000
 
 def is_int(num):
     """ Checks if num is an integer """
-    try:
-        int(num)
-        return True
-    except ValueError:
-        return False
+    return isinstance(num, int)
 
 
 class InstallationZFS(GtkBaseBox):
@@ -780,14 +776,16 @@ class InstallationZFS(GtkBaseBox):
             cmd = cmd_line.split()
             output = subprocess.check_output(cmd)
             pool_size = output.decode().strip('\n')
-            pool_size = pool_size.replace(',', '.')
-            if 'M' in pool_size:
-                pool_size = int(pool_size[:-1]) // 1024
-            elif 'G' in pool_size:
-                pool_size = int(pool_size[:-1])
-            elif 'T' in pool_size:
+            pool_size_str = pool_size.replace(',', '.')
+            if '.' in pool_size_str:
+                pool_size = int(float(pool_size_str[:-1]))
+            else:
+                pool_size = int(pool_size_str[:-1])
+            if 'M' in pool_size_str:
+                pool_size //= 1024
+            elif 'T' in pool_size_str:
                 pool_size = int(pool_size[:-1]) * 1024
-            elif 'P' in pool_size:
+            elif 'P' in pool_size_str:
                 pool_size = int(pool_size[:-1]) * 1024 * 1024
         except (subprocess.CalledProcessError, ValueError) as err:
             logging.warning(
@@ -960,7 +958,6 @@ class InstallationZFS(GtkBaseBox):
         if existing_pool:
             destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
             return call(destroy_cmd, fatal=fatal)
-
 
     @staticmethod
     def get_partition_path(device, part_num):
