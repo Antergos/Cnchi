@@ -500,34 +500,31 @@ class Pac(object):
 
         # Strip ending '\n'
         line = line.rstrip()
+        ignore = False
+        partials = ['error 0',
+                    'error 32',
+                    'extracting',
+                    'error 31 from alpm_db_get_pkg',
+                    'command failed to execute correctly',
+                    'extract: skipping dir extraction']
 
-        if "error 31 from alpm_db_get_pkg" in line:
-            # It's ok not to show this error because we search the package
-            # in all repos, and obviously it will only be in one of them,
-            # throwing errors when searching in the other ones
+        for partial in partials:
+            if partial in line:
+                ignore = True
+                break
+
+        if ignore or not level:
             return
 
-        if "command failed to execute correctly" in line:
-            # We get this warning sometimes (I think it's when Cnchi installs
-            # the kernel package). It seems to be harmless, we'll log it as
-            # a debug message instead of an error message
-            logging.debug(line)
-            return
-
-        if level & pyalpm.LOG_ERROR == pyalpm.LOG_ERROR:
+        if level == pyalpm.LOG_ERROR:
             logging.error(line)
-        elif level & pyalpm.LOG_WARNING == pyalpm.LOG_WARNING:
+        elif level == pyalpm.LOG_WARNING or level == pyalpm.LOG_DEBUG:
             # Alpm outputs non-english log messages so we can't target certain
             # useless warnings. I think most of the warnings are useless anyway.
             # We can revisit this later if need be.
             logging.debug(line)
-        elif level & pyalpm.LOG_DEBUG == pyalpm.LOG_DEBUG:
-            # There are a lot of "extracting" messages (not very useful), so we
-            # do not log them.
-            if " error " in line and "error 0" not in line and "error 32" not in line:
-                logging.debug(line)
-            elif "extracting" not in line and "extract: skipping dir extraction" not in line:
-                logging.debug(line)
+        else:
+            logging.info(line)
 
     def cb_progress(self, target, percent, total, current):
         """ Shows install progress """
