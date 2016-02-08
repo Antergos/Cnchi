@@ -526,8 +526,6 @@ class Pac(object):
             # useless warnings. I think most of the warnings are useless anyway.
             # We can revisit this later if need be.
             logging.debug(line)
-        else:
-            logging.info(line)
 
     def cb_progress(self, target, percent, total, current):
         """ Shows install progress """
