@@ -493,13 +493,6 @@ class InstallationZFS(GtkBaseBox):
             self.zfs_options["swap_size"] = 8192
 
         # Get pool name
-
-        # TODO: The pool name must begin with a letter, and
-        # can only contain alphanumeric  characters  as  well  as  underscore
-        # ("_"),  dash ("-"), period ("."), colon (":"), and space (" "). The
-        # pool names "mirror", "raidz", "spare" and "log"  are  reserved,  as
-        # are  names beginning with the pattern "c[0-9]".
-
         txt = self.ui.get_object("pool_name_entry").get_text()
         if txt:
             self.zfs_options["pool_name"] = txt
@@ -609,7 +602,11 @@ class InstallationZFS(GtkBaseBox):
         except ValueError as ex:
             logging.warning(ex)
 
-        wrapper.wipefs(device_path)
+        if not wrapper.wipefs(device_path, fatal=False):
+            pname, pid, _n = self.get_pool_id('_', include_offline=True)
+
+            if self.do_destroy_zfs_pool(fatal=True):
+                wrapper.wipefs(device_path, fatal=True)
 
         if scheme == "GPT":
             # Create fresh GPT table
@@ -940,12 +937,7 @@ class InstallationZFS(GtkBaseBox):
                 # Wait 10 seconds more and try again.
                 time.sleep(10)
                 if call(cmd) is False:
-                    # There is probably an existing pool on this disk.
-                    # Destroy it and then try one last time.
-                    existing_pool = self.get_pool_id('_', include_offline=True)
-                    destroy_cmd = ['zpool', 'destroy', existing_pool]
-
-                    if call(destroy_cmd, fatal=True):
+                    if self.do_destroy_zfs_pool(fatal=True):
                         time.sleep(2)
                         call(cmd, fatal=True)
 
@@ -962,6 +954,13 @@ class InstallationZFS(GtkBaseBox):
             call(cmd, fatal=True)
 
         logging.debug("Pool %s created.", pool_name)
+
+    def do_destroy_zfs_pool(self, fatal=False):
+        existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
+        destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
+
+        return call(destroy_cmd, fatal=fatal)
+
 
     @staticmethod
     def get_partition_path(device, part_num):

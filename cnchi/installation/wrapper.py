@@ -34,11 +34,13 @@ import logging
 from misc.extra import InstallError
 from misc.run_cmd import call
 
-def wipefs(device):
+
+def wipefs(device, fatal=True):
     """ Wipe fs from device """
     err_msg = "Cannot wipe the filesystem of device {0}".format(device)
     cmd = ["wipefs", "-a", device]
-    call(cmd, msg=err_msg, fatal=True)
+    call(cmd, msg=err_msg, fatal=fatal)
+
 
 def dd(input_device, output_device, bs=512, count=2048, seek=0):
     """ Helper function to call dd """
