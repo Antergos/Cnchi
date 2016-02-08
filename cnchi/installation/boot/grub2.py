@@ -73,16 +73,13 @@ class Grub2(object):
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
-        if "/" not in self.uuids:
+        if "/" not in self.uuids or self.settings.get("zfs"):
             logging.warning(
                 "Root uuid variable is not set. I can't check root UUID"
                 "in grub.cfg, let's hope it's ok")
             return
 
         ruuid_str = 'root=UUID={0}'.format(self.uuids["/"])
-
-        if self.settings.get("zfs"):
-            ruuid_str = 'root=ZFS=UUID={0}'.format(self.uuids["/"])
 
         cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
         if cmdline_linux is None:
@@ -135,8 +132,8 @@ class Grub2(object):
             use_splash = ""
 
         if self.settings.get("zfs"):
-            zfs_pool_name = self.settings.get("zfs_pool_name")
-            cmd_linux_default = 'root=ZFS={0}'.format(zfs_pool_name)
+            pool = self.settings.get("zfs_pool_name")
+            cmd_linux_default = 'root=ZFS={0} boot=zfs rpool={0} bootfs={0}/boot '.format(pool)
 
         if "swap" in self.uuids:
             cmd_linux_default += 'resume=UUID={0} quiet {1}'.format(
