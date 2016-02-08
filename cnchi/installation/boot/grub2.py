@@ -81,6 +81,9 @@ class Grub2(object):
 
         ruuid_str = 'root=UUID={0}'.format(self.uuids["/"])
 
+        if self.settings.get("zfs"):
+            ruuid_str = 'root=ZFS=UUID={0}'.format(self.uuids["/"])
+
         cmdline_linux = self.settings.get('GRUB_CMDLINE_LINUX')
         if cmdline_linux is None:
             cmdline_linux = ""
@@ -124,21 +127,23 @@ class Grub2(object):
             those listed in ‘GRUB_CMDLINE_LINUX’. """
 
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
+        cmd_linux_default = ''
+
         if os.path.exists(plymouth_bin):
             use_splash = "splash"
         else:
             use_splash = ""
 
+        if self.settings.get("zfs"):
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            cmd_linux_default = 'root=ZFS={0}'.format(zfs_pool_name)
+
         if "swap" in self.uuids:
-            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(
+            cmd_linux_default += 'resume=UUID={0} quiet {1}'.format(
                 self.uuids["swap"],
                 use_splash)
         else:
-            cmd_linux_default = 'quiet {0}'.format(use_splash)
-
-        if self.settings.get("zfs"):
-            zfs_pool_name = self.settings.get("zfs_pool_name")
-            cmd_linux_default += ' zfs={0}'.format(zfs_pool_name)
+            cmd_linux_default += 'quiet {0}'.format(use_splash)
 
         self.set_grub_option(
             "GRUB_THEME",
