@@ -506,7 +506,8 @@ class Pac(object):
                     'extracting',
                     'error 31 from alpm_db_get_pkg',
                     'command failed to execute correctly',
-                    'extract: skipping dir extraction']
+                    'extract: skipping dir extraction',
+                    'loading package data for']
 
         for partial in partials:
             if partial in line:
