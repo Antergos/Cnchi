@@ -35,6 +35,8 @@ import logging
 import dbus
 import urllib
 from socket import timeout
+import random
+import string
 
 try:
     import misc.osextras as osextras
@@ -633,6 +635,11 @@ def check_pid(pid):
         return False
     else:
         return True
+
+
+def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
+    """ Generates a random string. """
+    return ''.join(random.choice(chars) for x in range(size))
 
 
 class InstallError(Exception):

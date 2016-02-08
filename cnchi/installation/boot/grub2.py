@@ -34,13 +34,12 @@ import os
 import shutil
 import subprocess
 import re
-import random
-import string
 
 import parted3.fs_module as fs
 
 from installation import special_dirs
 from misc.run_cmd import call, chroot_call
+from misc.extra import random_generator
 
 # When testing, no _() is available
 try:
@@ -309,20 +308,14 @@ class Grub2(object):
                 logging.warning(txt)
                 self.settings.set('bootloader_installation_successful', False)
 
-    @staticmethod
-    def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
-        """ Generates a random string to be used as an identifier
-            for the UEFI bootloader_id """
-        return ''.join(random.choice(chars) for x in range(size))
-
     def install_efi(self):
         """ Install Grub2 bootloader in a UEFI system """
         uefi_arch = "x86_64"
         spec_uefi_arch = "x64"
         spec_uefi_arch_caps = "X64"
         fpath = '/install/boot/efi/EFI/antergos_grub'
-        bootloader_id = 'antergos_grub' if not os.path.exists(fpath) \
-            else 'antergos_grub_{0}'.format(self.random_generator())
+        bootloader_id = 'antergos_grub' if not os.path.exists(fpath) else \
+            'antergos_grub_{0}'.format(random_generator())
 
         txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
         logging.info(txt)
