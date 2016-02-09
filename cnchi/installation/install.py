@@ -859,7 +859,7 @@ class Installation(object):
                     if '#greeter-session=example-gtk-gnome' in line:
                         line = 'greeter-session={0}\n'.format(lightdm_greeter)
                     if 'session-wrapper' in line:
-                        line = 'session-wrapper=/etc/lightdm/Xsession'
+                        line = 'session-wrapper=/etc/lightdm/Xsession\n'
                     lightdm_conf.write(line)
             txt = _("LightDM display manager configuration completed.")
             logging.debug(txt)
