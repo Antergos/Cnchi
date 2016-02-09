@@ -1,32 +1,9 @@
 #  cnchi.pot
 #
-#  Copyright © 2013-2016 Antergos
-#
-#  This file is part of Cnchi.
-#
-#  Cnchi is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Cnchi is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  The following additional terms are in effect as per Section 7 of the license:
-#
-#  The preservation of all legal notices and author attributions in
-#  the material or in the Appropriate Legal Notices displayed
-#  by works containing it is required.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Cnchi 0.14.0\n"
-"POT-Creation-Date: 2016-01-30 04:04-0600\n"
+"POT-Creation-Date: 2016-02-09 01:21-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: English (http://www.transifex.com/faidoc/antergos/language/en/)\n"
@@ -46,32 +23,36 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: cnchi/check.py:81
+#: cnchi/check.py:83
 msgid "System Check"
 msgstr ""
 
-#: cnchi/check.py:85
+#: cnchi/check.py:87
 msgid "Cnchi is up to date"
 msgstr ""
 
-#: cnchi/check.py:89
+#: cnchi/check.py:91
 msgid "has at least {0}GB available storage space. (*)"
 msgstr ""
 
-#: cnchi/check.py:93
+#: cnchi/check.py:95
 msgid "This highly depends on which desktop environment you choose, so you might need more space."
 msgstr ""
 
-#: cnchi/check.py:102
+#: cnchi/check.py:104
 msgid "is plugged in to a power source"
 msgstr ""
 
-#: cnchi/check.py:106
+#: cnchi/check.py:108
 msgid "is connected to the Internet"
 msgstr ""
 
-#: cnchi/check.py:110
+#: cnchi/check.py:112
 msgid "For best results, please ensure that this computer:"
+msgstr ""
+
+#: cnchi/check.py:122
+msgid "You must reboot before retrying again."
 msgstr ""
 
 #: cnchi/cnchi.py:103
@@ -530,7 +511,7 @@ msgstr ""
 msgid "free space"
 msgstr ""
 
-#: cnchi/installation/advanced.py:431 cnchi/installation/zfs.py:183
+#: cnchi/installation/advanced.py:431 cnchi/installation/zfs.py:175
 msgid "Device"
 msgstr ""
 
@@ -761,23 +742,23 @@ msgstr ""
 msgid "Couldn't create BIOS GPT Boot partition: {0}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:1961
+#: cnchi/installation/advanced.py:1962
 msgid "{0} is already mounted as swap, to continue it will be unmounted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:1965
+#: cnchi/installation/advanced.py:1966
 msgid "{0} is already mounted in {1}, to continue it will be unmounted."
 msgstr ""
 
-#: cnchi/installation/advanced.py:2268
+#: cnchi/installation/advanced.py:2269
 msgid "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:2304
+#: cnchi/installation/advanced.py:2305
 msgid "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}"
 msgstr ""
 
-#: cnchi/installation/advanced.py:2325
+#: cnchi/installation/advanced.py:2326
 msgid "Cannot commit your changes to disk: {0}"
 msgstr ""
 
@@ -1015,19 +996,19 @@ msgstr ""
 msgid "Configuring hardware..."
 msgstr ""
 
-#: cnchi/installation/install.py:1259
+#: cnchi/installation/install.py:1258
 msgid "Configuring System Startup..."
 msgstr ""
 
-#: cnchi/installation/install.py:1300
+#: cnchi/installation/install.py:1299
 msgid "Encrypting user home dir..."
 msgstr ""
 
-#: cnchi/installation/install.py:1307
+#: cnchi/installation/install.py:1306
 msgid "Installing bootloader..."
 msgstr ""
 
-#: cnchi/installation/install.py:1320
+#: cnchi/installation/install.py:1319
 msgid "Updating man pages..."
 msgstr ""
 
@@ -1043,11 +1024,11 @@ msgstr ""
 msgid "Getting your disk(s) ready for Antergos..."
 msgstr ""
 
-#: cnchi/installation/process.py:100
+#: cnchi/installation/process.py:106
 msgid "Installation will start now!"
 msgstr ""
 
-#: cnchi/installation/process.py:112
+#: cnchi/installation/process.py:118
 msgid "Error running command {0}: {1}"
 msgstr ""
 
@@ -1071,120 +1052,128 @@ msgstr ""
 msgid "Special dirs are not mounted. Skipping."
 msgstr ""
 
-#: cnchi/installation/wrapper.py:66
+#: cnchi/installation/wrapper.py:68
 msgid "Command {0} failed: {1}"
 msgstr ""
 
-#: cnchi/installation/wrapper.py:98 cnchi/installation/wrapper.py:141
+#: cnchi/installation/wrapper.py:100 cnchi/installation/wrapper.py:143
 msgid "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
 msgstr ""
 
-#: cnchi/installation/wrapper.py:160
+#: cnchi/installation/wrapper.py:162
 msgid "Cannot create a new partition table on device {0}. Command {1} failed: {2}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:162
+#: cnchi/installation/zfs.py:154
 msgid "Use"
 msgstr ""
 
-#: cnchi/installation/zfs.py:171
+#: cnchi/installation/zfs.py:163
 msgid "Disk"
 msgstr ""
 
-#: cnchi/installation/zfs.py:177
+#: cnchi/installation/zfs.py:169
 msgid "Size (GB)"
 msgstr ""
 
-#: cnchi/installation/zfs.py:189
+#: cnchi/installation/zfs.py:181
 msgid "Disk ID"
 msgstr ""
 
-#: cnchi/installation/zfs.py:234
+#: cnchi/installation/zfs.py:226
 msgid "ZFS Setup"
 msgstr ""
 
-#: cnchi/installation/zfs.py:268
+#: cnchi/installation/zfs.py:260
 msgid "Pool type"
 msgstr ""
 
-#: cnchi/installation/zfs.py:282
+#: cnchi/installation/zfs.py:274
 msgid "Partition scheme"
 msgstr ""
 
-#: cnchi/installation/zfs.py:296
+#: cnchi/installation/zfs.py:288
 msgid "Validate password"
 msgstr ""
 
-#: cnchi/installation/zfs.py:299 cnchi/user_info.py:126
+#: cnchi/installation/zfs.py:291 cnchi/user_info.py:126
 msgid "Password"
 msgstr ""
 
-#: cnchi/installation/zfs.py:302
+#: cnchi/installation/zfs.py:294
 msgid "Swap size (MB)"
 msgstr ""
 
-#: cnchi/installation/zfs.py:306
+#: cnchi/installation/zfs.py:298
 msgid "Encrypt swap"
 msgstr ""
 
-#: cnchi/installation/zfs.py:309
+#: cnchi/installation/zfs.py:301
 msgid "Encrypt disk"
 msgstr ""
 
-#: cnchi/installation/zfs.py:312
+#: cnchi/installation/zfs.py:304
 msgid "Pool name"
 msgstr ""
 
-#: cnchi/installation/zfs.py:315
+#: cnchi/installation/zfs.py:307
 msgid "Force ZFS 4k block size"
 msgstr ""
 
-#: cnchi/installation/zfs.py:339
+#: cnchi/installation/zfs.py:329
 msgid "You must select one drive"
 msgstr ""
 
-#: cnchi/installation/zfs.py:345
+#: cnchi/installation/zfs.py:334
 msgid "For the {0} pool_type, you must select at least two drives"
 msgstr ""
 
-#: cnchi/installation/zfs.py:360
+#: cnchi/installation/zfs.py:349
 msgid "You must select at least {0} drives"
 msgstr ""
 
-#: cnchi/installation/zfs.py:365
+#: cnchi/installation/zfs.py:354
 msgid "For the {0} pool type, you must use a 'power of two' (2,4,8,...) plus the appropriate number of drives for the parity. RAID-Z = 1 disk, RAIDZ-2 = 2 disks, and so on."
 msgstr ""
 
-#: cnchi/installation/zfs.py:390
+#: cnchi/installation/zfs.py:364
+msgid "An unknown error occurred while processing chosen ZFS options."
+msgstr ""
+
+#: cnchi/installation/zfs.py:384
 msgid "'None' pool will use ZFS on a single selected disk."
 msgstr ""
 
-#: cnchi/installation/zfs.py:392
+#: cnchi/installation/zfs.py:386
 msgid "When created together, with equal capacity, ZFS space-balancing makes a span act like a RAID0 stripe. The space is added together. Provided all the devices are of the same size, the stripe behavior will continue regardless of fullness level. If devices/vdevs are not equally sized, then they will fill mostly equally until one device/vdev is full."
 msgstr ""
 
-#: cnchi/installation/zfs.py:400
+#: cnchi/installation/zfs.py:394
 msgid "A mirror consists of two or more devices, all data will be written to all member devices. Cnchi will try to group devices in groups of two."
 msgstr ""
 
-#: cnchi/installation/zfs.py:404
+#: cnchi/installation/zfs.py:398
 msgid "ZFS implements RAID-Z, a variation on standard RAID-5. ZFS supports three levels of RAID-Z which provide varying levels of redundancy in exchange for decreasing levels of usable storage. The types are named RAID-Z1 through RAID-Z3 based on the number of parity devices in the array and the number of disks which can fail while the pool remains operational."
 msgstr ""
 
-#: cnchi/installation/zfs.py:416
+#: cnchi/installation/zfs.py:410
 msgid "Advanced Format (AF) is a new disk format which natively uses a 4,096 byte instead of 512 byte sector size. To maintain compatibility with legacy systems AF disks emulate a sector size of 512 bytes. By default, ZFS will automatically detect the sector size of the drive. This combination will result in poorly aligned disk access which will greatly degrade the pool performance. If that might be your case, you can force ZFS to use a sector size of 4,096 bytes by selecting this option."
 msgstr ""
 
-#: cnchi/installation/zfs.py:527
+#: cnchi/installation/zfs.py:529
 msgid "Create {0} on device {1}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:531
+#: cnchi/installation/zfs.py:533
 msgid "Add device {0} to {1}"
 msgstr ""
 
-#: cnchi/installation/zfs.py:965
+#: cnchi/installation/zfs.py:987
 msgid "No devices were selected for the ZFS pool"
+msgstr ""
+
+#: cnchi/installation/zfs.py:1017
+msgid "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' followed by a number (c[0-9]) are not allowed. The following names are also not allowed: 'mirror', 'raidz', 'spare', 'log'."
 msgstr ""
 
 #: cnchi/keymap.py:87
@@ -1246,7 +1235,7 @@ msgstr ""
 msgid "Select your location"
 msgstr ""
 
-#: cnchi/location.py:262
+#: cnchi/location.py:266
 msgid "Can't get country code from %s location"
 msgstr ""
 
@@ -1262,7 +1251,7 @@ msgstr ""
 msgid "Antergos Installer"
 msgstr ""
 
-#: cnchi/main_window.py:371
+#: cnchi/main_window.py:373
 msgid "Do you really want to quit the installer?"
 msgstr ""
 
@@ -1350,15 +1339,15 @@ msgstr ""
 msgid "Downloading missing keys into the keyring..."
 msgstr ""
 
-#: cnchi/pacman/pac.py:537
+#: cnchi/pacman/pac.py:533
 msgid "Installing {0} ({1}/{2})"
 msgstr ""
 
-#: cnchi/pacman/pac.py:558
+#: cnchi/pacman/pac.py:554
 msgid "Updating {0} database"
 msgstr ""
 
-#: cnchi/pacman/pac.py:567
+#: cnchi/pacman/pac.py:563
 msgid "Downloading {0}..."
 msgstr ""
 
@@ -1689,3 +1678,4 @@ msgstr ""
 #: cnchi/wireless.py:73
 msgid "Display password"
 msgstr ""
+
