@@ -1,3 +1,4 @@
+[2016-02-08 08:43:26 -0600]  alpm is too noisy                                                      Dustin Falgout  {780d753}
 [2016-02-08 08:42:20 -0600]  i think its will work once rebuild isos                                Dustin Falgout  {452641a}
 [2016-02-08 05:39:03 -0600]  try workaround for grub                                                Dustin Falgout  {19acc17}
 [2016-02-08 03:59:42 -0600]  fix /home vol size calculation                                         Dustin Falgout  {ea43c95}
