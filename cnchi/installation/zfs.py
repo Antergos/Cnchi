@@ -605,6 +605,8 @@ class InstallationZFS(GtkBaseBox):
             pname, pid, _n = self.get_pool_id('_', include_offline=True)
 
             if self.do_destroy_zfs_pool():
+                call(["udevadm", "settle"])
+                call(["sync"])
                 wrapper.wipefs(device_path, fatal=True)
 
         if scheme == "GPT":
@@ -960,7 +962,7 @@ class InstallationZFS(GtkBaseBox):
     def do_destroy_zfs_pool(self):
         existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
         if existing_pool:
-            destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
+            destroy_cmd = ['zpool', 'destroy', '-R', '-f', existing_pool]
             return call(destroy_cmd)
 
     @staticmethod
