@@ -54,7 +54,7 @@ NAMES = {
     'xfce': "Xfce",
     'openbox': "Openbox",
     'enlightenment': "Enlightenment",
-    'kde': "KDE",
+    'kde': "KDE Plasma",
     'lxqt': "LXQt",
     'mate': "MATE"
 }
