@@ -962,8 +962,10 @@ class InstallationZFS(GtkBaseBox):
     def do_destroy_zfs_pool(self):
         existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
         if existing_pool:
-            destroy_cmd = ['zpool', 'destroy', '-R', '-f', existing_pool]
-            return call(destroy_cmd)
+            destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
+            if not call(destroy_cmd):
+                destroy_cmd = ['zpool', 'destroy', '-R', '-f', existing_pool]
+                call(destroy_cmd)
 
     @staticmethod
     def get_partition_path(device, part_num):
