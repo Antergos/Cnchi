@@ -963,7 +963,7 @@ class InstallationZFS(GtkBaseBox):
         if existing_pool:
             destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
             if not call(destroy_cmd):
-                destroy_cmd = ['zpool', 'destroy', '-R', '-f', existing_pool]
+                destroy_cmd = ['zfs', 'destroy', '-R', '-f', existing_pool]
                 call(destroy_cmd)
 
     @staticmethod
