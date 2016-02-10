@@ -1,3 +1,4 @@
+[2016-02-10 08:43:31 -0600]  fix destroy command                                                    Dustin Falgout  {77d05bc}
 [2016-02-09 09:40:11 +0100]  Forgot \n                                                                  karasu      {2a7a10b}
 [2016-02-09 09:39:10 +0100]  Set lightdm session-wrapper (https://forum.antergos.com/topic/3840/..      karasu      {2471f29}
 [2016-02-09 01:24:28 -0600]  update cnchi.pot                                                       Dustin Falgout  {71ba1ad}

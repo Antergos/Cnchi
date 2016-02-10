@@ -537,6 +537,7 @@
 		<pkgname>zfs-utils</pkgname>
 		<pkgname>spl</pkgname>
 		<pkgname>spl-utils</pkgname>
+		<pkgname>grub-zfs</pkgname>
 	</zfs>
 
 	<locale_fonts>
