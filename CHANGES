@@ -1,3 +1,4 @@
+[2016-02-10 21:40:55 -0600]  hopefully fix boot after install with zfs                              Dustin Falgout  {ff0516a}
 [2016-02-10 09:09:21 -0600]  :unamused:                                                             Dustin Falgout  {e631436}
 [2016-02-10 08:59:05 -0600]  forgot this                                                            Dustin Falgout  {1bda903}
 [2016-02-10 08:43:31 -0600]  fix destroy command                                                    Dustin Falgout  {77d05bc}
