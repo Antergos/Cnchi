@@ -131,16 +131,16 @@ class Grub2(object):
         else:
             use_splash = ""
 
-        if self.settings.get("zfs"):
-            pool = self.settings.get("zfs_pool_name")
-            cmd_linux_default = 'root=ZFS={0} boot=zfs rpool={0} bootfs={0}/boot '.format(pool)
-
         if "swap" in self.uuids:
-            cmd_linux_default += 'resume=UUID={0} quiet {1}'.format(
+            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(
                 self.uuids["swap"],
                 use_splash)
         else:
-            cmd_linux_default += 'quiet {0}'.format(use_splash)
+            cmd_linux_default = 'quiet {0}'.format(use_splash)
+
+        if self.settings.get("zfs"):
+            zfs_pool_name = self.settings.get("zfs_pool_name")
+            cmd_linux_default += ' zfs={0}'.format(zfs_pool_name)
 
         self.set_grub_option(
             "GRUB_THEME",
