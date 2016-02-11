@@ -134,6 +134,23 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
         return build_server
 
+    @staticmethod
+    def keep_line(line):
+        keep = True
+        excluded = [
+            'sort_mirrors_by_speed(',
+            'download_requests.py(',
+            'queue(): Fetching',
+            'queue(): Installing',
+            '[ALPM] installed'
+        ]
+        for pattern in excluded:
+            if pattern in line:
+                keep = False
+                break
+
+        return keep
+
     def bugsnag_before_notify_callback(self, notification=None):
         if notification is not None:
             if self.after_location_screen and not self.have_install_id:
@@ -153,7 +170,10 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 with open(logs[1], 'r') as pacman:
                     with open(logs[2], 'r') as postinstall:
                         log_dict = {'cnchi': cnchi, 'pacman': pacman, 'postinstall': postinstall}
-                        parse = {log: [line.strip() for line in log_dict[log]] for log in log_dict}
+                        parse = {
+                            log: [line.strip() for line in log_dict[log] if self.keep_line(line)]
+                            for log in log_dict
+                        }
                         notification.add_tab('logs', parse)
 
             return notification
