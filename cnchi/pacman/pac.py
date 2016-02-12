@@ -143,17 +143,16 @@ class Pac(object):
     @staticmethod
     def finalize_transaction(transaction):
         """ Commit a transaction """
-        all_ok = True
+        all_ok = False
         try:
             logging.debug("Prepare alpm transaction...")
             transaction.prepare()
             logging.debug("Commit alpm transaction...")
             transaction.commit()
+            all_ok = True
         except pyalpm.error as pyalpm_error:
-            errmsg, errno, data = pyalpm_error
-            msg = _("Can't finalize alpm transaction: %s :: %s :: %s")
-            logging.error(msg, errmsg, errno, data)
-            all_ok = False
+            msg = _("Can't finalize alpm transaction: %s")
+            logging.error(msg, pyalpm_error)
         finally:
             logging.debug("Releasing alpm transaction...")
             transaction.release()
