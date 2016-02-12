@@ -844,32 +844,30 @@ class InstallationZFS(GtkBaseBox):
         """ Creates zfs vol inside the pool
             if size is given, it should be in GB """
 
-        # Round up
+        cmd = ["zfs", "create"]
+
         if size:
+            # Round up
             size = math.ceil(size)
             logging.debug(
                 "Creating a zfs vol %s/%s of size %dGB",
                 pool_name,
                 vol_name,
                 size)
+            cmd.extend(["-V", "{0}G".format(size)])
         else:
             logging.debug(
                 "Creating a zfs vol %s/%s",
                 pool_name,
                 vol_name)
 
-        cmd = ["zfs", "create"]
+        #cmd.extend([
+        #    "-b", str(os.sysconf("SC_PAGE_SIZE")),
+        #    "-o", "primarycache=metadata",
+        #    "-o", "checksum=off",
+        #    "-o", "com.sun:auto-snapshot=false"])
 
-        if size:
-            cmd.extend(["-V", "{0}G".format(size)])
-
-        cmd.extend([
-            "-b", str(os.sysconf("SC_PAGE_SIZE")),
-            "-o", "primarycache=metadata",
-            "-o", "checksum=off",
-            "-o", "com.sun:auto-snapshot=false",
-            "{0}/{1}".format(pool_name, vol_name)])
-
+        cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
 
     @staticmethod
