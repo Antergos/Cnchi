@@ -839,25 +839,36 @@ class InstallationZFS(GtkBaseBox):
 
         return swap_size
 
-    def create_zfs_vol(self, pool_name, vol_name, size):
+    def create_zfs_vol(self, pool_name, vol_name, size=None):
         """ Creates zfs vol inside the pool
-            size is in GB """
+            if size is given, it should be in GB """
 
         # Round up
-        size = math.ceil(size)
-        logging.debug(
-            "Creating a zfs vol %s/%s of size %dGB",
-            pool_name,
-            vol_name,
-            size)
-        cmd = [
-            "zfs", "create",
-            "-V", "{0}G".format(size),
+        if size:
+            size = math.ceil(size)
+            logging.debug(
+                "Creating a zfs vol %s/%s of size %dGB",
+                pool_name,
+                vol_name,
+                size)
+        else:
+            logging.debug(
+                "Creating a zfs vol %s/%s",
+                pool_name,
+                vol_name)
+
+        cmd = ["zfs", "create"]
+
+        if size:
+            cmd.extend(["-V", "{0}G".format(size)])
+
+        cmd.extend([
             "-b", str(os.sysconf("SC_PAGE_SIZE")),
             "-o", "primarycache=metadata",
             "-o", "checksum=off",
             "-o", "com.sun:auto-snapshot=false",
-            "{0}/{1}".format(pool_name, vol_name)]
+            "{0}/{1}".format(pool_name, vol_name)])
+
         call(cmd, fatal=True)
 
     @staticmethod
@@ -1043,8 +1054,11 @@ class InstallationZFS(GtkBaseBox):
         if self.settings.get('use_home'):
             # Create home zvol
             home_size = self.get_home_size(pool_name)
-            logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
-            self.create_zfs_vol(pool_name, "home", home_size)
+            # Do not predefine /home size
+            # logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
+            # self.create_zfs_vol(pool_name, "home", home_size)
+            logging.debug("Creating zfs subvolume 'home'")
+            self.create_zfs_vol(pool_name, "home")
             self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
 
         # Create swap zvol
