@@ -860,8 +860,8 @@ class InstallationZFS(GtkBaseBox):
                 "Creating a zfs vol %s/%s",
                 pool_name,
                 vol_name)
-
-        cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
+            if "swap" not in vol_name:
+                cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
 
         cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
