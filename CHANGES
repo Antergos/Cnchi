@@ -1,3 +1,4 @@
+[2016-02-12 19:59:13 +0100]  Hope this fixes home volume creation                                       karasu      {4df1cc4}
 [2016-02-12 11:06:19 +0100]  Do not set /home size. THIS NEEDS TESTING                                  karasu      {64be421}
 [2016-02-12 09:38:36 +0100]  Hope this works (it was failing when trying to show pyalpm_error)          karasu      {fd77e2c}
 [2016-02-10 22:14:39 -0600]  filter the logs sent to bugsnag to reduce payload size                 Dustin Falgout  {bfdf181}
