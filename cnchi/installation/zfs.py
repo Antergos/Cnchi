@@ -861,11 +861,7 @@ class InstallationZFS(GtkBaseBox):
                 pool_name,
                 vol_name)
 
-        #cmd.extend([
-        #    "-b", str(os.sysconf("SC_PAGE_SIZE")),
-        #    "-o", "primarycache=metadata",
-        #    "-o", "checksum=off",
-        #    "-o", "com.sun:auto-snapshot=false"])
+        cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
 
         cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
@@ -954,8 +950,6 @@ class InstallationZFS(GtkBaseBox):
                         time.sleep(2)
                         call(cmd, fatal=True)
 
-
-
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
         call(["sync"])
@@ -1030,8 +1024,7 @@ class InstallationZFS(GtkBaseBox):
                 "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
                 "hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' "
                 "followed by a number (c[0-9]) are not allowed. The following names are also not "
-                "allowed: 'mirror', 'raidz', 'spare', 'log'."
-            )
+                "allowed: 'mirror', 'raidz', 'spare', 'log'.")
             raise InstallError(txt)
 
         # Create zpool
