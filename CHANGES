@@ -1,3 +1,4 @@
+[2016-02-14 18:53:43 +0100]  Umount /install/home                                                       karasu      {8bfaabb}
 [2016-02-14 17:58:29 +0100]  get_pool_id was returning wrong id if more than one zfs pool was de..      karasu      {78c103c}
 [2016-02-14 17:40:43 +0100]  Typo                                                                       karasu      {984ce4e}
 [2016-02-14 17:35:19 +0100]  Forgot to check for zfs mounts                                             karasu      {819929d}
