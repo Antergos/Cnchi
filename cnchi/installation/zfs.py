@@ -991,6 +991,8 @@ class InstallationZFS(GtkBaseBox):
         # Check that /install/boot and /install are not mounted
         call(["umount", "{0}/boot".format(DEST_DIR)])
         call(["umount", "{0}".format(DEST_DIR)])
+        call(["zfs", "umount", "{0}/boot".format(DEST_DIR)])
+        call(["zfs", "umount", "{0}".format(DEST_DIR)])
 
         # Delete /install contents
         for file_name in os.listdir(DEST_DIR):
