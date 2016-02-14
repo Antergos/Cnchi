@@ -987,14 +987,15 @@ class InstallationZFS(GtkBaseBox):
         else:
             return "{0}{1}".format(device, part_num)
 
-    def clear_dest_dir(self):
+    @staticmethod
+    def clear_dest_dir():
         """ Empties /install """
 
         # Check that /install/boot and /install are not mounted
-        call(["umount", "{0}/boot".format(DEST_DIR)])
-        call(["umount", "{0}".format(DEST_DIR)])
-        call(["zfs", "umount", "{0}/boot".format(DEST_DIR)])
-        call(["zfs", "umount", "{0}".format(DEST_DIR)])
+        call(["umount", "{0}/boot".format(DEST_DIR)], warning=False))
+        call(["umount", "{0}".format(DEST_DIR)], warning=False))
+        call(["zfs", "umount", "{0}/boot".format(DEST_DIR)], warning=False))
+        call(["zfs", "umount", "{0}".format(DEST_DIR)], warning=False))
 
         # Delete /install contents
         for file_name in os.listdir(DEST_DIR):
@@ -1067,16 +1068,17 @@ class InstallationZFS(GtkBaseBox):
         cmd = ["zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
         call(cmd, fatal=True)
 
-        # Create any zfs subvolumes
         if self.settings.get('use_home'):
             # Create home zvol
-            home_size = self.get_home_size(pool_name)
-            # Do not predefine /home size
+            # home_size = self.get_home_size(pool_name)
             # logging.debug("Creating zfs subvolume 'home' (%dGB)", home_size)
             # self.create_zfs_vol(pool_name, "home", home_size)
             logging.debug("Creating zfs subvolume 'home'")
             self.create_zfs_vol(pool_name, "home")
             self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
+            home_path = "{0}/home".format(DEST_DIR)
+            call(["zfs", "umount", home_path], warning=False)
+            shutil.rmtree(path=home_path, ignore_errors=True)
 
         # Create swap zvol
         swap_size = self.get_swap_size(pool_name)
