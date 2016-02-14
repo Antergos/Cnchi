@@ -162,9 +162,7 @@ class Installation(object):
         else:
             swap_partition = ""
 
-        # Mount root and boot partitions (only if it's needed)
-        # Not doing this in automatic mode as AutoPartition class mounts
-        # the root and boot devices itself.
+        # Mount root partition
         if self.method == "zfs":
             # Mount /
             logging.debug("ZFS: Mounting root")
