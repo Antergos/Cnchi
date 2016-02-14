@@ -877,25 +877,27 @@ class InstallationZFS(GtkBaseBox):
 
     @staticmethod
     def get_pool_id(pool_name, include_offline=False):
-        """ Get zpool id number """
+        """ Returns pool's name, identifier and status """
         output = call(["zpool", "import"])
         if not output:
-            return None
+            return None, None, None
 
         name = identifier = state = None
         lines = output.split("\n")
         for line in lines:
             if "pool:" in line:
+                # Pool info starts
                 name = line.split(": ")[1]
+                identifier = state = None
             elif "id:" in line:
                 identifier = line.split(": ")[1]
             elif "state:" in line:
                 state = line.split(": ")[1]
+                if name == pool_name and (state == "ONLINE" or include_offline) and identifier:
+                    return name, identifier, state
 
-        if not name or (name == pool_name and state != "ONLINE" and not include_offline):
-            name = identifier = state = None
-
-        return name, identifier, state
+        # Could not find pool id by name
+        return None, None, None
 
     def create_zfs_pool(self, pool_name, pool_type, device_paths):
         """ Create zpool """
