@@ -288,7 +288,7 @@ class Keymap(GtkBaseBox):
 
             if self.keyboard_variant['code']:
                 cmd.extend(["-variant", self.keyboard_variant['code']])
-                txt = _("Set keyboard to '{0}' ({1}), wvariant '{2}' ({3})")
+                txt = _("Set keyboard to '{0}' ({1}), variant '{2}' ({3})")
                 txt = txt.format(
                     self.keyboard_layout['description'],
                     self.keyboard_layout['code'],
