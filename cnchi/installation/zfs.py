@@ -984,7 +984,7 @@ class InstallationZFS(GtkBaseBox):
         else:
             return "{0}{1}".format(device, part_num)
 
-    def clear_dest_dir():
+    def clear_dest_dir(self):
         """ Empties /install """
 
         # Check that /install/boot and /install are not mounted
