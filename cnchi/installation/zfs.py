@@ -938,7 +938,7 @@ class InstallationZFS(GtkBaseBox):
         call(["udevadm", "settle"])
         call(["sync"])
 
-        logging.debug("Creating zfs pool %s of type %s", pool_name, pool_type)
+        logging.debug("Creating zfs pool %s...", pool_name)
         if call(cmd) is False:
             # Try again, now with -f
             cmd.insert(2, "-f")
@@ -985,8 +985,29 @@ class InstallationZFS(GtkBaseBox):
         else:
             return "{0}{1}".format(device, part_num)
 
+    def clear_dest_dir():
+        """ Empties /install """
+
+        # Check that /install/boot and /install are not mounted
+        call(["umount", "{0}/boot".format(DEST_DIR)])
+        call(["umount", "{0}".format(DEST_DIR)])
+
+        # Delete /install contents
+        for file_name in os.listdir(DEST_DIR):
+            file_path = os.path.join(DEST_DIR, file_name)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except OSError as err:
+                logging.warning(err)
+
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
+
+        # Empty DEST_DIR or zfs pool will fail to mount on it
+        self.clear_dest_dir()
 
         device_paths = self.zfs_options["device_paths"]
         if not device_paths:
@@ -1084,6 +1105,7 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
         cmd = [
             "zpool", "import",
+            "-f",
             "-d", "/dev/disk/by-id",
             "-R", DEST_DIR,
             pool_id]
@@ -1102,7 +1124,8 @@ class InstallationZFS(GtkBaseBox):
         # Store hostid
         hostid = call(["hostid"])
         if hostid:
-            with open("/install/etc/hostid", "w") as hostid_file:
+            hostid_path = os.path.join(DEST_DIR, "etc/hostid")
+            with open(hostid_path, "w") as hostid_file:
                 hostid_file.write("{0}\n".format(hostid))
 
     def run_install(self, packages, metalinks):
