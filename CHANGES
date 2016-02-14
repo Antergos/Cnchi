@@ -1,3 +1,4 @@
+[2016-02-13 15:19:03 +0100]  Can't set a mountpoint for swap... silly me.                               karasu      {d0e393b}
 [2016-02-13 11:48:35 +0100]  Create /home mounting it in /install/home                                  karasu      {d464497}
 [2016-02-12 19:59:13 +0100]  Hope this fixes home volume creation                                       karasu      {4df1cc4}
 [2016-02-12 11:06:19 +0100]  Do not set /home size. THIS NEEDS TESTING                                  karasu      {64be421}
