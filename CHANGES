@@ -1,3 +1,4 @@
+[2016-02-16 09:27:18 +0100]  Tries to delete all previous antergos zfs pools.                           karasu      {93b83c1}
 [2016-02-14 19:04:25 +0100]  and.... typo.                                                              karasu      {cdaee39}
 [2016-02-14 18:53:43 +0100]  Umount /install/home                                                       karasu      {8bfaabb}
 [2016-02-14 17:58:29 +0100]  get_pool_id was returning wrong id if more than one zfs pool was de..      karasu      {78c103c}

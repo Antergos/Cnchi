@@ -975,8 +975,9 @@ class InstallationZFS(GtkBaseBox):
         """ Try to destroy existing antergos zfs pools """
         self.load_existing_pools()
 
-        for (pool_name, pool_id, pool_state) in self.existing_pools:
+        for pool_name in self.existing_pools:
             if "antergos" in pool_name.lower():
+                pool_id, pool_state = self.existing_pools[pool_name]
                 destroy_cmd = ['zpool', 'destroy', '-f', pool_name]
                 if not call(destroy_cmd, warning=False):
                     destroy_cmd = ['zfs', 'destroy', '-R', '-f', pool_name]
