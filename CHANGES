@@ -1,3 +1,4 @@
+[2016-02-16 09:54:56 +0100]  Force using bash in run script                                             karasu      {4a4df0a}
 [2016-02-16 09:38:28 +0100]  Fix do_destroy_zfs_pools                                                   karasu      {a318fcf}
 [2016-02-16 09:27:18 +0100]  Tries to delete all previous antergos zfs pools.                           karasu      {93b83c1}
 [2016-02-14 19:04:25 +0100]  and.... typo.                                                              karasu      {cdaee39}
