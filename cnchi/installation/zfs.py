@@ -93,6 +93,8 @@ class InstallationZFS(GtkBaseBox):
         self.installation = None
         self.ids = {}
 
+        self.existing_pools = {}
+
         pool_name = "antergos_{0}".format(random_generator())
 
         # Set zfs default options
@@ -600,13 +602,7 @@ class InstallationZFS(GtkBaseBox):
         except ValueError as ex:
             logging.warning(ex)
 
-        if not wrapper.wipefs(device_path, fatal=False):
-            pname, pid, _n = self.get_pool_id('_', include_offline=True)
-
-            if self.do_destroy_zfs_pool():
-                call(["udevadm", "settle"])
-                call(["sync"])
-                wrapper.wipefs(device_path, fatal=True)
+        wrapper.wipefs(device_path, fatal=True)
 
         if scheme == "GPT":
             # Create fresh GPT table
@@ -639,6 +635,9 @@ class InstallationZFS(GtkBaseBox):
 
         device_paths = self.zfs_options["device_paths"]
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
+
+        # Read all preexisting zfs pools. If there's an antergos one, delete it.
+        self.do_destroy_zfs_pools()
 
         # Wipe all disks that will be part of the installation.
         # This cannot be undone!
@@ -875,12 +874,15 @@ class InstallationZFS(GtkBaseBox):
             err_output = err.output.decode().strip("\n")
             logging.warning(err_output)
 
-    @staticmethod
-    def get_pool_id(pool_name, include_offline=False):
-        """ Returns pool's name, identifier and status """
+    def load_existing_pools(self):
+        """ Fills existing_pools dict with pool's name,
+            identifier and status """
+
         output = call(["zpool", "import"])
         if not output:
-            return None, None, None
+            return
+
+        self.existing_pools = {}
 
         name = identifier = state = None
         lines = output.split("\n")
@@ -893,11 +895,19 @@ class InstallationZFS(GtkBaseBox):
                 identifier = line.split(": ")[1]
             elif "state:" in line:
                 state = line.split(": ")[1]
-                if name == pool_name and (state == "ONLINE" or include_offline) and identifier:
-                    return name, identifier, state
+                self.existing_pools[name] = (identifier, state)
 
-        # Could not find pool id by name
-        return None, None, None
+    def get_pool_id(self, pool_name, include_offline=False):
+        """ Returns pool's identifier and status """
+
+        self.load_existing_pools()
+
+        if pool_name in self.existing_pools:
+            identifier, state = self.existing_pools[pool_name]
+            if "ONLINE" in state or include_offline:
+                return identifier, state
+        else:
+            return None, None
 
     def create_zfs_pool(self, pool_name, pool_type, device_paths):
         """ Create zpool """
@@ -940,16 +950,14 @@ class InstallationZFS(GtkBaseBox):
         call(["sync"])
 
         logging.debug("Creating zfs pool %s...", pool_name)
-        if call(cmd) is False:
+        if call(cmd, warning=False) is False:
             # Try again, now with -f
             cmd.insert(2, "-f")
-            if call(cmd) is False:
+            if call(cmd, warning=False) is False:
                 # Wait 10 seconds more and try again.
+                # (Waiting a bit sometimes works)
                 time.sleep(10)
-                if call(cmd) is False:
-                    if self.do_destroy_zfs_pool():
-                        time.sleep(2)
-                        call(cmd, fatal=True)
+                call(cmd, fatal=True)
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
@@ -963,18 +971,20 @@ class InstallationZFS(GtkBaseBox):
 
         logging.debug("Pool %s created.", pool_name)
 
-    def do_destroy_zfs_pool(self):
-        existing_pool, _, _n = self.get_pool_id('_', include_offline=True)
-        if existing_pool:
-            destroy_cmd = ['zpool', 'destroy', '-f', existing_pool]
-            if not call(destroy_cmd):
-                destroy_cmd = ['zfs', 'destroy', '-R', '-f', existing_pool]
-                call(destroy_cmd)
+    def do_destroy_zfs_pools(self):
+        """ Try to destroy existing antergos zfs pools """
+        self.load_existing_pools()
+
+        for (pool_name, pool_id, pool_state) in self.existing_pools:
+            if "antergos" in pool_name.lower():
+                destroy_cmd = ['zpool', 'destroy', '-f', pool_name]
+                if not call(destroy_cmd, warning=False):
+                    destroy_cmd = ['zfs', 'destroy', '-R', '-f', pool_name]
+                    call(destroy_cmd)
 
     @staticmethod
     def get_partition_path(device, part_num):
-        """ This is awful and prone to fail. We should do some
-            type of test here """
+        """ Form partition path from device and partition number """
 
         # Remove /dev/
         path = device.replace('/dev/', '')
@@ -1011,7 +1021,9 @@ class InstallationZFS(GtkBaseBox):
         """ Setup ZFS system """
 
         # Empty DEST_DIR or zfs pool will fail to mount on it
-        self.clear_dest_dir()
+        # (this will delete preexisting installing attempts, too)
+        if os.path.exists(DEST_DIR):
+            self.clear_dest_dir()
 
         device_paths = self.zfs_options["device_paths"]
         if not device_paths:
@@ -1075,6 +1087,8 @@ class InstallationZFS(GtkBaseBox):
             logging.debug("Creating zfs subvolume 'home'")
             self.create_zfs_vol(pool_name, "home")
             self.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
+            # ZFS automounts, we have to unmount /install/home and delete it,
+            # otherwise we won't be able to import the zfs pool
             home_path = "{0}/home".format(DEST_DIR)
             call(["zfs", "umount", home_path], warning=False)
             shutil.rmtree(path=home_path, ignore_errors=True)
@@ -1097,16 +1111,18 @@ class InstallationZFS(GtkBaseBox):
         call(cmd, fatal=True)
 
         # Let's get the id of the pool (to import it)
-        _, pool_id, _n = self.get_pool_id(pool_name)
+        pool_id, _status = self.get_pool_id(pool_name)
 
         if not pool_id:
             # Something bad has happened. Will use the pool name instead.
+            logging.warning("Can't get %s zpool id", pool_name)
             pool_id = pool_name
 
         # Save pool id
         self.settings.set("zfs_pool_id", pool_id)
 
         # Finally, re-import the pool by-id
+        # DEST_DIR must be empty or importing will fail!
         logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
         cmd = [
             "zpool", "import",
