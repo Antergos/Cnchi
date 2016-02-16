@@ -55,7 +55,6 @@ class Grub2(object):
         self.dest_dir = dest_dir
         self.settings = settings
         self.uuids = uuids
-        self.default_grub_lines = []
 
     def install(self):
         """ Install Grub2 bootloader """
@@ -190,27 +189,25 @@ class Grub2(object):
     def set_grub_option(self, option, cmd):
         """ Changes a grub setup option in /etc/default/grub """
         try:
-            default_grub = os.path.join(self.dest_dir, "etc/default", "grub")
+            default_grub_path = os.path.join(self.dest_dir, "etc/default", "grub")
+            default_grub_lines = []
 
-            if not self.default_grub_lines:
-                with open(default_grub) as grub_file:
-                    self.default_grub_lines = [x.strip() for x in grub_file.readlines()]
+            with open(default_grub_path, 'r', newline='\n') as grub_file:
+                default_grub_lines = [x for x in grub_file.readlines()]
 
-            look_for = option + '='
+            with open(default_grub_path, 'w', newline='\n') as grub_file:
+                param_in_file = False
+                param_to_look_for = option + '='
+                for line in default_grub_lines:
+                    if param_to_look_for in line:
+                        # Option was already in file, update it
+                        line = '{0}="{1}"\n\n'.format(option, cmd)
+                        param_in_file = True
+                    grub_file.write(line)
 
-            if look_for in self.default_grub_lines:
-                with open(default_grub, 'r+', newline='\n') as grub_file:
-                    for line in grub_file:
-                        if look_for in line:
-                            # Option was already in file, update it
-                            line = '{0}="{1}"'.format(option, cmd)
-                        line += '\n'
-                        grub_file.write(line)
-            else:
-                # Option was not found. Thus, append new option
-                with open(default_grub, 'a', newline='\n') as grub_file:
-                    grub_file.write('{0}="{1}"'.format(option, cmd))
-                    grub_file.write('\n')
+                if not param_in_file:
+                    # Option was not found. Thus, append new option
+                    grub_file.write('{0}="{1}"\n\n'.format(option, cmd))
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
         except Exception as ex:
