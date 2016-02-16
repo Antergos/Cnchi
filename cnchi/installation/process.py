@@ -101,7 +101,7 @@ class Process(multiprocessing.Process):
                 if self.settings.get('is_iso'):
                     self.install_screen.run_format()
 
-            path = "/var/tmp/.cnchi_partitioning_completed"
+            path = "/tmp/.cnchi_partitioning_completed"
             with open(path, 'w') as part_file:
                 part_file.write("# File created by Cnchi to force\n")
                 part_file.write("# users to reboot before retry\n")
