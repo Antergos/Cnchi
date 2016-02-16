@@ -1,3 +1,4 @@
+[2016-02-16 20:20:59 +0100]  Set zfs config to True when using zfs                                      karasu      {d3da8f1}
 [2016-02-16 18:18:21 +0100]  Use /tmp                                                                   karasu      {e219b3a}
 [2016-02-16 09:54:56 +0100]  Force using bash in run script                                             karasu      {4a4df0a}
 [2016-02-16 09:38:28 +0100]  Fix do_destroy_zfs_pools                                                   karasu      {a318fcf}
