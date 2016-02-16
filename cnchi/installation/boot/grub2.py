@@ -73,7 +73,11 @@ class Grub2(object):
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
-        if "/" not in self.uuids or self.settings.get("zfs"):
+        if self.settings.get("zfs"):
+            # No root uuid checking if using zfs
+            return
+
+        if "/" not in self.uuids:
             logging.warning(
                 "Root uuid variable is not set. I can't check root UUID"
                 "in grub.cfg, let's hope it's ok")

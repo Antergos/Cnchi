@@ -498,14 +498,13 @@ class InstallationZFS(GtkBaseBox):
         if txt:
             self.zfs_options["pool_name"] = txt
 
-        # Bootloader needs to know zpool name
+        # Bootloader needs to know that we're using zfs and zpool's name
+        self.settings.set("zfs", True)
         self.settings.set("zfs_pool_name", self.zfs_options["pool_name"])
 
         # Get password
         txt = self.ui.get_object("password_lbl").get_text()
         self.zfs_options["encrypt_password"] = txt
-
-        # self.set_bootloader()
 
         return True
 
@@ -521,8 +520,6 @@ class InstallationZFS(GtkBaseBox):
             valid = True
 
         return valid
-
-
 
     # ZFS Creation starts here -------------------------------------------------
 
