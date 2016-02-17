@@ -139,7 +139,8 @@ class Grub2(object):
         if os.path.exists(plymouth_bin):
             cmd_linux_default += " splash"
 
-        if "swap" in self.uuids:
+        # resume does not work in zfs (or so it seems)
+        if "swap" in self.uuids and not self.settings.get("zfs"):
             cmd_linux_default += " resume=UUID={0}".format(self.uuids["swap"])
 
         if self.settings.get("zfs"):
