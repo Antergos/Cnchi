@@ -1,3 +1,4 @@
+[2016-02-17 19:54:51 +0100]  Use mkswap correctly on zfs. Do not unmount zfs and mount again, no..      karasu      {f563f03}
 [2016-02-17 19:15:06 +0100]  Some small changes (do not fix swap size in zfs)                           karasu      {90b9290}
 [2016-02-17 18:52:03 +0100]  libreoffice language pack selection rewritten (changes nothing, fix..      karasu      {995365a}
 [2016-02-17 09:53:25 +0100]  OK. Tests show that modify_grub_default() works.                           karasu      {a85d15c}
