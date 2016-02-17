@@ -35,11 +35,14 @@ import shutil
 import subprocess
 import re
 
-import parted3.fs_module as fs
+try:
+    import parted3.fs_module as fs
+    from installation import special_dirs
+    from misc.run_cmd import call, chroot_call
+    from misc.extra import random_generator
+except ImportError:
+    pass
 
-from installation import special_dirs
-from misc.run_cmd import call, chroot_call
-from misc.extra import random_generator
 
 # When testing, no _() is available
 try:
@@ -127,29 +130,21 @@ class Grub2(object):
             those listed in ‘GRUB_CMDLINE_LINUX’. """
 
         plymouth_bin = os.path.join(self.dest_dir, "usr/bin/plymouth")
-        cmd_linux_default = ''
+        cmd_linux_default = "quiet"
+        cmd_linux = ""
+
+        # https://www.kernel.org/doc/Documentation/kernel-parameters.txt
+        # cmd_linux_default : quiet splash resume=UUID=ABC zfs=ABC
 
         if os.path.exists(plymouth_bin):
-            use_splash = "splash"
-        else:
-            use_splash = ""
+            cmd_linux_default += " splash"
 
         if "swap" in self.uuids:
-            cmd_linux_default = 'resume=UUID={0} quiet {1}'.format(
-                self.uuids["swap"],
-                use_splash)
-        else:
-            cmd_linux_default = 'quiet {0}'.format(use_splash)
+            cmd_linux_default += " resume=UUID={0}".format(self.uuids["swap"])
 
         if self.settings.get("zfs"):
             zfs_pool_name = self.settings.get("zfs_pool_name")
-            cmd_linux_default += ' zfs={0}'.format(zfs_pool_name)
-
-        self.set_grub_option(
-            "GRUB_THEME",
-            "/boot/grub/themes/Antergos-Default/theme.txt")
-        self.set_grub_option("GRUB_CMDLINE_LINUX_DEFAULT", cmd_linux_default)
-        self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
+            cmd_linux += " zfs={0}".format(zfs_pool_name)
 
         if self.settings.get('use_luks'):
             # When using separate boot partition,
@@ -169,20 +164,30 @@ class Grub2(object):
                 root_device = self.settings.get('luks_root_device')
                 self.uuids["/"] = fs.get_uuid(root_device)
 
-            cmd_linux = "cryptdevice=/dev/disk/by-uuid/{0}:{1}"
-            cmd_linux = cmd_linux.format(self.uuids["/"], luks_root_volume)
+            cmd_linux += " cryptdevice=/dev/disk/by-uuid/{0}:{1}".format(
+                self.uuids["/"],
+                luks_root_volume)
 
             if self.settings.get("luks_root_password") == "":
                 # No luks password, so user wants to use a keyfile
-                cryptkey = " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root"
-                cryptkey = cryptkey.format(self.uuids["/boot"])
-                cmd_linux += cryptkey
+                cmd_linux += " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root".format(
+                    self.uuids["/boot"])
 
-            # Store grub line in settings, we'll use it later in
-            # check_root_uuid_in_grub()
+        # Remove leading/ending spaces
+        cmd_linux_default = cmd_linux_default.strip()
+        cmd_linux = cmd_linux.strip()
+
+        # Modify /etc/default/grub
+        self.set_grub_option("GRUB_THEME", "/boot/grub/themes/Antergos-Default/theme.txt")
+        self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
+        self.set_grub_option("GRUB_CMDLINE_LINUX_DEFAULT", cmd_linux_default)
+        self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
+
+        # Also store grub line in settings, we'll use it later in check_root_uuid_in_grub()
+        try:
             self.settings.set('GRUB_CMDLINE_LINUX', cmd_linux)
-            # Store grub line in /etc/default/grub file
-            self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
+        except AttributeError:
+            pass
 
         logging.debug("Grub configuration completed successfully.")
 
@@ -201,17 +206,19 @@ class Grub2(object):
                 for line in default_grub_lines:
                     if param_to_look_for in line:
                         # Option was already in file, update it
-                        line = '{0}="{1}"\n\n'.format(option, cmd)
+                        line = '{0}="{1}"\n'.format(option, cmd)
                         param_in_file = True
                     grub_file.write(line)
 
                 if not param_in_file:
                     # Option was not found. Thus, append new option
-                    grub_file.write('{0}="{1}"\n\n'.format(option, cmd))
+                    grub_file.write('\n{0}="{1}"\n'.format(option, cmd))
 
             logging.debug('Set %s="%s" in /etc/default/grub', option, cmd)
+        except FileNotFoundError as ex:
+            logging.error(ex)
         except Exception as ex:
-            tpl1 = "Can't modify /etc/default/grub."
+            tpl1 = "Can't modify {0}".format(default_grub_path)
             tpl2 = "An exception of type {0} occured. Arguments:\n{1!r}"
             template = '{0} {1}'.format(tpl1, tpl2)
             message = template.format(type(ex).__name__, ex.args)
@@ -244,21 +251,6 @@ class Grub2(object):
         # Make sure that /dev and others are mounted (binded).
         special_dirs.mount(self.dest_dir)
 
-        # if self.settings.get("zfs"):
-        #     # grub-mkconfig does not properly detect the ZFS filesystem,
-        #     # so it is necessary to edit grub.cfg manually.
-        #     zfs_pool_name = self.settings.get("zfs_pool_name")
-        #     grub_cfg_path = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
-        #     with open(grub_cfg_path, "w") as grub_cfg:
-        #         grub_cfg.write('set timeout=2\n')
-        #         grub_cfg.write('set default=0\n\n')
-        #         grub_cfg.write('# (0) Antergos Linux\n')
-        #         grub_cfg.write('\tmenuentry "Antergos Linux (zfs)" {\n')
-        #         # grub_cfg.write('\tsearch --no-floppy --label --set=root {0}\n'.format(zfs_pool_name))
-        #         grub_cfg.write('\tlinux /vmlinuz-linux zfs={0} rw\n'.format(zfs_pool_name))
-        #         grub_cfg.write('\tinitrd /initramfs-linux.img\n')
-        #         grub_cfg.write('}\n')
-        # else:
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
         logging.debug("Running grub-mkconfig...")
@@ -426,3 +418,17 @@ class Grub2(object):
         except FileExistsError:
             # Ignore if already exists
             pass
+
+if __name__ == '__main__':
+    os.makedirs("/install/etc/default", mode=0o755, exist_ok=True)
+    shutil.copy2("/etc/default/grub", "/install/etc/default/grub")
+    dest_dir = "/install"
+    settings = {}
+    settings["zfs"] = True
+    settings["zfs_pool_name"] = "Antergos_d3sq"
+    settings["use_luks"] = True
+    uuids = {}
+    uuids["/"] = "ABCD"
+    uuids["/boot"] = "ZXCV"
+    grub2 = Grub2(dest_dir, settings, uuids)
+    grub2.modify_grub_default()
