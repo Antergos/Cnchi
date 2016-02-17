@@ -863,13 +863,17 @@ class InstallationZFS(GtkBaseBox):
 
     @staticmethod
     def set_zfs_mountpoint(zvol, mount_point):
-        """ Sets mount point of zvol and tries to mount it """
+        """ Sets mount point of zvol and tries to mount it.
+            It does it but then ZFS tries to automount it and fails
+            because we set mountpoint to / instead of /install. ZFS cannot
+            mount it because / is not empty (same for /home if it's in a zvol). """
         try:
             cmd = ["zfs", "set", "mountpoint={0}".format(mount_point), zvol]
             output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             err_output = err.output.decode().strip("\n")
-            logging.warning(err_output)
+            # It's ok if it fails
+            logging.debug(err_output)
 
     def load_existing_pools(self):
         """ Fills existing_pools dict with pool's name,
@@ -978,7 +982,7 @@ class InstallationZFS(GtkBaseBox):
                 destroy_cmd = ['zpool', 'destroy', '-f', pool_name]
                 if not call(destroy_cmd, warning=False):
                     destroy_cmd = ['zfs', 'destroy', '-R', '-f', pool_name]
-                    call(destroy_cmd)
+                    call(destroy_cmd, warning=False)
 
     @staticmethod
     def get_partition_path(device, part_num):
@@ -1092,9 +1096,8 @@ class InstallationZFS(GtkBaseBox):
             shutil.rmtree(path=home_path, ignore_errors=True)
 
         # Create swap zvol
-        swap_size = self.get_swap_size(pool_name)
-        logging.debug("Creating zfs subvolume 'swap' (%dGB)", swap_size)
-        self.create_zfs_vol(pool_name, "swap", swap_size)
+        # swap_size = self.get_swap_size(pool_name)
+        self.create_zfs_vol(pool_name, "swap")
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])

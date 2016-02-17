@@ -136,7 +136,7 @@ class Installation(object):
 
     def mount_partitions(self):
         """ Do not call this in automatic mode as AutoPartition class mounts
-        the root and boot devices itself. """
+        the root and boot devices itself. (We call it if using ZFS, though) """
 
         if os.path.exists(DEST_DIR):
             # If we're recovering from a failed/stoped install, there'll be
@@ -178,8 +178,7 @@ class Installation(object):
         boot_path = os.path.join(DEST_DIR, "boot")
         os.makedirs(boot_path, mode=0o755, exist_ok=True)
         if boot_partition:
-            txt = _("Mounting partition {0} into {1}/boot directory")
-            txt = txt.format(boot_partition, boot_path)
+            txt = _("Mounting partition {0} into {1} directory").format(boot_partition, boot_path)
             logging.debug(txt)
             cmd = ['mount', boot_partition, boot_path]
             call(cmd, fatal=True)

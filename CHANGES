@@ -1,3 +1,4 @@
+[2016-02-17 18:52:03 +0100]  libreoffice language pack selection rewritten (changes nothing, fix..      karasu      {995365a}
 [2016-02-17 09:53:25 +0100]  OK. Tests show that modify_grub_default() works.                           karasu      {a85d15c}
 [2016-02-16 20:36:46 +0100]  /etc/default/grub is not updated as it should. Hope this fixes it.         karasu      {6dc9431}
 [2016-02-16 20:20:59 +0100]  Set zfs config to True when using zfs                                      karasu      {d3da8f1}
