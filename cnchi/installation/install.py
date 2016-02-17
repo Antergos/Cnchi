@@ -138,10 +138,12 @@ class Installation(object):
         """ Do not call this in automatic mode as AutoPartition class mounts
         the root and boot devices itself. (We call it if using ZFS, though) """
 
-        if os.path.exists(DEST_DIR):
+        if os.path.exists(DEST_DIR) and not self.method == "zfs":
             # If we're recovering from a failed/stoped install, there'll be
             # some mounted directories. Try to unmount them first.
             # We use unmount_all_in_directory from auto_partition to do this.
+            # ZFS already mounts everything automagically (except /boot that
+            # is not in zfs)
             auto_partition.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
@@ -187,7 +189,7 @@ class Installation(object):
         if self.method == 'advanced':
             for path in self.mount_devices:
                 if path == "":
-                    # Ignore devices without a mount path (or they will be mounted at "DEST_DIR")
+                    # Ignore devices without a mount path
                     continue
 
                 mount_part = self.mount_devices[path]
