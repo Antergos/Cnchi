@@ -365,21 +365,21 @@ class SelectPackages(object):
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            logging.debug("Add libreoffice language package")
             lang_name = self.settings.get("language_name").lower()
+            code = None
             if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en-GB', 'en-ZA']
-                locale = self.settings.get('locale').split('.')[0]
-                locale = locale.replace('_', '-')
-                if locale in lang_packs:
-                    pkg_text = "libreoffice-fresh-{0}".format(locale)
-                    self.packages.append(pkg_text)
+                locale = self.settings.get("locale").split('.')[0]
+                if locale in ['en_GB', 'en_ZA']:
+                    # There're some English variants available but not all of them.
+                    code = locale
             else:
                 # All the other language packs use their language code
-                lang_code = self.settings.get('language_code')
-                lang_code = lang_code.replace('_', '-')
-                pkg_text = "libreoffice-fresh-{0}".format(lang_code)
+                code = self.settings.get('language_code')
+
+            if code:
+                code = code.replace('_', '-').lower()
+                pkg_text = "libreoffice-fresh-{0}".format(code)
+                logging.debug("Adding libreoffice language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
 
         # Add firefox language package
