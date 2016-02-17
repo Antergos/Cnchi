@@ -843,15 +843,18 @@ class InstallationZFS(GtkBaseBox):
 
         cmd = ["zfs", "create"]
 
-        if size and size > 0:
+        if size:
             # Round up
             size = math.ceil(size)
             logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, size)
             cmd.extend(["-V", "{0}G".format(size)])
         else:
             logging.debug("Creating a zfs vol %s/%s", pool_name, vol_name)
-            if vol_name != "swap":
-                cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
+
+        if vol_name == "swap":
+            cmd.extend(["-o", "mountpoint=none"])
+        else:
+            cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
 
         cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
@@ -871,12 +874,15 @@ class InstallationZFS(GtkBaseBox):
         call(cmd)
 
         path = "/dev/zvol/{0}/swap".format(pool_name)
-        logging.debug("Formatting swap (%s)", path)
-        cmd = ["mkswap", "-f", path]
-        if call(cmd):
-            self.devices["swap"] = path
-            self.fs_devices[path] = "swap"
-            self.mount_devices["swap"] = path
+        if os.path.exists(path):
+            logging.debug("Formatting swap (%s)", path)
+            cmd = ["mkswap", "-f", path]
+            if call(cmd):
+                self.devices["swap"] = path
+                self.fs_devices[path] = "swap"
+                self.mount_devices["swap"] = path
+        else:
+            logging.warning("Can't find %s to create swap on it", path)
 
     @staticmethod
     def set_zfs_mountpoint(zvol, mount_point):
@@ -1112,9 +1118,9 @@ class InstallationZFS(GtkBaseBox):
             call(["zfs", "umount", home_path], warning=False)
             shutil.rmtree(path=home_path, ignore_errors=True)
 
-        # Create swap zvol
-        # swap_size = self.get_swap_size(pool_name)
-        self.create_zfs_vol(pool_name, "swap")
+        # Create swap zvol (it has to be named "swap")
+        swap_size = self.get_swap_size(pool_name)
+        self.create_zfs_vol(pool_name, "swap", swap_size)
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
