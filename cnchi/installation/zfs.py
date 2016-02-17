@@ -845,7 +845,7 @@ class InstallationZFS(GtkBaseBox):
         if swap_size:
             # If size is given, mountpoint cannot be set (zfs)
             # Round up
-            swap_size = math.ceil(size)
+            swap_size = math.ceil(swap_size)
             logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, swap_size)
             cmd.extend(["-V", "{0}G".format(swap_size)])
         else:
