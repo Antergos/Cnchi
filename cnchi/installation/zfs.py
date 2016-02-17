@@ -837,29 +837,45 @@ class InstallationZFS(GtkBaseBox):
 
     def create_zfs_vol(self, pool_name, vol_name, size=None):
         """ Creates zfs vol inside the pool
-            if size is given, it should be in GB """
+            if size is given, it should be in GB.
+            If vol_name is "swap" it will be setup as a swap space """
 
         cmd = ["zfs", "create"]
 
-        if size:
+        if size and size > 0:
             # Round up
             size = math.ceil(size)
-            logging.debug(
-                "Creating a zfs vol %s/%s of size %dGB",
-                pool_name,
-                vol_name,
-                size)
+            logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, size)
             cmd.extend(["-V", "{0}G".format(size)])
         else:
-            logging.debug(
-                "Creating a zfs vol %s/%s",
-                pool_name,
-                vol_name)
-            if "swap" not in vol_name:
+            logging.debug("Creating a zfs vol %s/%s", pool_name, vol_name)
+            if vol_name != "swap":
                 cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
 
         cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
+
+        if vol_name == "swap":
+            self.create_swap(pool_name, vol_name)
+
+    def create_swap(self, pool_name, vol_name):
+        """ mkswap on a zfs zvol """
+
+        zvol = "{0}/{1}".format(pool_name, vol_name)
+
+        cmd = ["zfs", "set", "com.sun:auto-snapshot=false", zvol]
+        call(cmd)
+
+        cmd = ["zfs", "set", "sync=always", zvol]
+        call(cmd)
+
+        path = "/dev/zvol/{0}/swap".format(pool_name)
+        logging.debug("Formatting swap (%s)", path)
+        cmd = ["mkswap", "-f", path]
+        if call(cmd):
+            self.devices["swap"] = path
+            self.fs_devices[path] = "swap"
+            self.mount_devices["swap"] = path
 
     @staticmethod
     def set_zfs_mountpoint(zvol, mount_point):
