@@ -38,7 +38,7 @@ ICON_NAMES = {
     'cups': 'printer',
     'firefox': 'firefox',
     'firewall': 'network-server',
-    'flash': 'applications-adobe-flashplayer',
+    'flash': 'flash',
     'fonts': 'preferences-desktop-font',
     'games': 'applications-games',
     'graphic_drivers': 'gnome-system',

@@ -291,6 +291,29 @@ def check_pyalpm_version():
     return True
 
 
+def check_iso_version():
+    """ Hostname contains the ISO version """
+    from socket import gethostname
+    hostname = gethostname()
+    # antergos-year.month-iso
+    prefix = "ant-"
+    suffix = "-min"
+    if hostname.startswith(prefix) or hostname.endswith(suffix):
+        # We're running form the ISO, register which version.
+        if suffix in hostname:
+            version = hostname[len(prefix):-len(suffix)]
+        else:
+            version = hostname[len(prefix):]
+        logging.debug("Running from ISO version %s", version)
+        # Delete user's chromium cache (just in case)
+        cache_dir = "/home/antergos/.cache/chromium"
+        if os.path.exists(cache_dir):
+            shutil.rmtree(cache_dir)
+    else:
+        logging.debug("Not running from ISO")
+    return True
+
+
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
 
