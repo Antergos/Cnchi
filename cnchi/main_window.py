@@ -173,6 +173,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
+        nil, major, minor = info.CNCHI_VERSION.split('.')
+        name = 'Cnchi '
+        title_string = "{0} {1}.{2}".format(name, nil, major)
+        tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
+        custom_title_widget = Gtk.Label.new(title_string)
+        custom_title_widget.get_style_context().add_class('title')
+        custom_title_widget.get_style_context().add_class('label')
+        custom_title_widget.set_tooltip_text(tooltip_string)
+        self.set_title(title_string)
+        self.header.set_custom_title(custom_title_widget)
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(True)
+
         self.set_geometry()
 
         # Set window icon
