@@ -311,11 +311,14 @@ def check_iso_version():
     from socket import gethostname
     hostname = gethostname()
     # antergos-year.month-iso
-    prefix = "antergos-"
-    suffix = "-iso"
-    if hostname.startswith(prefix) and hostname.endswith(suffix):
+    prefix = "ant-"
+    suffix = "-min"
+    if hostname.startswith(prefix) or hostname.endswith(suffix):
         # We're running form the ISO, register which version.
-        version = hostname[len(prefix):-len(suffix)]
+        if suffix in hostname:
+            version = hostname[len(prefix):-len(suffix)]
+        else:
+            version = hostname[len(prefix):]
         logging.debug("Running from ISO version %s", version)
         # Delete user's chromium cache (just in case)
         cache_dir = "/home/antergos/.cache/chromium"
