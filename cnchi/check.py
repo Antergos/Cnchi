@@ -125,7 +125,7 @@ class Check(GtkBaseBox):
         space = self.has_enough_space() if not self.has_space else True
         self.prepare_enough_space.set_state(space)
 
-        if self.has_internet:
+        if self.has_internet or 'development' == info.CNCHI_RELEASE_STAGE:
             updated = self.is_updated_check() if not self.is_updated else True
         else:
             updated = False
@@ -192,6 +192,8 @@ class Check(GtkBaseBox):
 
     def is_updated_check(self):
         """ Checks that cnchi version is, at least, latest stable """
+        if 'development' == info.CNCHI_RELEASE_STAGE:
+            return True
         if self.updater is None:
             # Only call updater once
             self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)

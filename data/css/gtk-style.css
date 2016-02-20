@@ -419,8 +419,11 @@ StateBox {
 }
 
 .best_results_label, .ask_intro_text {
-	font-weight: 700;
 	font-size: 15px;
+}
+
+.ask_intro_text {
+	font-weight: 700;
 }
 
 .state_box .horizontal:prelight {
