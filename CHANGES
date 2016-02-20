@@ -1,3 +1,6 @@
+[2016-02-20 05:23:03 -0600]  Merge branch 'master' of github.com:antergos/cnchi into stable         Dustin Falgout  {795b336}
+[2016-02-20 05:22:25 -0600]  fix title/subtitle that i broke yesterday                              Dustin Falgout  {934f221}
+[2016-02-19 09:00:40 +0100]  Do not fail if harddisk is too small for having a /home in another ..      karasu      {51a9769}
 [2016-02-18 23:03:50 -0600]  fix flash icon and iso version detection                               Dustin Falgout  {a812a0a}
 [2016-02-18 22:56:48 -0600]  dont display minor version part in title                               Dustin Falgout  {8f848c2}
 [2016-02-18 14:14:17 -0600]  add issue template                                                     Dustin Falgout  {6486156}
@@ -61,3 +64,806 @@
 [2016-02-01 09:11:12 -0600]  minor changes to logging context handler                               Dustin Falgout  {ced7869}
 [2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils (cherry picked from commit ..  Dustin Falgout  {3489a66}
 [2016-02-01 08:20:17 -0600]  update precommit hook                                                  Dustin Falgout  {a73314a}
+[2016-01-31 23:28:06 +0100]  My fault. Set version number as it should                                  karasu      {63eee87}
+[2016-01-31 23:27:26 +0100]  Merge branch 'master' of github.com:Antergos/Cnchi                         karasu      {3cdc568}
+[2016-01-31 23:26:38 +0100]  Use lowercase language code in kde language package. Just in case.         karasu      {16718e3}
+[2016-01-31 16:15:04 -0600]  fix pot file                                                           Dustin Falgout  {e329f5b}
+[2016-01-31 16:19:50 +0100]  First stable version                                                       karasu      {e5e2527}
+[2016-01-30 12:13:19 -0600]  Merge branch 'Wyn10-patch-1'                                           Dustin Falgout  {c409d82}
+[2016-01-30 07:40:09 -0600]  fix changes                                                            Dustin Falgout  {7afbbb2}
+[2016-01-30 07:39:34 -0600]  fix changes                                                            Dustin Falgout  {85be293}
+[2016-01-30 04:56:26 -0600]  update CHANGES                                                         Dustin Falgout  {f51c2fc}
+[2016-01-30 04:53:29 -0600]  a few stray commits                                                    Dustin Falgout  {a94d72f}
+[2016-01-30 04:37:20 -0600]  update readme                                                          Dustin Falgout  {34731df}
+[2016-01-30 04:11:04 -0600]  update translation strings                                             Dustin Falgout  {5458b0c}
+[2016-01-30 03:03:38 -0600]  prepping for release                                                   Dustin Falgout  {094c31c}
+[2016-01-30 02:41:32 -0600]  prepping for release                                                   Dustin Falgout  {f897ff1}
+[2016-01-29 16:39:03 +0100]  Minor changes                                                              karasu      {d1039a5}
+[2016-01-29 11:56:41 +0100]  Merge pull request #518 from waffle-iron/master                            karasu      {d3f8dd5}
+[2016-01-29 03:54:46 -0700]  add waffle.io badge                                                    Making GitHub Delicious {a54abd3}
+[2016-01-28 18:16:15 +0100]  Avoid failing if bugsnag returns msg                                       karasu      {fb17c69}
+[2016-01-27 23:40:07 +0100]  Try to detect zfs installed version                                        karasu      {705a4ea}
+[2016-01-27 23:26:16 +0100]  Thinking about what to do if user does not want the same language a..      karasu      {fea8895}
+[2016-01-27 18:51:35 +0100]  Change luks password recommendation                                        karasu      {82182ff}
+[2016-01-26 17:47:54 +0100]  Fix adding features packages                                               karasu      {0ccd66a}
+[2016-01-26 17:43:00 +0100]  Fix BIG typo                                                               karasu      {780e977}
+[2016-01-25 20:02:52 +0100]  Be able to use arch in packages (so we can install specific package..      karasu      {1bbd650}
+[2016-01-24 19:51:45 +0100]  Translate messages shown to the user                                       karasu      {48ce731}
+[2016-01-24 19:36:00 +0100]  Add more info messages (shown in the gui) to give a more accurate i..      karasu      {9eeedf7}
+[2016-01-24 08:12:38 +0100]  Load smbd service if smb (samba) is selected                               karasu      {c29237f}
+[2016-01-22 22:16:27 +0100]  Store network manager and desktop manager in config                        karasu      {fe6137b}
+[2016-01-19 19:52:27 +0100]  Fix kde session name                                                       karasu      {474b88e}
+[2016-01-19 19:50:06 +0100]  detect function is needed by features screen!                              karasu      {207ffd5}
+[2016-01-19 19:44:38 +0100]  Give vesafb the lowest priority                                            karasu      {04a3775}
+[2016-01-19 19:29:15 +0100]  ok. be less verbose                                                        karasu      {8b3c330}
+[2016-01-19 19:27:44 +0100]  Added a LOT of debugging messages to hardware (this must be removed..      karasu      {e4a3a5b}
+[2016-01-19 19:10:43 +0100]  extra symlink ¿?                                                           karasu      {fe2d9d9}
+[2016-01-19 17:17:48 +0100]  Fix kde package name                                                       karasu      {cbc7ce9}
+[2016-01-19 17:10:46 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {2f37742}
+[2016-01-19 17:09:44 +0100]  zfs is at version 0.6.5.4                                                  karasu      {919d8f0}
+[2016-01-19 09:29:49 +0100]  LUKS+ZFS is not done!                                                      karasu      {523634c}
+[2016-01-18 19:11:20 +0100]  Check against networkmanager                                               karasu      {77eac6c}
+[2016-01-18 19:09:47 +0100]  Best label handling                                                        karasu      {e356c9d}
+[2016-01-15 20:15:47 +0100]  Not log constantly                                                         karasu      {e218a17}
+[2016-01-15 19:57:43 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {48823e4}
+[2016-01-15 19:56:24 +0100]  Fix package name                                                           karasu      {45d03d4}
+[2016-01-15 10:11:17 +0100]  Do not fail if timesyncd.conf file is not found                            karasu      {9bb613e}
+[2016-01-14 14:09:00 +0100]  Store excluded desktop features, not needed ones (looks cleaner).          karasu      {5433c9d}
+[2016-01-13 20:07:42 +0100]  Log if ntp is used or not                                                  karasu      {4463d92}
+[2016-01-11 22:49:15 +0100]  Let's hope this fixes issue #417 once and for all.                         karasu      {aa1fc6a}
+[2016-01-11 21:38:51 +0100]  Testing Enlightenment                                                      karasu      {5c4d0a1}
+[2016-01-09 18:52:23 +0100]  backwards compatibility for GRUB_DISABLE_SUBMENU                           karasu      {60dca63}
+[2016-01-08 17:13:25 -0600]  Merge pull request #501 from codyzu/master                             Dustin Falgout  {431ff81}
+[2016-01-08 23:01:02 +0100]  backwards compatibility for GRUB_DISABLE_SUBMENU                           codyzu      {1ed58b9}
+[2016-01-08 22:25:31 +0100]  Added p7zip                                                                karasu      {e0e295c}
+[2016-01-08 22:20:43 +0100]  ksnapshot retired                                                          karasu      {653f174}
+[2016-01-07 17:45:41 +0100]  Merge pull request #1 from codyzu/grub_disable_submenu                     codyzu      {04f3473}
+[2016-01-07 17:37:06 +0100]  fix GRUB_DISABLE_SUBMENU check to be standard                              codyzu      {fb10d84}
+[2016-01-06 17:44:21 -0600]  Fix pkgname typo from previous commit                                  Dustin Falgout  {768f1f2}
+[2016-01-06 12:36:59 -0600]  Merge pull request #499 from artur9010/patch-3                         Dustin Falgout  {265bfab}
+[2016-01-06 19:10:16 +0100]  .7z support                                                             Artur Motyka   {a0dd6f5}
+[2016-01-03 21:13:49 +0100]  Use only the partition, not the whole disk (first disk only)               karasu      {09a4bf3}
+[2016-01-03 21:01:11 +0100]  Use device paths instead of ids when creating pool : https://github..      karasu      {782f555}
+[2016-01-03 19:05:27 +0100]  Of course pool does not exist, I AM CREATING IT NOW! (wtf zfs?)            karasu      {64e811f}
+[2016-01-03 18:06:37 +0100]  Why insisting works?                                                       karasu      {d466578}
+[2016-01-03 15:22:43 +0100]  Wait                                                                       karasu      {fbef747}
+[2016-01-03 14:15:37 +0100]  Fix image buttons                                                          karasu      {d5f522d}
+[2016-01-03 12:06:56 +0100]  Remove unneeded code                                                       karasu      {906c69c}
+[2016-01-03 12:02:44 +0100]  Show pool type help only if asked by user                                  karasu      {5184b7b}
+[2016-01-02 14:18:24 +0100]  Added some debug messages. ZFS with more than one device seems to w..      karasu      {64bd34a}
+[2016-01-02 14:08:11 +0100]  Always use force option when creating pool                                 karasu      {dafd80b}
+[2016-01-02 14:06:18 +0100]  zfs no pool_id found                                                       karasu      {0a3ca41}
+[2016-01-02 13:20:15 +0100]  Desesperate try to make zfs realise a pool has been created before ..      karasu      {3c35759}
+[2016-01-02 12:18:06 +0100]  Back to the idea of creating pool in two fases                             karasu      {278bfd1}
+[2016-01-02 11:01:36 +0100]  zfs                                                                        karasu      {b0d06cd}
+[2016-01-02 10:42:39 +0100]  Do not use full path.                                                      karasu      {99a33bf}
+[2016-01-02 09:41:10 +0100]  Let's see if zpool can be created once and for all                         karasu      {47a6b2b}
+[2016-01-01 16:42:59 +0100]  Do not use always "antergos" as pool name (this will avoid problems..      karasu      {7a1f9ac}
+[2016-01-01 16:32:37 +0100]  Small zfs changes                                                          karasu      {f778308}
+[2016-01-01 15:13:17 +0100]  only mirror and raidz are valid pool types                                 karasu      {a747cbe}
+[2016-01-01 15:10:07 +0100]  typo                                                                       karasu      {034231b}
+[2016-01-01 15:07:18 +0100]  More zfs                                                                   karasu      {123a392}
+[2016-01-01 12:29:08 +0100]  hating zfs more and more...                                                karasu      {df4b86d}
+[2016-01-01 12:16:53 +0100]  Is mklabel not mktable!                                                    karasu      {f9e2587}
+[2016-01-01 12:05:51 +0100]  typo                                                                       karasu      {da05d18}
+[2016-01-01 12:05:06 +0100]  Do not write a MBR to zfs disks                                            karasu      {896bfd3}
+[2016-01-01 11:53:50 +0100]  Do not use force when adding new devices to the pool                       karasu      {aebf476}
+[2016-01-01 11:45:47 +0100]  Fix typo                                                                   karasu      {8a61b23}
+[2015-12-31 10:45:32 +0100]  Show raid-z help just once                                                 karasu      {7056357}
+[2015-12-31 10:32:56 +0100]  Do not wait for rankmirrors (even if there's still a process going ..      karasu      {1960858}
+[2015-12-30 23:15:15 +0100]  Fix zfs typos. Change var names in auto_partition (and set boot to ..      karasu      {2ee0a13}
+[2015-12-30 19:41:44 +0100]  Workaround for issue #422                                                  karasu      {84fe3b9}
+[2015-12-30 13:29:27 +0100]  Users have reported problems if they surf the web and then try to i..      karasu      {e1b25c5}
+[2015-12-29 17:57:31 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {b0178a5}
+[2015-12-29 17:51:36 -0600]  fix bug in auto_partition (cherry picked from commit 6d260a9)          Dustin Falgout  {acdb508}
+[2015-12-28 08:47:41 +0100]  Add -f (force) parameter to zpool add                                      karasu      {ae0525a}
+[2015-12-28 08:41:12 +0100]  check_pool_type() zfs                                                      karasu      {caff73e}
+[2015-12-28 08:34:14 +0100]  Try to create stripe pool in two steps to avoid zfs failing                karasu      {33f32cb}
+[2015-12-27 22:43:10 +0100]  Try to fix zpool creation (cannot create 'antergos': no such pool o..      karasu      {1c54b6d}
+[2015-12-27 13:02:43 +0100]  Fix unmount_all_in_directory. Zfs with multiple disks is working.          karasu      {328396f}
+[2015-12-27 12:21:46 +0100]  Delete the ending part of the disk, too. (init_device simplified)          karasu      {141fffd}
+[2015-12-27 12:05:02 +0100]  Fix typo in zfs                                                            karasu      {cfbc8e8}
+[2015-12-27 12:02:43 +0100]  zfs                                                                        karasu      {250389d}
+[2015-12-27 10:44:09 +0100]  zpool export fails (but if I do it manually, it works)                     karasu      {99c212f}
+[2015-12-27 10:36:52 +0100]  Still working on zfs                                                       karasu      {92a5e30}
+[2015-12-27 09:58:10 +0100]  Do not ask NetworkManager (it does not work inside a VM)                   karasu      {a361e32}
+[2015-12-27 09:37:21 +0100]  ZFS fails if a previous zfs installation is already done                   karasu      {106a643}
+[2015-12-26 22:52:21 +0100]  Wipe the first 2MB when using zfs.py                                       karasu      {a538a77}
+[2015-12-26 22:12:06 +0100]  fix typo in zfs.py                                                         karasu      {294493e}
+[2015-12-26 22:09:31 +0100]  Use misc.run_cmd in zfs                                                    karasu      {1ace3cd}
+[2015-12-26 20:40:39 +0100]  Do not create a partition inside zfs vols                                  karasu      {beaf3d4}
+[2015-12-26 19:40:41 +0100]  Fixed pool_type for zpool create                                           karasu      {a3187fb}
+[2015-12-26 19:26:15 +0100]  Wrong function. Fixed.                                                     karasu      {4fbc137}
+[2015-12-26 12:03:38 +0100]  TODO: Check pool name                                                      karasu      {d74b5e0}
+[2015-12-26 11:58:53 +0100]  ups (add /dev/disk/by-id for full disks, too)                              karasu      {16b67dd}
+[2015-12-26 11:41:55 +0100]  Hope this fixes zfs in serveral disks                                      karasu      {d8f5231}
+[2015-12-26 11:33:03 +0100]  Small fix                                                                  karasu      {2e35bbb}
+[2015-12-26 11:06:32 +0100]  Cleaned up a bit zfs.py                                                    karasu      {7bcf636}
+[2015-12-26 10:59:08 +0100]  Avoid duplicated code                                                      karasu      {d2f2f7c}
+[2015-12-25 20:19:00 +0100]  Ugly fix to try to make autopartition run with non "standard" devices      karasu      {9976268}
+[2015-12-25 11:58:49 +0100]  Someday Grub2 will install ok... in a zfs system.                          karasu      {1690e86}
+[2015-12-25 09:56:02 +0100]  Import missing                                                             karasu      {fcf77fe}
+[2015-12-25 08:49:56 +0100]  Ups. That if was not well written                                          karasu      {21672ec}
+[2015-12-25 08:40:54 +0100]  Let's see if this helps installing bootloader in zfs                       karasu      {d7d868d}
+[2015-12-25 08:32:57 +0100]  Improving bootloader code a little bit. zfs.py does not inform of i..      karasu      {8c9f43c}
+[2015-12-24 21:09:37 +0100]  Give more information when an Exception of type Exception is caught.       karasu      {8b36aab}
+[2015-12-22 18:58:54 +0100]  ugly and temporary fix just for testing zfs                                karasu      {3e44998}
+[2015-12-22 18:40:47 +0100]  zfs packages are not being installed on /install                           karasu      {a3206f9}
+[2015-12-22 17:46:05 +0100]  Setting mountpoint to / makes zfs try to mount it and fail.                karasu      {570b822}
+[2015-12-22 17:32:09 +0100]  Trying to fix zfs                                                          karasu      {4f6e792}
+[2015-12-22 16:12:06 +0100]  Some users have reported problems when setting alsa mixer options. ..      karasu      {5a150aa}
+[2015-12-22 00:28:12 +0100]  Add zfs hook                                                               karasu      {edbef3d}
+[2015-12-21 21:18:22 +0100]  Where does this symlink come from?                                         karasu      {c5be3ca}
+[2015-12-21 21:15:33 +0100]  More work in bootloaders                                                   karasu      {6fbd12c}
+[2015-12-21 19:46:04 +0100]  bootloader was too big and confusing. THIS IS NOT FINISHED                 karasu      {91bbf12}
+[2015-12-21 17:53:20 +0100]  Fix typo                                                                   karasu      {d15af7b}
+[2015-12-20 06:36:27 -0600]  Update packages.xml                                                    Dustin Falgout  {ad044d0}
+[2015-12-19 21:40:32 -0600]  fix indent error                                                       Dustin Falgout  {84ae72b}
+[2015-12-19 14:39:08 +0100]  Little modifications in run_cmd                                            karasu      {d012ef2}
+[2015-12-19 13:27:37 +0100]  Do not log as warning when update.info is missing                          karasu      {8deaa14}
+[2015-12-18 04:26:18 -0600]  Update .landscape.yaml                                                 Dustin Falgout  {58b63c7}
+[2015-12-17 18:26:33 -0600]  new kde screenshots app not out of testing yet                         Dustin Falgout  {a7943d6}
+[2015-12-17 18:25:08 -0600]  Merge pull request #489 from Wyn10/patch-1                             Dustin Falgout  {df6d6f7}
+[2015-12-17 20:05:25 +0100]  Do not fail even if timezonemap.xml is not found                           karasu      {d13e689}
+[2015-12-16 23:43:35 +0100]  Not needed                                                                 karasu      {e093b4a}
+[2015-12-16 15:30:39 -0500]  Update packages.xml                                                          Wyn       {d842c62}
+[2015-12-15 20:41:40 +0100]  Fix automatic installation (auto_partition) in mmcblk devices (can'..      karasu      {5b57d49}
+[2015-12-15 10:28:53 +0100]  Add flash as a feature                                                     karasu      {93f5b47}
+[2015-12-14 21:19:58 +0100]  Merge branch 'master' of https://github.com/lots0logs/cnchi-dev            karasu      {c5d7ebb}
+[2015-12-14 21:19:04 +0100]  Fatal error if Cnchi can't get mainwindow screen (or installer scre..      karasu      {9a7db67}
+[2015-12-14 12:55:56 -0600]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {7aea58f}
+[2015-12-14 12:54:27 -0600]  kde changes                                                            Dustin Falgout  {1c7de2b}
+[2015-12-14 10:28:02 -0600]  trying to fix issue with no newlines being output to /etc/default/g..  Dustin Falgout  {8d16661}
+[2015-12-14 09:18:34 -0600]  fix syntax error                                                       Dustin Falgout  {ae4635e}
+[2015-12-14 09:11:50 -0600]  fix invalid attribute                                                  Dustin Falgout  {2387f78}
+[2015-12-14 09:46:36 +0100]  swapoff needs root privileges                                              karasu      {bbf0fbb}
+[2015-12-14 08:53:46 +0100]  Do not try to read Replay Protected Memory Block                           karasu      {e60dcf7}
+[2015-12-14 08:39:41 +0100]  Fix pvremove command                                                       karasu      {ee1d30f}
+[2015-12-14 08:35:11 +0100]  Typo                                                                       karasu      {a2c9349}
+[2015-12-14 08:34:47 +0100]  Allow to pass stdin to call in run_cmd                                     karasu      {f6c8a79}
+[2015-12-13 21:49:15 +0100]  Use our own call function in subprocess (easy to track errors)             karasu      {c5c2529}
+[2015-12-13 21:38:49 +0100]  Do not always refresh gpg keys (it's a too slow process)                   karasu      {e0167e2}
+[2015-12-13 21:05:52 +0100]  Merge pull request #486 from Wyn10/patch-1                                 karasu      {7ef7c86}
+[2015-12-13 14:41:28 -0500]  KDE4 package removed                                                         Wyn       {3b49e81}
+[2015-12-13 18:24:35 +0100]  Add zfs hook to mkinitcpio                                                 karasu      {25de414}
+[2015-12-12 09:36:00 -0600]  needs more testing                                                     Dustin Falgout  {fda723a}
+[2015-12-12 08:23:32 -0600]  blah! :wink:                                                           Dustin Falgout  {b5dd036}
+[2015-12-12 07:29:29 -0600]  ...                                                                    Dustin Falgout  {6a2631c}
+[2015-12-12 07:19:03 -0600]  almost done                                                            Dustin Falgout  {85cfdb7}
+[2015-12-12 06:49:18 -0600]  Maybe should have postponed this but it will be ok                     Dustin Falgout  {4af5ba7}
+[2015-12-12 06:28:19 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {1f92b55}
+[2015-12-12 06:28:05 -0600]  more kde changes                                                       Dustin Falgout  {9dbb8b9}
+[2015-12-12 12:58:12 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {6897b0b}
+[2015-12-12 12:57:53 +0100]  Fix some minor issues                                                      karasu      {f2770b1}
+[2015-12-12 05:55:55 -0600]  was moving a little too quickly :grimacing:                            Dustin Falgout  {f96ebe7}
+[2015-12-12 05:23:34 -0600]  ...                                                                    Dustin Falgout  {e6db815}
+[2015-12-12 05:10:57 -0600]  started working on dropping kde4                                       Dustin Falgout  {a34795e}
+[2015-12-12 01:14:56 +0100]  OK, it seems that now we're getting all output info in our log file..      karasu      {385c4db}
+[2015-12-12 00:47:07 +0100]  Still fooling around with error messages (and still not finished)          karasu      {d22e3bb}
+[2015-12-11 23:57:22 +0100]  Trying to beautify error messages                                          karasu      {4ea2d8a}
+[2015-12-11 19:47:30 +0100]  Let's try new call function                                                karasu      {cd9e258}
+[2015-12-11 19:44:07 +0100]  Testing something (aesthetic)                                              karasu      {c9b8a1f}
+[2015-12-11 19:37:50 +0100]  More fixing                                                                karasu      {8cc0c8a}
+[2015-12-11 19:21:31 +0100]  Fix BIG typo                                                               karasu      {c2eb87b}
+[2015-12-11 12:30:59 +0100]  Fix typo in auto_partition                                                 karasu      {26818e6}
+[2015-12-11 12:23:35 +0100]  More work done in auto_partition                                           karasu      {eb71a44}
+[2015-12-11 11:01:55 +0100]  Trying to fix error logging once and for all (UNFINISHED)                  karasu      {8ef704d}
+[2015-12-11 09:00:26 +0100]  Working on subprocess                                                      karasu      {0c07038}
+[2015-12-10 21:52:03 +0100]  Must rethink all this...                                                   karasu      {b505300}
+[2015-12-10 21:15:47 +0100]  Nope                                                                       karasu      {59adf50}
+[2015-12-10 21:14:10 +0100]  Trying something                                                           karasu      {e87c070}
+[2015-12-10 21:08:33 +0100]  zfs                                                                        karasu      {32c400e}
+[2015-12-10 21:06:20 +0100]  zfs (str to float and then to int, in this case)                           karasu      {62f31c8}
+[2015-12-10 20:44:33 +0100]  Fix indentation error in bootloader                                        karasu      {194189b}
+[2015-12-10 12:27:44 +0100]  Improve warning/error messages in fs_module.py                             karasu      {56f5caf}
+[2015-12-09 18:25:54 +0100]  Fix bug in mkinitcpio (introduced by myself xD)                            karasu      {0bda569}
+[2015-12-09 17:24:39 +0100]  Still working on download_requests                                         karasu      {abeb2bf}
+[2015-12-09 15:15:28 +0100]  Testing check_output to see if it caches command error messages (st..      karasu      {d96bd60}
+[2015-12-09 10:00:21 +0100]  more info                                                                  karasu      {98569ae}
+[2015-12-09 09:52:37 +0100]  Split in more functions download_requests                                  karasu      {98bb5dc}
+[2015-12-08 22:02:58 +0100]  Log a warning message when md5 sum does not match                          karasu      {39fe95d}
+[2015-12-08 21:53:08 +0100]  Hope this fixes download_requests hash check                               karasu      {dc25ad2}
+[2015-12-08 21:05:08 +0100]  fix download_requests.py                                                   karasu      {5feed4f}
+[2015-12-08 20:51:43 +0100]  Working on progress (user messages get stuck)                              karasu      {a3f5d44}
+[2015-12-08 20:41:58 +0100]  Some pep8. Remove testing option                                           karasu      {7910a8d}
+[2015-12-08 15:42:58 +0100]  pep8 used_space                                                            karasu      {d33272a}
+[2015-12-08 15:34:51 +0100]  pep8 partition_module                                                      karasu      {a79aa9a}
+[2015-12-08 15:11:32 +0100]  pep8 fs_module                                                             karasu      {e1d85e4}
+[2015-12-08 15:01:48 +0100]  pep8 pac.py                                                                karasu      {7d3ba9a}
+[2015-12-08 14:42:15 +0100]  pep8 pacman.conf                                                           karasu      {c463344}
+[2015-12-08 14:26:28 +0100]  pep8 on validation                                                         karasu      {ed09457}
+[2015-12-08 14:17:48 +0100]  pep8 on tz                                                                 karasu      {a486a62}
+[2015-12-08 13:58:54 +0100]  More pep8, now on timezonemap                                              karasu      {6d2155e}
+[2015-12-08 13:30:12 +0100]  pep8 on keyboard_widget and keyboard_names                                 karasu      {f8c0309}
+[2015-12-08 13:00:57 +0100]  pep8 on keyboard_names.py                                                  karasu      {3a0792b}
+[2015-12-08 12:50:43 +0100]  pep8 on i18n                                                               karasu      {55352b8}
+[2015-12-08 12:48:17 +0100]  pep8 on gtkwidgets.py                                                      karasu      {5c080cd}
+[2015-12-08 12:35:41 +0100]  pep8 on extra.py                                                           karasu      {b400a99}
+[2015-12-08 12:08:34 +0100]  pep8 camera.py (this module needs a lot of work)                           karasu      {ba071df}
+[2015-12-08 11:58:03 +0100]  Pep8 (and bugfixing) zfs.py                                                karasu      {c64fbd3}
+[2015-12-08 09:23:53 +0100]  pep8 on wrapper.py                                                         karasu      {03a4e0b}
+[2015-12-08 09:21:46 +0100]  pep8 on systemd_networkd                                                   karasu      {dde4bae}
+[2015-12-08 09:19:29 +0100]  More pep8                                                                  karasu      {6b6dbe7}
+[2015-12-05 14:38:33 +0100]  pep8 lamp.py                                                               karasu      {5abdf19}
+[2015-12-05 14:33:35 +0100]  pep8 install.py                                                            karasu      {43857f7}
+[2015-12-05 13:51:15 +0100]  pep8 firewall                                                              karasu      {1fc1d5a}
+[2015-12-05 13:47:16 +0100]  pep8 chroot.py                                                             karasu      {80dc532}
+[2015-12-05 12:44:13 +0100]  pep8 bootloader                                                            karasu      {e0a79e4}
+[2015-12-05 12:23:11 +0100]  pep8 automatic                                                             karasu      {0471703}
+[2015-12-05 12:12:53 +0100]  pep8 ask.py                                                                karasu      {113dbc5}
+[2015-12-05 11:38:30 +0100]  more pep8, now on advanced.py                                              karasu      {453f067}
+[2015-12-04 09:59:17 +0100]  Working on advanced.py                                                     karasu      {7b8ee01}
+[2015-12-04 09:51:06 +0100]  fix action messages and pep8                                               karasu      {213f186}
+[2015-12-04 09:29:35 +0100]  pep8 on hardware.py                                                        karasu      {954de51}
+[2015-12-04 08:59:25 +0100]  And more pep8 on nvidia                                                    karasu      {0dfeb3f}
+[2015-12-04 08:56:24 +0100]  pep8 catalyst hardware module                                              karasu      {0becdb1}
+[2015-12-04 08:54:25 +0100]  More pep8 in hardware module                                               karasu      {621e5f8}
+[2015-12-04 08:47:40 +0100]  pep8 on hardware modules                                                   karasu      {f274d5f}
+[2015-12-04 08:30:50 +0100]  pep8                                                                       karasu      {5bf07ba}
+[2015-12-03 23:35:33 +0100]  Fix typo                                                                   karasu      {9dcec1b}
+[2015-12-03 22:39:53 +0100]  Require webkit version, too                                                karasu      {16089a8}
+[2015-12-03 22:37:41 +0100]  Split a big function. Needs testing!                                       karasu      {8b1311a}
+[2015-12-03 17:02:04 +0100]  Must quit                                                                  karasu      {d7eb20d}
+[2015-12-03 15:55:42 +0100]  pep8 on download.py                                                        karasu      {aedd79e}
+[2015-12-03 14:35:07 +0100]  More pep8                                                                  karasu      {e2f451b}
+[2015-12-03 14:20:02 +0100]  pep8                                                                       karasu      {5a73535}
+[2015-12-03 14:19:32 +0100]  pep8 user_info                                                             karasu      {7eaa0b3}
+[2015-12-03 13:58:54 +0100]  pep8 updater.py                                                            karasu      {07b198f}
+[2015-12-03 13:46:33 +0100]  More pep8                                                                  karasu      {a9396d3}
+[2015-12-02 09:50:57 +0100]  Catch OSError when calling setxkbmap, too.                                 karasu      {54e4402}
+[2015-12-01 22:28:03 +0100]  Some users experience problems after amixer is run ¿?                      karasu      {f4ad531}
+[2015-12-01 22:17:35 +0100]  More pep8 on show_message                                                  karasu      {1e826a9}
+[2015-12-01 19:14:06 +0100]  pylint                                                                     karasu      {dce5eb0}
+[2015-12-01 19:06:55 +0100]  pep8 rankmirrors                                                           karasu      {b85919d}
+[2015-12-01 18:57:01 +0100]  pep8 main_window                                                           karasu      {714a78e}
+[2015-12-01 18:44:25 +0100]  pep8 logging_utils                                                         karasu      {524181f}
+[2015-12-01 15:54:45 +0100]  pep8 wrapper                                                               karasu      {7a6b54d}
+[2015-12-01 15:48:17 +0100]  pep8 zfs                                                                   karasu      {87b251c}
+[2015-12-01 15:31:45 +0100]  pep8 location                                                              karasu      {4629f39}
+[2015-12-01 15:28:56 +0100]  pep8 on language                                                           karasu      {ff498ce}
+[2015-12-01 15:17:25 +0100]  pylint                                                                     karasu      {c4448fd}
+[2015-12-01 14:31:12 +0100]  more pylint                                                                karasu      {02e63f1}
+[2015-12-01 13:43:34 +0100]  pylint                                                                     karasu      {8a85f3f}
+[2015-11-27 02:40:32 -0600]  Revert "change files owned by root to user 1000"                       Dustin Falgout  {31060ff}
+[2015-11-27 02:31:08 -0600]  change files owned by root to user 1000                                Dustin Falgout  {395e6ee}
+[2015-11-24 22:51:29 -0600]  fix typo (cherry picked from commit 0a5a7e1)                           Dustin Falgout  {f8521c6}
+[2015-11-22 13:53:15 +0100]  pylint                                                                     karasu      {b3e9712}
+[2015-11-22 13:31:46 +0100]  pylint                                                                     karasu      {fac0a2f}
+[2015-12-01 03:34:53 -0600]  fix issue with amixer command causing postinstall.sh to hang (maybe)   Dustin Falgout  {746238c}
+[2015-12-01 03:17:17 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {4636c6b}
+[2015-12-01 03:15:50 -0600]  update pre-commit hook                                                 Dustin Falgout  {920e2b6}
+[2015-12-01 03:13:16 -0600]  update pre-commit hook                                                 Dustin Falgout  {3847846}
+[2015-12-01 10:01:17 +0100]  pylint                                                                     karasu      {9d8bece}
+[2015-11-22 12:32:55 +0100]  Little changes to keyboard_widget                                          karasu      {5d51dff}
+[2015-11-29 22:08:24 +0100]  Add cache dir to pacman (again)                                            karasu      {04ac00b}
+[2015-11-29 21:43:37 +0100]  Updated pacman.conf template (used while installing)                       karasu      {3b4b26a}
+[2015-11-29 21:31:40 +0100]  Need to check this out, but I think that alpm won't copy xz files t..      karasu      {12c022f}
+[2015-11-29 21:19:16 +0100]  Run dirmngr before refresh-keys                                            karasu      {e75f67f}
+[2015-11-29 20:42:38 +0100]  Nope, it didn't help.                                                      karasu      {85a4b24}
+[2015-11-29 18:49:46 +0100]  Make alpm download packages before installing. Not useful really, j..      karasu      {0fc7a65}
+[2015-11-29 18:31:43 +0100]  Added some comments (nothing new)                                          karasu      {7bdf3b3}
+[2015-11-29 09:46:41 -0600]  try skipping the copying of cache files and let alpm get them itself   Dustin Falgout  {22c997c}
+[2015-11-29 12:57:52 +0100]  Fix cryptsetup version adquiring (not really important)                    karasu      {65b3e93}
+[2015-11-29 02:46:10 -0600]  add an upgrade method (like pacman -U) to pac.py in case we need it    Dustin Falgout  {d72434a}
+[2015-11-29 02:23:30 -0600]  that was dumb. revert last three commits                               Dustin Falgout  {0e74ea5}
+[2015-11-29 01:11:12 -0600]  :unamused:                                                             Dustin Falgout  {5c250bc}
+[2015-11-29 00:57:32 -0600]  fix some faulty logic                                                  Dustin Falgout  {6e3b056}
+[2015-11-29 00:36:14 -0600]  wrong key name                                                         Dustin Falgout  {bd68b1f}
+[2015-11-29 00:21:05 -0600]  copy alpm database files for pkgs copied from iso's pkg cache          Dustin Falgout  {114831f}
+[2015-11-28 22:44:07 -0600]  make sure we get all data from alpm errors                             Dustin Falgout  {bbc00f3}
+[2015-11-28 21:48:23 -0600]  still working on checksum ussue                                        Dustin Falgout  {8c3f432}
+[2015-11-28 21:33:53 -0600]  nothing important                                                      Dustin Falgout  {4a43288}
+[2015-11-28 18:56:06 -0600]  need priveldges to delete stale cache files                            Dustin Falgout  {953042e}
+[2015-11-28 18:51:23 -0600]  fix files owned by root. added utility script for future use           Dustin Falgout  {196473f}
+[2015-11-28 11:23:27 +0100]  auto_partition was unmounting zfs (or so it seems)                         karasu      {72268c5}
+[2015-11-28 11:05:09 +0100]  ZFS is not mounted                                                         karasu      {99edbf8}
+[2015-11-27 18:59:59 +0100]  Forgot to add zfs packages to destination!!!                               karasu      {f85ad0c}
+[2015-11-27 18:11:58 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {13df307}
+[2015-11-27 18:10:24 +0100]  fix typo                                                                   karasu      {358656a}
+[2015-11-27 10:49:48 -0600]  forgot to handle md5 check failed event in slides.py                   Dustin Falgout  {d684eb6}
+[2015-11-27 17:19:46 +0100]  Fix comment                                                                karasu      {d6653e1}
+[2015-11-27 17:05:52 +0100]  Fix bug in install.py (only when using Base)                               karasu      {dc6dbb0}
+[2015-11-27 17:03:57 +0100]  More zfs changes                                                           karasu      {979095e}
+[2015-11-27 16:53:29 +0100]  zfs - Small modifications in install.py                                    karasu      {0b10c9b}
+[2015-11-27 05:16:08 -0600]  missed this                                                            Dustin Falgout  {c17291b}
+[2015-11-27 05:12:00 -0600]  Possible fix for antergos/cnchi#363 NEEDS TESTING!                     Dustin Falgout  {38f6b8e}
+[2015-11-22 08:24:28 +0100]  More changes in zfs BUT ALSO in install                                    karasu      {d469583}
+[2015-11-26 22:21:30 +0100]  Need to fill both vars                                                     karasu      {16623d9}
+[2015-11-26 18:59:25 +0100]  Size in GB must be int                                                     karasu      {1ac6e34}
+[2015-11-26 18:24:34 +0100]  Still working on zfs                                                       karasu      {61b0c8a}
+[2015-11-26 14:18:03 +0100]  more zfs                                                                   karasu      {634e976}
+[2015-11-25 22:28:28 +0100]  zfs get_swap_size needs fixing                                             karasu      {8e388de}
+[2015-11-25 21:50:27 +0100]  Forgot a return                                                            karasu      {a3f35ae}
+[2015-11-25 21:35:40 +0100]  Fix zpool command                                                          karasu      {67978ac}
+[2015-11-25 19:28:27 +0100]  Fix check_output                                                           karasu      {03a0bc2}
+[2015-11-25 18:43:13 +0100]  Fix typo                                                                   karasu      {6aa021a}
+[2015-11-25 18:26:57 +0100]  More zfs                                                                   karasu      {2365f2c}
+[2015-11-25 10:01:21 +0100]  must go, zfs                                                               karasu      {c74eff0}
+[2015-11-25 07:09:02 +0100]  Some zfs modifications. Unfinished.                                        karasu      {560573a}
+[2015-11-24 22:51:29 -0600]  fix typo                                                               Dustin Falgout  {0a5a7e1}
+[2015-11-24 20:34:58 +0100]  Fix warning message. ZFS formats and installs ok, but bootloader is..      karasu      {420f17b}
+[2015-11-24 19:18:49 +0100]  avoid an empty pool name                                                   karasu      {2a46559}
+[2015-11-24 19:09:47 +0100]  docs are being generated by sphinx. A bit messy, but works. Check c..      karasu      {e012825}
+[2015-11-22 02:06:05 +0100]  Working on docs. Changed misc.py to extras.py                              karasu      {2330997}
+[2015-11-22 01:05:45 +0100]  Playing with sphinx                                                        karasu      {f305fbd}
+[2015-11-22 00:36:48 +0100]  Fix bug in ask.py                                                          karasu      {b3bfd90}
+[2015-11-24 09:48:09 +0100]  zfs : use pool_name from user if selected                                  karasu      {a1b91c0}
+[2015-11-24 09:34:13 +0100]  Trying to fix summary bug                                                  karasu      {79ac96c}
+[2015-11-23 20:33:19 +0100]  Forgot an import                                                           karasu      {8317286}
+[2015-11-23 20:29:33 +0100]  More zfs - pre setup works (with None pool and one harddisk). Let's..      karasu      {8b148b2}
+[2015-11-23 10:56:35 +0100]  Added docs (just playing with sphinx)                                      karasu      {32fcc7a}
+[2015-11-22 21:02:32 +0100]  typo                                                                       karasu      {67c951c}
+[2015-11-22 21:00:21 +0100]  zpool export fails in cnchi, works when I try it manually ¿?               karasu      {978dfc7}
+[2015-11-22 20:49:33 +0100]  More zfs                                                                   karasu      {e57d505}
+[2015-11-22 20:17:14 +0100]  And.... more ZFS                                                           karasu      {87bc670}
+[2015-11-22 19:55:05 +0100]  Show version with -V or --version flags                                    karasu      {f3c811b}
+[2015-11-22 19:43:25 +0100]  more zfs                                                                   karasu      {b643f86}
+[2015-11-22 19:23:09 +0100]  build_server, self.install or result is None ¿?                            karasu      {5bc3437}
+[2015-11-22 19:17:38 +0100]  From process dialogs can't be shown                                        karasu      {45f11b6}
+[2015-11-22 17:59:09 +0100]  More zfs                                                                   karasu      {32cc639}
+[2015-11-22 09:37:56 +0100]  Show errors                                                                karasu      {d5202d5}
+[2015-11-21 09:41:45 -0600]  Merge pull request #470 from ronhuang/taiwan-not-part-of-china         Dustin Falgout  {3a5074b}
+[2015-11-21 22:48:23 +0800]  Taiwan is not part of China                                               Ron Huang    {e1fb839}
+[2015-11-21 14:51:21 +0100]  More ZFS                                                                   karasu      {1f22766}
+[2015-11-21 13:13:00 +0100]  Install lightdm-webkit2-greeter                                            karasu      {b9ac894}
+[2015-11-21 13:11:10 +0100]  Install lightdm-webkit2-greeter                                            karasu      {74a925a}
+[2015-11-21 12:47:52 +0100]  zfs                                                                        karasu      {d7b44cb}
+[2015-11-21 12:11:17 +0100]  zfs                                                                        karasu      {d422420}
+[2015-11-21 12:10:21 +0100]  zfs                                                                        karasu      {91c3a07}
+[2015-11-21 12:09:10 +0100]  zfs minor changes                                                          karasu      {01b918a}
+[2015-11-21 12:01:59 +0100]  Show stdout                                                                karasu      {6e45695}
+[2015-11-21 11:06:18 +0100]  zfs added -f to create                                                     karasu      {968fe41}
+[2015-11-21 01:18:20 +0100]  zfs                                                                        karasu      {0b83fcc}
+[2015-11-20 23:29:52 +0100]  zukitwo themes got renamed to zuki themes                                  karasu      {4412ea8}
+[2015-11-20 23:28:58 +0100]  Allow to continue even if Cnchi is not updated                             karasu      {5c60119}
+[2015-11-20 23:26:48 +0100]  Allow to continue even if it's not updated                                 karasu      {1fdd2b7}
+[2015-11-20 23:20:32 +0100]  zukitwo-themes is now zuki-themes                                          karasu      {19fa02b}
+[2015-11-20 17:30:49 +0100]  Log which ISO version is used by the user to run Cnchi                     karasu      {131bf34}
+[2015-11-20 17:15:56 +0100]  Taiwan is not part of China                                                karasu      {b4ba9fe}
+[2015-11-20 17:12:53 +0100]  Fix multiple typos                                                         karasu      {4342cc5}
+[2015-11-20 17:09:57 +0100]  Fix typo                                                                   karasu      {cb993e6}
+[2015-11-20 11:01:36 +0100]  wip                                                                        karasu      {56de5dc}
+[2015-11-20 10:05:12 +0100]  Enable proprietary driver feature                                          karasu      {38c8a17}
+[2015-11-20 09:52:00 +0100]  Disable AMD catalyst proprietary driver                                    karasu      {79fa939}
+[2015-11-19 21:24:21 +0100]  Add nox package in base installs in virtualbox                             karasu      {8fee70c}
+[2015-11-18 19:46:39 +0100]  Nope, I was wrong.                                                         karasu      {30b5d71}
+[2015-11-18 19:46:02 +0100]  Convert two if's to one.                                                   karasu      {d2a50ae}
+[2015-11-18 19:35:43 +0100]  Add exception "control" to issue #465                                      karasu      {3cf1f82}
+[2015-11-18 19:20:57 +0100]  Try to minimize issue #451 effects. I cannot reproduce it, though.         karasu      {4bc572f}
+[2015-11-18 18:47:17 +0100]  Merge pull request #460 from prescott66/patch-7                            karasu      {da8c410}
+[2015-11-18 18:43:56 +0100]  Add a control to get_used_fat                                              karasu      {5b3f28e}
+[2015-11-17 14:09:20 +0100]  Fix typo                                                                   karasu      {689e5ff}
+[2015-11-17 14:00:25 +0100]  Force Gtk 3.18 (also show graphic warning message if pyalpm is not ..      karasu      {b66ada3}
+[2015-11-16 19:01:28 -0600]  set editor env var in postinstall (cherry picked from commit 0bce60a)  Dustin Falgout  {72d9cba}
+[2015-11-16 19:01:28 -0600]  set editor env var in postinstall                                      Dustin Falgout  {0bce60a}
+[2015-11-16 18:19:51 +0100]  Add -ff to pvremove (I thought that this was already done...¿?)            karasu      {f27d011}
+[2015-11-16 10:00:58 +0100]  Fix typo in zfs                                                            karasu      {9aa2ad6}
+[2015-11-15 20:51:15 +0100]  working on create_zfs_pool                                                 karasu      {e70e665}
+[2015-11-15 20:42:18 +0100]  Fix zfs encrypt checkbox                                                   karasu      {06ba08d}
+[2015-11-15 19:21:10 +0100]  zfs                                                                        karasu      {2998405}
+[2015-11-15 18:31:49 +0100]  zfs                                                                        karasu      {b653f2a}
+[2015-11-15 18:27:01 +0100]  zfs                                                                        karasu      {0d7fc67}
+[2015-11-15 17:31:07 +0100]  Working on fix summary blank error. Not much luck with this as I ca..      karasu      {3847c51}
+[2015-11-15 11:02:01 +0100]  Set right height in slides                                                 karasu      {0f3671b}
+[2015-11-15 10:27:28 +0100]  Fix if typo in ask.py                                                      karasu      {bfd3295}
+[2015-11-14 13:25:18 +0100]  Some beautification                                                        karasu      {1571f21}
+[2015-11-13 12:49:46 -0600]  fix window size issues with new version of numix frost theme (cherr..  Dustin Falgout  {950e38c}
+[2015-11-13 12:27:31 -0600]  fix window size issues with new version of numix frost theme           Dustin Falgout  {0b53a8f}
+[2015-11-13 17:24:41 +0100]  Fix MATE, add Cinnamon to user-dirs patch                                  karasu      {52cb826}
+[2015-11-12 23:40:10 +0100]  Fix user-dirs-update-gtk.desktop path                                      karasu      {d79e7ad}
+[2015-11-12 23:38:40 +0100]  Patch for issue #464 (needs testing)                                       karasu      {971cba3}
+[2015-11-12 20:56:20 +0100]  Trying to create home dirs using the right language (xfce)                 karasu      {230fb82}
+[2015-11-12 18:58:57 +0100]  Install xdg-user-dirs-update in Openbox, too.                              karasu      {97bd84a}
+[2015-11-11 16:23:16 -0600]  not really sure if it will help but it cant hurt so why not? anterg..  Dustin Falgout  {74ef943}
+[2015-11-11 16:22:30 -0600]  don't call blkid if part value is empty. Hopefully Fixes antergos/C..  Dustin Falgout  {3b8bf16}
+[2015-11-11 16:19:57 -0600]  not really sure if it will help but it cant hurt so why not? anterg..  Dustin Falgout  {b48cf3e}
+[2015-11-11 15:51:08 -0600]  don't call blkid if part value is empty. Hopefully Fixes antergos/C..  Dustin Falgout  {6c0c37a}
+[2015-11-11 19:47:55 +0100]  Shorten explanations                                                       karasu      {e3677b8}
+[2015-11-11 19:40:01 +0100]  Fix return identation. Could fix issue #422 (needs testing)                karasu      {4e58812}
+[2015-11-11 19:37:04 +0100]  Fix ugly bug (in advanced and summary screens)                             karasu      {30a4070}
+[2015-11-08 13:51:29 +0100]  Add ZFS as an automatic option                                             karasu      {400fd44}
+[2015-11-08 13:10:18 +0100]  Add pl to cnchi.desktop                                                    karasu      {d57fc54}
+[2015-11-08 13:09:01 +0100]  Update cnchi.desktop                                                     Dušan Kazik   {eb85113}
+[2015-11-08 00:34:03 +0100]  Merge pull request #459 from artur9010/patch-1                             karasu      {eb262f8}
+[2015-11-07 22:29:29 +0100]  Update cnchi.desktop                                                        Artur      {3c25a49}
+[2015-11-07 20:44:18 +0100]  More work on zfs. Fixed a typo in ask screen                               karasu      {f2680be}
+[2015-11-07 17:47:11 +0100]  Activate forward button (in case we came back from zfs)                    karasu      {108581f}
+[2015-11-07 17:43:32 +0100]  Some more changes in zfs                                                   karasu      {1775a93}
+[2015-11-07 08:29:47 -0600]  dont add GRUB_ENABLE_CRYPTODISK when boot is on encrypted root part..  Dustin Falgout  {c1d762e}
+[2015-10-31 20:14:14 +0100]  Fix typo in var name                                                       karasu      {28a655e}
+[2015-10-31 18:49:54 +0100]  Do not show errors when livecd is full                                     karasu      {a14f1e6}
+[2015-10-31 18:31:29 +0100]  Fix alsactl store command                                                  karasu      {bcee0d0}
+[2015-10-31 15:36:16 +0100]  Need to be root to load zfs module                                         karasu      {3177940}
+[2015-10-31 14:26:36 +0100]  do not show ZFS if module can't be loaded                                  karasu      {950af8a}
+[2015-10-31 14:17:57 +0100]  Fix exception message in zfs                                               karasu      {c57a469}
+[2015-10-31 13:06:32 +0100]  Try to fix get_changes                                                     karasu      {15f4759}
+[2015-10-31 12:57:21 +0100]  Fix device_path                                                            karasu      {8eaf48f}
+[2015-10-31 12:53:53 +0100]  Forgot to change var                                                       karasu      {42c6adb}
+[2015-10-31 12:51:56 +0100]  Working on get_changes in zfs                                              karasu      {23e075a}
+[2015-10-31 11:10:23 +0100]  Added force_4k message in zfs                                              karasu      {6b2b140}
+[2015-10-31 10:34:26 +0100]  Fix typos in zfs                                                           karasu      {3febf21}
+[2015-10-31 00:03:19 -0500]  pycharm bug grrr                                                       Dustin Falgout  {2bf48b6}
+[2015-10-31 00:00:54 -0500]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {40597c3}
+[2015-10-30 19:03:25 -0500]  Update 10_antergos                                                     Julio Gutierrez {ace9baf}
+[2015-10-30 23:53:27 -0500]  Merge pull request #456 from bubuntux/master                           Dustin Falgout  {077ed53}
+[2015-10-30 18:03:25 -0600]  Update 10_antergos                                                     Julio Gutierrez {c7c106a}
+[2015-10-30 19:17:35 +0100]  load zfs module                                                            karasu      {bcd86bc}
+[2015-10-30 19:14:35 +0100]  More zfs                                                                   karasu      {c5e122d}
+[2015-10-30 11:00:04 +0100]  More zfs                                                                   karasu      {a5c6ab5}
+[2015-10-30 09:00:18 +0100]  Need to get disk id                                                        karasu      {539a767}
+[2015-10-29 23:33:20 +0100]  zfs                                                                        karasu      {080f9bb}
+[2015-10-29 20:09:08 +0100]  Working on zfs                                                             karasu      {928c567}
+[2015-10-29 12:29:58 +0100]  Nothing really, just have to rush out (so I save the changes)              karasu      {8a96c2e}
+[2015-10-28 23:27:50 +0100]  Fix imports (and a typo)                                                   karasu      {22d582e}
+[2015-10-28 23:24:57 +0100]  Split of auto_partition in two files (wrapper and itself) for ZFS s..      karasu      {10b9cd3}
+[2015-10-28 22:13:09 +0100]  Add CSS style for zfs_radio_btn                                            karasu      {8a32243}
+[2015-10-28 09:46:50 +0100]  More on zfs                                                                karasu      {6201cd4}
+[2015-10-27 21:46:49 +0100]  Try to get stderr when mkfs fails                                          karasu      {740a250}
+[2015-10-27 21:29:58 +0100]  And more work in zfs                                                       karasu      {eb41e1c}
+[2015-10-27 19:47:39 +0100]  Go back to choose vconsole in install.py (no vconsole.py). Problem ..      karasu      {2d0fa41}
+[2015-10-27 14:25:05 +0100]  fill_partition_list to be finished                                         karasu      {c6e0d31}
+[2015-10-27 14:22:06 +0100]  Added parted to zfs                                                        karasu      {0c8946e}
+[2015-10-27 14:18:37 +0100]  And... yes, more work on zfs screen                                        karasu      {e6334bd}
+[2015-10-27 14:07:22 +0100]  More work on zfs                                                           karasu      {afb0e82}
+[2015-10-27 13:45:49 +0100]  More work on zfs                                                           karasu      {c21117f}
+[2015-10-26 16:40:51 +0100]  Little changes                                                             karasu      {d93d0b7}
+[2015-10-26 15:56:46 +0100]  ZFS dialog done                                                            karasu      {954865a}
+[2015-10-24 03:52:47 -0500]  :unamused:                                                             Dustin Falgout  {7169303}
+[2015-10-24 03:51:01 -0500]  quick/dirty fixes for comparing remote version with local version      Dustin Falgout  {11b5496}
+[2015-10-24 03:33:48 -0500]  update my local copy of precommit hook                                 Dustin Falgout  {fa8a8dc}
+[2015-10-24 03:31:45 -0500]  ups. Fix error in generate_update_info.py (cherry picked from commi..  Dustin Falgout  {41b4443}
+[2015-10-24 03:30:33 -0500]  Download update.info once when checking Internet version. (cherry p..  Dustin Falgout  {0b15850}
+[2015-10-24 03:28:53 -0500]  Forgotten import (cherry picked from commit ece3d1e)                   Dustin Falgout  {ab4e4d4}
+[2015-10-07 03:00:16 -0500]  Working on checking version (cherry picked from commit 59e90cf)            karasu      {6cee6ce}
+[2015-10-24 03:09:57 -0500]  Use time,perf_counter() for accurate bps calculation (Fixes antergo..  Dustin Falgout  {61e882e}
+[2015-10-24 03:09:57 -0500]  Use time.perf_counter() in download Use time,perf_counter() for acc..  Dustin Falgout  {2c47103}
+[2015-10-23 05:28:50 -0500]  looking into #429 (cherry picked from commit b3fb54d)                  Dustin Falgout  {78de954}
+[2015-10-23 05:28:50 -0500]  looking into #429                                                      Dustin Falgout  {b3fb54d}
+[2015-10-22 16:59:28 +0200]  playing around                                                             karasu      {6161a2e}
+[2015-10-22 16:36:24 +0200]  Added zfs screen (does nothing)                                            karasu      {2621b63}
+[2015-10-22 14:24:16 +0200]  Playing around with an special dialog for zfs (inspired in GhostBSD)       karasu      {6b69572}
+[2015-10-20 10:00:36 +0200]  Working on vconsole.conf creation                                          karasu      {4d8c6ec}
+[2015-10-17 10:23:31 +0200]  Working on rEFInd                                                          karasu      {34ccc63}
+[2015-10-16 21:17:38 +0200]  Working on rEFInd (but will have to wait 0.16.x)                           karasu      {db7515e}
+[2015-10-15 16:56:26 +0200]  Prepare Cnchi to be able to use rEFInd                                     karasu      {b588a1e}
+[2015-10-10 16:41:13 +0200]  Wait 20 seconds before slide transition                                    karasu      {fd06e8e}
+[2015-10-10 16:27:56 +0200]  Added bootstrap to easely translate slides text                            karasu      {8300b72}
+[2015-10-08 16:55:04 +0200]  err.output only shows what the command returns (but not the error)...      karasu      {9763a2f}
+[2015-10-08 15:48:30 +0200]  Added acpid to common                                                      karasu      {e161a06}
+[2015-10-08 15:36:43 +0200]  Trying to fix #433                                                         karasu      {7e304d6}
+[2015-10-08 13:08:45 +0200]  It seems there's a tab error here, but I can't find it (issue #437)        karasu      {68f4e1c}
+[2015-10-08 13:00:31 +0200]  Fixes issue #440                                                           karasu      {235f979}
+[2015-10-07 20:37:10 +0200]  ups. Fix error in generate_update_info.py                                  karasu      {ad838a3}
+[2015-10-07 20:32:01 +0200]  Removed logserver as we use bugsnag                                        karasu      {7fabd1b}
+[2015-10-07 16:40:16 +0200]  Download update.info once when checking Internet version.                  karasu      {0deb74a}
+[2015-10-07 16:30:24 +0200]  Update pre-commit hook                                                     karasu      {343c963}
+[2015-10-07 16:25:35 +0200]  Update pre-commit hook with update.info update                             karasu      {db2c795}
+[2015-10-07 16:19:28 +0200]  Forgotten import                                                           karasu      {ece3d1e}
+[2015-10-07 10:00:16 +0200]  Working on checking version                                                karasu      {59e90cf}
+[2015-10-07 09:28:41 +0200]  Fix pot file                                                               karasu      {03781e8}
+[2015-10-07 09:23:24 +0200]  Update translations (source pot file)                                      karasu      {ca553ab}
+[2015-10-07 09:03:05 +0200]  little modification in README                                              karasu      {9fdba1c}
+[2015-10-06 14:08:47 +0200]  As chroot is a static method we should be able to call it directly         karasu      {5f60d7d}
+[2015-10-05 16:42:36 +0200]  Minor changes                                                              karasu      {babd64f}
+[2015-10-04 22:04:47 +0200]  Fix typo                                                                   karasu      {d2ba3de}
+[2015-10-04 22:02:09 +0200]  Some strings were not translated                                           karasu      {1e32949}
+[2015-10-04 12:52:44 +0200]  Fix unmount_all_in_directory from auto_partition                           karasu      {c2c7dfd}
+[2015-10-04 11:57:04 +0200]  We do not have metadata files in our repo                                  karasu      {8b0e0e9}
+[2015-10-04 11:53:20 +0200]  Takes too long                                                             karasu      {17d49b9}
+[2015-10-04 11:40:12 +0200]  Update databases and mount special dirs BEFORE installing                  karasu      {9636a72}
+[2015-10-04 11:18:01 +0200]  Enable detection of linux-* named initrd. Fixes #442                       karasu      {3069d1e}
+[2015-10-04 11:17:07 +0200]  Merge pull request #443 from DanySK/master                                 karasu      {b5bd04e}
+[2015-10-04 10:35:39 +0200]  Fix typo                                                                   karasu      {9be3af6}
+[2015-10-04 10:23:39 +0200]  Can't write xz files to cache. Permission problem?                         karasu      {810095f}
+[2015-10-03 20:34:10 +0200]  Copy downloaded xz files to user's provided cache (if possible)            karasu      {cb50d47}
+[2015-10-03 15:09:48 +0200]  Enable detection of linux-* named initrd. Fixes #442                   Danilo Pianini  {83467ee}
+[2015-10-02 21:23:18 +0200]  Removed unused file                                                        karasu      {f0d066c}
+[2015-10-02 20:12:11 +0200]  Name is pacman.log                                                         karasu      {92a46db}
+[2015-10-02 18:55:08 +0200]  log alpm to /tmp/alpm.log                                                  karasu      {472d987}
+[2015-10-02 12:02:56 +0200]  Fix some comments. Need to find out where pacman error messages are..      karasu      {10d5067}
+[2015-10-02 10:55:03 +0200]  Log "command failed to execute correctly" as a debug message               karasu      {92c33e5}
+[2015-10-02 10:36:00 +0200]  Line comments where too long                                               karasu      {438d006}
+[2015-10-02 10:15:27 +0200]  Check that pacman_conf_dir is always created                               karasu      {a7c48ea}
+[2015-10-02 08:54:08 +0200]  Forgot hook                                                                karasu      {3169442}
+[2015-10-02 08:51:00 +0200]  Fix valuerror exception in advanced                                        karasu      {6623d2a}
+[2015-10-01 22:05:03 +0200]  Added sample code (gvfs-mount)                                             karasu      {07b275f}
+[2015-10-01 21:08:34 +0200]  We do not always have md5 info. If it's not present we must assume ..      karasu      {e33c3e4}
+[2015-10-01 20:41:39 +0200]  Prepare code to be able to specify multiple xz package cache direct..      karasu      {986e83a}
+[2015-09-30 19:45:15 +0200]  download_error when url is none (just in case is the last url we try)      karasu      {ce5834e}
+[2015-09-27 05:02:05 -0500]  Update packages.xml                                                    Dustin Falgout  {22b637e}
+[2015-09-27 05:00:32 -0500]  Update packages.xml                                                    Dustin Falgout  {efb91e4}
+[2015-09-26 21:17:23 +0200]  Merge branch 'master' of github.com:Antergos/Cnchi                         karasu      {bf8dd82}
+[2015-09-26 21:16:28 +0200]  Fix for issue #436                                                         karasu      {9cd7d03}
+[2015-09-26 19:55:40 +0200]  Merge pull request #435 from fionera/master                                karasu      {b210244}
+[2015-09-26 17:57:43 +0200]  Added "device"                                                         Tim Windelschmidt {3da2393}
+[2015-09-26 12:46:37 +0200]  Backport hardware module changes to solve issue #431                       karasu      {0cab130}
+[2015-09-25 23:07:10 -0500]  missed this                                                            Dustin Falgout  {fcae144}
+[2015-09-25 22:38:39 -0500]  backport fixes for metalinks and vbox detection from dev branch (ch..  Dustin Falgout  {e083d15}
+[2015-09-25 22:21:18 -0500]  send install result to build server                                    Dustin Falgout  {8dbcdac}
+[2015-09-24 20:43:01 +0200]  Fix bug in warning message                                                 karasu      {60dcc0e}
+[2015-09-21 23:56:00 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {d745dfb}
+[2015-09-21 23:54:37 -0500]  continue trying other mirrors after we catch an exception. fixes #426  Dustin Falgout  {b505188}
+[2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors (cherry picked from commit 75..  Dustin Falgout  {4f80ead}
+[2015-09-21 23:35:10 -0500]  port postinstall changes from stable                                   Dustin Falgout  {2eee631}
+[2015-09-21 23:20:34 -0500]  fix metalink url sorting (needs testing). fix vbox not properly det..  Dustin Falgout  {0ae609d}
+[2015-09-21 09:19:58 -0500]  working on metalinks                                                   Dustin Falgout  {10fc11e}
+[2015-09-21 07:40:46 -0500]  oops :grimacing:                                                       Dustin Falgout  {bfa404e}
+[2015-09-21 07:37:19 -0500]  continue trying other mirrors after we catch an exception. fixes an..  Dustin Falgout  {4d6c44f}
+[2015-09-21 07:09:19 -0500]  Made a few adjustments to rankmirrors                                  Dustin Falgout  {754e727}
+[2015-09-19 20:30:12 +0200]  Set lightdm greeter in Cnchi                                               karasu      {bb059a6}
+[2015-09-19 19:38:09 +0200]  Check device in mount line                                                 karasu      {682285c}
+[2015-09-19 18:46:00 +0200]  removed unnecessary if                                                     karasu      {8621389}
+[2015-09-19 18:44:40 +0200]  Missing _()                                                                karasu      {2fa203a}
+[2015-09-19 18:37:25 +0200]  Fix name                                                                   karasu      {f85f2b8}
+[2015-09-19 18:30:29 +0200]  Better names for functions                                                 karasu      {38c8240}
+[2015-09-19 18:00:10 +0200]  Do not delete lvm from other devices                                       karasu      {0d818df}
+[2015-09-19 17:57:21 +0200]  Do not delete lvm from other devices                                       karasu      {99ecb90}
+[2015-09-18 15:29:02 -0500]  dont send alpm warning level messages to bugsnag (cherry picked fro..  Dustin Falgout  {5dab4d4}
+[2015-09-18 15:25:48 -0500]  dont send alpm warning level messages to bugsnag                       Dustin Falgout  {ee2c6f8}
+[2015-09-18 19:52:30 +0200]  Use systemd-boot (pka gummiboot)                                           karasu      {77fc043}
+[2015-09-18 19:41:41 +0200]  Do not overwrite lvm in advanced                                           karasu      {9958509}
+[2015-09-15 18:09:10 +0200]  If something is mounted, unmount it (warn the user but do not ask p..      karasu      {aa12269}
+[2015-09-15 17:55:59 +0200]  Show TB in advanced                                                        karasu      {52ac9d3}
+[2015-09-14 23:13:06 +0200]  Trying to fix get_toplevel error                                           karasu      {4b10c4d}
+[2015-09-14 20:24:14 +0200]  Port postinstall.sh stable changes                                         karasu      {42df27b}
+[2015-09-14 18:32:25 +0200]  This left forward button pressed.                                          karasu      {1973cca}
+[2015-09-13 20:25:36 +0200]  Working on fixing hardware module (pre-install, post-install and co..      karasu      {aa330ce}
+[2015-09-13 19:18:41 +0200]  Ask for a boot partition when using f2fs as root                           karasu      {8329c5e}
+[2015-09-13 17:54:16 +0200]  Show which button is selected in welcome screen                            karasu      {5c38e02}
+[2015-09-13 01:00:54 -0500]  fix it for real this time                                              Dustin Falgout  {3baba93}
+[2015-09-12 20:43:41 -0500]  hopefully this will fix it                                             Dustin Falgout  {ebc29bc}
+[2015-09-12 18:53:12 +0200]  Formatting and partitioning makes gui nearly freeze. Makes no sense..      karasu      {cd5fc90}
+[2015-09-12 18:45:05 +0200]  Show pulse bar while doing auto partition process                          karasu      {cf90cf9}
+[2015-09-11 21:24:33 -0500]  go back to previous method for now                                     Dustin Falgout  {8a8cd6d}
+[2015-09-11 20:13:22 -0500]  not sure why it isnt working. it works fine running the commands ma..  Dustin Falgout  {100f564}
+[2015-09-11 18:48:10 -0500]  fix version again :grimacing:                                          Dustin Falgout  {c8045e6}
+[2015-09-11 18:47:36 -0500]  fix version                                                            Dustin Falgout  {618514b}
+[2015-09-11 18:46:35 -0500]  dont start container until after os-release files are copied.          Dustin Falgout  {de945fa}
+[2015-09-11 20:37:59 +0200]  Fix queue_event in auto_partition                                          karasu      {dda8e5f}
+[2015-09-11 20:30:52 +0200]  Not sure about this                                                        karasu      {3b49276}
+[2015-09-11 20:21:00 +0200]  No parameter is required                                                   karasu      {d44e16f}
+[2015-09-11 20:19:15 +0200]  Playing with toplevel                                                      karasu      {3b2a47d}
+[2015-09-11 19:24:06 +0200]  Try to at least, show a pulse progress bar when auto partitioning          karasu      {08b16da}
+[2015-09-11 14:39:37 +0200]  Fixes issue #418 https://github.com/Antergos/Cnchi/issues/418              karasu      {ec59781}
+[2015-09-11 13:36:28 +0200]  Use -F in advanced (in automatic it was already being used) issue #..      karasu      {99b6c61}
+[2015-09-11 13:09:22 +0200]  why * 8 ?                                                                  karasu      {3dc5a26}
+[2015-09-11 12:50:36 +0200]  There's something wrong with bps                                           karasu      {39229b3}
+[2015-09-11 05:01:06 -0500]  Merge remote-tracking branch 'stable/master' into stable               Dustin Falgout  {b7c712e}
+[2015-09-11 04:49:27 -0500]  redirect output to logfile only once to prevent recursion (cherry p..  Dustin Falgout  {0971044}
+[2015-09-11 04:34:12 -0500]  fix set-settings issue with dbus-launch (cherry picked from commit ..  Dustin Falgout  {e36f4a1}
+[2015-09-11 04:49:27 -0500]  redirect output to logfile only once to prevent recursion              Dustin Falgout  {0df7c82}
+[2015-09-11 04:36:12 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {c81b06c}
+[2015-09-11 11:35:59 +0200]  Run postinstall script with /dev binded                                    karasu      {3d666a0}
+[2015-09-11 04:34:12 -0500]  fix set-settings issue with dbus-launch                                Dustin Falgout  {9bfc2da}
+[2015-09-11 11:23:07 +0200]  Do not mount/umount /dev constantly (just do it at the beginning an..      karasu      {53c5283}
+[2015-09-10 22:40:27 +0200]  Do not leave an empty if in set-settings                                   karasu      {28521d6}
+[2015-09-10 22:25:37 +0200]  Do not leave an if empty                                                   karasu      {d91a234}
+[2015-09-10 22:07:12 +0200]  Still don't know what's happening                                          karasu      {d44a574}
+[2015-09-10 00:18:15 +0200]  Can't find what's wrong                                                    karasu      {2f0b474}
+[2015-09-09 23:13:03 +0200]  Remove wrong mkdir. This solves nothing.                                   karasu      {e4712ad}
+[2015-09-09 22:48:30 +0200]  Log postinstall parameters                                                 karasu      {2ad5a94}
+[2015-09-09 22:22:10 +0200]  What the hell is wrong with this? Vanilla Gnome?                           karasu      {b85190c}
+[2015-09-09 21:26:45 +0200]  Try to fix postinstall script in Gnome.                                    karasu      {f6e8988}
+[2015-09-09 18:25:07 +0200]  Give a minute between connection tries (hoping that connection will..      karasu      {7bea1d4}
+[2015-09-09 14:17:55 +0200]  Update readme                                                              karasu      {531ab2d}
+[2015-09-08 17:26:06 +0200]  Use systemd-boot (previously called gummiboot)                             karasu      {dd11f62}
+[2015-09-07 22:52:06 +0200]  Fixed in https://github.com/Antergos/Cnchi/issues/411                      karasu      {c0d9f26}
+[2015-09-07 22:37:27 +0200]  Fixes issue #409                                                           karasu      {298ab15}
+[2015-09-07 21:39:14 +0200]  Fix version number                                                         karasu      {d5cae13}
+[2015-09-07 21:38:27 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {76ae003}
+[2015-09-07 21:37:38 +0200]  Fixes issue #410 but needs testing (do not merge to stable yet)            karasu      {35f6553}
+[2015-09-07 12:32:20 -0500]  fix pot file header                                                    Dustin Falgout  {671e7f8}
+[2015-09-07 12:29:47 -0500]  fix pot file header                                                    Dustin Falgout  {64405d2}
+[2015-09-07 19:23:04 +0200]  typos                                                                      karasu      {f8428f8}
+[2015-09-07 18:44:47 +0200]  Merge pull request #407 from Wyn10/master                                  karasu      {0f6c2af}
+[2015-09-07 00:15:22 -0400]  Spelling error.                                                              Wyn       {0284442}
+[2015-09-06 17:08:29 +0200]  6.5GB is not enough when installing KDE plus all features.                 karasu      {d5784b5}
+[2015-09-06 12:37:00 +0200]  Fix kde language pack installation (pt_BR was failing)                     karasu      {6008f1b}
+[2015-09-06 12:05:43 +0200]  Update cnchi.pot file                                                      karasu      {0409dde}
+[2015-09-06 01:27:03 -0500]  move logging logging related classes to their own module. don't att..  Dustin Falgout  {7586224}
+[2015-09-06 01:06:23 -0500]  move logging logging related classes to their own module. don't att..  Dustin Falgout  {63671ff}
+[2015-09-06 07:39:15 +0200]  Added compile_all helper script                                            karasu      {b772d34}
+[2015-09-05 20:11:37 -0500]  if we dont have an install id when attempting to send an error to b..  Dustin Falgout  {4a2e784}
+[2015-09-05 20:11:37 -0500]  if we dont have an install id when attempting to send an error to b..  Dustin Falgout  {112a121}
+[2015-09-05 19:52:28 -0500]  save change log state for v0.12.0 release announcement, update pre-..  Dustin Falgout  {e10b76a}
+[2015-09-05 19:41:28 -0500]  fix readme. first update to pre-commit hook, one more will follow s..  Dustin Falgout  {97f490a}
+[2015-09-05 21:05:07 +0200]  New dev version                                                            karasu      {0369d14}
+[2015-09-05 21:04:27 +0200]  Updated cnchi.pot                                                          karasu      {ded539d}
+[2015-09-05 20:55:44 +0200]  Updated pot file                                                           karasu      {bb8e9db}
+[2015-09-05 13:05:26 +0200]  Update run                                                                 karasu      {9ee423c}
+[2015-09-05 13:04:56 +0200]  Update requirements.txt                                                    karasu      {c3f17cf}
+[2015-09-05 13:01:47 +0200]  Fix release version info                                                   karasu      {fcd39b3}
+[2015-09-05 13:01:12 +0200]  Fix README                                                                 karasu      {e8f5838}
+[2015-09-05 12:47:42 +0200]  Merge branch 'master' of ../cnchi-dev                                      karasu      {abdcff2}
+[2015-09-04 21:40:49 +0200]  Set requests timeout to one minute                                         karasu      {30cdc4f}
+[2015-09-04 20:50:20 +0200]  Fix typo                                                                   karasu      {e9d662b}
+[2015-09-04 20:45:52 +0200]  Add bluetooth for MATE                                                     karasu      {3674028}
+[2015-09-04 20:02:51 +0200]  forgot about the pre-commit hook (again)                                   karasu      {f9acdad}
+[2015-09-04 20:01:02 +0200]  Fix uk in vconsole.conf. Fixes issue #401                                  karasu      {c8d24f7}
+[2015-09-04 16:11:17 +0200]  Store bugsnag error to be able to log it later                             karasu      {6b57724}
+[2015-09-04 16:06:33 +0200]  Fix for when python-bugsnag is not installed                               karasu      {46b7821}
+[2015-09-04 08:45:19 -0500]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {80d4ec2}
+[2015-09-04 08:54:22 -0500]  fixes double logging (hopefully) (cherry picked from commit c0eb26d)   Dustin Falgout  {e4c182a}
+[2015-09-04 08:45:19 -0500]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {ddf0016}
+[2015-09-04 08:38:52 -0500]  fixes double logging (hopefully)                                       Dustin Falgout  {c0eb26d}
+[2015-09-04 15:26:30 +0200]  Do not crash if /etc/raven.conf is not present                             karasu      {0f03f01}
+[2015-09-04 05:42:49 -0500]  use custom http headerin install_id request (cherry picked from com..  Dustin Falgout  {60e8277}
+[2015-09-04 05:38:30 -0500]  use custom http headerin install_id request                            Dustin Falgout  {99dca86}
+[2015-09-04 00:37:15 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {f8e9c25}
+[2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {a0f831c}
+[2015-09-04 00:27:32 -0500]  changes to bugsnag logging setup to prevent spam bots from bumping ..  Dustin Falgout  {073d975}
+[2015-09-03 19:51:10 +0200]  REALLY fix packages.xml                                                    karasu      {837dcce}
+[2015-09-03 19:18:15 +0200]  Fixed packages.xml                                                         karasu      {e4161da}
+[2015-09-03 18:58:04 +0200]  Merge branch 'master' of ../cnchi-stable                                   karasu      {7d31f66}
+[2015-09-02 13:31:06 +0200]  Merge pull request #398 from akshar26/master                               karasu      {0bf1e77}
+[2015-09-02 13:19:22 +0530]  Correct speed format                                                      akshar26     {b080a50}
+[2015-09-02 07:36:50 +0200]  Merge pull request #397 from akshar26/akshar26-patch-1                     karasu      {d07eb86}
+[2015-09-02 08:43:01 +0530]  Merge pull request #1 from akshar26/akshar26-patch-1                      akshar26     {d83791e}
+[2015-09-02 08:42:00 +0530]  Correct speed format                                                      akshar26     {375d381}
+[2015-09-01 17:58:24 -0500]  bump version to a multiple of 10 so a package will be built            Dustin Falgout  {eb19588}
+[2015-09-01 20:00:38 +0200]  Fix class id in all hardware files (it's class_id subclass_id), and..      karasu      {a2cfbd5}
+[2015-08-31 23:55:48 +0200]  Device classes are neither well used nor well defined in hardware m..      karasu      {2881d5b}
+[2015-08-31 21:27:50 +0200]  Some little changes in hardware module                                     karasu      {318edd2}
+[2015-08-31 14:20:00 +0200]  Fix typo                                                                   karasu      {a8a3d0c}
+[2015-08-31 11:26:31 +0200]  Added log messages to create_fs                                            karasu      {008787f}
+[2015-08-31 11:15:51 +0200]  Fixes issue #365                                                           karasu      {b9aac7f}
+[2015-08-30 20:51:23 +0200]  Do not timeout at five minutes, it's too much. (I know ten seconds ..      karasu      {0fac959}
+[2015-08-30 20:35:51 +0200]  /tmp/pacman.conf is used after (installation)                              karasu      {abebad1}
+[2015-08-30 20:29:11 +0200]  Fix import                                                                 karasu      {16e23b2}
+[2015-08-30 20:27:06 +0200]  alpm needs root privileges                                                 karasu      {875b8e7}
+[2015-08-30 20:23:48 +0200]  There's an error when initialising alpm for the second time.               karasu      {28de19b}
+[2015-08-30 20:14:31 +0200]  Do not use /install before partitioning when trying to create metal..      karasu      {183b8b1}
+[2015-08-30 20:07:14 +0200]  Calculates metalinks list before partitioning                              karasu      {4cf1e77}
+[2015-08-30 17:44:21 +0200]  More code cleaning                                                         karasu      {89f6ca8}
+[2015-08-30 16:47:22 +0200]  Some code cleaning (pycharm)                                               karasu      {b2c628f}
+[2015-08-30 13:46:28 +0200]  Remove leafpad from openbox                                                karasu      {4c9f617}
+[2015-08-30 13:45:31 +0200]  Use mousepad instead of leafpad                                            karasu      {490f895}
+[2015-08-30 13:44:29 +0200]  Merge pull request #395 from Wyn10/patch-3                                 karasu      {29afca5}
+[2015-08-30 03:39:14 +0200]  Packages are now selected in select_packages.py (before they were s..      karasu      {1bb0210}
+[2015-08-30 03:35:42 +0200]  Prettier logging (or not)                                                  karasu      {aa39179}
+[2015-08-30 03:34:08 +0200]  Fix logging in select_packages                                             karasu      {7964c4f}
+[2015-08-30 03:23:06 +0200]  Need root permisions to update pacman databases                            karasu      {19920a7}
+[2015-08-30 03:19:37 +0200]  Fix refresh_pacman_databases                                               karasu      {dcb8028}
+[2015-08-30 03:12:54 +0200]  BROKEN version. I'm in the middle of something... (get package list..      karasu      {6b873f1}
+[2015-08-29 09:18:32 +0200]  Cnchi was closing both instances when another one was detected. Als..      karasu      {25577d4}
+[2015-08-28 23:13:57 -0400]  Update packages.xml                                                          Wyn       {3b4943f}
+[2015-08-29 00:13:33 +0200]  Merge pull request #392 from Wyn10/patch-6                                 karasu      {a012c26}
+[2015-08-28 20:59:20 +0200]  It's dolphin now.                                                          karasu      {3841dc6}
+[2015-08-28 14:21:21 -0400]  Update packages.xml                                                          Wyn       {a4f0363}
+[2015-08-28 11:32:26 +0200]  Add nm-connection-editor to KDE (just)                                     karasu      {3fc6ff7}
+[2015-08-27 14:00:05 +0200]  Fix typo                                                                   karasu      {e192854}
+[2015-08-27 13:59:13 +0200]  I didn't save the file...                                                  karasu      {c4a2813}
+[2015-08-27 13:58:07 +0200]  chromium-pepper-flash is installed no matter what ¿?                       karasu      {65bfc07}
+[2015-08-27 13:33:07 +0200]  Remove duplicates in conflicts list                                        karasu      {bbee8b6}
+[2015-08-27 12:54:08 +0200]  Trying to fix installation of chromium-pepper-flash                        karasu      {d35da27}
+[2015-08-26 19:21:46 +0200]  Fix warning message (imho it looks better this way)                        karasu      {eeeaab2}
+[2015-08-26 19:16:43 +0200]  Change some logging messages from warning to debug (Cnchi can conti..      karasu      {fd067f7}
+[2015-08-26 13:20:17 +0200]  Give full path to lspci                                                    karasu      {32233c7}
+[2015-08-26 13:16:52 +0200]  better control if lsusb does not work in hardware module                   karasu      {0fd004d}
+[2015-08-26 11:32:38 +0200]  Add ffmpegthumbnailer to all desktops                                      karasu      {b95426c}
+[2015-08-26 11:15:41 +0200]  Fixes #391                                                                 karasu      {fe000c4}
+[2015-08-26 08:41:10 +0200]  If firefox is selected it takes precedence over chromium                   karasu      {eeb2bff}
+[2015-08-26 08:25:41 +0200]  Added firefox language package. Added "desktops" field to packages...      karasu      {e0af7a0}
+[2015-08-25 18:06:13 +0200]  Fix typo                                                                   karasu      {ae5a277}
+[2015-08-25 18:04:36 +0200]  Add game support feature                                                   karasu      {97d3d53}
+[2015-08-25 17:51:49 +0200]  Changed Gnome to GNOME                                                     karasu      {fb942ed}
+[2015-08-25 17:42:57 +0200]  More logging fixes                                                         karasu      {3b29200}
+[2015-08-25 14:34:10 +0200]  Another BIG typo in download.py                                            karasu      {775f051}
+[2015-08-25 14:26:22 +0200]  Fix package_names error in download.py                                     karasu      {a918a3a}
+[2015-08-25 13:54:56 +0200]  Can't log messages in ContextFilter                                        karasu      {2a8e787}
+[2015-08-25 13:37:32 +0200]  Another typo                                                               karasu      {7ea0678}
+[2015-08-25 13:36:44 +0200]  And another typo                                                           karasu      {4ca33b7}
+[2015-08-25 12:28:00 +0200]  And another typo...                                                        karasu      {4de80f2}
+[2015-08-25 12:26:15 +0200]  Typo                                                                       karasu      {5988424}
+[2015-08-25 12:23:41 +0200]  Preparing to be able to calculate package list BEFORE formatting. I..      karasu      {d0046ce}
+[2015-08-25 12:02:38 +0200]  Preparing to be able to calculate package list before formatting           karasu      {309aeba}
+[2015-08-25 09:27:28 +0200]  More logging changes...                                                    karasu      {ba96c91}
+[2015-08-25 08:47:57 +0200]  More logging work donw                                                     karasu      {92ca71f}
+[2015-08-24 20:44:04 -0500]  Merge pull request #388 from Wyn10/patch-5                             Dustin Falgout  {bdcf21a}
+[2015-08-24 19:20:09 -0400]  Update packages.xml                                                          Wyn       {e947b08}
+[2015-08-24 18:29:48 -0400]  Update packages.xml                                                          Wyn       {ead1790}
+[2015-08-25 00:27:03 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {4ede3bd}
+[2015-08-25 00:24:22 +0200]  Merge pull request #383 from Wyn10/patch-4                                 karasu      {efad87a}
+[2015-08-24 22:26:01 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {0ede370}
+[2015-08-24 21:37:33 +0200]  More logging changes                                                       karasu      {ae06fd0}
+[2015-08-24 13:52:43 -0400]  Update packages.xml                                                          Wyn       {5059309}
+[2015-08-23 18:18:52 -0500]  Merge pull request #381 from Wyn10/patch-2                             Dustin Falgout  {83c46f5}
+[2015-08-23 18:18:21 -0500]  Merge pull request #382 from Wyn10/patch-3                             Dustin Falgout  {0f71a0c}
+[2015-08-23 23:49:19 +0200]  More logging changes                                                       karasu      {e4e38f0}
+[2015-08-23 16:43:24 -0400]  Update packages.xml                                                          Wyn       {6dd181e}
+[2015-08-23 16:42:13 -0400]  Update packages.xml                                                          Wyn       {6e3e0d2}
+[2015-08-23 16:36:01 -0400]  Update packages.xml                                                          Wyn       {07d71af}
+[2015-08-23 05:29:59 -0500]  fix erroneous version bumps                                            Dustin Falgout  {d8e9dbb}
+[2015-08-23 05:21:36 -0500]  fix packages.xml url. add release_stage global variable. (cherry-pi..  Dustin Falgout  {32f91c7}
+[2015-08-23 05:11:32 -0500]  fix packages.xml url. add release_stage global variable.               Dustin Falgout  {b13a5a8}
+[2015-08-22 12:10:32 -0500]  fix bug I introduced in the last commit :grimacing: (cherry picked ..  Dustin Falgout  {9d8bf98}
+[2015-08-22 12:09:50 -0500]  fix bug I introduced in the last commit :grimacing:                    Dustin Falgout  {7addaac}
+[2015-08-22 09:04:03 -0500]  change the field names so its easier to filter in bugsnag dashboard..  Dustin Falgout  {c92eb3d}
+[2015-08-22 09:02:39 -0500]  change the field names so its easier to filter in bugsnag dashboard    Dustin Falgout  {b6b88c4}
+[2015-08-22 02:30:32 -0500]  oops :grimacing:                                                       Dustin Falgout  {928303f}
+[2015-08-22 02:29:08 -0500]  oops :grimacing:                                                       Dustin Falgout  {dd57eff}
+[2015-08-22 01:23:27 -0500]  add try/except just in case (cherry picked from commit fb6ba18)        Dustin Falgout  {81913b5}
+[2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging (cherry p..  Dustin Falgout  {f465e15}
+[2015-08-22 01:23:27 -0500]  add try/except just in case                                            Dustin Falgout  {fb6ba18}
+[2015-08-22 01:20:15 -0500]  get installation identifier from build server for logging              Dustin Falgout  {ef00305}
+[2015-08-21 13:29:32 +0200]  Fighting with issue #378, a lot of changes are needed! :grin:              karasu      {45a1d7a}
+[2015-08-20 14:39:59 +0200]  Use fat as fat32                                                           karasu      {3c2cf84}
+[2015-08-20 14:37:35 +0200]  Use fat as fat32                                                           karasu      {9b37dc4}
+[2015-08-20 14:20:56 +0200]  Forgot if check                                                            karasu      {af2762d}
+[2015-08-20 14:19:06 +0200]  Disable graphics_feature until conflict between lib32-nvidia-libgl ..      karasu      {f61c544}
+[2015-08-20 11:17:50 +0200]  unmounting should not issue a warning                                      karasu      {7bb6db8}
+[2015-08-20 11:17:06 +0200]  Unmounting should not issue a warning                                      karasu      {8599e2a}
+[2015-08-20 11:13:13 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {6b4db62}
+[2015-08-20 11:00:19 +0200]  Do not issue a warning if user doesn't want to install a bootloader        karasu      {bd19eb7}
+[2015-08-20 10:35:32 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {2b055f0}
+[2015-08-20 10:23:23 +0200]  Fix MATE (no mate-meda-pulseaudio package anymore, just mate-media)        karasu      {2c99384}
+[2015-08-20 10:03:43 +0200]  Typo                                                                       karasu      {d446aee}
+[2015-08-20 09:59:58 +0200]  Catch finalize_changes error (advanced)                                    karasu      {410a8be}
+[2015-08-20 09:19:09 +0200]  Do not issue the same warning three times in auto_partition                karasu      {888b57c}
+[2015-08-20 09:07:47 +0200]  Use extend as objects_selected is a list in hardware module                karasu      {8bca69b}
+[2015-08-20 07:08:46 +0200]  Merge branch 'master' of /data/antergos/cnchi-stable                       karasu      {d94eb37}
+[2015-08-20 07:05:31 +0200]  Do not call del_pages (it does nothing anyway)                             karasu      {bb82556}
+[2015-08-20 06:29:32 +0200]  Merge branch 'master' of cnchi-stable                                      karasu      {f5c7201}
+[2015-08-20 06:19:50 +0200]  Remove extra chmod (makedirs already sets permissions)                     karasu      {2e9530a}
+[2015-08-19 21:30:28 -0500]  forgot one of the nvidia modules (cherry-picked from cnchi-dev)        Dustin Falgout  {0390171}
+[2015-08-19 21:30:28 -0500]  forgot one of the nvidia modules                                       Dustin Falgout  {475a8ad}
+[2015-08-19 14:37:00 -0500]  fix bugsnag handler (cherry picked from commit e218c59)                Dustin Falgout  {565f034}
+[2015-08-19 14:35:05 -0500]  fix bugsnag handler                                                    Dustin Falgout  {e218c59}
+[2015-08-19 06:15:42 -0500]  remove `libgl` from nvidia packages as it appears that it does not ..  Dustin Falgout  {f19a0e1}
+[2015-08-19 06:15:42 -0500]  remove `libgl` from nvidia packages as it appears that it does not ..  Dustin Falgout  {5d957b8}
+[2015-08-19 05:46:58 -0500]  update readme                                                          Dustin Falgout  {f60bbdb}
+[2015-08-19 05:37:09 -0500]  Merge remote-tracking branch 'stable/master' into 0.11.x               Dustin Falgout  {b7c34b2}
+[2015-08-19 05:25:36 -0500]  update precommit hook--don't forget to update your local copies!       Dustin Falgout  {7ea5aee}
+[2015-08-19 05:04:29 -0500]  fix filepath to bugsnag api key                                        Dustin Falgout  {63b0dbb}
+[2015-08-19 02:35:38 +0200]  Fixing Enlightenment postinstall                                           karasu      {28d0af6}
+[2015-08-19 00:57:13 +0200]  Rage is in our repo ;)                                                     karasu      {6a0c730}
+[2015-08-18 21:37:18 +0200]  Use new antergos-kde-setup and set correct keyboard layout in Enlig..      karasu      {86d953e}
+[2015-08-18 14:44:26 +0200]  connman must be enabled                                                    karasu      {c616df2}
+[2015-08-18 12:34:08 +0200]  Cnchi will use bugsnag                                                     karasu      {21cdd8f}
+[2015-08-18 12:32:37 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into 0.11.x        karasu      {d568278}
+[2015-08-18 01:19:49 +0200]  Do not use sentry when testing Cnchi 0.11                                  karasu      {3f964f1}
+[2015-08-18 01:14:28 +0200]  Add enlightenment desktop                                                  karasu      {211e8f1}
+[2015-08-17 10:33:06 +0200]  Merge branch 'master' of ../cnchi-dev into split                           karasu      {0a6dc43}
+[2015-08-15 17:00:42 +0200]  Merge branch 'master' of ../cnchi-dev into split                           karasu      {f798564}
+[2015-08-14 17:44:44 +0200]  Added enlightenment icon                                                   karasu      {f49dc7c}
+[2015-08-14 16:52:36 +0200]  Prepare Cnchi to use new antergos-DE-setup packages                        karasu      {531631f}
+[2015-08-14 14:21:56 +0200]  Remove lxde (was never finished). The target should be lxqt                karasu      {2b79cdb}
+[2015-08-14 14:09:03 +0200]  Added copyright notice to set-settings                                     karasu      {d1a6b67}
+[2015-08-13 19:21:10 +0200]  Merge branch 'split' of github.com:lots0logs/cnchi-dev into split          karasu      {7530368}
+[2015-08-13 12:16:21 -0500]  Update README.md                                                       Dustin Falgout  {9c2ea2e}
+[2015-08-13 19:15:45 +0200]  Working on Enlightenment DE                                                karasu      {23a89db}
+[2015-08-13 12:14:16 -0500]  Update README.md                                                       Dustin Falgout  {a4c2d48}
+[2015-08-12 17:29:28 +0200]  This is going to be next Cnchi 0.12                                        karasu      {6950fd0}
+[2015-08-11 15:11:19 +0200]  Sort devices when showing them in summary (comming from automatic)...      karasu      {e148274}
+[2015-08-11 14:35:31 +0200]  Going back as it were                                                      karasu      {3df58bd}
+[2015-08-11 14:31:50 +0200]  Download_requests has problems when using session                          karasu      {5d3e885}
+[2015-08-11 13:57:28 +0200]  Hide features summary if no feature has been selected                      karasu      {335ff31}
+[2015-08-11 13:46:22 +0200]  wrong params                                                               karasu      {98be9d0}
+[2015-08-11 13:43:44 +0200]  Do not change button as it changes its size (do not know why). Show..      karasu      {fe4880d}
+[2015-08-11 12:45:08 +0200]  Forward button is not shown correctly                                      karasu      {be8d356}
+[2015-08-11 12:43:32 +0200]  stream=True is needed!                                                     karasu      {fd03342}
+[2015-08-11 12:14:21 +0200]  Fix warning in download_requests using session                             karasu      {953d460}
+[2015-08-11 11:41:17 +0200]  Use true/false instead of 'yes'/'no'                                       karasu      {bb46f0d}
+[2015-08-11 11:29:48 +0200]  Typo                                                                       karasu      {d56e867}
+[2015-08-11 10:15:25 +0200]  alternate_package_list fix                                                 karasu      {53e24c6}
+[2015-08-11 10:05:54 +0200]  Use misc.raised_privileges with format and install                         karasu      {179585a}
+[2015-08-11 09:50:27 +0200]  Fix text                                                                   karasu      {8e582bf}
+[2015-08-11 09:47:43 +0200]  remove trailing \n                                                         karasu      {19804ba}
+[2015-08-11 09:44:37 +0200]  Make more room in summary (get rid off the subtitle)                       karasu      {392c60a}
+[2015-08-11 09:37:59 +0200]  Added gtkgrid to summary.ui                                                karasu      {dfb125d}
+[2015-08-11 09:11:53 +0200]  Not all devices are mounted                                                karasu      {0a2502e}
+[2015-08-11 09:08:23 +0200]  Try to show mount points correctly                                         karasu      {fc1c3ca}
+[2015-08-11 08:58:38 +0200]  Fix page and fix mount message                                             karasu      {72be0bf}
+[2015-08-11 08:53:59 +0200]  add DEST_DIR variable                                                      karasu      {fd2891b}
+[2015-08-11 08:50:33 +0200]  Add log message when not using rank mirrors                                karasu      {a336771}
+[2015-08-11 08:48:14 +0200]  Missing import                                                             karasu      {8b169eb}
+[2015-08-11 08:46:23 +0200]  Added option to disable rank mirrors                                       karasu      {6f2509f}
+[2015-08-11 08:40:52 +0200]  Fix page name                                                              karasu      {44a0fce}
+[2015-08-11 08:35:47 +0200]  Fix summary testing                                                        karasu      {fb1d985}
+[2015-08-11 08:32:02 +0200]  Trying to fix summary                                                      karasu      {cacb6e9}
+[2015-08-11 08:10:41 +0200]  typo                                                                       karasu      {fafa989}
+[2015-08-11 08:08:54 +0200]  advanced and automatic give a list of changes to summary                   karasu      {3864b23}
+[2015-08-11 00:04:32 +0200]  Call summary screen before user_info screen                                karasu      {136cb04}
+[2015-08-10 21:26:58 +0200]  Need to test this method before further developing                         karasu      {01d257f}
+[2015-08-10 20:55:20 +0200]  More work done. It's a new approach xD                                     karasu      {9eab767}
+[2015-08-10 19:52:38 +0200]  Working on splitting formating and installing                              karasu      {097d0b4}

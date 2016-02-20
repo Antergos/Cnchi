@@ -554,7 +554,7 @@ class AutoPartition(object):
                 # new_root_part_size can't be bigger than part_sizes['root'] !
                 # this could happen if new_root_part_size == MIN_ROOT_SIZE but
                 # our harddisk is smaller (detected using vbox)
-                # Should we fail here or install without a separated /home partition? 
+                # Should we fail here or install without a separated /home partition?
                 logging.warning("There's not enough free space to have a separate /home partition")
                 self.home = False
                 part_sizes['home'] = 0
@@ -639,7 +639,7 @@ class AutoPartition(object):
 
             # Create fresh GPT
             wrapper.sgdisk("clear", device)
-            wrapper.parted_mklabel(device_path, "gpt")
+            wrapper.parted_mklabel(device, "gpt")
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             err_msg = "Error informing the kernel of the partition change."
