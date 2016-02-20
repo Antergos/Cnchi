@@ -1,3 +1,4 @@
+[2016-02-18 23:03:50 -0600]  fix flash icon and iso version detection                               Dustin Falgout  {a812a0a}
 [2016-02-18 22:56:48 -0600]  dont display minor version part in title                               Dustin Falgout  {8f848c2}
 [2016-02-18 14:14:17 -0600]  add issue template                                                     Dustin Falgout  {6486156}
 [2016-02-17 21:58:23 +0100]  resume doesn't seem to work in zfs                                         karasu      {e29e344}

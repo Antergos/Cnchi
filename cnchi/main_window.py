@@ -227,15 +227,12 @@ class MainWindow(Gtk.ApplicationWindow):
         nil, major, minor = info.CNCHI_VERSION.split('.')
         name = 'Cnchi '
         title_string = "{0} {1}.{2}".format(name, nil, major)
-        tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
-        custom_title_widget = Gtk.Label.new(title_string)
-        custom_title_widget.get_style_context().add_class('title')
-        custom_title_widget.get_style_context().add_class('label')
-        custom_title_widget.set_tooltip_text(tooltip_string)
+        self.tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
         self.set_title(title_string)
-        self.header.set_custom_title(custom_title_widget)
+        self.header.set_title(title_string)
         self.header.set_subtitle(_("Antergos Installer"))
         self.header.set_show_close_button(True)
+        self.header.forall(self.header_for_all_callback, self.tooltip_string)
 
         self.set_geometry()
 
@@ -293,6 +290,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_focus(None)
 
         misc.gtk_refresh()
+
+    def header_for_all_callback(self, widget, data):
+        if isinstance(widget, Gtk.Box):
+            widget.forall(self.header_for_all_callback, self.tooltip_string)
+            return
+        if widget.get_style_context().has_class('title'):
+            logging.info('fired!')
+            widget.set_tooltip_text(self.tooltip_string)
 
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
