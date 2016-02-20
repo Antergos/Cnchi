@@ -54,7 +54,9 @@ and then raise an InstallError exception.
 MAX_ROOT_SIZE = 30000
 
 # KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
-MIN_ROOT_SIZE = 10000
+# Vbox, by default, creates disks of 8GB. We should limit to this so vbox installations do not fail
+# (if installing kde and not enough free space is available is their fault, not ours)
+MIN_ROOT_SIZE = 8000
 
 
 def printk(enable):
@@ -541,13 +543,24 @@ class AutoPartition(object):
 
         if self.home:
             # Decide how much we leave to root and how much we leave to /home
+            # Question: why 5?
             new_root_part_size = part_sizes['root'] // 5
             if new_root_part_size > MAX_ROOT_SIZE:
                 new_root_part_size = MAX_ROOT_SIZE
             elif new_root_part_size < MIN_ROOT_SIZE:
                 new_root_part_size = MIN_ROOT_SIZE
-            part_sizes['home'] = part_sizes['root'] - new_root_part_size
-            part_sizes['root'] = new_root_part_size
+
+            if new_root_part_size >= part_sizes['root']:
+                # new_root_part_size can't be bigger than part_sizes['root'] !
+                # this could happen if new_root_part_size == MIN_ROOT_SIZE but
+                # our harddisk is smaller (detected using vbox)
+                # Should we fail here or install without a separated /home partition? 
+                logging.warning("There's not enough free space to have a separate /home partition")
+                self.home = False
+                part_sizes['home'] = 0
+            else:
+                part_sizes['home'] = part_sizes['root'] - new_root_part_size
+                part_sizes['root'] = new_root_part_size
         else:
             part_sizes['home'] = 0
 
