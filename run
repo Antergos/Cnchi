@@ -9,7 +9,7 @@ cleanup() {
 		sudo unlink /usr/share/cnchi
 		sudo mv /usr/share/cnchi.tmp /usr/share/cnchi > /dev/null 2>&1
 	fi
-	sudo killall python3
+	sudo killall python3 > /dev/null 2>&1
 }
 
 trap cleanup EXIT
