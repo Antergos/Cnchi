@@ -626,7 +626,7 @@ class AutoPartition(object):
 
             # Create fresh GPT
             wrapper.sgdisk("clear", device)
-            wrapper.parted_mklabel(device_path, "gpt")
+            wrapper.parted_mklabel(device, "gpt")
 
             # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
             err_msg = "Error informing the kernel of the partition change."
