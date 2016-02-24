@@ -152,10 +152,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.settings.set('desktop_ask', False)
                 logging.debug("Cnchi will install the %s desktop environment", my_desktop)
 
+        # Store if we're running from the minimal ISO (runs openbox instead of Gnome)
         self.is_minimal = os.path.exists('/home/antergos/.config/openbox')
 
         # Create a queue. Will be used to report pacman messages
-        # (pacman/pac.py) to the main thread (installation/process.py)
+        # (pacman/pac.py) to the installer process (installation/install.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # This list will have all processes (rankmirrors, autotimezone...)
@@ -266,12 +267,11 @@ class MainWindow(Gtk.ApplicationWindow):
     def initialize_gui(self):
         """
         Initial setup of our UI elements. This must be called during __init__().
-
         """
 
         self.ui = Gtk.Builder()
-        path = os.path.join(self.ui_dir, "cnchi.ui")
-        self.ui.add_from_file(path)
+        ui_path = os.path.join(self.ui_dir, "cnchi.ui")
+        self.ui.add_from_file(ui_path)
         self.add(self.ui.get_object("main"))
 
         self.main_box_wrapper = self.ui.get_object("main_box_wrapper")
@@ -283,8 +283,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_stack.set_transition_duration(400)
 
         self.header_ui = Gtk.Builder()
-        path = os.path.join(self.ui_dir, "header.ui")
-        self.header_ui.add_from_file(path)
+        ui_path = os.path.join(self.ui_dir, "header.ui")
+        self.header_ui.add_from_file(ui_path)
 
         self.header = self.header_ui.get_object("header")
         self.header_overlay = self.header_ui.get_object("header_overlay")
