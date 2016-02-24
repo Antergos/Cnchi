@@ -80,10 +80,27 @@ class MainWindow(Gtk.ApplicationWindow):
         super().__init__(title="Cnchi", application=app)
 
         self.cnchi_app = app
+
         self._main_window_width = 1200
         self._main_window_height = 821
 
+        if cmd_line.resolution:
+            err_msg = "User has given a wrong screen size. Using defaults."
+            res = cmd_line.resolution.split("x")
+            try:
+                width = int(res[0])
+                height = int(res[1])
+                if width >= 800 and height >= 600:
+                    self._main_window_width = width
+                    self._main_window_height = height
+                else:
+                    logging.warning(err_msg)
+            except ValueError:
+                logging.warning(err_msg)
+
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
+
+        logging.debug("Screen size %dx%d", self._main_window_width, self._main_window_height)
 
         self.settings = config.Settings()
         self.ui_dir = self.settings.get('ui')

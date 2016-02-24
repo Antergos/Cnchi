@@ -351,6 +351,10 @@ def parse_options():
         help=_("Install the packages referenced by a local xml instead of the default ones"),
         nargs='?')
     parser.add_argument(
+        "-r", "--resolution",
+        help=_("Specify Cnchi screen with and height (useful for low res screens) (format is widthxheight)"),
+        nargs='?')
+    parser.add_argument(
         "-s", "--log-server",
         help=_("Choose to which log server send Cnchi logs."
                " Expects a hostname or an IP address"),
