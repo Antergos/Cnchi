@@ -82,9 +82,6 @@ except ImportError as err:
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
-# Command line options
-cmd_line = None
-
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.18.0"
 
@@ -92,14 +89,17 @@ GTK_VERSION_NEEDED = "3.18.0"
 class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
 
-    def __init__(self):
+    def __init__(self, cmd_line):
         super().__init__(application_id="com.antergos.cnchi",
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.TMP_RUNNING = "/tmp/.setup-running"
 
+        # Command line options
+        self.cmd_line = cmd_line
+
     def do_activate(self):
         # Make sure we have administrative privileges
-        if os.getuid() != 0 and not cmd_line.z_hidden:
+        if os.getuid() != 0 and not self.cmd_line.z_hidden:
             msg = _('This installer must be run with administrative privileges, '
                     'and cannot continue without them.')
             show.error(None, msg)
@@ -115,7 +115,7 @@ class CnchiApp(Gtk.Application):
             show.error(None, msg)
             return
 
-        window = main_window.MainWindow(self, cmd_line)
+        window = main_window.MainWindow(self, self.cmd_line)
         window.show_all()
 
         with open(self.TMP_RUNNING, "w") as tmp_file:
@@ -149,7 +149,7 @@ class CnchiApp(Gtk.Application):
         return False
 
 
-def setup_logging():
+def setup_logging(cmd_line):
     """ Configure our logger """
     logger = logging.getLogger()
 
@@ -409,7 +409,7 @@ def threads_init():
         # Gdk.threads_init()
 
 
-def update_cnchi():
+def update_cnchi(cmd_line):
     """ Runs updater function to update cnchi to the latest version if necessary """
     upd = updater.Updater(
         force_update=cmd_line.update,
@@ -470,7 +470,6 @@ def init_cnchi():
     setup_gettext()
 
     # Command line options
-    global cmd_line
     cmd_line = parse_options()
 
     if cmd_line.version:
@@ -484,7 +483,7 @@ def init_cnchi():
     misc.drop_privileges()
 
     # Setup our logging framework
-    setup_logging()
+    setup_logging(cmd_line)
 
     # Check Cnchi is correctly installed
     if not check_for_files():
@@ -503,16 +502,16 @@ def init_cnchi():
     #    sys.exit(1)
 
     # if not cmd_line.disable_update:
-        # update_cnchi()
+        # update_cnchi(cmd_line)
 
     # Init PyObject Threads
     # threads_init()
+    return cmd_line
 
 
 if __name__ == '__main__':
-    init_cnchi()
-
+    cmd_line = init_cnchi()
     # Create Gtk Application
-    app = CnchiApp()
+    app = CnchiApp(cmd_line)
     exit_status = app.run(None)
     sys.exit(exit_status)
