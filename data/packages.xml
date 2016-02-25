@@ -543,13 +543,40 @@
 	<locale_fonts>
 		<chinese>
 			<pkgname>opendesktop-fonts</pkgname>
+			<pkgname>adobe-source-han-sans-cn-fonts</pkgname>
+			<pkgname>adobe-source-han-sans-tw-fonts</pkgname>
 		</chinese>
+		<japanese>
+			<pkgname>adobe-source-han-sans-jp-fonts</pkgname>
+			<pkgname>ttf-sazanami</pkgname>
+			<pkgname>otf-ipafont</pkgname>
+		</japanese>
+		<korean>
+			<pkgname>adobe-source-han-sans-kr-fonts</pkgname>
+			<pkgname>ttf-baekmuk</pkgname>
+		</korean>
 	</locale_fonts>
-	<locale_fonts>
+
+	<input_systems>
+		<fcitx>
+			<package>fcitx</package>
+			<package lib="gtk">fcitx-configtool</package>
+			<package lib="qt">kcm-fcitx</package>
+			<package lib="gtk">fcitx-gtk2</package>
+	 		<package lib="gtk">fcitx-gtk3</package>
+		 	<package lib="qt">fcitx-qt4</package>
+			<package lib="qt">fcitx-qt5</package>
+		</fcitx>
+		<japanese>
+			<package>fcitx-mozc</package>
+		</japanese>
 		<chinese>
-			<pkgname>opendesktop-fonts</pkgname>
+			<package>fcitx-googlepinyin</package>
 		</chinese>
-	</locale_fonts>
+		<korean>
+			<package>fcitx-hangul</package>
+		</korean>
+	</input_systems>
 
 	<bootloaders>
 		<bootloader name="grub2">
