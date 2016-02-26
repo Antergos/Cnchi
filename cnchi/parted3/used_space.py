@@ -184,10 +184,10 @@ def get_used_btrfs(part, show_error=True):
     except subprocess.CalledProcessError as err:
         result = None
         if show_error:
-            msg = "Can't detect used space of BTRFS partition {0}: {1}".format(part, err.output)
-            logging.error(msg)
+            message = "Can't detect used space of BTRFS partition {0}: {1}".format(part, err.output)
+            logging.error(message)
             template = "An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
+            message = template.format(type(err).__name__, err.args)
             logging.error(message)
 
     if result:
