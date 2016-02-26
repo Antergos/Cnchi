@@ -176,18 +176,19 @@ def get_used_reiser(part):
 
 
 @misc.raise_privileges
-def get_used_btrfs(part):
+def get_used_btrfs(part, show_error=True):
     """ Gets used space in a Btrfs partition """
     used = 0
     try:
         result = subprocess.check_output(["btrfs", "filesystem", "show", part])
-    except Exception as ex:
+    except subprocess.CalledProcessError as err:
         result = None
-        logging.error("Can't detect used space of BTRFS partition %s: %s", part, err)
-        template = "An exception of type {0} occured. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        logging.error(message)
-
+        if show_error:
+            msg = "Can't detect used space of BTRFS partition {0}: {1}".format(part, err.output)
+            logging.error(msg)
+            template = "An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            logging.error(message)
 
     if result:
         vsize, usize, umult, vmult = (1, 1, 1, 1)
@@ -252,7 +253,7 @@ def get_used_f2fs(part):
 
 def is_btrfs(part):
     """ Checks if part is a Btrfs partition """
-    space = get_used_btrfs(part)
+    space = get_used_btrfs(part, show_error=False)
     if not space:
         return False
     else:
