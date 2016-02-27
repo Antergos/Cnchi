@@ -1,3 +1,4 @@
+[2016-02-26 21:26:24 +0100]  Fixes issue #550 - Needs testing                                           karasu      {7dfce5b}
 [2016-02-23 09:21:46 +0100]  Do not show "process not found" as it disturbs me ;)                       karasu      {263a2ba}
 [2016-02-20 20:27:51 +0100]  Fixes issue #543                                                           karasu      {2dee942}
 [2016-02-20 05:23:03 -0600]  Merge branch 'master' of github.com:antergos/cnchi into stable         Dustin Falgout  {795b336}
