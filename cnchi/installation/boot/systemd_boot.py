@@ -61,7 +61,7 @@ class SystemdBoot(object):
         options = ""
 
         if not self.settings.get('use_luks'):
-            options = "root=UUID={0} rw quiet".format(self.uuids["/"]))
+            options = "root=UUID={0} rw quiet".format(self.uuids["/"])
         else:
             luks_root_volume = self.settings.get('luks_root_volume')
             logging.debug("Luks Root Volume: %s", luks_root_volume)
