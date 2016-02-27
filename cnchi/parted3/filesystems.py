@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# fs_module.py
+# filesystems.py
 #
 # Copyright © 2013-2016 Antergos
 #

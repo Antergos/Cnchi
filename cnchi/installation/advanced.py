@@ -39,7 +39,7 @@ import misc.validation as validation
 from misc.run_cmd import call
 
 import parted3.partition_module as pm
-import parted3.fs_module as fs
+import parted3.filesystems as fs
 import parted3.lvm as lvm
 import parted3.used_space as used_space
 

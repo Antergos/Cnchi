@@ -67,7 +67,7 @@
 {"name":"/usr/share/cnchi/cnchi/parted3/lvm.py","md5":"9a20a597a6febf97641cdc8ff3bec42b"},
 {"name":"/usr/share/cnchi/cnchi/parted3/__init__.py","md5":"68b329da9893e34099c7d8ad5cb9c940"},
 {"name":"/usr/share/cnchi/cnchi/parted3/README","md5":"cf28aa5ca9975804e37676302f09c2cc"},
-{"name":"/usr/share/cnchi/cnchi/parted3/fs_module.py","md5":"fd82e50775ee80fdfb41d654001f2b18"},
+{"name":"/usr/share/cnchi/cnchi/parted3/filesystems.py","md5":"fd82e50775ee80fdfb41d654001f2b18"},
 {"name":"/usr/share/cnchi/cnchi/parted3/partition_module.py","md5":"1f600822e9f19e4d25455fa42aa55656"},
 {"name":"/usr/share/cnchi/cnchi/parted3/used_space.py","md5":"75a8c0c20831f3834d5b2bc11f3fc41c"},
 {"name":"/usr/share/cnchi/cnchi/misc/keyboard_widget.py","md5":"cea95163dfbd61dc0588d91ccfb442bd"},

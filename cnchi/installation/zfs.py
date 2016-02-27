@@ -39,7 +39,7 @@ from installation import action
 from installation import install
 from installation import wrapper
 
-import parted3.fs_module as fs
+import parted3.filesystems as fs
 
 import gi
 gi.require_version('Gtk', '3.0')

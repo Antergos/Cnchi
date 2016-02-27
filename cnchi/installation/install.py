@@ -47,7 +47,7 @@ from installation import firewall
 from misc.extra import InstallError
 from misc.run_cmd import call, chroot_call
 
-import parted3.fs_module as fs
+import parted3.filesystems as fs
 import misc.extra as misc
 import pacman.pac as pac
 

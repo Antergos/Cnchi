@@ -35,7 +35,7 @@ import math
 
 from misc.extra import InstallError
 from misc.run_cmd import call, popen
-import parted3.fs_module as fs
+import parted3.filesystems as fs
 
 from installation import wrapper
 
