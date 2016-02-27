@@ -15,6 +15,7 @@
 			<object class="GtkEventBox" id="timezone_map_window">
 				<property name="visible">True</property>
 				<property name="can_focus">True</property>
+				<property name="height_request">400</property>
 				<child>
 					<placeholder/>
 				</child>

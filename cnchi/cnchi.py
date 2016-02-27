@@ -356,8 +356,7 @@ def parse_options():
         nargs='?')
     parser.add_argument(
         "-s", "--log-server",
-        help=_("Choose to which log server send Cnchi logs."
-               " Expects a hostname or an IP address"),
+        help=_("Choose to which log server send Cnchi logs. Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
         "-u", "--update",
