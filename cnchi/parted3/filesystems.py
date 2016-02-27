@@ -78,11 +78,6 @@ def get_info(part):
         # -c /dev/null means no cache
         cmd = ['blkid', '-c', '/dev/null', part]
         call(cmd)
-        try:
-
-            ret = subprocess.check_output(cmd).decode().strip()
-        except subprocess.CalledProcessError as err:
-            logging.warning("Error running %s: %s", err.cmd, err.output)
 
         for info in ret.split():
             if '=' in info:
@@ -97,11 +92,8 @@ def get_type(part):
     """ Get filesystem type using blkid """
     ret = ''
     if part and not misc.is_partition_extended(part):
-        try:
-            cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
-            ret = subprocess.check_output(cmd).decode().strip()
-        except subprocess.CalledProcessError as err:
-            logging.warning("Error running %s: %s", err.cmd, err.output)
+        cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
+        ret = call(cmd)
 
     return ret
 
@@ -110,13 +102,10 @@ def get_pknames():
     """ PKNAME: internal parent kernel device name """
     pknames = {}
     info = None
-    try:
-        cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
-        info = subprocess.check_output(cmd).decode().strip().split('\n')
-    except subprocess.CalledProcessError as err:
-        logging.warning("Error running %s: %s", err.cmd, err.output)
-
+    cmd = ['lsblk', '-o', 'NAME,PKNAME', '-l']
+    info = call(cmd)
     if info:
+        info = info.split('\n')
         # skip header
         info = info[1:]
         skip_list = ["disk", "rom", "loop", "arch_root-image"]
@@ -137,7 +126,7 @@ def get_pknames():
 
 @misc.raise_privileges
 def label_fs(fstype, part, label):
-    """ Get filesystem label """
+    """ Set filesystem label """
     ladic = {'ext2': 'e2label %(part)s %(label)s',
              'ext3': 'e2label %(part)s %(label)s',
              'ext4': 'e2label %(part)s %(label)s',
@@ -151,45 +140,36 @@ def label_fs(fstype, part, label):
              'xfs': 'xfs_admin -l %(label)s %(part)s',
              'btrfs': 'btrfs filesystem label %(part)s %(label)s',
              'swap': 'swaplabel -L %(label)s %(part)s'}
+
     fstype = fstype.lower()
+
     # OK, the below is a quick cheat.  vars() returns all variables
     # in a dictionary.  So 'part' and 'label' will be defined
     # and replaced in above dic
     if fstype in ladic:
-        try:
-            cmd = shlex.split(ladic[fstype] % vars())
-            result = subprocess.check_output(cmd).decode()
-            ret = (0, result)
-        except subprocess.CalledProcessError as err:
-            logging.error("Error running %s: %s", err.cmd, err.output)
-            ret = (1, err)
-            # check_call returns exit code.  0 should mean success
+        cmd = shlex.split(ladic[fstype] % vars())
+        call(cmd)
     else:
-        ret = (1, _("Can't label a {0} partition").format(fstype))
-    return ret
+        # Not being able to label a partition shouldn't worry us much
+        logging.warning("Can't label %s (%s) with label %s", part, fstype, label)
 
 
 @misc.raise_privileges
 def create_fs(part, fstype, label='', other_opts=''):
-    """ Create filesystem using mkfs """
-
-    # Set some default options
-    # -m 1 reserves 1% for root, because I think 5% is too much on
-    # newer bigger drives.
-    # Also turn on dir_index for ext.  Not sure about other fs opts
-
-    # The return value is tuple.
-    # (failed, msg)
-    # First arg is False for success, True for fail
-    # Second arg is either output from call if successful
-    # or exception message error if failure
+    """ Create filesystem using mkfs
+        Set some default options
+        -m 1 reserves one percent for root, because I think five percent
+        is too much on newer bigger drives.
+        Also turn on dir_index for ext.  Not sure about other fs opts
+        The return value is tuple.
+        (failed, msg)
+        First arg is False for success, True for fail
+        Second arg is either output from call if successful
+        or exception message error if failure """
 
     if not fstype:
-        msg = "Cannot make a filesystem of type None in partition %s"
-        logging.error(msg, part)
-        msg = _("Cannot make a filesystem of type None in partition {0}")
-        msg = msg.format(part)
-        return True, msg
+        logging.error("Cannot make a filesystem of type None in partition %s", part)
+        return False
 
     fstype = fstype.lower()
 
@@ -209,9 +189,8 @@ def create_fs(part, fstype, label='', other_opts=''):
               'swap': 'mkswap'}
 
     if fstype not in comdic.keys():
-        msg = _("Unknown filesystem {0} for partition {1}")
-        msg = msg.format(fstype, part)
-        return True, msg
+        logging.error("Unknown filesystem %s for partition %s", fstype, part)
+        return False
 
     cmd = comdic[fstype]
 
@@ -254,14 +233,8 @@ def create_fs(part, fstype, label='', other_opts=''):
 
     cmd += " %(part)s"
 
-    try:
-        cmd = shlex.split(cmd % vars())
-        result = subprocess.check_output(cmd).decode()
-        ret = (False, result)
-    except subprocess.CalledProcessError as err:
-        logging.error("Error running %s: %s", err.cmd, err.output)
-        ret = (True, err)
-    return ret
+    cmd = shlex.split(cmd % vars())
+    return call(cmd)
 
 
 @misc.raise_privileges

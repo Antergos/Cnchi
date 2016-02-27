@@ -64,10 +64,12 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
             stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
-        output = output.decode()
-        if output and debug:
+        if output:
+            output = output.decode()
             output = output.strip('\n')
-            logging.debug(output)
+            output = output.strip()
+            if debug:
+                logging.debug(output)
         return output
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         err_output = err.output.decode().strip("\n")
@@ -123,7 +125,6 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
         else:
             log_exception_info()
             return False
-
     except subprocess.CalledProcessError as err:
         if msg:
             msg = "{0}: {1}".format(msg, err.output)

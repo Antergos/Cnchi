@@ -2261,15 +2261,13 @@ class InstallationAdvanced(GtkBaseBox):
                                 luks_pass=password)
                         self.settings.set("use_luks", True)
                         luks_device = "/dev/mapper/" + vol_name
-                        error, msg = fs.create_fs(luks_device, fisy, lbl)
-                        if not error:
-                            logging.info(msg)
-                        else:
+                        result = fs.create_fs(luks_device, fisy, lbl)
+                        if not result:
                             txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}".format(
-                                luks_device, lbl, fisy, msg)
+                                luks_device, lbl, fisy)
                             logging.error(txt)
                             txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(
-                                luks_device, lbl, fisy, msg)
+                                luks_device, lbl, fisy)
                             show.error(self.get_main_window(), txt)
 
                         # Do not format (already done)
@@ -2297,26 +2295,17 @@ class InstallationAdvanced(GtkBaseBox):
                     logging.info(txt)
 
                     # Create filesystem using mkfs
-                    error, msg = fs.create_fs(partition_path, fisy, lbl)
-                    if not error:
-                        logging.info(msg)
-                    else:
+                    result = fs.create_fs(partition_path, fisy, lbl)
+                    if not result:
                         txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}".format(
-                            partition_path, lbl, fisy, msg)
+                            partition_path, lbl, fisy)
                         logging.error(txt)
                         txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(
-                            partition_path, lbl, fisy, msg)
+                            partition_path, lbl, fisy)
                         show.error(self.get_main_window(), txt)
-                elif (partition_path in self.orig_label_dic and
+                elif (lbl and partition_path in self.orig_label_dic and
                         self.orig_label_dic[partition_path] != lbl):
-                    try:
                         fs.label_fs(fisy, partition_path, lbl)
-                    except Exception as ex:
-                        # Catch all exceptions because not being able to label
-                        # a partition shouldn't be fatal
-                        template = "An exception of type {0} occured. Arguments:\n{1!r}"
-                        message = template.format(type(ex).__name__, ex.args)
-                        logging.warning(message)
 
     def finalize_changes(self, disk):
         try:
