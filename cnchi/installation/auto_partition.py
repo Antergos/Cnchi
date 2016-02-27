@@ -89,6 +89,8 @@ def unmount_all_in_directory(dest_dir):
     # Get all mounted devices
     mount_result = call(["mount"]).split("\n")
 
+    dest_dir_mounted = False
+
     # Umount all devices mounted inside dest_dir (if any)
     dirs = []
     for mount in mount_result:
@@ -98,6 +100,8 @@ def unmount_all_in_directory(dest_dir):
                 # Do not unmount dest_dir now (we will do it later)
                 if directory != dest_dir:
                     dirs.append(directory)
+                else:
+                    dest_dir_mounted = True
             except IndexError:
                 pass
 
@@ -105,7 +109,8 @@ def unmount_all_in_directory(dest_dir):
         unmount(directory)
 
     # Now is the time to unmount the device that is mounted in dest_dir (if any)
-    unmount(dest_dir)
+    if dest_dir_mounted:
+        unmount(dest_dir)
 
 
 def unmount_all_in_device(device):
