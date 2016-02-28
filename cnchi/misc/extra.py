@@ -389,11 +389,9 @@ def get_prop(obj, iface, prop):
     """ Get network interface property """
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
-        if err.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-            return None
-        else:
-            raise
+    except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
+        logging.warning(dbus_err)
+        return None
 
 
 def is_wireless_enabled():

@@ -150,23 +150,28 @@ class Check(GtkBaseBox):
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
-            return misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            if misc.get_prop(upower, UPOWER_PATH, 'OnBattery'):
+                return True
 
         return False
 
     def has_battery(self):
-        """ Checks if latptop is connected to a power supply """
+        """ Checks if we have a battery (thus we are a laptop) """
         # UPower doesn't seem to have an interface for this.
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
+            self.settings.set('laptop', False)
             return False
+
         for folder in os.listdir(path):
             type_path = os.path.join(path, folder, 'type')
             if os.path.exists(type_path):
                 with open(type_path) as power_file:
                     if power_file.read().startswith('Battery'):
-                        self.settings.set('laptop', 'True')
+                        self.settings.set('laptop', True)
                         return True
+
+        self.settings.set('laptop', False)
         return False
 
     def has_enough_space(self):
