@@ -182,15 +182,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
-        nil, major, minor = info.CNCHI_VERSION.split('.')
-        name = 'Cnchi '
-        title_string = "{0} {1}.{2}".format(name, nil, major)
-        self.tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
-        self.set_title(title_string)
-        self.header.set_title(title_string)
-        self.header.set_subtitle(_("Antergos Installer"))
-        self.header.set_show_close_button(False)
-        self.header.forall(self.header_for_all_callback, self.tooltip_string)
+        # nil, major, minor = info.CNCHI_VERSION.split('.')
+        # name = 'Cnchi '
+        # title_string = "{0} {1}.{2}".format(name, nil, major)
+        # self.tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
+        # self.set_title(title_string)
+        # self.header.set_title(title_string)
+        # self.header.set_subtitle(_("Antergos Installer"))
+        # self.header.set_show_close_button(False)
+        # self.header.forall(self.header_for_all_callback, self.tooltip_string)
 
         self.set_geometry()
 
@@ -573,6 +573,9 @@ class MainWindow(Gtk.ApplicationWindow):
             return
 
         prev_page = self.current_page
+
+        if 'timezone' == prev_page.name:
+            self.main_box_wrapper.set_property('margin_top', 35)
         if 'welcome' != prev_page.name:
             self.header.set_title('')
             prev_page.nav_button.set_state_flags(Gtk.StateFlags.NORMAL, True)
@@ -611,6 +614,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.current_page.prepare('forwards')
         self.current_page.can_show = True
+
         if self.current_page.name != self.current_stack.get_visible_child_name():
             self.current_stack.show_all()
             self.current_stack.set_visible_child_name(self.current_page.name)

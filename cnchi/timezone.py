@@ -57,6 +57,7 @@ class Timezone(GtkBaseBox):
         self.title = _('Timezone')
         self.in_group = True
         self.cnchi_main = cnchi_main
+        self.main_box_wrapper = params['main_box_wrapper']
 
         self.combobox_zone = self.ui.get_object('comboboxtext_zone')
         self.combobox_region = self.ui.get_object('comboboxtext_region')
@@ -84,7 +85,7 @@ class Timezone(GtkBaseBox):
         # Strip .UTF-8 from locale, icu doesn't parse it
         self.locale = os.environ['LANG'].rsplit('.', 1)[0]
         self.map_window.add(self.tzmap)
-        self.map_window.set_valign(Gtk.Align.START)
+        self.map_window.set_valign(Gtk.Align.FILL)
         self.tzmap.show()
 
     def translate_ui(self):
@@ -222,6 +223,7 @@ class Timezone(GtkBaseBox):
             return False
 
         if show:
+            self.main_box_wrapper.set_property('margin_top', 15)
             self.show_all()
 
     def start_auto_timezone_process(self):
