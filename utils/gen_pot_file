@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd ..
+if ! [[ -d cnchi ]] && [[ -d ../cnchi ]]; then
+	cd ..
+fi
 
 /usr/lib/python3.5/Tools/i18n/pygettext.py -a -d cnchi_py -p /tmp -v cnchi/*.py cnchi/*/*.py
 python utils/rm_empty_strings_pot.py

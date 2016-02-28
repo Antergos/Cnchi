@@ -1,3 +1,4 @@
+[2016-02-28 08:06:53 -0600]  cleaning up                                                            Dustin Falgout  {0a49eb8}
 [2016-02-28 08:02:07 -0600]  Merge branch 'master' of github.com:antergos/cnchi                     Dustin Falgout  {9d3000d}
 [2016-02-28 11:58:37 +0100]  Try not to issue an exception if upower is not present                     karasu      {237a092}
 [2016-02-27 17:17:57 +0100]  Fix typo. Should fix #547                                                  karasu      {e81d030}

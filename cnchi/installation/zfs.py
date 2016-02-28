@@ -382,31 +382,30 @@ class InstallationZFS(GtkBaseBox):
 
     def show_pool_type_help(self, pool_type):
         """ Show pool type help to the user """
-        msg = ""
-        if pool_type == "None":
-            msg = _("'None' pool will use ZFS on a single selected disk.")
-        elif pool_type == "Stripe":
-            msg = _("When created together, with equal capacity, ZFS "
-                    "space-balancing makes a span act like a RAID0 stripe. "
-                    "The space is added together. Provided all the devices "
-                    "are of the same size, the stripe behavior will "
-                    "continue regardless of fullness level. If "
-                    "devices/vdevs are not equally sized, then they will "
-                    "fill mostly equally until one device/vdev is full.")
-        elif pool_type == "Mirror":
-            msg = _("A mirror consists of two or more devices, all data "
-                    "will be written to all member devices. Cnchi will "
-                    "try to group devices in groups of two.")
-        elif pool_type.startswith("RAID-Z"):
-            msg = _("ZFS implements RAID-Z, a variation on standard "
-                    "RAID-5. ZFS supports three levels of RAID-Z which "
-                    "provide varying levels of redundancy in exchange for "
-                    "decreasing levels of usable storage. The types are "
-                    "named RAID-Z1 through RAID-Z3 based on the number of "
-                    "parity devices in the array and the number of disks "
-                    "which can fail while the pool remains operational.")
-        if msg:
-            show.message(self.get_main_window(), msg)
+        ptype = pool_type if 'RAID-Z' not in pool_type else 'RAID-Z'
+        help_text = {
+            "None": _("'None' pool will use ZFS on a single selected disk."),
+            "Stripe": _("When created together, with equal capacity, ZFS "
+                        "space-balancing makes a span act like a RAID0 stripe. "
+                        "The space is added together. Provided all the devices "
+                        "are of the same size, the stripe behavior will "
+                        "continue regardless of fullness level. If "
+                        "devices/vdevs are not equally sized, then they will "
+                        "fill mostly equally until one device/vdev is full."),
+            "Mirror": _("A mirror consists of two or more devices, all data "
+                        "will be written to all member devices. Cnchi will "
+                        "try to group devices in groups of two."),
+            "RAID-Z": _("ZFS implements RAID-Z, a variation on standard "
+                        "RAID-5. ZFS supports three levels of RAID-Z which "
+                        "provide varying levels of redundancy in exchange for "
+                        "decreasing levels of usable storage. The types are "
+                        "named RAID-Z1 through RAID-Z3 based on the number of "
+                        "parity devices in the array and the number of disks "
+                        "which can fail while the pool remains operational.")
+        }
+
+        if ptype in help_text:
+            show.message(self.get_main_window(), help_text[ptype])
 
     def on_force_4k_help_btn_clicked(self, widget):
         """ Show 4k help to the user """
