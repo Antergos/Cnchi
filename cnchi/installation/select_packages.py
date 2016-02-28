@@ -143,28 +143,46 @@ class SelectPackages(object):
             logging.error(message)
             raise InstallError(message)
 
+    def get_desktop_lib(self):
+        """ Returns which widget library our desktop will need """
+        for lib in desktop_info.LIBS:
+            if self.desktop in desktop_info.LIBS[lib]:
+                return lib
+        return None
+
     def add_package(self, pkg):
         """ Adds xml node text to our package list
             returns TRUE if the package is added """
-        lib = desktop_info.LIBS
-        arch = pkg.attrib.get('arch')
         added = False
-        if arch is None or arch == self.my_arch:
+
+        # Check node attributes
+        names = ["arch", "lib", "desktops", "lang"]
+
+        check_attr = {
+            "arch" : self.my_arch,
+            "lib" : self.get_desktop_lib(),
+            "desktops" : self.desktop,
+            "lang" : self.settings.get('language_code')
+        }
+
+        all_check = True
+        for name in names:
+            node_attr = pkg.attrib.get(name)
+            if node_attr and check_attr[name] not in node_attr:
+                all_check = False
+
+        if all_check:
+            conflicts = pkg.attrib.get("conflicts")
+            if conflicts:
+                self.add_conflicts(conflicts)
+            self.packages.append(pkg.text)
+            added = True
             # If package is a Desktop Manager or a Network Manager,
             # save the name to activate the correct service later
             if pkg.attrib.get('dm'):
                 self.settings.set("desktop_manager", pkg.attrib.get('name'))
             if pkg.attrib.get('nm'):
                 self.settings.set("network_manager", pkg.attrib.get('name'))
-            plib = pkg.attrib.get('lib')
-            if plib is None or (plib is not None and self.desktop in lib[plib]):
-                desktops = pkg.attrib.get('desktops')
-                if desktops is None or (desktops is not None and self.desktop in desktops):
-                    conflicts = pkg.attrib.get('conflicts')
-                    if conflicts:
-                        self.add_conflicts(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
-                    added = True
         return added
 
     def select_packages(self):
@@ -284,13 +302,8 @@ class SelectPackages(object):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
-        # Add chinese fonts
-        lang_code = self.settings.get("language_code")
-        if lang_code in ["zh_TW", "zh_CN"]:
-            logging.debug("Selecting chinese fonts.")
-            for child in xml_root.iter('chinese'):
-                for pkg in child.iter('pkgname'):
-                    self.add_package(pkg)
+        # Add locale fonts (atm only asian) and input system (if needed)
+        self.add_locale_fonts(xml_root)
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
@@ -329,6 +342,18 @@ class SelectPackages(object):
                     self.packages.remove(pkg)
 
         logging.debug("Packages list: %s", ",".join(self.packages))
+
+    def add_locale_fonts(self, root):
+        """ Adds input system and fonts """
+        # Add locale fonts (add_package checks lang)
+        for child in root.iter('fonts'):
+            for pkg in child.iter('pkgname'):
+                self.add_package(pkg)
+
+        # Add input system (we use fcitx, add_package checks lang)
+        for child in root.iter('fcitx'):
+            for pkg in child.iter('pkgname'):
+                self.add_package(pkg)
 
     def add_conflicts(self, conflicts):
         """ Maintains a list of conflicting packages """

@@ -541,20 +541,20 @@
 	</zfs>
 
 	<locale_fonts>
-		<chinese>
+		<fonts lang="zh_TW, zh_CN">
 			<pkgname>opendesktop-fonts</pkgname>
 			<pkgname>adobe-source-han-sans-cn-fonts</pkgname>
 			<pkgname>adobe-source-han-sans-tw-fonts</pkgname>
-		</chinese>
-		<japanese>
+		</fonts>
+		<fonts lang="ja_JP">
 			<pkgname>adobe-source-han-sans-jp-fonts</pkgname>
 			<pkgname>ttf-sazanami</pkgname>
 			<pkgname>otf-ipafont</pkgname>
-		</japanese>
-		<korean>
+		</fonts>
+		<fonts lang="ko_KR">
 			<pkgname>adobe-source-han-sans-kr-fonts</pkgname>
 			<pkgname>ttf-baekmuk</pkgname>
-		</korean>
+		</fonts>
 	</locale_fonts>
 
 	<input_systems>
@@ -566,16 +566,10 @@
 	 		<package lib="gtk">fcitx-gtk3</package>
 		 	<package lib="qt">fcitx-qt4</package>
 			<package lib="qt">fcitx-qt5</package>
+			<package lang="zh_TW, zh_CN">fcitx-googlepinyin</package>
+			<package lang="ja_JP">fcitx-mozc</package>
+			<package lang="ko_KR">fcitx-hangul</package>
 		</fcitx>
-		<japanese>
-			<package>fcitx-mozc</package>
-		</japanese>
-		<chinese>
-			<package>fcitx-googlepinyin</package>
-		</chinese>
-		<korean>
-			<package>fcitx-hangul</package>
-		</korean>
 	</input_systems>
 
 	<bootloaders>
