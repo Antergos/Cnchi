@@ -180,18 +180,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
-        # nil, major, minor = info.CNCHI_VERSION.split('.')
-        # name = 'Cnchi '
-        # title_string = "{0} {1}.{2}".format(name, nil, major)
-        # tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
-        # custom_title_widget = Gtk.Label.new(title_string)
-        # custom_title_widget.get_style_context().add_class('title')
-        # custom_title_widget.get_style_context().add_class('label')
-        # custom_title_widget.set_tooltip_text(tooltip_string)
-        # self.set_title(title_string)
-        # self.header.set_custom_title(custom_title_widget)
-        # self.header.set_subtitle(_("Antergos Installer"))
-        # self.header.set_show_close_button(True)
+        nil, major, minor = info.CNCHI_VERSION.split('.')
+        name = 'Cnchi '
+        title_string = "{0} {1}.{2}".format(name, nil, major)
+        self.tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
+        self.set_title(title_string)
+        self.header.set_title(title_string)
+        self.header.set_subtitle(_("Antergos Installer"))
+        self.header.set_show_close_button(False)
+        self.header.forall(self.header_for_all_callback, self.tooltip_string)
 
         self.set_geometry()
 
@@ -225,13 +222,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.progressbar.hide()
         self.set_focus(None)
 
-        self.set_focus(None)
-
         misc.gtk_refresh()
 
         self.cnchi_started = True
         if self.timezone_start_needed:
             self.on_has_internet_connection()
+
+    def header_for_all_callback(self, widget, data):
+        if isinstance(widget, Gtk.Box):
+            widget.forall(self.header_for_all_callback, self.tooltip_string)
+            return
+        if widget.get_style_context().has_class('title'):
+            widget.set_tooltip_text(self.tooltip_string)
 
     def prepare_shared_parameters(self):
         """

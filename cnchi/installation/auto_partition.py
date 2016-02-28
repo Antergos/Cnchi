@@ -54,10 +54,8 @@ and then raise an InstallError exception.
 MAX_ROOT_SIZE = 30000
 
 # KDE (with all features) needs 8 GB for its files (including pacman cache xz files).
-# MIN_ROOT_SIZE = 10000
-# Vbox, by default, creates disks of 8GB. We should limit to this so vbox installations do not fail
-# (if installing kde and not enough free space is available is their fault, not ours)
 MIN_ROOT_SIZE = 8000
+
 
 def printk(enable):
     """ Enables / disables printing kernel messages to console """
