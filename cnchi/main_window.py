@@ -58,11 +58,13 @@ from gi.repository import Gtk, Gdk, Atk
 import show_message as show
 import misc.extra as misc
 
-from installation import ask as installation_ask
-from installation import automatic as installation_automatic
-from installation import alongside as installation_alongside
-from installation import advanced as installation_advanced
-from installation import zfs as installation_zfs
+from installation import (
+    ask as installation_ask,
+    automatic as installation_automatic,
+    alongside as installation_alongside,
+    advanced as installation_advanced,
+    zfs as installation_zfs
+)
 
 
 def atk_set_image_description(widget, description):
