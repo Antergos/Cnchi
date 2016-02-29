@@ -390,27 +390,32 @@ class SelectPackages(object):
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            lang_name = self.settings.get("language_name").lower()
-            code = None
-            if lang_name == "english":
-                locale = self.settings.get("locale").split('.')[0]
-                if locale in ['en_GB', 'en_ZA']:
-                    # There're some English variants available but not all of them.
-                    code = locale
-            else:
-                # All the other language packs use their language code
-                code = self.settings.get('language_code')
+            libre_lang_codes = [
+                'af', 'am', 'ar', 'as', 'ast', 'be', 'bg', 'bn', 'bn-IN', 'bo',
+                'br', 'brx', 'bs', 'ca', 'ca-valencia', 'cs', 'cy', 'da', 'de',
+                'dgo', 'dz', 'el', 'en-GB', 'en-ZA', 'eo', 'es', 'et', 'eu', 'fa',
+                'fi', 'fr', 'ga', 'gd', 'gl', 'gu', 'he', 'hi', 'hr', 'hu', 'id',
+                'is', 'it', 'ja', 'ka', 'kk', 'km', 'kmr-Latn', 'kn', 'ko', 'kok',
+                'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn', 'mni', 'mr',
+                'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om', 'or', 'pa-IN',
+                'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat', 'sd', 'sdk',
+                'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss', 'st', 'sv',
+                'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt', 'ug', 'uk',
+                'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu']
 
-            if code:
-                code = code.replace('_', '-').lower()
+            lang_code = self.settings.get("language_code").lower()
+            lang_code = lang_code.replace('_', '-')
+            if lang_code in libre_lang_codes:
                 pkg_text = "libreoffice-fresh-{0}".format(code)
-                logging.debug("Adding libreoffice language package (%s)", pkg_text)
+                logging.debug("Adding libreoffice language package: %s", pkg_text)
                 self.packages.append(pkg_text)
+            else:
+                logging.warning("Couldn't find libreoffice %s language package", lang_code)
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
             # Firefox is available in these languages
-            lang_codes = [
+            firefox_lang_codes = [
                 'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
                 'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
                 'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
@@ -422,9 +427,11 @@ class SelectPackages(object):
                 'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
                 'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
 
-            logging.debug("Add firefox language package")
-            lang_code = self.settings.get('language_code')
+            lang_code = self.settings.get('language_code').lower()
             lang_code = lang_code.replace('_', '-')
-            if lang_code in lang_codes:
+            if lang_code in firefox_lang_codes:
                 pkg_text = "firefox-i18n-{0}".format(lang_code)
+                logging.debug("Adding firefox language package: %s", pkg_text)
                 self.packages.append(pkg_text)
+            else:
+                logging.warning("Couldn't find firefox %s language package", lang_code)
