@@ -57,13 +57,16 @@ def get_uuid(part):
 
 def get_label(part):
     """ Get partition label """
-    info = get_info(part)
-    if "LABEL" in info.keys():
-        return info['LABEL']
+    if "/dev/mapper" not in part:
+        info = get_info(part)
+        if "LABEL" in info.keys():
+            return info['LABEL']
+        else:
+            logging.debug(
+                "Can't get partition %s label (or it does not have any)",
+                part)
+            return ""
     else:
-        logging.debug(
-            "Can't get partition %s label (or it does not have any)",
-            part)
         return ""
 
 
