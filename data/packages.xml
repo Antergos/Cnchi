@@ -546,12 +546,12 @@
 			<pkgname>adobe-source-han-sans-cn-fonts</pkgname>
 			<pkgname>adobe-source-han-sans-tw-fonts</pkgname>
 		</fonts>
-		<fonts lang="ja_JP">
+		<fonts lang="ja">
 			<pkgname>adobe-source-han-sans-jp-fonts</pkgname>
 			<pkgname>ttf-sazanami</pkgname>
 			<pkgname>otf-ipafont</pkgname>
 		</fonts>
-		<fonts lang="ko_KR">
+		<fonts lang="ko">
 			<pkgname>adobe-source-han-sans-kr-fonts</pkgname>
 			<pkgname>ttf-baekmuk</pkgname>
 		</fonts>
@@ -567,8 +567,8 @@
 		 	<package lib="qt">fcitx-qt4</package>
 			<package lib="qt">fcitx-qt5</package>
 			<package lang="zh_TW, zh_CN">fcitx-googlepinyin</package>
-			<package lang="ja_JP">fcitx-mozc</package>
-			<package lang="ko_KR">fcitx-hangul</package>
+			<package lang="ja">fcitx-mozc</package>
+			<package lang="ko">fcitx-hangul</package>
 		</fcitx>
 	</input_systems>
 
