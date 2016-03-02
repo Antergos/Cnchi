@@ -39,7 +39,6 @@ except ImportError as err:
 import desktop_info
 import info
 
-
 import pacman.pac as pac
 import misc.extra as misc
 from misc.extra import InstallError
@@ -241,22 +240,7 @@ class SelectPackages(object):
 
         # Set KDE language pack
         if self.desktop == 'kde':
-            pkg_text = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
-                if locale in lang_packs:
-                    pkg_text = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
-                pkg_text = base_name + lang_code
-            if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg_text)
-                self.packages.append(pkg_text)
+            self.add_kde_language_pack()
 
         try:
             # Detect which hardware drivers are needed
@@ -390,48 +374,83 @@ class SelectPackages(object):
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            libre_lang_codes = [
-                'af', 'am', 'ar', 'as', 'ast', 'be', 'bg', 'bn', 'bn-IN', 'bo',
-                'br', 'brx', 'bs', 'ca', 'ca-valencia', 'cs', 'cy', 'da', 'de',
-                'dgo', 'dz', 'el', 'en-GB', 'en-ZA', 'eo', 'es', 'et', 'eu', 'fa',
-                'fi', 'fr', 'ga', 'gd', 'gl', 'gu', 'he', 'hi', 'hr', 'hu', 'id',
-                'is', 'it', 'ja', 'ka', 'kk', 'km', 'kmr-Latn', 'kn', 'ko', 'kok',
-                'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn', 'mni', 'mr',
-                'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om', 'or', 'pa-IN',
-                'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat', 'sd', 'sdk',
-                'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss', 'st', 'sv',
-                'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt', 'ug', 'uk',
-                'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu']
-
-            lang_code = self.settings.get("language_code").lower()
-            lang_code = lang_code.replace('_', '-')
-            if lang_code in libre_lang_codes:
-                pkg_text = "libreoffice-fresh-{0}".format(code)
-                logging.debug("Adding libreoffice language package: %s", pkg_text)
-                self.packages.append(pkg_text)
-            else:
-                logging.warning("Couldn't find libreoffice %s language package", lang_code)
+            self.add_libreoffice_language_pack()
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
-            # Firefox is available in these languages
-            firefox_lang_codes = [
-                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
-                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
-                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
-                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
-                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
-                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt',
-                'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
-                'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
-                'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
-                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
+            self.add_firefox_language_pack()
 
+    def add_libreoffice_language_pack(self):
+        libre_lang_codes = [
+            'af', 'am', 'ar', 'as', 'ast', 'be', 'bg', 'bn', 'bn-IN', 'bo',
+            'br', 'brx', 'bs', 'ca', 'ca-valencia', 'cs', 'cy', 'da', 'de',
+            'dgo', 'dz', 'el', 'en-GB', 'en-ZA', 'eo', 'es', 'et', 'eu', 'fa',
+            'fi', 'fr', 'ga', 'gd', 'gl', 'gu', 'he', 'hi', 'hr', 'hu', 'id',
+            'is', 'it', 'ja', 'ka', 'kk', 'km', 'kmr-Latn', 'kn', 'ko', 'kok',
+            'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn', 'mni', 'mr',
+            'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om', 'or', 'pa-IN',
+            'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat', 'sd', 'sdk',
+            'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss', 'st', 'sv',
+            'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt', 'ug', 'uk',
+            'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu']
+
+        lang_code = self.settings.get("language_code").lower()
+        lang_code = lang_code.replace('_', '-')
+        if lang_code in libre_lang_codes:
+            pkg_text = "libreoffice-fresh-{0}".format(code)
+            logging.debug("Adding libreoffice language package: %s", pkg_text)
+            self.packages.append(pkg_text)
+        else:
+            logging.warning("Couldn't find libreoffice %s language package", lang_code)
+
+    def add_firefox_language_pack(self):
+        # Firefox is available in these languages
+        firefox_lang_codes = [
+            'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
+            'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
+            'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
+            'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
+            'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
+            'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt',
+            'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
+            'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
+            'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
+            'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
+
+        lang_code = self.settings.get('language_code').lower()
+        lang_code = lang_code.replace('_', '-')
+        if lang_code in firefox_lang_codes:
+            pkg_text = "firefox-i18n-{0}".format(lang_code)
+            logging.debug("Adding firefox language package: %s", pkg_text)
+            self.packages.append(pkg_text)
+        else:
+            logging.warning("Couldn't find firefox %s language package", lang_code)
+
+    def add_kde_language_pack(self):
+        kde_lang_codes = [
+            'ar', 'bg', 'bs', 'ca', 'ca@valencia', 'cs', 'da', 'de',
+            'el', 'en-gb', 'eo', 'es', 'et', 'eu', 'fa',
+            'fi', 'fr', 'ga', 'gl', 'he', 'hi', 'hr', 'hu', 'ia', 'id',
+            'is', 'it', 'ja', 'kk', 'km', 'ko', 'kok',
+            'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn', 'mni', 'mr',
+            'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om', 'or', 'pa-IN',
+            'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat', 'sd', 'sdk',
+            'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss', 'st', 'sv',
+            'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt', 'ug', 'uk',
+            'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu']
+        pkg_text = ""
+        base_name = 'kde-l10n-'
+        lang_name = self.settings.get("language_name").lower()
+        if lang_name == "english":
+            # There're some English variants available but not all of them.
+            lang_packs = ['en_gb']
+            locale = self.settings.get('locale').split('.')[0].lower()
+            if locale in lang_packs:
+                pkg_text = base_name + locale
+        else:
+            # All the other language packs use their language code
             lang_code = self.settings.get('language_code').lower()
-            lang_code = lang_code.replace('_', '-')
-            if lang_code in firefox_lang_codes:
-                pkg_text = "firefox-i18n-{0}".format(lang_code)
-                logging.debug("Adding firefox language package: %s", pkg_text)
-                self.packages.append(pkg_text)
-            else:
-                logging.warning("Couldn't find firefox %s language package", lang_code)
+            pkg_text = base_name + lang_code
+        if pkg_text:
+            logging.debug("Selected kde language pack: %s", pkg_text)
+            self.packages.append(pkg_text)
