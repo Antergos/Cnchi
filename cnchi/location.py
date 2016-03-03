@@ -170,7 +170,7 @@ class Location(GtkBaseBox):
 
         lang_code = self.settings.get("language_code")
         for locale_name in self.locales:
-            logging.debug(locale_name)
+            # logging.debug(locale_name)
             if self.show_all_locations or lang_code in locale_name:
                 areas.append(self.locales[locale_name])
         if len(areas) == 0:

@@ -334,10 +334,16 @@ class SelectPackages(object):
             for pkg in child.iter('pkgname'):
                 self.add_package(pkg)
 
-        # Add input system (we use fcitx, add_package checks lang)
-        for child in root.iter('fcitx'):
-            for pkg in child.iter('pkgname'):
-                self.add_package(pkg)
+        # Add input system if needed for lang_code (we use fcitx)
+        lang_code = self.settings.get("language_code").lower()
+        for input_system in root.iter('input_systems'):
+            name = input_system.get("name").lower()
+            lang = input_system.get("lang").lower()
+            if name == "fcitx" and lang == lang_code:
+                # Check if we need to install this input system
+                for child in root.iter('fcitx'):
+                    for pkg in child.iter('pkgname'):
+                        self.add_package(pkg)
 
     def add_conflicts(self, conflicts):
         """ Maintains a list of conflicting packages """

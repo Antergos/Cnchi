@@ -116,7 +116,7 @@ class Check(GtkBaseBox):
 
         if has_internet and not self.cnchi_notified:
             self.cnchi_main.on_has_internet_connection()
-            logging.debug('ON HAS INTERNET CONNECTION FIRED!')
+            logging.debug('on_has_internet_connection() is running')
             self.cnchi_notified = True
 
         on_power = not self.on_battery()

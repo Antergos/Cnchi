@@ -473,7 +473,7 @@ class StateBox(StylizedFrame):
 
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
-        self.image.set_margin_right(20)
+        self.image.set_margin_end(20)
 
         self.label = Gtk.Label(label=text)
         self.label.set_halign(Gtk.Align.START)
@@ -485,8 +485,8 @@ class StateBox(StylizedFrame):
         hbox_children_wrapper.add(self.label)
         hbox_children_wrapper.set_margin_top(25)
         hbox_children_wrapper.set_margin_bottom(25)
-        hbox_children_wrapper.set_margin_left(20)
-        hbox_children_wrapper.set_margin_right(20)
+        hbox_children_wrapper.set_margin_start(20)
+        hbox_children_wrapper.set_margin_end(20)
 
         hbox.add(hbox_children_wrapper)
         hbox.get_style_context().add_class('statebox_item')

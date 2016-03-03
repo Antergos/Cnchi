@@ -558,7 +558,7 @@
 	</locale_fonts>
 
 	<input_systems>
-		<fcitx>
+		<fcitx lang="zh_TW, zh_CN, ja, ko">
 			<package>fcitx</package>
 			<package lib="gtk">fcitx-configtool</package>
 			<package lib="qt">kcm-fcitx</package>

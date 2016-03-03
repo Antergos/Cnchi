@@ -675,7 +675,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.timezone_start_needed = True
 
     def on_timezone_set(self):
-        logging.debug('TIMEZONE SET')
+        logging.debug('Timezone set')
 
     def on_forward_button_clicked(self, widget=None, data=None):
         """ Show next screen """

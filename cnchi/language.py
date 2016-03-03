@@ -125,7 +125,7 @@ class LanguageWidget(Gtk.Box):
                 "caution as data loss is possible!\n\n"
                 "If you find any bugs, please report them at "
                 "<a href='{1}'>{1}</a>")
-        url = "http://bugs.antergos.com"
+        url = "https://github.com/Antergos/Cnchi/issues"
         txt = txt.format(txt_bold, url)
         # label = self.ui.get_object("welcome_label")
         # label.set_markup(txt)
