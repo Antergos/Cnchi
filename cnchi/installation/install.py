@@ -646,7 +646,7 @@ class Installation(object):
             # Add mount options parameters
             if not is_ssd:
                 if "btrfs" in myfmt:
-                    opts = "defaults,rw,relatime,space_cache,autodefrag,inode_cache"
+                    opts = "defaults,rw,relatime,space_cache,autodefrag"
                 elif "f2fs" in myfmt:
                     opts = "defaults,rw,noatime"
                 elif "ext3" in myfmt or "ext4" in myfmt:
@@ -660,7 +660,7 @@ class Installation(object):
                     opts = "defaults,rw,noatime,discard"
                 elif myfmt == "btrfs":
                     opts = ("defaults,rw,noatime,compress=lzo,ssd,discard,"
-                            "space_cache,autodefrag,inode_cache")
+                            "space_cache,autodefrag")
                 else:
                     opts = "defaults,rw,noatime"
 

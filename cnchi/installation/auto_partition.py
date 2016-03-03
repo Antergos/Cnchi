@@ -347,7 +347,7 @@ class AutoPartition(object):
             if fs_type == "ext4":
                 mopts = "rw,relatime,data=ordered"
             elif fs_type == "btrfs":
-                mopts = 'rw,relatime,space_cache,autodefrag,inode_cache'
+                mopts = 'rw,relatime,space_cache,autodefrag'
 
             err_msg = "Error trying to mount {0} in {1}".format(device, path)
             cmd = ["mount", "-t", fs_type, "-o", mopts, device, path]
