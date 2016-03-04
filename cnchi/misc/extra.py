@@ -390,10 +390,8 @@ def get_prop(obj, iface, prop):
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
     except (dbus.DBusException, dbus.exceptions.DBusException) as err:
-        if err.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
-            return None
-        else:
-            raise
+        logging.warning(err)
+        return None
 
 
 def is_wireless_enabled():

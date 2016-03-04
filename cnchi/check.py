@@ -156,7 +156,13 @@ class Check(GtkBaseBox):
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
-            return misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            result = misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            if result == None:
+                # Cannot read property, something is wrong.
+                logging.error("Cannot read %s dbus property", UPOWER_PATH)
+                # We will assume we are connected to a power supply
+                result = False
+            return result
 
         return False
 
