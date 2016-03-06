@@ -2249,7 +2249,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
-                    if use_luks and len(vol_name) > 0 and len(password) > 0:
+                    if use_luks and vol_name and password:
                         txt = "Encrypting {0}, assigning volume name {1} and formatting it..."
                         txt = txt.format(partition_path, vol_name)
                         logging.info(txt)
@@ -2260,14 +2260,14 @@ class InstallationAdvanced(GtkBaseBox):
                                 luks_name=vol_name,
                                 luks_pass=password)
                         self.settings.set("use_luks", True)
-                        luks_device = "/dev/mapper/" + vol_name
+                        luks_device = "/dev/mapper/{0}".format(vol_name)
                         result = fs.create_fs(luks_device, fisy, lbl)
                         if not result:
-                            txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}".format(
-                                luks_device, lbl, fisy)
+                            txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}"
+                            txt = txt.format(luks_device, lbl, fisy)
                             logging.error(txt)
-                            txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}").format(
-                                luks_device, lbl, fisy)
+                            txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}")
+                            txt = txt.format(luks_device, lbl, fisy)
                             show.error(self.get_main_window(), txt)
 
                         # Do not format (already done)
@@ -2276,12 +2276,8 @@ class InstallationAdvanced(GtkBaseBox):
                         if partition_path in self.orig_label_dic:
                             lbl = self.orig_label_dic[partition_path]
                         if mnt == "/":
-                            self.settings.set(
-                                "luks_root_password",
-                                password)
-                            self.settings.set(
-                                "luks_root_device",
-                                partition_path)
+                            self.settings.set("luks_root_password", password)
+                            self.settings.set("luks_root_device", partition_path)
 
                 # Only format if they want formatting
                 if fmt:

@@ -47,6 +47,9 @@ from gi.repository import Gtk
 
 from gtkbasebox import GtkBaseBox
 
+# We'll use auto_partition.setup_luks if necessary
+from installation import auto_partition as ap
+
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
 COL_USE_SENSITIVE = 2
@@ -612,17 +615,6 @@ class InstallationZFS(GtkBaseBox):
             # Create fresh MBR table
             wrapper.parted_mklabel(device_path, "msdos")
 
-        """
-        if self.zfs_options["encrypt_disk"]:
-            from installation import auto_partition as ap
-            vol_name = device_path.split("/")[-1]
-            ap.setup_luks(
-                luks_device=device_path,
-                luks_name=vol_name,
-                luks_pass=self.zfs_options["encrypt_password"])
-            self.settings.set("use_luks", True)
-        """
-
         call(["sync"])
 
     def run_format(self):
@@ -740,6 +732,29 @@ class InstallationZFS(GtkBaseBox):
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
         call(["sync"])
+
+        '''
+        if self.zfs_options["encrypt_disk"]:
+            vol_name = self.devices['root'].split("/")[-1]
+            password = self.zfs_options["encrypt_password"]
+
+            ap.setup_luks(
+                luks_device=self.devices['root'],
+                luks_name=vol_name,
+                luks_pass=password)
+
+            self.settings.set("use_luks", True)
+            self.settings.set("luks_root_password",  password)
+            self.settings.set("luks_root_device",  self.devices['root'])
+
+            # Encrypt the rest of drives
+            for device_path in device_paths[1:]:
+                vol_name = device_path.split("/")[-1]
+                ap.setup_luks(
+                    luks_device=device_path,
+                    luks_name=vol_name,
+                    luks_pass=password)
+        '''
 
         self.create_zfs(solaris_partition_number)
 
