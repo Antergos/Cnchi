@@ -539,7 +539,13 @@ class Installation(object):
                     opts = "defaults,discard"
                 else:
                     opts = "defaults"
-                txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
+
+                if self.settings.get("zfs"):
+                    # We can't use UUID with zfs, so we will use device name
+                    txt = "{0} swap swap {1} 0 0".format(partition_path, opts)
+                else:
+                    txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
+
                 all_lines.append(txt)
                 logging.debug("Added %s to fstab", txt)
                 continue
