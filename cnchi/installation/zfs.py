@@ -138,6 +138,53 @@ class InstallationZFS(GtkBaseBox):
             self.uefi = False
             self.zfs_options["scheme"] = "MBR"
 
+        # Set grub2 bootloader as default
+        self.bootloader = "grub2"
+        self.bootloader_entry = self.ui.get_object('bootloader_entry')
+
+    def fill_bootloader_entry(self):
+        """ Put the bootloaders for the user to choose """
+        self.bootloader_entry.remove_all()
+
+        if os.path.exists('/sys/firmware/efi'):
+            self.bootloader_entry.append_text("Grub2")
+
+            # TODO: These two need more testing
+            # self.bootloader_entry.append_text("Systemd-boot")
+            # self.bootloader_entry.append_text("rEFInd")
+
+            if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
+                # Automatically select first entry
+                self.bootloader_entry.set_active(0)
+            self.bootloader_entry.show()
+        else:
+            self.bootloader_entry.hide()
+            widget = self.ui.get_object("bootloader_label")
+            if widget:
+                widget.hide()
+
+    @staticmethod
+    def select_combobox_value(combobox, value):
+        model = combobox.get_model()
+        combo_iter = model.get_iter(0)
+        index = 0
+        found = False
+        while combo_iter is not None and not found:
+            if value.lower() == model[combo_iter][0].lower():
+                combobox.set_active_iter(combo_iter)
+                combo_iter = None
+                found = True
+            else:
+                index += 1
+                combo_iter = model.iter_next(combo_iter)
+        return found
+
+    def on_bootloader_entry_changed(self, widget):
+        """ Get new selected bootloader """
+        line = self.bootloader_entry.get_active_text()
+        if line is not None:
+            self.bootloader = line.lower()
+
     def on_use_device_toggled(self, widget, path):
         """ Use device clicked """
         status = self.device_list_store[path][COL_USE_ACTIVE]
@@ -471,6 +518,7 @@ class InstallationZFS(GtkBaseBox):
 
         self.translate_ui()
         self.fill_device_list()
+        self.fill_bootloader_entry()
         self.show_all()
         self.forward_button.set_sensitive(self.check_pool_type())
 

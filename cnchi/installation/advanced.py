@@ -363,7 +363,7 @@ class InstallationAdvanced(GtkBaseBox):
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Systemd-boot")
 
-            # TODO: Finish rEFInd addition
+            # TODO: rEFInd needs more testing
             # self.bootloader_entry.append_text("rEFInd")
 
             if not self.select_combobox_value(self.bootloader_entry, self.bootloader):

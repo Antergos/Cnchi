@@ -303,6 +303,35 @@
             <property name="top_attach">0</property>
           </packing>
         </child>
+
+
+
+        <child>
+          <object class="GtkLabel" id="bootloader_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Bootloader:</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="bootloader_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_start">5</property>
+            <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">3</property>
+          </packing>
+        </child>
+
+
+
         <child>
           <object class="GtkButton" id="force_4k_help_btn">
             <property name="visible">True</property>
@@ -316,12 +345,6 @@
             <property name="left_attach">4</property>
             <property name="top_attach">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
         </child>
         <child>
           <placeholder/>
