@@ -1,3 +1,4 @@
+[2016-03-08 19:24:02 +0100]  Enable zfs-mount service                                                   karasu      {36f5f16}
 [2016-03-08 19:20:35 +0100]  Fix zfs on EFI systems (issue #555)                                        karasu      {59debc3}
 [2016-03-04 20:17:51 +0100]  Do not fail if can't read dbus property                                    karasu      {564c035}
 [2016-02-27 17:17:57 +0100]  Fix typo. Should fix #547                                                  karasu      {e81d030}
