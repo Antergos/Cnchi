@@ -1075,14 +1075,18 @@ class Installation(object):
 
         # Enable some useful services
         services = []
+
         if self.desktop != "base":
             # In base there's no desktop manager ;)
             services.append(self.settings.get("desktop_manager"))
             # In base we use systemd-networkd (setup already done above)
             services.append(self.settings.get("network_manager"))
+
         services.extend(["ModemManager", "haveged"])
+
         if self.method == "zfs":
-            services.append("zfs")
+            services.extend(["zfs",  "zfs-mount"])
+
         self.enable_services(services)
 
         # Enable timesyncd service
