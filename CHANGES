@@ -1,3 +1,4 @@
+[2016-03-08 19:34:12 +0100]  Should fix swap in fstab (zfs)                                             karasu      {474bced}
 [2016-03-08 19:25:52 +0100]  Show full version in window header (helps users to report bugs)            karasu      {33e522d}
 [2016-03-08 19:24:02 +0100]  Enable zfs-mount service                                                   karasu      {36f5f16}
 [2016-03-08 19:20:35 +0100]  Fix zfs on EFI systems (issue #555)                                        karasu      {59debc3}
