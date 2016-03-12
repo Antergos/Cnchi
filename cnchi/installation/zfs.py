@@ -518,8 +518,8 @@ class InstallationZFS(GtkBaseBox):
 
         self.translate_ui()
         self.fill_device_list()
-        self.fill_bootloader_entry()
         self.show_all()
+        self.fill_bootloader_entry()
         self.forward_button.set_sensitive(self.check_pool_type())
 
     def store_values(self):
