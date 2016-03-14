@@ -1,3 +1,4 @@
+[2016-03-12 06:32:05 +0100]  Do not show bootloader label and combo in zfs in non uefi systems (..      karasu      {62e9335}
 [2016-03-12 06:11:23 +0100]  Merge pull request #565 from karasu/master                                 karasu      {38f4d2b}
 [2016-03-09 20:07:53 +0100]  Fixes issue #552 (until Arch decides to change it)                         karasu      {e85ceb8}
 [2016-03-08 19:34:12 +0100]  Should fix swap in fstab (zfs)                                             karasu      {474bced}

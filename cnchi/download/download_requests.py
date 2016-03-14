@@ -296,7 +296,8 @@ class Download(object):
                     return False
         except (socket.timeout,
                 requests.exceptions.Timeout,
-                requests.exceptions.ConnectionError) as connection_error:
+                requests.exceptions.ConnectionError,
+                requests.exceptions.ChunkedEncodingError) as connection_error:
             logging.debug(connection_error)
             return False
 
