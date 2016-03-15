@@ -101,6 +101,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.cmd_line = cmd_line
         self.params = dict()
         self.data_dir = self.settings.get('data')
+
         self.current_stack = None
         self.current_grp = None
         self.current_page = None
@@ -356,11 +357,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.current_page = self.pages["welcome"]
 
     def load_pages(self):
+        """ Load all remaining pages """
 
         self.top_level_pages = ['check', 'location_grp', 'desktop_grp',
                                 'disk_grp', 'user_info', 'summary']
 
+        # Load pages in our dict
         self.initialize_pages_dict()
+
+        # Prepare page stacks
         self.stacks.append(self.main_stack)
 
         diff = 2
@@ -435,9 +440,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.current_stack = self.main_stack
 
     def initialize_pages_dict(self):
-
+        """ Load pages """
         self.pages["location_grp"]["location"] = location.Location(params=self.params)
-        if self.pages["location_grp"].get('timezone', False) is False:
+        if not self.pages["location_grp"].get('timezone', False):
             self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
                                                                        cnchi_main=self)
 
