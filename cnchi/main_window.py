@@ -211,29 +211,31 @@ class MainWindow(Gtk.ApplicationWindow):
         # Show main window
         self.show_all()
 
-        self.progressbar.set_fraction(0)
         self.progressbar_step = 0
-
+        self.progressbar.set_fraction(0)
         self.progressbar.hide()
+
         self.set_focus(None)
 
         misc.gtk_refresh()
 
         self.cnchi_started = True
+
         if self.timezone_start_needed:
             self.on_has_internet_connection()
 
     def header_for_all_callback(self, widget, data):
+        """ Callback for all header elements. """
         if isinstance(widget, Gtk.Box):
             widget.forall(self.header_for_all_callback, self.tooltip_string)
             return
+
+        # Show header tooltip
         if widget.get_style_context().has_class('title'):
             widget.set_tooltip_text(self.tooltip_string)
 
     def prepare_shared_parameters(self):
-        """
-        Parameters that are common to all screens
-        """
+        """ Parameters that are common to all screens """
 
         self.params['main_window'] = self
         self.params['main_box_wrapper'] = self.main_box_wrapper
