@@ -83,8 +83,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.cnchi_app = app
 
-        self._main_window_width = 1200
-        self._main_window_height = 821
+        # Default window size
+        # self._main_window_width = 1200
+        # self._main_window_height = 821
+        self._main_window_width = 1000
+        self._main_window_height = 621
 
         if cmd_line.resolution:
             self.set_window_size(cmd_line.resolution)
@@ -116,15 +119,15 @@ class MainWindow(Gtk.ApplicationWindow):
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
 
-        # Check command line
+        # Add xz cache dirs added using the command line
         if cmd_line.cache and cmd_line.cache not in self.xz_cache:
             self.xz_cache.append(cmd_line.cache)
 
-        # Log cache dirs
+        # Log xz cache dirs
         for xz in self.xz_cache:
             logging.debug("Cnchi will use '%s' as a source for cached xz packages", xz)
 
-        # Store cache dirs in config
+        # Store xz cache dirs in config
         self.settings.set('xz_cache', self.xz_cache)
 
         # For things we are not ready for users to test
@@ -136,6 +139,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.settings.set("desktops", desktop_info.DESKTOPS)
 
+        # DE can be forced by command line
         if cmd_line.environment:
             my_desktop = cmd_line.environment.lower()
             if my_desktop in desktop_info.DESKTOPS:
@@ -159,39 +163,39 @@ class MainWindow(Gtk.ApplicationWindow):
         # Prepare params dict to pass common parameters to all screens
         self.prepare_shared_parameters()
 
+        # Top right Language widget
         self.language_widget = language.LanguageWidget(self.params, button=self.language_menu_btn)
         self.popover = Gtk.Popover.new(self.language_menu_btn)
         self.popover.add(self.language_widget)
         self.popover.set_position(Gtk.PositionType.BOTTOM)
         self.popover.connect('closed', self.on_language_popover_closed)
 
+        # User can use an alternate package list
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
             logging.info(
                 "Using '%s' file as package list",
                 self.settings.get('alternate_package_list'))
 
+        # Load 1st and 2nd screens
         self.pre_load_pages()
 
+        # main_box is the gtk box that will contain current screen
         self.main_box.add(self.current_page)
 
         self.settings.set('timezone_start', True)
+
+        # When cnchi is closed
         self.connect('delete-event', self.on_exit_button_clicked)
+
+        # Controls if ESC is pressed
         self.connect('key-release-event', self.on_key_release)
 
+        # Connect all ui signals
         self.ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
-        # nil, major, minor = info.CNCHI_VERSION.split('.')
-        # name = 'Cnchi '
-        # title_string = "{0} {1}.{2}".format(name, nil, major)
-        # self.tooltip_string = "{0} {1}.{2}.{3}".format(name, nil, major, minor)
-        # self.set_title(title_string)
-        # self.header.set_title(title_string)
-        # self.header.set_subtitle(_("Antergos Installer"))
-        # self.header.set_show_close_button(False)
-        # self.header.forall(self.header_for_all_callback, self.tooltip_string)
-
+        # Set window size
         self.set_geometry()
 
         # Set window icon
@@ -199,20 +203,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_icon_from_file(icon_path)
 
         # Use our css file
-        style_provider = Gtk.CssProvider()
+        self.apply_css()
 
-        style_css = os.path.join(self.data_dir, "css", "gtk-style.css")
-
-        with open(style_css, 'rb') as css:
-            css_data = css.read()
-
-        style_provider.load_from_data(css_data)
-
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(), style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_USER
-        )
-
+        # Call prepare from first screen (so it can initialise itself)
         self.current_page.prepare('forwards')
 
         # Show main window
@@ -256,16 +249,36 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['disable_tryit'] = self.cmd_line.disable_tryit if not self.is_minimal else True
         self.params['disable_rank_mirrors'] = self.cmd_line.disable_rank_mirrors
 
+    def apply_css(self):
+        """ Loads css file and applies it to our gui """
+
+        style_css = os.path.join(self.data_dir, "css", "gtk-style.css")
+
+        if os.path.exists(style_css):
+            with open(style_css, 'rb') as css:
+                css_data = css.read()
+
+            style_provider = Gtk.CssProvider()
+            style_provider.load_from_data(css_data)
+
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(),
+                style_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        else:
+            logging.error("Can't load css file")
+
     def initialize_gui(self):
         """
         Initial setup of our UI elements. This must be called during __init__().
         """
 
-        self.ui = Gtk.Builder()
         ui_path = os.path.join(self.ui_dir, "cnchi.ui")
+        self.ui = Gtk.Builder()
         self.ui.add_from_file(ui_path)
         self.add(self.ui.get_object("main"))
 
+        # This is difficult to follow... main_box, main_stack, sub_nav_box ...
         self.main_box_wrapper = self.ui.get_object("main_box_wrapper")
         self.main_box = self.ui.get_object("main_box")
         self.main_stack = self.ui.get_object("main_stack")
@@ -274,24 +287,28 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_stack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT_RIGHT)
         self.main_stack.set_transition_duration(400)
 
+        # header (header_overlay will contain all header elements)
+        ui_header_path = os.path.join(self.ui_dir, "header.ui")
         self.header_ui = Gtk.Builder()
-        ui_path = os.path.join(self.ui_dir, "header.ui")
-        self.header_ui.add_from_file(ui_path)
+        self.header_ui.add_from_file(ui_header_path)
 
-        self.header = self.header_ui.get_object("header")
         self.header_overlay = self.header_ui.get_object("header_overlay")
+        self.header = self.header_ui.get_object("header")
         self.header_nav = self.header_ui.get_object("header_nav")
         self.language_menu_btn = self.header_ui.get_object('language_button')
         self.next_prev_button_box = self.header_ui.get_object('nav_box')
 
+        # Main progress bar (also in header)
         self.progressbar = self.header_ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
 
+        # Top left logo (in header)
         self.logo = self.header_ui.get_object("logo")
         self.logo_text = self.header_ui.get_object("logo_text")
         img_path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
         self.logo.set_from_file(img_path)
 
+        # Add all header elements to header_overlay
         self.header_overlay.add_overlay(self.header)
         self.header_overlay.add_overlay(self.header_nav)
         self.header_overlay.add_overlay(self.progressbar)
@@ -300,10 +317,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header_overlay.set_overlay_pass_through(self.header_nav, True)
         self.set_titlebar(self.header_overlay)
 
-        # To honor our css
+        # Set widget names so Gtk can use our css
         self.header.set_name("header")
         self.logo.set_name("logo")
 
+        # Forward button (allows going to next screen)
         self.forward_button = self.header_ui.get_object("forward_button")
         atk_set_image_description(self.forward_button, _("Next step"))
         self.forward_button.set_name('fwd_btn')
@@ -323,8 +341,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_show_close_button(False)
 
     def pre_load_pages(self):
-        # Just load the first two screens (the other ones will be loaded later)
-        # We do this to reduce Cnchi's initial startup time.
+        """ Just load the first two screens (the other ones will be loaded later)
+        We do this to reduce Cnchi's initial startup time. """
         self.pages = dict()
         self.pages["location_grp"] = {'title': 'Location',
                                       'prev_page': 'check',

@@ -46,6 +46,7 @@ sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
 sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
 sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
 
+import argparse
 import logging
 import logging.handlers
 import gettext
@@ -166,8 +167,9 @@ def setup_logging(cmd_line):
     logger.addFilter(context_filter.filter)
 
     # Log format
+    log_format = "%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s"
     formatter = logging.Formatter(
-        fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
+        fmt=log_format,
         datefmt="%Y-%m-%d %H:%M:%S")
 
     # File logger
@@ -316,8 +318,6 @@ def check_iso_version():
 
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
-
-    import argparse
 
     desc = _("Cnchi v{0} - Antergos Installer").format(info.CNCHI_VERSION)
     parser = argparse.ArgumentParser(description=desc)
