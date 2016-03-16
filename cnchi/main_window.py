@@ -50,6 +50,7 @@ import summary
 import info
 import substack
 import gtkbasebox
+import pages
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -102,20 +103,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params = dict()
         self.data_dir = self.settings.get('data')
 
-        self.current_stack = None
-        self.current_grp = None
-        self.current_page = None
-        self.next_page = None
-        self.prev_page = None
         self.nav_buttons = {}
         self.sub_nav_btns = {}
-        self.page_count = 0
-        self.all_pages = []
-        self.pages_loaded = False
-        self.stacks = []
+
+        self.pages = pages.Pages()
+
         self.cnchi_started = False
         self.timezone_start_needed = False
-        self.top_level_pages = []
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -179,10 +173,10 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.settings.get('alternate_package_list'))
 
         # Load 1st and 2nd screens
-        self.pre_load_pages()
+        self.pages.pre_load_pages()
 
         # main_box is the gtk box that will contain current screen
-        self.main_box.add(self.current_page)
+        self.main_box.add(self.pages.get_current_page())
 
         self.settings.set('timezone_start', True)
 
@@ -207,7 +201,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.apply_css()
 
         # Call prepare from first screen (so it can initialise itself)
-        self.current_page.prepare('forwards')
+        self.pages.prepare_current_page()
 
         # Show main window
         self.show_all()
@@ -272,9 +266,7 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.error("Can't load css file")
 
     def initialize_gui(self):
-        """
-        Initial setup of our UI elements. This must be called during __init__().
-        """
+        """ Initial setup of our UI elements. This must be called during __init__(). """
 
         ui_path = os.path.join(self.ui_dir, "cnchi.ui")
         self.ui = Gtk.Builder()
@@ -342,155 +334,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_custom_title(label)
         self.header.get_custom_title().get_style_context().add_class('cnchi_title')
         self.header.set_show_close_button(False)
-
-    def pre_load_pages(self):
-        """ Just load the first two screens (the other ones will be loaded later)
-        We do this to reduce Cnchi's initial startup time. """
-        self.pages = dict()
-        self.pages["location_grp"] = {'title': 'Location',
-                                      'prev_page': 'check',
-                                      'next_page': 'location',
-                                      'pages': ['location', 'timezone', 'keymap']}
-        self.pages["check"] = check.Check(self.params, cnchi_main=self)
-        self.pages["check"].prepare('forwards', show=False)
-        self.pages["welcome"] = welcome.Welcome(self.params)
-        self.current_page = self.pages["welcome"]
-
-    def load_pages(self):
-        """ Load all remaining pages """
-
-        self.top_level_pages = ['check', 'location_grp', 'desktop_grp',
-                                'disk_grp', 'user_info', 'summary']
-
-        # Load pages in our dict
-        self.initialize_pages_dict()
-
-        # Prepare page stacks
-        self.stacks.append(self.main_stack)
-
-        diff = 2
-
-        top_pages = [p for p in self.pages if not isinstance(self.pages[p], dict)]
-        sub_stacks = [self.pages[p]['pages'] for p in self.pages if p not in top_pages]
-        sub_pages = [p for x in sub_stacks for p in x]
-        self.all_pages = self.top_level_pages + sub_pages
-
-        num_pages = len(top_pages) + len(sub_pages)
-
-        self.page_count = num_pages - diff
-
-        if num_pages > 0:
-            self.progressbar_step = 1.0 / num_pages
-
-        for page_name in self.top_level_pages:
-            page = self.pages[page_name]
-            if isinstance(page, dict):
-                sub_stack = substack.SubStack(params=self.params,
-                                              name=page_name,
-                                              title=page['title'],
-                                              prev_page=page['prev_page'],
-                                              next_page=page['next_page'])
-
-                sub_stack.get_style_context().add_class('sub_page')
-                sub_stack.set_transition_type(Gtk.StackTransitionType.OVER_DOWN_UP)
-                sub_stack.set_transition_duration(400)
-                self.sub_nav_btns[page_name] = {
-                    'box': Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
-                }
-                self.sub_nav_btns[page_name]['box'].set_halign(Gtk.Align.CENTER)
-                self.sub_nav_btns[page_name]['box'].set_hexpand(True)
-
-                for sub_page_name in page['pages']:
-                    sub_page = self.pages[page_name][sub_page_name]
-                    if sub_page:
-                        sub_page.stack = sub_stack
-                        sub_stack.add_titled(sub_page, sub_page_name, sub_page.title)
-                        self.sub_nav_btns[page_name][sub_page_name] = Gtk.Button.new_with_label(
-                                sub_page.title)
-                        self.sub_nav_btns[page_name][sub_page_name].connect(
-                                'clicked',
-                                self.on_header_nav_button_clicked,
-                                {'group_name': page_name, 'name': sub_page_name})
-                        sub_page.nav_button = self.sub_nav_btns[page_name][sub_page_name]
-                        self.sub_nav_btns[page_name]['box'].add(
-                                self.sub_nav_btns[page_name][sub_page_name])
-                        sub_page.nav_button_box = self.sub_nav_btns[page_name]['box']
-
-                self.pages[page_name]['group'] = page = sub_stack
-                self.stacks.append(sub_stack)
-
-            page.show_all()
-            self.main_stack.add_titled(page, page_name, page.title)
-            self.nav_buttons[page_name] = Gtk.Button.new_with_label(page.title)
-            self.nav_buttons[page_name].connect('clicked',
-                                                self.on_header_nav_button_clicked, page_name)
-
-            if isinstance(page, gtkbasebox.GtkBaseBox):
-                page.stack = self.main_stack
-
-            page.nav_button = self.nav_buttons[page_name]
-
-            self.header_nav.add(self.nav_buttons[page_name])
-
-        self.nav_buttons['forward_button'] = self.forward_button
-        self.header_nav.add(self.nav_buttons['forward_button'])
-        self.header_nav.child_set_property(self.nav_buttons['forward_button'], 'packing', 'end')
-
-        self.header_nav.show_all()
-        self.current_stack = self.main_stack
-
-    def initialize_pages_dict(self):
-        """ Load pages """
-        self.pages["location_grp"]["location"] = location.Location(params=self.params)
-        if not self.pages["location_grp"].get('timezone', False):
-            self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
-                                                                       cnchi_main=self)
-
-        self.pages["desktop_grp"] = {'title': 'Desktop Selection',
-                                     'prev_page': 'location_grp',
-                                     'next_page': 'desktop',
-                                     'pages': ['desktop', 'features']}
-
-        if self.settings.get('desktop_ask') or True:
-            self.pages["location_grp"]["keymap"] = keymap.Keymap(params=self.params, is_last=True)
-            self.pages["desktop_grp"]["desktop"] = desktop.DesktopAsk(params=self.params)
-            self.pages["desktop_grp"]["features"] = features.Features(params=self.params,
-                                                                      is_last=True)
-        else:
-            self.pages["location_grp"]["keymap"] = keymap.Keymap(self.params, next_page='features',
-                                                                 is_last=True)
-            self.pages["desktop_grp"]["features"] = features.Features(self.params,
-                                                                      prev_page='location_grp',
-                                                                      is_last=True)
-
-        self.pages["disk_grp"] = {'title': 'Disk Setup',
-                                  'prev_page': 'desktop_grp',
-                                  'next_page': 'installation_ask',
-                                  'pages': ['installation_ask', 'installation_automatic',
-                                            'installation_alongside', 'installation_advanced',
-                                            'installation_zfs']}
-
-        self.pages["disk_grp"]["installation_ask"] = \
-            installation_ask.InstallationAsk(params=self.params)
-
-        self.pages["disk_grp"]["installation_automatic"] = \
-            installation_automatic.InstallationAutomatic(params=self.params, is_last=True)
-
-        if self.settings.get("enable_alongside"):
-            self.pages["disk_grp"]["installation_alongside"] = \
-                installation_alongside.InstallationAlongside(params=self.params)
-        else:
-            self.pages["disk_grp"]["installation_alongside"] = None
-
-        self.pages["disk_grp"]["installation_advanced"] = \
-            installation_advanced.InstallationAdvanced(params=self.params, is_last=True)
-
-        self.pages["disk_grp"]["installation_zfs"] = \
-            installation_zfs.InstallationZFS(params=self.params, is_last=True)
-
-        self.pages["user_info"] = user_info.UserInfo(params=self.params)
-        self.pages["summary"] = summary.Summary(params=self.params)
-        self.pages["slides"] = slides.Slides(params=self.params)
 
     def set_window_size(self, size):
         res = size.split("x")
@@ -567,6 +410,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_language_popover_closed(self, widget, data=None):
         self.language_widget.popover_is_visible = False
+
+
+
+
 
     def on_header_nav_button_clicked(self, widget, data=None):
         logging.debug(data)
@@ -712,10 +559,8 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.warning('next_page_name required: %s', next_page_name)
             return
 
-        if not self.pages_loaded:
-            # Load all pages
-            self.load_pages()
-            self.pages_loaded = True
-            self.progressbar_step = 1.0 / self.page_count
+        if not self.pages.loaded():
+            self.pages.load_pages()
+            self.progressbar_step = 1.0 / self.pages.get_page_count()
 
         self.on_header_nav_button_clicked(widget, next_page_name)
