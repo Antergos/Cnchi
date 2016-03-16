@@ -213,8 +213,8 @@ class Timezone(GtkBaseBox):
                 timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
                 self.set_timezone(timezone, show=show)
                 self.store_values()
-                if self.cnchi_main is not None:
-                    self.cnchi_main.on_timezone_set()
+                #if self.cnchi_main is not None:
+                #    self.cnchi_main.on_timezone_set()
             except ValueError as value_error:
                 self.autodetected_coords = None
                 logging.warning("Can't autodetect timezone coordinates: %s", value_error)

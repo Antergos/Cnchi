@@ -28,10 +28,31 @@
 
 """ Manage Cnchi pages """
 
+
 import logging
 
+import check
+import desktop
+import features
+import keymap
+import location
+import slides
+import summary
+import timezone
+import user_info
+import welcome
+
+from installation import (
+    ask as installation_ask,
+    automatic as installation_automatic,
+    alongside as installation_alongside,
+    advanced as installation_advanced,
+    zfs as installation_zfs
+)
+
+
 class Pages():
-    def __init__():
+    def __init__(self, params):
         self.current_stack = None
         self.current_grp = None
         self.current_page = None
@@ -47,6 +68,8 @@ class Pages():
         self.top_level_pages = []
         self.pages = {}
 
+        self.params = params
+
     def get_page_count(self):
         return self.page_count
 
@@ -59,6 +82,18 @@ class Pages():
 
     def get_current_page(self):
         return self.current_page
+
+    def get_current_page_name(self):
+        if self.current_page:
+            return self.current_page.name
+        else:
+            return None
+
+    def get_next_page(self):
+        if self.current_page:
+            return self.current_page.get_next_page()
+        else:
+            return None
 
     def get_current_stack(self):
         return self.current_stack

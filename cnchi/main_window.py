@@ -29,28 +29,19 @@
 
 """ Main Cnchi Window """
 
+import logging
+import multiprocessing
 import os
 import sys
 import time
-import multiprocessing
-import logging
+
 import config
-import welcome
-import language
-import location
-import check
-import desktop
 import desktop_info
-import features
-import keymap
-import timezone
-import user_info
-import slides
-import summary
-import info
-import substack
 import gtkbasebox
+import info
+import language
 import pages
+import substack
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -58,14 +49,6 @@ from gi.repository import Gtk, Gdk, Atk
 
 import show_message as show
 import misc.extra as misc
-
-from installation import (
-    ask as installation_ask,
-    automatic as installation_automatic,
-    alongside as installation_alongside,
-    advanced as installation_advanced,
-    zfs as installation_zfs
-)
 
 
 def atk_set_image_description(widget, description):
@@ -98,18 +81,14 @@ class MainWindow(Gtk.ApplicationWindow):
         logging.debug("Window size %dx%d", self._main_window_width, self._main_window_height)
 
         self.settings = config.Settings()
-        self.ui_dir = self.settings.get('ui')
         self.cmd_line = cmd_line
         self.params = dict()
         self.data_dir = self.settings.get('data')
 
+        self.gui = {}
+
         self.nav_buttons = {}
         self.sub_nav_btns = {}
-
-        self.pages = pages.Pages()
-
-        self.cnchi_started = False
-        self.timezone_start_needed = False
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -158,9 +137,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # Prepare params dict to pass common parameters to all screens
         self.prepare_shared_parameters()
 
+        self.pages = pages.Pages(self.params)
+
         # Top right Language widget
-        self.language_widget = language.LanguageWidget(self.params, button=self.language_menu_btn)
-        self.popover = Gtk.Popover.new(self.language_menu_btn)
+        self.language_widget = language.LanguageWidget(self.params, button=self.gui["language_button"])
+        self.popover = Gtk.Popover.new(self.gui["language_button"])
         self.popover.add(self.language_widget)
         self.popover.set_position(Gtk.PositionType.BOTTOM)
         self.popover.connect('closed', self.on_language_popover_closed)
@@ -186,10 +167,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Controls if ESC is pressed
         self.connect('key-release-event', self.on_key_release)
 
-        # Connect all ui signals
-        self.ui.connect_signals(self)
-        self.header_ui.connect_signals(self)
-
         # Set window size
         self.set_geometry()
 
@@ -214,11 +191,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         misc.gtk_refresh()
 
-        self.cnchi_started = True
-
-        if self.timezone_start_needed:
-            self.on_has_internet_connection()
-
     def header_for_all_callback(self, widget, data):
         """ Callback for all header elements. """
         if isinstance(widget, Gtk.Box):
@@ -233,14 +205,16 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Parameters that are common to all screens """
 
         self.params['main_window'] = self
-        self.params['main_box_wrapper'] = self.main_box_wrapper
-        self.params['header'] = self.header
-        self.params['ui_dir'] = self.ui_dir
-        self.params['forward_button'] = self.forward_button
+        self.params['ui_dir'] = self.settings.get('ui')
+
+        self.params['main_box_wrapper'] = self.gui["main_box_wrapper"]
+        self.params['header'] = self.gui["header"]
+        self.params['forward_button'] = self.gui["forward_button"]
+        self.params['main_progressbar'] = self.gui["progressbar"]
+
         self.params['backwards_button'] = None
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
-        self.params['main_progressbar'] = self.progressbar
         self.params['process_list'] = self.process_list
         self.params['checks_are_optional'] = self.cmd_line.no_check
         self.params['disable_tryit'] = self.cmd_line.disable_tryit if not self.is_minimal else True
@@ -265,75 +239,75 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             logging.error("Can't load css file")
 
+    def load_gui_objects(self):
+        """ Load all gui objects in self.gui """
+        ui_dir = self.settings.get('ui')
+
+        names = {
+            "cnchi.ui": ["main", "main_box_wrapper", "main_box", "main_stack", "sub_nav_box"],
+            "header.ui": ["header_overlay", "header", "header_nav", "language_button",
+                "header_nav", "progressbar", "logo", "logo_text", "forward_button"]}
+
+        files = ["cnchi.ui", "header.ui"]
+
+        for filename in files:
+            ui_path = os.path.join(ui_dir, filename)
+            builder = Gtk.Builder()
+            builder.add_from_file(ui_path)
+
+            for name in names[filename]:
+                self.gui[name] = builder.get_object(name)
+            # Connect all ui signals
+            builder.connect_signals(self)
+
     def initialize_gui(self):
         """ Initial setup of our UI elements. This must be called during __init__(). """
 
-        ui_path = os.path.join(self.ui_dir, "cnchi.ui")
-        self.ui = Gtk.Builder()
-        self.ui.add_from_file(ui_path)
-        self.add(self.ui.get_object("main"))
+        self.load_gui_objects()
 
-        # This is difficult to follow... main_box, main_stack, sub_nav_box ...
-        self.main_box_wrapper = self.ui.get_object("main_box_wrapper")
-        self.main_box = self.ui.get_object("main_box")
-        self.main_stack = self.ui.get_object("main_stack")
-        self.sub_nav_box = self.ui.get_object("sub_nav_box")
+        self.add(self.gui["main"])
 
-        self.main_stack.set_transition_type(Gtk.StackTransitionType.OVER_LEFT_RIGHT)
-        self.main_stack.set_transition_duration(400)
-
-        # header (header_overlay will contain all header elements)
-        ui_header_path = os.path.join(self.ui_dir, "header.ui")
-        self.header_ui = Gtk.Builder()
-        self.header_ui.add_from_file(ui_header_path)
-
-        self.header_overlay = self.header_ui.get_object("header_overlay")
-        self.header = self.header_ui.get_object("header")
-        self.header_nav = self.header_ui.get_object("header_nav")
-        self.language_menu_btn = self.header_ui.get_object('language_button')
-        self.next_prev_button_box = self.header_ui.get_object('nav_box')
+        self.gui["main_stack"].set_transition_type(Gtk.StackTransitionType.OVER_LEFT_RIGHT)
+        self.gui["main_stack"].set_transition_duration(400)
 
         # Main progress bar (also in header)
-        self.progressbar = self.header_ui.get_object("main_progressbar")
-        self.progressbar.set_name('process_progressbar')
+        self.gui["progressbar"].set_name('process_progressbar')
 
         # Top left logo (in header)
-        self.logo = self.header_ui.get_object("logo")
-        self.logo_text = self.header_ui.get_object("logo_text")
         img_path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
-        self.logo.set_from_file(img_path)
+        if os.path.exists(img_path):
+            self.gui["logo"].set_from_file(img_path)
 
         # Add all header elements to header_overlay
-        self.header_overlay.add_overlay(self.header)
-        self.header_overlay.add_overlay(self.header_nav)
-        self.header_overlay.add_overlay(self.progressbar)
-        self.header_overlay.set_overlay_pass_through(self.header, True)
-        self.header_overlay.set_overlay_pass_through(self.progressbar, True)
-        self.header_overlay.set_overlay_pass_through(self.header_nav, True)
-        self.set_titlebar(self.header_overlay)
+        self.gui["header_overlay"].add_overlay(self.gui["header"])
+        self.gui["header_overlay"].add_overlay(self.gui["header_nav"])
+        self.gui["header_overlay"].add_overlay(self.gui["progressbar"])
+        self.gui["header_overlay"].set_overlay_pass_through(self.gui["header"], True)
+        self.gui["header_overlay"].set_overlay_pass_through(self.gui["progressbar"], True)
+        self.gui["header_overlay"].set_overlay_pass_through(self.gui["header_nav"], True)
+        self.set_titlebar(self.gui["header_overlay"])
 
         # Set widget names so Gtk can use our css
-        self.header.set_name("header")
-        self.logo.set_name("logo")
+        self.gui["header"].set_name("header")
+        self.gui["logo"].set_name("logo")
 
         # Forward button (allows going to next screen)
-        self.forward_button = self.header_ui.get_object("forward_button")
-        atk_set_image_description(self.forward_button, _("Next step"))
-        self.forward_button.set_name('fwd_btn')
-        self.forward_button.set_always_show_image(True)
+        atk_set_image_description(self.gui["forward_button"], _("Next step"))
+        self.gui["forward_button"].set_name('fwd_btn')
+        self.gui["forward_button"].set_always_show_image(True)
 
         # title = "Cnchi {0}".format(info.CNCHI_VERSION)
         title = _("Cnchi Installer")
         self.set_title(title)
-        self.logo_text.set_text(title)
+        self.gui["logo_text"].set_text(title)
 
         welcome_msg = _("Welcome To Antergos!")
         label = Gtk.Label.new()
         label.set_text(welcome_msg)
         # self.header.set_title(welcome_msg)
-        self.header.set_custom_title(label)
-        self.header.get_custom_title().get_style_context().add_class('cnchi_title')
-        self.header.set_show_close_button(False)
+        self.gui["header"].set_custom_title(label)
+        self.gui["header"].get_custom_title().get_style_context().add_class('cnchi_title')
+        self.gui["header"].set_show_close_button(False)
 
     def set_window_size(self, size):
         res = size.split("x")
@@ -354,7 +328,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def set_geometry(self):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
-        self.set_resizable(True)
+        self.set_resizable(False)
         self.set_size_request(self._main_window_width, self._main_window_height)
         self.set_default_size(self._main_window_width, self._main_window_height)
         # self.set_property('height_request', self._main_window_height)
@@ -417,9 +391,20 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_header_nav_button_clicked(self, widget, data=None):
         logging.debug(data)
-        page_name = data if not isinstance(data, dict) else data.get('name', False)
-        curr_page = self.current_page.name
-        curr_stack = self.current_stack.name if hasattr(self.current_stack, 'name') else None
+
+        if isinstance(data, dict):
+            page_name = data.get('name', False)
+        else:
+            page_name = data
+
+        curr_page = self.pages.get_current_page_name()
+
+        if hasattr(self.current_stack, 'name'):
+            curr_stack = self.current_stack.name
+        else:
+            curr_stack = None
+
+
         page = stack = None
 
         logging.debug({'page_name': page_name, 'curr_page': curr_page, 'curr_stack': curr_stack})
@@ -444,17 +429,17 @@ class MainWindow(Gtk.ApplicationWindow):
             logging.warning('Unable to store page values: %s', stored)
             return
 
-        prev_page = self.current_page
+        prev_page = self.pages.get_current_page()
 
         if 'timezone' == prev_page.name:
-            self.main_box_wrapper.set_property('margin_top', 35)
+            self.gui["main_box_wrapper"].set_property('margin_top', 35)
         if 'welcome' != prev_page.name:
-            self.header.set_title('')
+            self.gui["header"].set_title('')
             prev_page.nav_button.set_state_flags(Gtk.StateFlags.NORMAL, True)
         else:
-            self.main_box.set_visible(False)
-            self.main_stack.set_visible(True)
-            self.current_stack = self.main_stack
+            self.gui["main_box"].set_visible(False)
+            self.gui["main_stack"].set_visible(True)
+            self.current_stack = self.gui["main_stack"]
             self.current_stack.can_show = True
             self.current_stack.show_all()
 
@@ -480,7 +465,7 @@ class MainWindow(Gtk.ApplicationWindow):
         elif not self.current_page.in_group:
             self.current_stack = self.main_stack
             self.handle_nav_buttons_state(page_name)
-            self.sub_nav_box.hide()
+            self.gui["sub_nav_box"].hide()
         else:
             self.current_stack = stack
 
@@ -493,9 +478,9 @@ class MainWindow(Gtk.ApplicationWindow):
 
         if 'slides' != self.current_page.name:
             self.current_page.nav_button.set_state_flags(Gtk.StateFlags.SELECTED, True)
-            self.header.set_subtitle('')
+            self.gui["header"].set_subtitle('')
         else:
-            self.header_nav.hide()
+            self.gui["header_nav"].hide()
 
     def handle_nav_buttons_state(self, page_name):
         if self.nav_buttons.get('selected', False):
@@ -519,10 +504,11 @@ class MainWindow(Gtk.ApplicationWindow):
         page = data['name']
         group = data['group']
         prev = data.get('previous', None)
-        curr_btns = self.sub_nav_box.get_children()
+        curr_btns = self.gui["sub_nav_box"].get_children()
         noop = False
         logging.debug('curr_btns is: %s ', curr_btns)
         self.sub_nav_box.hide()
+
         if curr_btns and curr_btns[0] is not data['nav_button_box']:
             logging.debug('curr_btns is not btn_container')
             self.sub_nav_box.remove(curr_btns[0])
@@ -536,24 +522,11 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sub_nav_box.height_request = 43
         self.sub_nav_box.show_all()
 
-    def on_has_internet_connection(self):
-        if self.cnchi_started:
-            if self.pages["location_grp"].get('timezone', False) is False:
-                self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
-                                                                           cnchi_main=self)
-                time.sleep(1)
-                self.pages['location_grp']['timezone'].prepare(show=False)
-        else:
-            self.timezone_start_needed = True
-
-    def on_timezone_set(self):
-        logging.debug('Timezone set')
-
     def on_forward_button_clicked(self, widget=None, data=None):
         """ Show next screen """
 
-        curr_page_name = self.current_page.name
-        next_page_name = self.current_page.get_next_page()
+        curr_page_name = self.pages.get_current_page_name()
+        next_page_name = self.pages.get_next_page()
 
         if not next_page_name:
             logging.warning('next_page_name required: %s', next_page_name)
