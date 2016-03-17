@@ -54,10 +54,12 @@ class GtkBaseBox(Gtk.Box):
         self.main_window = params['main_window']
         self.prev_page = prev_page
         self.next_page = next_page
+
         self.in_group = in_group
         self.can_show = False
         self.nav_button_box = None
         self.nav_button = None
+
         self.stack = None
         self.is_last = is_last
 
