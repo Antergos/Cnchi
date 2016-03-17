@@ -550,8 +550,8 @@ class SummaryScreenStateBox(StateBox):
         hbox_children_wrapper.add(self.label)
         hbox_children_wrapper.set_margin_top(15)
         hbox_children_wrapper.set_margin_bottom(15)
-        hbox_children_wrapper.set_margin_left(15)
-        hbox_children_wrapper.set_margin_right(15)
+        hbox_children_wrapper.set_margin_start(15)
+        hbox_children_wrapper.set_margin_end(15)
 
         hbox.add(hbox_children_wrapper)
         hbox.get_style_context().add_class('statebox_item')

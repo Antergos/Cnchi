@@ -186,8 +186,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.show_all()
 
         self.progressbar_step = 0
-        self.progressbar.set_fraction(0)
-        self.progressbar.hide()
+        self.gui["progressbar"].set_fraction(0)
+        self.gui["progressbar"].hide()
 
         self.set_focus(None)
 

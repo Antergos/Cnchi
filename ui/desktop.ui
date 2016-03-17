@@ -8,8 +8,8 @@
 		<property name="spacing">15</property>
 		<!--<property name="margin_top">30px</property>
 		<property name="margin_bottom">30px</property>
-		<property name="margin_left">50px</property>
-		<property name="margin_right">50px</property>-->
+		<property name="margin_start">50px</property>
+		<property name="margin_end">50px</property>-->
 		<style>
 			<class name="desktop_screen"/>
 		</style>
@@ -78,7 +78,7 @@
 			<object class="GtkLabel" id="desktop_info">
 				<property name="visible">True</property>
 				<property name="can_focus">False</property>
-				<!--<property name="margin_left">70</property>-->
+				<!--<property name="margin_start">70</property>-->
 				<property name="margin_end">0</property>
 				<property name="margin_top">25</property>
 				<property name="label" translatable="yes">label</property>
