@@ -70,7 +70,6 @@ class Pages():
         self.params = params
         self.settings = self.params["settings"]
 
-
     def get_top_pages(self):
         return [p for p in self.pages if not isinstance(self.pages[p], dict)]
 
@@ -121,6 +120,9 @@ class Pages():
 
     def get_current_stack(self):
         return self.current_stack
+
+    def set_current_stack(self, current_stack):
+        self.current_stack = current_stack
 
     def pre_load_pages(self):
         """ Just load the first two screens (the other ones will be loaded later)

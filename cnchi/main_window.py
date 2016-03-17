@@ -90,6 +90,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sub_nav_btns = {}
 
         self.stacks = []
+        self.current_stack = None
 
         # By default, always try to use local /var/cache/pacman/pkg
         self.xz_cache = ["/var/cache/pacman/pkg"]
@@ -386,22 +387,19 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_language_popover_closed(self, widget, data=None):
         self.language_widget.popover_is_visible = False
 
+    def set_progressbar_step(self, add_value):
+        new_value = self.gui["progressbar"].get_fraction() + add_value
+        if new_value > 1:
+            new_value = 1
+        if new_value < 0:
+            new_value = 0
+        self.gui["progressbar"].set_fraction(new_value)
+        if new_value > 0:
+            self.gui["progressbar"].show()
+        else:
+            self.gui["progressbar"].hide()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # ------------------------------------------------------------------------
 
     def on_header_nav_button_clicked(self, widget, data=None):
         logging.debug(data)
@@ -500,18 +498,6 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.gui["header_nav"].hide()
 
-    def set_progressbar_step(self, add_value):
-        new_value = self.gui["progressbar"].get_fraction() + add_value
-        if new_value > 1:
-            new_value = 1
-        if new_value < 0:
-            new_value = 0
-        self.gui["progressbar"].set_fraction(new_value)
-        if new_value > 0:
-            self.gui["progressbar"].show()
-        else:
-            self.gui["progressbar"].hide()
-
     def prepare_sub_nav_buttons(self, data):
         page = data['name']
         group = data['group']
@@ -570,9 +556,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         diff = 2
 
-        #top_pages = [p for p in self.pages if not isinstance(self.pages[p], dict)]
-        #sub_stacks = [self.pages[p]['pages'] for p in self.pages if p not in top_pages]
-        #sub_pages = [p for x in sub_stacks for p in x]
         top_pages = self.pages.get_top_pages()
         sub_stacks = self.pages.get_sub_stacks()
         sub_pages = self.pages.get_sub_pages()
@@ -641,7 +624,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.nav_buttons['forward_button'] = self.gui["forward_button"]
         self.gui["header_nav"].add(self.nav_buttons['forward_button'])
         self.gui["header_nav"].child_set_property(self.nav_buttons['forward_button'], 'packing', 'end')
-
         self.gui["header_nav"].show_all()
         self.current_stack = self.gui["main_stack"]
         self.pages_loaded = True
