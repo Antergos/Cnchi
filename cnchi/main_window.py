@@ -437,7 +437,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if (not page or not page.can_show) and page_name != current_page.next_page:
             return
 
-        logging.debug({'page': page})
+        logging.debug({'storing page': page})
         stored = current_page.store_values()
 
         if not stored:
@@ -463,15 +463,16 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages.set_current_page(page)
 
         if not isinstance(page, gtkbasebox.GtkBaseBox):
-            self.main_stack.show_all()
-            self.main_stack.set_visible_child_name(page_name)
-            self.current_stack = self.pages[page_name]['group']
+            self.gui["main_stack"].show_all()
+            self.gui["main_stack"].set_visible_child_name(page_name)
+            self.current_stack = self.pages.get_sub_page(page_name, 'group')
             self.current_stack.can_show = True
             self.handle_nav_buttons_state(page_name)
 
             # The sub-stack container itself is not a page. Let's proceed to
             # first page within the sub-stack (a non-top-level page)
-            page = self.pages[page_name][self.current_stack.next_page]
+            # page = self.pages[page_name][self.current_stack.next_page]
+            page = self.pages.get_sub_page(page_name, self.current_stack.next_page)
             self.pages.set_current_page(page)
 
             self.prepare_sub_nav_buttons({'name': page.name,
@@ -518,20 +519,20 @@ class MainWindow(Gtk.ApplicationWindow):
         curr_btns = self.gui["sub_nav_box"].get_children()
         noop = False
         logging.debug('curr_btns is: %s ', curr_btns)
-        self.sub_nav_box.hide()
+        self.gui["sub_nav_box"].hide()
 
         if curr_btns and curr_btns[0] is not data['nav_button_box']:
             logging.debug('curr_btns is not btn_container')
-            self.sub_nav_box.remove(curr_btns[0])
+            self.gui["sub_nav_box"].remove(curr_btns[0])
         elif curr_btns and curr_btns[0] is data['nav_button_box']:
             logging.debug('curr_btns is btn_container')
             noop = True
 
         if not noop:
-            self.sub_nav_box.add(data['nav_button_box'])
+            self.gui["sub_nav_box"].add(data['nav_button_box'])
 
-        self.sub_nav_box.height_request = 43
-        self.sub_nav_box.show_all()
+        self.gui["sub_nav_box"].height_request = 43
+        self.gui["sub_nav_box"].show_all()
 
     def on_forward_button_clicked(self, widget=None, data=None):
         """ Show next screen """
