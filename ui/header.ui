@@ -110,7 +110,7 @@
 		</style>
 	</object>
 
-	<object class="GtkProgressBar" id="main_progressbar">
+	<object class="GtkProgressBar" id="progressbar">
 		<property name="visible">True</property>
 		<property name="can_focus">False</property>
 		<property name="valign">end</property>

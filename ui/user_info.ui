@@ -10,8 +10,8 @@
 		<property name="vexpand">True</property>
 		<property name="row_spacing">9</property>
 		<property name="column_spacing">60</property>
-		<property name="margin_left">25</property>
-		<property name="margin_right">25</property>
+		<property name="margin_start">25</property>
+		<property name="margin_end">25</property>
 		<style>
 			<class name="user_info"/>
 		</style>

@@ -114,10 +114,10 @@ class Check(GtkBaseBox):
         has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
 
-        if has_internet and not self.cnchi_notified:
-            self.cnchi_main.on_has_internet_connection()
-            logging.debug('on_has_internet_connection() is running')
-            self.cnchi_notified = True
+        #if has_internet and not self.cnchi_notified:
+        #    self.cnchi_main.on_has_internet_connection()
+        #    logging.debug('on_has_internet_connection() is running')
+        #    self.cnchi_notified = True
 
         on_power = not self.on_battery()
         self.prepare_power_source.set_state(on_power)

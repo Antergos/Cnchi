@@ -260,8 +260,8 @@ class TimezoneMap(Gtk.Widget):
         """ Draw bubble with information text """
         margin_top = 12.0
         margin_bottom = 12.0
-        margin_left = 24.0
-        margin_right = 24.0
+        margin_start = 24.0
+        margin_end = 24.0
 
         # Corner radius
         rounded = 9.0
@@ -282,7 +282,7 @@ class TimezoneMap(Gtk.Widget):
         (ink_rect, logical_rect) = layout.get_pixel_extents()
 
         # Calculate the bubble size based on the text layout size
-        width = logical_rect.width + margin_left + margin_right
+        width = logical_rect.width + margin_start + margin_end
         height = logical_rect.height + margin_top + margin_bottom
 
         if pointx < alloc.width / 2:
@@ -312,7 +312,7 @@ class TimezoneMap(Gtk.Widget):
 
         # And finally draw the text
         cr.set_source_rgb(1, 1, 1)
-        cr.move_to(margin_left, margin_top)
+        cr.move_to(margin_start, margin_top)
         PangoCairo.show_layout(cr, layout)
         cr.restore()
 
