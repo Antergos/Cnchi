@@ -538,7 +538,7 @@ class SummaryScreenStateBox(StateBox):
 
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
-        self.image.set_margin_right(20)
+        self.image.set_margin_end(20)
 
         self.label = Gtk.Label(label=text)
         self.label.set_halign(Gtk.Align.START)
