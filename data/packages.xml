@@ -362,66 +362,6 @@
 		<edition name="KDE" description="KDE Desktop">
 			<packages>
 				<pkgname>antergos-kde-setup</pkgname>
-				<pkgname>ark</pkgname>
-				<pkgname>aspell-en</pkgname>
-				<pkgname>breeze</pkgname>
-				<pkgname>breeze-gtk</pkgname>
-				<pkgname>breeze-kde4</pkgname>
-				<pkgname>cdrdao</pkgname>
-				<pkgname>clementine</pkgname>
-				<pkgname>dolphin</pkgname>
-				<pkgname>dolphin-plugins</pkgname>
-				<pkgname>dvd+rw-tools</pkgname>
-				<pkgname>ffmpegthumbs</pkgname>
-				<pkgname>grub2-editor</pkgname>
-				<pkgname>gwenview</pkgname>
-				<pkgname>k3b</pkgname>
-				<pkgname>kate</pkgname>
-				<pkgname>kcalc</pkgname>
-				<pkgname>kde-gtk-config</pkgname>
-				<pkgname>kdebase-kdepasswd</pkgname>
-				<pkgname>kdebase-kdialog</pkgname>
-				<pkgname>kdebase-kfind</pkgname>
-				<pkgname>kdegraphics-okular</pkgname>
-				<pkgname>kdegraphics-thumbnailers</pkgname>
-				<pkgname>kdenetwork-kopete</pkgname>
-				<pkgname>kde-servicemenus-rootactions</pkgname>
-				<pkgname>kdesudo</pkgname>
-				<pkgname>kdeutils-sweeper</pkgname>
-				<pkgname>kf5</pkgname>
-				<pkgname>kf5-aids</pkgname>
-				<pkgname>kfaenza-icon-theme</pkgname>
-				<pkgname>kipi-plugins</pkgname>
-				<pkgname>khelpcenter</pkgname>
-				<pkgname>kinfocenter</pkgname>
-				<pkgname>kmenuedit</pkgname>
-				<pkgname>konsole</pkgname>
-				<pkgname>kscreen</pkgname>
-				<pkgname>ksshaskpass</pkgname>
-				<pkgname>ksysguard</pkgname>
-				<pkgname>kwallet-pam</pkgname>
-				<pkgname>kwalletmanager</pkgname>
-				<pkgname>kwayland-integration</pkgname>
-				<pkgname>kwin</pkgname>
-				<pkgname>kwrited</pkgname>
-				<pkgname>milou</pkgname>
-				<pkgname>nm-connection-editor</pkgname>
-				<pkgname>numix-icon-theme-square</pkgname>
-				<pkgname>oxygen</pkgname>
-				<pkgname>oxygen-cursors</pkgname>
-				<pkgname>plasma-desktop</pkgname>
-				<pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
-				<pkgname>plasma-pa</pkgname>
-				<pkgname>plasma-workspace</pkgname>
-				<pkgname>plasma-workspace-wallpapers</pkgname>
-				<pkgname>powerdevil</pkgname>
-				<pkgname>qtcurve</pkgname>
-				<pkgname>spectacle</pkgname>
-				<pkgname>systemsettings</pkgname>
-				<pkgname>transmission-qt</pkgname>
-				<pkgname>user-manager</pkgname>
-				<pkgname>vlc</pkgname>
-				<pkgname>xdg-user-dirs</pkgname>
 			</packages>
 		</edition>
 	</editions>
