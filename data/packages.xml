@@ -360,6 +360,7 @@
 		<edition name="KDE" description="KDE Desktop">
 			<packages>
 				<pkgname>antergos-kde-setup</pkgname>
+				<!--
 				<pkgname>ark</pkgname>
 				<pkgname>aspell-en</pkgname>
 				<pkgname>breeze</pkgname>
@@ -406,7 +407,6 @@
 				<pkgname>nm-connection-editor</pkgname>
 				<pkgname>numix-icon-theme-square</pkgname>
 				<pkgname>oxygen</pkgname>
-				<pkgname>oxygen-cursors</pkgname>
 				<pkgname>plasma-desktop</pkgname>
 				<pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
 				<pkgname>plasma-pa</pkgname>
@@ -420,6 +420,7 @@
 				<pkgname>user-manager</pkgname>
 				<pkgname>vlc</pkgname>
 				<pkgname>xdg-user-dirs</pkgname>
+			-->
 			</packages>
 		</edition>
 	</editions>
