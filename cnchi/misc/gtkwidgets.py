@@ -483,10 +483,10 @@ class StateBox(StylizedFrame):
 
         hbox_children_wrapper.add(self.image)
         hbox_children_wrapper.add(self.label)
-        hbox_children_wrapper.set_margin_top(25)
-        hbox_children_wrapper.set_margin_bottom(25)
-        hbox_children_wrapper.set_margin_start(20)
-        hbox_children_wrapper.set_margin_end(20)
+        # hbox_children_wrapper.set_margin_top(25)
+        # hbox_children_wrapper.set_margin_bottom(25)
+        # hbox_children_wrapper.set_margin_start(20)
+        # hbox_children_wrapper.set_margin_end(20)
 
         hbox.add(hbox_children_wrapper)
         hbox.get_style_context().add_class('statebox_item')
