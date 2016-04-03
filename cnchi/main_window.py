@@ -243,8 +243,8 @@ class MainWindow(Gtk.ApplicationWindow):
                     style_provider,
                     Gtk.STYLE_PROVIDER_PRIORITY_USER)
                 loaded = True
-            except GLib.Error:
-                logging.error("Error loading Cnchi CSS file")
+            except GLib.Error as err:
+                logging.error("Error loading Cnchi CSS file: %s", err)
         else:
             logging.error("Can't find Cnchi CSS file")
 
