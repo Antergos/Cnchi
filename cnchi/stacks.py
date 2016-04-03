@@ -31,23 +31,25 @@
 
 import logging
 
-import check
-import desktop
-import features
-import keymap
-import location
-import slides
-import summary
-import timezone
-import user_info
-import welcome
+from stacks import (
+    check,
+    desktop,
+    features,
+    keymap,
+    location,
+    slides,
+    summary,
+    timezone,
+    user_info,
+    welcome
+)
 
 from installation import (
-    ask as installation_ask,
-    automatic as installation_automatic,
-    alongside as installation_alongside,
-    advanced as installation_advanced,
-    zfs as installation_zfs
+    ask,
+    automatic,
+    alongside,
+    advanced,
+    zfs
 )
 
 
@@ -164,28 +166,28 @@ class CnchiStack():
 
         self.pages["disk_grp"] = {'title': 'Disk Setup',
                                   'prev_page': 'desktop_grp',
-                                  'next_page': 'installation_ask',
-                                  'pages': ['installation_ask', 'installation_automatic',
-                                            'installation_alongside', 'installation_advanced',
-                                            'installation_zfs']}
+                                  'next_page': 'ask',
+                                  'pages': ['ask', 'automatic',
+                                            'alongside', 'advanced',
+                                            'zfs']}
 
-        self.pages["disk_grp"]["installation_ask"] = \
-            installation_ask.InstallationAsk(params=self.params)
+        self.pages["disk_grp"]["ask"] = \
+            ask.InstallationAsk(params=self.params)
 
-        self.pages["disk_grp"]["installation_automatic"] = \
-            installation_automatic.InstallationAutomatic(params=self.params, is_last=True)
+        self.pages["disk_grp"]["automatic"] = \
+            automatic.InstallationAutomatic(params=self.params, is_last=True)
 
         if self.settings.get("enable_alongside"):
-            self.pages["disk_grp"]["installation_alongside"] = \
-                installation_alongside.InstallationAlongside(params=self.params)
+            self.pages["disk_grp"]["alongside"] = \
+                alongside.InstallationAlongside(params=self.params)
         else:
-            self.pages["disk_grp"]["installation_alongside"] = None
+            self.pages["disk_grp"]["alongside"] = None
 
-        self.pages["disk_grp"]["installation_advanced"] = \
-            installation_advanced.InstallationAdvanced(params=self.params, is_last=True)
+        self.pages["disk_grp"]["advanced"] = \
+            advanced.InstallationAdvanced(params=self.params, is_last=True)
 
-        self.pages["disk_grp"]["installation_zfs"] = \
-            installation_zfs.InstallationZFS(params=self.params, is_last=True)
+        self.pages["disk_grp"]["zfs"] = \
+            zfs.InstallationZFS(params=self.params, is_last=True)
 
         self.pages["user_info"] = user_info.UserInfo(params=self.params)
         self.pages["summary"] = summary.Summary(params=self.params)

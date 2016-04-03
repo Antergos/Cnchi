@@ -441,14 +441,12 @@ class MainWindow(Gtk.ApplicationWindow):
         if not stored:
             logging.warning('Unable to store page values: %s', stored)
             return
-
-        prev_page = current_page
-
-        if 'timezone' == prev_page.name:
+            
+        if 'timezone' == current_page.name:
             self.gui["main_box_wrapper"].set_property('margin_top', 35)
-        if 'welcome' != prev_page.name:
+        if 'welcome' != current_page.name:
             self.gui["header"].set_title('')
-            prev_page.nav_button.set_state_flags(Gtk.StateFlags.NORMAL, True)
+            current_page.nav_button.set_state_flags(Gtk.StateFlags.NORMAL, True)
         else:
             self.gui["main_box"].set_visible(False)
             self.gui["main_stack"].set_visible(True)
@@ -457,6 +455,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.current_stack.show_all()
 
         self.set_progressbar_step(self.progressbar_step)
+
+        prev_page = current_page
 
         self.pages.set_current_page(page)
 

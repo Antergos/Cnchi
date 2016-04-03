@@ -230,6 +230,10 @@ class Keymap(GtkBaseBox):
                     variant = layout
                     layout = tree_model[iter_parent][0]
 
+        if not layout:
+            # Set English as default keyboard layout if none selected
+            logging.warning("Setting English (US) keyboard layout as none was selected")
+            layout = "English (US)"
         return layout, variant
 
     def on_keymap_row_activated(self, treeview, iterator, path):
@@ -249,13 +253,14 @@ class Keymap(GtkBaseBox):
         (layout_description, variant_description) = self.get_selected_in_treeview(self.keymap_treeview)
 
         if not layout_description:
-            return
+            logging.debug("Layout description not selected")
+            return False
 
         layout_name = self.kbd_names.get_layout_name_by_description(layout_description)
 
         if not layout_name:
             logging.warning("Unknown layout description: %s", layout_description)
-            return
+            return False
 
         self.keyboard_layout['code'] = layout_name
         self.keyboard_layout['description'] = layout_description
@@ -266,15 +271,11 @@ class Keymap(GtkBaseBox):
                 self.keyboard_variant['code'] = variant_name
                 self.keyboard_variant['description'] = variant_description
             else:
-                logging.warning(
-                    "Unknown variant description: %s",
-                    variant_description)
+                logging.warning("Unknown variant description: %s", variant_description)
 
-        # Fixes issue 75:
-        # Won't pick/load the keyboard layout after selecting one
-        # (sticks to qwerty)
         if self.prepare_called:
             self.set_keymap()
+
         return True
 
     def set_keymap(self):

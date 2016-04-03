@@ -54,7 +54,6 @@
 				<pkgname>gstreamer-vaapi</pkgname>
 				<pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
 				<pkgname>libdvdcss</pkgname>
-				<pkgname>libreoffice-installer</pkgname>
 				<pkgname dm='true' name='lightdm'>lightdm</pkgname>
 				<pkgname>lightdm-webkit2-greeter</pkgname>
 				<pkgname>mesa</pkgname>
@@ -294,7 +293,6 @@
 				<pkgname nm='true' name='connman'>connman</pkgname>
 				<pkgname>econnman</pkgname>
 				<pkgname>file-roller</pkgname>
-				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
 				<pkgname>polkit-gnome</pkgname>
 				<pkgname>rage</pkgname> <!-- video player -->
 				<pkgname>terminology</pkgname> <!-- terminal emulator -->
@@ -362,6 +360,7 @@
 		<edition name="KDE" description="KDE Desktop">
 			<packages>
 				<pkgname>antergos-kde-setup</pkgname>
+				<!--
 				<pkgname>ark</pkgname>
 				<pkgname>aspell-en</pkgname>
 				<pkgname>breeze</pkgname>
@@ -408,7 +407,6 @@
 				<pkgname>nm-connection-editor</pkgname>
 				<pkgname>numix-icon-theme-square</pkgname>
 				<pkgname>oxygen</pkgname>
-				<pkgname>oxygen-cursors</pkgname>
 				<pkgname>plasma-desktop</pkgname>
 				<pkgname nm='true' name='NetworkManager'>plasma-nm</pkgname>
 				<pkgname>plasma-pa</pkgname>
@@ -422,6 +420,7 @@
 				<pkgname>user-manager</pkgname>
 				<pkgname>vlc</pkgname>
 				<pkgname>xdg-user-dirs</pkgname>
+			-->
 			</packages>
 		</edition>
 	</editions>
@@ -480,9 +479,9 @@
 		</feature>
 		<feature name="office">
 			<!-- There're now two libreoffice branches, fresh and still
-			Fresh is a LibreOffice branch which contains new features and program enhancements
-			while still is more stable and only gets bug fixes. -->
-			<pkgname conflicts='libreoffice-installer'>libreoffice-fresh</pkgname>
+			Fresh is a libreoffice branch which contains new features and program
+			enhancements while still is more stable and only gets bug fixes. -->
+			<pkgname>libreoffice-fresh</pkgname>
 			<pkgname>hunspell-en</pkgname>
 		</feature>
 		<feature name="visual">
