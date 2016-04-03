@@ -45,7 +45,7 @@ from stacks import Stack
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Atk
+from gi.repository import Gtk, Gdk, Atk, GLib
 
 import show_message as show
 import misc.extra as misc
@@ -177,7 +177,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_icon_from_file(icon_path)
 
         # Use our css file
-        self.apply_css()
+        if not self.apply_css():
+            # Can't load Cnchi CSS - Error.
+            sys.exit(-1)
 
         # Call prepare from first screen (so it can initialise itself)
         self.pages.prepare_current_page()
@@ -227,19 +229,26 @@ class MainWindow(Gtk.ApplicationWindow):
 
         style_css = os.path.join(self.data_dir, "css", "gtk-style.css")
 
+        loaded = False
+
         if os.path.exists(style_css):
             with open(style_css, 'rb') as css:
                 css_data = css.read()
 
             style_provider = Gtk.CssProvider()
-            style_provider.load_from_data(css_data)
-
-            Gtk.StyleContext.add_provider_for_screen(
-                Gdk.Screen.get_default(),
-                style_provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            try:
+                style_provider.load_from_data(css_data)
+                Gtk.StyleContext.add_provider_for_screen(
+                    Gdk.Screen.get_default(),
+                    style_provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_USER)
+                loaded = True
+            except GLib.Error:
+                logging.error("Error loading Cnchi CSS file")
         else:
-            logging.error("Can't load css file")
+            logging.error("Can't find Cnchi CSS file")
+
+        return loaded
 
     def load_gui_objects(self):
         """ Load all gui objects in self.gui """
@@ -441,7 +450,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if not stored:
             logging.warning('Unable to store page values: %s', stored)
             return
-            
+
         if 'timezone' == current_page.name:
             self.gui["main_box_wrapper"].set_property('margin_top', 35)
         if 'welcome' != current_page.name:
