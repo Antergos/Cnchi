@@ -20,12 +20,22 @@ GtkWindow, window {
 	font-family: 'Open Sans';
 }
 
-#header {
+.header_bar, .header_bg_top {
 	box-shadow: none;
 	border-bottom: 0px;
 	border-color: transparent;
 	font-family: 'Open Sans';
-	padding: 8px 12px;
+	padding: 0px 12px;
+	min-height: 63px;
+}
+
+.logo {
+	min-width: 26px;
+	min-height: 26px;
+}
+
+.header_nav, .header_bg_bottom {
+	min-height: 54px;
 }
 
 #process_progressbar, #i_progressbar, #a_progressbar, progressbar {
@@ -228,7 +238,7 @@ GtkTreeView row:selected {
 	border: none;
 }
 
-StateBox {
+.statebox {
 	border-radius: 2px;
 }
 
@@ -252,6 +262,7 @@ StateBox {
 	font-weight: 500;
 	font-family: 'Open Sans';
 	padding: 13px 25px;
+	padding-top: 12px;
 	color: #ffffff;
 	box-shadow: none;
 }
@@ -391,7 +402,7 @@ StateBox {
 }*/
 
 .state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row,
-.state_box, .state_box .horizontal, .list_box row, treeview, treeview row {
+.statebox, .statebox .horizontal, .list_box row, treeview, treeview row {
 	border-top: none;
 	border-left: none;
 	border-right: none;
@@ -420,7 +431,8 @@ StateBox {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.state_box .statebox_item {
+.state_box .statebox_item,
+.statebox .statebox_item {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 25px 20px;
 }
@@ -446,7 +458,7 @@ treeview row {
 }
 
 .state_box .horizontal:prelight,
-.state_box .horizontal:hover  {
+.statebox .horizontal:hover  {
 	background-color: rgba(179, 199, 234, 0.67);
 }
 
@@ -551,7 +563,8 @@ switch slider {
 	border-color: #ecf0f4;
 }
 
-.summary .state_box .statebox_item {
+.summary .state_box .statebox_item,
+.summary .statebox .statebox_item {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 15px 15px;
 }

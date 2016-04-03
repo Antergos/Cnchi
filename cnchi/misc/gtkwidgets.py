@@ -470,6 +470,7 @@ class StateBox(StylizedFrame):
         StylizedFrame.__init__(self)
         hbox = Gtk.Box()
         hbox_children_wrapper = Gtk.Box()
+        self.get_style_context().add_class('statebox')
 
         self.image = Gtk.Image()
         self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
