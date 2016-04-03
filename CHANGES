@@ -1,4 +1,12 @@
+[2016-03-22 04:35:31 -0500]  Merge branch 'pages' of github.com:lots0logs/cnchi-dev                 Dustin Falgout  {c77eeec}
 [2016-03-20 01:21:05 -0500]  going to work on cleaning things up a bit during the next few hours..  Dustin Falgout  {420911c}
+[2016-03-17 21:46:47 +0100]  Nothing at all...                                                          karasu      {606145e}
+[2016-03-17 21:42:49 +0100]  margin_start margin_end                                                    karasu      {c28ee0f}
+[2016-03-17 21:13:45 +0100]  Not finished. There're still duplicated attributes (current_stack, ..      karasu      {60b2aad}
+[2016-03-17 21:05:00 +0100]  Now it's working as it was working before the split, or so it seems        karasu      {c27a3c3}
+[2016-03-17 20:58:01 +0100]  Still working on it                                                        karasu      {eac268c}
+[2016-03-16 20:07:09 +0100]  More work dividing both files                                              karasu      {7fd3e5e}
+[2016-03-16 14:17:13 +0100]  I'm trying to simplify main_window.py using a new pages.py. Hopeful..      karasu      {6da1e4b}
 [2016-03-15 21:27:07 +0100]  Nothing new, just comments                                                 karasu      {12cfedd}
 [2016-03-15 17:25:26 +0100]  Nothing important or new                                                   karasu      {2e6ccc5}
 [2016-03-15 09:55:09 +0100]  Added some comments, just to myself                                        karasu      {b01e4c4}

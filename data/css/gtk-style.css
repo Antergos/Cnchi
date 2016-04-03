@@ -8,7 +8,7 @@
 	font-size: 11px;
 }
 
-GtkWindow {
+GtkWindow, window {
 	border-color: transparent;
 }
 
@@ -21,29 +21,28 @@ GtkWindow {
 }
 
 #header {
-	/*background-image: url('/usr/share/cnchi/data/images/header.png');
-	background-position: top;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;*/
+	box-shadow: none;
 	border-bottom: 0px;
 	border-color: transparent;
 	font-family: 'Open Sans';
 	padding: 8px 12px;
 }
 
-#process_progressbar, #i_progressbar, #a_progressbar {
+#process_progressbar, #i_progressbar, #a_progressbar, progressbar {
 	border-radius: 1px;
 }
 
 #process_progressbar {
 	-GtkProgressBar-min-horizontal-bar-height: 3;
+	min-height: 3px;
 }
 
 #i_progressbar, #a_progressbar {
 	-GtkProgressBar-min-horizontal-bar-height: 12;
+	min-height: 12px;
 }
 
-GtkProgressBar.progressbar {
+GtkProgressBar.progressbar, progressbar progress {
 	color: #FF4081;
 	border-color: shade(#FF4081, 0.8);
 	background-image: linear-gradient(to bottom, #FF4081, #FF4081);
@@ -89,7 +88,8 @@ GtkProgressBar.progressbar {
 	border-width: 1px;
 }
 
-#fwd_btn_install_now .label, #fwd_btn_save .label {
+#fwd_btn_install_now .label, #fwd_btn_save .label,
+#fwd_btn_install_now label, #fwd_btn_save label{
 	font-size: 10px;
 	font-weight: 500;
 }
@@ -103,7 +103,7 @@ GtkProgressBar.progressbar {
 	box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.4);
 }
 
-.header-bar .close_button {
+.header-bar .close_button, headerbar .close_button {
 	padding-left: 5px;
 	padding-right: 0px;
 }
@@ -112,7 +112,8 @@ GtkProgressBar.progressbar {
 	background-color: #f9f9f9;
 }*/
 
-GtkListBoxRow:active, .list-row:active, .list-row:selected {
+GtkListBoxRow:active, .list-row:active, .list-row:selected,
+list row:active, list row:checked {
 	border-color: shade(#07A6ED, 0.8);
 	background-image: linear-gradient(to bottom, #07A6ED, #079fe6);
 	border-bottom: 1px solid rgba(150, 150, 150, 0.1);
@@ -149,15 +150,18 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
 	color: #795aff;
 }
 
-#graph_btn:focused, .automatic_radiobutton:focused {
+#graph_btn:focused, .automatic_radiobutton:focused,
+#graph_btn:focus, .automatic_radiobutton:focus {
 	border-color: #f959b7;
 }
 
-#tryit_btn:focused, .advanced_radiobutton:focused {
+#tryit_btn:focused, .advanced_radiobutton:focused,
+#tryit_btn:focused, .advanced_radiobutton:focus {
 	border-color: #795aff;
 }
 
-.automatic_radiobutton:focused, .advanced_radiobutton:focused {
+.automatic_radiobutton:focused, .advanced_radiobutton:focused,
+.automatic_radiobutton:focus, .advanced_radiobutton:focus {
 	border-width: 2px;
 }
 
@@ -205,7 +209,8 @@ GtkTreeView row:selected {
 }*/
 
 
-#lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
+#lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel,
+#lvm_btn label, #enc_btn label, #zfs_btn label, #home_btn label {
 	font-size: 11px;
 }
 
@@ -218,7 +223,8 @@ GtkTreeView row:selected {
 	font-size: 16px;
 }
 
-#slides GtkScrolledWindow {
+#slides GtkScrolledWindow,
+#slides scrolledwindow {
 	border: none;
 }
 
@@ -238,7 +244,8 @@ StateBox {
 	background: transparent;
 }
 
-.header_nav .button {
+.header_nav .button,
+.header_nav button, .header_nav button.backdrop {
 	background-color: transparent;
 	border: none;
 	font-size: 12px;
@@ -249,12 +256,14 @@ StateBox {
 	box-shadow: none;
 }
 
-.header_nav .button:hover, .header_nav .button:selected, .header_nav .button:insensitive {
+.header_nav .button:hover, .header_nav .button:selected, .header_nav .button:insensitive,
+.header_nav button:hover, .header_nav button:active, header_nav button.backdrop:active, .header_nav button:disabled {
 	background-color: #3F7AE4;
 	color: #ffffff;
 }
 
-.header_nav .button:insensitive .label {
+.header_nav .button:insensitive .label,
+.header_nav button:disabled label {
 	color: #ffffff;
 }
 
@@ -296,11 +305,13 @@ StateBox {
 	background-color: #f7fafd;
 }
 
-.sub_nav_box GtkBox {
+.sub_nav_box GtkBox,
+.sub_nav_box box {
 	background-color: #f7fafd;
 }
 
-.sub_nav_box .button {
+.sub_nav_box .button,
+.sub_nav_box button {
 	background-color: #f7fafd;
 	padding: 11px 45px;
 	border-top-left-radius: 4px;
@@ -314,12 +325,14 @@ StateBox {
 	color: #bec9d6;
 }
 
-.sub_nav_box .button:prelight {
+.sub_nav_box .button:prelight,
+.sub_nav_box button:hover {
 	background-color: #ffffff;
 	color: #07A6ED;
 }
 
-.sub_nav_box .button:selected {
+.sub_nav_box .button:selected,
+.sub_nav_box button:active  {
 	background-color: #eaedf0;
 	color: #07A6ED;
 }
@@ -340,16 +353,19 @@ StateBox {
 	padding: 10px 20px;
 }
 
-#fwd_btn:insensitive, #bk_btn:insensitive {
+#fwd_btn:insensitive, #bk_btn:insensitive,
+#fwd_btn:disabled, #bk_btn:disabled  {
 	color: rgba(255, 255, 255, 0.7);
 }
 
-#fwd_btn:prelight, #bk_btn:prelight, .language_button:prelight {
+#fwd_btn:prelight, #bk_btn:prelight, .language_button:prelight,
+#fwd_btn:hover, #bk_btn:hover, .language_button:hover {
 	background: #3F7AE4;
 	color: #ffffff;
 }
 
-.language_button:prelight {
+.language_button:prelight,
+.language_button:hover {
 	border-color: transparent;
 	color: #ffffff;
 }
@@ -374,7 +390,8 @@ StateBox {
 	padding: 0px 40px;
 }*/
 
-.state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row {
+.state_box, .state_box .horizontal, .list_box_row, .treeview, .treeview row,
+.state_box, .state_box .horizontal, .list_box row, treeview, treeview row {
 	border-top: none;
 	border-left: none;
 	border-right: none;
@@ -408,12 +425,14 @@ StateBox {
 	padding: 25px 20px;
 }
 
-.list_box_row {
+.list_box_row,
+.list_box row  {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 18px 18px;
 }
 
-.treeview row {
+.treeview row,
+treeview row {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 0px;
 }
@@ -426,7 +445,8 @@ StateBox {
 	font-weight: 700;
 }
 
-.state_box .horizontal:prelight {
+.state_box .horizontal:prelight,
+.state_box .horizontal:hover  {
 	background-color: rgba(179, 199, 234, 0.67);
 }
 
@@ -434,23 +454,27 @@ StateBox {
 	font-weight: 700;
 }
 
-.list_box_row .list_row_box {
+.list_box_row .list_row_box,
+.list_box row .list_box row  {
 	padding: 15px;
 }
 
-.switch {
+.switch, switch {
 	border-radius: 4px;
 	padding: 5px;
 	border: none;
 	outline: none;
 	transition: all 0.3s;
+	background-color: #F1F5F9;
 }
 
-.trough:active, .treeview row:selected {
+.trough:active, .treeview row:selected,
+switch:active, treeview row:checked {
 	background-color: #008BDB;
 }
 
-.trough:insensitive {
+.trough:insensitive,
+switch:disabled {
 	background-color: #F1F5F9;
 	color: #8E969E;
 	box-shadow: none;
@@ -458,12 +482,13 @@ StateBox {
 	outline: none;
 }
 
-.switch.slider {
+.switch.slider,
+switch slider {
 	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
 	border: none;
 	transition: all 0.3s;
 }
-.treeview {
+.treeview, treeview {
 	-GtkTreeView-vertical-separator: 33;
 }
 
@@ -489,7 +514,9 @@ StateBox {
 }
 
 .bootloader_entry .button, .bootloader_device_entry .button,
-.part_auto_drive .button {
+.part_auto_drive .button,
+.bootloader_entry button, .bootloader_device_entry button,
+.part_auto_drive button{
 	border-radius: 4px;
 	box-shadow: none;
 	background-color: #ffffff;
@@ -500,12 +527,16 @@ StateBox {
 
 .bootloader_entry .button:hover, .bootloader_device_entry .button:hover,
 .bootloader_entry .button:focused, .bootloader_device_entry .button:focused,
-.part_auto_drive .button:hover, .part_auto_drive .button:focused {
+.part_auto_drive .button:hover, .part_auto_drive .button:focused,
+.bootloader_entry button:hover, .bootloader_device_entry button:hover,
+.bootloader_entry button:focus, .bootloader_device_entry button:focus,
+.part_auto_drive button:hover, .part_auto_drive button:focus {
 	background-color: #f7fafd;
 	border-color: #ecf0f4;
 }
 
-.user_info .entry {
+.user_info .entry,
+.user_info entry  {
 	border-radius: 4px;
 	border: none;
 	box-shadow: none;
@@ -514,7 +545,8 @@ StateBox {
 	color: #42474c;
 }
 
-.user_info .entry:hover, .user_info .entry:focus {
+.user_info .entry:hover, .user_info .entry:focus,
+.user_info entry:hover, .user_info entry:focus {
 	background-color: #f7fafd;
 	border-color: #ecf0f4;
 }
@@ -524,4 +556,5 @@ StateBox {
 	padding: 15px 15px;
 }
 
-.undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }
+.undershoot.top, .undershoot.right, .undershoot.bottom, .undershoot.left,
+undershoot.top, undershoot.right, undershoot.bottom, undershoot.left { background-image: none; background-color: transparent; border: none; box-shadow: none; }
