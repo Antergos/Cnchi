@@ -1,4 +1,10 @@
+[2016-04-03 03:02:27 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {121825d}
 [2016-04-03 03:00:42 -0500]  styles for gtk 3.20                                                    Dustin Falgout  {68d776f}
+[2016-03-30 19:52:59 +0200]  Enable Enlightenment (to start testing it)                                 karasu      {c94e795}
+[2016-03-29 17:14:50 +0200]  Version                                                                    karasu      {df3b936}
+[2016-03-25 15:43:42 +0100]  Do not install libreoffice-installer                                       karasu      {b2cf423}
+[2016-03-25 12:38:55 +0100]  Select English (US) as keyboard layout if none is selected by user         karasu      {ea17b9d}
+[2016-03-25 11:54:23 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into pages         karasu      {cd68b83}
 [2016-03-22 04:35:31 -0500]  Merge branch 'pages' of github.com:lots0logs/cnchi-dev                 Dustin Falgout  {c77eeec}
 [2016-03-20 01:21:05 -0500]  going to work on cleaning things up a bit during the next few hours..  Dustin Falgout  {420911c}
 [2016-03-17 21:46:47 +0100]  Nothing at all...                                                          karasu      {606145e}

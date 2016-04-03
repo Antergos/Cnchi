@@ -42,7 +42,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 import misc.extra as misc
 
@@ -91,7 +91,7 @@ def load_zfs():
     return True
 
 
-class InstallationAsk(GtkBaseBox):
+class InstallationAsk(Page):
     def __init__(self, params, prev_page="disk_group", next_page=None, **kwargs):
         super().__init__(self, params, name="installation_ask", prev_page=prev_page,
                          next_page=next_page, **kwargs)

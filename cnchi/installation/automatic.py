@@ -38,7 +38,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 from installation import install
 from installation import action
@@ -50,7 +50,7 @@ import parted3.filesystems as fs
 DEST_DIR = "/install"
 
 
-class InstallationAutomatic(GtkBaseBox):
+class InstallationAutomatic(Page):
     """ Automatic Installation Screen """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info", **kwargs):
         super().__init__(self, params, name="installation_automatic", prev_page=prev_page,

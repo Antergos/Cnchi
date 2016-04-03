@@ -40,7 +40,7 @@ import tempfile
 import show_message as show
 import bootinfo
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
@@ -97,7 +97,7 @@ def get_partition_size_info(partition_path, human=False):
     return min_size, part_size
 
 
-class InstallationAlongside(GtkBaseBox):
+class InstallationAlongside(Page):
     """ Performs an automatic installation next to a previous installed OS """
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)

@@ -37,11 +37,11 @@ import time
 
 import config
 import desktop_info
-import gtkbasebox
 import info
 import language
-import pages
+from page import Page
 import substack
+from stacks import Stack
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -139,7 +139,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Prepare params dict to pass common parameters to all screens
         self.prepare_shared_parameters()
 
-        self.pages = pages.Pages(self.params)
+        self.pages = Stack(self.params)
 
         # Top right Language widget
         self.language_widget = language.LanguageWidget(self.params, button=self.gui["language_button"])
@@ -460,7 +460,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.pages.set_current_page(page)
 
-        if not isinstance(page, gtkbasebox.GtkBaseBox):
+        if not isinstance(page, Page):
             self.gui["main_stack"].show_all()
             self.gui["main_stack"].set_visible_child_name(page_name)
             self.current_stack = self.pages.get_sub_page(page_name, 'group')
@@ -614,7 +614,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.nav_buttons[page_name].connect(
                 'clicked', self.on_header_nav_button_clicked, page_name)
 
-            if isinstance(page, gtkbasebox.GtkBaseBox):
+            if isinstance(page, Page):
                 page.stack = self.gui["main_stack"]
 
             page.nav_button = self.nav_buttons[page_name]

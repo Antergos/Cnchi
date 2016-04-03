@@ -1,0 +1,27 @@
+[options]
+Architecture = auto
+SigLevel = Required DatabaseOptional
+LocalFileSigLevel = Optional
+
+RootDir = ${destDir}
+DBPath = ${destDir}/var/lib/pacman/
+CacheDir = ${destDir}/var/cache/pacman/pkg
+LogFile = /tmp/pacman.log
+
+# Repositories
+[core]
+Include = /etc/pacman.d/mirrorlist
+
+[extra]
+Include = /etc/pacman.d/mirrorlist
+
+[community]
+Include = /etc/pacman.d/mirrorlist
+
+% if arch == 'x86_64':
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+% endif
+
+[antergos]
+Include = /etc/pacman.d/antergos-mirrorlist

@@ -26,10 +26,10 @@ import dbus
 import misc.extra as misc
 import misc.nm as nm
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 
-class Wireless(GtkBaseBox):
+class Wireless(Page):
     def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
         try:

@@ -45,7 +45,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 # We'll use auto_partition.setup_luks if necessary
 from installation import auto_partition as ap
@@ -75,7 +75,7 @@ def is_int(num):
     return isinstance(num, int)
 
 
-class InstallationZFS(GtkBaseBox):
+class InstallationZFS(Page):
     """ ZFS installation screen class """
     def __init__(
             self, params, prev_page="installation_ask", next_page="summary", **kwargs):

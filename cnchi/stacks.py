@@ -31,7 +31,7 @@
 
 import logging
 
-from stacks import (
+from pages import (
     check,
     desktop,
     features,
@@ -53,7 +53,7 @@ from installation import (
 )
 
 
-class CnchiStack():
+class Stack():
     def __init__(self, params):
         self.current_stack = None
         self.current_grp = None
@@ -138,7 +138,6 @@ class CnchiStack():
         self.pages["check"].prepare('forwards', show=False)
         self.pages["welcome"] = welcome.Welcome(self.params)
         self.current_page = self.pages["welcome"]
-
 
     def load_all(self):
         """ Load pages """

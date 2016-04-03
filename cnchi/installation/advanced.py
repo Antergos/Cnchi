@@ -52,7 +52,7 @@ from installation import action
 
 import show_message as show
 
-from gtkbasebox import GtkBaseBox
+from page import Page
 
 
 COL_PATH = 0
@@ -73,7 +73,7 @@ COL_SSD_SENSITIVE = 14
 COL_ENCRYPTED = 15
 
 
-class InstallationAdvanced(GtkBaseBox):
+class InstallationAdvanced(Page):
     """ Installation advanced class. Custom partitioning. """
 
     def __init__(self, params, prev_page='installation_ask', next_page='user_info', **kwargs):
