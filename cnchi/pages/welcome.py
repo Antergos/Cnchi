@@ -34,7 +34,7 @@ import logging
 import sys
 import queue
 import misc.extra as misc
-from page import Page
+from base_ui import Page
 from gi.repository import GdkPixbuf
 
 

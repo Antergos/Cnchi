@@ -40,7 +40,7 @@ import tempfile
 import show_message as show
 import bootinfo
 
-from page import Page
+from base_ui import Page
 
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets

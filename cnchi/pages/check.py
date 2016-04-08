@@ -43,7 +43,7 @@ import updater
 
 import misc.extra as misc
 from misc.run_cmd import call, popen
-from page import Page
+from base_ui import Page
 
 import show_message as show
 

@@ -52,8 +52,7 @@ from installation import action
 
 import show_message as show
 
-from page import Page
-
+from base_ui import Page
 
 COL_PATH = 0
 COL_FS = 1

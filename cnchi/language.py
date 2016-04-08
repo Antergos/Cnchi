@@ -34,7 +34,7 @@ import os
 import logging
 import sys
 
-from page import Page
+from base_ui import Page
 
 import misc.i18n as i18n
 

@@ -42,7 +42,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from page import Page
+from base_ui import Page
 
 import misc.extra as misc
 

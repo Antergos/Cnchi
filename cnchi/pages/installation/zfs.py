@@ -45,7 +45,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from page import Page
+from base_ui import Page
 
 # We'll use auto_partition.setup_luks if necessary
 from installation import auto_partition as ap

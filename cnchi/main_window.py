@@ -39,9 +39,8 @@ import config
 import desktop_info
 import info
 import language
-from page import Page
-import substack
-from stacks import Stack
+from base_ui import Page, Stack
+from ui_controller import Stack
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -580,7 +579,7 @@ class MainWindow(Gtk.ApplicationWindow):
         for page_name in top_level_pages:
             page = self.pages.get_page(page_name)
             if isinstance(page, dict):
-                sub_stack = substack.SubStack(params=self.params,
+                sub_stack = Stack(params=self.params,
                                               name=page_name,
                                               title=page['title'],
                                               prev_page=page['prev_page'],

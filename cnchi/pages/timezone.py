@@ -40,7 +40,7 @@ import hashlib
 import misc.tz as tz
 import misc.extra as misc
 import misc.timezonemap as timezonemap
-from page import Page
+from base_ui import Page
 from gi.repository import Gtk
 
 NM = 'org.freedesktop.NetworkManager'

@@ -37,14 +37,13 @@ import os
 import logging
 
 
-class Tab(Gtk.Container):
+class CnchiComponent(Gtk.Container):
     """
       Base class for the main components of Cnchi's UI (pages and page stacks).
 
     """
 
-    def __init__(self, params=None, name=None, prev_page=None, next_page=None, top_level=False):
-
+    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
         super().__init__()
 
         logging.debug("Loading '%s' %s", (name, self.__class__.name))
@@ -59,9 +58,10 @@ class Tab(Gtk.Container):
         self.ui_dir = params['ui_dir']
         self.process_list = params['process_list']
         self.main_window = params['main_window']
-        self.prev_page = prev_page
-        self.next_page = next_page
-        self.top_level = top_level
+        self.prev = prev
+        self.next = next
+        self.title = title
+        self._parent = _parent
 
         self.can_show = False
         self.tab_button = None
@@ -78,6 +78,10 @@ class Tab(Gtk.Container):
         self.set_name(name)
         self.name = name
 
+    def get_name(self):
+        """ Return screen name """
+        return self.name
+
     def get_prev_page(self):
         """ Returns previous screen """
         return self.prev_page
@@ -85,6 +89,35 @@ class Tab(Gtk.Container):
     def get_next_page(self):
         """ Returns next screen """
         return self.next_page
+
+    def get_ancestor_window(self):
+        """ Returns first ancestor that is a Gtk Window """
+        return self.get_ancestor(Gtk.Window)
+
+    def get_main_window(self):
+        """ Returns top level window (main window) """
+        if isinstance(self.main_window, Gtk.Window):
+            return self.main_window
+        else:
+            return None
+
+    def setup_tab_button(self, button):
+        self.tab_button = Gtk.Button.new_with_label(self.title)
+
+        self.tab_button.connect(
+            'clicked',
+            self.main_window.on_header_nav_button_clicked,
+            {'parent_name': self._parent.name, 'name': self.name}
+        )
+
+        self._parent.tab_buttons.append(self.tab_button)
+
+
+class Page(CnchiComponent, Gtk.Box):
+    """ Base class for our pages """
+
+    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
+        super().__init__(params, name, prev, next, title, _parent)
 
     def translate_ui(self):
         """ This must be implemented by childen """
@@ -98,17 +131,15 @@ class Tab(Gtk.Container):
         """ This must be implemented by childen """
         raise NotImplementedError
 
-    def get_name(self):
-        """ Return screen name """
-        return self.name
 
-    def get_ancestor_window(self):
-        """ Returns first ancestor that is a Gtk Window """
-        return self.get_ancestor(Gtk.Window)
+class Stack(CnchiComponent, Gtk.Stack):
+    """ Base class for our page stacks """
 
-    def get_main_window(self):
-        """ Returns top level window (main window) """
-        if isinstance(self.main_window, Gtk.Window):
-            return self.main_window
-        else:
-            return None
+    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
+        super().__init__(params, name, prev, next, title, _parent)
+        self._children = []
+        self.tab_buttons_container = None
+        self.tab_buttons = []
+
+
+

@@ -28,10 +28,7 @@
 
 """ Manage Cnchi pages """
 
-
-import logging
-
-from pages import (
+from .pages import (
     check,
     desktop,
     features,
@@ -44,16 +41,16 @@ from pages import (
     welcome
 )
 
-from installation import (
+from .pages.installation import (
+    advanced,
+    alongside,
     ask,
     automatic,
-    alongside,
-    advanced,
     zfs
 )
 
 
-class Stack():
+class UIController:
     def __init__(self, params):
         self.current_stack = None
         self.current_grp = None

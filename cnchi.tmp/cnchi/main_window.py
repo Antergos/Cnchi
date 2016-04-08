@@ -29,33 +29,33 @@
 
 """ Main Cnchi Window """
 
-import os
-import sys
-import multiprocessing
 import logging
-import config
-import welcome
-import language
-import location
+import multiprocessing
+import os
+
 import check
 import desktop
-import desktop_info
 import features
+import gi
 import keymap
-import timezone
-import user_info
+import location
 import slides
 import summary
+import timezone
+import user_info
+import welcome
+
+import config
+import desktop_info
 import info
+import language
 
-import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Atk
+from gi.repository import Gtk, Gdk
 
-import show_message as show
 import misc.extra as misc
 
-from installation import ask as installation_ask
+from pages.installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced
