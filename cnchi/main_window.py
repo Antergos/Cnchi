@@ -40,7 +40,7 @@ import desktop_info
 import info
 import language
 from base_ui import Page, Stack
-from ui_controller import Stack
+from ui_controller import UIController
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -138,7 +138,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Prepare params dict to pass common parameters to all screens
         self.prepare_shared_parameters()
 
-        self.pages = Stack(self.params)
+        self.pages = UIController(self.params)
 
         # Top right Language widget
         self.language_widget = language.LanguageWidget(self.params, button=self.gui["language_button"])

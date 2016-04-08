@@ -1,3 +1,4 @@
+[2016-04-08 02:48:17 -0500]  started work on implementing our plan for an OO code structure         Dustin Falgout  {653036b}
 [2016-04-03 18:18:14 +0200]  Show GLib error :p                                                         karasu      {0af99f6}
 [2016-04-03 18:17:02 +0200]  Fail "graciously" if CSS can't be loaded                                   karasu      {c05249b}
 [2016-04-03 05:53:23 -0500]  adjust the header a bit                                                Dustin Falgout  {a4f247d}
