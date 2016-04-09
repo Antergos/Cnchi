@@ -136,8 +136,8 @@ def php_setup():
     php_path = os.path.join(DEST_DIR, 'etc/httpd/conf/mods-enabled/php.conf')
     with open(php_path, 'w') as php_conf:
         php_conf.write("LoadModule mpm_prefork_module /etc/httpd/modules/mod_mpm_prefork.so\n")
-        php_conf.write("LoadModule php5_module /etc/httpd/modules/libphp5.so\n")
-        php_conf.write("Include conf/extra/php5_module.conf\n")
+        php_conf.write("LoadModule php7_module /etc/httpd/modules/libphp7.so\n")
+        php_conf.write("Include conf/extra/php7_module.conf\n")
 
     # PHP extensions that will be activated
     so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
