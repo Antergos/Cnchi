@@ -118,9 +118,9 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
     path = os.path.join(dest_dir, "etc/mkinitcpio.conf")
     with open(path, "w") as mkinitcpio_file:
         for line in mklines:
-            if "HOOKS" in line:
+            if line.startswith("HOOKS"):
                 line = 'HOOKS="{0}"\n'.format(' '.join(hooks))
-            elif "MODULES" in line:
+            elif line.startswith("MODULES"):
                 line = 'MODULES="{0}"\n'.format(' '.join(modules))
             mkinitcpio_file.write(line)
 
