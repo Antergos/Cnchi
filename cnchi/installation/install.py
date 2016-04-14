@@ -1158,7 +1158,7 @@ class Installation(object):
 
         # Setup user
 
-        default_groups = 'lp,video,network,storage,wheel,audio'
+        default_groups = 'wheel'
 
         if self.vbox:
             # Why there is no vboxusers group? Add it ourselves.
