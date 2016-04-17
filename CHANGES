@@ -1,3 +1,7 @@
+[2016-04-09 20:51:53 +0200]  Merge pull request #574 from Wyn10/patch-2                                 karasu      {fe98e01}
+[2016-04-09 11:58:04 -0400]  Update lamp.py                                                               Wyn       {76bd46f}
+[2016-03-28 02:16:16 -0500]  Update packages.xml. Fixes #570                                        Dustin Falgout  {1763efd}
+[2016-03-14 22:29:44 +0100]  Catch requests.exceptions.ChunkedEncodingError in download_requests        karasu      {840aca6}
 [2016-03-12 06:32:05 +0100]  Do not show bootloader label and combo in zfs in non uefi systems (..      karasu      {62e9335}
 [2016-03-12 06:11:23 +0100]  Merge pull request #565 from karasu/master                                 karasu      {38f4d2b}
 [2016-03-09 20:07:53 +0100]  Fixes issue #552 (until Arch decides to change it)                         karasu      {e85ceb8}

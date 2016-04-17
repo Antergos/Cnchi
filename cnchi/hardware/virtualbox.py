@@ -51,7 +51,7 @@ class Virtualbox(Hardware):
     def get_packages():
         """ Get all required packages """
         # return ["virtualbox-guest-modules", "virtualbox-guest-utils"]
-        return ["virtualbox-guest-dkms", "virtualbox-guest-utils"]
+        return ["linux-headers", "virtualbox-guest-dkms", "virtualbox-guest-utils"]
 
     @staticmethod
     def post_install(dest_dir):
