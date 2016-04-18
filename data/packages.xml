@@ -290,16 +290,19 @@
 		<edition name="Enlightenment" description="Enlightenment Desktop">
 			<packages>
 				<pkgname>antergos-enlightenment-setup</pkgname>
+				<pkgname>ark</pkgname>
+				<pkgname>emotion_generic_players</pkgname>
 				<pkgname>enlightenment</pkgname>
 				<pkgname nm='true' name='connman'>connman</pkgname>
 				<pkgname>econnman</pkgname>
-				<pkgname>file-roller</pkgname>
 				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
-				<pkgname>polkit-gnome</pkgname>
 				<pkgname>rage</pkgname> <!-- video player -->
 				<pkgname>terminology</pkgname> <!-- terminal emulator -->
-				<pkgname>transmission-gtk</pkgname>
+				<pkgname>ttf-dejavu</pkgname>
+				<pkgname>ttf-bitsream-vera</pkgname>
+				<pkgname>udisks2</pkgname>
 				<pkgname>xdg-user-dirs-gtk</pkgname>
+				<pkgname>vlc</pkgname>
 			</packages>
 		</edition>
 

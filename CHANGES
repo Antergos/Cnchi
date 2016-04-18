@@ -1,3 +1,4 @@
+[2016-04-17 13:03:09 +0200]  Add linux-headers when in Virtualbox. Fixes #578                           karasu      {a2a9bad}
 [2016-04-09 20:51:53 +0200]  Merge pull request #574 from Wyn10/patch-2                                 karasu      {fe98e01}
 [2016-04-09 11:58:04 -0400]  Update lamp.py                                                               Wyn       {76bd46f}
 [2016-03-28 02:16:16 -0500]  Update packages.xml. Fixes #570                                        Dustin Falgout  {1763efd}
