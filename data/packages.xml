@@ -299,7 +299,7 @@
 				<pkgname>rage</pkgname> <!-- video player -->
 				<pkgname>terminology</pkgname> <!-- terminal emulator -->
 				<pkgname>ttf-dejavu</pkgname>
-				<pkgname>ttf-bitsream-vera</pkgname>
+				<pkgname>ttf-bitstream-vera</pkgname>
 				<pkgname>udisks2</pkgname>
 				<pkgname>xdg-user-dirs-gtk</pkgname>
 				<pkgname>vlc</pkgname>

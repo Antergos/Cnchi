@@ -1,4 +1,10 @@
+[2016-04-18 22:37:13 +0200]  Merge branch 'master' of github.com:Antergos/Cnchi                         karasu      {32fea35}
+[2016-04-18 22:36:03 +0200]  Update Enlightenment packages' list                                        karasu      {5e88342}
+[2016-04-18 10:40:45 +0200]  Merge pull request #577 from BojanStipic/patch-2                           karasu      {8cc7bc0}
+[2016-04-18 10:39:51 +0200]  Merge pull request #576 from BojanStipic/patch-1                           karasu      {1bcc5c8}
 [2016-04-17 13:03:09 +0200]  Add linux-headers when in Virtualbox. Fixes #578                           karasu      {a2a9bad}
+[2016-04-14 20:25:47 +0200]  change default_groups                                                   Bojan Stipic   {c276979}
+[2016-04-13 22:49:11 +0200]  fix if statement in set_hooks_and_modules                               Bojan Stipic   {b2625a0}
 [2016-04-09 20:51:53 +0200]  Merge pull request #574 from Wyn10/patch-2                                 karasu      {fe98e01}
 [2016-04-09 11:58:04 -0400]  Update lamp.py                                                               Wyn       {76bd46f}
 [2016-03-28 02:16:16 -0500]  Update packages.xml. Fixes #570                                        Dustin Falgout  {1763efd}
