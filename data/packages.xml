@@ -263,6 +263,7 @@
 				<pkgname>eom</pkgname>
 				<pkgname>galculator-gtk2</pkgname>
 				<pkgname>gksu</pkgname>
+				<pkgname>gnome-keyring</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
 				<pkgname>mate</pkgname> <!-- Group -->
 				<pkgname>mate-applets</pkgname>
