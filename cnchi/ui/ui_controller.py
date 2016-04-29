@@ -33,14 +33,12 @@ from .pages import (
     desktop,
     features,
     keymap,
-    location,
     slides,
     summary,
     timezone,
     user_info,
     welcome
 )
-
 from .pages.installation import (
     advanced,
     alongside,
@@ -48,6 +46,8 @@ from .pages.installation import (
     automatic,
     zfs
 )
+
+from ui.pages import location
 
 
 class UIController:

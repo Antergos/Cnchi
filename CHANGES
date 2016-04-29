@@ -1,3 +1,4 @@
+[2016-04-08 02:51:16 -0500]  fix an import that i missed--though it doesnt change anything (we'r..  Dustin Falgout  {57c9723}
 [2016-04-08 02:48:17 -0500]  started work on implementing our plan for an OO code structure         Dustin Falgout  {653036b}
 [2016-04-03 18:18:14 +0200]  Show GLib error :p                                                         karasu      {0af99f6}
 [2016-04-03 18:17:02 +0200]  Fail "graciously" if CSS can't be loaded                                   karasu      {c05249b}

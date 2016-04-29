@@ -36,8 +36,77 @@ from gi.repository import Gtk, Gdk
 import os
 import logging
 
+TPL_DIRECTORY = os.path.normpath()
 
-class CnchiComponent(Gtk.Container):
+
+class Widget(Gtk.Widget):
+    """
+    Base class for all of Cnchi's UI classes. This will ensure we have the utmost control
+    over Cnchi's UI code making it easier to extend in the future as needed.
+
+    Attributes:
+        name (str): a name for this widget.
+        template_dir (str): The absolute path to our glade template directory for this widget.
+        ui_dir (str): The absolute path to our ui directory.
+        settings (dict): Settings object as class attribute (common to all instances)
+
+    """
+
+    cn_settings = None
+
+    def __init__(self, template_dir='', name='', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.set('template_dir', template_dir)
+        self.set('name', name)
+
+        if self.get('settings') is None:
+            self.set('settings', {})
+
+    def get(self, attribute=None):
+        """
+        Getter method that handles prefixing our attributes automatically.
+
+        Args:
+            attribute (str): Attribute to get
+
+        Returns:
+            (mixed) value of requested attribute.
+
+        """
+        if attribute is None:
+            msg = '{0}.get() called without an attribute to "get".'
+            logging.debug(msg.format(self.__class__.__name__))
+            return
+
+        attr = 'cn_{0}'.format(attribute)
+
+        return getattr(self, attr)
+
+    def set(self, attribute=None, value=None):
+        """
+        Setter method that handles prefixing our attributes automatically.
+
+        Args:
+            attribute (str): Attribute name to set
+            value (mixed): Attribute value to set
+
+        Returns:
+            True if attribute was set successfully.
+
+        """
+        if attribute is None or value is None:
+            msg = '{0}.set() called without an attribute or value to "set". '
+            msg += 'attribute was: {1}. value was: {2}'
+            logging.debug(msg.format(self.__class__.__name__, attribute, value))
+            return
+
+        attr = 'cn_{0}'.format(attribute)
+
+        return setattr(self, attr, value)
+
+
+class Container(Widget, Gtk.Container):
     """
       Base class for the main components of Cnchi's UI (pages and page stacks).
 
@@ -113,7 +182,7 @@ class CnchiComponent(Gtk.Container):
         self._parent.tab_buttons.append(self.tab_button)
 
 
-class Page(CnchiComponent, Gtk.Box):
+class Page(Container, Gtk.Box):
     """ Base class for our pages """
 
     def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
@@ -132,14 +201,11 @@ class Page(CnchiComponent, Gtk.Box):
         raise NotImplementedError
 
 
-class Stack(CnchiComponent, Gtk.Stack):
+class Stack(Container, Gtk.Stack):
     """ Base class for our page stacks """
 
     def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
         super().__init__(params, name, prev, next, title, _parent)
-        self._children = []
-        self.tab_buttons_container = None
-        self.tab_buttons = []
 
 
 

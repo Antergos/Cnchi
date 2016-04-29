@@ -27,17 +27,15 @@
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-from gi.repository import Gtk
 import gettext
 import locale
-import os
 import logging
+import os
 import sys
 
-from base_ui import Page
+from gi.repository import Gtk
 
 import misc.i18n as i18n
-
 from rank_mirrors import AutoRankmirrorsProcess
 
 # Useful vars for gettext (translations)

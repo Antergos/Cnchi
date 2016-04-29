@@ -55,7 +55,7 @@ from gi.repository import Gtk, Gdk
 
 import misc.extra as misc
 
-from pages.installation import ask as installation_ask
+from ui.pages.installation import ask as installation_ask
 from installation import automatic as installation_automatic
 from installation import alongside as installation_alongside
 from installation import advanced as installation_advanced

@@ -53,8 +53,6 @@ import gettext
 import locale
 import uuid
 import gi
-import requests
-import json
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
@@ -73,7 +71,7 @@ except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
 try:
-    import main_window
+    from ui import main_window
 except ImportError as err:
     msg = "Cannot create Cnchi main window: {0}".format(err.msg)
     logging.error(msg)

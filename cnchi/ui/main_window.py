@@ -33,20 +33,19 @@ import logging
 import multiprocessing
 import os
 import sys
-import time
+
+import gi
 
 import config
 import desktop_info
 import info
 import language
-from base_ui import Page, Stack
-from ui_controller import UIController
+from ui.base import Page, Stack
+from ui.ui_controller import UIController
 
-import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Atk, GLib
+from gi.repository import Gtk, Gdk, GLib
 
-import show_message as show
 import misc.extra as misc
 
 

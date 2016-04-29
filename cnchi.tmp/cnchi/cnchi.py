@@ -28,10 +28,9 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
-
 import os
-import sys
 import shutil
+import sys
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -49,8 +48,6 @@ import gettext
 import locale
 import uuid
 import gi
-import requests
-import json
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
@@ -92,7 +89,7 @@ class CnchiApp(Gtk.Application):
     def do_activate(self):
         """ Override the 'activate' signal of GLib.Application. """
         try:
-            import main_window
+            from ui import main_window
         except ImportError as err:
             msg = "Cannot create Cnchi main window: {0}".format(err)
             logging.error(msg)
