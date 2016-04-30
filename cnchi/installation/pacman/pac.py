@@ -31,12 +31,12 @@
 
 """ Module interface to pyalpm """
 
-import sys
-import math
+import inspect
 import logging
+import math
 import os
 import queue
-import inspect
+import sys
 
 try:
     _("x")
@@ -44,9 +44,9 @@ except NameError:
     import gettext
     _ = gettext.gettext
 
-import pacman.alpm_events as alpm
-import pacman.pkginfo as pkginfo
-import pacman.pacman_conf as config
+from installation import pacman as alpm
+import installation.pacman.pkginfo as pkginfo
+import installation.pacman.pacman_conf as config
 
 try:
     import pyalpm

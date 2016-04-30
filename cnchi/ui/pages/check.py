@@ -40,7 +40,7 @@ import misc.extra as misc
 import show_message as show
 import updater
 from misc.run_cmd import call
-from ui.base import Page
+from ui.page import Page
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'

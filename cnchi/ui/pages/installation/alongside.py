@@ -36,11 +36,11 @@ import os
 import subprocess
 import tempfile
 
-import bootinfo
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
 import show_message as show
-from ui.base import Page
+from installation.boot import bootinfo
+from ui.page import Page
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500

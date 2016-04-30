@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  info.py
+#  stack.py
 #
 #  Copyright © 2013-2016 Antergos
 #
@@ -26,12 +26,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Base class for Cnchi's UI """
 
-""" Set some Cnchi global constants """
+import gi
 
-CNCHI_VERSION = "0.15.53"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+from ui.container import Container
+
+
+class Stack(Container, Gtk.Stack):
+    """ Base class for our page stacks """
+
+    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
+        super().__init__(params, name, prev, next, title, _parent)
+
+
+

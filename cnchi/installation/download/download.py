@@ -28,15 +28,15 @@
 
 """ Module to download packages """
 
-import os
 import logging
+import os
 import queue
 
-import pacman.pac as pac
-import download.metalink as ml
 import download.download_requests as download_requests
 
+import installation.download.metalink as ml
 import misc.extra as misc
+from installation import pacman as pac
 
 
 class DownloadPackages(object):

@@ -31,20 +31,17 @@
 
 # ******************* NO GPT SUPPORT, YET ***************************************
 
-import sys
-import os
 import logging
+import os
 import subprocess
 import tempfile
-
-import show_message as show
-import bootinfo
 
 from gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
-
+import show_message as show
+from installation.boot import bootinfo
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500

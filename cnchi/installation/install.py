@@ -29,33 +29,26 @@ import glob
 import logging
 import os
 import queue
+import re
 import shutil
 import sys
 import time
-import re
+
+import parted3.filesystems as fs
+from mako.template import Template
 
 import desktop_info
 import encfs
-
-from download import download
-
-from installation import auto_partition
-from installation import special_dirs
-from installation import mkinitcpio
+import hardware.hardware as hardware
+import installation.pacman.pac as pac
+import misc.extra as misc
 from installation import firewall
-
+from installation import mkinitcpio
+from installation import special_dirs
+from installation.download import download
+from installation.storage import auto_partition
 from misc.extra import InstallError
 from misc.run_cmd import call, chroot_call
-
-import parted3.filesystems as fs
-import misc.extra as misc
-import pacman.pac as pac
-
-from mako.template import Template
-
-import hardware.hardware as hardware
-
-from installation.boot import loader
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"

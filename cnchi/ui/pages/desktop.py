@@ -36,7 +36,7 @@ import os
 import logging
 
 import desktop_info
-from ui.base import Page
+from ui.page import Page
 
 import misc.extra as misc
 

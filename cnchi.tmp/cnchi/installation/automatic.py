@@ -29,12 +29,12 @@
 
 """ Automatic installation screen """
 
-import os
 import logging
-
-import parted
+import os
 
 import gi
+import parted
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
@@ -42,7 +42,7 @@ from gtkbasebox import GtkBaseBox
 
 from installation import install
 from installation import action
-from installation import auto_partition
+from installation.storage import auto_partition
 
 import misc.extra as misc
 import parted3.fs_module as fs

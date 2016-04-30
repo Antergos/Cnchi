@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 #
-#  info.py
+#  page.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -26,12 +26,28 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+import gi
 
-""" Set some Cnchi global constants """
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
-CNCHI_VERSION = "0.15.53"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
+from ui.container import Container
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+
+class Page(Container, Gtk.Box):
+    """ Base class for our pages """
+
+    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
+        super().__init__(params, name, prev, next, title, _parent)
+
+    def translate_ui(self):
+        """ This must be implemented by childen """
+        raise NotImplementedError
+
+    def prepare(self, direction):
+        """ This must be implemented by childen """
+        raise NotImplementedError
+
+    def store_values(self):
+        """ This must be implemented by childen """
+        raise NotImplementedError

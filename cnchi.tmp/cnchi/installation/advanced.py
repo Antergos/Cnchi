@@ -29,21 +29,20 @@
 
 """ Installation advanced module. Custom partition screen """
 
-
-import os
 import logging
+import os
 import re
+
+import gi
+import parted3.fs_module as fs
+import parted3.lvm as lvm
+import parted3.partition_module as pm
+import parted3.used_space as used_space
 
 import misc.extra as misc
 import misc.validation as validation
 from misc.run_cmd import call
 
-import parted3.partition_module as pm
-import parted3.fs_module as fs
-import parted3.lvm as lvm
-import parted3.used_space as used_space
-
-import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
@@ -2175,7 +2174,7 @@ class InstallationAdvanced(GtkBaseBox):
                 call(cmd)
 
         # We'll use auto_partition.setup_luks if necessary
-        from installation import auto_partition as ap
+        from installation.storage import auto_partition as ap
 
         partitions = {}
         if self.disks is None:

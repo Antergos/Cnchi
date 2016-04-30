@@ -42,7 +42,7 @@ from gi.repository import Gtk
 import misc.extra as misc
 import misc.timezonemap as timezonemap
 import misc.tz as tz
-from ui.base import Page
+from ui.page import Page
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70

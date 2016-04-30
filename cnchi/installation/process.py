@@ -29,12 +29,12 @@
 
 """ Format and Installation process module. """
 
-import multiprocessing
-import subprocess
-import traceback
 import logging
-import sys
+import multiprocessing
 import queue
+import subprocess
+import sys
+import traceback
 
 try:
     import pyalpm
@@ -43,7 +43,7 @@ except ImportError:
 
 import misc.extra as misc
 
-from download import download
+from installation.download import download
 
 from installation import select_packages as pack
 

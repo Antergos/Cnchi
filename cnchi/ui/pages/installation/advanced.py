@@ -34,13 +34,13 @@ import os
 import re
 
 import gi
-
-import misc.extra as misc
-import misc.validation as validation
 import parted3.filesystems as fs
 import parted3.lvm as lvm
 import parted3.partition_module as pm
 import parted3.used_space as used_space
+
+import misc.extra as misc
+import misc.validation as validation
 from misc.run_cmd import call
 
 gi.require_version('Gtk', '3.0')
@@ -51,7 +51,7 @@ from installation import action
 
 import show_message as show
 
-from ui.base import Page
+from ui.page import Page
 
 COL_PATH = 0
 COL_FS = 1
@@ -2175,7 +2175,7 @@ class InstallationAdvanced(Page):
                 call(cmd)
 
         # We'll use auto_partition.setup_luks if necessary
-        from installation import auto_partition as ap
+        from installation.storage import auto_partition as ap
 
         partitions = {}
         if self.disks is None:

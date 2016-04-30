@@ -29,20 +29,17 @@
 
 """ Format and Installation process module. """
 
-import multiprocessing
-import subprocess
-import traceback
 import logging
-import sys
-import queue
-
+import multiprocessing
 import pyalpm
+import queue
+import subprocess
+import sys
+import traceback
 
 import misc.extra as misc
-
-from download import download
-
 from installation import select_packages as pack
+from installation.download import download
 
 
 class Process(multiprocessing.Process):

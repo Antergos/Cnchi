@@ -32,7 +32,7 @@ from gi.repository import Gtk
 
 import misc.validation as validation
 import show_message as show
-from ui.base import Page
+from ui.page import Page
 
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"

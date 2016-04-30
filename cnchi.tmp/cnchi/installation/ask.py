@@ -29,16 +29,15 @@
 
 """ Asks which type of installation the user wants to perform """
 
-import os
-import sys
-import queue
-import time
 import logging
+import os
 import subprocess
-
-import bootinfo
+import time
 
 import gi
+
+from installation.boot import bootinfo
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 

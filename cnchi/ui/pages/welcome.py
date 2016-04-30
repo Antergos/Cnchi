@@ -35,7 +35,7 @@ import sys
 from gi.repository import GdkPixbuf
 
 import misc.extra as misc
-from ui.base import Page
+from ui.page import Page
 
 
 class Welcome(Page):

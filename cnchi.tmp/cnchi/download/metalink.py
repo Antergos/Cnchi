@@ -30,18 +30,15 @@
 
 """ Operations with metalinks """
 
-import logging
-import tempfile
-import os
-
-import xml.dom.minidom as minidom
-import hashlib
-import re
 import argparse
-
-from collections import deque
-
+import hashlib
+import logging
+import os
 import pyalpm
+import re
+import tempfile
+import xml.dom.minidom as minidom
+from collections import deque
 
 try:
     import xml.etree.cElementTree as eTree
@@ -471,7 +468,7 @@ def test():
 
     import gc
     import pprint
-    import cnchi.pacman.pac as pac
+    import installation.pacman.pac as pac
 
     try:
         pacman = pac.Pac(

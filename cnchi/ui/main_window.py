@@ -40,7 +40,8 @@ import config
 import desktop_info
 import info
 import language
-from ui.base import Page, Stack
+from ui.stack import Stack
+from ui.page import Page
 from ui.ui_controller import UIController
 
 gi.require_version('Gtk', '3.0')

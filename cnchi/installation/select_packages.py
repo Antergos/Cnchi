@@ -28,8 +28,8 @@ import logging
 import os
 import queue
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 
 try:
     import xml.etree.cElementTree as eTree
@@ -39,7 +39,7 @@ except ImportError as err:
 import desktop_info
 import info
 
-import pacman.pac as pac
+from installation import pacman as pac
 import misc.extra as misc
 from misc.extra import InstallError
 

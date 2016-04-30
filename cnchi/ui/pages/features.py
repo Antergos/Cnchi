@@ -39,7 +39,7 @@ import features_info
 
 import misc.extra as misc
 
-from ui.base import Page
+from ui.page import Page
 
 COL_IMAGE = 0
 COL_TITLE = 1

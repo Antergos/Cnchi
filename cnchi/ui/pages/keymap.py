@@ -39,7 +39,7 @@ import misc.keyboard_names as keyboard_names
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib
 
-from ui.base import Page
+from ui.page import Page
 
 
 class Keymap(Page):

@@ -36,12 +36,12 @@ import time
 
 import gi
 
-import bootinfo
+from installation.boot import bootinfo
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from ui.base import Page
+from ui.page import Page
 
 import misc.extra as misc
 
