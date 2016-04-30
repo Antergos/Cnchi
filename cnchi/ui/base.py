@@ -28,20 +28,21 @@
 
 """ Base class for Cnchi's UI """
 
+import os
+import logging
+import inspect
 import gi
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-import os
-import logging
 
-TPL_DIRECTORY = os.path.normpath()
+TPL_DIRECTORY = '/usr/share/cnchi/ui'
 
 
 class Widget(Gtk.Widget):
     """
-    Base class for all of Cnchi's UI classes. This will ensure we have the utmost control
+    Base class for all of Cnchi's UI classes. This gives us the utmost control
     over Cnchi's UI code making it easier to extend in the future as needed.
 
     Attributes:
@@ -52,58 +53,40 @@ class Widget(Gtk.Widget):
 
     """
 
-    cn_settings = None
+    settings = None
 
     def __init__(self, template_dir='', name='', *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.set('template_dir', template_dir)
-        self.set('name', name)
+        self.template_dir = template_dir
+        self.name = name
 
-        if self.get('settings') is None:
-            self.set('settings', {})
+        self.ui = self.template = None
 
-    def get(self, attribute=None):
-        """
-        Getter method that handles prefixing our attributes automatically.
+        if self.settings is None:
+            self.settings = {}
 
-        Args:
-            attribute (str): Attribute to get
+        if self.template_dir:
+            self.load_template()
 
-        Returns:
-            (mixed) value of requested attribute.
+    def load_template(self):
+        self.ui = Gtk.Builder()
+        self.template = os.path.join(self.template_dir, "{}.ui".format(self.name))
+        self.ui.add_from_file(self.template)
 
-        """
-        if attribute is None:
-            msg = '{0}.get() called without an attribute to "get".'
-            logging.debug(msg.format(self.__class__.__name__))
-            return
+        # Connect UI signals
+        self.ui.connect_signals(self)
 
-        attr = 'cn_{0}'.format(attribute)
+    def get_ancestor_window(self):
+        """ Returns first ancestor that is a Gtk Window """
+        return self.get_ancestor(Gtk.Window)
 
-        return getattr(self, attr)
-
-    def set(self, attribute=None, value=None):
-        """
-        Setter method that handles prefixing our attributes automatically.
-
-        Args:
-            attribute (str): Attribute name to set
-            value (mixed): Attribute value to set
-
-        Returns:
-            True if attribute was set successfully.
-
-        """
-        if attribute is None or value is None:
-            msg = '{0}.set() called without an attribute or value to "set". '
-            msg += 'attribute was: {1}. value was: {2}'
-            logging.debug(msg.format(self.__class__.__name__, attribute, value))
-            return
-
-        attr = 'cn_{0}'.format(attribute)
-
-        return setattr(self, attr, value)
+    def get_main_window(self):
+        """ Returns top level window (main window) """
+        if isinstance(self.main_window, Gtk.Window):
+            return self.main_window
+        else:
+            return None
 
 
 class Container(Widget, Gtk.Container):
@@ -112,10 +95,15 @@ class Container(Widget, Gtk.Container):
 
     """
 
-    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
-        super().__init__()
+    params = None
 
-        logging.debug("Loading '%s' %s", (name, self.__class__.name))
+    def __init__(self, template_dir='', name='', *args, **kwargs):
+        super().__init__(template_dir=template_dir, name=name, *args, **kwargs)
+
+        logging.debug("Loading '%s' %s", name, self.__class__.name)
+
+        if self.params is None:
+            self.params = {}
 
         self.backwards_button = params['backwards_button']
         self.callback_queue = params['callback_queue']
@@ -135,51 +123,10 @@ class Container(Widget, Gtk.Container):
         self.can_show = False
         self.tab_button = None
 
-        self.ui = Gtk.Builder()
-        self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
-        self.ui.add_from_file(self.ui_file)
-
-        # Connect UI signals
-        self.ui.connect_signals(self)
-
         self.add(self.ui.get_object(name))
 
         self.set_name(name)
         self.name = name
-
-    def get_name(self):
-        """ Return screen name """
-        return self.name
-
-    def get_prev_page(self):
-        """ Returns previous screen """
-        return self.prev_page
-
-    def get_next_page(self):
-        """ Returns next screen """
-        return self.next_page
-
-    def get_ancestor_window(self):
-        """ Returns first ancestor that is a Gtk Window """
-        return self.get_ancestor(Gtk.Window)
-
-    def get_main_window(self):
-        """ Returns top level window (main window) """
-        if isinstance(self.main_window, Gtk.Window):
-            return self.main_window
-        else:
-            return None
-
-    def setup_tab_button(self, button):
-        self.tab_button = Gtk.Button.new_with_label(self.title)
-
-        self.tab_button.connect(
-            'clicked',
-            self.main_window.on_header_nav_button_clicked,
-            {'parent_name': self._parent.name, 'name': self.name}
-        )
-
-        self._parent.tab_buttons.append(self.tab_button)
 
 
 class Page(Container, Gtk.Box):
