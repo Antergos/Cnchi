@@ -39,8 +39,8 @@ from ui.container import Container
 class Stack(Container, Gtk.Stack):
     """ Base class for our page stacks """
 
-    def __init__(self, params=None, name=None, prev=None, next=None, title=None, _parent=None):
-        super().__init__(params, name, prev, next, title, _parent)
+    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
+        super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
 
 
 

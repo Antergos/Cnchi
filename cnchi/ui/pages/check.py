@@ -51,7 +51,7 @@ MIN_ROOT_SIZE = 8000000000
 
 
 class Check(Page):
-    """ Check class """
+    """ System requirements check page """
 
     def __init__(self, params, prev_page="welcome", next_page="location_grp", cnchi_main=None):
         """ Init class ui """

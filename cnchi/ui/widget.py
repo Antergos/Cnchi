@@ -32,8 +32,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-TPL_DIRECTORY = '/usr/share/cnchi/tpl'
-UI_DIRECTORY = '/usr/share/cnchi/cnchi/ui'
+TPL_DIR = '/usr/share/cnchi/tpl'
+UI_DIR = '/usr/share/cnchi/cnchi/ui'
 
 
 class Widget(Gtk.Widget):
@@ -52,12 +52,13 @@ class Widget(Gtk.Widget):
     settings = None
     main_window = None
 
-    def __init__(self, template_dir='', name='', ui_dir=UI_DIRECTORY, *args, **kwargs):
+    def __init__(self, template_dir=TPL_DIR, name='', ui_dir=UI_DIR, parent=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.template_dir = template_dir
         self.name = name
         self.ui_dir = ui_dir
+        self._parent = parent
 
         self.ui = self.template = None
 
@@ -73,10 +74,11 @@ class Widget(Gtk.Widget):
     def load_template(self):
         self.ui = Gtk.Builder()
         self.template = os.path.join(self.template_dir, "{}.ui".format(self.name))
-        self.ui.add_from_file(self.template)
 
-        # Connect UI signals
-        self.ui.connect_signals(self)
+        if os.path.exists(self.template):
+            self.ui.add_from_file(self.template)
+            # Connect UI signals
+            self.ui.connect_signals(self)
 
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
@@ -84,7 +86,5 @@ class Widget(Gtk.Widget):
 
     def get_main_window(self):
         """ Returns top level window (main window) """
-        if isinstance(self.main_window, Gtk.Window):
-            return self.main_window
-        else:
-            return None
+        return self.main_window if isinstance(self.main_window, Gtk.Window) else None
+

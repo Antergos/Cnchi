@@ -43,33 +43,15 @@ class Container(Widget, Gtk.Container):
 
     params = None
 
-    def __init__(self, template_dir='', name='', *args, **kwargs):
-        super().__init__(template_dir=template_dir, name=name, *args, **kwargs)
+    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
+        super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
 
         logging.debug("Loading '%s' %s", name, self.__class__.name)
 
         if self.params is None:
             self.params = {}
 
-        self.backwards_button = params['backwards_button']
-        self.callback_queue = params['callback_queue']
-        self.disable_tryit = params['disable_tryit']
-        self.forward_button = params['forward_button']
-        self.header = params['header']
-        self.main_progressbar = params['main_progressbar']
-        self.settings = params['settings']
-        self.ui_dir = params['ui_dir']
-        self.process_list = params['process_list']
-        self.main_window = params['main_window']
-        self.prev = prev
-        self.next = next
-        self.title = title
-        self._parent = _parent
+        self.children = []
 
-        self.can_show = False
-        self.tab_button = None
-
-        self.add(self.ui.get_object(name))
-
-        self.set_name(name)
-        self.name = name
+        params = ['callback_queue', 'disable_tryit', 'top_nav_buttons', 'header', 'sub_nav_buttons'
+                  'main_progressbar', 'process_list', 'main_window']
