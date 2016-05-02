@@ -53,9 +53,9 @@ MIN_ROOT_SIZE = 8000000000
 class Check(Page):
     """ System requirements check page """
 
-    def __init__(self, params, prev_page="welcome", next_page="location_grp", cnchi_main=None):
+    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
         """ Init class ui """
-        super().__init__(self, params, "check", prev_page, next_page)
+        super().__init__(template_dir=template_dir, name=name, parent=None, *args, **kwargs)
 
         self.remove_timer = False
         self.title = _("System Check")
@@ -68,34 +68,18 @@ class Check(Page):
         self.prepare_best_results = None
         self.updated = None
         self.latest_iso = None
-        self.cnchi_main = cnchi_main
         self.cnchi_notified = False
         self.has_space = False
         self.has_internet = False
         self.has_iso = False
         self.is_updated = False
-        self.header = params['header']
+        self.header = self.params['header']
+        self.checks_are_optional = False
+
+        if 'checks_are_optional' in self.params:
+            self.checks_are_optional = self.params['checks_are_optional']
 
         self.header.set_title('')
-
-        if 'checks_are_optional' in params:
-            self.checks_are_optional = params['checks_are_optional']
-        else:
-            self.checks_are_optional = False
-
-    def translate_ui(self):
-        """ Translates all ui elements """
-        # self.header.set_subtitle(self.title)
-
-        self.updated = self.ui.get_object("updated")
-
-        self.latest_iso = self.ui.get_object("latest_iso")
-
-        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-
-        self.prepare_power_source = self.ui.get_object("prepare_power_source")
-
-        self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
 
     def check_all(self):
         """ Check that all requirements are meet """
@@ -241,7 +225,12 @@ class Check(Page):
 
     def prepare(self, direction=None, show=True):
         """ Load screen """
-        self.translate_ui()
+        self.updated = self.ui.get_object("updated")
+        self.latest_iso = self.ui.get_object("latest_iso")
+        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
+        self.prepare_power_source = self.ui.get_object("prepare_power_source")
+        self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
+
         result = self.check_all()
         if result is not None and show:
             self.set_valign(Gtk.Align.START)

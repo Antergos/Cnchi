@@ -40,10 +40,6 @@ class Page(Container, Gtk.Box):
     def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
         super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
 
-    def translate_ui(self):
-        """ This must be implemented by childen """
-        raise NotImplementedError
-
     def prepare(self, direction):
         """ This must be implemented by childen """
         raise NotImplementedError

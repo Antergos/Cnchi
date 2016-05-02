@@ -32,16 +32,17 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from ui.widget import Widget
+from ui.base_widget import BaseWidget
 
 
-class Container(Widget, Gtk.Container):
+class Container(BaseWidget, Gtk.Container):
     """
       Base class for the main components of Cnchi's UI (pages and page stacks).
 
     """
 
     params = None
+    params_initialized = False
 
     def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
         super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
@@ -53,5 +54,12 @@ class Container(Widget, Gtk.Container):
 
         self.children = []
 
-        params = ['callback_queue', 'disable_tryit', 'top_nav_buttons', 'header', 'sub_nav_buttons'
-                  'main_progressbar', 'process_list', 'main_window']
+        params = ['callback_queue', 'disable_tryit', 'top_nav_buttons', 'header',
+                  'sub_nav_buttons', 'main_progressbar', 'process_list']
+
+        if not self.params_initialized:
+            self.params_initialized = True
+            for param in params:
+                if param not in self.params:
+                    self.params[param] = None
+

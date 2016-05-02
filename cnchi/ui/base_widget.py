@@ -36,7 +36,7 @@ TPL_DIR = '/usr/share/cnchi/tpl'
 UI_DIR = '/usr/share/cnchi/cnchi/ui'
 
 
-class Widget(Gtk.Widget):
+class BaseWidget(Gtk.Widget):
     """
     Base class for all of Cnchi's UI classes. This gives us the utmost control
     over Cnchi's UI code making it easier to extend in the future as needed.
