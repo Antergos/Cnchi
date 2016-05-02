@@ -33,11 +33,13 @@ from gi.repository import Gtk
 
 from ui.container import Container
 
+TPL_DIR = '/usr/share/cnchi/cnchi/ui/tpl'
+
 
 class Page(Container, Gtk.Box):
     """ Base class for our pages """
 
-    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
+    def __init__(self, template_dir=TPL_DIR, name='', parent=None, *args, **kwargs):
         super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
 
     def prepare(self, direction):
