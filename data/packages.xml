@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file is supposed to be in the antergos server -->
 <!-- Please add new packages alphabetically -->
 <cnchi>
 	<editions>
@@ -22,6 +21,7 @@
 				<pkgname>ipw2200-fw</pkgname>
 				<pkgname>modemmanager</pkgname>
 				<pkgname>net-tools</pkgname>
+				<pkgname>networkmanager</pkgname>
 				<pkgname>ntfs-3g</pkgname>
 				<pkgname>openssh</pkgname>
 				<pkgname>pkgfile</pkgname>
