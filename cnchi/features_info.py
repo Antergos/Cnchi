@@ -102,8 +102,8 @@ TOOLTIPS = {
                  "with a mobile version for Android, by the Mozilla Foundation and\n"
                  "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
                  "layout engine to render web pages, which implements current and\n"
-                 "anticipated web standards.  If Firefox is not chosen, Cnchi will\n"
-				 "be installing chromium."),
+                 "anticipated web standards.  Enable this option to install Firefox\n"
+				 "instead of Chromium (the default)"),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
