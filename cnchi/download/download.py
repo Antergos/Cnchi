@@ -89,7 +89,7 @@ class DownloadPackages(object):
 
         if self.metalinks is None:
             # Still None? Error!
-            txt = _("Can't create download package list. Check log output in /tmp/cnchi.log for details")
+            txt = _("Can't create download package list.")
             raise misc.InstallError(txt)
 
         download = download_requests.Download(

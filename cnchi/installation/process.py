@@ -64,7 +64,7 @@ class Process(multiprocessing.Process):
         self.pkg.create_package_list()
 
         if not self.pkg.packages:
-            txt = _("Cannot create package list. Check log output in /tmp/cnchi.log for details.")
+            txt = _("Cannot create package list.")
             raise misc.InstallError(txt)
 
         # Won't download anything here. It's just to create the metalinks list
@@ -79,8 +79,7 @@ class Process(multiprocessing.Process):
         self.down.create_metalinks_list()
 
         if not self.down.metalinks:
-            txt = _("Cannot create download package list (metalinks). "
-                    "Check log output in tmp/cnchi.log for details.")
+            txt = _("Cannot create download package list (metalinks).")
             raise misc.InstallError(txt)
 
     def run(self):

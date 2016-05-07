@@ -123,11 +123,11 @@ TOOLTIPS = {
                "is a very easy manager to setting up games to play\n"
                "through wine, instead of doing it manually."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver.\n"
-               "If proprietary drivers are not chosen, cnchi will install the\n"
-               "open-source varient."),
+                         "If proprietary drivers are not chosen, cnchi will install the\n"
+                         "open-source varient."),
     'lamp': _("This option installs a web server (you can choose\n"
-               "Apache or Nginx) plus a database server (Mariadb)\n"
-               "and PHP."),
+              "Apache or Nginx) plus a database server (Mariadb)\n"
+              "and PHP."),
     'lts': _("The linux-lts package is an alternative Arch kernel package\n"
              "based upon Linux kernel 3.14 and is available in the core repository.\n"
              "This particular kernel version enjoys long-term support from upstream,\n"

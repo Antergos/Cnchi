@@ -236,8 +236,12 @@ class Slides(GtkBaseBox):
                 # A fatal error has been issued. We empty the queue
                 self.empty_queue()
 
+                # Add install id to error message (we can lookup logs on bugsnag by the install id)
+                tpl = _('Please reference the following number when reporting this error: ')
+                error_message = '{0}\n{1}{2}'.format(event[1], tpl, log_util.install_id)
+
                 # Show the error
-                show.fatal_error(self.get_main_window(), event[1])
+                show.fatal_error(self.get_main_window(), error_message)
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:

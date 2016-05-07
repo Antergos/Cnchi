@@ -142,7 +142,11 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             'download_requests.py(',
             'queue(): Fetching',
             'queue(): Installing',
-            '[ALPM] installed'
+            '[ALPM] installed',
+            'queue(): Checking integrity',
+            '[DEBUG] connectionpool.py',
+            '[INFO] connectionpool.py',
+            '[INFO] slides.py(242) manage_events_from_cb_queue'
         ]
         for pattern in excluded:
             if pattern in line:
