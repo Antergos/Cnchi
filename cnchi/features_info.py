@@ -123,7 +123,7 @@ TOOLTIPS = {
                "is a very easy manager to setting up games to play\n"
                "through wine, instead of doing it manually."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver.\n"
-               "if proprietary drivers are not chosen, cnchi will install the\n"
+               "If proprietary drivers are not chosen, cnchi will install the\n"
                "open-source varient."),
     'lamp': _("This option installs a web server (you can choose\n"
                "Apache or Nginx) plus a database server (Mariadb)\n"
