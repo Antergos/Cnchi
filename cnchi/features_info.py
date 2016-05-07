@@ -102,7 +102,8 @@ TOOLTIPS = {
                  "with a mobile version for Android, by the Mozilla Foundation and\n"
                  "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
                  "layout engine to render web pages, which implements current and\n"
-                 "anticipated web standards."),
+                 "anticipated web standards.  If Firefox is not chosen, Cnchi will\n"
+				 "be installing chromium."),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
@@ -117,12 +118,13 @@ TOOLTIPS = {
                "pt-sans, roboto, sil-fonts, sortsmillgoudy, source-code-pro\n"
                "source-sans-pro, ubuntu-font-family, vollkorn, fira-mono\n"
                "fira-sans and lato."),
-
     'games': _("Steam is one of the most popular gaming clients that supports\n"
                "linux in technology and gaming, while PlayOnLinux\n"
                "is a very easy manager to setting up games to play\n"
                "through wine, instead of doing it manually."),
-    'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver."),
+    'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver.\n"
+				"if proprietary drivers are not chosen, cnchi will install the\n"
+				"open-source varient."),
     'lamp': _("This option installs a web server (you can choose\n"
               "Apache or Nginx) plus a database server (Mariadb)\n"
               "and PHP."),
