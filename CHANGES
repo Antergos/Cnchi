@@ -1,3 +1,4 @@
+[2016-05-07 11:26:36 -0500]  provide the user with their install id number in fatal error messag..  Dustin Falgout  {cf6d58c}
 [2016-05-07 11:29:13 -0400]  Tell the user where the log file is stored. (#588)                           Wyn       {90ffd56}
 [2016-05-01 23:50:49 -0500]  Add networkmanager to common packages                                  Dustin Falgout  {5c2d1b8}
 [2016-04-28 20:54:30 +0200]  Merge pull request #567 from Wyn10/patch-1                                 karasu      {e8fca47}
