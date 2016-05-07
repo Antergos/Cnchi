@@ -64,7 +64,7 @@ class Process(multiprocessing.Process):
         self.pkg.create_package_list()
 
         if not self.pkg.packages:
-            txt = _("Cannot create package list. Check log output in tmp/cnchi.log for details.")
+            txt = _("Cannot create package list. Check log output in /tmp/cnchi.log for details.")
             raise misc.InstallError(txt)
 
         # Won't download anything here. It's just to create the metalinks list
