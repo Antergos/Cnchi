@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="cnchi">
+	<requires lib="gtk+" version="3.20"/>
+	<object class="GtkOverlay" id="header_overlay">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<style>
+			<class name="header_overlay"/>
+		</style>
+		<child>
+			<object class="GtkBox" id="header_bg_wrapper">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="orientation">vertical</property>
+				<property name="homogeneous">False</property>
+				<child>
+					<object class="GtkLabel" id="header_bg_top">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<style>
+							<class name="header_bg_top"/>
+						</style>
+					</object>
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">True</property>
+						<property name="position">0</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkLabel" id="header_bg_bottom">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<style>
+							<class name="header_bg_bottom"/>
+						</style>
+					</object>
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">True</property>
+						<property name="position">1</property>
+					</packing>
+				</child>
+				<style>
+					<class name="header_bg_wrapper"/>
+				</style>
+			</object>
+			<packing>
+				<property name="index">-1</property>
+			</packing>
+		</child>
+	</object>
+</interface>
