@@ -34,7 +34,7 @@ import shutil
 import sys
 import time
 
-import parted3.filesystems as fs
+import storage.filesystems as fs
 from mako.template import Template
 
 import desktop_info

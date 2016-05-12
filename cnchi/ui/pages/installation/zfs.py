@@ -32,7 +32,7 @@ import gi
 import parted
 
 import misc.extra as misc
-import parted3.filesystems as fs
+import storage.filesystems as fs
 import show_message as show
 from installation import action
 from installation import install

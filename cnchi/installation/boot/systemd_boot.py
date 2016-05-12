@@ -32,7 +32,7 @@
 import logging
 import os
 
-import parted3.filesystems as fs
+import storage.filesystems as fs
 
 from misc.run_cmd import chroot_call
 

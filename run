@@ -4,26 +4,30 @@
 # This script is a helper that the developers use to call Cnchi (testing purposes only)
 # Please, do not use if your intention is to do a "normal" installation
 
-cleanup() {
-	if [[ -h /usr/share/cnchi ]]; then
-		sudo unlink /usr/share/cnchi
-		sudo mv /usr/share/cnchi.tmp /usr/share/cnchi > /dev/null 2>&1
-	fi
-	sudo killall python3 > /dev/null 2>&1
-}
-
-trap cleanup EXIT
+#cleanup() {
+#	if [[ -h /usr/share/cnchi ]]; then
+#		sudo unlink /usr/share/cnchi
+#		sudo mv /usr/share/cnchi.tmp /usr/share/cnchi > /dev/null 2>&1
+#	fi
+#	sudo killall python3 > /dev/null 2>&1
+#}
+#
+#trap cleanup EXIT
 
 
 if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
 	sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
 fi
 
-cnchi_dir=`pwd`
-sudo ln -sf $cnchi_dir /usr/share/cnchi
+if [[ -d /usr/share/cnchi ]]; then
+	sudo rm /usr/share/cnchi
+fi
+
+CNCHI_DIR=`pwd`
+sudo ln -sf $CNCHI_DIR /usr/share/cnchi
 
 #clear_fcache='False'
-#for file in ${cnchi_dir}/data/fonts/OpenSans**
+#for file in ${CNCHI_DIR}/data/fonts/OpenSans**
 #do
 #	file_name=$(basename ${file})
 #	if ! [[ -f /usr/share/fonts/TTF/${file_name} ]]; then

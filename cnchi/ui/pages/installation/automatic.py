@@ -45,7 +45,7 @@ from installation import action
 from installation.storage import auto_partition
 
 import misc.extra as misc
-import parted3.filesystems as fs
+import storage.filesystems as fs
 
 DEST_DIR = "/install"
 

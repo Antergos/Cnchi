@@ -34,10 +34,10 @@ import os
 import re
 
 import gi
-import parted3.filesystems as fs
-import parted3.lvm as lvm
-import parted3.partition_module as pm
-import parted3.used_space as used_space
+import storage.filesystems as fs
+import storage.lvm as lvm
+import storage.partition_module as pm
+import storage.used_space as used_space
 
 import misc.extra as misc
 import misc.validation as validation
