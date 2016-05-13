@@ -254,19 +254,22 @@ class MainWindow(Gtk.ApplicationWindow):
         ui_dir = self.settings.get('ui')
 
         names = {
-            "cnchi.ui": ["main", "main_box_wrapper", "main_box", "main_stack", "sub_nav_box"],
-            "header.ui": ["header_overlay", "header", "header_nav", "language_button",
-                "header_nav", "progressbar", "logo", "logo_text", "forward_button"]}
+            "cnchi.ui": ["main", "main_box_wrapper", "main_box", "main_stack",
+                "sub_nav_box"],
+            "header.ui": ["header", "language_button", "progressbar", "logo",
+                "logo_text", "forward_button", "primary_navigation"],
+            "header_overlay.ui": ["header_overlay"]}
 
-        files = ["cnchi.ui", "header.ui"]
-
-        for filename in files:
+        for filename in names.keys():
             ui_path = os.path.join(ui_dir, filename)
+            print(ui_path)
             builder = Gtk.Builder()
+            assert builder != None
             builder.add_from_file(ui_path)
 
             for name in names[filename]:
                 self.gui[name] = builder.get_object(name)
+                assert self.gui[name] != None, "Can't load {} ui object".format(name)
             # Connect all ui signals
             builder.connect_signals(self)
 

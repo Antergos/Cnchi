@@ -110,7 +110,7 @@ class Settings(object):
             'timezone_done': False,
             'timezone_start': False,
             'tmp': '/tmp',
-            'ui': '/usr/share/cnchi/ui/',
+            'ui': '/usr/share/cnchi/cnchi/ui/tpl',
             'use_home': False,
             'use_luks': False,
             'use_luks_in_root': False,
