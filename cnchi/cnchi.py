@@ -311,6 +311,8 @@ def check_iso_version():
             shutil.rmtree(cache_dir)
     else:
         logging.debug("Not running from ISO")
+        return False
+
     return True
 
 
@@ -450,14 +452,16 @@ def setup_gettext():
 
 def check_for_files():
     """ Check for some necessary files. Cnchi can't run without them """
+
     paths = [
         "/usr/share/cnchi",
-        "/usr/share/cnchi/ui",
+        "/usr/share/cnchi/cnchi/ui/tpl",
         "/usr/share/cnchi/data",
         "/usr/share/cnchi/data/locale"]
 
     for path in paths:
         if not os.path.exists(path):
+            print(path)
             print(_("Cnchi files not found. Please, install Cnchi using pacman"))
             return False
 
