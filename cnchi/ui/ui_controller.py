@@ -131,7 +131,9 @@ class UIController:
                                       'prev_page': 'check',
                                       'next_page': 'location',
                                       'pages': ['location', 'timezone', 'keymap']}
-        self.pages["check"] = check.Check(self.params, cnchi_main=self)
+
+        # (self, template_dir=TPL_DIR, name='', parent=None, *args, **kwargs)
+        self.pages["check"] = check.Check(self.params, parent=self)
         self.pages["check"].prepare('forwards', show=False)
         self.pages["welcome"] = welcome.Welcome(self.params)
         self.current_page = self.pages["welcome"]

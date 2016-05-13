@@ -293,11 +293,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Add all header elements to header_overlay
         self.gui["header_overlay"].add_overlay(self.gui["header"])
-        self.gui["header_overlay"].add_overlay(self.gui["header_nav"])
+        self.gui["header_overlay"].add_overlay(self.gui["primary_navigation"])
         self.gui["header_overlay"].add_overlay(self.gui["progressbar"])
         self.gui["header_overlay"].set_overlay_pass_through(self.gui["header"], True)
         self.gui["header_overlay"].set_overlay_pass_through(self.gui["progressbar"], True)
-        self.gui["header_overlay"].set_overlay_pass_through(self.gui["header_nav"], True)
+        self.gui["header_overlay"].set_overlay_pass_through(self.gui["primary_navigation"], True)
         self.set_titlebar(self.gui["header_overlay"])
 
         # Set widget names so Gtk can use our css
@@ -412,7 +412,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     # ------------------------------------------------------------------------
 
-    def on_header_nav_button_clicked(self, widget, data=None):
+    def on_primary_navigation_button_clicked(self, widget, data=None):
         logging.debug(data)
 
         if isinstance(data, dict):
@@ -507,7 +507,7 @@ class MainWindow(Gtk.ApplicationWindow):
             page.nav_button.set_state_flags(Gtk.StateFlags.SELECTED, True)
             self.gui["header"].set_subtitle('')
         else:
-            self.gui["header_nav"].hide()
+            self.gui["primary_navigation"].hide()
 
     def prepare_sub_nav_buttons(self, data):
         page = data['name']
@@ -545,7 +545,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.load_pages()
             self.progressbar_step = 1.0 / self.pages.get_page_count()
 
-        self.on_header_nav_button_clicked(widget, next_page_name)
+        self.on_primary_navigation_button_clicked(widget, next_page_name)
 
     def handle_nav_buttons_state(self, page_name):
         if self.nav_buttons.get('selected', False):
@@ -607,7 +607,7 @@ class MainWindow(Gtk.ApplicationWindow):
                                 sub_page.title)
                         self.sub_nav_btns[page_name][sub_page_name].connect(
                                 'clicked',
-                                self.on_header_nav_button_clicked,
+                                self.on_primary_navigation_button_clicked,
                                 {'group_name': page_name, 'name': sub_page_name})
                         sub_page.nav_button = self.sub_nav_btns[page_name][sub_page_name]
                         self.sub_nav_btns[page_name]['box'].add(
@@ -623,18 +623,18 @@ class MainWindow(Gtk.ApplicationWindow):
             self.gui["main_stack"].add_titled(page, page_name, page.title)
             self.nav_buttons[page_name] = Gtk.Button.new_with_label(page.title)
             self.nav_buttons[page_name].connect(
-                'clicked', self.on_header_nav_button_clicked, page_name)
+                'clicked', self.on_primary_navigation_button_clicked, page_name)
 
             if isinstance(page, Page):
                 page.stack = self.gui["main_stack"]
 
             page.nav_button = self.nav_buttons[page_name]
 
-            self.gui["header_nav"].add(self.nav_buttons[page_name])
+            self.gui["primary_navigation"].add(self.nav_buttons[page_name])
 
         self.nav_buttons['forward_button'] = self.gui["forward_button"]
-        self.gui["header_nav"].add(self.nav_buttons['forward_button'])
-        self.gui["header_nav"].child_set_property(self.nav_buttons['forward_button'], 'packing', 'end')
-        self.gui["header_nav"].show_all()
+        self.gui["primary_navigation"].add(self.nav_buttons['forward_button'])
+        self.gui["primary_navigation"].child_set_property(self.nav_buttons['forward_button'], 'packing', 'end')
+        self.gui["primary_navigation"].show_all()
         self.current_stack = self.gui["main_stack"]
         self.pages_loaded = True
