@@ -160,17 +160,14 @@ list row:active, list row:checked {
 	color: #795aff;
 }
 
-#graph_btn:focused, .automatic_radiobutton:focused,
 #graph_btn:focus, .automatic_radiobutton:focus {
 	border-color: #f959b7;
 }
 
-#tryit_btn:focused, .advanced_radiobutton:focused,
-#tryit_btn:focused, .advanced_radiobutton:focus {
+#tryit_btn:focus, .advanced_radiobutton:focus {
 	border-color: #795aff;
 }
 
-.automatic_radiobutton:focused, .advanced_radiobutton:focused,
 .automatic_radiobutton:focus, .advanced_radiobutton:focus {
 	border-width: 2px;
 }
@@ -267,13 +264,13 @@ GtkTreeView row:selected {
 	box-shadow: none;
 }
 
-.header_nav .button:hover, .header_nav .button:selected, .header_nav .button:insensitive,
+.header_nav .button:hover, .header_nav .button:selected, .header_nav .button:disabled,
 .header_nav button:hover, .header_nav button:active, header_nav button.backdrop:active, .header_nav button:disabled {
 	background-color: #3F7AE4;
 	color: #ffffff;
 }
 
-.header_nav .button:insensitive .label,
+.header_nav .button:disabled .label,
 .header_nav button:disabled label {
 	color: #ffffff;
 }
@@ -336,7 +333,7 @@ GtkTreeView row:selected {
 	color: #bec9d6;
 }
 
-.sub_nav_box .button:prelight,
+.sub_nav_box .button:hover,
 .sub_nav_box button:hover {
 	background-color: #ffffff;
 	color: #07A6ED;
@@ -364,18 +361,15 @@ GtkTreeView row:selected {
 	padding: 10px 20px;
 }
 
-#fwd_btn:insensitive, #bk_btn:insensitive,
 #fwd_btn:disabled, #bk_btn:disabled  {
 	color: rgba(255, 255, 255, 0.7);
 }
 
-#fwd_btn:prelight, #bk_btn:prelight, .language_button:prelight,
 #fwd_btn:hover, #bk_btn:hover, .language_button:hover {
 	background: #3F7AE4;
 	color: #ffffff;
 }
 
-.language_button:prelight,
 .language_button:hover {
 	border-color: transparent;
 	color: #ffffff;
@@ -409,10 +403,10 @@ GtkTreeView row:selected {
 	border-radius: 0px;
 	outline-width: 0px;
 	outline-color: transparent;
-	outline-bottom-left-radius: 0px;
-	outline-bottom-right-radius: 0px;
-	outline-top-left-radius: 0px;
-	outline-top-right-radius: 0px;
+	-gtk-outline-bottom-left-radius: 0px;
+	-gtk-outline-bottom-right-radius: 0px;
+	-gtk-outline-top-left-radius: 0px;
+	-gtk-outline-top-right-radius: 0px;
 	outline-offset: 0px;
 	border-image-width: 0px;
 	border-width: 0px;
@@ -457,7 +451,7 @@ treeview row {
 	font-weight: 700;
 }
 
-.state_box .horizontal:prelight,
+.state_box .horizontal:hover,
 .statebox .horizontal:hover  {
 	background-color: rgba(179, 199, 234, 0.67);
 }
@@ -485,7 +479,7 @@ switch:active, treeview row:checked {
 	background-color: #008BDB;
 }
 
-.trough:insensitive,
+.trough:disabled,
 switch:disabled {
 	background-color: #F1F5F9;
 	color: #8E969E;
@@ -538,8 +532,8 @@ switch slider {
 }
 
 .bootloader_entry .button:hover, .bootloader_device_entry .button:hover,
-.bootloader_entry .button:focused, .bootloader_device_entry .button:focused,
-.part_auto_drive .button:hover, .part_auto_drive .button:focused,
+.bootloader_entry .button:focus, .bootloader_device_entry .button:focus,
+.part_auto_drive .button:hover, .part_auto_drive .button:focus,
 .bootloader_entry button:hover, .bootloader_device_entry button:hover,
 .bootloader_entry button:focus, .bootloader_device_entry button:focus,
 .part_auto_drive button:hover, .part_auto_drive button:focus {
