@@ -54,21 +54,18 @@ MIN_ROOT_SIZE = 8000000000
 
 
 class Check(Page):
-    """ System requirements check page """
+    """
+    System requirements check page
+    Attributes:
+        name (str): a name for this widget.
+    """
 
-    name = ""
+    name = "check"
 
-    def __init__(self, name='', parent=None):
-        """
-        Init class ui
+    def __init__(self, parent=None):
+        """ Init class ui """
 
-        Attributes:
-            name (str): a name for this widget.
-        """
-        super().__init__(name=name, parent=None)
-        logging.debug("Loading '%s' %s", name, self.__class__.name)
-
-        Check.name = name
+        super().__init__(name=Check.name, parent=None)
 
         self.remove_timer = False
         self.title = _("System Check")
@@ -219,7 +216,7 @@ class Check(Page):
     def on_timer(self):
         """ If all requirements are met, enable forward button """
         if not self.remove_timer:
-            self.forward_button.set_sensitive(self.check_all())
+            Container.params["forward_button"].set_sensitive(self.check_all())
         return not self.remove_timer
 
     def store_values(self):
@@ -232,7 +229,7 @@ class Check(Page):
         logging.info("We have enough disk space.")
 
         # Enable forward button
-        self.forward_button.set_sensitive(True)
+        Container.params["forward_button"].set_sensitive(True)
         return True
 
     def prepare(self, direction=None, show=True):
@@ -249,7 +246,7 @@ class Check(Page):
         if result is not None and show:
             self.set_valign(Gtk.Align.START)
             self.show_all()
-            self.forward_button.set_sensitive(result)
+            Container.params["forward_button"].set_sensitive(result)
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)

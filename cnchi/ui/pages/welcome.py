@@ -36,14 +36,19 @@ from gi.repository import GdkPixbuf
 
 import misc.extra as misc
 from ui.page import Page
+from ui.container import Container
+from ui.base_widget import BaseWidget
 
 
 class Welcome(Page):
     """ Welcome screen class """
-    def __init__(self, params, prev_page=None, next_page="check"):
-        super().__init__(self, params, "welcome", prev_page, next_page)
 
-        data_dir = self.settings.get('data')
+    name = "welcome"
+
+    def __init__(self, parent=None):
+        super().__init__(name=Welcome.name, parent=parent)
+
+        data_dir = BaseWidget.settings.get('data')
         welcome_dir = os.path.join(data_dir, "images", "welcome")
 
         self.labels = {'welcome': self.ui.get_object("welcome_label"),
@@ -83,7 +88,7 @@ class Welcome(Page):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        if not self.disable_tryit:
+        if not Container.params["disable_tryit"]:
             txt = _("Use Antergos without making any changes to your system.") + "\n"
         else:
             txt = ""
@@ -120,9 +125,9 @@ class Welcome(Page):
     def on_graph_button_clicked(self, widget, data=None):
         self.show_loading_message()
         # Tell timezone process to start searching now
-        self.settings.set('timezone_start', True)
+        BaseWidget.settings.set('timezone_start', True)
         # Simulate a forward button click
-        self.forward_button.clicked()
+        Container.params["forward_button"].clicked()
 
     def show_loading_message(self, do_show=True):
         if do_show:
@@ -134,14 +139,14 @@ class Welcome(Page):
         misc.gtk_refresh()
 
     def store_values(self):
-        self.forward_button.show()
+        Container.params["forward_button"].show()
         return True
 
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
-        self.forward_button.hide()
-        if self.disable_tryit:
+        Container.params["forward_button"].hide()
+        if Container.params["disable_tryit"]:
             self.buttons['tryit'].set_sensitive(False)
         if direction == "backwards":
             self.show_loading_message(do_show=False)

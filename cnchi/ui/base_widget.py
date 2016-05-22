@@ -73,7 +73,6 @@ class BaseWidget(Gtk.Widget):
     def load_template(self):
         self.ui = Gtk.Builder()
         self.template = os.path.join(BaseWidget.template_dir, "{}.ui".format(self.name))
-        logging.debug(self.template)
         if os.path.exists(self.template):
             logging.debug("Loading %s template and connecting its signals", self.template)
             self.ui.add_from_file(self.template)

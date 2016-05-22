@@ -44,7 +44,6 @@ class Page(Container, Gtk.Box):
             name (str): a name for this widget.
         """
         super().__init__(name=name, parent=parent)
-        logging.debug("Loading '%s' %s", name, self.__class__.name)
 
         self.name = name
         self.parent = parent

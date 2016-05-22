@@ -141,9 +141,9 @@ class UIController:
         Container.params = self.params
         BaseWidget.settings = self.settings
 
-        self.pages["check"] = check.Check(name="check", parent=self)
+        self.pages["check"] = check.Check(parent=self)
         self.pages["check"].prepare('forwards', show=False)
-        self.pages["welcome"] = welcome.Welcome(name="welcome", parent=self)
+        self.pages["welcome"] = welcome.Welcome(parent=self)
         self.current_page = self.pages["welcome"]
 
     def load_all(self):
