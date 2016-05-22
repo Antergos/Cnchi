@@ -39,6 +39,7 @@ from .pages import (
     user_info,
     welcome
 )
+
 from .pages.installation import (
     advanced,
     alongside,
@@ -48,6 +49,9 @@ from .pages.installation import (
 )
 
 from ui.pages import location
+
+from ui.container import Container
+from ui.base_widget import BaseWidget
 
 
 class UIController:
@@ -132,18 +136,22 @@ class UIController:
                                       'next_page': 'location',
                                       'pages': ['location', 'timezone', 'keymap']}
 
-        # (self, template_dir=TPL_DIR, name='', parent=None, *args, **kwargs)
-        self.pages["check"] = check.Check(self.params, parent=self)
+        # (name='', template_dir=TPL_DIR, parent=None, *args, **kwargs)
+        #self.pages["check"] = check.Check(self.params, parent=self)
+
+        Container.params = self.params
+        BaseWidget.settings = self.settings
+
+        self.pages["check"] = check.Check(name="check", parent=self)
         self.pages["check"].prepare('forwards', show=False)
-        self.pages["welcome"] = welcome.Welcome(self.params)
+        self.pages["welcome"] = welcome.Welcome(name="welcome", parent=self)
         self.current_page = self.pages["welcome"]
 
     def load_all(self):
         """ Load pages """
-        self.pages["location_grp"]["location"] = location.Location(params=self.params)
+        self.pages["location_grp"]["location"] = location.Location(name="location", parent=self)
         if not self.pages["location_grp"].get('timezone', False):
-            self.pages["location_grp"]["timezone"] = timezone.Timezone(params=self.params,
-                                                                       cnchi_main=self)
+            self.pages["location_grp"]["timezone"] = timezone.Timezone(name="timezone", parent=self)
 
         self.pages["desktop_grp"] = {'title': 'Desktop Selection',
                                      'prev_page': 'location_grp',
@@ -151,42 +159,31 @@ class UIController:
                                      'pages': ['desktop', 'features']}
 
         if self.settings.get('desktop_ask') or True:
-            self.pages["location_grp"]["keymap"] = keymap.Keymap(params=self.params, is_last=True)
-            self.pages["desktop_grp"]["desktop"] = desktop.DesktopAsk(params=self.params)
-            self.pages["desktop_grp"]["features"] = features.Features(params=self.params,
-                                                                      is_last=True)
+            self.pages["location_grp"]["keymap"] = keymap.Keymap(name="keymap", is_last=True)
+            self.pages["desktop_grp"]["desktop"] = desktop.DesktopAsk(name="desktop")
+            self.pages["desktop_grp"]["features"] = features.Features(name="features", is_last=True)
         else:
-            self.pages["location_grp"]["keymap"] = keymap.Keymap(self.params, next_page='features',
-                                                                 is_last=True)
-            self.pages["desktop_grp"]["features"] = features.Features(self.params,
-                                                                      prev_page='location_grp',
-                                                                      is_last=True)
+            self.pages["location_grp"]["keymap"] = keymap.Keymap(name="keymap", next_page='features', is_last=True)
+            self.pages["desktop_grp"]["features"] = features.Features(name="features", prev_page='location_grp', is_last=True)
 
         self.pages["disk_grp"] = {'title': 'Disk Setup',
                                   'prev_page': 'desktop_grp',
                                   'next_page': 'ask',
-                                  'pages': ['ask', 'automatic',
-                                            'alongside', 'advanced',
-                                            'zfs']}
+                                  'pages': ['ask', 'automatic', 'alongside', 'advanced', 'zfs']}
 
-        self.pages["disk_grp"]["ask"] = \
-            ask.InstallationAsk(params=self.params)
+        self.pages["disk_grp"]["ask"] = ask.InstallationAsk(name="ask")
 
-        self.pages["disk_grp"]["automatic"] = \
-            automatic.InstallationAutomatic(params=self.params, is_last=True)
+        self.pages["disk_grp"]["automatic"] = automatic.InstallationAutomatic(name="automatic", is_last=True)
 
         if self.settings.get("enable_alongside"):
-            self.pages["disk_grp"]["alongside"] = \
-                alongside.InstallationAlongside(params=self.params)
+            self.pages["disk_grp"]["alongside"] = alongside.InstallationAlongside(name="alongside")
         else:
             self.pages["disk_grp"]["alongside"] = None
 
-        self.pages["disk_grp"]["advanced"] = \
-            advanced.InstallationAdvanced(params=self.params, is_last=True)
+        self.pages["disk_grp"]["advanced"] = advanced.InstallationAdvanced(name="advanced", is_last=True)
 
-        self.pages["disk_grp"]["zfs"] = \
-            zfs.InstallationZFS(params=self.params, is_last=True)
+        self.pages["disk_grp"]["zfs"] = zfs.InstallationZFS(name="zfs", is_last=True)
 
-        self.pages["user_info"] = user_info.UserInfo(params=self.params)
-        self.pages["summary"] = summary.Summary(params=self.params)
-        self.pages["slides"] = slides.Slides(params=self.params)
+        self.pages["user_info"] = user_info.UserInfo(name="user_info")
+        self.pages["summary"] = summary.Summary(name="summary")
+        self.pages["slides"] = slides.Slides(name="slides")

@@ -39,8 +39,11 @@ import info
 import misc.extra as misc
 import show_message as show
 import updater
+
 from misc.run_cmd import call
 from ui.page import Page
+from ui.container import Container
+from ui.base_widget import BaseWidget
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -53,13 +56,21 @@ MIN_ROOT_SIZE = 8000000000
 class Check(Page):
     """ System requirements check page """
 
-    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
-        """ Init class ui """
-        super().__init__(template_dir=template_dir, name=name, parent=None, *args, **kwargs)
+    name = ""
+
+    def __init__(self, name='', parent=None):
+        """
+        Init class ui
+
+        Attributes:
+            name (str): a name for this widget.
+        """
+        super().__init__(name=name, parent=None)
+
+        Check.name = name
 
         self.remove_timer = False
         self.title = _("System Check")
-
         self.updater = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
@@ -73,11 +84,11 @@ class Check(Page):
         self.has_internet = False
         self.has_iso = False
         self.is_updated = False
-        self.header = self.params['header']
+        self.header = Container.params['header']
         self.checks_are_optional = False
 
-        if 'checks_are_optional' in self.params:
-            self.checks_are_optional = self.params['checks_are_optional']
+        if 'checks_are_optional' in Container.params:
+            self.checks_are_optional = Container.params['checks_are_optional']
 
         self.header.set_title('')
 
@@ -139,7 +150,7 @@ class Check(Page):
         # UPower doesn't seem to have an interface for this.
         path = '/sys/class/power_supply'
         if not os.path.exists(path):
-            self.settings.set('laptop', False)
+            BaseWidget.settings.set('laptop', False)
             return False
 
         for folder in os.listdir(path):
@@ -147,10 +158,10 @@ class Check(Page):
             if os.path.exists(type_path):
                 with open(type_path) as power_file:
                     if power_file.read().startswith('Battery'):
-                        self.settings.set('laptop', True)
+                        BaseWidget.settings.set('laptop', True)
                         return True
 
-        self.settings.set('laptop', False)
+        BaseWidget.settings.set('laptop', False)
         return False
 
     def has_enough_space(self):
@@ -196,7 +207,7 @@ class Check(Page):
             suffix = "-min" if hostname.endswith("-min") else ''
             version = hostname[len(prefix):-len(suffix)]
             logging.debug("Running from ISO version %s", version)
-            self.settings.set('is_iso', True)
+            BaseWidget.settings.set('is_iso', True)
             cache_dir = "/home/antergos/.cache/chromium"
             if os.path.exists(cache_dir):
                 shutil.rmtree(cache_dir)
@@ -230,6 +241,8 @@ class Check(Page):
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
         self.prepare_power_source = self.ui.get_object("prepare_power_source")
         self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
+
+        assert self.prepare_network_connection != None, "Error loading check.ui"
 
         result = self.check_all()
         if result is not None and show:

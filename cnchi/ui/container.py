@@ -37,29 +37,22 @@ from ui.base_widget import BaseWidget
 
 class Container(BaseWidget, Gtk.Container):
     """
-      Base class for the main components of Cnchi's UI (pages and page stacks).
+    Base class for the main components of Cnchi's UI (pages and page stacks).
+
+    Class attributes:
+        params (dict):  ['callback_queue', 'disable_tryit', 'top_nav_buttons', 'header',
+                  'sub_nav_buttons', 'main_progressbar', 'process_list', 'settings']
 
     """
-
     params = None
-    params_initialized = False
 
-    def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
-        super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
+    def __init__(self, name='', parent=None):
+        """
+        Attributes:
+            name (str): a name for this widget.
+        """
+        super().__init__(name=name, parent=parent)
 
         logging.debug("Loading '%s' %s", name, self.__class__.name)
 
-        if self.params is None:
-            self.params = {}
-
         self.children = []
-
-        params = ['callback_queue', 'disable_tryit', 'top_nav_buttons', 'header',
-                  'sub_nav_buttons', 'main_progressbar', 'process_list']
-
-        if not self.params_initialized:
-            self.params_initialized = True
-            for param in params:
-                if param not in self.params:
-                    self.params[param] = None
-

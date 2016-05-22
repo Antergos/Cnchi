@@ -32,48 +32,44 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-TPL_DIR = '/usr/share/cnchi/tpl'
-UI_DIR = '/usr/share/cnchi/cnchi/ui'
-
 
 class BaseWidget(Gtk.Widget):
     """
     Base class for all of Cnchi's UI classes. This gives us the utmost control
     over Cnchi's UI code making it easier to extend in the future as needed.
 
-    Attributes:
-        name (str): a name for this widget.
+    Class Attributes:
+        settings (dict): Settings object as class attribute (common to all instances)
+        main_window
         template_dir (str): The absolute path to our glade template directory for this widget.
         ui_dir (str): The absolute path to our ui directory.
-        settings (dict): Settings object as class attribute (common to all instances)
-
     """
 
     settings = None
     main_window = None
+    template_dir = '/usr/share/cnchi/tpl'
+    ui_dir = '/usr/share/cnchi/cnchi/ui'
 
-    def __init__(self, template_dir=TPL_DIR, name='', ui_dir=UI_DIR, parent=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, name='', parent=None):
+        """
+        Attributes:
+            name (str): a name for this widget.
+        """
 
-        self.template_dir = template_dir
+        super().__init__()
+
         self.name = name
-        self.ui_dir = ui_dir
         self._parent = parent
 
-        self.ui = self.template = None
+        if BaseWidget.main_window is None and isinstance(self, Gtk.Window):
+            BaseWidget.main_window = self
 
-        if self.settings is None:
-            self.settings = {}
-
-        if self.main_window is None and issubclass(self, Gtk.Window):
-            self.main_window = self
-
-        if self.template_dir:
-            self.load_template()
+        self.template = None
+        self.load_template()
 
     def load_template(self):
         self.ui = Gtk.Builder()
-        self.template = os.path.join(self.template_dir, "{}.ui".format(self.name))
+        self.template = os.path.join(BaseWidget.template_dir, "{}.ui".format(self.name))
 
         if os.path.exists(self.template):
             self.ui.add_from_file(self.template)
@@ -86,5 +82,4 @@ class BaseWidget(Gtk.Widget):
 
     def get_main_window(self):
         """ Returns top level window (main window) """
-        return self.main_window if isinstance(self.main_window, Gtk.Window) else None
-
+        return main_window if isinstance(main_window, Gtk.Window) else None
