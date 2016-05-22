@@ -66,6 +66,7 @@ class Check(Page):
             name (str): a name for this widget.
         """
         super().__init__(name=name, parent=None)
+        logging.debug("Loading '%s' %s", name, self.__class__.name)
 
         Check.name = name
 

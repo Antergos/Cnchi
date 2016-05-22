@@ -28,6 +28,7 @@
 
 import os
 import gi
+import logging
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -47,7 +48,7 @@ class BaseWidget(Gtk.Widget):
 
     settings = None
     main_window = None
-    template_dir = '/usr/share/cnchi/tpl'
+    template_dir = '/usr/share/cnchi/cnchi/ui/tpl'
     ui_dir = '/usr/share/cnchi/cnchi/ui'
 
     def __init__(self, name='', parent=None):
@@ -65,13 +66,16 @@ class BaseWidget(Gtk.Widget):
             BaseWidget.main_window = self
 
         self.template = None
+
+        logging.debug("Loading '%s' %s", name, self.__class__.name)
         self.load_template()
 
     def load_template(self):
         self.ui = Gtk.Builder()
         self.template = os.path.join(BaseWidget.template_dir, "{}.ui".format(self.name))
-
+        logging.debug(self.template)
         if os.path.exists(self.template):
+            logging.debug("Loading %s template and connecting its signals", self.template)
             self.ui.add_from_file(self.template)
             # Connect UI signals
             self.ui.connect_signals(self)

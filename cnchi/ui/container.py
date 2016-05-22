@@ -53,6 +53,9 @@ class Container(BaseWidget, Gtk.Container):
         """
         super().__init__(name=name, parent=parent)
 
+        self.name = name
+        self.parent = parent
+
         logging.debug("Loading '%s' %s", name, self.__class__.name)
 
         self.children = []

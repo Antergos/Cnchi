@@ -27,6 +27,7 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 import gi
+import logging
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -43,6 +44,10 @@ class Page(Container, Gtk.Box):
             name (str): a name for this widget.
         """
         super().__init__(name=name, parent=parent)
+        logging.debug("Loading '%s' %s", name, self.__class__.name)
+
+        self.name = name
+        self.parent = parent
 
     def prepare(self, direction):
         """ This must be implemented by childen """

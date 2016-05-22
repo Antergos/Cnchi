@@ -28,7 +28,7 @@
 
 """ Manage Cnchi pages """
 
-from .pages import (
+from ui.pages import (
     check,
     desktop,
     features,
@@ -37,18 +37,17 @@ from .pages import (
     summary,
     timezone,
     user_info,
-    welcome
+    welcome,
+    location
 )
 
-from .pages.installation import (
+from ui.pages.installation import (
     advanced,
     alongside,
     ask,
     automatic,
     zfs
 )
-
-from ui.pages import location
 
 from ui.container import Container
 from ui.base_widget import BaseWidget
