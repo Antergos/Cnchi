@@ -377,7 +377,7 @@ class SelectPackages(object):
                 code = self.settings.get('language_code')
 
             if code:
-                code = code.replace('_', '-').lower()
+                code = code.replace('_', '-')
                 pkg_text = "libreoffice-fresh-{0}".format(code)
                 logging.debug("Adding libreoffice language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
