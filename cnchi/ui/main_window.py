@@ -156,8 +156,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # Load 1st and 2nd screens
         self.pages.pre_load_pages()
+        assert self.pages.get_current_page() != None
 
         # main_box is the gtk box that will contain current screen
+        # gtk_widget_real_realize: assertion failed: (!_gtk_widget_get_has_window (widget))
         self.gui["main_box"].add(self.pages.get_current_page())
 
         self.settings.set('timezone_start', True)

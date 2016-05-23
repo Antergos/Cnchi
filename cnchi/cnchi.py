@@ -98,6 +98,7 @@ class CnchiApp(Gtk.Application):
 
     def do_activate(self):
         # Make sure we have administrative privileges
+
         if os.getuid() != 0 and not self.cmd_line.z_hidden:
             msg = _('This installer must be run with administrative privileges, '
                     'and cannot continue without them.')

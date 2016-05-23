@@ -53,7 +53,7 @@ from ui.container import Container
 from ui.base_widget import BaseWidget
 
 
-class UIController:
+class UIController(object):
     def __init__(self, params):
         self.current_stack = None
         self.current_grp = None
@@ -135,15 +135,12 @@ class UIController:
                                       'next_page': 'location',
                                       'pages': ['location', 'timezone', 'keymap']}
 
-        # (name='', template_dir=TPL_DIR, parent=None, *args, **kwargs)
-        #self.pages["check"] = check.Check(self.params, parent=self)
-
         Container.params = self.params
         BaseWidget.settings = self.settings
 
-        self.pages["check"] = check.Check(parent=self)
+        self.pages["check"] = check.Check(parent=None)
         self.pages["check"].prepare('forwards', show=False)
-        self.pages["welcome"] = welcome.Welcome(parent=self)
+        self.pages["welcome"] = welcome.Welcome(parent=None)
         self.current_page = self.pages["welcome"]
 
     def load_all(self):
