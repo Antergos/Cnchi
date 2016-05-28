@@ -76,6 +76,9 @@ class Features(GtkBaseBox):
 
     @staticmethod
     def nvidia_detected():
+        # FIXME: Do not return true if Optimus is detected
+        return False
+        '''
         from hardware.nvidia import Nvidia
         if Nvidia().detect():
             return True
@@ -86,6 +89,7 @@ class Features(GtkBaseBox):
         if Nvidia304xx().detect():
             return True
         return False
+        '''
 
     @staticmethod
     def amd_detected():
