@@ -47,6 +47,31 @@ COL_TITLE = 1
 COL_DESCRIPTION = 2
 COL_SWITCH = 3
 
+class Graphics(object):
+    def nvidia(self):
+        from hardware.nvidia import Nvidia
+        if Nvidia().detect():
+            return True
+        from hardware.nvidia_340xx import Nvidia340xx
+        if Nvidia340xx().detect():
+            return True
+        from hardware.nvidia_304xx import Nvidia304xx
+        if Nvidia304xx().detect():
+            return True
+        return False
+
+    def amd(self):
+        from hardware.catalyst import Catalyst
+        return Catalyst().detect()
+
+    def i915(self):
+        from hardware.i915 import Intel915
+        return Intel915().detect()
+
+    def bumblebee(self):
+        return self.nvidia() and self.i915()
+
+
 
 class Features(GtkBaseBox):
     """ Features screen class """
@@ -54,6 +79,8 @@ class Features(GtkBaseBox):
     def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
         """ Initializes features ui """
         super().__init__(self, params, "features", prev_page, next_page)
+
+        self.detect = Graphics()
 
         self.listbox_rows = {}
 
@@ -74,27 +101,6 @@ class Features(GtkBaseBox):
         # Only load defaults the first time this screen is shown
         self.load_defaults = True
 
-    @staticmethod
-    def nvidia_detected():
-        # FIXME: Do not return true if Optimus is detected
-        return False
-        '''
-        from hardware.nvidia import Nvidia
-        if Nvidia().detect():
-            return True
-        from hardware.nvidia_340xx import Nvidia340xx
-        if Nvidia340xx().detect():
-            return True
-        from hardware.nvidia_304xx import Nvidia304xx
-        if Nvidia304xx().detect():
-            return True
-        return False
-        '''
-
-    @staticmethod
-    def amd_detected():
-        from hardware.catalyst import Catalyst
-        return Catalyst().detect()
 
     @staticmethod
     def on_listbox_row_selected(listbox, listbox_row):
@@ -106,6 +112,52 @@ class Features(GtkBaseBox):
                 if switch:
                     switch.set_active(not switch.get_active())
 
+    def add_feature_icon(self, feature, box):
+        """ Adds feature icon to listbox row box """
+        if feature in features_info.ICON_NAMES:
+            icon_name = features_info.ICON_NAMES[feature]
+        else:
+            logging.debug("No icon found for feature %s", feature)
+            icon_name = "missing"
+
+        image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.DND)
+        object_name = "image_" + feature
+        image.set_name(object_name)
+        image.set_property('margin_start', 10)
+        self.listbox_rows[feature].append(image)
+        box.pack_start(image, False, False, 0)
+
+    def add_feature_label(self, feature, box):
+        """ Adds feature title and label to listbox row box """
+        text_box = Gtk.VBox()
+
+        object_name = "label_title_" + feature
+        label_title = Gtk.Label.new()
+        label_title.set_halign(Gtk.Align.START)
+        label_title.set_justify(Gtk.Justification.LEFT)
+        label_title.set_name(object_name)
+        self.listbox_rows[feature].append(label_title)
+        text_box.pack_start(label_title, False, True, 0)
+
+        object_name = "label_" + feature
+        label = Gtk.Label.new()
+        label.set_halign(Gtk.Align.START)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_name(object_name)
+        self.listbox_rows[feature].append(label)
+        text_box.pack_start(label, False, False, 0)
+        box.pack_start(text_box, False, False, 0)
+
+    def add_feature_switch(self, feature, box):
+        object_name = "switch_" + feature
+        switch = Gtk.Switch.new()
+        switch.set_name(object_name)
+        switch.set_property('margin_top', 10)
+        switch.set_property('margin_bottom', 10)
+        switch.set_property('margin_end', 10)
+        self.listbox_rows[feature].append(switch)
+        box.pack_end(switch, False, False, 0)
+
     def fill_listbox(self):
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
@@ -115,11 +167,14 @@ class Features(GtkBaseBox):
         # Only add graphic-driver feature if an AMD or Nvidia is detected
         # FIXME: Conflict between lib32-nvidia-libgl and lib32-mesa-libgl
         if "graphic_drivers" in self.features:
-            if not self.amd_detected() and not self.nvidia_detected():
-                logging.debug("Neither NVidia nor AMD have been detected.")
+            allow = False
+            if self.detect.amd():
+                allow = True
+            if self.detect.nvidia() and not self.detect.bumblebee():
+                allow = True
+            if not allow:
+                logging.debug("Removing proprietary graphic drivers feature.")
                 self.features.remove("graphic_drivers")
-        #if "graphic_drivers" in self.features:
-        #    self.features.remove("graphic_drivers")
 
         for feature in self.features:
             box = Gtk.Box(spacing=20)
@@ -127,47 +182,9 @@ class Features(GtkBaseBox):
 
             self.listbox_rows[feature] = []
 
-            if feature in features_info.ICON_NAMES:
-                icon_name = features_info.ICON_NAMES[feature]
-            else:
-                logging.debug("No icon found for feature %s", feature)
-                icon_name = "missing"
-
-            object_name = "image_" + feature
-            image = Gtk.Image.new_from_icon_name(
-                icon_name,
-                Gtk.IconSize.DND)
-            image.set_name(object_name)
-            image.set_property('margin_start', 10)
-            self.listbox_rows[feature].append(image)
-            box.pack_start(image, False, False, 0)
-
-            text_box = Gtk.VBox()
-            object_name = "label_title_" + feature
-            label_title = Gtk.Label.new()
-            label_title.set_halign(Gtk.Align.START)
-            label_title.set_justify(Gtk.Justification.LEFT)
-            label_title.set_name(object_name)
-            self.listbox_rows[feature].append(label_title)
-            text_box.pack_start(label_title, False, False, 0)
-
-            object_name = "label_" + feature
-            label = Gtk.Label.new()
-            label.set_name(object_name)
-            self.listbox_rows[feature].append(label)
-            text_box.pack_start(label, False, False, 0)
-
-            box.pack_start(text_box, False, False, 0)
-
-            object_name = "switch_" + feature
-            switch = Gtk.Switch.new()
-            switch.set_name(object_name)
-            switch.set_property('margin_top', 10)
-            switch.set_property('margin_bottom', 10)
-            switch.set_property('margin_end', 10)
-            self.listbox_rows[feature].append(switch)
-            box.pack_end(switch, False, False, 0)
-
+            self.add_feature_icon(feature, box)
+            self.add_feature_label(feature, box)
+            self.add_feature_switch(feature, box)
             # Add row to our gtklist
             self.listbox.add(box)
 
@@ -217,10 +234,6 @@ class Features(GtkBaseBox):
         self.header.set_subtitle(txt)
 
         for feature in self.features:
-            if feature == "graphic_drivers":
-                # Only add this feature if NVIDIA or AMD are detected
-                if not self.amd_detected() and not self.nvidia_detected():
-                    continue
             title = _(features_info.TITLES[feature])
             desc = _(features_info.DESCRIPTIONS[feature])
             tooltip = _(features_info.TOOLTIPS[feature])
