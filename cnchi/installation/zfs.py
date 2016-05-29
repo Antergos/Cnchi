@@ -833,9 +833,9 @@ class InstallationZFS(GtkBaseBox):
             if 'M' in pool_size_str:
                 pool_size //= 1024
             elif 'T' in pool_size_str:
-                pool_size = int(pool_size[:-1]) * 1024
+                pool_size = pool_size * 1024
             elif 'P' in pool_size_str:
-                pool_size = int(pool_size[:-1]) * 1024 * 1024
+                pool_size = pool_size * 1024 * 1024
         except (subprocess.CalledProcessError, ValueError) as err:
             logging.warning(
                 "Can't get zfs %s pool size: %s",
