@@ -151,10 +151,6 @@ class Features(GtkBaseBox):
             if row[Features.COL_SWITCH] == switch:
                 is_active = switch.get_active()
                 self.settings.set("feature_" + feature, is_active)
-                if is_active:
-                    logging.debug("Feature '%s' has been selected", feature)
-                else:
-                    logging.debug("Feature '%s' has been unselected", feature)
 
     def add_feature_switch(self, feature, box):
         object_name = "switch_" + feature
@@ -391,7 +387,6 @@ class Features(GtkBaseBox):
             row = self.listbox_rows[feature]
             is_active = self.settings.get("feature_" + feature)
             if row[Features.COL_SWITCH] is not None and is_active is not None:
-                logging.debug("%s %s", feature, is_active)
                 row[Features.COL_SWITCH].set_active(is_active)
 
 # When testing, no _() is available
