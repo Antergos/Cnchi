@@ -42,11 +42,6 @@ import misc.extra as misc
 from gtkbasebox import GtkBaseBox
 
 
-COL_IMAGE = 0
-COL_TITLE = 1
-COL_DESCRIPTION = 2
-COL_SWITCH = 3
-
 class Graphics(object):
     def nvidia(self):
         from hardware.nvidia import Nvidia
@@ -72,9 +67,12 @@ class Graphics(object):
         return self.nvidia() and self.i915()
 
 
-
 class Features(GtkBaseBox):
     """ Features screen class """
+
+    COL_TITLE = 1
+    COL_DESCRIPTION = 2
+    COL_SWITCH = 3
 
     def __init__(self, params, prev_page="desktop", next_page="installation_ask"):
         """ Initializes features ui """
@@ -98,9 +96,8 @@ class Features(GtkBaseBox):
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = {"ufw": False, "aur": False}
 
-        # Only load defaults the first time this screen is shown
-        self.load_defaults = True
-
+        # Only load defaults for each DE the first time this screen is shown
+        self.defaults_loaded = False
 
     @staticmethod
     def on_listbox_row_selected(listbox, listbox_row):
@@ -148,6 +145,17 @@ class Features(GtkBaseBox):
         text_box.pack_start(label, False, False, 0)
         box.pack_start(text_box, False, False, 0)
 
+    def on_switch_activated(self, switch, gparam):
+        for feature in self.features:
+            row = self.listbox_rows[feature]
+            if row[Features.COL_SWITCH] == switch:
+                is_active = switch.get_active()
+                self.settings.set("feature_" + feature, is_active)
+                if is_active:
+                    logging.debug("Feature '%s' has been selected", feature)
+                else:
+                    logging.debug("Feature '%s' has been unselected", feature)
+
     def add_feature_switch(self, feature, box):
         object_name = "switch_" + feature
         switch = Gtk.Switch.new()
@@ -155,6 +163,7 @@ class Features(GtkBaseBox):
         switch.set_property('margin_top', 10)
         switch.set_property('margin_bottom', 10)
         switch.set_property('margin_end', 10)
+        switch.connect("notify::active", self.on_switch_activated)
         self.listbox_rows[feature].append(switch)
         box.pack_end(switch, False, False, 0)
 
@@ -221,8 +230,8 @@ class Features(GtkBaseBox):
             title = "<span weight='bold' size='large'>{0}</span>".format(title)
             desc = "<span size='small'>{0}</span>".format(desc)
             row = self.listbox_rows[feature]
-            row[COL_TITLE].set_markup(title)
-            row[COL_DESCRIPTION].set_markup(desc)
+            row[Features.COL_TITLE].set_markup(title)
+            row[Features.COL_DESCRIPTION].set_markup(desc)
             for widget in row:
                 widget.set_tooltip_markup(tooltip)
 
@@ -244,6 +253,7 @@ class Features(GtkBaseBox):
 
     def switch_defaults_on(self):
         """ Enable some features by default """
+
         if 'bluetooth' in self.features:
             try:
                 process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
@@ -255,7 +265,7 @@ class Features(GtkBaseBox):
                 out, process_error = process2.communicate()
                 if out.decode() is not '':
                     row = self.listbox_rows['bluetooth']
-                    row[COL_SWITCH].set_active(True)
+                    row[Features.COL_SWITCH].set_active(True)
             except subprocess.CalledProcessError as err:
                 logging.warning(
                     "Error checking bluetooth presence. Command %s failed: %s",
@@ -264,21 +274,18 @@ class Features(GtkBaseBox):
 
         if 'cups' in self.features:
             row = self.listbox_rows['cups']
-            row[COL_SWITCH].set_active(True)
+            row[Features.COL_SWITCH].set_active(True)
 
         if 'visual' in self.features:
             row = self.listbox_rows['visual']
-            row[COL_SWITCH].set_active(True)
+            row[Features.COL_SWITCH].set_active(True)
 
-    def store_values(self):
-        """ Get switches values and store them """
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            is_active = row[COL_SWITCH].get_active()
-            self.settings.set("feature_" + feature, is_active)
-            if is_active:
-                logging.debug("Feature '%s' has been selected", feature)
+        if 'chromium' in self.features:
+            row = self.listbox_rows['chromium']
+            row[Features.COL_SWITCH].set_active(True)
 
+    def show_disclaimer_messages(self):
+        """ Show ufw and AUR warning messages if necessary """
         # Show ufw info message if ufw is selected (show it only once)
         if self.settings.get("feature_firewall") and not self.info_already_shown["ufw"]:
             self.show_info_dialog("ufw")
@@ -288,28 +295,6 @@ class Features(GtkBaseBox):
         if self.settings.get("feature_aur") and not self.info_already_shown["aur"]:
             self.show_info_dialog("aur")
             self.info_already_shown["aur"] = True
-
-        # LAMP: Ask user if he wants Apache or Nginx
-        if self.settings.get("feature_lamp"):
-            info = Gtk.MessageDialog(
-                transient_for=self.get_main_window(),
-                modal=True,
-                destroy_with_parent=True,
-                message_type=Gtk.MessageType.INFO,
-                buttons=Gtk.ButtonsType.YES_NO)
-            info.set_markup("LAMP / LEMP")
-            msg = _("Do you want to install the Nginx server instead of the Apache server?")
-            info.format_secondary_markup(msg)
-            response = info.run()
-            info.destroy()
-            if response == Gtk.ResponseType.YES:
-                self.settings.set("feature_lemp", True)
-            else:
-                self.settings.set("feature_lemp", False)
-
-        self.listbox_rows = {}
-
-        return True
 
     def show_info_dialog(self, feature):
         """ Some features show an information dialog when this screen is accepted """
@@ -343,6 +328,45 @@ class Features(GtkBaseBox):
         info.run()
         info.destroy()
 
+    def ask_nginx(self):
+        """ LAMP: Ask user if he wants Apache or Nginx """
+        if self.settings.get("feature_lamp"):
+            info = Gtk.MessageDialog(
+                transient_for=self.get_main_window(),
+                modal=True,
+                destroy_with_parent=True,
+                message_type=Gtk.MessageType.INFO,
+                buttons=Gtk.ButtonsType.YES_NO)
+            info.set_markup("LAMP / LEMP")
+            msg = _("Do you want to install the Nginx server instead of the Apache server?")
+            info.format_secondary_markup(msg)
+            response = info.run()
+            info.destroy()
+            if response == Gtk.ResponseType.YES:
+                self.settings.set("feature_lemp", True)
+            else:
+                self.settings.set("feature_lemp", False)
+
+    def store_switches(self):
+        """ Store current feature selections """
+        for feature in self.features:
+            row = self.listbox_rows[feature]
+            is_active = row[Features.COL_SWITCH].get_active()
+            self.settings.set("feature_" + feature, is_active)
+            if is_active:
+                logging.debug("Feature '%s' has been selected", feature)
+
+    def store_values(self):
+        """ Go to next screen, but first save changes """
+
+        self.store_switches()
+        self.show_disclaimer_messages()
+        self.ask_nginx()
+
+        self.listbox_rows = {}
+
+        return True
+
     def prepare(self, direction):
         """ Prepare features screen to get ready to show itself """
         # Each desktop has its own features
@@ -353,10 +377,10 @@ class Features(GtkBaseBox):
         self.fill_listbox()
         self.translate_ui()
         self.show_all()
-        if self.load_defaults:
+        if not self.defaults_loaded:
             self.switch_defaults_on()
             # Only load defaults once
-            self.load_defaults = False
+            self.defaults_loaded = True
         else:
             # Load values user has chosen when this screen is shown again
             self.load_values()
@@ -366,8 +390,9 @@ class Features(GtkBaseBox):
         for feature in self.features:
             row = self.listbox_rows[feature]
             is_active = self.settings.get("feature_" + feature)
-            if row[COL_SWITCH] is not None and is_active is not None:
-                row[COL_SWITCH].set_active(is_active)
+            if row[Features.COL_SWITCH] is not None and is_active is not None:
+                logging.debug("%s %s", feature, is_active)
+                row[Features.COL_SWITCH].set_active(is_active)
 
 # When testing, no _() is available
 try:

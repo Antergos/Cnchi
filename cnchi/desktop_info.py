@@ -64,7 +64,7 @@ LIBS = {
     'qt': ["kde", "lxqt"]
 }
 
-ALL_FEATURES = ["aur", "bluetooth", "cups", "firefox", "firewall", "flash",
+ALL_FEATURES = ["aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "flash",
                 "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
                 "visual", "smb"]
 

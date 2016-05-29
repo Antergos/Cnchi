@@ -36,6 +36,7 @@ ICON_NAMES = {
     'aur': 'system-software-install',
     'bluetooth': 'bluetooth',
     'cups': 'printer',
+    'chromium': 'chromium',
     'firefox': 'firefox',
     'firewall': 'network-server',
     'flash': 'flash',
@@ -57,9 +58,10 @@ TITLES = {
     'aur': _("Arch User Repository (AUR) Support"),
     'bluetooth': _("Bluetooth Support"),
     'cups': _("Printing Support"),
+    'chromium': _("Chromium Web Browser"),
     'firefox': _("Firefox Web Browser"),
     'firewall': _("Uncomplicated Firewall"),
-    'flash': _("Flash Player"),
+    'flash': _("Flash plugins"),
     'fonts': _("Extra Truetype Fonts"),
     'games': _("Steam + PlayonLinux"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
@@ -72,6 +74,8 @@ TITLES = {
 DESCRIPTIONS = {
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
+    'chromium': _("Open-source web browser from Google."),
+    'firefox': _("A popular open-source graphical web browser from Mozilla."),
     'flash': _("Freeware software normally used for multimedia."),
     'fonts': _("TrueType fonts from the Google Fonts project."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
@@ -82,7 +86,6 @@ DESCRIPTIONS = {
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
     'lts': _("Long term support (LTS) Linux kernel and modules."),
-    'firefox': _("A popular open-source graphical web browser from Mozilla."),
     'smb': _("SMB provides shared access to files and printers.")}
 
 TOOLTIPS = {
@@ -97,13 +100,16 @@ TOOLTIPS = {
     'cups': _("CUPS is the standards-based, open source printing\n"
               "system developed by Apple Inc. for OS® X and other\n"
               "UNIX®-like operating systems."),
+    'chromium': _("Chromium is an open-source browser project that aims to build a\n"
+                  "safer, faster, and more stable way for all users to experience the web.\n"
+                  "(this is the default)"),
     'firefox': _("Mozilla Firefox (known simply as Firefox) is a free and\n"
                  "open-source web browser developed for Windows, OS X, and Linux,\n"
                  "with a mobile version for Android, by the Mozilla Foundation and\n"
                  "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
                  "layout engine to render web pages, which implements current and\n"
                  "anticipated web standards.  Enable this option to install Firefox\n"
-                 "instead of Chromium (the default)"),
+                 "instead of Chromium"),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
@@ -123,7 +129,8 @@ TOOLTIPS = {
                "is a very easy manager to setting up games to play\n"
                "through wine, instead of doing it manually."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphics driver instead\n"
-                         "of the open-source variant."),
+                         "of the open-source variant. Do NOT install this if you have a\n"
+                         "Nvidia Optimus laptop"),
     'lamp': _("This option installs a web server (you can choose\n"
               "Apache or Nginx) plus a database server (Mariadb)\n"
               "and PHP."),
