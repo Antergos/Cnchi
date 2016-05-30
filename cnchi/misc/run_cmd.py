@@ -58,6 +58,10 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     msg: Error message to log (if empty the command called will be logged) """
 
     output = None
+    
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
+    
     try:
         output = subprocess.check_output(
             cmd,
@@ -97,6 +101,9 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
 
     for element in cmd:
         full_cmd.append(element)
+    
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
 
     try:
         proc = subprocess.Popen(
@@ -152,6 +159,10 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
 
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
+    
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
+    
     try:
         proc = subprocess.Popen(
             cmd,
