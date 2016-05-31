@@ -199,10 +199,11 @@ class SelectPackages(object):
         if packages_xml is None:
             data_dir = self.settings.get("data")
             packages_xml = os.path.join(data_dir, 'packages.xml')
+            xml_tree = eTree.parse(packages_xml)
+            xml_root = xml_tree.getroot()
             logging.debug("Loading %s", packages_xml)
-
-        xml_tree = eTree.parse(packages_xml)
-        xml_root = xml_tree.getroot()
+        else:
+            xml_root = eTree.fromstring(packages_xml)
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):

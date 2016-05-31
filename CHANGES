@@ -1,3 +1,5 @@
+[2016-05-31 13:16:39 +0200]  Clarify SMB feature description                                            karasu      {50199f4}
+[2016-05-30 22:45:38 -0500]  don't use verify=False as its not needed with requests lib             Dustin Falgout  {5e7066d}
 [2016-05-30 22:23:23 -0500]  use requests instead of urlib in select_packages.py (cherry picked ..  Dustin Falgout  {5984f2c}
 [2016-05-30 14:21:25 -0500]  whoops :sweat_smile:                                                   Dustin Falgout  {03129f5}
 [2016-05-30 14:20:38 -0500]  ensure CNCHI_RUNNING env variable is set                               Dustin Falgout  {8cb8960}
