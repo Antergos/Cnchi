@@ -1,3 +1,15 @@
+[2016-05-30 19:30:38 +0200]  I'm not sure about this as I do not see the welcome page.                  karasu      {6536166}
+[2016-05-23 11:07:12 +0200]  Should we pass the container here?                                         karasu      {40a0f7a}
+[2016-05-22 19:04:02 +0200]  Removed deprecated styles.                                                 karasu      {fdded31}
+[2016-05-22 18:58:31 +0200]  Fixing check and welcome pages                                             karasu      {c7a5fca}
+[2016-05-22 18:45:48 +0200]  Fix template dir                                                           karasu      {ed8dbb0}
+[2016-05-22 14:16:20 +0200]  Redefined class variables and instance variables.                          karasu      {c306200}
+[2016-05-13 19:47:21 +0200]  I hope this is ok. I see page constructor has changed (only in chec..      karasu      {659ec62}
+[2016-05-13 12:52:09 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {2d82bee}
+[2016-05-13 12:49:39 +0200]  Changing to new folder structure                                           karasu      {e4be1f8}
+[2016-05-13 12:48:19 +0200]  Changing to new folder structure                                           karasu      {56e3c42}
+[2016-05-12 22:47:42 +0200]  Finally. I'll start working on Cnchi again ;)                              karasu      {c891209}
+[2016-05-11 07:22:27 -0500]  working  on header class                                               Dustin Falgout  {05c74ef}
 [2016-05-02 06:37:26 -0500]  add default value for tpl dir in page class                            Dustin Falgout  {6850576}
 [2016-05-02 06:31:04 -0500]  move glade template dir                                                Dustin Falgout  {9e08f02}
 [2016-05-02 00:49:51 -0500]  progress is still slow                                                 Dustin Falgout  {0708ee4}
