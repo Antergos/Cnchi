@@ -1,3 +1,8 @@
+[2016-05-30 14:21:25 -0500]  whoops :sweat_smile:                                                   Dustin Falgout  {03129f5}
+[2016-05-30 14:20:38 -0500]  ensure CNCHI_RUNNING env variable is set                               Dustin Falgout  {8cb8960}
+[2016-05-29 18:32:12 +0200]  Merge pull request #604 from gburd/patch-1                                 karasu      {4b9f921}
+[2016-05-29 12:26:35 -0400]  split on int() type                                                     Gregory Burd   {fc93b09}
+[2016-05-29 14:33:06 +0200]  Remove some unnecessary debug messages                                     karasu      {fd3cbea}
 [2016-05-29 14:23:37 +0200]  - Chromium is a feature (enabled by default) - Features screen alwa..      karasu      {f9b949e}
 [2016-05-28 19:44:58 +0200]  Do not show nvidia proprietary option if i950 is also detected (qui..      karasu      {3291e38}
 [2016-05-28 12:03:01 +0200]  Forgot pre-hook as I was using a clean clonned repo :(                     karasu      {15bcf52}

@@ -28,8 +28,8 @@ import logging
 import os
 import queue
 import sys
-import urllib.request
-import urllib.error
+import requests
+from requests.exceptions import RequestException
 
 try:
     import xml.etree.cElementTree as eTree
@@ -47,6 +47,7 @@ from misc.extra import InstallError
 import hardware.hardware as hardware
 
 DEST_DIR = "/install"
+PKGLIST_URL = 'http://install.antergos.com/'
 
 
 def write_file(filecontents, filename):
@@ -170,6 +171,7 @@ class SelectPackages(object):
     def select_packages(self):
         """ Get package list from the Internet """
         self.packages = []
+        packages_xml = None
 
         if len(self.alternate_package_list) > 0:
             packages_xml = self.alternate_package_list
@@ -180,12 +182,11 @@ class SelectPackages(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = 'http://install.antergos.com/packages-{0}.xml'.format(
-                    info.CNCHI_VERSION.rsplit('.')[-2])
+                url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
                 logging.debug("Getting url %s...", url)
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml = urllib.request.urlopen(req, timeout=10)
-            except urllib.error.URLError as url_error:
+                req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, verify=False)
+                packages_xml = req.content
+            except RequestException as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
                 msg = "{0}. Can't retrieve remote package list, using the local file instead."
@@ -194,9 +195,11 @@ class SelectPackages(object):
                     logging.warning(msg)
                 else:
                     logging.debug(msg)
-                data_dir = self.settings.get("data")
-                packages_xml = os.path.join(data_dir, 'packages.xml')
-                logging.debug("Loading %s", packages_xml)
+
+        if packages_xml is None:
+            data_dir = self.settings.get("data")
+            packages_xml = os.path.join(data_dir, 'packages.xml')
+            logging.debug("Loading %s", packages_xml)
 
         xml_tree = eTree.parse(packages_xml)
         xml_root = xml_tree.getroot()
