@@ -86,7 +86,7 @@ DESCRIPTIONS = {
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
     'lts': _("Long term support (LTS) Linux kernel and modules."),
-    'smb': _("SMB provides shared access to files and printers.")}
+    'smb': _("Provides client access to shared files and printers.")}
 
 TOOLTIPS = {
     'aur': _("Use yaourt to install AUR packages.\n"
@@ -146,11 +146,8 @@ TOOLTIPS = {
                 "and Linux, that gives you six feature-rich applications\n"
                 "for all your document production and data processing\n"
                 "needs: Writer, Calc, Impress, Draw, Math and Base."),
-    'smb': _("In computer networking, Server Message Block (SMB)\n"
-             "operates as an application-layer network protocol mainly used\n"
-             "for providing shared access to files, printers, serial ports,\n"
-             "and miscellaneous communications between nodes on a network.\n"
-             "Most usage of SMB involves computers running Microsoft Windows."),
+    'smb': _("Most usage of SMB involves computers running Microsoft Windows.\n"
+             "Use this option to be able to browse SMB shares from your computer."),
     'visual': _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
