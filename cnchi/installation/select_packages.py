@@ -184,7 +184,7 @@ class SelectPackages(object):
             try:
                 url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
                 logging.debug("Getting url %s...", url)
-                req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, verify=False)
+                req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml = req.content
             except RequestException as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
@@ -406,3 +406,4 @@ class SelectPackages(object):
             if lang_code in lang_codes:
                 pkg_text = "firefox-i18n-{0}".format(lang_code)
                 self.packages.append(pkg_text)
+
