@@ -110,12 +110,16 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         if not self.json_obj:
             try:
-                with requests.Session() as session:
-                    self.json_obj = session.get(self.arch_mirror_status).json()
+                req = requests.get(
+                    self.arch_mirror_status,
+                    headers={'User-Agent': 'Mozilla/5.0'}
+                )
+                self.json_obj = req.json()
             except requests.RequestException as err:
                 logging.debug(
                     'Failed to retrieve mirror status information: %s',
-                    err)
+                    err
+                )
 
         try:
             # Remove servers that have not synced, and parse the "last_sync"
@@ -123,7 +127,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             mirrors = self.json_obj['urls']
 
             # Filter incomplete mirrors  and mirrors that haven't synced.
-            mirrors = list(m for m in mirrors if self.is_good_mirror(m))
+            mirrors = [m for m in mirrors if self.is_good_mirror(m)]
 
             self.json_obj['urls'] = mirrors
         except KeyError as err:
@@ -229,22 +233,20 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         rankmirrors can find the best mirror. """
 
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
+        autoselect_on = True
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:
                 lines = [x.strip() for x in mirrors.readlines()]
 
             for i in range(len(lines)):
-                if lines[i].startswith("Server") and autoselect in lines[i]:
+                if autoselect_on and lines[i].startswith("Server") and autoselect in lines[i]:
                     # Comment out auto selection
                     lines[i] = "#" + lines[i]
+                    autoselect_on = False
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
-
-                # sourceforge server does not get updated as often as necessary
-                if "sourceforge" in lines[i]:
-                    lines[i] = "#" + lines[i]
 
             with misc.raised_privileges():
                 # Write new one
@@ -254,8 +256,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
     def run_rankmirrors(self):
         if os.path.exists("/usr/bin/rankmirrors"):
-            # Uncomment Antergos mirrors and comment out auto selection so
-            # rankmirrors can find the best mirror.
             self.uncomment_antergos_mirrors()
 
             with misc.raised_privileges():
@@ -285,11 +285,11 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         for mirror in mirrors:
             self.arch_mirrorlist_ranked.append(mirror['url'])
-            line = "Server = {0}{1}/os/{2}\n".format(
+            output += "Server = {0}{1}/os/{2}\n".format(
                 mirror['url'],
                 '$repo',
-                '$arch')
-            output += line
+                '$arch'
+            )
 
         # Write modified Arch mirrorlist
         with misc.raised_privileges():
@@ -302,7 +302,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Wait until there is an Internet connection available
         while not misc.has_connection():
-            time.sleep(2)  # Delay, try again after 4 seconds
+            time.sleep(2)  # Delay, try again after 2 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
         self.update_mirrorlist()
