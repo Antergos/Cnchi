@@ -8,7 +8,7 @@
     font-size: 11px;
 }
 
-GtkWindow {
+window {
     border-color: transparent;
 }
 
@@ -51,11 +51,11 @@ GtkWindow {
 }
 
 #process_progressbar {
-    -GtkProgressBar-min-horizontal-bar-height: 3;
+    min-height: 3px;
 }
 
 #i_progressbar, #a_progressbar {
-    -GtkProgressBar-min-horizontal-bar-height: 12;
+    min-height: 12px;
 }
 
 GtkProgressBar.progressbar {
@@ -136,21 +136,20 @@ GtkProgressBar.progressbar {
     padding-right: 0px;
 }
 
-.header-bar GtkSeparator {
+headerbar separator {
     color: rgba(255, 255, 255, 0.08);
 }
 
-.toolbar .separator, .separator,
-.header-bar GtkSeparatorToolItem,
-GtkSeparatorToolItem {
+toolbar separator, separator,
+headerbar separator {
     margin-left: 10px;
 }
 
-.list {
+list, .list {
     background-color: #eee;
 }
 
-GtkListBoxRow:active, .list-row:active, .list-row:selected {
+list row:active, list row:selected, .list-row:active, .list-row:selected {
     background-color: #2EA3F2;
 }
 
@@ -166,7 +165,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
     transition: all 0.1s ease-in;
 }
 
-#tryit_btn:focused, #graph_btn:focused {
+#tryit_btn:focus, #graph_btn:focus {
     padding: 12px 20px;
     border-radius: 3px;
     border-color: #2EA3F2;
@@ -193,7 +192,7 @@ GtkListBoxRow:active, .list-row:active, .list-row:selected {
     font-size: 11px;
 }
 
-GtkSwitch.trough:active {
+/*GtkSwitch.trough:active {
     border-color: shade(#2EA3F2, 0.9);
     background-color: #2EA3F2;
     background-image: none;
@@ -202,14 +201,14 @@ GtkSwitch.trough:active {
 GtkTreeView row:selected {
     background-color: #2EA3F2;
     border-color: shade(#2EA3F2, 0.9);
-}
+}*/
 
-#auto_radio_btn GtkLabel, #advanced_radio_btn GtkLabel {
+#auto_radio_btn label, #advanced_radio_btn label {
     font-size: 13px;
     font-weight: 600;
 }
 
-#lvm_btn GtkLabel, #enc_btn GtkLabel, #zfs_btn GtkLabel, #home_btn GtkLabel {
+#lvm_btn label, #enc_btn label, #zfs_btn label, #home_btn label {
     font-size: 11px;
 }
 
@@ -222,7 +221,7 @@ GtkTreeView row:selected {
     font-size: 15px;
 }
 
-#slides GtkScrolledWindow {
+#slides scrolledwindow {
     border: none;
 }
 
