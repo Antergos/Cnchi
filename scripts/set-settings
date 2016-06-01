@@ -35,6 +35,7 @@ fi
 if [[ ${DESKTOP} == 'gnome' ]]; then
 
 	# Change keyboard layout
+	# The value of this setting is applied with sed from postinstall.sh before running set-settings.
 	gsettings set org.gnome.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set favorite apps
@@ -71,14 +72,12 @@ fi
 if [[ ${DESKTOP} == 'cinnamon' ]]; then
 
 	# Change keyboard layout
+	# The value of this setting is applied with sed from postinstall.sh before running set-settings.
 	gsettings set org.cinnamon.desktop.input-sources sources "[('xkb','us')]"
 
 	# Set gtk theme
 	gsettings set org.cinnamon.desktop.interface gtk-theme "Numix-Frost-Light"
 	gsettings set org.cinnamon.desktop.wm.preferences theme "Numix-Frost-Light"
-
-	# Set menu icon
-	gsettings set org.cinnamon menu-icon "/usr/share/antergos/antergos-menu.png"
 
 	# Set favorite apps
 	gsettings set org.cinnamon favorite-apps "['nemo.desktop', \"${_BROWSER}.desktop\", 'pamac.desktop', 'gnome-terminal.desktop']"
@@ -87,7 +86,7 @@ if [[ ${DESKTOP} == 'cinnamon' ]]; then
 	gsettings set org.cinnamon overview-corner "['false:false:false', 'false:false:false', 'false:false:false', 'false:false:false']"
 
 	# Set panel orientation
-	gsettings set org.cinnamon desktop-layout "flipped"
+	gsettings set org.cinnamon panels-enabled "['1:0:bottom']"
 
 	# Set enabled applets
 	gsettings set org.cinnamon enabled-applets "['panel1:left:1:menu@cinnamon.org:0', 'panel1:left:2:panel-launchers@cinnamon.org:1', 'panel1:left:3:window-list@cinnamon.org:2', 'panel1:right:0:removable-drives@cinnamon.org:3', 'panel1:right:1:keyboard@cinnamon.org:4', 'panel1:right:2:bluetooth@cinnamon.org:5', 'panel1:right:4:systray@cinnamon.org:7', 'panel1:right:5:power@cinnamon.org:8', 'panel1:right:6:network@cinnamon.org:6', 'panel1:right:7:sound@cinnamon.org:9', 'panel1:right:8:calendar@cinnamon.org:10', 'panel1:right:9:settings@cinnamon.org:11']"
@@ -193,7 +192,7 @@ if [[ ${DESKTOP} == 'xfce' ]]; then
 		sleep 3
 		CMD=`grep size ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`
 	done
-	xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu.png"
+	xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu-logo-dark-bg.png"
 fi
 
 if [[ ${DESKTOP} == 'mate' ]]; then
@@ -280,8 +279,8 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.Marco.keybinding-commands command-screenshot 'mate-screenshot'
 	gsettings set org.mate.Marco.keybinding-commands command-window-screenshot 'mate-screenshot --window'
 	gsettings set org.mate.thumbnailers disable-all false
-	gsettings set org.mate.search-tool quick-search-excluded-paths ['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']
-	gsettings set org.mate.search-tool quick-search-second-scan-excluded-paths ['/']
+	gsettings set org.mate.search-tool quick-search-excluded-paths "['/mnt/*', '/media/*', '/dev/*', '/tmp/*', '/proc/*', '/var/*']"
+	gsettings set org.mate.search-tool quick-search-second-scan-excluded-paths "['/']"
 	gsettings set org.mate.search-tool show-additional-options false
 	gsettings set com.linuxmint.mintmenu.plugins.recent height 385
 	gsettings set com.linuxmint.mintmenu.plugins.recent hide-separator false
@@ -306,15 +305,15 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.panel highlight-launchers-on-mouseover true
 	gsettings set org.mate.panel history-mate-run []
 	gsettings set org.mate.panel locked-down false
-	gsettings set org.mate.panel object-id-list ['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'menu-bar']
+	gsettings set org.mate.panel object-id-list "['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'menu-bar']"
 	gsettings set org.mate.panel show-program-list false
 	gsettings set org.mate.panel tooltips-enabled true
-	gsettings set org.mate.panel toplevel-id-list ['top', 'bottom']
+	gsettings set org.mate.panel toplevel-id-list "['top', 'bottom']"
 	gsettings set org.mate.SettingsDaemon.plugins.clipboard active true
 	gsettings set org.mate.SettingsDaemon.plugins.clipboard priority 99
 	gsettings set org.mate.SettingsDaemon.plugins.keybindings active true
 	gsettings set org.mate.SettingsDaemon.plugins.keybindings priority 6
-	gsettings set com.linuxmint.mintmenu applet-icon '/usr/share/antergos/antergos-menu.png'
+	gsettings set com.linuxmint.mintmenu applet-icon '/usr/share/antergos/antergos-menu-logo-dark-bg'
 	gsettings set com.linuxmint.mintmenu applet-icon-size 25
 	gsettings set com.linuxmint.mintmenu applet-text 'Menu'
 	gsettings set com.linuxmint.mintmenu border-width 1
@@ -325,7 +324,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set com.linuxmint.mintmenu hot-key 'Super_L'
 	gsettings set com.linuxmint.mintmenu offset 0
 	gsettings set com.linuxmint.mintmenu opacity 97
-	gsettings set com.linuxmint.mintmenu plugins-list ['places', 'system_management', 'newpane', 'applications']
+	gsettings set com.linuxmint.mintmenu plugins-list "['places', 'system_management', 'newpane', 'applications']"
 	gsettings set com.linuxmint.mintmenu start-with-favorites true
 	gsettings set com.linuxmint.mintmenu theme-name 'default'
 	gsettings set com.linuxmint.mintmenu tooltips-enabled true

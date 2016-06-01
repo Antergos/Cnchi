@@ -1,3 +1,4 @@
+[2016-05-31 22:58:23 -0500]  fix some deprecated styles                                             Dustin Falgout  {4af245b}
 [2016-05-31 22:15:57 -0500]  fixes cinnamon install issue mentioned in #605                         Dustin Falgout  {2ab5c27}
 [2016-05-31 22:08:48 -0500]  working on #605                                                        Dustin Falgout  {24b0a6c}
 [2016-05-31 09:13:42 -0500]  fix bug with packages.xml parsing that I introduced yesterday          Dustin Falgout  {35f46da}

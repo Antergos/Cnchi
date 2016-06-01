@@ -14,12 +14,12 @@
   },
   "menu-icon": {
     "type": "iconfilechooser",
-    "default": "/usr/share/cinnamon/theme/menu.svg",
+    "default": "/usr/share/antergos/antergos-menu-logo-dark-bg.png",
     "description": "Icon",
     "tooltip": "Select an icon to show in the panel.",
     "dependency": "menu-icon-custom",
     "indent": "true",
-    "value": "/usr/share/antergos/antergos-menu.png"
+    "value": "/usr/share/antergos/antergos-menu-logo-dark-bg.png"
   },
   "menu-label": {
     "type": "entry",
@@ -73,5 +73,5 @@
     "callback": "_launch_editor",
     "tooltip": "Press this button to customize your menu entries."
   },
-  "__md5__": "417bf70d65bf71c02569c036851d8938"
+  "__md5__": ""
 }

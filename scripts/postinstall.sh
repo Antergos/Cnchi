@@ -93,9 +93,6 @@ cinnamon_settings() {
 	else
 		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
 	fi
-	# copy antergos menu icon
-	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${CN_DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Set gsettings
 	set_gsettings
@@ -127,10 +124,6 @@ cinnamon_settings() {
 }
 
 xfce_settings() {
-	# copy antergos menu icon
-	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${CN_DESTDIR}/usr/share/antergos/antergos-menu.png
-
 	# Set settings
 	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/xfconf/xfce-perchannel-xml
 	cp -R ${CN_DESTDIR}/etc/xdg/xfce4/panel ${CN_DESTDIR}/etc/xdg/xfce4/helpers.rc ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4
@@ -165,10 +158,6 @@ xfce_settings() {
 }
 
 openbox_settings() {
-	# Copy antergos menu icon
-	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${CN_DESTDIR}/usr/share/antergos/antergos-menu.png
-
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${CN_USER_NAME}
 
@@ -282,11 +271,6 @@ mate_settings() {
 	# Fix for Zukitwo Metacity Theme
 	cp ${CN_DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${CN_DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
 
-	# copy antergos menu icon
-	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${CN_DESTDIR}/usr/share/antergos/antergos-menu.png
-	chroot ${CN_DESTDIR} ln -sf /usr/share/antergos/antergos-menu.png /usr/share/icons/Numix/24x24/places/start-here.png
-
 	# Set gsettings
 	set_gsettings
 
@@ -306,9 +290,6 @@ nox_settings() {
 
 enlightenment_settings() {
 	# http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
-	# copy antergos menu icon
-	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
-	cp /usr/share/antergos/antergos-menu.png ${CN_DESTDIR}/usr/share/antergos/antergos-menu.png
 
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${CN_USER_NAME}
@@ -381,6 +362,14 @@ postinstall() {
 	cp /etc/arch-release "${CN_DESTDIR}/etc"
 	cp /etc/os-release "${CN_DESTDIR}/etc"
 	sed -i 's|Arch|Antergos|g' "${CN_DESTDIR}/etc/issue"
+
+	# copy antergos menu icon
+	mkdir -p ${CN_DESTDIR}/usr/share/antergos/
+	cp -t ${CN_DESTDIR}/usr/share/antergos \
+		/usr/share/antergos/antergos-menu.png \
+		/usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
+
+	chroot ${CN_DESTDIR} ln -sf /usr/share/antergos/antergos-menu-logo-dark-bg.png /usr/share/icons/Numix/24x24/places/start-here.png
 
 	## Set desktop-specific settings
 	"${CN_DESKTOP}_settings"
