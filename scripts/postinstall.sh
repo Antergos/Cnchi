@@ -83,7 +83,7 @@ gnome_settings() {
 	fi
 
 	# Ensure that Light Locker starts before gnome-shell
-	sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${CN_DESTDIR}/etc/lightdm/Xsession
+	sed -i 's|echo "X|if grep -q "Exec=light-locker" "$HOME/.config/autostart/light-locker.desktop"; then\n/usr/bin/light-locker \&\nsleep 3;\nfi\necho "X|g' ${CN_DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings() {
