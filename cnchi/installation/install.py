@@ -447,12 +447,11 @@ class Installation(object):
         if not result and stale_pkgs and len(stale_pkgs) > 0:
             # Failure might be due to stale cached packages. Delete them and try again.
             if os.path.exists(self.pacman_cache_dir):
-                with misc.raised_privileges:
-                    for stale_pkg in stale_pkgs:
-                        filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
-                        to_delete = glob.glob(filepath + '***') if filepath else False
-                        if to_delete and len(to_delete) <= 6:
-                            os.remove(to_delete)
+                for stale_pkg in stale_pkgs:
+                    filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
+                    to_delete = glob.glob(filepath + '***') if filepath else False
+                    if to_delete and len(to_delete) <= 6:
+                        os.remove(to_delete)
 
                 self.pacman.refresh()
 
@@ -460,16 +459,15 @@ class Installation(object):
 
         elif not result and self.settings.get('desktop').lower() in ['cinnamon', 'mate']:
             # Failure might be due to antergos mirror issues. Try using build server repo.
-            with misc.raised_privileges:
-                with open('/etc/pacman.conf', 'r') as pacman_conf:
-                    contents = pacman_conf.readlines()
+            with open('/etc/pacman.conf', 'r') as pacman_conf:
+                contents = pacman_conf.readlines()
 
-                with open('/etc/pacman.conf', 'w') as new_pacman_conf:
-                    for line in contents:
-                        if 'antergos-mirrorlist' in line:
-                            line = 'Server = http://repo.antergos.info/$repo/$arch'
+            with open('/etc/pacman.conf', 'w') as new_pacman_conf:
+                for line in contents:
+                    if 'antergos-mirrorlist' in line:
+                        line = 'Server = http://repo.antergos.info/$repo/$arch'
 
-                        new_pacman_conf.write(line)
+                    new_pacman_conf.write(line)
 
             self.pacman.refresh()
 

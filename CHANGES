@@ -1,3 +1,4 @@
+[2016-06-03 01:28:51 -0500]  prevent exception from bubbling up to top so we can try to recover ..  Dustin Falgout  {d7042a7}
 [2016-06-02 20:43:25 -0500]  workaround for mirror issues. Hopefully will address #605              Dustin Falgout  {4f371de}
 [2016-06-01 00:04:03 -0500]  update desktop configs                                                 Dustin Falgout  {70de9c9}
 [2016-05-31 22:58:23 -0500]  fix some deprecated styles                                             Dustin Falgout  {4af245b}
