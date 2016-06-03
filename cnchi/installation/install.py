@@ -453,7 +453,26 @@ class Installation(object):
                         if to_delete and len(to_delete) <= 6:
                             os.remove(to_delete)
 
+                self.pacman.refresh()
+
                 result = self.pacman.install(pkgs=self.packages)
+
+        elif not result and self.settings.get('desktop').lower() in ['cinnamon', 'mate']:
+            # Failure might be due to antergos mirror issues. Try using build server repo.
+            with misc.raised_privileges:
+                with open('/etc/pacman.conf', 'r') as pacman_conf:
+                    contents = pacman_conf.readlines()
+
+                with open('/etc/pacman.conf', 'w') as new_pacman_conf:
+                    for line in contents:
+                        if 'antergos-mirrorlist' in line:
+                            line = 'Server = http://repo.antergos.info/$repo/$arch'
+
+                        new_pacman_conf.write(line)
+
+            self.pacman.refresh()
+
+            result = self.pacman.install(pkgs=self.packages)
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")
