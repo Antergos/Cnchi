@@ -1,3 +1,4 @@
+[2016-06-02 20:43:25 -0500]  workaround for mirror issues. Hopefully will address #605              Dustin Falgout  {4f371de}
 [2016-06-01 00:04:03 -0500]  update desktop configs                                                 Dustin Falgout  {70de9c9}
 [2016-05-31 22:58:23 -0500]  fix some deprecated styles                                             Dustin Falgout  {4af245b}
 [2016-05-31 22:15:57 -0500]  fixes cinnamon install issue mentioned in #605                         Dustin Falgout  {2ab5c27}
