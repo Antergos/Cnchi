@@ -1,3 +1,4 @@
+[2016-06-04 04:25:43 -0500]  remove cached cinnamon pkgs before attempting to recover from failu..  Dustin Falgout  {35906dd}
 [2016-06-03 18:24:15 -0500]  dont try to regain privleges when we already have them. (related to..  Dustin Falgout  {9102e11}
 [2016-06-03 01:28:51 -0500]  prevent exception from bubbling up to top so we can try to recover ..  Dustin Falgout  {d7042a7}
 [2016-06-02 20:43:25 -0500]  workaround for mirror issues. Hopefully will address #605              Dustin Falgout  {4f371de}

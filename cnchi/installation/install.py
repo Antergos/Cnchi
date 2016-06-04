@@ -449,9 +449,13 @@ class Installation(object):
             if os.path.exists(self.pacman_cache_dir):
                 for stale_pkg in stale_pkgs:
                     filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
-                    to_delete = glob.glob(filepath + '***') if filepath else False
+                    to_delete = glob.glob(filepath + '***') if filepath else []
                     if to_delete and len(to_delete) <= 20:
-                        os.remove(to_delete)
+                        for fpath in to_delete:
+                            try:
+                                os.remove(fpath)
+                            except Exception as err:
+                                logging.error(err)
 
                 self.pacman.refresh()
 
