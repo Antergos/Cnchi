@@ -1,3 +1,4 @@
+[2016-06-05 19:18:43 +0200]  Trying to fix issue #609                                                   karasu      {711c9b7}
 [2016-06-05 09:04:55 +0200]  Use pcmanfm in Openbox instead of thunar                                   karasu      {ea31f1e}
 [2016-06-04 06:45:18 -0500]  fix logic bug in previously unreachable code. bug is not related to..  Dustin Falgout  {63d08e8}
 [2016-06-04 04:25:43 -0500]  remove cached cinnamon pkgs before attempting to recover from failu..  Dustin Falgout  {35906dd}

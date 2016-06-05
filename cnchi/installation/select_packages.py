@@ -175,7 +175,7 @@ class SelectPackages(object):
         packages_xml_filename = None
 
         if len(self.alternate_package_list) > 0:
-            # Use file passed by parameter
+            # Use file passed by parameter (overrides server one)
             packages_xml_filename = self.alternate_package_list
         else:
             # The list of packages is retrieved from an online XML to let us
@@ -203,13 +203,10 @@ class SelectPackages(object):
         if packages_xml_data != None:
             logging.debug("Loading xml data from server...")
             xml_root = eTree.fromstring(packages_xml)
-        elif packages_xml_filename != None:
+        else:
             logging.debug("Loading %s", packages_xml_filename)
             xml_tree = eTree.parse(packages_xml_filename)
             xml_root = xml_tree.getroot()
-        else:
-            logging.error("Couldn't load packages xml data file!")
-            raise
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
