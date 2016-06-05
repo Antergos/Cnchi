@@ -171,10 +171,12 @@ class SelectPackages(object):
     def select_packages(self):
         """ Get package list from the Internet """
         self.packages = []
-        packages_xml = None
+        packages_xml_data = None
+        packages_xml_filename = None
 
         if len(self.alternate_package_list) > 0:
-            packages_xml = self.alternate_package_list
+            # Use file passed by parameter
+            packages_xml_filename = self.alternate_package_list
         else:
             # The list of packages is retrieved from an online XML to let us
             # control the pkgname in case of any modification
@@ -185,10 +187,12 @@ class SelectPackages(object):
                 url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
                 logging.debug("Getting url %s...", url)
                 req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml = req.content
+                packages_xml_data = req.content
             except RequestException as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
+                data_dir = self.settings.get("data")
+                packages_xml_filename = os.path.join(data_dir, 'packages.xml')
                 msg = "{0}. Can't retrieve remote package list, using the local file instead."
                 msg = msg.format(url_error)
                 if info.CNCHI_RELEASE_STAGE == "production":
@@ -196,14 +200,16 @@ class SelectPackages(object):
                 else:
                     logging.debug(msg)
 
-        if packages_xml is None:
-            data_dir = self.settings.get("data")
-            packages_xml = os.path.join(data_dir, 'packages.xml')
-            xml_tree = eTree.parse(packages_xml)
-            xml_root = xml_tree.getroot()
-            logging.debug("Loading %s", packages_xml)
-        else:
+        if packages_xml_data != None:
+            logging.debug("Loading xml data from server...")
             xml_root = eTree.fromstring(packages_xml)
+        elif packages_xml_filename != None:
+            logging.debug("Loading %s", packages_xml_filename)
+            xml_tree = eTree.parse(packages_xml_filename)
+            xml_root = xml_tree.getroot()
+        else:
+            logging.error("Couldn't load packages xml data file!")
+            raise
 
         for editions in xml_root.iter('editions'):
             for edition in editions.iter('edition'):
@@ -407,4 +413,3 @@ class SelectPackages(object):
             if lang_code in lang_codes:
                 pkg_text = "firefox-i18n-{0}".format(lang_code)
                 self.packages.append(pkg_text)
-

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Please add new packages alphabetically -->
 <cnchi>
 	<editions>
 		<edition name="common" description="Packages common to all DE and base">
