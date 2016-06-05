@@ -338,6 +338,7 @@
 				<pkgname>openbox-menu</pkgname>
 				<pkgname>parcellite</pkgname>
 				<pkgname>pidgin</pkgname>
+				<pkgname>pcmanfm</pkgname>
 				<pkgname>plank</pkgname>
 				<pkgname>plank-config</pkgname>
 				<pkgname>plank-theme-numix</pkgname>
@@ -346,9 +347,6 @@
 				<pkgname>python2-xdg</pkgname>
 				<pkgname>scrot</pkgname>
 				<pkgname>tint2</pkgname>
-				<pkgname>thunar</pkgname>
-				<pkgname>thunar-archive-plugin</pkgname>
-				<pkgname>thunar-volman</pkgname>
 				<pkgname>transmission-gtk</pkgname>
 				<pkgname>udiskie</pkgname>
 				<pkgname>volumeicon</pkgname>
