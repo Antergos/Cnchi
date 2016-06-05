@@ -70,16 +70,16 @@ ALL_FEATURES = ["aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "
 
 # Not all desktops have all features
 EXCLUDED_FEATURES = {
-    'cinnamon': ["lamp", "visual"],
-    'gnome': ["lamp", "visual"],
-    'kde': ["lamp", "visual"],
-    'mate': ["lamp", "visual"],
-    'enlightenment': ["lamp", "visual"],
+    'cinnamon': ["visual"],
+    'gnome': ["visual"],
+    'kde': ["visual"],
+    'mate': ["visual"],
+    'enlightenment': ["visual"],
     'base': ["bluetooth", "firefox", "firewall", "flash", "games",
              "graphic_drivers", "office", "smb", "visual"],
-    'openbox': ["lamp"],
-    'lxqt': ["lamp", "visual"],
-    'xfce': ["lamp", "visual"]
+    'openbox': [],
+    'lxqt': ["visual"],
+    'xfce': ["visual"]
 }
 
 # Session names for lightDM setup
