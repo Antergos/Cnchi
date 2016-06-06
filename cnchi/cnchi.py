@@ -380,7 +380,7 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "--disable-rank-mirrors",
-        help=_("Do not try to rank Arch and Antergos mirrors"),
+        help=_("Does not attempt to rank Arch and Antergos mirrors during installation"),
         action="store_true")
     parser.add_argument(
         "-v", "--verbose",
