@@ -1,3 +1,4 @@
+[2016-06-06 17:04:47 +0200]  Disable chromium feature in base install                                   karasu      {e14eb44}
 [2016-06-05 19:40:52 +0200]  Avoid using raise outside try/except block                                 karasu      {6efcef9}
 [2016-06-05 19:18:43 +0200]  Trying to fix issue #609                                                   karasu      {711c9b7}
 [2016-06-05 09:04:55 +0200]  Use pcmanfm in Openbox instead of thunar                                   karasu      {ea31f1e}

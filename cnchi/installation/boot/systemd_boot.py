@@ -80,12 +80,20 @@ class SystemdBoot(object):
                 key = "cryptkey=UUID={0}:ext2:/.keyfile-root"
                 key = key.format(self.uuids["/boot"])
 
-            options = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
-            options = options.format(
-                self.uuids["/"],
-                luks_root_volume,
-                key,
-                luks_root_volume_uuid)
+            if not self.settings.get('use_lvm'):
+                options = "cryptdevice=UUID={0}:{1} {2} root=UUID={3} rw quiet"
+                options = options.format(
+                    self.uuids["/"],
+                    luks_root_volume,
+                    key,
+                    luks_root_volume_uuid)
+            else:
+                # Quick fix for issue #595 (lvm+luks)
+                options = "cryptdevice=UUID={0}:{1} {2} root=/dev/dm-1 rw quiet"
+                options = options.format(
+                    self.uuids["/"],
+                    luks_root_volume,
+                    key)
 
         if self.settings.get("zfs"):
             zfs_pool_name = self.settings.get("zfs_pool_name")
