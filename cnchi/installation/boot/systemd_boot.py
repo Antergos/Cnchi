@@ -73,7 +73,7 @@ class SystemdBoot(object):
                 # In advanced, if using luks in root device,
                 # we store root device it in luks_root_device var
                 root_device = self.settings.get('luks_root_device')
-                self.uuids["/"] = root_device
+                self.uuids["/"] = fs.get_uuid(root_device)
 
             key = ""
             if not self.settings.get("luks_root_password"):
