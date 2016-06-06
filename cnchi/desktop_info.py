@@ -75,7 +75,7 @@ EXCLUDED_FEATURES = {
     'kde': ["lamp", "visual"],
     'mate': ["lamp", "visual"],
     'enlightenment': ["lamp", "visual"],
-    'base': ["bluetooth", "firefox", "firewall", "flash", "games",
+    'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
              "graphic_drivers", "office", "smb", "visual"],
     'openbox': ["lamp"],
     'lxqt': ["lamp", "visual"],
