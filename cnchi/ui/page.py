@@ -47,12 +47,11 @@ class Page(Gtk.Box, Container):
         Gtk.Box.__init__(self)
         Container.__init__(self, name=name, parent=parent)
 
-        #self.name = name
-        #self.parent = parent
+        self.name = name
+        self.parent = parent
 
 
-
-    def prepare(self, direction, show=False):
+    def prepare(self, direction):
         """ This must be implemented by childen """
         raise NotImplementedError
 
