@@ -50,20 +50,6 @@ class Page(Gtk.Box, Container):
         #self.name = name
         #self.parent = parent
 
-        # FIXME: Is this ok?
-        '''
-        Specifies whether widget has a GdkWindow of its own.
-        Note that all realized widgets have a non-NULL “window” pointer
-        (gtk_widget_get_window() never returns a NULL window when a widget is realized),
-        but for many of them it’s actually the GdkWindow of one of its parent widgets.
-        Widgets that do not create a window for themselves in “realize” must announce
-        this by calling this function with has_window = FALSE.
-        This function should only be called by widget implementations, and they should call it in their init() function.
-        '''
-        self.set_has_window(False)
-        #self.unparent()
-        #self.unrealize()
-
 
 
     def prepare(self, direction, show=False):
