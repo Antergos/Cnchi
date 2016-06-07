@@ -38,13 +38,14 @@ TPL_DIR = '/usr/share/cnchi/tpl'
 UI_DIR = '/usr/share/cnchi/cnchi/ui'
 
 
-class HeaderOverlay(Container, Gtk.Headerbar):
+class HeaderOverlay(Gtk.Headerbar, Container):
     pass
 
 
-class Header(Container, Gtk.Headerbar):
+class Header(Gtk.Headerbar, Container):
     def __init__(self, template_dir=TPL_DIR, name='header', parent=None, *args, **kwargs):
-        super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
+        Gtk.Headerbar.__init__(self)
+        Container.__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
 
         self.overlay = HeaderOverlay()
         self.progressbar = self.ui.get('progressbar')
@@ -53,7 +54,3 @@ class Header(Container, Gtk.Headerbar):
 
         for widget in [self, self.progressbar, self.navigation, self.forward_button]:
             self.overlay.add_overlay(widget)
-
-
-
-

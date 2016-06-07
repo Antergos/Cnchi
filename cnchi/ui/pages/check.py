@@ -65,7 +65,7 @@ class Check(Page):
     def __init__(self, parent=None):
         """ Init class ui """
 
-        super().__init__(name=Check.name, parent=None)
+        super().__init__(name=Check.name, parent=parent)
 
         self.remove_timer = False
         self.title = _("System Check")
@@ -80,10 +80,11 @@ class Check(Page):
         self.cnchi_notified = False
         self.has_space = False
         self.has_internet = False
-        self.has_iso = False
         self.is_updated = False
         self.header = Container.params['header']
         self.checks_are_optional = False
+
+        self.iso_version_ok = self.check_iso_version()
 
         if 'checks_are_optional' in Container.params:
             self.checks_are_optional = Container.params['checks_are_optional']
@@ -102,6 +103,8 @@ class Check(Page):
         has_internet = misc.has_connection()
         self.prepare_network_connection.set_state(has_internet)
 
+        self.latest_iso.set_state(self.iso_version_ok)
+
         #if has_internet and not self.cnchi_notified:
         #    self.cnchi_main.on_has_internet_connection()
         #    logging.debug('on_has_internet_connection() is running')
@@ -119,9 +122,6 @@ class Check(Page):
             updated = False
 
         self.updated.set_state(updated)
-
-        iso_check = self.check_iso_version() if not self.has_iso else True
-        self.latest_iso.set_state(iso_check)
 
         if self.checks_are_optional:
             return True
@@ -210,7 +210,8 @@ class Check(Page):
             if os.path.exists(cache_dir):
                 shutil.rmtree(cache_dir)
         else:
-            logging.debug("Not running from ISO")
+            logging.debug("Not running from ISO (dev mode?)")
+
         return True
 
     def on_timer(self):
@@ -232,7 +233,7 @@ class Check(Page):
         Container.params["forward_button"].set_sensitive(True)
         return True
 
-    def prepare(self, direction=None, show=True):
+    def prepare(self, direction=None):
         """ Load screen """
         self.updated = self.ui.get_object("updated")
         self.latest_iso = self.ui.get_object("latest_iso")
@@ -243,10 +244,10 @@ class Check(Page):
         assert self.prepare_network_connection != None, "Error loading check.ui"
 
         result = self.check_all()
-        if result is not None and show:
-            self.set_valign(Gtk.Align.START)
-            self.show_all()
-            Container.params["forward_button"].set_sensitive(result)
+
+        self.set_valign(Gtk.Align.START)
+        self.show_all()
+        Container.params["forward_button"].set_sensitive(result)
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)

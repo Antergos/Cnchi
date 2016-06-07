@@ -35,7 +35,7 @@ from gi.repository import Gtk
 from ui.base_widget import BaseWidget
 
 
-class Container(BaseWidget, Gtk.Container):
+class Container(Gtk.Container, BaseWidget):
     """
     Base class for the main components of Cnchi's UI (pages and page stacks).
 
@@ -51,7 +51,8 @@ class Container(BaseWidget, Gtk.Container):
         Attributes:
             name (str): a name for this widget.
         """
-        super().__init__(name=name, parent=parent)
+        Gtk.Container.__init__(self)
+        BaseWidget.__init__(self, name=name, parent=parent)
 
         self.name = name
         self.parent = parent

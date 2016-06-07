@@ -35,15 +35,20 @@ from gi.repository import Gtk
 from ui.container import Container
 
 
-class Page(Container, Gtk.Box):
+class Page(Gtk.Box, Container):
     """ Base class for our pages """
 
     def __init__(self, name='', parent=None):
         """
-        Attributes:
+        Parameters:
             name (str): a name for this widget.
+            parent (object): object parent of this one
         """
-        super().__init__(name=name, parent=parent)
+        Gtk.Box.__init__(self)
+        Container.__init__(self, name=name, parent=parent)
+
+        #self.name = name
+        #self.parent = parent
 
         # FIXME: Is this ok?
         '''
@@ -56,11 +61,12 @@ class Page(Container, Gtk.Box):
         This function should only be called by widget implementations, and they should call it in their init() function.
         '''
         self.set_has_window(False)
+        #self.unparent()
+        #self.unrealize()
 
-        self.name = name
-        self.parent = parent
 
-    def prepare(self, direction):
+
+    def prepare(self, direction, show=False):
         """ This must be implemented by childen """
         raise NotImplementedError
 

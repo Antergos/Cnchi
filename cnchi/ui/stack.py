@@ -35,12 +35,11 @@ from gi.repository import Gtk
 
 from ui.container import Container
 
+# TODO : EVERYTHING!
 
-class Stack(Container, Gtk.Stack):
+class Stack(Gtk.Stack, Container):
     """ Base class for our page stacks """
 
     def __init__(self, template_dir='', name='', parent=None, *args, **kwargs):
-        super().__init__(template_dir=template_dir, name=name, parent=parent, *args, **kwargs)
-
-
-
+        Gtk.Stack.__init__(self)
+        Container.__init__(self, template_dir=template_dir, name=name, parent=parent, *args, **kwargs)

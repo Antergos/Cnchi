@@ -145,6 +145,7 @@ class Welcome(Page):
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
+        logging.debug("************************** PREPARE ***********************************")
         Container.params["forward_button"].hide()
         if Container.params["disable_tryit"]:
             self.buttons['tryit'].set_sensitive(False)
