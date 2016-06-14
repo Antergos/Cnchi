@@ -241,15 +241,18 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 lines = [x.strip() for x in mirrors.readlines()]
 
             for i in range(len(lines)):
-                if autoselect_on and lines[i].startswith("Server") and autoselect in lines[i]:
+                srv_comment = lines[i].startswith("#Server")
+                srv = lines[i].startswith("Server")
+
+                if autoselect_on and srv and autoselect in lines[i]:
                     # Comment out auto selection
                     lines[i] = "#" + lines[i]
                     autoselect_on = False
-                elif autoselect_sf and lines[i].startswith("Server") and 'sourceforge' in lines[i]:
+                elif autoselect_sf and srv and 'sourceforge' in lines[i]:
                     # Comment out sourceforge auto selection url
                     lines[i] = "#" + lines[i]
                     autoselect_sf = False
-                elif lines[i].startswith("#Server") and autoselect not in lines[i]:
+                elif srv_comment and autoselect not in lines[i] and 'sourceforge' not in lines[i]:
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
 
