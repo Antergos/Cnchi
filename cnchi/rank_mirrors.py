@@ -234,6 +234,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         autoselect = "http://mirrors.antergos.com/$repo/$arch"
         autoselect_on = True
+        autoselect_sf = True
 
         if os.path.exists(self.antergos_mirrorlist):
             with open(self.antergos_mirrorlist) as mirrors:
@@ -244,6 +245,10 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     # Comment out auto selection
                     lines[i] = "#" + lines[i]
                     autoselect_on = False
+                elif autoselect_sf and lines[i].startswith("Server") and 'sourceforge' in lines[i]:
+                    # Comment out sourceforge auto selection url
+                    lines[i] = "#" + lines[i]
+                    autoselect_sf = False
                 elif lines[i].startswith("#Server") and autoselect not in lines[i]:
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
