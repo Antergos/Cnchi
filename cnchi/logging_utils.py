@@ -135,25 +135,25 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         return build_server
 
     @staticmethod
-    def keep_line(line):
-        keep = True
-        excluded = [
-            'sort_mirrors_by_speed(',
-            'download_requests.py(',
-            'queue(): Fetching',
-            'queue(): Installing',
-            '[ALPM] installed',
-            'queue(): Checking integrity',
-            '[DEBUG] connectionpool.py',
-            '[INFO] connectionpool.py',
-            '[INFO] slides.py(242) manage_events_from_cb_queue'
-        ]
-        for pattern in excluded:
-            if pattern in line:
-                keep = False
-                break
+    def filter_log_lines(log):
+        keep_lines = []
+        look_for = ['[WARNING]', '[ERROR]']
+        log_lines = log.readlines()
 
-        return keep
+        for i in range(0, len(log_lines)):
+            for pattern in look_for:
+                if pattern in log_lines[i]:
+                    try:
+                        if 10 < i < (len(log_lines) - 10):
+                            keep_lines.extend([log_lines[l] for l in range(i - 10, i + 10)])
+                        elif i < 10:
+                            keep_lines.extend([log_lines[l] for l in range(0, i)])
+                        elif i > (len(log_lines) - 10):
+                            keep_lines.extend([log_lines[l] for l in range(i, len(log_lines))])
+                    except Exception:
+                        pass
+
+        return keep_lines
 
     def bugsnag_before_notify_callback(self, notification=None):
         if notification is not None:
@@ -161,7 +161,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 self.get_and_save_install_id()
 
             notification.user = {"id": self.ip,
-                                 "name": "Antergos User",
+                                 "name": self.install_id,
                                  "install_id": self.install_id}
 
             logs = ['/tmp/{0}.log'.format(n) for n in ['cnchi', 'pacman', 'postinstall']]
@@ -173,11 +173,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             with open(logs[0], 'r') as cnchi:
                 with open(logs[1], 'r') as pacman:
                     with open(logs[2], 'r') as postinstall:
-                        log_dict = {'cnchi': cnchi, 'pacman': pacman, 'postinstall': postinstall}
+                        log_dict = {'pacman': pacman, 'postinstall': postinstall}
                         parse = {
-                            log: [line.strip() for line in log_dict[log] if self.keep_line(line)]
+                            log: [line.strip() for line in log_dict[log]]
                             for log in log_dict
                         }
+                        parse['cnchi'] = self.filter_log_lines(cnchi)
                         notification.add_tab('logs', parse)
 
             return notification

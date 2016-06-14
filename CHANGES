@@ -1,3 +1,4 @@
+[2016-06-13 22:57:15 -0500]  remove patch for install failures related to cinnamon as it was dum..  Dustin Falgout  {301aa75}
 [2016-06-06 22:50:13 +0200]  Merge pull request #611 from Wyn10/patch-2                                 karasu      {44ccd43}
 [2016-06-06 22:49:57 +0200]  Merge pull request #610 from Wyn10/patch-1                                 karasu      {9d93713}
 [2016-06-06 16:38:04 -0400]  Update cnchi.py                                                              Wyn       {1b3c183}
