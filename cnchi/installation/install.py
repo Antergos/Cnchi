@@ -473,22 +473,6 @@ class Installation(object):
 
                     new_pacman_conf.write(line)
 
-            # Temporary hack to get cinnamon installations working
-            matches = ['cinnamon', 'nemo-', 'muffin', 'cjs', 'mate-', 'caja-', 'eom-']
-            cached_pkgs = [
-                os.path.join(self.pacman_cache_dir, pkg)
-                for pattern in matches
-                for pkg in os.listdir(self.pacman_cache_dir)
-                if pattern in pkg
-            ]
-
-            if cached_pkgs:
-                for cached_pkg in cached_pkgs:
-                    try:
-                        os.remove(cached_pkg)
-                    except OSError as err:
-                        logging.error(err)
-
             self.pacman.refresh()
 
             result = self.pacman.install(pkgs=self.packages)
