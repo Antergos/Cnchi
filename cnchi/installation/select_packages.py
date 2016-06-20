@@ -202,7 +202,7 @@ class SelectPackages(object):
 
         if packages_xml_data != None:
             logging.debug("Loading xml data from server...")
-            xml_root = eTree.fromstring(packages_xml)
+            xml_root = eTree.fromstring(packages_xml_data)
         else:
             logging.debug("Loading %s", packages_xml_filename)
             xml_tree = eTree.parse(packages_xml_filename)
