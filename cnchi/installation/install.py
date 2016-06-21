@@ -775,7 +775,7 @@ class Installation(object):
                     elif mode == 'x86_64' and multilib_open and pacline.startswith('#Include ='):
                         pacline = pacline[1:]
                         multilib_open = False
-                    elif pacline == '[testing]\n':
+                    elif pacline == '#[testing]\n':
                         antlines = '\n\n#[antergos-staging]\n'
                         antlines += '#SigLevel = PackageRequired\n'
                         antlines += '#Server = http://mirrors.antergos.com/$repo/$arch/\n\n'
