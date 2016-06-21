@@ -774,10 +774,10 @@ class Installation(object):
                     else:
                         pacman_file.write(pacline)
 
-                # Add antergos repository
-                pacman_file.write("\n[antergos]\n")
-                pacman_file.write("SigLevel = PackageRequired\n")
-                pacman_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
+                        # Add antergos and staging repository
+                        if pacline == "# after the header, and they will be used before the default mirrors.\n":
+                            pacman_file.write("\n\n#[antergos-staging]\n" + "#SigLevel = PackageRequired\n" + "#Server = http://mirrors.antergos.com/$repo/$arch/\n" + "\n[antergos]\n" + "SigLevel = PackageRequired\n" + "Include = /etc/pacman.d/antergos-mirrorlist\n")
+
         else:
             logging.warning("Can't find pacman configuration file")
 
