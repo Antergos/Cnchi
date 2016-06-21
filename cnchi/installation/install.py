@@ -776,7 +776,7 @@ class Installation(object):
                         pacline = pacline[1:]
                         multilib_open = False
                     elif pacline == '#[testing]\n':
-                        antlines = '\n\n#[antergos-staging]\n'
+                        antlines = '\n#[antergos-staging]\n'
                         antlines += '#SigLevel = PackageRequired\n'
                         antlines += '#Server = http://mirrors.antergos.com/$repo/$arch/\n\n'
                         antlines += '[antergos]\n'
