@@ -765,21 +765,27 @@ class Installation(object):
                 paclines = pacman_file.readlines()
 
             mode = os.uname()[-1]
+            multilib_open = False
 
             with open(path, 'w') as pacman_file:
                 for pacline in paclines:
-                    if mode == "x86_64" and pacline == "#[multilib]\n":
-                        pacman_file.write("[multilib]\n")
-                        pacman_file.write("Include = /etc/pacman.d/mirrorlist\n")
-                    elif pacline == "# after the header, and they will be used before the default mirrors.\n":
-                        pacman_file.write("\n\n#[antergos-staging]\n")
-                        pacman_file.write("#SigLevel = PackageRequired\n")
-                        pacman_file.write("#Server = http://mirrors.antergos.com/$repo/$arch/\n")
-                        pacman_file.write("\n[antergos]\n")
-                        pacman_file.write("SigLevel = PackageRequired\n")
-                        pacman_file.write("Include = /etc/pacman.d/antergos-mirrorlist\n")
-                    else:
-                        pacman_file.write(pacline)
+                    if mode == "x86_64" and pacline == '#[multilib]\n':
+                        multilib_open = True
+                        pacline = '[multilib]\n'
+                    elif mode == 'x86_64' and multilib_open and pacline.startswith('#Include ='):
+                        pacline = pacline[1:]
+                        multilib_open = False
+                    elif pacline == '[testing]\n':
+                        antlines = '\n\n#[antergos-staging]\n'
+                        antlines += '#SigLevel = PackageRequired\n'
+                        antlines += '#Server = http://mirrors.antergos.com/$repo/$arch/\n\n'
+                        antlines += '[antergos]\n'
+                        antlines += 'SigLevel = PackageRequired\n'
+                        antlines += 'Include = /etc/pacman.d/antergos-mirrorlist\n\n'
+                        
+                        pacman_file.write(antlines)
+                    
+                    pacman_file.write(pacline)
         else:
             logging.warning("Can't find pacman configuration file")
 
