@@ -211,7 +211,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Parameters that are common to all screens """
 
         self.params['main_window'] = self
-        self.params['ui_dir'] = self.settings.get('ui')
+        self.params['UI_DIR'] = self.settings.get('ui')
 
         self.params['main_box_wrapper'] = self.gui["main_box_wrapper"]
         self.params['header'] = self.gui["header"]

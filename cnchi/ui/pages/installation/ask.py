@@ -376,7 +376,7 @@ class InstallationAsk(Page):
         txt2 = "<i>{0}</i>".format(txt2)
 
         wait_ui = Gtk.Builder()
-        ui_file = os.path.join(self.ui_dir, "wait.ui")
+        ui_file = os.path.join(self.UI_DIR, "wait.ui")
         wait_ui.add_from_file(ui_file)
 
         lbl1 = wait_ui.get_object("label1")

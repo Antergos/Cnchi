@@ -48,7 +48,7 @@ class LanguageWidget(Gtk.Box):
         super().__init__()
 
         self.settings = params['settings']
-        self.ui_dir = params['ui_dir']
+        self.ui_dir = params['UI_DIR']
         self.ui = Gtk.Builder()
         self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
         self.ui.add_from_file(self.ui_file)

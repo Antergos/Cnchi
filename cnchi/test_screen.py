@@ -129,7 +129,7 @@ def run(screen_name):
     params = {
         'title': "Cnchi",
         'main_window': window,
-        'ui_dir': "/usr/share/cnchi/ui",
+        'UI_DIR': "/usr/share/cnchi/ui",
         'disable_tryit': False,
         'settings': settings,
         'forward_button': Gtk.Button.new(),
