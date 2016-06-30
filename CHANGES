@@ -1,3 +1,4 @@
+[2016-06-29 18:59:18 -0500]  working on trying something to see how/if it works.                    Dustin Falgout  {9661a11}
 [2016-06-07 22:15:31 +0200]  Forgot this                                                                karasu      {9682290}
 [2016-06-07 22:13:45 +0200]  This is no longer needed                                                   karasu      {753b995}
 [2016-06-07 22:04:59 +0200]  Finally! I managed to make it work using old __init__ style.               karasu      {5634d5e}

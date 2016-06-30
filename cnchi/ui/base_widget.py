@@ -43,32 +43,45 @@ class BaseWidget(Gtk.Widget):
     over Cnchi's UI code making it easier to extend in the future as needed.
 
     Class Attributes:
-        TOP_DIR  (str):  Absolute path to the application's top-most directory.
-        APP_DIR  (str):  Abs path to the application's source files (derived from TOP_DIR).
-        TPL_DIR  (str):  Abs path to the application's glade templates (derived from APP_DIR).
-        UI_DIR   (str):  Abs path to the application's UI source files (derived from APP_DIR).
+        TOP_DIR      (str): Absolute path to the application's top-most directory.
+        APP_DIR      (str): Abs path to the app's source files (derived from TOP_DIR).
+        UI_DIR       (str): Abs path to the app's UI source files (derived from APP_DIR).
+        TPL_DIR      (str): Abs path to the app's UI templates (derived from UI_DIR).
+        BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
+        JINJA_DIR    (str): Abs path to the app's Jinja templates (derived from TPL_DIR).
 
-        settings    (SharedData):     Settings object as class attribute (common to all instances).
         main_window (Gtk.MainWindow): The application's main window.
+        settings    (SharedData):     Settings object (common to all instances).
+
     """
 
-    settings = SharedData('settings', from_dict=settings)
-    main_window = None
     TOP_DIR = '/usr/share/cnchi'
     APP_DIR = os.path.join(TOP_DIR, 'cnchi')
     UI_DIR = os.path.join(APP_DIR, 'ui')
     TPL_DIR = os.path.join(UI_DIR, 'tpl')
+    BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
+    JINJA_DIR = os.path.join(TPL_DIR, 'jinja')
 
-    def __init__(self, name='', parent=None):
+    main_window = None
+    settings = SharedData('settings', from_dict=settings)
+
+    def __init__(self, name='', parent=None, tpl_engine='gtkbuilder'):
         """
         Attributes:
-            name (str): a name for this widget.
+            name       (str):         A name for this widget.
+            parent     (mixed):       This widget's parent widget (if applicable).
+            ui         (Gtk.Builder): This Widget's GTKBuilder instance.
+            template   (str):         Abs path to this widget's template file.
+            tpl_engine (str):         Name of this widget's primary template engine.
+
         """
 
         super().__init__()
 
         self.name = name
         self.parent = parent
+        self.tpl_engine = tpl_engine
+        self.template = self.ui = None
 
         if parent:
             self.set_parent(parent)
@@ -76,35 +89,41 @@ class BaseWidget(Gtk.Widget):
         if name:
             self.set_name(name)
 
-        if BaseWidget.main_window is None and isinstance(self, Gtk.Window):
-            BaseWidget.main_window = self
+        if self.main_window is None and isinstance(self, Gtk.Window):
+            self.main_window = self
 
-        self.template = None
-        self.ui = None
         logging.debug("Loading '%s' %s", name, self.__class__.name)
         self.load_template()
 
-        if self.ui and self.template and self.name:
+        if all([self.ui, self.template, self.name]):
             main_box = self.ui.get_object(name)
+
             if main_box:
                 logging.debug(" ------------------------ %s ------------------------", self.name)
                 self.pack_start(main_box, True, True, 0)
-                #self.add(main_box)
 
     def load_template(self):
-        self.template = os.path.join(BaseWidget.TPL_DIR, "{}.ui".format(self.name))
+        if 'gtkbuilder' == self.tpl_engine:
+            self.template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
+        elif 'jinja' == self.tpl_engine:
+            self.template = os.path.join(self.JINJA_DIR, '{}.html'.format(self.name))
+        else:
+            logging.error('Unknown template engine "%s".'.format(self.tpl_engine))
+            return
+
         if os.path.exists(self.template):
             logging.debug("Loading %s template and connecting its signals", self.template)
-            self.ui = Gtk.Builder().new_from_file(self.template)
-            # Connect UI signals
-            self.ui.connect_signals(self)
+
+            if 'gtkbuilder' == self.tpl_engine:
+                self.ui = Gtk.Builder().new_from_file(self.template)
+                # Connect UI signals
+                self.ui.connect_signals(self)
+
+            elif 'jinja' == self.tpl_engine:
+                pass
         else:
             logging.error("Cannot find %s template!", self.template)
 
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
         return self.get_ancestor(Gtk.Window)
-
-    def get_main_window(self):
-        """ Returns top level window (main window) """
-        return main_window if isinstance(main_window, Gtk.Window) else None
