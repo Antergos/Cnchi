@@ -43,9 +43,9 @@ class DataObject:
     _initialized = False
 
     def __init__(self, from_dict=None):
-        from_dict = from_dict is not None and isinstance(from_dict, dict)
+        _from_dict = from_dict is not None and isinstance(from_dict, dict)
 
-        if from_dict and not self._initialized:
+        if _from_dict and not self._initialized:
             for key, val in from_dict.items():
                 setattr(self, key, val)
 
@@ -68,7 +68,7 @@ class SharedData:
         self.name = name
 
         if self._data is None:
-            self._data = DataObject(from_dict)
+            self._data = DataObject(from_dict=from_dict)
 
     def __get__(self, instance, cls):
         return self._data

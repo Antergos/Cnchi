@@ -62,11 +62,13 @@ class BaseWidget(Gtk.Widget):
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
     JINJA_DIR = os.path.join(TPL_DIR, 'jinja')
 
+    controller = None
     log_wrap = '-'
     main_window = None
+    _pages_data = None
     settings = SharedData('settings', from_dict=settings)
 
-    def __init__(self, name='', parent=None, tpl_engine='gtkbuilder'):
+    def __init__(self, name='', parent=None, tpl_engine='gtkbuilder', *args, **kwargs):
         """
         Attributes:
             log_wrap   (str):         Character that can be included before/after log messages.
@@ -94,10 +96,13 @@ class BaseWidget(Gtk.Widget):
         if self.main_window is None and isinstance(self, Gtk.Window):
             self.main_window = self
 
+        if self.controller is None and 'Controller' == self.__class__.__name__:
+            self.controller = self
+
         if self._pages_data is None:
             self._pages_data = dict()
 
-        logging.debug("Loading '%s' %s", name, self.__class__.name)
+        logging.debug("Loading '%s' %s", name, self.__class__.__name__)
         self.load_template()
 
         if all([self.ui, self.template, self.name]):

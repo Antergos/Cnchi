@@ -43,7 +43,7 @@ class MainContainer(Box):
     Class Attributes:
         all_pages (list):            List of initialized pages for the UI.
         web_view  (WebKit2.WebView): Object that renders the app's HTML UI.
-        See `Box.__doc__`
+        Also see `Box.__doc__`
 
     """
 
@@ -52,7 +52,7 @@ class MainContainer(Box):
     page_names = None
     web_view = None
 
-    def __init__(self, name='main_container', *args, **kwargs):
+    def __init__(self, name='main_container', controller=None,  *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -73,21 +73,11 @@ class MainContainer(Box):
 
             self.page_names.extend(self._get_page_names())
 
+        if self.controller is None:
+            self.controller = controller
+
         if self.web_view is None:
             self._initialize_web_view()
-
-    def get_page(self, page):
-        """ Load a page by name or by index """
-        if isinstance(page, int):
-            _page = self._get_page_by_index(page)
-        elif isinstance(page, str):
-            _page = self._get_page_by_name(page)
-        else:
-            raise ValueError(
-                '"page" to load must be of type(int) or type(str), %s given.', type(page)
-            )
-
-        return _page
 
     def _get_page_by_index(self, index):
         if index > len(self.page_names):
@@ -134,15 +124,28 @@ class MainContainer(Box):
         self.web_view = WebKit2.WebView.new_with_settings(webkit_settings)
 
         # register signals
-        self.web_view.connect('decide-policy', self.decide_policy_cb)
-        self.web_view.connect('load-changed', self.load_changed_cb)
-        self.web_view.connect('notify::title', self.title_changed_cb)
+        self.web_view.connect('decide-policy', self.controller.decide_policy_cb)
+        self.web_view.connect('load-changed', self.controller.load_changed_cb)
+        self.web_view.connect('notify::title', self.controller.title_changed_cb)
 
         # register custom uri scheme cnchi://
-        context.register_uri_scheme('cnchi', self._uri_scheme_cb)
+        context.register_uri_scheme('cnchi', self.controller.uri_resource_cb)
         security_manager.register_uri_scheme_as_cors_enabled('cnchi')
 
     def _load_page(self, name):
         page_class_name = '{}Page'.format(name.capitalize())
         page_class = __dict__[page_class_name]
         self.all_pages[page_class_name] = page_class(name=name, web_view=self.web_view)
+
+    def get_page(self, page):
+        """ Get a page by name or by index """
+        if isinstance(page, int):
+            _page = self._get_page_by_index(page)
+        elif isinstance(page, str):
+            _page = self._get_page_by_name(page)
+        else:
+            raise ValueError(
+                '"page" to load must be of type(int) or type(str), %s given.', type(page)
+            )
+
+        return _page

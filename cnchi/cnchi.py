@@ -36,15 +36,15 @@ import sys
 # Set initial value for "_" to appease PyCharm
 _ = lambda x: x
 
-CNCHI_PATH = "/usr/share/cnchi"
-sys.path.append(CNCHI_PATH)
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
+# CNCHI_PATH = "/usr/share/cnchi"
+# sys.path.append(CNCHI_PATH)
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
+# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
 
 import argparse
 import logging
@@ -71,9 +71,9 @@ except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
 try:
-    from ui import main_window
+    from ui.controller import Controller
 except ImportError as err:
-    msg = "Cannot create Cnchi main window: {0}".format(err.msg)
+    msg = "Cannot create Cnchi UI Controller: {0}".format(err.msg)
     logging.error(msg)
     sys.exit(1)
 
@@ -115,8 +115,8 @@ class CnchiApp(Gtk.Application):
             show.error(None, msg)
             return
 
-        window = main_window.MainWindow(self, self.cmd_line)
-        window.show_all()
+        controller = Controller(self)
+        controller.main_window.show_all()
 
         with open(self.TMP_RUNNING, "w") as tmp_file:
             txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
