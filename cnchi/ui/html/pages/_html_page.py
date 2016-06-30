@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  main_container.py
+#  _html_page.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -26,53 +26,39 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.base_widgets import Stack
-
-from .pages import (
-    check,
-    desktop,
-    features,
-    keymap,
-    slides,
-    timezone,
-    user_info,
-    welcome,
-    location,
-    summary
-)
-
-from .pages.installation import (
-    advanced,
-    alongside,
-    ask,
-    automatic,
-    zfs
-)
+from ui.base_widgets import Page, Gtk
 
 
-class MainContainer(Stack):
+class HTMLPage(Page):
     """
-    Main entry-point for GTK Pages UI.
+    Base class for HTML UI pages.
 
     Class Attributes:
-        all_pages (list): List of initialized pages for the UI.
-        See `Stack.__doc__`
+        web_view (Gtk.WebKitWebView): Object that renders the app's HTML UI.
+        Also see `Page.__doc__`
 
     """
 
-    all_pages = None
-
-    def __init__(self, name='main_container', *args, **kwargs):
+    def __init__(self, name='', web_view=None, *args, **kwargs):
         """
         Attributes:
-            Also see `Stack.__doc__`.
+            Also see `Page.__doc__`.
 
         Args:
-            name (str): A name for this widget.
+            name (str):                   A name for this widget.
+            web_view (Gtk.WebKitWebView): Object that renders the app's HTML UI.
 
         """
 
         super().__init__(name=name, *args, **kwargs)
 
-        if self.all_pages is None:
-            self.all_pages = []
+        if web_view is not None and self.web_view is None:
+            self.web_view = web_view
+
+    def prepare(self, direction):
+        """ This must be implemented by subclasses """
+        raise NotImplementedError
+
+    def store_values(self):
+        """ This must be implemented by subclasses """
+        raise NotImplementedError

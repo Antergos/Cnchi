@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  main_container.py
+#  ${file.fileName}
 #
-#  Copyright © 2016 Antergos
+#  Copyright ©  Antergos
 #
 #  This file is part of The Antergos Build Server, (AntBS).
 #
@@ -26,53 +26,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.base_widgets import Stack
+from .welcome import WelcomePage
 
-from .pages import (
-    check,
-    desktop,
-    features,
-    keymap,
-    slides,
-    timezone,
-    user_info,
-    welcome,
-    location,
-    summary
-)
-
-from .pages.installation import (
-    advanced,
-    alongside,
-    ask,
-    automatic,
-    zfs
-)
-
-
-class MainContainer(Stack):
-    """
-    Main entry-point for GTK Pages UI.
-
-    Class Attributes:
-        all_pages (list): List of initialized pages for the UI.
-        See `Stack.__doc__`
-
-    """
-
-    all_pages = None
-
-    def __init__(self, name='main_container', *args, **kwargs):
-        """
-        Attributes:
-            Also see `Stack.__doc__`.
-
-        Args:
-            name (str): A name for this widget.
-
-        """
-
-        super().__init__(name=name, *args, **kwargs)
-
-        if self.all_pages is None:
-            self.all_pages = []
+__all__ = ['WelcomePage']

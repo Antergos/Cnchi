@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  main_container.py
+#  welcome.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -26,53 +26,27 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.base_widgets import Stack
-
-from .pages import (
-    check,
-    desktop,
-    features,
-    keymap,
-    slides,
-    timezone,
-    user_info,
-    welcome,
-    location,
-    summary
-)
-
-from .pages.installation import (
-    advanced,
-    alongside,
-    ask,
-    automatic,
-    zfs
-)
+from ._html_page import HTMLPage
 
 
-class MainContainer(Stack):
+class WelcomePage(HTMLPage):
     """
-    Main entry-point for GTK Pages UI.
+    The first page shown when the app starts.
 
     Class Attributes:
-        all_pages (list): List of initialized pages for the UI.
-        See `Stack.__doc__`
+        Also see `HTMLPage.__doc__`
 
     """
 
-    all_pages = None
-
-    def __init__(self, name='main_container', *args, **kwargs):
+    def __init__(self, name='', web_view=None, *args, **kwargs):
         """
         Attributes:
-            Also see `Stack.__doc__`.
+            Also see `HTMLPage.__doc__`.
 
         Args:
-            name (str): A name for this widget.
+            name (str):                   A name for this widget.
+            web_view (Gtk.WebKitWebView): Object that renders the app's HTML UI.
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
-
-        if self.all_pages is None:
-            self.all_pages = []
+        super().__init__(name=name, web_view=web_view, *args, **kwargs)
