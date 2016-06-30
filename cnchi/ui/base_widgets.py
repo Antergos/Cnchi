@@ -34,7 +34,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from _settings import SharedData, settings
+from _settings import NonSharedData, SharedData, settings
 
 
 class BaseWidget(Gtk.Widget):
@@ -93,6 +93,9 @@ class BaseWidget(Gtk.Widget):
 
         if self.main_window is None and isinstance(self, Gtk.Window):
             self.main_window = self
+
+        if self._pages_data is None:
+            self._pages_data = dict()
 
         logging.debug("Loading '%s' %s", name, self.__class__.name)
         self.load_template()
@@ -200,3 +203,35 @@ class Box(Container, Gtk.Box):
 
         super().__init__(name=name, *args, **kwargs)
 
+
+class Page(Box):
+    """
+    Base class for pages.
+
+    Class Attributes:
+        _page_data (NonSharedData): Data storage for `Page` objects.
+        Also see `Box.__doc__`
+
+    """
+
+    _page_data = NonSharedData('_page_data')
+
+    def __init__(self, name='', *args, **kwargs):
+        """
+        Attributes:
+            Also see `Box.__doc__`.
+
+        Args:
+            name (str): A name for this widget.
+
+        """
+
+        super().__init__(name=name, *args, **kwargs)
+
+    def prepare(self, direction):
+        """ This must be implemented by subclasses """
+        raise NotImplementedError
+
+    def store_values(self):
+        """ This must be implemented by subclasses """
+        raise NotImplementedError

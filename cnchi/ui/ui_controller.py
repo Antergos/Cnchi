@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# stacks.py
+# ui_controller.py
 #
 # Copyright © 2013-2016 Antergos
 #
@@ -26,33 +26,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" Manage Cnchi pages """
-
-from ui.container import Container
-from ui.pages import (
-    check,
-    desktop,
-    features,
-    keymap,
-    slides,
-    timezone,
-    user_info,
-    welcome,
-    location
-)
-from ui.pages.installation import (
-    advanced,
-    alongside,
-    ask,
-    automatic,
-    zfs
-)
-
-from ui.base_widgets import BaseWidget
-from ui.gtk.pages import summary
+""" UI Controller Module """
 
 
-class UIController(object):
+class UIController:
     def __init__(self, params):
         self.current_stack = None
         self.current_grp = None

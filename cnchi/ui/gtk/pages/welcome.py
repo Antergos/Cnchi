@@ -36,8 +36,8 @@ from gi.repository import GdkPixbuf
 from ui.container import Container
 
 import misc.extra as misc
-from ui.base_widgets import BaseWidget
-from ui.gtk.page import Page
+from ui.base_widgets import BaseWidget, Page
+from ui.page import Page
 
 
 class Welcome(Page):

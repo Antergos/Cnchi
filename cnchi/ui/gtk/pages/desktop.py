@@ -36,7 +36,7 @@ import os
 import logging
 
 import desktop_info
-from ui.gtk.page import Page
+from ui.base_widgets import Page
 
 import misc.extra as misc
 

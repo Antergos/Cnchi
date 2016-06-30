@@ -41,8 +41,8 @@ import misc.extra as misc
 import show_message as show
 import updater
 from misc.run_cmd import call
-from ui.base_widgets import BaseWidget
-from ui.gtk.page import Page
+from ui.base_widgets import BaseWidget, Page
+from ui.page import Page
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'

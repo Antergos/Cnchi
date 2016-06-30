@@ -28,6 +28,27 @@
 
 from ui.base_widgets import Stack
 
+from .pages import (
+    check,
+    desktop,
+    features,
+    keymap,
+    slides,
+    timezone,
+    user_info,
+    welcome,
+    location,
+    summary
+)
+
+from .pages.installation import (
+    advanced,
+    alongside,
+    ask,
+    automatic,
+    zfs
+)
+
 
 class MainContainer(Stack):
     """
@@ -38,7 +59,7 @@ class MainContainer(Stack):
 
     """
 
-    def __init__(self, name='', *args, **kwargs):
+    def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
             Also see `Stack.__doc__`.

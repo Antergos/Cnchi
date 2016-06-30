@@ -38,7 +38,7 @@ class MainContainer(Box):
 
     """
 
-    def __init__(self, name='', *args, **kwargs):
+    def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.

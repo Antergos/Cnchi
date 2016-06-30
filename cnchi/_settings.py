@@ -73,3 +73,31 @@ class SharedData:
     def __get__(self, instance, cls):
         return self._data
 
+
+class NonSharedData:
+    """
+    Data descriptor that facilitates per-instance data storage/retrieval.
+
+    Attributes:
+        name      (str): The name of the bound attribute.
+        from_dict (dict): Initial data to store.
+
+    """
+
+    _data = None
+
+    def __init__(self, name):
+        self.name = name
+
+        if self._data is None:
+            self._data = dict()
+
+    def __get__(self, instance, cls):
+        self._instance_data_check(instance)
+        return self._data[instance.name]
+
+    def _instance_data_check(self, instance):
+        if instance.name not in self._data:
+            self._data[instance.name] = DataObject()
+
+

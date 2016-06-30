@@ -43,7 +43,7 @@ from misc.run_cmd import call
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from ui.gtk.page import Page
+from ui.base_widgets import Page
 
 # We'll use auto_partition.setup_luks if necessary
 
