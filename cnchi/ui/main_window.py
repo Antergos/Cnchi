@@ -35,13 +35,13 @@ import os
 import sys
 
 import gi
+from ui.stack import Stack
 
 import config
 import desktop_info
 import info
 import language
-from ui.stack import Stack
-from ui.page import Page
+from ui.gtk.page import Page
 from ui.ui_controller import UIController
 
 gi.require_version('Gtk', '3.0')

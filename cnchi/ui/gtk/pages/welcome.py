@@ -33,11 +33,11 @@ import os
 import sys
 
 from gi.repository import GdkPixbuf
+from ui.container import Container
 
 import misc.extra as misc
-from ui.page import Page
-from ui.container import Container
-from ui.base_widget import BaseWidget
+from ui.base_widgets import BaseWidget
+from ui.gtk.page import Page
 
 
 class Welcome(Page):

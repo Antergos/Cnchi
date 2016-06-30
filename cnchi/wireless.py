@@ -25,7 +25,7 @@ import dbus
 
 import misc.extra as misc
 import misc.nm as nm
-from ui.page import Page
+from ui.gtk.page import Page
 
 
 class Wireless(Page):

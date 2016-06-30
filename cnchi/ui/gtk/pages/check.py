@@ -34,16 +34,15 @@ import os
 import shutil
 
 from gi.repository import Gtk, GLib
+from ui.container import Container
 
 import info
 import misc.extra as misc
 import show_message as show
 import updater
-
 from misc.run_cmd import call
-from ui.page import Page
-from ui.container import Container
-from ui.base_widget import BaseWidget
+from ui.base_widgets import BaseWidget
+from ui.gtk.page import Page
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'

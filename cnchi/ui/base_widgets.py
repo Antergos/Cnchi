@@ -62,12 +62,14 @@ class BaseWidget(Gtk.Widget):
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
     JINJA_DIR = os.path.join(TPL_DIR, 'jinja')
 
+    log_wrap = '-'
     main_window = None
     settings = SharedData('settings', from_dict=settings)
 
     def __init__(self, name='', parent=None, tpl_engine='gtkbuilder'):
         """
         Attributes:
+            log_wrap   (str):         Character that can be included before/after log messages.
             name       (str):         A name for this widget.
             parent     (mixed):       This widget's parent widget (if applicable).
             ui         (Gtk.Builder): This Widget's GTKBuilder instance.
@@ -99,7 +101,8 @@ class BaseWidget(Gtk.Widget):
             main_box = self.ui.get_object(name)
 
             if main_box:
-                logging.debug(" ------------------------ %s ------------------------", self.name)
+                log_wrap = self.log_wrap * 25
+                logging.debug("%s %s %s", log_wrap, self.name, log_wrap)
                 self.pack_start(main_box, True, True, 0)
 
     def load_template(self):
@@ -127,3 +130,73 @@ class BaseWidget(Gtk.Widget):
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
         return self.get_ancestor(Gtk.Window)
+
+
+class Container(BaseWidget, Gtk.Container):
+    """
+    Base class for container widgets.
+
+    Class Attributes:
+        See `BaseWidget.__doc__`
+
+    """
+
+    def __init__(self, name='', *args, **kwargs):
+        """
+        Attributes:
+            children (list): This widget's children.
+            Also see `BaseWidget.__doc__`.
+
+        Args:
+            name (str): A name for this widget.
+
+        """
+
+        super().__init__(name=name, *args, **kwargs)
+
+        self.children = []
+
+
+class Stack(Container, Gtk.Stack):
+    """
+    Base class for page stacks (not used for HTML UI).
+
+    Class Attributes:
+        See `Container.__doc__`
+
+    """
+
+    def __init__(self, name='', *args, **kwargs):
+        """
+        Attributes:
+            Also see `Container.__doc__`.
+
+        Args:
+            name (str): A name for this widget.
+
+        """
+
+        super().__init__(name=name, *args, **kwargs)
+
+
+class Box(Container, Gtk.Box):
+    """
+    Base class for pages.
+
+    Class Attributes:
+        See `Container.__doc__`
+
+    """
+
+    def __init__(self, name='', *args, **kwargs):
+        """
+        Attributes:
+            Also see `Container.__doc__`.
+
+        Args:
+            name (str): A name for this widget.
+
+        """
+
+        super().__init__(name=name, *args, **kwargs)
+

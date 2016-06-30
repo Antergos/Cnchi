@@ -37,7 +37,7 @@ from gi.repository import Gtk
 
 import desktop_info
 import features_info
-from ui.page import Page
+from ui.gtk.page import Page
 from installation.process import Process
 
 from misc.extra import InstallError

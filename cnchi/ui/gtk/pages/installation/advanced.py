@@ -51,7 +51,7 @@ from installation import action
 
 import show_message as show
 
-from ui.page import Page
+from ui.gtk.page import Page
 
 COL_PATH = 0
 COL_FS = 1

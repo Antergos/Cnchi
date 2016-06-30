@@ -43,7 +43,7 @@ from gi.repository import Gtk, GLib, WebKit
 import show_message as show
 import misc.extra as misc
 
-from ui.page import Page
+from ui.gtk.page import Page
 
 from logging_utils import ContextFilter
 

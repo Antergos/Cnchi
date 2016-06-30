@@ -28,19 +28,18 @@
 
 """ Manage Cnchi pages """
 
+from ui.container import Container
 from ui.pages import (
     check,
     desktop,
     features,
     keymap,
     slides,
-    summary,
     timezone,
     user_info,
     welcome,
     location
 )
-
 from ui.pages.installation import (
     advanced,
     alongside,
@@ -49,8 +48,8 @@ from ui.pages.installation import (
     zfs
 )
 
-from ui.container import Container
-from ui.base_widget import BaseWidget
+from ui.base_widgets import BaseWidget
+from ui.gtk.pages import summary
 
 
 class UIController(object):

@@ -30,9 +30,9 @@ import time
 
 import gi
 import parted
+import storage.filesystems as fs
 
 import misc.extra as misc
-import storage.filesystems as fs
 import show_message as show
 from installation import action
 from installation import install
@@ -43,7 +43,7 @@ from misc.run_cmd import call
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from ui.page import Page
+from ui.gtk.page import Page
 
 # We'll use auto_partition.setup_luks if necessary
 

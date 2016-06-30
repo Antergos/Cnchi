@@ -44,7 +44,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from ui.page import Page
+from ui.gtk.page import Page
 from logging_utils import ContextFilter
 
 
