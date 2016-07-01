@@ -115,12 +115,15 @@ class CnchiApp(Gtk.Application):
             show.error(None, msg)
             return
 
-        controller = Controller(self)
-        controller.main_window.show_all()
+        #with open(self.TMP_RUNNING, "w") as tmp_file:
+        #    txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
+        #    tmp_file.write(txt)
+        with open('/tmp/cnchi.pid', "w") as tmp_file:
+            tmp_file.write(str(os.getpid()))
 
-        with open(self.TMP_RUNNING, "w") as tmp_file:
-            txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
-            tmp_file.write(txt)
+        controller = Controller(self)
+        controller.initialize()
+        controller.main_window.show_all()
 
     def already_running(self):
         """ Check to see if we're already running """

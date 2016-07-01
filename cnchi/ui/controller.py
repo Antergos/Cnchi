@@ -52,8 +52,11 @@ class Controller(BaseWidget):
     _web_view = None
     _main_container = None
 
-    def __init__(self, app, name='controller', parent=None, tpl_engine='jinja'):
-        super().__init__(name=name, parent=parent, tpl_engine=tpl_engine)
+    def __init__(self, app, name='controller', parent=None, tpl_engine='jinja', *args, **kwargs):
+        super().__init__(name=name, parent=parent, tpl_engine=tpl_engine, *args, **kwargs)
+
+        if self.controller is None:
+            self.controller = self
 
         if self.main_window is None:
             self.main_window = MainWindow(app, controller=self)
@@ -64,8 +67,14 @@ class Controller(BaseWidget):
         if self._web_view is None:
             self._web_view = self._main_container.web_view
 
-        self._main_container.add(self._web_view)
-        self.main_window.add(self._main_container)
+
+    def initialize(self):
+        logging.debug([type(self._main_container), type(self.main_window)])
+        try:
+            self._main_container.add(self._web_view)
+            self.main_window.add(self._main_container)
+        except Exception as err:
+            logging.exception(err)
 
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:

@@ -53,8 +53,8 @@ class MainWindow(BaseWidget, Gtk.ApplicationWindow):
 
     _controller = None
 
-    def __init__(self, app, name='main_window', controller=None):
-        super().__init__(application=app)
+    def __init__(self, app, name='main_window', controller=None, *args, **kwargs):
+        super(MainWindow, self).__init__(application=app, name=name, *args, **kwargs)
 
         self.cnchi_app = app
         self._state = {}

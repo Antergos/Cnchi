@@ -73,7 +73,7 @@ class MainContainer(Box):
 
             self.page_names.extend(self._get_page_names())
 
-        if self.controller is None:
+        if controller and self.controller is None:
             self.controller = controller
 
         if self.web_view is None:

@@ -32,12 +32,12 @@ import os
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gobject
 
 from _settings import NonSharedData, SharedData, settings
 
 
-class BaseWidget(Gtk.Widget):
+class BaseWidget():
     """
     Base class for all of Cnchi's UI classes. This gives us the utmost control
     over Cnchi's UI code making it easier to extend in the future as needed.
@@ -66,9 +66,9 @@ class BaseWidget(Gtk.Widget):
     log_wrap = '-'
     main_window = None
     _pages_data = None
-    settings = SharedData('settings', from_dict=settings)
+    settings = None
 
-    def __init__(self, name='', parent=None, tpl_engine='gtkbuilder', *args, **kwargs):
+    def __init__(self, *args, name='base_widget', parent=None, tpl_engine='gtkbuilder', **kwargs):
         """
         Attributes:
             log_wrap   (str):         Character that can be included before/after log messages.
@@ -93,10 +93,14 @@ class BaseWidget(Gtk.Widget):
         if name:
             self.set_name(name)
 
+        if self.settings is None:
+            self.settings = SharedData('settings', from_dict=settings)
+
         if self.main_window is None and isinstance(self, Gtk.Window):
             self.main_window = self
 
         if self.controller is None and 'Controller' == self.__class__.__name__:
+            logging.debug('saving controller to self.controller!')
             self.controller = self
 
         if self._pages_data is None:
@@ -133,7 +137,8 @@ class BaseWidget(Gtk.Widget):
             elif 'jinja' == self.tpl_engine:
                 pass
         else:
-            logging.error("Cannot find %s template!", self.template)
+            logging.warning("Cannot find %s template!", self.template)
+            self.template = False
 
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
@@ -219,8 +224,6 @@ class Page(Box):
 
     """
 
-    _page_data = NonSharedData('_page_data')
-
     def __init__(self, name='', *args, **kwargs):
         """
         Attributes:
@@ -232,6 +235,9 @@ class Page(Box):
         """
 
         super().__init__(name=name, *args, **kwargs)
+
+        if self._page_data is None:
+            self._page_data = NonSharedData('_page_data')
 
     def prepare(self, direction):
         """ This must be implemented by subclasses """
