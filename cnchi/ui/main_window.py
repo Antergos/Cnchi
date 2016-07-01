@@ -51,16 +51,10 @@ class MainWindow(BaseWidget, Gtk.ApplicationWindow):
 
     """
 
-    _controller = None
+    def __init__(self, application=None, _name='main_window', *args, **kwargs):
+        super().__init__(application=application, _name=_name, *args, **kwargs)
 
-    def __init__(self, app, name='main_window', controller=None, *args, **kwargs):
-        super(MainWindow, self).__init__(application=app, name=name, *args, **kwargs)
-
-        self.cnchi_app = app
         self._state = {}
-
-        if controller and self._controller is None:
-            self._controller = controller
 
         # Default window size
         self._main_window_width = 1120

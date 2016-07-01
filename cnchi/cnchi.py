@@ -60,7 +60,6 @@ from gi.repository import Gio, Gtk, GObject
 import misc.extra as misc
 import show_message as show
 import info
-import updater
 from logging_utils import ContextFilter
 
 try:
@@ -72,6 +71,7 @@ except ImportError as err:
 
 try:
     from ui.controller import Controller
+    from ui.base_widgets import BaseWidget
 except ImportError as err:
     msg = "Cannot create Cnchi UI Controller: {0}".format(err.msg)
     logging.error(msg)
@@ -84,13 +84,17 @@ LOCALE_DIR = "/usr/share/locale"
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.18.0"
 
+FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
-class CnchiApp(Gtk.Application):
+
+class CnchiApp(BaseWidget, Gtk.Application):
     """ Main Cnchi App class """
 
-    def __init__(self, cmd_line):
-        super().__init__(application_id="com.antergos.cnchi",
-                         flags=Gio.ApplicationFlags.FLAGS_NONE)
+    def __init__(self, cmd_line, _name='cnchi_app', *args, **kwargs):
+
+        super().__init__(application_id='com.antergos.cnchi',
+                         flags=FLAGS, _name=_name, *args, **kwargs)
+
         self.TMP_RUNNING = "/tmp/.setup-running"
 
         # Command line options
@@ -121,9 +125,13 @@ class CnchiApp(Gtk.Application):
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
-        controller = Controller(self)
-        controller.initialize()
-        controller.main_window.show_all()
+        try:
+            controller = Controller(self)
+            controller.initialize()
+            self.add_window(self._main_window)
+            self._main_window.show_all()
+        except Exception as err:
+            logging.exception(err)
 
     def already_running(self):
         """ Check to see if we're already running """
@@ -388,59 +396,6 @@ def parse_options():
         action="store_true")
 
     return parser.parse_args()
-
-
-def threads_init():
-    """
-    For applications that wish to use Python threads to interact with the GNOME platform,
-    GObject.threads_init() must be called prior to running or creating threads and starting
-    main loops (see notes below for PyGObject 3.10 and greater). Generally, this should be done
-    in the first stages of an applications main entry point or right after importing GObject.
-    For multi-threaded GUI applications Gdk.threads_init() must also be called prior to running
-    Gtk.main() or Gio/Gtk.Application.run().
-    """
-    minor = Gtk.get_minor_version()
-    micro = Gtk.get_micro_version()
-
-    if minor == 10 and micro < 2:
-        # Unfortunately these versions of PyGObject suffer a bug
-        # which require a workaround to get threading working properly.
-        # Workaround: Force GIL creation
-        import threading
-        threading.Thread(target=lambda: None).start()
-
-    # Since version 3.10.2, calling threads_init is no longer needed.
-    # See: https://wiki.gnome.org/PyGObject/Threading
-    if minor < 10 or (minor == 10 and micro < 2):
-        GObject.threads_init()
-        # Gdk.threads_init()
-
-
-def update_cnchi(cmd_line):
-    """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(
-        force_update=cmd_line.update,
-        local_cnchi_version=info.CNCHI_VERSION)
-
-    if upd.update():
-        logging.info("Program updated! Restarting...")
-        misc.remove_temp_files()
-        if cmd_line.update:
-            # Remove -u and --update options from new call
-            new_argv = []
-            for argv in sys.argv:
-                if argv != "-u" and argv != "--update":
-                    new_argv.append(argv)
-        else:
-            new_argv = sys.argv
-
-        # Do not try to update again now
-        new_argv.append("--disable-update")
-
-        # Run another instance of Cnchi (which will be the new version)
-        with misc.raised_privileges():
-            os.execl(sys.executable, *([sys.executable] + new_argv))
-        sys.exit(0)
 
 
 def setup_gettext():

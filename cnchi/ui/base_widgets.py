@@ -32,12 +32,16 @@ import os
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gobject
+gi.require_version('WebKit2', '4.0')
+from gi.repository import Gtk, WebKit2
 
 from _settings import NonSharedData, SharedData, settings
 
+VERTICAL = Gtk.Orientation.VERTICAL
+HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
-class BaseWidget():
+
+class BaseWidget(Gtk.Widget):
     """
     Base class for all of Cnchi's UI classes. This gives us the utmost control
     over Cnchi's UI code making it easier to extend in the future as needed.
@@ -62,18 +66,21 @@ class BaseWidget():
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
     JINJA_DIR = os.path.join(TPL_DIR, 'jinja')
 
-    controller = None
-    log_wrap = '-'
-    main_window = None
+    _cnchi_app = None
+    _controller = None
+    _main_window = None
     _pages_data = None
+    _web_view = None
+    log_wrap = '-'
     settings = None
 
-    def __init__(self, *args, name='base_widget', parent=None, tpl_engine='gtkbuilder', **kwargs):
+    def __init__(self, _name='base_widget', _parent=None,
+                 _tpl_engine='gtkbuilder', *args, **kwargs):
         """
         Attributes:
             log_wrap   (str):         Character that can be included before/after log messages.
             name       (str):         A name for this widget.
-            parent     (mixed):       This widget's parent widget (if applicable).
+            parent     (mixed):       This widget's _parent widget (if applicable).
             ui         (Gtk.Builder): This Widget's GTKBuilder instance.
             template   (str):         Abs path to this widget's template file.
             tpl_engine (str):         Name of this widget's primary template engine.
@@ -82,35 +89,37 @@ class BaseWidget():
 
         super().__init__()
 
-        self.name = name
-        self.parent = parent
-        self.tpl_engine = tpl_engine
+        self.name = _name
+        self._parent = _parent
+        self.tpl_engine = _tpl_engine
         self.template = self.ui = None
 
-        if parent:
-            self.set_parent(parent)
-
-        if name:
-            self.set_name(name)
+        if _name:
+            self.set_name(_name)
 
         if self.settings is None:
             self.settings = SharedData('settings', from_dict=settings)
 
-        if self.main_window is None and isinstance(self, Gtk.Window):
-            self.main_window = self
+        if self._main_window is None and isinstance(self, Gtk.Window):
+            self._main_window = self
 
-        if self.controller is None and 'Controller' == self.__class__.__name__:
-            logging.debug('saving controller to self.controller!')
-            self.controller = self
+        if self._controller is None and 'Controller' == self.__class__.__name__:
+            self._controller = self
+
+        if self._cnchi_app is None and isinstance(self, Gtk.Application):
+            self._cnchi_app = self
+
+        if self._web_view is None and isinstance(self, WebKit2.WebView):
+            self._web_view = self
 
         if self._pages_data is None:
             self._pages_data = dict()
 
-        logging.debug("Loading '%s' %s", name, self.__class__.__name__)
-        self.load_template()
+        logging.debug("Loading '%s' %s", _name, self.__class__.__name__)
+        # self.load_template()
 
         if all([self.ui, self.template, self.name]):
-            main_box = self.ui.get_object(name)
+            main_box = self.ui.get_object(_name)
 
             if main_box:
                 log_wrap = self.log_wrap * 25
@@ -145,32 +154,7 @@ class BaseWidget():
         return self.get_ancestor(Gtk.Window)
 
 
-class Container(BaseWidget, Gtk.Container):
-    """
-    Base class for container widgets.
-
-    Class Attributes:
-        See `BaseWidget.__doc__`
-
-    """
-
-    def __init__(self, name='', *args, **kwargs):
-        """
-        Attributes:
-            children (list): This widget's children.
-            Also see `BaseWidget.__doc__`.
-
-        Args:
-            name (str): A name for this widget.
-
-        """
-
-        super().__init__(name=name, *args, **kwargs)
-
-        self.children = []
-
-
-class Stack(Container, Gtk.Stack):
+class Stack(BaseWidget, Gtk.Stack):
     """
     Base class for page stacks (not used for HTML UI).
 
@@ -179,7 +163,7 @@ class Stack(Container, Gtk.Stack):
 
     """
 
-    def __init__(self, name='', *args, **kwargs):
+    def __init__(self, name='', _parent=None, tpl_engine='gtkbuilder', *args, **kwargs):
         """
         Attributes:
             Also see `Container.__doc__`.
@@ -189,10 +173,10 @@ class Stack(Container, Gtk.Stack):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, _parent=_parent, tpl_engine=tpl_engine, *args, **kwargs)
 
 
-class Box(Container, Gtk.Box):
+class Box(BaseWidget, Gtk.Box):
     """
     Base class for pages.
 
@@ -201,7 +185,8 @@ class Box(Container, Gtk.Box):
 
     """
 
-    def __init__(self, name='', *args, **kwargs):
+    def __init__(self, orientation=HORIZONTAL, spacing=0, _name='',
+                 _parent=None, _tpl_engine='gtkbuilder', *args, **kwargs):
         """
         Attributes:
             Also see `Container.__doc__`.
@@ -211,7 +196,8 @@ class Box(Container, Gtk.Box):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(orientation=orientation, spacing=spacing, _name=_name,
+                         _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
 
 
 class Page(Box):
@@ -224,7 +210,7 @@ class Page(Box):
 
     """
 
-    def __init__(self, name='', *args, **kwargs):
+    def __init__(self, _name='page', _parent=None, _tpl_engine='gtkbuilder', *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -234,7 +220,8 @@ class Page(Box):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(orientation=HORIZONTAL, spacing=0, _name=_name,
+                         _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
 
         if self._page_data is None:
             self._page_data = NonSharedData('_page_data')

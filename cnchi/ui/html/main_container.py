@@ -28,12 +28,11 @@
 
 import os
 
-from ui.base_widgets import Box, gi
+from ui.base_widgets import Box, Gtk, WebKit2
 
 from .pages import *
 
-gi.require_version('WebKit2', '4.0')
-from gi.repository import WebKit2
+HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
 
 class MainContainer(Box):
@@ -52,7 +51,7 @@ class MainContainer(Box):
     page_names = None
     web_view = None
 
-    def __init__(self, name='main_container', controller=None,  *args, **kwargs):
+    def __init__(self, orientation=HORIZONTAL, spacing=0, _name='main_container', *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -62,7 +61,7 @@ class MainContainer(Box):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(orientation=orientation, spacing=spacing, _name=_name, *args, **kwargs)
 
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
@@ -73,11 +72,10 @@ class MainContainer(Box):
 
             self.page_names.extend(self._get_page_names())
 
-        if controller and self.controller is None:
-            self.controller = controller
-
         if self.web_view is None:
             self._initialize_web_view()
+
+        self.add(self.web_view)
 
     def _get_page_by_index(self, index):
         if index > len(self.page_names):

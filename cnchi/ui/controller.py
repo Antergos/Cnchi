@@ -31,10 +31,10 @@
 import json
 import logging
 
-from .base_widgets import BaseWidget
+from .base_widgets import BaseWidget, WebKit2
 from .main_window import MainWindow
 
-from .html.main_container import MainContainer, WebKit2
+from .html.main_container import MainContainer
 
 
 class Controller(BaseWidget):
@@ -49,30 +49,25 @@ class Controller(BaseWidget):
     """
 
     _emit_js_tpl = 'window.cnchi._emit(%s)'
-    _web_view = None
-    _main_container = None
 
-    def __init__(self, app, name='controller', parent=None, tpl_engine='jinja', *args, **kwargs):
-        super().__init__(name=name, parent=parent, tpl_engine=tpl_engine, *args, **kwargs)
+    def __init__(self, _application=None, _name='controller',
+                 _parent=None, _tpl_engine='jinja', *args, **kwargs):
 
-        if self.controller is None:
-            self.controller = self
+        super().__init__(_name=_name, _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
 
-        if self.main_window is None:
-            self.main_window = MainWindow(app, controller=self)
+        if self._main_window is None:
+            self._main_window = MainWindow(application=_application)
 
         if self._main_container is None:
-            self._main_container = MainContainer(controller=self)
+            self._main_container = MainContainer()
 
         if self._web_view is None:
             self._web_view = self._main_container.web_view
 
-
     def initialize(self):
-        logging.debug([type(self._main_container), type(self.main_window)])
+        logging.debug([type(self._main_container), type(self._main_window)])
         try:
-            self._main_container.add(self._web_view)
-            self.main_window.add(self._main_container)
+            self._main_window.add(self._main_container)
         except Exception as err:
             logging.exception(err)
 
