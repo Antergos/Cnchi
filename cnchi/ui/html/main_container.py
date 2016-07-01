@@ -27,15 +27,16 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import logging
 
-from ui.base_widgets import Box, Gtk, WebKit2
+from ui.base_widgets import BaseWidget, Gtk, WebKit2
 
 from .pages import *
 
 HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
 
-class MainContainer(Box):
+class MainContainer(Gtk.Box, BaseWidget):
     """
     Main entry-point for HTML Pages UI.
 
@@ -49,9 +50,9 @@ class MainContainer(Box):
     PAGES_DIR = None
     all_pages = None
     page_names = None
-    web_view = None
 
-    def __init__(self, orientation=HORIZONTAL, spacing=0, _name='main_container', *args, **kwargs):
+    def __init__(self, orientation=HORIZONTAL, spacing=0,
+                 _name='main_container', _controller=None, *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -61,7 +62,9 @@ class MainContainer(Box):
 
         """
 
-        super().__init__(orientation=orientation, spacing=spacing, _name=_name, *args, **kwargs)
+        ignore = self._get_gtk_ignore_kwargs(**kwargs)
+        super().__init__(orientation=orientation, spacing=spacing,
+                         _name=_name, ignore=ignore, *args, **kwargs)
 
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
@@ -72,10 +75,11 @@ class MainContainer(Box):
 
             self.page_names.extend(self._get_page_names())
 
-        if self.web_view is None:
-            self._initialize_web_view()
+        if self._controller is None:
+            self._controller = _controller
 
-        self.add(self.web_view)
+        if self._web_view is None:
+            self._initialize_web_view()
 
     def _get_page_by_index(self, index):
         if index > len(self.page_names):
@@ -119,21 +123,21 @@ class MainContainer(Box):
         context = WebKit2.WebContext.get_default()
         security_manager = context.get_security_manager()
         webkit_settings = self._get_webkit_settings()
-        self.web_view = WebKit2.WebView.new_with_settings(webkit_settings)
+        self._web_view = WebKit2.WebView.new_with_settings(webkit_settings)
 
         # register signals
-        self.web_view.connect('decide-policy', self.controller.decide_policy_cb)
-        self.web_view.connect('load-changed', self.controller.load_changed_cb)
-        self.web_view.connect('notify::title', self.controller.title_changed_cb)
+        self._web_view.connect('decide-policy', self._controller.decide_policy_cb)
+        self._web_view.connect('load-changed', self._controller.load_changed_cb)
+        self._web_view.connect('notify::title', self._controller.title_changed_cb)
 
         # register custom uri scheme cnchi://
-        context.register_uri_scheme('cnchi', self.controller.uri_resource_cb)
+        context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
         security_manager.register_uri_scheme_as_cors_enabled('cnchi')
 
     def _load_page(self, name):
         page_class_name = '{}Page'.format(name.capitalize())
         page_class = __dict__[page_class_name]
-        self.all_pages[page_class_name] = page_class(name=name, web_view=self.web_view)
+        self.all_pages[page_class_name] = page_class(name=name, web_view=self._web_view)
 
     def get_page(self, page):
         """ Get a page by name or by index """

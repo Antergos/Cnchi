@@ -35,15 +35,14 @@ class DataObject:
     """
     Generic object used to store data/settings as attributes.
 
-    Attributes:
+    Args:
         from_dict (dict): Initialize object using dict.
 
     """
 
-    _initialized = False
-
     def __init__(self, from_dict=None):
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
+        self._initialized = False
 
         if _from_dict and not self._initialized:
             for key, val in from_dict.items():
@@ -57,7 +56,7 @@ class SharedData:
     Data descriptor that facilitates shared data storage/retrieval.
 
     Attributes:
-        name      (str): The name of the bound attribute.
+        name      (str):  The name of the bound attribute.
         from_dict (dict): Initial data to store.
 
     """

@@ -72,6 +72,8 @@ except ImportError as err:
 try:
     from ui.controller import Controller
     from ui.base_widgets import BaseWidget
+    from ui.main_window import MainWindow
+    from ui.html.main_container import MainContainer
 except ImportError as err:
     msg = "Cannot create Cnchi UI Controller: {0}".format(err.msg)
     logging.error(msg)
@@ -87,7 +89,7 @@ GTK_VERSION_NEEDED = "3.18.0"
 FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
 
-class CnchiApp(BaseWidget, Gtk.Application):
+class CnchiApp(Gtk.Application, BaseWidget):
     """ Main Cnchi App class """
 
     def __init__(self, cmd_line, _name='cnchi_app', *args, **kwargs):
@@ -126,10 +128,12 @@ class CnchiApp(BaseWidget, Gtk.Application):
             tmp_file.write(str(os.getpid()))
 
         try:
-            controller = Controller(self)
-            controller.initialize()
-            self.add_window(self._main_window)
-            self._main_window.show_all()
+            controller = Controller()
+            main_window = MainWindow(application=self)
+            main_container = MainContainer(_controller=controller)
+            self.add_window(main_window)
+            main_window.add(main_container)
+            main_window.show_all()
         except Exception as err:
             logging.exception(err)
 

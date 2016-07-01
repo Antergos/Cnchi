@@ -42,7 +42,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GLib
 
 
-class MainWindow(BaseWidget, Gtk.ApplicationWindow):
+class MainWindow(Gtk.ApplicationWindow, BaseWidget):
     """
     Cnchi Main Window
 
@@ -52,7 +52,8 @@ class MainWindow(BaseWidget, Gtk.ApplicationWindow):
     """
 
     def __init__(self, application=None, _name='main_window', *args, **kwargs):
-        super().__init__(application=application, _name=_name, *args, **kwargs)
+        ignore = self._get_gtk_ignore_kwargs(**kwargs)
+        super().__init__(application=application, _name=_name, ignore=ignore, *args, **kwargs)
 
         self._state = {}
 

@@ -33,15 +33,12 @@ import gi
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, WebKit2
+from gi.repository import GLib, Gio, Gtk, WebKit2
 
 from _settings import NonSharedData, SharedData, settings
 
-VERTICAL = Gtk.Orientation.VERTICAL
-HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
-
-class BaseWidget:
+class BaseObject:
     """
     Base class for all of Cnchi's classes.
 
@@ -53,17 +50,19 @@ class BaseWidget:
         BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
         JINJA_DIR    (str): Abs path to the app's Jinja templates (derived from TPL_DIR).
 
-        _cnchi_app      (BaseWidget):    The application object.
-        _controller     (BaseWidget):    The app's ui controller object.
-        _main_container (BaseWidget):    The app's main ui container object.
-        _main_window    (BaseWidget):    The app's main window object.
-        _pages_data     (SharedData):    Descriptor that provides access to the app's ui
-                                         pages' data (storage for `Page.store_values()`)
-        _web_view       (BaseWidget):    The app's ui web view object.
-        settings        (SharedData):    Descriptor that provides access to the app's
-                                         Settings object.
-        widget          (NonSharedData): Descriptor that provides access to the `Gtk.Widget`
-                                         for this object.
+        _cnchi_app      (BaseWidget):      The application object.
+        _controller     (BaseWidget):      The app's ui controller object.
+        _main_container (BaseWidget):      The app's main ui container object.
+        _main_window    (BaseWidget):      The app's main window object.
+        _pages_data     (SharedData):      Descriptor that provides access to the app's ui
+                                           pages' data (storage for `Page.store_values()`)
+        _web_view       (BaseWidget):      The app's ui web view object.
+
+        logger          (logging.Handler): The app's log handler.
+        settings        (SharedData):      Descriptor that provides access to the app's
+                                           Settings object.
+        widget          (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
+                                           for this object.
 
     """
 
@@ -81,44 +80,39 @@ class BaseWidget:
     _pages_data = None
     _web_view = None
     log_wrap = '-'
-    settings = None
+    settings = SharedData('settings', from_dict=settings)
 
-    def __init__(self, _name='base_widget', _parent=None, _tpl_engine='builder', *args, **kwargs):
+    def __init__(self, name='base_widget', parent=None, tpl_engine='builder', *args, **kwargs):
         """
         Attributes:
             widget     (Gtk.Widget):  This object's GTK Widget.
-            name       (str):         A name for this widget.
+            name       (str):         A name for this object (all objects must have unique name).
             parent     (mixed):       This object's parent object (if applicable).
-            ui         (Gtk.Builder): This Widget's GTKBuilder instance (if applicable).
-            template   (str):         Abs path to this widget's template file.
-            tpl_engine (str):         Name of this widget's primary template engine.
+            ui         (Gtk.Builder): This objects's GTK Builder instance (if applicable).
+            template   (str):         Abs path to this object's template file.
+            tpl_engine (str):         Name of this object's primary template engine.
 
         """
 
         super().__init__()
 
-        self.name = _name
-        self._parent = _parent
-        self.tpl_engine = _tpl_engine
+        self.name, self.parent, self.tpl_engine = (name, parent, tpl_engine)
+
         self.template = self.ui = None
 
-        if _name and isinstance(self, Gtk.Widget):
-            self.set_name(_name)
-
         if self.settings is None:
-            self.settings = SharedData('settings', from_dict=settings)
-
-        if self._main_window is None and isinstance(self, Gtk.Window):
-            self._main_window = self
-
-        if self._controller is None and 'controller' == self.name:
-            self._controller = self
-
-        if self._cnchi_app is None and isinstance(self, Gtk.Application):
-            self._cnchi_app = self
+            self.settings =
 
         if self._pages_data is None:
             self._pages_data = dict()
+
+        for component in ['main_window', 'controller', 'cnchi_app']:
+            attrib_name = '_{}'.format(component)
+            attrib = getattr(self, attrib_name)
+
+            if attrib is None and name == attrib_name:
+                setattr(self, attrib_name, self)
+
 
         logging.debug("Loading '%s' %s", _name, self.__class__.__name__)
         # self.load_template()
