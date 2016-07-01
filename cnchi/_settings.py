@@ -31,6 +31,16 @@
 from config import settings
 
 
+class Singleton(type):
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super().__call__(*args, **kwargs)
+
+        return cls._instance
+
+
 class DataObject:
     """
     Generic object used to store data/settings as attributes.
@@ -51,9 +61,9 @@ class DataObject:
             self._initialized = True
 
 
-class SharedData:
+class SharedData(metaclass=Singleton):
     """
-    Data descriptor that facilitates shared data storage/retrieval.
+    Descriptor that facilitates shared data storage/retrieval.
 
     Attributes:
         name      (str):  The name of the bound attribute.
@@ -73,7 +83,7 @@ class SharedData:
         return self._data
 
 
-class NonSharedData:
+class NonSharedData(metaclass=Singleton):
     """
     Data descriptor that facilitates per-instance data storage/retrieval.
 
@@ -94,6 +104,10 @@ class NonSharedData:
     def __get__(self, instance, cls):
         self._instance_data_check(instance)
         return self._data[instance.name]
+
+    def __set__(self, instance, value):
+        self._instance_data_check(instance)
+        self._data[instance.name] = value
 
     def _instance_data_check(self, instance):
         if instance.name not in self._data:

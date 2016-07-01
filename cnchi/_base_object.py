@@ -77,20 +77,23 @@ class BaseObject:
     _controller = None
     _main_container = None
     _main_window = None
-    _pages_data = None
+    _pages_data = NonSharedData('_pages_data')
     _web_view = None
+
+    logger = None
     log_wrap = '-'
     settings = SharedData('settings', from_dict=settings)
+    widget = NonSharedData('widget')
 
     def __init__(self, name='base_widget', parent=None, tpl_engine='builder', *args, **kwargs):
         """
         Attributes:
-            widget     (Gtk.Widget):  This object's GTK Widget.
             name       (str):         A name for this object (all objects must have unique name).
             parent     (mixed):       This object's parent object (if applicable).
             ui         (Gtk.Builder): This objects's GTK Builder instance (if applicable).
             template   (str):         Abs path to this object's template file.
             tpl_engine (str):         Name of this object's primary template engine.
+            widget     (Gtk.Widget):  This object's GTK Widget.
 
         """
 
@@ -100,120 +103,16 @@ class BaseObject:
 
         self.template = self.ui = None
 
-        if self.settings is None:
-            self.settings =
-
-        if self._pages_data is None:
-            self._pages_data = dict()
-
-        for component in ['main_window', 'controller', 'cnchi_app']:
+        for component in ['main_window', 'controller', 'cnchi_app', 'logger']:
             attrib_name = '_{}'.format(component)
             attrib = getattr(self, attrib_name)
 
             if attrib is None and name == attrib_name:
                 setattr(self, attrib_name, self)
 
+        logger_provided = 'logger' in kwargs and kwargs['logger'] is not None
 
-        logging.debug("Loading '%s' %s", _name, self.__class__.__name__)
-        # self.load_template()
+        if logger_provided and self.logger is None:
+            self.logger = kwargs['logger']
 
-        if all([self.ui, self.template, self.name]):
-            main_box = self.ui.get_object(_name)
-
-            if main_box:
-                log_wrap = self.log_wrap * 25
-                logging.debug("%s %s %s", log_wrap, self.name, log_wrap)
-                self.pack_start(main_box, True, True, 0)
-
-    @staticmethod
-    def _get_gtk_ignore_kwargs(**kwargs):
-        return [kw for kw in kwargs if kw.startswith('_')]
-
-    def load_template(self):
-        if 'gtkbuilder' == self.tpl_engine:
-            self.template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
-        elif 'jinja' == self.tpl_engine:
-            self.template = os.path.join(self.JINJA_DIR, '{}.html'.format(self.name))
-        else:
-            logging.error('Unknown template engine "%s".'.format(self.tpl_engine))
-            return
-
-        if os.path.exists(self.template):
-            logging.debug("Loading %s template and connecting its signals", self.template)
-
-            if 'gtkbuilder' == self.tpl_engine:
-                self.ui = Gtk.Builder().new_from_file(self.template)
-                # Connect UI signals
-                self.ui.connect_signals(self)
-
-            elif 'jinja' == self.tpl_engine:
-                pass
-        else:
-            logging.warning("Cannot find %s template!", self.template)
-            self.template = False
-
-    def get_ancestor_window(self):
-        """ Returns first ancestor that is a Gtk Window """
-        return self.get_ancestor(Gtk.Window)
-
-
-
-
-
-
-class Stack(BaseWidget, Gtk.Stack):
-    """
-    Base class for page stacks (not used for HTML UI).
-
-    Class Attributes:
-        See `Container.__doc__`
-
-    """
-
-    def __init__(self, name='', _parent=None, tpl_engine='gtkbuilder', *args, **kwargs):
-        """
-        Attributes:
-            Also see `Container.__doc__`.
-
-        Args:
-            name (str): A name for this widget.
-
-        """
-
-        super().__init__(name=name, _parent=_parent, tpl_engine=tpl_engine, *args, **kwargs)
-
-
-class Page(BaseWidget, Gtk.Box):
-    """
-    Base class for pages.
-
-    Class Attributes:
-        _page_data (NonSharedData): Data storage for `Page` objects.
-        Also see `Box.__doc__`
-
-    """
-
-    def __init__(self, _name='page', _parent=None, _tpl_engine='gtkbuilder', *args, **kwargs):
-        """
-        Attributes:
-            Also see `Box.__doc__`.
-
-        Args:
-            name (str): A name for this widget.
-
-        """
-
-        ignore = self._get_gtk_ignore_kwargs(**kwargs)
-        super().__init__(orientation=HORIZONTAL, spacing=0, ignore=ignore, _name=_name,
-                         _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
-
-        if self._page_data is None:
-            self._page_data = NonSharedData('_page_data')
-
-    def prepare(self, direction):
-        """ This must be implemented by subclasses """
-        raise NotImplementedError
-
-    def store_values(self):
-        """ This must be implemented by subclasses """
-        raise NotImplementedError
+        self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
