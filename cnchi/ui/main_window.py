@@ -46,14 +46,16 @@ class MainWindow(BaseWidget):
 
     """
 
-    def __init__(self, application=None, name='main_window', logger=None, *args, **kwargs):
-        super().__init__(name=name, logger=logger, *args, **kwargs)
+    def __init__(self, name='main_window', *args, **kwargs):
+        super().__init__(name=name, *args, **kwargs)
 
         self._state = {}
 
         # Default window size
         self._main_window_width = 1120
         self._main_window_height = 721
+
+        self.widget.show_all()
 
     def connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)

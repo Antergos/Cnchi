@@ -72,9 +72,6 @@ except ImportError as err:
 try:
     from _base_object import BaseObject, Gtk
     from ui.controller import Controller
-    from ui.base_widgets import BaseWidget
-    from ui.main_window import MainWindow
-    from ui.html.main_container import MainContainer
 except ImportError as err:
     msg = "Cannot create Cnchi UI Controller: {0}".format(err.msg)
     logging.error(msg)
@@ -132,12 +129,8 @@ class CnchiApp(BaseObject):
             tmp_file.write(str(os.getpid()))
 
         controller = Controller()
-        main_window = MainWindow(application=self)
-        main_container = MainContainer(_controller=controller)
 
-        self.widget.add_window(main_window.widget)
-        main_window.widget.add(main_container.widget)
-        main_window.widget.show_all()
+        self._main_window.widget.show_all()
 
     def already_running(self):
         """ Check to see if we're already running """

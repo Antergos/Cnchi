@@ -51,8 +51,7 @@ class MainContainer(BaseWidget):
     all_pages = None
     page_names = None
 
-    def __init__(self, name='main_container', parent=None,
-                 tpl_engine='jinja', logger=None, *args, **kwargs):
+    def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -62,9 +61,7 @@ class MainContainer(BaseWidget):
 
         """
 
-        super().__init__(
-            name=name, parent=parent, tpl_engine=tpl_engine, logger=logger, *args, **kwargs
-        )
+        super().__init__(name=name, *args, **kwargs)
 
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
@@ -77,6 +74,8 @@ class MainContainer(BaseWidget):
 
         if self._web_view is None:
             self._initialize_web_view()
+            self.widget.add(self._web_view)
+            self.widget.show_all()
 
     def _get_page_by_index(self, index):
         if index > len(self.page_names):

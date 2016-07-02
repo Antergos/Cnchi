@@ -32,6 +32,8 @@ import json
 import logging
 
 from .base_widgets import BaseObject, WebKit2
+from .main_window import MainWindow
+from .html.main_container import MainContainer
 
 
 class Controller(BaseObject):
@@ -46,12 +48,15 @@ class Controller(BaseObject):
 
     _emit_js_tpl = 'window.cnchi._emit(%s)'
 
-    def __init__(self, name='controller', parent=None,
-                 tpl_engine='jinja', logger=None, *args, **kwargs):
+    def __init__(self, name='controller', *args, **kwargs):
 
-        super().__init__(
-            name=name, parent=parent, tpl_engine=tpl_engine, logger=logger, *args, **kwargs
-        )
+        super().__init__(name=name, *args, **kwargs)
+
+        main_window = MainWindow()
+        main_container = MainContainer()
+
+        self._cnchi_app.widget.add_window(main_window.widget)
+        self._main_window.widget.add(main_container.widget)
 
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:

@@ -85,8 +85,8 @@ class BaseObject:
     settings = SharedData('settings', from_dict=settings)
     widget = NonSharedData('widget')
 
-    def __init__(self, name='base_widget', parent=None, widget=None,
-                 tpl_engine='builder', logger=None, *args, **kwargs):
+    def __init__(self, name='base_widget', parent=None,
+                 tpl_engine='gtkbuilder', logger=None, *args, **kwargs):
         """
         Attributes:
             name       (str):         A name for this object (all objects must have unique name).
