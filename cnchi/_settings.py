@@ -28,18 +28,10 @@
 
 """ Classes and data descriptor objects for the storage and retrieval of shared data/settings. """
 
-from config import settings
-
-
-class Singleton(type):
-    _instance = None
-
-    def __call__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = super().__call__(*args, **kwargs)
-
-        return cls._instance
-
+try:
+    from config import settings
+except Exception:
+    pass
 
 class DataObject:
     """
@@ -60,8 +52,12 @@ class DataObject:
 
             self._initialized = True
 
+    def __getattr__(self, item):
+        setattr(self, item, None)
+        return None
 
-class SharedData(metaclass=Singleton):
+
+class SharedData:
     """
     Descriptor that facilitates shared data storage/retrieval.
 
@@ -71,19 +67,30 @@ class SharedData(metaclass=Singleton):
 
     """
 
-    _data = None
+    _data = dict()
 
     def __init__(self, name, from_dict=None):
         self.name = name
 
-        if self._data is None:
-            self._data = DataObject(from_dict=from_dict)
+        if name not in self._data:
+            self._data[name] = None
+
+        if from_dict is not None:
+            self._data[name] = DataObject(from_dict=from_dict)
 
     def __get__(self, instance, cls):
-        return self._data
+        val = self if self.name not in self._data else self._data[self.name]
+        return val
+
+    def __set__(self, instance, value):
+        if self.name not in self._data or self._data[self.name] is None:
+            self._data[self.name] = value
+
+    def __getattr__(self, item):
+        return None
 
 
-class NonSharedData(metaclass=Singleton):
+class NonSharedData:
     """
     Data descriptor that facilitates per-instance data storage/retrieval.
 
@@ -93,24 +100,30 @@ class NonSharedData(metaclass=Singleton):
 
     """
 
-    _data = None
+    _data = dict()
 
     def __init__(self, name):
         self.name = name
 
-        if self._data is None:
-            self._data = dict()
-
     def __get__(self, instance, cls):
-        self._instance_data_check(instance)
-        return self._data[instance.name]
+        val = self if not self._instance_data_check(instance) else self._data[instance.name]
+        return val
+
+    def __getattr__(self, item):
+        return None
 
     def __set__(self, instance, value):
-        self._instance_data_check(instance)
+        if not self._instance_data_check(instance):
+            return
+
         self._data[instance.name] = value
 
     def _instance_data_check(self, instance):
-        if instance.name not in self._data:
-            self._data[instance.name] = DataObject()
+        res = instance is not None
+
+        if res and instance.name not in self._data:
+            self._data[instance.name] = None
+
+        return res
 
 

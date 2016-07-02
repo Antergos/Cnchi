@@ -31,27 +31,27 @@
 import json
 import logging
 
-from .base_widgets import BaseWidget, WebKit2
-
-from .html.main_container import MainContainer
+from .base_widgets import BaseObject, WebKit2
 
 
-class Controller(BaseWidget):
+class Controller(BaseObject):
     """
     UI Controller
 
     Class Attributes:
-        _emit_js_tpl (str):             Javascript string used to emit signals in web_view.
-        _web_view    (WebKit2.WebView): Object that renders the app's HTML UI.
-        See also `Box.__doc__`
+        _emit_js_tpl (str): Javascript string used to emit signals in web_view.
+        See also `BaseWidget.__doc__`
 
     """
 
     _emit_js_tpl = 'window.cnchi._emit(%s)'
 
-    def __init__(self, _name='controller', _parent=None, _tpl_engine='jinja', *args, **kwargs):
+    def __init__(self, name='controller', parent=None,
+                 tpl_engine='jinja', logger=None, *args, **kwargs):
 
-        super().__init__(_name=_name, _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
+        super().__init__(
+            name=name, parent=parent, tpl_engine=tpl_engine, logger=logger, *args, **kwargs
+        )
 
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
@@ -80,7 +80,7 @@ class Controller(BaseWidget):
             args = incoming_data.setdefault('args', [])
 
             # emit our python/js bridge signal
-            self.emit('on-js', name, args)
+            self._cnchi_app.emit('on-js', name, args)
 
         except Exception as err:
             logging.exception(err)

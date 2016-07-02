@@ -33,7 +33,7 @@ import gi
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import GLib, Gio, Gtk, WebKit2
+from gi.repository import Gdk, GLib, Gio, Gtk, WebKit2
 
 from _settings import NonSharedData, SharedData, settings
 
@@ -73,19 +73,20 @@ class BaseObject:
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
     JINJA_DIR = os.path.join(TPL_DIR, 'jinja')
 
-    _cnchi_app = None
-    _controller = None
-    _main_container = None
-    _main_window = None
+    _cnchi_app = SharedData('_cnchi_app')
+    _controller = SharedData('_controller')
+    _main_container = SharedData('_main_container')
+    _main_window = SharedData('_main_window')
     _pages_data = NonSharedData('_pages_data')
-    _web_view = None
+    _web_view = SharedData('_web_view')
 
     logger = None
     log_wrap = '-'
     settings = SharedData('settings', from_dict=settings)
     widget = NonSharedData('widget')
 
-    def __init__(self, name='base_widget', parent=None, tpl_engine='builder', *args, **kwargs):
+    def __init__(self, name='base_widget', parent=None, widget=None,
+                 tpl_engine='builder', logger=None, *args, **kwargs):
         """
         Attributes:
             name       (str):         A name for this object (all objects must have unique name).
@@ -103,16 +104,19 @@ class BaseObject:
 
         self.template = self.ui = None
 
-        for component in ['main_window', 'controller', 'cnchi_app', 'logger']:
+        for component in ['main_window', 'controller', 'cnchi_app']:
+            if name != component:
+                continue
+
             attrib_name = '_{}'.format(component)
             attrib = getattr(self, attrib_name)
 
-            if attrib is None and name == attrib_name:
+            if attrib is None:
                 setattr(self, attrib_name, self)
 
-        logger_provided = 'logger' in kwargs and kwargs['logger'] is not None
-
-        if logger_provided and self.logger is None:
-            self.logger = kwargs['logger']
+        if self.logger is None:
+            logging.debug('setting logger!')
+            BaseObject.logger = logger
 
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
+

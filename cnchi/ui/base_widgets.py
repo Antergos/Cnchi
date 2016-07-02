@@ -29,7 +29,7 @@
 
 import os
 
-from _base_object import Gtk, BaseObject
+from _base_object import Gdk, Gio, GLib, Gtk, BaseObject, WebKit2
 
 from _settings import NonSharedData, SharedData, settings
 
@@ -46,18 +46,19 @@ class BaseWidget(BaseObject):
 
     """
 
-    def __init__(self, name='base_widget', parent=None, tpl_engine='builder', *args, **kwargs):
+    def __init__(self, name='base_widget', parent=None,
+                 tpl_engine='builder', logger=None, *args, **kwargs):
         """
         Attributes:
             See Also `BaseObject.__doc__`
 
         """
 
-        super().__init__(name=name, parent=parent, tpl_engine=tpl_engine, *args, **kwargs)
-
+        super().__init__(
+            name=name, parent=parent, tpl_engine=tpl_engine, logger=logger, *args, **kwargs
+        )
 
         self._maybe_load_widget()
-
 
     def _get_template_path(self):
         if 'gtkbuilder' == self.tpl_engine:
@@ -99,7 +100,6 @@ class BaseWidget(BaseObject):
         return self.widget.get_ancestor(Gtk.Window)
 
 
-
 class Stack(BaseWidget):
     """
     Base class for page stacks (not used for HTML UI).
@@ -109,7 +109,7 @@ class Stack(BaseWidget):
 
     """
 
-    def __init__(self, name='', _parent=None, tpl_engine='gtkbuilder', *args, **kwargs):
+    def __init__(self, name='stack', parent=None, tpl_engine='builder', *args, **kwargs):
         """
         Attributes:
             Also see `BaseWidget.__doc__`.
@@ -119,7 +119,7 @@ class Stack(BaseWidget):
 
         """
 
-        super().__init__(name=name, _parent=_parent, tpl_engine=tpl_engine, *args, **kwargs)
+        super().__init__(name=name, parent=parent, tpl_engine=tpl_engine, *args, **kwargs)
 
 
 class Page(BaseWidget):
@@ -132,7 +132,8 @@ class Page(BaseWidget):
 
     """
 
-    def __init__(self, _name='page', _parent=None, _tpl_engine='gtkbuilder', *args, **kwargs):
+    def __init__(self, _name='page', _parent=None,
+                 _tpl_engine='gtkbuilder', logger=None, *args, **kwargs):
         """
         Attributes:
             Also see `BaseWidget.__doc__`.
@@ -142,7 +143,9 @@ class Page(BaseWidget):
 
         """
 
-        super().__init__(_name=_name, _parent=_parent, _tpl_engine=_tpl_engine, *args, **kwargs)
+        super().__init__(
+            _name=_name, _parent=_parent, _tpl_engine=_tpl_engine, logger=logger, *args, **kwargs
+        )
 
     def prepare(self, direction):
         """ This must be implemented by subclasses """

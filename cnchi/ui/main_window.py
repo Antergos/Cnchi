@@ -34,15 +34,10 @@ import multiprocessing
 import os
 import sys
 
-import gi
-
-from ui.base_widgets import BaseWidget
-
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GLib
+from ui.base_widgets import BaseWidget, Gtk, Gdk, GLib
 
 
-class MainWindow(Gtk.ApplicationWindow, BaseWidget):
+class MainWindow(BaseWidget):
     """
     Cnchi Main Window
 
@@ -51,9 +46,8 @@ class MainWindow(Gtk.ApplicationWindow, BaseWidget):
 
     """
 
-    def __init__(self, application=None, _name='main_window', *args, **kwargs):
-        ignore = self._get_gtk_ignore_kwargs(**kwargs)
-        super().__init__(application=application, _name=_name, ignore=ignore, *args, **kwargs)
+    def __init__(self, application=None, name='main_window', logger=None, *args, **kwargs):
+        super().__init__(name=name, logger=logger, *args, **kwargs)
 
         self._state = {}
 
@@ -61,27 +55,27 @@ class MainWindow(Gtk.ApplicationWindow, BaseWidget):
         self._main_window_width = 1120
         self._main_window_height = 721
 
-    def _connect_signals(self):
-        self.connect('delete-event', self.delete_event_cb)
-        self.connect('window-state-event', self.window_state_event_cb)
+    def connect_signals(self):
+        self.widget.connect('delete-event', self.delete_event_cb)
+        self.widget.connect('window-state-event', self.window_state_event_cb)
 
     def delete_event_cb(self, *args):
-        self._controller.emit('__close_app', *args)
+        self._cnchi_app.emit('__close_app', *args)
 
     def toggle_maximize(self):
-        if self.is_maximized():
-            self.unmaximize()
+        if self.widget.is_maximized():
+            self.widget.unmaximize()
             self._controller.emit_js('window-unmaximized')
         else:
-            self.maximize()
+            self.widget.maximize()
             self._controller.emit_js('window-maximized')
 
     def toggle_fullscreen(self):
         if self._state.get("fullscreen", False):
-            self.unfullscreen()
+            self.widget.unfullscreen()
             self._controller.emit_js('window-unfullscreen')
         else:
-            self.fullscreen()
+            self.widget.fullscreen()
             self._controller.emit_js('window-fullscreen')
 
     def window_state_event_cb(self, window, event, *args):

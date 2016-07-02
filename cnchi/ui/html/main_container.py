@@ -36,7 +36,7 @@ from .pages import *
 HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
 
-class MainContainer(Gtk.Box, BaseWidget):
+class MainContainer(BaseWidget):
     """
     Main entry-point for HTML Pages UI.
 
@@ -51,8 +51,8 @@ class MainContainer(Gtk.Box, BaseWidget):
     all_pages = None
     page_names = None
 
-    def __init__(self, orientation=HORIZONTAL, spacing=0,
-                 _name='main_container', _controller=None, *args, **kwargs):
+    def __init__(self, name='main_container', parent=None,
+                 tpl_engine='jinja', logger=None, *args, **kwargs):
         """
         Attributes:
             Also see `Box.__doc__`.
@@ -62,9 +62,9 @@ class MainContainer(Gtk.Box, BaseWidget):
 
         """
 
-        ignore = self._get_gtk_ignore_kwargs(**kwargs)
-        super().__init__(orientation=orientation, spacing=spacing,
-                         _name=_name, ignore=ignore, *args, **kwargs)
+        super().__init__(
+            name=name, parent=parent, tpl_engine=tpl_engine, logger=logger, *args, **kwargs
+        )
 
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
@@ -74,9 +74,6 @@ class MainContainer(Gtk.Box, BaseWidget):
             self.page_names = []
 
             self.page_names.extend(self._get_page_names())
-
-        if self._controller is None:
-            self._controller = _controller
 
         if self._web_view is None:
             self._initialize_web_view()

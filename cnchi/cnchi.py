@@ -55,7 +55,7 @@ import uuid
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, Gtk, GObject
+from gi.repository import Gio, GObject
 
 import misc.extra as misc
 import show_message as show
@@ -70,6 +70,7 @@ except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
 try:
+    from _base_object import BaseObject, Gtk
     from ui.controller import Controller
     from ui.base_widgets import BaseWidget
     from ui.main_window import MainWindow
@@ -89,20 +90,23 @@ GTK_VERSION_NEEDED = "3.18.0"
 FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
 
-class CnchiApp(Gtk.Application, BaseWidget):
+class CnchiApp(BaseObject):
     """ Main Cnchi App class """
 
-    def __init__(self, cmd_line, _name='cnchi_app', *args, **kwargs):
+    def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
 
-        super().__init__(application_id='com.antergos.cnchi',
-                         flags=FLAGS, _name=_name, *args, **kwargs)
+        super().__init__(name=name, logger=logger, *args, **kwargs)
+
+        self.widget = Gtk.Application(application_id='com.antergos.cnchi', flags=FLAGS)
+
+        self.widget.connect('activate', self.activate)
 
         self.TMP_RUNNING = "/tmp/.setup-running"
 
         # Command line options
         self.cmd_line = cmd_line
 
-    def do_activate(self):
+    def activate(self, app):
         # Make sure we have administrative privileges
 
         if os.getuid() != 0 and not self.cmd_line.z_hidden:
@@ -127,15 +131,13 @@ class CnchiApp(Gtk.Application, BaseWidget):
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
-        try:
-            controller = Controller()
-            main_window = MainWindow(application=self)
-            main_container = MainContainer(_controller=controller)
-            self.add_window(main_window)
-            main_window.add(main_container)
-            main_window.show_all()
-        except Exception as err:
-            logging.exception(err)
+        controller = Controller()
+        main_window = MainWindow(application=self)
+        main_container = MainContainer(_controller=controller)
+
+        self.widget.add_window(main_window.widget)
+        main_window.widget.add(main_container.widget)
+        main_window.widget.show_all()
 
     def already_running(self):
         """ Check to see if we're already running """
@@ -245,6 +247,8 @@ def setup_logging(cmd_line):
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
             logging.info("Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
+
+    return logger
 
 
 def check_gtk_version():
@@ -451,7 +455,7 @@ def init_cnchi():
     misc.drop_privileges()
 
     # Setup our logging framework
-    setup_logging(cmd_line)
+    logger = setup_logging(cmd_line)
 
     # Check Cnchi is correctly installed
     if not check_for_files():
@@ -474,12 +478,12 @@ def init_cnchi():
 
     # Init PyObject Threads
     # threads_init()
-    return cmd_line
+    return cmd_line, logger
 
 
 if __name__ == '__main__':
-    cmd_line = init_cnchi()
+    cmd_line, logger = init_cnchi()
     # Create Gtk Application
-    app = CnchiApp(cmd_line)
-    exit_status = app.run(None)
+    app = CnchiApp(cmd_line=cmd_line, logger=logger)
+    exit_status = app.widget.run(None)
     sys.exit(exit_status)
