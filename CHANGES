@@ -1,3 +1,4 @@
+[2016-07-02 01:49:43 -0500]  working on the page flow structure                                     Dustin Falgout  {6d720aa}
 [2016-07-02 00:33:57 -0500]  okay finally got the low-level stuff done. now get to move onto the..  Dustin Falgout  {a309503}
 [2016-07-02 00:09:30 -0500]  still working on decoupling cnchi classes from Gtk classes             Dustin Falgout  {9b2a9a1}
 [2016-07-01 18:16:35 -0500]  still working on decoupling cnchi classes from Gtk classes             Dustin Falgout  {4b5a503}
