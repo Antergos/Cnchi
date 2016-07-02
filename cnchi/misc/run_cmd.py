@@ -35,9 +35,26 @@ import sys
 import traceback
 import os
 
+from functools import wraps
+
 from misc.extra import InstallError
 
 DEST_DIR = "/install"
+
+
+def ensure_excecutable(func, *args, **kwargs):
+    """ Decorator that ensures file is executable before attempting to execute it. """
+    _args = list(*args)
+    cmd = None if not _args or DEST_DIR in _args[0] else _args[0]
+
+    if cmd and os.path.exits(cmd) and not os.access(path, os.X_OK):
+        os.chmod(cmd, 0o777)
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return _decorated_function
 
 
 def log_exception_info():
@@ -50,6 +67,7 @@ def log_exception_info():
         logging.error(line.rstrip())
 
 
+@ensure_excecutable
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
          stdin=None, debug=True):
     """ Helper function to make a system call
@@ -158,6 +176,7 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
         return False
 
 
+@ensure_excecutable
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
     
