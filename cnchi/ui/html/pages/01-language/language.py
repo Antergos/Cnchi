@@ -31,7 +31,7 @@ from ui.html.pages._html_page import HTMLPage
 
 class LanguagePage(HTMLPage):
     """
-    The first page shown when the app starts.
+    The first page shown when the app starts. It facilitates language selection (translations).
 
     Class Attributes:
         Also see `HTMLPage.__doc__`

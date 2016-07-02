@@ -37,6 +37,9 @@ from gi.repository import Gdk, GLib, Gio, Gtk, WebKit2
 
 from _settings import NonSharedData, SharedData, settings
 
+TE = 'gtkbuilder'
+BO = 'base_object'
+
 
 class BaseObject:
     """
@@ -85,8 +88,7 @@ class BaseObject:
     settings = SharedData('settings', from_dict=settings)
     widget = NonSharedData('widget')
 
-    def __init__(self, name='base_widget', parent=None,
-                 tpl_engine='gtkbuilder', logger=None, *args, **kwargs):
+    def __init__(self, name=BO, parent=None, tpl_engine=TE, logger=None, *args, **kwargs):
         """
         Attributes:
             name       (str):         A name for this object (all objects must have unique name).
@@ -104,6 +106,15 @@ class BaseObject:
 
         self.template = self.ui = None
 
+        self._check_for_main_components(name)
+
+        if self.logger is None:
+            logging.debug('setting logger!')
+            BaseObject.logger = logger
+
+        self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
+
+    def _check_for_main_components(self, name):
         for component in ['main_window', 'controller', 'cnchi_app']:
             if name != component:
                 continue
@@ -113,10 +124,4 @@ class BaseObject:
 
             if attrib is None:
                 setattr(self, attrib_name, self)
-
-        if self.logger is None:
-            logging.debug('setting logger!')
-            BaseObject.logger = logger
-
-        self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 

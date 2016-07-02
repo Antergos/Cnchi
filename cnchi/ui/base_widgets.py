@@ -46,6 +46,8 @@ class BaseWidget(BaseObject):
 
     """
 
+    _page_dirs = []
+
     def __init__(self, name='base_widget', *args, **kwargs):
         """
         Attributes:
@@ -62,12 +64,23 @@ class BaseWidget(BaseObject):
             template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
 
         elif 'jinja' == self.tpl_engine:
-            template = os.path.join(self.JINJA_DIR, '{}.html'.format(self.name))
+            page_dir = self._get_page_directory_name()
+            template = os.path.join(self.JINJA_DIR, '{0}/{1}.html'.format(page_dir, self.name))
         else:
             self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None
 
         return template
+
+    def _get_page_directory_name(self, name=None):
+        name = name if name is not None else self.name
+        
+        if not self._page_dirs:
+            self._page_dirs.extend(os.listdir(os.path.join(self.UI_DIR, 'html/pages')))
+
+        res = [d for d in self._page_dirs if '-{}'.format(name) in d]
+
+        return '' if not res else res[0]
 
     def _maybe_load_widget(self):
         template = self._get_template_path()
