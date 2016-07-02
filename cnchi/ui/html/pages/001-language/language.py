@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  _html_page.py
+#  welcome.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -26,54 +26,33 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext
-
-from jinja2 import Environment, FileSystemLoader
-
-from ui.base_widgets import SharedData, Page, Gtk
-
-env = Environment(loader=FileSystemLoader(os.path.join(CURRENT_DIR, 'templates')))
-env.globals['_'] = gettext
+from ui.html.pages._html_page import HTMLPage
 
 
-class HTMLPage(Page):
+class LanguagePage(HTMLPage):
     """
-    Base class for HTML UI pages.
+    The first page shown when the app starts.
 
     Class Attributes:
-        _tpl (SharedData): Descriptor object that handles access to Jinja2 template environment.
-        Also see `Page.__doc__`
+        Also see `HTMLPage.__doc__`
 
     """
 
-    _tpl = SharedData('_tpl')
-
-    def __init__(self, name='HTMLPage', tpl_engine='jinja', *args, **kwargs):
+    def __init__(self, name='language', *args, **kwargs):
         """
         Attributes:
-            _tpl (Environment): The Jinja2 template environment.
-            Also see `Page.__doc__`.
+            Also see `HTMLPage.__doc__`.
 
         Args:
             name (str): A name for this widget.
 
         """
 
-        super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
-
-        if self._tpl is None:
-            self._tpl = env
-
-    def emit_js(self, name, *args):
-        """ See `Controller.emit_js.__doc__` """
-        self._controller.emit_js(name, *args)
+        super().__init__(name=name, *args, **kwargs)
 
     def prepare(self):
-        """ This must be implemented by subclasses """
+        """ Prepare to become the current (visible) page. """
         raise NotImplementedError
-
-    def render_template(self, name, tpl_vars):
-        return self._tpl.render_template(name, tpl_vars)
 
     def store_values(self):
         """ This must be implemented by subclasses """

@@ -65,7 +65,15 @@ class Controller(BaseObject):
             pass
 
     def emit_js(self, name, *args):
-        msg = json.dumps([name] + list(args))
+        """
+        Trigger and pass data to a JavaScript event in the web_view.
+
+        Args:
+            name (str): The name of the JavaScript event to trigger.
+            *args (str): Arguments to pass to the event handler (optional).
+
+        """
+        msg = json.dumps([name] + list(args), None, None, None)
         self._web_view.run_javascript(self._emit_js_tpl.format(msg))
 
     def load_changed_cb(self, view, event):

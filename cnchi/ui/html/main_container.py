@@ -33,8 +33,6 @@ from ui.base_widgets import BaseWidget, Gtk, WebKit2
 
 from .pages import *
 
-HORIZONTAL = Gtk.Orientation.HORIZONTAL
-
 
 class MainContainer(BaseWidget):
     """
@@ -75,7 +73,8 @@ class MainContainer(BaseWidget):
         if self._web_view is None:
             self._initialize_web_view()
             self.widget.add(self._web_view)
-            self.widget.show_all()
+
+        self.widget.show_all()
 
     def _get_page_by_index(self, index):
         if index > len(self.page_names):
@@ -129,6 +128,8 @@ class MainContainer(BaseWidget):
         # register custom uri scheme cnchi://
         context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
         security_manager.register_uri_scheme_as_cors_enabled('cnchi')
+
+        self._web_view.show_all()
 
     def _load_page(self, name):
         page_class_name = '{}Page'.format(name.capitalize())

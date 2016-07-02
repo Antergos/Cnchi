@@ -26,7 +26,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ._html_page import HTMLPage
+from ui.html.pages._html_page import HTMLPage
 
 
 class WelcomePage(HTMLPage):
@@ -38,15 +38,22 @@ class WelcomePage(HTMLPage):
 
     """
 
-    def __init__(self, name='', web_view=None, *args, **kwargs):
+    def __init__(self, name='welcome', *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
 
         Args:
-            name (str):                   A name for this widget.
-            web_view (Gtk.WebKitWebView): Object that renders the app's HTML UI.
+            name (str): A name for this widget.
 
         """
 
-        super().__init__(name=name, web_view=web_view, *args, **kwargs)
+        super().__init__(name=name, *args, **kwargs)
+
+    def prepare(self):
+        """ Prepare to become the current (visible) page. """
+        raise NotImplementedError
+
+    def store_values(self):
+        """ This must be implemented by subclasses """
+        raise NotImplementedError
