@@ -74,13 +74,16 @@ class BaseWidget(BaseObject):
 
     def _get_page_directory_name(self, name=None):
         name = name if name is not None else self.name
-        
+
         if not self._page_dirs:
             self._page_dirs.extend(os.listdir(os.path.join(self.UI_DIR, 'html/pages')))
 
         res = [d for d in self._page_dirs if '-{}'.format(name) in d]
 
         return '' if not res else res[0]
+
+    def _get_page_names(self):
+        return [n.split('-', 1)[1] for n in self._page_dirs if '_' not in n]
 
     def _maybe_load_widget(self):
         template = self._get_template_path()
