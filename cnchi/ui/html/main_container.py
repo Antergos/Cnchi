@@ -45,10 +45,6 @@ class MainContainer(BaseWidget):
 
     """
 
-    PAGES_DIR = None
-    all_pages = None
-    page_names = None
-
     def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
@@ -61,37 +57,11 @@ class MainContainer(BaseWidget):
 
         super().__init__(name=name, *args, **kwargs)
 
-        if self.PAGES_DIR is None:
-            self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
-
-        if self.all_pages is None:
-            self.all_pages = dict()
-            self.page_names = []
-
-            self.page_names.extend(self._get_page_names())
-
         if self._web_view is None:
             self._initialize_web_view()
             self.widget.add(self._web_view)
 
         self.widget.show_all()
-
-    def _get_page_by_index(self, index):
-        if index > len(self.page_names):
-            raise IndexError
-
-        name = self.page_names[index]
-
-        return self._get_page_by_name(name)
-
-    def _get_page_by_name(self, name):
-        if name not in self.all_pages:
-            self._load_page(name)
-
-        return self.all_pages[name]
-
-    def _get_page_names(self):
-        return [n.rstrip('.py') for n in os.listdir(self.PAGES_DIR) if not n.startswith('_')]
 
     @staticmethod
     def _get_settings_for_webkit():
@@ -115,10 +85,13 @@ class MainContainer(BaseWidget):
         return webkit_settings
 
     def _initialize_web_view(self):
+        content_manager = WebKit2.UserContentManager()
         context = WebKit2.WebContext.get_default()
         security_manager = context.get_security_manager()
         webkit_settings = self._get_webkit_settings()
-        self._web_view = WebKit2.WebView.new_with_settings(webkit_settings)
+
+        self._web_view = WebKit2.WebView.new_with_user_content_manager(content_manager)
+        self._web_view.set_settings(webkit_settings)
 
         # register signals
         self._web_view.connect('decide-policy', self._controller.decide_policy_cb)

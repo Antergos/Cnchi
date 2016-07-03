@@ -66,74 +66,53 @@ class Pages(BaseWidget):
 
         if self.all_pages is None:
             self.all_pages = dict()
+
+            self._find_page_directories()
+
             self.page_names = self._get_page_names()
 
-    def _get_page_by_index(self, index):
+    def _find_page_directories(self):
+        if not self._page_dirs:
+            self._page_dirs.extend(os.listdir(os.path.join(self.UI_DIR, 'html/pages')))
+
+    def _get_page_names(self):
+        return [n.split('-', 1)[1] for n in self._page_dirs if '_' not in n]
+
+    def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
             raise IndexError
 
         name = self.page_names[index]
 
-        return self._get_page_by_name(name)
+        return self._get_page_object_by_name(name)
 
-    def _get_page_by_name(self, name):
+    def _get_page_object_by_name(self, name):
         if name not in self.all_pages:
             self._load_page(name)
 
         return self.all_pages[name]
-
-    @staticmethod
-    def _get_settings_for_webkit():
-        return {
-            'enable_developer_extras': True,
-            'javascript_can_open_windows_automatically': True,
-            'allow_file_access_from_file_urls': True,
-            'enable_write_console_messages_to_stdout': True,
-        }
-
-    def _get_webkit_settings(self):
-        webkit_settings = WebKit2.Settings()
-        all_settings = self._get_settings_for_webkit()
-
-        for setting_name, value in all_settings.items():
-            setting_name = 'set_{}'.format(setting_name)
-            set_setting = getattr(webkit_settings, setting_name)
-
-            set_setting(value)
-
-        return webkit_settings
-
-    def _initialize_web_view(self):
-        context = WebKit2.WebContext.get_default()
-        security_manager = context.get_security_manager()
-        webkit_settings = self._get_webkit_settings()
-        self._web_view = WebKit2.WebView.new_with_settings(webkit_settings)
-
-        # register signals
-        self._web_view.connect('decide-policy', self._controller.decide_policy_cb)
-        self._web_view.connect('load-changed', self._controller.load_changed_cb)
-        self._web_view.connect('notify::title', self._controller.title_changed_cb)
-
-        # register custom uri scheme cnchi://
-        context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
-        security_manager.register_uri_scheme_as_cors_enabled('cnchi')
-
-        self._web_view.show_all()
 
     def _load_page(self, name):
         page_class_name = '{}Page'.format(name.capitalize())
         page_class = __dict__[page_class_name]
         self.all_pages[page_class_name] = page_class(name=name, web_view=self._web_view)
 
-    def get_page(self, page):
-        """ Get a page by name or by index """
-        if isinstance(page, int):
-            _page = self._get_page_by_index(page)
-        elif isinstance(page, str):
-            _page = self._get_page_by_name(page)
+    def get_page_directory_name(self, name=None):
+        name = name if name is not None else self.name
+
+        res = [d for d in self._page_dirs if '-{}'.format(name) in d]
+
+        return '' if not res else res[0]
+
+    def get_page_object(self, page_identifier):
+        """ Get a page_identifier object by name or by index """
+        if isinstance(page_identifier, int):
+            _page = self._get_page_object_by_index(page_identifier)
+        elif isinstance(page_identifier, str):
+            _page = self._get_page_object_by_name(page_identifier)
         else:
             raise ValueError(
-                '"page" to load must be of type(int) or type(str), %s given.', type(page)
+                '"page_identifier" must be of type(int) or type(str), %s given.', type(page_identifier)
             )
 
         return _page

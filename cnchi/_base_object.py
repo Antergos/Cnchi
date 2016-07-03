@@ -80,6 +80,7 @@ class BaseObject:
     _controller = SharedData('_controller')
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
+    _pages_helper = SharedData('_pages_helper')
     _pages_data = NonSharedData('_pages_data')
     _web_view = SharedData('_web_view')
 
