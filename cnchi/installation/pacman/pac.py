@@ -249,7 +249,7 @@ class Pac(object):
         # Discard duplicates
         pkgs = list(set(pkgs))
 
-        # `alpm.handle.get_syncdbs()` returns an `OrderedDict` so we
+        # `alpm.handle.get_syncdbs()` returns a list (the order is important) so we
         # have to ensure we don't clobber the priority of the repos.
         repos = OrderedDict()
 
