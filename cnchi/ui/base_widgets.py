@@ -29,7 +29,16 @@
 
 import os
 
-from _base_object import Gdk, Gio, GLib, Gtk, BaseObject, WebKit2
+from _base_object import (
+    Gdk,
+    Gio,
+    GLib,
+    GObject,
+    Gtk,
+    WebKit2,
+    BaseObject,
+    DataObject
+)
 
 from _settings import NonSharedData, SharedData, settings
 
@@ -75,7 +84,7 @@ class BaseWidget(BaseObject):
         template = self._get_template_path()
 
         if not template or not os.path.exists(template):
-            self.logger.warning("Cannot find %s template!", self.template)
+            self.logger.debug("Cannot find %s template!", self.template)
             return
 
         if template and os.path.exists(template):
@@ -131,7 +140,7 @@ class Page(BaseWidget):
 
     """
 
-    def __init__(self, _name='page', *args, **kwargs):
+    def __init__(self, name='page', *args, **kwargs):
         """
         Attributes:
             Also see `BaseWidget.__doc__`.
@@ -141,15 +150,15 @@ class Page(BaseWidget):
 
         """
 
-        super().__init__(_name=_name, *args, **kwargs)
+        super().__init__(name=name, *args, **kwargs)
 
     def _get_template_path(self):
         if 'gtkbuilder' == self.tpl_engine:
             template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
 
         elif 'jinja' == self.tpl_engine:
-            page_dir = self._pages_helper.get_page_directory_name()
-            template = os.path.join(self.PAGES_DIR, '{0}/{1}.html'.format(page_dir, self.name))
+            page_dir = self._pages_helper.get_page_directory_name(self.name)
+            template = os.path.join('{0}/{1}.html'.format(page_dir, self.name))
         else:
             self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None

@@ -33,9 +33,9 @@ import gi
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import Gdk, GLib, Gio, Gtk, WebKit2
+from gi.repository import Gdk, GLib, Gio, GObject, Gtk, WebKit2
 
-from _settings import NonSharedData, SharedData, settings
+from _settings import DataObject, NonSharedData, SharedData, settings
 
 TE = 'gtkbuilder'
 BO = 'base_object'
@@ -116,7 +116,7 @@ class BaseObject:
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 
     def _check_for_main_components(self, name):
-        for component in ['main_window', 'controller', 'cnchi_app']:
+        for component in ['main_window', 'controller', 'cnchi_app', 'pages_helper']:
             if name != component:
                 continue
 

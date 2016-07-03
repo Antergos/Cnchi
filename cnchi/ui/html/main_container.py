@@ -29,7 +29,7 @@
 import os
 import logging
 
-from ui.base_widgets import BaseWidget, Gtk, WebKit2
+from ui.base_widgets import BaseWidget, DataObject, Gtk, WebKit2
 
 from .pages import *
 
@@ -56,7 +56,7 @@ class MainContainer(BaseWidget):
         super().__init__(name=name, *args, **kwargs)
 
         if self._web_view is None:
-            self._wv_parts = object()
+            self._wv_parts = DataObject()
 
             self._initialize_web_view()
             self.widget.add(self._web_view)

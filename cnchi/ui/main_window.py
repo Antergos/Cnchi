@@ -34,7 +34,13 @@ import multiprocessing
 import os
 import sys
 
-from ui.base_widgets import BaseWidget, Gtk, Gdk, GLib
+from .base_widgets import (
+    Gtk,
+    Gdk,
+    GLib,
+    GObject,
+    BaseWidget
+)
 
 
 class MainWindow(BaseWidget):
@@ -55,14 +61,20 @@ class MainWindow(BaseWidget):
         self._main_window_width = 1120
         self._main_window_height = 721
 
+        self._create_custom_signals()
+
         self.widget.show_all()
 
     def connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)
         self.widget.connect('window-state-event', self.window_state_event_cb)
 
+    def _create_custom_signals(self):
+        GObject.signal_new('on-js', self.widget, GObject.SIGNAL_RUN_LAST,
+                           None, (GObject.TYPE_STRING, GObject.TYPE_PYOBJECT,))
+
     def delete_event_cb(self, *args):
-        self._cnchi_app.emit('__close_app', *args)
+        self._cnchi_app.widget.emit('__close_app', *args)
 
     def toggle_maximize(self):
         if self.widget.is_maximized():

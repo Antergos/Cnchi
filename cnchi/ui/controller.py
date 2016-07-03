@@ -31,9 +31,10 @@
 import json
 import logging
 
-from .base_widgets import BaseObject, WebKit2
-from .main_window import MainWindow
-from .html.main_container import MainContainer
+from ui.base_widgets import BaseObject, WebKit2
+from ui.main_window import MainWindow
+from ui.html.main_container import MainContainer
+from ui.html.pages_helper import PagesHelper
 
 
 class Controller(BaseObject):
@@ -58,8 +59,17 @@ class Controller(BaseObject):
         self._cnchi_app.widget.add_window(main_window.widget)
         self._main_window.widget.add(main_container.widget)
 
+        self._initialize_pages()
+        self._connect_signals_to_callbacks()
+
     def _connect_signals_to_callbacks(self):
-        self._cnchi_app.connect('on-js', self.js_log_message_cb)
+        self._main_window.widget.connect('on-js', self.js_log_message_cb)
+
+    def _initialize_pages(self):
+        self._pages_helper = PagesHelper()
+        page = self._pages_helper.get_page_object(0)
+
+        self._web_view.load_html(page.render_template())
 
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
@@ -94,6 +104,19 @@ class Controller(BaseObject):
 
     def load_changed_cb(self, view, event):
         pass
+
+    def set_current_page(self, identifier):
+        page = None
+
+        try:
+            self._pages_helper.get_page_object(identifier)
+        except Exception as err:
+            self.logger.exception(err)
+            return
+
+        if page is not None:
+            page.prepare()
+
 
     def title_changed_cb(self, view, event):
         incoming = view.get_title()

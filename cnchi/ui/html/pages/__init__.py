@@ -26,9 +26,14 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-__all__ = ['LanguagePage']
+__all__ = ['ALL_PAGES']
 
-import importlib
+from ._01language.language import LanguagePage
 
-_temp = __import__('.01-language.language', globals(), locals(), ['LanguagePage'], 3)
+
+class AllPages:
+    pass
+
+ALL_PAGES = AllPages()
+ALL_PAGES.language = LanguagePage
 

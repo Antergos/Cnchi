@@ -31,10 +31,10 @@ import logging
 
 from ui.base_widgets import BaseWidget, SharedData
 
-from .pages import *
+from .pages import ALL_PAGES
 
 
-class Pages(BaseWidget):
+class PagesHelper(BaseWidget):
     """
     Manages the UI's pages.
 
@@ -49,7 +49,7 @@ class Pages(BaseWidget):
     all_pages = SharedData('all_pages')
     page_names = SharedData('page_names')
 
-    def __init__(self, name='pages', *args, **kwargs):
+    def __init__(self, name='pages_helper', *args, **kwargs):
         """
         Attributes:
             Also see `BaseWidget.__doc__`.
@@ -73,10 +73,12 @@ class Pages(BaseWidget):
 
     def _find_page_directories(self):
         if not self._page_dirs:
-            self._page_dirs.extend(os.listdir(os.path.join(self.UI_DIR, 'html/pages')))
+            _dirs = os.listdir(os.path.join(self.UI_DIR, 'html/pages'))
+            _page_dirs = [d for d in _dirs if '_' in d and '__' not in d and '.' not in d]
+            self._page_dirs.extend(_page_dirs)
 
     def _get_page_names(self):
-        return [n.split('-', 1)[1] for n in self._page_dirs if '_' not in n]
+        return [n[2:] for n in self._page_dirs]
 
     def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
@@ -93,14 +95,11 @@ class Pages(BaseWidget):
         return self.all_pages[name]
 
     def _load_page(self, name):
-        page_class_name = '{}Page'.format(name.capitalize())
-        page_class = __dict__[page_class_name]
-        self.all_pages[page_class_name] = page_class(name=name, web_view=self._web_view)
+        page_class = getattr(ALL_PAGES, 'language')
+        self.all_pages[name] = page_class(name=name)
 
-    def get_page_directory_name(self, name=None):
-        name = name if name is not None else self.name
-
-        res = [d for d in self._page_dirs if '-{}'.format(name) in d]
+    def get_page_directory_name(self, name):
+        res = [d for d in self._page_dirs if name in d]
 
         return '' if not res else res[0]
 

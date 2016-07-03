@@ -77,10 +77,12 @@ class HTMLPage(Page):
 
     def prepare(self):
         """ This must be implemented by subclasses """
-        raise NotImplementedError
+        pass
 
-    def render_template(self, name, tpl_vars):
-        return self._tpl.render_template(name, tpl_vars)
+    def render_template(self, name=None, tpl_vars=None):
+        name = name if name is not None else self.template
+        tpl = self._tpl.get_template(name)
+        return tpl.render_template(name, tpl_vars)
 
     def store_values(self):
         """ This must be implemented by subclasses """
