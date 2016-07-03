@@ -38,6 +38,8 @@ import os
 import queue
 import inspect
 
+from collections import OrderedDict
+
 try:
     _("x")
 except NameError:
@@ -249,7 +251,12 @@ class Pac(object):
         # Discard duplicates
         pkgs = list(set(pkgs))
 
-        repos = dict((database.name, database) for database in self.handle.get_syncdbs())
+        # `alpm.handle.get_syncdbs()` returns an `OrderedDict` so we
+        # have to ensure we don't clobber the priority of the repos.
+        repos = OrderedDict()
+
+        for syncdb in self.handle.get_syncdbs():
+            repos[syncdb.name] = syncdb
 
         targets = []
         for name in pkgs:
