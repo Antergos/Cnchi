@@ -26,14 +26,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from gettext import gettext
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, PrefixLoader
 
-from ui.base_widgets import SharedData, Page, Gtk
-
-env = Environment(loader=FileSystemLoader(os.path.join(CURRENT_DIR, 'templates')))
-env.globals['_'] = gettext
+from ui.base_widgets import SharedData, Page
 
 
 class HTMLPage(Page):
@@ -47,6 +45,7 @@ class HTMLPage(Page):
     """
 
     _tpl = SharedData('_tpl')
+    _tpl_setup_running = SharedData('_tpl_setup_running')
 
     def __init__(self, name='HTMLPage', tpl_engine='jinja', *args, **kwargs):
         """
@@ -61,12 +60,20 @@ class HTMLPage(Page):
 
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
-        if self._tpl is None:
-            self._tpl = env
+        if self._tpl is None and self._tpl_setup_running is None:
+            self._tpl_setup_running = True
+            self._initialize_template_engine()
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """
         self._controller.emit_js(name, *args)
+
+    def _initialize_template_engine(self):
+        tpl_map = {
+            pdir: FileSystemLoader(os.path.join(self.PAGES_DIR, pdir)) for pdir in self._page_dirs
+        }
+        self._tpl = Environment(loader=PrefixLoader(tpl_map))
+        self._tpl.globals['_'] = gettext
 
     def prepare(self):
         """ This must be implemented by subclasses """

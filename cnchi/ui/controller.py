@@ -58,11 +58,14 @@ class Controller(BaseObject):
         self._cnchi_app.widget.add_window(main_window.widget)
         self._main_window.widget.add(main_container.widget)
 
+    def _connect_signals_to_callbacks(self):
+        self._cnchi_app.connect('on-js', self.js_log_message_cb)
+
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             # grab the requested URI
             uri = decision.get_request().get_uri()
-            pass
+            logging.debug(uri)
 
     def emit_js(self, name, *args):
         """
@@ -76,21 +79,34 @@ class Controller(BaseObject):
         msg = json.dumps([name] + list(args), None, None, None)
         self._web_view.run_javascript(self._emit_js_tpl.format(msg))
 
+    def js_log_message_cb(self, called, msg, *args):
+        if not called or 'logger' not in called:
+            return
+
+        level = 'debug'
+
+        if '.' in called:
+            level = called.split('.')[-1]
+
+        _logger = getattr(self.logger, level)
+
+        _logger(msg, *args)
+
     def load_changed_cb(self, view, event):
         pass
 
     def title_changed_cb(self, view, event):
-        incoming_data = view.get_title()
+        incoming = view.get_title()
 
         # check for "_BR::" prefix to determine we're crossing the python/JS bridge
-        if not incoming_data or not incoming_data.startswith('_BR::'):
+        if not incoming or not incoming.startswith('_BR::'):
             return
 
         try:
-            incoming_data = json.loads(incoming_data[5:])
+            incoming = json.loads(incoming[5:])
 
-            name = incoming_data.setdefault('name', '')
-            args = incoming_data.setdefault('args', [])
+            name = incoming.setdefault('name', '')
+            args = incoming.setdefault('args', [])
 
             # emit our python/js bridge signal
             self._cnchi_app.emit('on-js', name, args)

@@ -149,14 +149,14 @@ class Page(BaseWidget):
 
         elif 'jinja' == self.tpl_engine:
             page_dir = self._pages_helper.get_page_directory_name()
-            template = os.path.join(self.JINJA_DIR, '{0}/{1}.html'.format(page_dir, self.name))
+            template = os.path.join(self.PAGES_DIR, '{0}/{1}.html'.format(page_dir, self.name))
         else:
             self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None
 
         return template
 
-    def prepare(self, direction):
+    def prepare(self):
         """ This must be implemented by subclasses """
         raise NotImplementedError
 

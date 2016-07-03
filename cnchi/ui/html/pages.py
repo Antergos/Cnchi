@@ -52,7 +52,7 @@ class Pages(BaseWidget):
     def __init__(self, name='pages', *args, **kwargs):
         """
         Attributes:
-            Also see `Box.__doc__`.
+            Also see `BaseWidget.__doc__`.
 
         Args:
             name (str): A name for this widget.

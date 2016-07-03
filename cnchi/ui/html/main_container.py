@@ -39,16 +39,14 @@ class MainContainer(BaseWidget):
     Main entry-point for HTML Pages UI.
 
     Class Attributes:
-        all_pages (list):            List of initialized pages for the UI.
-        web_view  (WebKit2.WebView): Object that renders the app's HTML UI.
-        Also see `Box.__doc__`
+        Also see `BaseWidget.__doc__`
 
     """
 
     def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
-            Also see `Box.__doc__`.
+            Also see `BaseWidget.__doc__`.
 
         Args:
             name (str): A name for this widget.
@@ -58,10 +56,32 @@ class MainContainer(BaseWidget):
         super().__init__(name=name, *args, **kwargs)
 
         if self._web_view is None:
+            self._wv_parts = object()
+
             self._initialize_web_view()
             self.widget.add(self._web_view)
 
         self.widget.show_all()
+
+    def _apply_webkit_settings(self):
+        self._wv_parts.settings = WebKit2.Settings()
+        all_settings = self._get_settings_for_webkit()
+
+        for setting_name, value in all_settings.items():
+            setting_name = 'set_{}'.format(setting_name)
+            set_setting = getattr(self._wv_parts.settings, setting_name)
+
+            set_setting(value)
+
+    def _connect_signals_to_callbacks(self):
+        # register signals
+        self._web_view.connect('decide-policy', self._controller.decide_policy_cb)
+        self._web_view.connect('load-changed', self._controller.load_changed_cb)
+        self._web_view.connect('notify::title', self._controller.title_changed_cb)
+
+        # register custom uri scheme cnchi://
+        self._wv_parts.context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
+        self._wv_parts.security_manager.register_uri_scheme_as_cors_enabled('cnchi')
 
     @staticmethod
     def _get_settings_for_webkit():
@@ -72,52 +92,14 @@ class MainContainer(BaseWidget):
             'enable_write_console_messages_to_stdout': True,
         }
 
-    def _get_webkit_settings(self):
-        webkit_settings = WebKit2.Settings()
-        all_settings = self._get_settings_for_webkit()
-
-        for setting_name, value in all_settings.items():
-            setting_name = 'set_{}'.format(setting_name)
-            set_setting = getattr(webkit_settings, setting_name)
-
-            set_setting(value)
-
-        return webkit_settings
-
     def _initialize_web_view(self):
-        content_manager = WebKit2.UserContentManager()
-        context = WebKit2.WebContext.get_default()
-        security_manager = context.get_security_manager()
-        webkit_settings = self._get_webkit_settings()
+        self._wv_parts.content_mgr = WebKit2.UserContentManager()
+        self._wv_parts.context = WebKit2.WebContext.get_default()
+        self._wv_parts.security_manager = self._wv_parts.context.get_security_manager()
 
-        self._web_view = WebKit2.WebView.new_with_user_content_manager(content_manager)
-        self._web_view.set_settings(webkit_settings)
+        self._apply_webkit_settings()
 
-        # register signals
-        self._web_view.connect('decide-policy', self._controller.decide_policy_cb)
-        self._web_view.connect('load-changed', self._controller.load_changed_cb)
-        self._web_view.connect('notify::title', self._controller.title_changed_cb)
+        self._web_view = WebKit2.WebView.new_with_user_content_manager(self._wv_parts.content_mgr)
 
-        # register custom uri scheme cnchi://
-        context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
-        security_manager.register_uri_scheme_as_cors_enabled('cnchi')
-
+        self._web_view.set_settings(self._wv_parts.settings)
         self._web_view.show_all()
-
-    def _load_page(self, name):
-        page_class_name = '{}Page'.format(name.capitalize())
-        page_class = __dict__[page_class_name]
-        self.all_pages[page_class_name] = page_class(name=name, web_view=self._web_view)
-
-    def get_page(self, page):
-        """ Get a page by name or by index """
-        if isinstance(page, int):
-            _page = self._get_page_by_index(page)
-        elif isinstance(page, str):
-            _page = self._get_page_by_name(page)
-        else:
-            raise ValueError(
-                '"page" to load must be of type(int) or type(str), %s given.', type(page)
-            )
-
-        return _page
