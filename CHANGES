@@ -1,3 +1,4 @@
+[2016-07-03 20:23:37 -0500]  don't allow more than one instance of the main ui components classes   Dustin Falgout  {3b4229b}
 [2016-07-03 02:56:52 -0500]  progress                                                               Dustin Falgout  {bca5abd}
 [2016-07-02 23:40:24 -0500]  progress                                                               Dustin Falgout  {4c861c5}
 [2016-07-02 22:14:42 -0500]  Fix code comment.                                                      Dustin Falgout  {cf838bc}

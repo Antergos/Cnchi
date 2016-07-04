@@ -61,9 +61,6 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
             self._initialize_web_view()
             self._connect_signals_to_callbacks()
-            self.widget.add(self._web_view)
-
-        self.widget.show_all()
 
     def _apply_webkit_settings(self):
         self._wv_parts.settings = WebKit2.Settings()
@@ -112,7 +109,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             logging.debug(uri)
 
     def load_changed_cb(self, view, event):
-        self._web_view.show_all()
+        self.logger.debug('load_changed fired!')
 
     def title_changed_cb(self, view, event):
         incoming = view.get_title()
@@ -134,7 +131,11 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             logging.exception(err)
 
     def uri_resource_cb(self, request):
-        path, query = request.get_uri().split('?')
+        path = request.get_uri()
+
+        if '?' in path:
+            path, query = path.split('?')
+
         page = path.replace('cnchi://', '') if 'cnchi:///' != path else 'language'
 
         if '.' in path:
@@ -149,11 +150,11 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         elif page in self._pages_helper.page_names:
             self.logger.debug('Loading app page: {0}'.format(page))
-            page_obj = self.pages_helper.get_page(page)
+            page_obj = self._pages_helper.get_page(page)
             data = page_obj.render_template_as_bytes()
 
             request.finish(
-                Gio.MemoryInputStream.new_from_bytes(data), -1,
+                Gio.MemoryInputStream.new_from_data(data), -1,
                 Gio.content_type_guess(None, data)[0]
             )
 

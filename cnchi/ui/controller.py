@@ -56,10 +56,11 @@ class Controller(BaseObject, metaclass=Singleton):
         main_window = MainWindow()
         main_container = MainContainer()
 
+        main_window.widget.add(self._web_view)
         self._initialize_pages()
         self._connect_signals_to_callbacks()
 
-        for widget in [main_window.widget, main_container.widget]:
+        for widget in [main_window.widget, self._web_view]:
             widget.show_all()
 
     def _connect_signals_to_callbacks(self):
@@ -101,5 +102,5 @@ class Controller(BaseObject, metaclass=Singleton):
             raise ValueError('page cannot be None!')
 
         page.prepare()
-        self._web_view.load_html(page.render_template(), 'cnchi://')
+        self._web_view.load_uri('cnchi:///')
 
