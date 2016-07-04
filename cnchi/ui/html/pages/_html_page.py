@@ -60,12 +60,16 @@ class HTMLPage(Page):
 
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
+        self.signals = []
+
         if self._tpl is None and self._tpl_setup_running is None:
             self._tpl_setup_running = True
             self._initialize_template_engine()
 
-    def _connect_signal_handlers(self):
-        raise NotImplementedError
+    def _create_signals(self):
+        for _signal in self.signals:
+            self.allowed_signals.append(_signal)
+            self._main_window.create_custom_signal(_signal)
 
     def _get_default_template_vars(self):
         return {'page_name': self.name}

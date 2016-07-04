@@ -39,11 +39,8 @@
 		<script src="{{ RESOURCES_DIR }}/js/materialize.min.js"></script>
 		<script src="{{ RESOURCES_DIR }}/js/cnchi_app.js"></script>
 	{% endblock scripts %}
-	<script>
-		$(window).on('page-loaded', function() {
-			{% block page_script %}{% endblock page_script %}
-		});
-	</script>
+
+	{% block page_script %}{% endblock page_script %}
 {% endblock body %}
 </body>
 </html>

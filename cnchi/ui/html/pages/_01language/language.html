@@ -41,23 +41,51 @@
 				</form>
 			</div>
 			<div class="grid-100 btn_wrapper">
-				<a class="btn-floating btn-large waves-effect waves-light pink accent-2"><i class="material-icons">forward</i></a>
+				<a href="#" class="btn-floating btn-large waves-effect waves-light pink accent-2"><i class="material-icons">forward</i></a>
 			</div>
 		</div>
 	</div>
 {% endblock main_content %}
 
 {% block page_script %}
+	<script>
+		let _page = null;
 
-	$('body').css({'background': '#424755', 'opacity': 1});
-	$('select').material_select();
+		class LanguagePage extends CnchiPage {
+			constructor() {
+				if (null !== _page) {
+					return _page;
+				}
 
-	$('.button_wrapper a').on('click', function() {
-		let lang = $('select').val();
+				super();
 
-		cnchi.log(`${lang} language was selected`);
-		cnchi.send_signal('language-selected', lang);
-	});
+				_page = this;
+				this.signals = JSON.parse('{{ signals }}');
+
+				this.register_allowed_signals();
+				this.initialize();
+			}
+
+			initialize() {
+				$('body').css({'background': '#424755', 'opacity': 1});
+				$('select').material_select();
+
+				this.register_event_handlers();
+			}
+
+			register_event_handlers() {
+				$('.btn_wrapper a').on('click', () => {
+					let lang = $('select').val();
+
+					cnchi.log(`${lang} language was selected`);
+					cnchi.emit_signal('language-selected', lang);
+				});
+			}
+		}
+
+		new LanguagePage();
+
+	</script>
 
 {% endblock page_script %}
 

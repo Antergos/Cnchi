@@ -52,6 +52,7 @@ class CnchiApp {
 		_self = this;
 		this.loaded = false;
 		this.cmds = ['trigger_event'];
+		this.signals = [];
 
 		this._register_event_handlers();
 
@@ -64,6 +65,14 @@ class CnchiApp {
 
 	_register_event_handlers() {
 		$(window).on('page-loaded', this.page_loaded_handler);
+	}
+
+	emit_signal(...args) {
+		let msg = JSON.stringify(args), log_prefix = this._get_log_message_prefix(this.emit_signal);
+
+		this.log(`${log_prefix} Emitting signal: "${msg}" via python bridge...`);
+
+		window.title = `_BR::${msg}`;
 	}
 
 	js_bridge_handler(args) {
@@ -116,4 +125,17 @@ class CnchiApp {
 }
 
 
+class CnchiPage {
+	constructor() {
+		this.signals = [];
+	}
+
+	register_allowed_signals() {
+		for (let signal of this.signals) {
+			cnchi.signals.push(signal);
+		}
+	}
+}
+
+window.CnchiPage = CnchiPage;
 window.cnchi = new CnchiApp();

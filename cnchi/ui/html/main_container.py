@@ -202,6 +202,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
     def title_changed_cb(self, view, event):
         incoming = view.get_title()
+        self.logger.debug('title changed!')
 
         # check for "_BR::" prefix to determine we're crossing the python/JS bridge
         if not incoming or not incoming.startswith('_BR::'):
@@ -213,8 +214,13 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             name = incoming.setdefault('name', '')
             args = incoming.setdefault('args', [])
 
+            if name not in self.allowed_signals:
+                self.logger.error('Signal: %s not allowed!', name)
+                return
+
             # emit our python/js bridge signal
-            self._main_window.emit('on-js', name, args)
+            self._main_window.widget.emit(name, args)
+
 
         except Exception as err:
             logging.exception(err)

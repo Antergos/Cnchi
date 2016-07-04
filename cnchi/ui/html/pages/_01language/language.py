@@ -27,6 +27,7 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import json
 import locale
 import gettext
 
@@ -57,6 +58,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         super().__init__(name=name, *args, **kwargs)
 
         self.languages = []
+        self.signals = ['language-selected']
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
             self.settings.data,
@@ -64,14 +66,15 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             'languagelist.txt.gz'
         )
         self.set_languages_list()
-        self._connect_signal_handlers()
+        self._create_signals()
+        self._connect_signals()
 
-    def _connect_signal_handlers(self):
-        # self._main_window.connect('language-selected', self.language_selected_cb)
-        pass
+    def _connect_signals(self):
+        self._main_window.connect('language-selected', self.language_selected_cb)
 
     def _get_default_template_vars(self):
-        return {'page_name': self.name, 'languages': self.languages}
+        signals = json.dumps(self.signals)
+        return {'page_name': self.name, 'languages': self.languages, 'signals': signals}
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]

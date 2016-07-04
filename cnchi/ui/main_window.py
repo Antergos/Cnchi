@@ -62,18 +62,21 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self._main_window_width = 1120
         self._main_window_height = 721
 
-        self._create_custom_signals()
+        self.create_custom_signal('on-js')
 
         self.widget.set_size_request(1120, 721)
         self.widget.set_position(Gtk.WindowPosition.CENTER)
         self.widget.set_decorated(False)
 
-    def connect_signals(self):
+    def _connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)
         self.widget.connect('window-state-event', self.window_state_event_cb)
 
-    def _create_custom_signals(self):
-        GObject.signal_new('on-js', self.widget, GObject.SignalFlags.RUN_LAST,
+    def connect(self, signal_name, callback):
+        self.widget.connect(signal_name, callback)
+
+    def create_custom_signal(self, signal_name):
+        GObject.signal_new(signal_name, self.widget, GObject.SignalFlags.RUN_LAST,
                            None, (GObject.TYPE_STRING, GObject.TYPE_PYOBJECT,))
 
     def delete_event_cb(self, *args):

@@ -1,3 +1,4 @@
+[2016-07-04 08:58:51 -0500]  just realizing we're going to need an event class to manage communi..  Dustin Falgout  {740bcc3}
 [2016-07-04 08:44:14 -0500]  hooking up language.py into new UI                                     Dustin Falgout  {8a60a71}
 [2016-07-04 07:16:02 -0500]  hooking up language.py into new UI                                     Dustin Falgout  {5acd0bb}
 [2016-07-04 05:19:41 -0500]  finally getting somewhere with this!                                   Dustin Falgout  {1724101}
