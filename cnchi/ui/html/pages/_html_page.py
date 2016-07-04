@@ -64,6 +64,9 @@ class HTMLPage(Page):
             self._tpl_setup_running = True
             self._initialize_template_engine()
 
+    def _connect_signal_handlers(self):
+        raise NotImplementedError
+
     def _get_default_template_vars(self):
         return {'page_name': self.name}
 

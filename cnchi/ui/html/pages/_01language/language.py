@@ -64,7 +64,11 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             'languagelist.txt.gz'
         )
         self.set_languages_list()
-        self.logger.debug(self.languages)
+        self._connect_signal_handlers()
+
+    def _connect_signal_handlers(self):
+        # self._main_window.connect('language-selected', self.language_selected_cb)
+        pass
 
     def _get_default_template_vars(self):
         return {'page_name': self.name, 'languages': self.languages}
@@ -78,6 +82,9 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             return default_locale[0] + "." + default_locale[1]
         else:
             return default_locale[0]
+
+    def language_selected_cb(self, lang):
+        self.logger.debug('%s language selected!', lang)
 
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string

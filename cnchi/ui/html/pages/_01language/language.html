@@ -52,6 +52,13 @@
 	$('body').css({'background': '#424755', 'opacity': 1});
 	$('select').material_select();
 
+	$('.button_wrapper a').on('click', function() {
+		let lang = $('select').val();
+
+		cnchi.log(`${lang} language was selected`);
+		cnchi.send_signal('language-selected', lang);
+	});
+
 {% endblock page_script %}
 
 
