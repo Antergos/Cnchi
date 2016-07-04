@@ -7,29 +7,42 @@
 	body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
 	.header { display: none; }
 	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; }
-	h3 { font-size: 18px; }
+	h3 { font-size: 18px; font-family: 'Open Sans'; }
 	.heading { text-align: center; }
 	.heading img { margin-bottom: 20px; max-width: 200px; }
 	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
-	language_selection { margin-top: 30px; width: 100%; }
+	.language_selection { padding-top: 50px; padding-bottom: 50px; font-family: 'Open Sans'; }
+	.language_selection form { max-width: 100%; }
+	.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+	.btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
+	.btn_wrapper i { font-size: 2.2rem; }
 {% endblock page_styles %}
 
 {% block main_content %}
-	<div class="grid-100 heading">
-		<img src="{{ RESOURCES_DIR }}/images/overlay.png" />
-		<h1>Welcome To Antergos!</h1>
-		<h3>Please select a language to continue.</h3>
-		<div class="language_selection">
-			<form>
-				<select>
-					<option value="" disabled>Choose a language</option>
-					{% for language in languages %}
-						{% set condition = 'en_US' == language.code %}
-						<option value="{{ language.code }}"{{ conditional_text(condition, ' selected') }}>{{ language.name }}</option>
-					{% endfor %}
-				</select>
-				<label>Installer Language</label>
-			</form>
+	<div class="grid-100 grid-parent">
+		<div class="grid-100 heading">
+			<img src="{{ RESOURCES_DIR }}/images/overlay.png"/>
+			<h1>Welcome To Antergos!</h1>
+			<h3>Please select a language to continue.</h3>
+		</div>
+		<div class="grid-30 grid-parent prefix-35 suffix-35 language_selection">
+			<div class="grid-100">
+				<form>
+					<div class="input-field">
+						<select>
+							<option value="" disabled>Choose a language</option>
+							{% for language in languages %}
+								{% set condition = language[1] %}
+								<option value="{{ language[0] }}"{{ conditional_text(condition, ' selected') }}>{{ language[0] }}</option>
+							{% endfor %}
+						</select>
+						<label>Installer Language</label>
+					</div>
+				</form>
+			</div>
+			<div class="grid-100 btn_wrapper">
+				<a class="btn-floating btn-large waves-effect waves-light pink accent-2"><i class="material-icons">forward</i></a>
+			</div>
 		</div>
 	</div>
 {% endblock main_content %}
@@ -37,6 +50,7 @@
 {% block page_script %}
 
 	$('body').css({'background': '#424755', 'opacity': 1});
+	$('select').material_select();
 
 {% endblock page_script %}
 

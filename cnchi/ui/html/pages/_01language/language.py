@@ -56,6 +56,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.languages = []
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
             self.settings.data,
@@ -63,6 +64,10 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             'languagelist.txt.gz'
         )
         self.set_languages_list()
+        self.logger.debug(self.languages)
+
+    def _get_default_template_vars(self):
+        return {'page_name': self.name, 'languages': self.languages}
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]
@@ -112,14 +117,8 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         current_language = self.langcode_to_lang(display_map)
 
         for lang in sorted_choices:
-            box = Gtk.VBox()
-            label = Gtk.Label()
-            label.set_markup(lang)
-            box.add(label)
-            self.listbox.add(box)
-            if current_language == lang:
-                self.select_default_row(current_language)
-
+            selected = lang == current_language
+            self.languages.append((lang, selected))
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
@@ -127,4 +126,4 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        raise NotImplementedError
+        self._main_window.toggle_maximize()
