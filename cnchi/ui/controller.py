@@ -47,7 +47,7 @@ class Controller(BaseObject, metaclass=Singleton):
 
     """
 
-    _emit_js_tpl = 'window.cnchi._emit(%s)'
+    _emit_js_tpl = 'window.cnchi.js_bridge_handler({0});'
 
     def __init__(self, name='controller', *args, **kwargs):
 
@@ -60,7 +60,7 @@ class Controller(BaseObject, metaclass=Singleton):
         self._initialize_pages()
         self._connect_signals_to_callbacks()
 
-        for widget in [main_window.widget, self._web_view]:
+        for widget in [self._web_view, main_window.widget]:
             widget.show_all()
 
     def _connect_signals_to_callbacks(self):
@@ -79,8 +79,9 @@ class Controller(BaseObject, metaclass=Singleton):
             *args (str): Arguments to pass to the event handler (optional).
 
         """
-        msg = json.dumps([name] + list(args), None, None, None)
-        self._web_view.run_javascript(self._emit_js_tpl.format(msg))
+
+        msg = json.dumps([name] + list(args))
+        self._web_view.run_javascript(self._emit_js_tpl.format(msg), None, None, None)
 
     def js_log_message_cb(self, called, msg, *args):
         if not called or 'logger' not in called:
@@ -102,5 +103,5 @@ class Controller(BaseObject, metaclass=Singleton):
             raise ValueError('page cannot be None!')
 
         page.prepare()
-        self._web_view.load_uri('cnchi:///')
+        self._web_view.load_uri('cnchi://language')
 

@@ -1,5 +1,29 @@
-{% extends 'base/_html_page.html' %}
+{% extends 'pages/_html_page.html' %}
 
-{% block main_content %}Hello World!{% endblock main_content %}
+{% block page_styles %}
+	html, .cnchi_app { height: 100%; }
+	body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
+	.header { display: none; }
+	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; }
+	h3 { font-size: 18px; }
+	.heading { text-align: center; }
+	.heading img { margin-bottom: 20px; max-width: 200px; }
+	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+{% endblock page_styles %}
+
+{% block main_content %}
+	<div class="grid-100 heading">
+		<img src="{{ RESOURCES_DIR }}/images/overlay.png" />
+		<h1>Welcome To Antergos!</h1>
+		<h3>Please select a language to continue.</h3>
+	</div>
+
+{% endblock main_content %}
+
+{% block page_script %}
+
+	$('body').css({'background': '#424755', 'opacity': 1});
+
+{% endblock page_script %}
 
 

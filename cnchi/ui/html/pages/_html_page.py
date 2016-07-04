@@ -64,17 +64,23 @@ class HTMLPage(Page):
             self._tpl_setup_running = True
             self._initialize_template_engine()
 
-    def emit_js(self, name, *args):
-        """ See `Controller.emit_js.__doc__` """
-        self._controller.emit_js(name, *args)
+    def _get_default_template_vars(self):
+        return {'page_name': self.name}
 
     def _initialize_template_engine(self):
+        resources_path = 'cnchi://{}'.format(os.path.join(self.PAGES_DIR, 'resources'))
         tpl_map = {
             pdir: FileSystemLoader(os.path.join(self.PAGES_DIR, pdir)) for pdir in self._page_dirs
         }
-        tpl_map['base'] = FileSystemLoader(self.PAGES_DIR)
-        self._tpl = Environment(loader=PrefixLoader(tpl_map))
+        tpl_map['pages'] = FileSystemLoader(self.PAGES_DIR)
+        self._tpl = Environment(loader=PrefixLoader(tpl_map), lstrip_blocks=True, trim_blocks=True)
         self._tpl.globals['_'] = gettext
+        self._tpl.globals['RESOURCES_DIR'] = resources_path
+        self._tpl.add_extension('jinja2.ext.do')
+
+    def emit_js(self, name, *args):
+        """ See `Controller.emit_js.__doc__` """
+        self._controller.emit_js(name, *args)
 
     def prepare(self):
         """ This must be implemented by subclasses """
@@ -82,8 +88,14 @@ class HTMLPage(Page):
 
     def render_template(self, name=None, tpl_vars=None):
         name = name if name is not None else self.template
-        tpl_vars = tpl_vars if tpl_vars is not None else dict()
+        default_tpl_vars = self._get_default_template_vars()
         tpl = self._tpl.get_template(name)
+
+        if tpl_vars is not None:
+            tpl_vars = tpl_vars.update(default_tpl_vars)
+        else:
+            tpl_vars = default_tpl_vars
+
         return tpl.render(tpl_vars)
 
     def render_template_as_bytes(self, name=None, tpl_vars=None):

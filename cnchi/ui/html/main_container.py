@@ -27,10 +27,19 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import io
 import json
 import logging
 
-from ui.base_widgets import BaseWidget, DataObject, Singleton, Gio, Gtk, WebKit2
+from ui.base_widgets import (
+    Gdk,
+    Gio,
+    Gtk,
+    WebKit2,
+    BaseWidget,
+    DataObject,
+    Singleton
+)
 
 from .pages import *
 
@@ -56,10 +65,13 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.cnchi_loaded = False
+
         if self._web_view is None:
             self._wv_parts = DataObject()
 
             self._initialize_web_view()
+            self._set_background_color_for_web_view()
             self._connect_signals_to_callbacks()
 
     def _apply_webkit_settings(self):
@@ -79,8 +91,15 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         self._web_view.connect('notify::title', self.title_changed_cb)
 
         # register custom uri scheme cnchi://
-        self._wv_parts.context.register_uri_scheme('cnchi', self.uri_resource_cb)
+        self._wv_parts.context.register_uri_scheme('cnchi', self.uri_request_cb)
         self._wv_parts.security_manager.register_uri_scheme_as_cors_enabled('cnchi')
+
+    @staticmethod
+    def _get_page_name_from_uri(uri):
+        if '?' in uri:
+            uri = uri.split('?')[0]
+
+        return uri.replace('cnchi://', '') if 'cnchi:///' != uri else 'language'
 
     @staticmethod
     def _get_settings_for_webkit():
@@ -102,6 +121,65 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         self._web_view.set_settings(self._wv_parts.settings)
 
+    def _set_background_color_for_web_view(self, color='rgba(0,0,0,0)'):
+        _color = Gdk.RGBA()
+        _color.parse(color)
+
+        if 'rgba(0,0,0,0)' == color:
+            self._set_transparent_background(_color)
+
+    def _set_transparent_background(self, _color):
+        visual = self._main_window.widget.get_screen().get_rgba_visual()
+
+        if not visual:
+            self.logger.error('Unable to set transparent background!')
+
+        self._web_view.override_background_color(Gtk.StateFlags.ACTIVE, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.BACKDROP, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.DIR_LTR, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.DIR_RTL, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.FOCUSED, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.INCONSISTENT, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.INSENSITIVE, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.NORMAL, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.PRELIGHT, _color)
+        self._web_view.override_background_color(Gtk.StateFlags.SELECTED, _color)
+        
+        self._main_window.widget.set_visual(visual)
+        self._main_window.widget.set_app_paintable(True)
+
+        transparent_window_style_provider = Gtk.CssProvider()
+        data = 'GtkWindow {\nbackground-color: rgba(0, 0, 0, 0);\nbackground-image: none;\n}\n'
+
+        transparent_window_style_provider.load_from_data(data.encode('utf-8'))
+
+        self._web_view.get_style_context().add_provider(
+            transparent_window_style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+    def _uri_request_finish_page(self, page, request):
+        page_obj = self._pages_helper.get_page(page)
+        data = page_obj.render_template_as_bytes()
+
+        request.finish(
+            Gio.MemoryInputStream.new_from_data(data), -1,
+            Gio.content_type_guess(None, data)[0]
+        )
+
+    def _uri_request_finish_resource(self, path, request):
+        if path.startswith(self.APP_DIR) and os.path.exists(path):
+            request.finish(
+                Gio.File.new_for_path(path).read(None), -1,
+                Gio.content_type_guess(path, None)[0]
+            )
+
+        elif path.startswith(self.APP_DIR):
+            raise RuntimeError('Requested path: "%s" does not exist!', path)
+
+        elif os.path.exists(path):
+            raise RuntimeError('Requested path: "%s" is not inside Cnchi directory!', path)
+
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             # grab the requested URI
@@ -109,7 +187,18 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             logging.debug(uri)
 
     def load_changed_cb(self, view, event):
-        self.logger.debug('load_changed fired!')
+        if WebKit2.LoadEvent.FINISHED != event:
+            return
+
+        page_name = self._get_page_name_from_uri(view.get_uri())
+
+        self._controller.emit_js('trigger_event', 'page-loaded', page_name)
+
+        if not self.cnchi_loaded and 'language' == page_name:
+            self.cnchi_loaded = True
+            self._main_window.widget.set_opacity(1)
+
+        self.logger.debug('load_changed fired! %s', page_name)
 
     def title_changed_cb(self, view, event):
         incoming = view.get_title()
@@ -130,33 +219,21 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         except Exception as err:
             logging.exception(err)
 
-    def uri_resource_cb(self, request):
+    def uri_request_cb(self, request):
         path = request.get_uri()
 
         if '?' in path:
             path, query = path.split('?')
 
-        page = path.replace('cnchi://', '') if 'cnchi:///' != path else 'language'
+        page = self._get_page_name_from_uri(path)
 
         if '.' in path:
             self.logger.debug('Loading app resource: {0}'.format(path))
-            path = page
-
-            if path.startswith(self.APP_DIR) and os.path.exists(path):
-                request.finish(
-                    Gio.File.new_for_path(path).read(None), -1,
-                    Gio.content_type_guess(path, None)[0]
-                )
+            self._uri_request_finish_resource(page, request)
 
         elif page in self._pages_helper.page_names:
             self.logger.debug('Loading app page: {0}'.format(page))
-            page_obj = self._pages_helper.get_page(page)
-            data = page_obj.render_template_as_bytes()
-
-            request.finish(
-                Gio.MemoryInputStream.new_from_data(data), -1,
-                Gio.content_type_guess(None, data)[0]
-            )
+            self._uri_request_finish_page(page, request)
 
         else:
-            raise Exception('App resource path not found: {0}'.format(path))
+            raise Exception('Path is not valid: {0}'.format(path))

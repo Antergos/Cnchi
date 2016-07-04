@@ -5,11 +5,16 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
 		<title></title>
+		<link rel="stylesheet" id="unsemantic_grid" href="{{ RESOURCES_DIR }}/unsemantic-grid.css" type="text/css" media="all">
+		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/style.css" type="text/css" media="all">
+		<style>
+			{% block page_styles %}{% endblock page_styles %}
+		</style>
 	{% endblock head %}
 </head>
-<body class="{% block body_class %}{% endblock body_class %}">
+<body class="{% block body_class %}{{ page_name }}{% endblock body_class %}">
 {% block body %}
-	<div class="grid-container cnchi_app">
+	<div class="grid-container grid-parent cnchi_app">
 		{% block cnchi_app %}
 			<div class="grid-100 grid-parent header">
 				{% block header %}
@@ -23,16 +28,20 @@
 			</div>
 			<div class="grid-100 grid-parent main_content">
 				{% block main_content %}
-
 				{% endblock main_content %}
 			</div>
 		{% endblock cnchi_app %}
 	</div>
 
 	{% block scripts %}
-
+		<script src="{{ RESOURCES_DIR }}/jquery-3.0.0.min.js"></script>
+		<script src="{{ RESOURCES_DIR }}/cnchi_app.js"></script>
 	{% endblock scripts %}
-
+	<script>
+		$(window).on('page-loaded', function() {
+			{% block page_script %}{% endblock page_script %}
+		});
+	</script>
 {% endblock body %}
 </body>
 </html>

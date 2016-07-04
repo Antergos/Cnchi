@@ -66,6 +66,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
         self.widget.set_size_request(1120, 721)
         self.widget.set_position(Gtk.WindowPosition.CENTER)
+        self.widget.set_decorated(False)
 
     def connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)

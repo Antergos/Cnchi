@@ -98,7 +98,7 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         return self.all_pages[name]
 
     def _load_page(self, name):
-        page_class = getattr(ALL_PAGES, 'language')
+        page_class = getattr(ALL_PAGES, name)
         self.all_pages[name] = page_class(name=name)
 
     def get_page(self, identifier):

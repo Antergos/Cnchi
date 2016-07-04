@@ -53,7 +53,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        pass
+        self._main_window.toggle_maximize()
 
     def store_values(self):
         """ This must be implemented by subclasses """
