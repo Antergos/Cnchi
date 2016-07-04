@@ -1,0 +1,90 @@
+{#
+ # _macros.html
+ #
+ # Copyright © 2013-2016 Antergos
+ #
+ # This file is part of Cnchi.
+ #
+ # Cnchi is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Cnchi is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ # GNU General Public License for more details.
+ #
+ # The following additional terms are in effect as per Section 7 of the license:
+ #
+ # The preservation of all legal notices and author attributions in
+ # the material or in the Appropriate Legal Notices displayed
+ # by works containing it is required.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+ #}
+
+{# Macros (Reusable Code Snippets) #}
+
+
+{#
+ # Generates HTML for text with icon.
+ #
+ # Args:
+ #     icon_info  (dict): Dict which maps one or more icon_class(es) & icon_color(s) to possible `text` values.
+ #     text       (str):  The text to display next to the icon. Not required when calling this
+ #                        macro from another macro. You should place text inside call block instead.
+ #
+ #}
+{% macro text_with_icon(icon_info, text=None) %}
+	{% if text is none %}
+		{% set text = caller() %}
+	{% endif %}
+
+	{% set icon_class = icon_info.class %}
+	{% set icon_color = icon_info.color %}
+
+	{% if icon_info.class is mapping %}
+		{% set icon_class = icon_info.class[text] %}
+	{% endif %}
+
+	{% if icon_info.color is mapping %}
+		{% set icon_color = icon_info.color[text] %}
+	{% endif %}
+
+	<i class="fa fa-{{ icon_class }}" style="color: {{ icon_color }}"></i> {{ text }}
+{% endmacro %}
+
+
+{#
+ # Outputs "readonly" if condition evaluates to a truthy value.
+ #
+ # Args:
+ #     condition (mixed): If condition is truthy, output "readonly".
+ #
+ #}
+{%- macro readonly(condition) -%}
+	{%- if condition -%}
+		readonly
+	{%- endif -%}
+{%- endmacro -%}
+
+
+{#
+ # Outputs `text` if condition evaluates to a truthy value.
+ #
+ # Args:
+ #     condition (mixed): If condition is truthy, output "checked".
+ #     text      (str):   The text to output. Not required when calling this macro from another macro;
+ #                        you should place text inside call block instead.
+ #
+ #}
+{%- macro conditional_text(condition, text=None) -%}
+	{% if text is none %}
+		{% set text = caller() %}
+	{% endif %}
+	{%- if condition -%}
+		{{ text }}
+	{%- endif -%}
+{%- endmacro -%}

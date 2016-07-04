@@ -26,8 +26,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import locale
+import gettext
+
 from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
+import misc.i18n as i18n
 
 
 class LanguagePage(HTMLPage, metaclass=Singleton):
@@ -50,6 +55,71 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         """
 
         super().__init__(name=name, *args, **kwargs)
+
+        self.current_locale = locale.getdefaultlocale()[0]
+        self.language_list = os.path.join(
+            self.settings.data,
+            'locale',
+            'languagelist.txt.gz'
+        )
+        self.set_languages_list()
+
+    def get_lang(self):
+        return os.environ["LANG"].split(".")[0]
+
+    def get_locale(self):
+        default_locale = locale.getdefaultlocale()
+        if len(default_locale) > 1:
+            return default_locale[0] + "." + default_locale[1]
+        else:
+            return default_locale[0]
+
+    def langcode_to_lang(self, display_map):
+        # Special cases in which we need the complete current_locale string
+        if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
+            self.current_locale = self.current_locale.split("_")[0]
+
+        for lang, lang_code in display_map.items():
+            if lang_code[1] == self.current_locale:
+                return lang
+
+    def set_language(self, locale_code):
+        if not locale_code:
+            locale_code, encoding = locale.getdefaultlocale()
+
+        # os.environ["LANG"] = locale_code
+        #
+        # try:
+        #     lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code])
+        #     lang.install()
+        #     self.translate_ui()
+        # except IOError:
+        #     logging.warning(
+        #         "Can't find translation file for the %s language",
+        #         locale_code)
+
+    def set_languages_list(self):
+        """ Load languages list """
+        sorted_choices = display_map = None
+
+        try:
+            (current_language,
+             sorted_choices,
+             display_map) = i18n.get_languages(self.language_list)
+        except FileNotFoundError as file_error:
+            self.logger.exception(file_error)
+
+        current_language = self.langcode_to_lang(display_map)
+
+        for lang in sorted_choices:
+            box = Gtk.VBox()
+            label = Gtk.Label()
+            label.set_markup(lang)
+            box.add(label)
+            self.listbox.add(box)
+            if current_language == lang:
+                self.select_default_row(current_language)
+
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

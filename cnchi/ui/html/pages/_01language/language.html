@@ -1,5 +1,7 @@
 {% extends 'pages/_html_page.html' %}
 
+{% from 'pages/_macros.html' import conditional_text %}
+
 {% block page_styles %}
 	html, .cnchi_app { height: 100%; }
 	body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
@@ -9,6 +11,7 @@
 	.heading { text-align: center; }
 	.heading img { margin-bottom: 20px; max-width: 200px; }
 	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+	language_selection { margin-top: 30px; width: 100%; }
 {% endblock page_styles %}
 
 {% block main_content %}
@@ -16,8 +19,19 @@
 		<img src="{{ RESOURCES_DIR }}/images/overlay.png" />
 		<h1>Welcome To Antergos!</h1>
 		<h3>Please select a language to continue.</h3>
+		<div class="language_selection">
+			<form>
+				<select>
+					<option value="" disabled>Choose a language</option>
+					{% for language in languages %}
+						{% set condition = 'en_US' == language.code %}
+						<option value="{{ language.code }}"{{ conditional_text(condition, ' selected') }}>{{ language.name }}</option>
+					{% endfor %}
+				</select>
+				<label>Installer Language</label>
+			</form>
+		</div>
 	</div>
-
 {% endblock main_content %}
 
 {% block page_script %}
