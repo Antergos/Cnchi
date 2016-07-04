@@ -72,7 +72,7 @@ class BaseObject:
     TOP_DIR = '/usr/share/cnchi'
     APP_DIR = os.path.join(TOP_DIR, 'cnchi')
     UI_DIR = os.path.join(APP_DIR, 'ui')
-    PAGES_DIR = os.path.join(UI_DIR, 'pages')
+    PAGES_DIR = os.path.join(UI_DIR, 'html/pages')
     TPL_DIR = os.path.join(UI_DIR, 'tpl')
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
 

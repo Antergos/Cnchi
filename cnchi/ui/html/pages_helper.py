@@ -29,12 +29,12 @@
 import os
 import logging
 
-from ui.base_widgets import BaseWidget, SharedData
+from ui.base_widgets import BaseWidget, SharedData, Singleton
 
 from .pages import ALL_PAGES
 
 
-class PagesHelper(BaseWidget):
+class PagesHelper(BaseWidget, metaclass=Singleton):
     """
     Manages the UI's pages.
 
@@ -61,6 +61,7 @@ class PagesHelper(BaseWidget):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.logger.debug([self.PAGES_DIR, self.all_pages])
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
 
@@ -71,6 +72,8 @@ class PagesHelper(BaseWidget):
 
             self.page_names = self._get_page_names()
 
+        self.logger.debug([self.PAGES_DIR, self.all_pages])
+
     def _find_page_directories(self):
         if not self._page_dirs:
             _dirs = os.listdir(os.path.join(self.UI_DIR, 'html/pages'))
@@ -78,7 +81,7 @@ class PagesHelper(BaseWidget):
             self._page_dirs.extend(_page_dirs)
 
     def _get_page_names(self):
-        return [n[2:] for n in self._page_dirs]
+        return [n[3:] for n in self._page_dirs]
 
     def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
@@ -97,6 +100,16 @@ class PagesHelper(BaseWidget):
     def _load_page(self, name):
         page_class = getattr(ALL_PAGES, 'language')
         self.all_pages[name] = page_class(name=name)
+
+    def get_page(self, identifier):
+        page = None
+
+        try:
+            page = self.get_page_object(identifier)
+        except Exception as err:
+            self.logger.exception(err)
+
+        return page
 
     def get_page_directory_name(self, name):
         res = [d for d in self._page_dirs if name in d]

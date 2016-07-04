@@ -27,14 +27,15 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import json
 import logging
 
-from ui.base_widgets import BaseWidget, DataObject, Gtk, WebKit2
+from ui.base_widgets import BaseWidget, DataObject, Singleton, Gio, Gtk, WebKit2
 
 from .pages import *
 
 
-class MainContainer(BaseWidget):
+class MainContainer(BaseWidget, metaclass=Singleton):
     """
     Main entry-point for HTML Pages UI.
 
@@ -59,6 +60,7 @@ class MainContainer(BaseWidget):
             self._wv_parts = DataObject()
 
             self._initialize_web_view()
+            self._connect_signals_to_callbacks()
             self.widget.add(self._web_view)
 
         self.widget.show_all()
@@ -75,12 +77,12 @@ class MainContainer(BaseWidget):
 
     def _connect_signals_to_callbacks(self):
         # register signals
-        self._web_view.connect('decide-policy', self._controller.decide_policy_cb)
-        self._web_view.connect('load-changed', self._controller.load_changed_cb)
-        self._web_view.connect('notify::title', self._controller.title_changed_cb)
+        # self._web_view.connect('decide-policy', self.decide_policy_cb)
+        self._web_view.connect('load-changed', self.load_changed_cb)
+        self._web_view.connect('notify::title', self.title_changed_cb)
 
         # register custom uri scheme cnchi://
-        self._wv_parts.context.register_uri_scheme('cnchi', self._controller.uri_resource_cb)
+        self._wv_parts.context.register_uri_scheme('cnchi', self.uri_resource_cb)
         self._wv_parts.security_manager.register_uri_scheme_as_cors_enabled('cnchi')
 
     @staticmethod
@@ -102,4 +104,58 @@ class MainContainer(BaseWidget):
         self._web_view = WebKit2.WebView.new_with_user_content_manager(self._wv_parts.content_mgr)
 
         self._web_view.set_settings(self._wv_parts.settings)
+
+    def decide_policy_cb(self, view, decision, decision_type):
+        if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
+            # grab the requested URI
+            uri = decision.get_request().get_uri()
+            logging.debug(uri)
+
+    def load_changed_cb(self, view, event):
         self._web_view.show_all()
+
+    def title_changed_cb(self, view, event):
+        incoming = view.get_title()
+
+        # check for "_BR::" prefix to determine we're crossing the python/JS bridge
+        if not incoming or not incoming.startswith('_BR::'):
+            return
+
+        try:
+            incoming = json.loads(incoming[5:])
+
+            name = incoming.setdefault('name', '')
+            args = incoming.setdefault('args', [])
+
+            # emit our python/js bridge signal
+            self._main_window.emit('on-js', name, args)
+
+        except Exception as err:
+            logging.exception(err)
+
+    def uri_resource_cb(self, request):
+        path, query = request.get_uri().split('?')
+        page = path.replace('cnchi://', '') if 'cnchi:///' != path else 'language'
+
+        if '.' in path:
+            self.logger.debug('Loading app resource: {0}'.format(path))
+            path = page
+
+            if path.startswith(self.APP_DIR) and os.path.exists(path):
+                request.finish(
+                    Gio.File.new_for_path(path).read(None), -1,
+                    Gio.content_type_guess(path, None)[0]
+                )
+
+        elif page in self._pages_helper.page_names:
+            self.logger.debug('Loading app page: {0}'.format(page))
+            page_obj = self.pages_helper.get_page(page)
+            data = page_obj.render_template_as_bytes()
+
+            request.finish(
+                Gio.MemoryInputStream.new_from_bytes(data), -1,
+                Gio.content_type_guess(None, data)[0]
+            )
+
+        else:
+            raise Exception('App resource path not found: {0}'.format(path))

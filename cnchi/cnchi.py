@@ -97,6 +97,7 @@ class CnchiApp(BaseObject):
         self.widget = Gtk.Application(application_id='com.antergos.cnchi', flags=FLAGS)
 
         self.widget.connect('activate', self.activate)
+        self.widget.connect('activate', self.activate)
 
         self.TMP_RUNNING = "/tmp/.setup-running"
 
@@ -130,7 +131,7 @@ class CnchiApp(BaseObject):
 
         controller = Controller()
 
-        self._main_window.widget.show_all()
+        self.widget.add_window(self._main_window.widget)
 
     def already_running(self):
         """ Check to see if we're already running """

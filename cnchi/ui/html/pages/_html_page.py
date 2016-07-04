@@ -72,6 +72,7 @@ class HTMLPage(Page):
         tpl_map = {
             pdir: FileSystemLoader(os.path.join(self.PAGES_DIR, pdir)) for pdir in self._page_dirs
         }
+        tpl_map['base'] = FileSystemLoader(self.PAGES_DIR)
         self._tpl = Environment(loader=PrefixLoader(tpl_map))
         self._tpl.globals['_'] = gettext
 
@@ -81,8 +82,13 @@ class HTMLPage(Page):
 
     def render_template(self, name=None, tpl_vars=None):
         name = name if name is not None else self.template
+        tpl_vars = tpl_vars if tpl_vars is not None else dict()
         tpl = self._tpl.get_template(name)
-        return tpl.render_template(name, tpl_vars)
+        return tpl.render(tpl_vars)
+
+    def render_template_as_bytes(self, name=None, tpl_vars=None):
+        tpl = self.render_template(name=name, tpl_vars=tpl_vars)
+        return tpl.encode('UTF-8')
 
     def store_values(self):
         """ This must be implemented by subclasses """

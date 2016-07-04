@@ -46,6 +46,16 @@ VERTICAL = Gtk.Orientation.VERTICAL
 HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
 
+class Singleton(type):
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+
+        return cls._instance
+
+
 class BaseWidget(BaseObject):
     """
     Base class for all of Cnchi's UI classes.
@@ -81,19 +91,20 @@ class BaseWidget(BaseObject):
         return template
 
     def _maybe_load_widget(self):
-        template = self._get_template_path()
+        template_path = self._get_template_path()
 
-        if not template or not os.path.exists(template):
+        if not template_path or not os.path.exists(template_path):
             self.logger.debug("Cannot find %s template!", self.template)
             return
 
-        if template and os.path.exists(template):
-            self.template = template
+        if template_path and os.path.exists(template_path):
+            path_parts = template_path.rsplit('/', 2)
+            self.template = '{0}/{1}'.format(path_parts[-2], path_parts[-1])
 
             self.logger.debug("Loading %s template and connecting its signals", self.template)
 
             if 'gtkbuilder' == self.tpl_engine:
-                self.ui = Gtk.Builder().new_from_file(self.template)
+                self.ui = Gtk.Builder().new_from_file(template_path)
 
                 # Connect UI signals
                 self.ui.connect_signals(self)
@@ -154,16 +165,17 @@ class Page(BaseWidget):
 
     def _get_template_path(self):
         if 'gtkbuilder' == self.tpl_engine:
-            template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
+            template_path = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
 
         elif 'jinja' == self.tpl_engine:
             page_dir = self._pages_helper.get_page_directory_name(self.name)
-            template = os.path.join('{0}/{1}.html'.format(page_dir, self.name))
+            template_path = os.path.join(self.PAGES_DIR, '{0}/{1}.html'.format(page_dir, self.name))
+            self.logger.debug([self.name, page_dir, template_path])
         else:
             self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
-            template = None
+            template_path = None
 
-        return template
+        return template_path
 
     def prepare(self):
         """ This must be implemented by subclasses """

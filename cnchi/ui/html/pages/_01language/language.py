@@ -26,10 +26,11 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
+from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
 
 
-class LanguagePage(HTMLPage):
+class LanguagePage(HTMLPage, metaclass=Singleton):
     """
     The first page shown when the app starts. It facilitates language selection (translations).
 
@@ -52,7 +53,7 @@ class LanguagePage(HTMLPage):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        raise NotImplementedError
+        pass
 
     def store_values(self):
         """ This must be implemented by subclasses """

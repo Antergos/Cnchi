@@ -39,11 +39,12 @@ from .base_widgets import (
     Gdk,
     GLib,
     GObject,
-    BaseWidget
+    BaseWidget,
+    Singleton
 )
 
 
-class MainWindow(BaseWidget):
+class MainWindow(BaseWidget, metaclass=Singleton):
     """
     Cnchi Main Window
 
@@ -63,6 +64,7 @@ class MainWindow(BaseWidget):
 
         self._create_custom_signals()
 
+        self.widget.set_size_request(1120, 721)
         self.widget.show_all()
 
     def connect_signals(self):
@@ -70,11 +72,11 @@ class MainWindow(BaseWidget):
         self.widget.connect('window-state-event', self.window_state_event_cb)
 
     def _create_custom_signals(self):
-        GObject.signal_new('on-js', self.widget, GObject.SIGNAL_RUN_LAST,
+        GObject.signal_new('on-js', self.widget, GObject.SignalFlags.RUN_LAST,
                            None, (GObject.TYPE_STRING, GObject.TYPE_PYOBJECT,))
 
     def delete_event_cb(self, *args):
-        self._cnchi_app.widget.emit('__close_app', *args)
+        self.widget.emit('__close_app', *args)
 
     def toggle_maximize(self):
         if self.widget.is_maximized():

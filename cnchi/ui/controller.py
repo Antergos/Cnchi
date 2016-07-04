@@ -31,13 +31,13 @@
 import json
 import logging
 
-from ui.base_widgets import BaseObject, WebKit2
+from ui.base_widgets import BaseObject, Singleton, WebKit2
 from ui.main_window import MainWindow
 from ui.html.main_container import MainContainer
 from ui.html.pages_helper import PagesHelper
 
 
-class Controller(BaseObject):
+class Controller(BaseObject, metaclass=Singleton):
     """
     UI Controller
 
@@ -56,26 +56,18 @@ class Controller(BaseObject):
         main_window = MainWindow()
         main_container = MainContainer()
 
-        self._cnchi_app.widget.add_window(main_window.widget)
-        self._main_window.widget.add(main_container.widget)
-
         self._initialize_pages()
         self._connect_signals_to_callbacks()
+
+        for widget in [main_window.widget, main_container.widget]:
+            widget.show_all()
 
     def _connect_signals_to_callbacks(self):
         self._main_window.widget.connect('on-js', self.js_log_message_cb)
 
     def _initialize_pages(self):
         self._pages_helper = PagesHelper()
-        page = self._pages_helper.get_page_object(0)
-
-        self._web_view.load_html(page.render_template())
-
-    def decide_policy_cb(self, view, decision, decision_type):
-        if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
-            # grab the requested URI
-            uri = decision.get_request().get_uri()
-            logging.debug(uri)
+        self.set_current_page(0)
 
     def emit_js(self, name, *args):
         """
@@ -102,60 +94,12 @@ class Controller(BaseObject):
 
         _logger(msg, *args)
 
-    def load_changed_cb(self, view, event):
-        pass
-
     def set_current_page(self, identifier):
-        page = None
+        page = self._pages_helper.get_page(identifier)
 
-        try:
-            self._pages_helper.get_page_object(identifier)
-        except Exception as err:
-            self.logger.exception(err)
-            return
+        if page is None:
+            raise ValueError('page cannot be None!')
 
-        if page is not None:
-            page.prepare()
-
-
-    def title_changed_cb(self, view, event):
-        incoming = view.get_title()
-
-        # check for "_BR::" prefix to determine we're crossing the python/JS bridge
-        if not incoming or not incoming.startswith('_BR::'):
-            return
-
-        try:
-            incoming = json.loads(incoming[5:])
-
-            name = incoming.setdefault('name', '')
-            args = incoming.setdefault('args', [])
-
-            # emit our python/js bridge signal
-            self._cnchi_app.emit('on-js', name, args)
-
-        except Exception as err:
-            logging.exception(err)
-
-    def uri_resource_cb(self, request):
-        pass
-        # path = o = request.get_uri().split('?')[0]
-        #
-        # if path == 'app:///':
-        #     path = self._uri_app_base + 'app.html'
-        #
-        # else:
-        #     path = path.replace('app://', self._uri_app_base)
-        #
-        #     # variable substitution
-        #     path = path.replace('$backend', 'gtk3')
-        #
-        # logger.debug('Loading app resource: {0} ({1})'.format(o, path))
-        #
-        # if os.path.exists(path):
-        #     request.finish(Gio.File.new_for_path(path).read(None), -1,
-        #                    Gio.content_type_guess(path, None)[0])
-        #
-        # else:
-        #     raise Exception('App resource path not found: {0}'.format(path))
+        page.prepare()
+        self._web_view.load_html(page.render_template(), 'cnchi://')
 
