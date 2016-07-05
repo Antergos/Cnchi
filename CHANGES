@@ -1,3 +1,4 @@
+[2016-07-04 23:57:45 -0500]  hooked up signals for try it/install it buttons. tried some animati..  Dustin Falgout  {a66d33c}
 [2016-07-04 21:35:39 -0500]  its coming together now. lots of work left to do though                Dustin Falgout  {a3695d0}
 [2016-07-04 11:42:40 -0500]  working on python/js bridge                                            Dustin Falgout  {a3a8123}
 [2016-07-04 08:58:51 -0500]  just realizing we're going to need an event class to manage communi..  Dustin Falgout  {740bcc3}

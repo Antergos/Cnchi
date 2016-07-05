@@ -2,6 +2,11 @@
 
 {% from 'pages/_macros.html' import conditional_text %}
 
+
+
+{#
+ # CSS Styles Specific To This Page
+ #}
 {% block page_styles %}
 	<style>
 		html, .cnchi_app { height: 100%; }
@@ -20,6 +25,11 @@
 	</style>
 {% endblock page_styles %}
 
+
+
+{#
+ # Main Content (Appears below the header)
+ #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
 		<div class="grid-100 heading">
@@ -50,6 +60,11 @@
 	</div>
 {% endblock main_content %}
 
+
+
+{#
+ # Javascript For This Page
+ #}
 {% block page_script %}
 	<script>
 		let _page = null;
@@ -93,7 +108,4 @@
 		new LanguagePage();
 
 	</script>
-
 {% endblock page_script %}
-
-
