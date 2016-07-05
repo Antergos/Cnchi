@@ -77,7 +77,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
     def create_custom_signal(self, signal_name):
         GObject.signal_new(signal_name, self.widget, GObject.SignalFlags.RUN_LAST,
-                           None, (GObject.TYPE_STRING, GObject.TYPE_PYOBJECT,))
+                           None, (GObject.TYPE_PYOBJECT,))
 
     def delete_event_cb(self, *args):
         self.widget.emit('__close_app', *args)

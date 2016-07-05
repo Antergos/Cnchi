@@ -1,0 +1,80 @@
+{% extends 'pages/_html_page.html' %}
+
+{% from 'pages/_macros.html' import conditional_text %}
+
+{% block page_styles %}
+	html, .cnchi_app { height: 100%; }
+	body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
+	.header { display: none; }
+	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; margin-top: 0px; }
+	h3 { font-size: 18px; font-family: 'Open Sans'; }
+	.heading { text-align: center; margin-bottom: 60px; }
+	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+	.options_wrapper img { max-width: 100%; text-align: center; }
+	.options_wrapper > div { text-align: center; }
+	.options_wrapper p { font-size: 17px; margin-bottom: 20px; }
+	.options_wrapper button { font-size: 17px; }
+	.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+{% endblock page_styles %}
+
+{% block main_content %}
+	<div class="grid-100 grid-parent">
+		<div class="grid-100 heading">
+			<h1>What would you like to do?</h1>
+		</div>
+		<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
+			<div class="grid-50 try_it">
+				<img src="{{ RESOURCES_DIR }}/images/try-it.svg" width="200" alt="Icon for 'Try It' option"/>
+				<p id="tryit_description">{{ _('Try Antergos without making any changes to your system.') }}</p>
+				<button class="waves-effect waves-purple btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="tryit_description">{{ _('Try It') }}</button>
+			</div>
+			<div class="grid-50 install_it">
+				<img src="{{ RESOURCES_DIR }}/images/install-it.svg" width="200" alt="Icon for 'Install It' option"/>
+				<p id="installit_description">{{ _('Create a permanent place for Antergos on your system.') }}</p>
+				<button class="waves-effect waves-pink btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="installit_description">{{ _('Install It') }}</button>
+			</div>
+		</div>
+
+	</div>
+{% endblock main_content %}
+
+{% block page_script %}
+	<script>
+		let _page = null;
+
+		class WelcomePage extends CnchiPage {
+			constructor() {
+				if (null !== _page) {
+					return _page;
+				}
+
+				super();
+
+				_page = this;
+				this.signals = JSON.parse('{{ signals }}');
+
+				this.register_allowed_signals();
+				this.initialize();
+			}
+
+			initialize() {
+				this.register_event_handlers();
+			}
+
+			register_event_handlers() {
+				$('.btn_wrapper a').on('click', () => {
+					let lang = $('select').val();
+
+					cnchi.log(`${lang} language was selected`);
+					cnchi.emit_signal('language-selected', lang);
+				});
+			}
+		}
+
+		new WelcomePage();
+
+	</script>
+
+{% endblock page_script %}
+
+

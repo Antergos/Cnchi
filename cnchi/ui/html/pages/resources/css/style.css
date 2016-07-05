@@ -35,3 +35,14 @@ html, body { padding: 0px; margin: 0px; background: transparent; }
 .header_top { height: 70px; background-color: #2e66b9; }
 .header_bottom { height: 58px; background-color: #3b70d0; }
 
+
+/* ============================================== *\
+ * -->>> CUSTOM COLORS FOR WAVES ANIMATION <<<--- *
+\* ============================================== */
+.waves-effect.waves-pink .waves-ripple {
+	background-color: rgba(249, 89, 183, 0.65);
+}
+
+.waves-effect.waves-purple .waves-ripple {
+	background-color: rgba(121, 90, 255, 0.65);
+}

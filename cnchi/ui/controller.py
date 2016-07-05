@@ -29,6 +29,7 @@
 """ UI Controller Module """
 
 import json
+import sys
 import logging
 
 from ui.base_widgets import BaseObject, Singleton, WebKit2
@@ -83,6 +84,9 @@ class Controller(BaseObject, metaclass=Singleton):
         msg = json.dumps([name] + list(args))
         self._web_view.run_javascript(self._emit_js_tpl.format(msg), None, None, None)
 
+    def exit_app(self):
+        sys.exit(0)
+
     def js_log_message_cb(self, called, msg, *args):
         if not called or 'logger' not in called:
             return
@@ -97,11 +101,13 @@ class Controller(BaseObject, metaclass=Singleton):
         _logger(msg, *args)
 
     def set_current_page(self, identifier):
+        self.logger.debug('set_current_page(%s)', identifier)
         page = self._pages_helper.get_page(identifier)
+        page_uri = 'cnchi://{0}'.format(page.name)
 
         if page is None:
             raise ValueError('page cannot be None!')
 
         page.prepare()
-        self._web_view.load_uri('cnchi://language')
+        self._web_view.load_uri(page_uri)
 

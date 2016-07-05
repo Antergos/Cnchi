@@ -26,12 +26,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
+import os
+import json
+
+from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
 
 
-class WelcomePage(HTMLPage):
+class WelcomePage(HTMLPage, metaclass=Singleton):
     """
-    The first page shown when the app starts.
+    This page provides the user with a choice: (Try It or Install It).
 
     Class Attributes:
         Also see `HTMLPage.__doc__`
@@ -50,10 +54,29 @@ class WelcomePage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.signals = ['tryit-selected', 'installit-selected']
+
+        self._create_signals()
+        self._connect_signals()
+
+    def _connect_signals(self):
+        self._main_window.connect('tryit-selected', self.try_it_selected_cb)
+        self._main_window.connect('installit-selected', self.install_it_selected_cb)
+
+    def _get_default_template_vars(self):
+        signals = json.dumps(self.signals)
+        return {'page_name': self.name, 'signals': signals}
+
+    def try_it_selected_cb(self, *args):
+        self._controller.exit_app()
+
+    def install_it_selected_cb(self, *args):
+        self.go_to_next_page()
+
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        raise NotImplementedError
+        pass
 
     def store_values(self):
-        """ This must be implemented by subclasses """
-        raise NotImplementedError
+        super().store_values()
+        self._main_window.toggle_maximize()

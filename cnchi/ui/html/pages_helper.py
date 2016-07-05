@@ -117,7 +117,7 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         return '' if not res else res[0]
 
     def get_page_object(self, page_identifier):
-        """ Get a page_identifier object by name or by index """
+        """ Get a page object by name or by index """
         if isinstance(page_identifier, int):
             _page = self._get_page_object_by_index(page_identifier)
         elif isinstance(page_identifier, str):

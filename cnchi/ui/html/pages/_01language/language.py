@@ -32,7 +32,7 @@ import locale
 import gettext
 
 from ui.base_widgets import Singleton
-from ui.html.pages._html_page import HTMLPage
+from ui.html.pages._html_page import HTMLPage, DataObject
 import misc.i18n as i18n
 
 
@@ -59,6 +59,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
 
         self.languages = []
         self.signals = ['language-selected']
+        self.selected_language = None
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
             self.settings.data,
@@ -86,8 +87,11 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         else:
             return default_locale[0]
 
-    def language_selected_cb(self, lang):
-        self.logger.debug('%s language selected!', lang)
+    def language_selected_cb(self, widget, lang):
+        self.logger.debug('%s language selected!', lang[0])
+        self.selected_language = lang
+        # TODO: Apply the selected language if its not English!
+        self.go_to_next_page()
 
     def langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
@@ -135,5 +139,5 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         self._main_window.toggle_maximize()
 
     def store_values(self):
-        """ This must be implemented by subclasses """
-        self._main_window.toggle_maximize()
+        super().store_values()
+        self._pages_data.selected_language = self.selected_language

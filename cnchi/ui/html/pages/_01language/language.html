@@ -6,7 +6,7 @@
 	html, .cnchi_app { height: 100%; }
 	body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
 	.header { display: none; }
-	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; }
+	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; margin-top: 0px; }
 	h3 { font-size: 18px; font-family: 'Open Sans'; }
 	.heading { text-align: center; }
 	.heading img { margin-bottom: 20px; max-width: 200px; }
@@ -21,27 +21,27 @@
 {% block main_content %}
 	<div class="grid-100 grid-parent">
 		<div class="grid-100 heading">
-			<img src="{{ RESOURCES_DIR }}/images/overlay.png"/>
-			<h1>Welcome To Antergos!</h1>
-			<h3>Please select a language to continue.</h3>
+			<img src="{{ RESOURCES_DIR }}/images/overlay.png" alt="Antergos logo"/>
+			<h1>{{ _('Welcome To Antergos!') }}</h1>
+			<h3>{{ _('Please select a language to continue.') }}</h3>
 		</div>
 		<div class="grid-30 grid-parent prefix-35 suffix-35 language_selection">
 			<div class="grid-100">
 				<form>
 					<div class="input-field">
-						<select>
-							<option value="" disabled>Choose a language</option>
+						<select id="language_select">
+							<option value="" disabled>{{ _('Choose a language') }}</option>
 							{% for language in languages %}
 								{% set condition = language[1] %}
 								<option value="{{ language[0] }}"{{ conditional_text(condition, ' selected') }}>{{ language[0] }}</option>
 							{% endfor %}
 						</select>
-						<label>Installer Language</label>
+						<label for="language_select">{{ _('Installer Language') }}</label>
 					</div>
 				</form>
 			</div>
 			<div class="grid-100 btn_wrapper">
-				<a href="#" class="btn-floating btn-large waves-effect waves-light pink accent-2"><i class="material-icons">forward</i></a>
+				<button id="continue_btn" aria-label="Continue" class="waves-effect waves-circle btn-floating btn-large waves-light pink accent-2"><i class="material-icons">forward</i></button>
 			</div>
 		</div>
 	</div>
@@ -67,14 +67,14 @@
 			}
 
 			initialize() {
-				$('body').css({'background': '#424755', 'opacity': 1});
+				$('body').css({'background': '#383A41', 'opacity': 1});
 				$('select').material_select();
 
 				this.register_event_handlers();
 			}
 
 			register_event_handlers() {
-				$('.btn_wrapper a').on('click', () => {
+				$('.btn_wrapper button').on('click', () => {
 					let lang = $('select').val();
 
 					cnchi.log(`${lang} language was selected`);

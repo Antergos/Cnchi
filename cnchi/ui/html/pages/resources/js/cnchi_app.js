@@ -72,7 +72,7 @@ class CnchiApp {
 
 		this.log(`${log_prefix} Emitting signal: "${msg}" via python bridge...`);
 
-		window.title = `_BR::${msg}`;
+		document.title = `_BR::${msg}`;
 	}
 
 	js_bridge_handler(args) {

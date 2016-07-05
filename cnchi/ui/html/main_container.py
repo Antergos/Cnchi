@@ -211,8 +211,8 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         try:
             incoming = json.loads(incoming[5:])
 
-            name = incoming.setdefault('name', '')
-            args = incoming.setdefault('args', [])
+            name = incoming.pop(0)
+            args = incoming
 
             if name not in self.allowed_signals:
                 self.logger.error('Signal: %s not allowed!', name)
@@ -220,7 +220,6 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
             # emit our python/js bridge signal
             self._main_window.widget.emit(name, args)
-
 
         except Exception as err:
             logging.exception(err)

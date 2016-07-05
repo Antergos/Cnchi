@@ -31,7 +31,7 @@ from gettext import gettext
 
 from jinja2 import Environment, FileSystemLoader, PrefixLoader
 
-from ui.base_widgets import SharedData, Page
+from ui.base_widgets import DataObject, SharedData, Page
 
 
 class HTMLPage(Page):
@@ -66,10 +66,17 @@ class HTMLPage(Page):
             self._tpl_setup_running = True
             self._initialize_template_engine()
 
+        if self._pages_data is None:
+            self.logger.debug('creating data object in _pages_data for %s..', name)
+            self._pages_data = DataObject()
+            self._pages_data.has_data = False
+
     def _create_signals(self):
         for _signal in self.signals:
-            self.allowed_signals.append(_signal)
             self._main_window.create_custom_signal(_signal)
+
+            if _signal not in self.allowed_signals:
+                self.allowed_signals.append(_signal)
 
     def _get_default_template_vars(self):
         return {'page_name': self.name}
@@ -81,13 +88,24 @@ class HTMLPage(Page):
         }
         tpl_map['pages'] = FileSystemLoader(self.PAGES_DIR)
         self._tpl = Environment(loader=PrefixLoader(tpl_map), lstrip_blocks=True, trim_blocks=True)
-        self._tpl.globals['_'] = gettext
         self._tpl.globals['RESOURCES_DIR'] = resources_path
         self._tpl.add_extension('jinja2.ext.do')
+        self._tpl.add_extension('jinja2.ext.i18n')
+        self._tpl.install_null_translations(newstyle=True)
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """
         self._controller.emit_js(name, *args)
+
+    def get_next_page_index(self):
+        return self._pages_helper.page_names.index(self.name) + 1
+
+    def get_previous_page_index(self):
+        return self._pages.helper.page_names.index(self.name) - 1
+
+    def go_to_next_page(self):
+        self.store_values()
+        self._controller.set_current_page(self.get_next_page_index())
 
     def prepare(self):
         """ This must be implemented by subclasses """
@@ -111,4 +129,4 @@ class HTMLPage(Page):
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        raise NotImplementedError
+        self._pages_data.has_data = True
