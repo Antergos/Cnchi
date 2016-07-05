@@ -7,10 +7,9 @@
 		<title></title>
 		<link rel="stylesheet" id="unsemantic_grid" href="{{ RESOURCES_DIR }}/css/unsemantic-grid.css" type="text/css" media="all">
 		<link rel="stylesheet" id="materialize_styles" href="{{ RESOURCES_DIR }}/css/materialize.css" type="text/css" media="all">
+		<link rel="stylesheet" id="animatecss_styles" href="{{ RESOURCES_DIR }}/css/animate.css" type="text/css" media="all">
 		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/css/style.css" type="text/css" media="all">
-		<style>
-			{% block page_styles %}{% endblock page_styles %}
-		</style>
+		{% block page_styles %}{% endblock page_styles %}
 	{% endblock head %}
 </head>
 <body class="{% block body_class %}{{ page_name }}{% endblock body_class %}">

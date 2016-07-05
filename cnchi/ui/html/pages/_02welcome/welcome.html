@@ -1,24 +1,24 @@
 {% extends 'pages/_html_page.html' %}
 
-{% from 'pages/_macros.html' import conditional_text %}
-
 {% block page_styles %}
-	html, .cnchi_app { height: 100%; }
-	body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
-	.header { display: none; }
-	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; margin-top: 0px; }
-	h3 { font-size: 18px; font-family: 'Open Sans'; }
-	.heading { text-align: center; margin-bottom: 60px; }
-	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
-	.options_wrapper img { max-width: 100%; text-align: center; }
-	.options_wrapper > div { text-align: center; }
-	.options_wrapper p { font-size: 17px; margin-bottom: 20px; }
-	.options_wrapper button { font-size: 17px; }
-	.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+	<style>
+		html, .cnchi_app { height: 100%; }
+		body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
+		.header { display: none; }
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
+		h3 { font-size: 18px; font-family: 'Open Sans'; }
+		.heading { text-align: center; margin-bottom: 60px; }
+		.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+		.options_wrapper img { max-width: 100%; text-align: center; }
+		.options_wrapper > div { text-align: center; }
+		.options_wrapper p { font-size: 17px; margin-bottom: 20px; }
+		.options_wrapper button { font-size: 17px; }
+		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+	</style>
 {% endblock page_styles %}
 
 {% block main_content %}
-	<div class="grid-100 grid-parent">
+	<div class="grid-100 grid-parent content_wrapper et-page">
 		<div class="grid-100 heading">
 			<h1>What would you like to do?</h1>
 		</div>
@@ -58,15 +58,19 @@
 			}
 
 			initialize() {
+				//$('.content_wrapper').animateCss('flipInX');
+				$('.content_wrapper').animateCss('in-rotateUnfoldLeft');
 				this.register_event_handlers();
 			}
 
 			register_event_handlers() {
-				$('.btn_wrapper a').on('click', () => {
-					let lang = $('select').val();
-
-					cnchi.log(`${lang} language was selected`);
-					cnchi.emit_signal('language-selected', lang);
+				$('.try_it button').on('click', () => {
+					cnchi.log('"Try It" was selected. Sending signal to Cnchi..');
+					cnchi.emit_signal('tryit-selected');
+				});
+				$('.install_it button').on('click', () => {
+					cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
+					cnchi.emit_signal('installit-selected');
 				});
 			}
 		}

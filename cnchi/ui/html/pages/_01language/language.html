@@ -3,23 +3,25 @@
 {% from 'pages/_macros.html' import conditional_text %}
 
 {% block page_styles %}
-	html, .cnchi_app { height: 100%; }
-	body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
-	.header { display: none; }
-	h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align:center; font-weight: 400; margin-top: 0px; }
-	h3 { font-size: 18px; font-family: 'Open Sans'; }
-	.heading { text-align: center; }
-	.heading img { margin-bottom: 20px; max-width: 200px; }
-	.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
-	.language_selection { padding-top: 50px; padding-bottom: 50px; font-family: 'Open Sans'; }
-	.language_selection form { max-width: 100%; }
-	.valign-wrapper { width: 100%; height: 100%; text-align: center; }
-	.btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
-	.btn_wrapper i { font-size: 2.2rem; }
+	<style>
+		html, .cnchi_app { height: 100%; }
+		body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
+		.header { display: none; }
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
+		h3 { font-size: 18px; font-family: 'Open Sans'; }
+		.heading { text-align: center; }
+		.heading img { margin-bottom: 20px; max-width: 200px; }
+		.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+		.language_selection { padding-top: 50px; padding-bottom: 50px; font-family: 'Open Sans'; }
+		.language_selection form { max-width: 100%; }
+		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+		.btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
+		.btn_wrapper i { font-size: 2.2rem; }
+	</style>
 {% endblock page_styles %}
 
 {% block main_content %}
-	<div class="grid-100 grid-parent">
+	<div class="grid-100 grid-parent content_wrapper">
 		<div class="grid-100 heading">
 			<img src="{{ RESOURCES_DIR }}/images/overlay.png" alt="Antergos logo"/>
 			<h1>{{ _('Welcome To Antergos!') }}</h1>
@@ -41,7 +43,8 @@
 				</form>
 			</div>
 			<div class="grid-100 btn_wrapper">
-				<button id="continue_btn" aria-label="Continue" class="waves-effect waves-circle btn-floating btn-large waves-light pink accent-2"><i class="material-icons">forward</i></button>
+				<button id="continue_btn" aria-label="Continue" class="waves-effect waves-circle btn-floating btn-large waves-light pink accent-2">
+					<i class="material-icons">forward</i></button>
 			</div>
 		</div>
 	</div>
@@ -67,6 +70,7 @@
 			}
 
 			initialize() {
+				$('.content_wrapper').animateCss('in-rotateUnfoldLeft');
 				$('body').css({'background': '#383A41', 'opacity': 1});
 				$('select').material_select();
 
@@ -78,7 +82,10 @@
 					let lang = $('select').val();
 
 					cnchi.log(`${lang} language was selected`);
-					cnchi.emit_signal('language-selected', lang);
+
+					$('.content_wrapper').animateCss('out-moveToRightFade', () => {
+						cnchi.emit_signal('language-selected', lang);
+					});
 				});
 			}
 		}

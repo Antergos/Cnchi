@@ -39,10 +39,46 @@ html, body { padding: 0px; margin: 0px; background: transparent; }
 /* ============================================== *\
  * -->>> CUSTOM COLORS FOR WAVES ANIMATION <<<--- *
 \* ============================================== */
+
 .waves-effect.waves-pink .waves-ripple {
 	background-color: rgba(249, 89, 183, 0.65);
 }
 
 .waves-effect.waves-purple .waves-ripple {
 	background-color: rgba(121, 90, 255, 0.65);
+}
+
+
+
+/* ============================================== *\
+ * ------------->>> Animations <<<--------------- *
+\* ============================================== */
+
+.in-rotateUnfoldLeft {
+	-webkit-transform-origin: 100% 50%;
+	-webkit-animation: rotateUnfoldLeft .7s both ease;
+	transform-origin: 100% 50%;
+	animation: rotateUnfoldLeft .7s both ease;
+}
+
+.out-moveToRightFade {
+	-webkit-animation: moveToRightFade .7s ease both;
+	-moz-animation: moveToRightFade .7s ease both;
+	animation: moveToRightFade .7s ease both;
+}
+
+@-webkit-keyframes rotateUnfoldLeft {
+	from { opacity: 0; -webkit-transform: translateX(-100%) rotateY(-90deg); }
+}
+
+@keyframes rotateUnfoldLeft {
+	from { opacity: 0; transform: translateX(-100%) rotateY(-90deg); }
+}
+
+@-webkit-keyframes moveToRightFade {
+	to { opacity: 0.3; -webkit-transform: translateX(100%); }
+}
+
+@keyframes moveToRightFade {
+	to { opacity: 0.3; transform: translateX(100%); }
 }

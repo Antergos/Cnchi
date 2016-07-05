@@ -42,6 +42,22 @@ String.prototype.capitalize = function () {
 };
 
 
+/**
+ * jQuery plugin to make using animate.css library easier.
+ */
+$.fn.extend({
+	animateCss: function (animationName, callback) {
+		var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+		$(this).addClass(animationName).one(animationEnd, function () {
+			$(this).removeClass(animationName);
+			if (callback) {
+				callback();
+			}
+		});
+	}
+});
+
+
 class CnchiApp {
 
 	constructor() {
