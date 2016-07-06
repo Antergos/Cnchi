@@ -85,7 +85,8 @@ class HTMLPage(Page):
 
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()
-        self._tabs_list = [(t, False) for t in tabs]
+        excluded = ['language', 'welcome']
+        self._tabs_list = [(t, False) for t in tabs if t not in excluded]
 
     def _get_default_template_vars(self):
         return {'page_name': self.name}

@@ -74,7 +74,6 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self.widget.set_decorated(False)
         # self.widget.set_interactive_debugging(True)
         self.widget.set_app_paintable(True)
-        self.widget.set_titlebar(self._web_view)
 
     def _connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)

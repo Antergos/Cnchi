@@ -29,7 +29,7 @@
 from ui.html.pages._html_page import HTMLPage, json, Gtk
 
 
-class CheckPage(HTMLPage):
+class DesktopPage(HTMLPage):
     """
     The first page shown when the app starts.
 
@@ -38,7 +38,7 @@ class CheckPage(HTMLPage):
 
     """
 
-    def __init__(self, name='check', *args, **kwargs):
+    def __init__(self, name='desktop', *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.

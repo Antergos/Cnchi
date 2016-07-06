@@ -31,25 +31,30 @@
  *
  */
 
-html { padding: 1px; -webkit-app-region: drag}
-html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; -webkit-app-region: no-drag }
+html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; max-width: 100%; overflow: hidden; }
 
 
 /* ============================================== *\
  * ---------------->>> HEADER <<<---------------- *
 \* ============================================== */
 
+.header { color: #ffffff; padding: 0px;}
 .header_top { height: 70px; background-color: #2e66b9; }
-.header_bottom { height: 58px; background-color: #3b70d0; }
+.header_bottom { height: 58px; background-color: #3b70d0; padding: 0px; }
+.header_bottom .row, .header_bottom .col { padding: 0px; margin: 0px; }
+.header_bottom .tabs, .header_bottom .tab { background-color: transparent; height: 58px; line-height: 58px; }
+.header_bottom .tabs a, .header_bottom .tabs a:hover { color: #ffffff; }
+.header_bottom .tabs .tab a:hover, .header_bottom .tabs .tab a.active { background-color: #3f7ae4; }
+.header_bottom .tabs .indicator { display: none; }
+.header .progress { height: 3px; margin: 0px; }
 
 
-/* ============================================== *\
- * --------->>> MAIN CONTENT WRAPPER <<<--------- *
-\* ============================================== */
+	/* ============================================== *\
+	 * --------->>> MAIN CONTENT WRAPPER <<<--------- *
+	\* ============================================== */
 
 .main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
 
-.heading { text-align: center; margin-bottom: 60px; }
 
 /* ============================================== *\
  * -->>> CUSTOM COLORS FOR WAVES ANIMATION <<<--- *

@@ -114,7 +114,7 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         return '' if not res else res[0]
 
     def get_page_names(self):
-        return [n[3:] for n in self._page_dirs]
+        return [n[3:].replace('_', ' ') for n in self._page_dirs]
 
     def get_page_object(self, page_identifier):
         """ Get a page object by name or by index """

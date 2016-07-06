@@ -31,6 +31,10 @@ __all__ = ['ALL_PAGES']
 from ._01language.language import LanguagePage
 from ._02welcome.welcome import WelcomePage
 from ._03check.check import CheckPage
+from ._04location.location import LocationPage
+from ._05desktop.desktop import DesktopPage
+from ._06features.features import FeaturesPage
+from ._07disk_setup.disk_setup import DiskSetupPage
 
 
 class AllPages:
@@ -40,4 +44,8 @@ ALL_PAGES = AllPages()
 ALL_PAGES.language = LanguagePage
 ALL_PAGES.welcome = WelcomePage
 ALL_PAGES.check = CheckPage
+ALL_PAGES.location = LocationPage
+ALL_PAGES.desktop = DesktopPage
+ALL_PAGES.features = FeaturesPage
+ALL_PAGES.disk_setup = DiskSetupPage
 
