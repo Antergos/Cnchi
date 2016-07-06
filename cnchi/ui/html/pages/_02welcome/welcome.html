@@ -7,6 +7,7 @@
  #}
 {% block page_styles %}
 	<style>
+		html { background: #000000; }
 		html, .cnchi_app { height: 100%; }
 
 		body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
@@ -36,7 +37,7 @@
 
 
 {#
- # Main Content (Appears below the header)
+ # Page Content (Appears below the header)
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper et-page">
@@ -67,7 +68,7 @@
 	<script>
 		let _page = null;
 
-		class WelcomePage extends CnchiPage {
+		class {{ page_name|capitalize() }}Page extends CnchiPage {
 			constructor() {
 				if (null !== _page) {
 					return _page;
@@ -84,7 +85,6 @@
 
 			initialize() {
 				//$('.content_wrapper').animateCss('flipInX');
-				$('.content_wrapper').animateCss('in-rotateUnfoldLeft');
 				this.register_event_handlers();
 			}
 
@@ -100,7 +100,10 @@
 			}
 		}
 
-		new WelcomePage();
+		$(window).on('page-loaded', () => {
+			new {{ page_name|capitalize() }}Page();
+		});
+		$('.content_wrapper').animateCss('magictime swashIn');
 
 	</script>
 {% endblock page_script %}

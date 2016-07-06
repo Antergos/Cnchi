@@ -29,11 +29,6 @@
 
 """ Main Cnchi Window """
 
-import logging
-import multiprocessing
-import os
-import sys
-
 from .base_widgets import (
     Gtk,
     Gdk,
@@ -64,9 +59,21 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
         self.create_custom_signal('on-js')
 
+        self._apply_window_settings()
+        self._connect_signals()
+
+    def _apply_window_settings(self):
+        visual = self._main_window.widget.get_screen().get_rgba_visual()
+
+        if visual:
+            self.widget.set_visual(visual)
+        else:
+            self.logger.error('Unable to set transparent background!')
+
         self.widget.set_size_request(1120, 721)
-        self.widget.set_position(Gtk.WindowPosition.CENTER)
         self.widget.set_decorated(False)
+        # self.widget.set_interactive_debugging(True)
+        self.widget.set_app_paintable(True)
 
     def _connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)
@@ -82,6 +89,9 @@ class MainWindow(BaseWidget, metaclass=Singleton):
     def delete_event_cb(self, *args):
         self.widget.emit('__close_app', *args)
 
+    def emit(self, signal_name, callback):
+        self.widget.emit(signal_name, callback)
+
     def toggle_maximize(self):
         if self.widget.is_maximized():
             self.widget.unmaximize()
@@ -91,7 +101,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
             self._controller.emit_js('window-maximized')
 
     def toggle_fullscreen(self):
-        if self._state.get("fullscreen", False):
+        if self._state.get('fullscreen', False):
             self.widget.unfullscreen()
             self._controller.emit_js('window-unfullscreen')
         else:
@@ -99,6 +109,6 @@ class MainWindow(BaseWidget, metaclass=Singleton):
             self._controller.emit_js('window-fullscreen')
 
     def window_state_event_cb(self, window, event, *args):
-        self._state["maximized"] = event.new_window_state & Gdk.WindowState.MAXIMIZED
-        self._state["fullscreen"] = event.new_window_state & Gdk.WindowState.FULLSCREEN
+        self._state['maximized'] = event.new_window_state & Gdk.WindowState.MAXIMIZED
+        self._state['fullscreen'] = event.new_window_state & Gdk.WindowState.FULLSCREEN
 

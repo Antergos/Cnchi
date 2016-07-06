@@ -52,10 +52,6 @@ import logging.handlers
 import gettext
 import locale
 import uuid
-import gi
-
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, GObject
 
 import misc.extra as misc
 import show_message as show
@@ -70,16 +66,16 @@ except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
 try:
-    from _base_object import BaseObject, Gtk
+    from _base_object import BaseObject, Gio, Gtk
     from ui.controller import Controller
 except ImportError as err:
-    msg = "Cannot create Cnchi UI Controller: {0}".format(err.msg)
+    msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
     logging.error(msg)
     sys.exit(1)
 
 # Useful vars for gettext (translations)
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
+APP_NAME = 'cnchi'
+LOCALE_DIR = '/usr/share/locale'
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.18.0"
@@ -88,7 +84,9 @@ FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
 
 class CnchiApp(BaseObject):
-    """ Main Cnchi App class """
+    """ Cnchi Installer """
+
+    TMP_RUNNING = '/tmp/.setup-running'
 
     def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
 
@@ -96,31 +94,35 @@ class CnchiApp(BaseObject):
 
         self.widget = Gtk.Application(application_id='com.antergos.cnchi', flags=FLAGS)
 
-        self.widget.connect('activate', self.activate)
-        self.widget.connect('activate', self.activate)
-
-        self.TMP_RUNNING = "/tmp/.setup-running"
+        self.widget.connect('activate', self.activate_cb)
 
         # Command line options
         self.cmd_line = cmd_line
 
-    def activate(self, app):
-        # Make sure we have administrative privileges
+    def _pre_activation_checks(self):
+        can_activate = True
 
+        # Make sure we have administrative privileges
         if os.getuid() != 0 and not self.cmd_line.z_hidden:
+            can_activate = False
             msg = _('This installer must be run with administrative privileges, '
                     'and cannot continue without them.')
             show.error(None, msg)
-            return
 
         # Make sure we're not already running
         if self.already_running():
+            can_activate = False
             msg = _("You cannot run two instances of this installer.\n\n"
                     "If you are sure that the installer is not already running\n"
                     "you can run this installer using the --force option\n"
                     "or you can manually delete the offending file.\n\n"
                     "Offending file: '{0}'").format(self.TMP_RUNNING)
             show.error(None, msg)
+
+        return can_activate
+
+    def activate_cb(self, app):
+        if not self._pre_activation_checks:
             return
 
         #with open(self.TMP_RUNNING, "w") as tmp_file:
@@ -132,6 +134,8 @@ class CnchiApp(BaseObject):
         controller = Controller()
 
         self.widget.add_window(self._main_window.widget)
+        self._main_window.widget.show_all()
+        self._main_window.widget.set_position(Gtk.WindowPosition.CENTER)
 
     def already_running(self):
         """ Check to see if we're already running """

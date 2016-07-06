@@ -121,40 +121,21 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         self._web_view.set_settings(self._wv_parts.settings)
 
-    def _set_background_color_for_web_view(self, color='rgba(0,0,0,0)'):
+    def _set_background_color_for_web_view(self, color='rgba(56,58,65,1)'):
         _color = Gdk.RGBA()
         _color.parse(color)
 
-        if 'rgba(0,0,0,0)' == color:
-            self._set_transparent_background(_color)
+        self._web_view.set_background_color(_color)
+        # self._set_transparent_background()
 
-    def _set_transparent_background(self, _color):
-        visual = self._main_window.widget.get_screen().get_rgba_visual()
+    def _set_transparent_background(self):
+        style_provider = Gtk.CssProvider()
+        data = 'window, .main_window {\nbackground-color: rgba(56, 58, 65, 1);\n}\n'
 
-        if not visual:
-            self.logger.error('Unable to set transparent background!')
+        style_provider.load_from_data(data.encode('utf-8'))
 
-        self._web_view.override_background_color(Gtk.StateFlags.ACTIVE, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.BACKDROP, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.DIR_LTR, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.DIR_RTL, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.FOCUSED, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.INCONSISTENT, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.INSENSITIVE, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.NORMAL, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.PRELIGHT, _color)
-        self._web_view.override_background_color(Gtk.StateFlags.SELECTED, _color)
-        
-        self._main_window.widget.set_visual(visual)
-        self._main_window.widget.set_app_paintable(True)
-
-        transparent_window_style_provider = Gtk.CssProvider()
-        data = 'GtkWindow {\nbackground-color: rgba(0, 0, 0, 0);\nbackground-image: none;\n}\n'
-
-        transparent_window_style_provider.load_from_data(data.encode('utf-8'))
-
-        self._web_view.get_style_context().add_provider(
-            transparent_window_style_provider,
+        self._main_window.widget.get_style_context().add_provider(
+            style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 

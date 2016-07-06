@@ -30,7 +30,6 @@
 
 import json
 import sys
-import logging
 
 from ui.base_widgets import BaseObject, Singleton, WebKit2
 from ui.main_window import MainWindow
@@ -44,7 +43,7 @@ class Controller(BaseObject, metaclass=Singleton):
 
     Class Attributes:
         _emit_js_tpl (str): Javascript string used to emit signals in web_view.
-        See also `BaseWidget.__doc__`
+        See also `BaseObject.__doc__`
 
     """
 
@@ -60,9 +59,6 @@ class Controller(BaseObject, metaclass=Singleton):
         main_window.widget.add(self._web_view)
         self._initialize_pages()
         self._connect_signals_to_callbacks()
-
-        for widget in [self._web_view, main_window.widget]:
-            widget.show_all()
 
     def _connect_signals_to_callbacks(self):
         self._main_window.widget.connect('on-js', self.js_log_message_cb)

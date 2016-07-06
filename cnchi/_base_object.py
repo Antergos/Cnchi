@@ -31,6 +31,8 @@ import os
 
 import gi
 
+# Once 3.22 is released we will be able to do this:
+# gi.require_versions({'Gtk': '3.0', 'WebKit2': '4.0'})
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
 from gi.repository import Gdk, GLib, Gio, GObject, Gtk, WebKit2

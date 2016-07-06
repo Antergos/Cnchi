@@ -43,7 +43,7 @@ String.prototype.capitalize = function () {
 
 
 /**
- * jQuery plugin to make using animate.css library easier.
+ * jQuery plugin to make using animate.css library more convenient.
  */
 $.fn.extend({
 	animateCss: function (animationName, callback) {
