@@ -70,7 +70,7 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
             self._find_page_directories()
 
-            self.page_names = self._get_page_names()
+            self.page_names = self.get_page_names()
 
         self.logger.debug([self.PAGES_DIR, self.all_pages])
 
@@ -79,9 +79,6 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
             _dirs = os.listdir(os.path.join(self.UI_DIR, 'html/pages'))
             _page_dirs = [d for d in _dirs if '_' in d and '__' not in d and '.' not in d]
             self._page_dirs.extend(_page_dirs)
-
-    def _get_page_names(self):
-        return [n[3:] for n in self._page_dirs]
 
     def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
@@ -115,6 +112,9 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         res = [d for d in self._page_dirs if name in d]
 
         return '' if not res else res[0]
+
+    def get_page_names(self):
+        return [n[3:] for n in self._page_dirs]
 
     def get_page_object(self, page_identifier):
         """ Get a page object by name or by index """

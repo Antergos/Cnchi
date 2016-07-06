@@ -74,6 +74,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self.widget.set_decorated(False)
         # self.widget.set_interactive_debugging(True)
         self.widget.set_app_paintable(True)
+        self.widget.set_titlebar(self._web_view)
 
     def _connect_signals(self):
         self.widget.connect('delete-event', self.delete_event_cb)
@@ -95,18 +96,18 @@ class MainWindow(BaseWidget, metaclass=Singleton):
     def toggle_maximize(self):
         if self.widget.is_maximized():
             self.widget.unmaximize()
-            self._controller.emit_js('window-unmaximized')
+            self._controller.emit_js('trigger_event', 'window-unmaximized')
         else:
             self.widget.maximize()
-            self._controller.emit_js('window-maximized')
+            self._controller.emit_js('trigger_event', 'window-maximized')
 
     def toggle_fullscreen(self):
         if self._state.get('fullscreen', False):
             self.widget.unfullscreen()
-            self._controller.emit_js('window-unfullscreen')
+            self._controller.emit_js('trigger_event', 'window-unfullscreen')
         else:
             self.widget.fullscreen()
-            self._controller.emit_js('window-fullscreen')
+            self._controller.emit_js('trigger_event', 'window-fullscreen')
 
     def window_state_event_cb(self, window, event, *args):
         self._state['maximized'] = event.new_window_state & Gdk.WindowState.MAXIMIZED

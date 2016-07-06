@@ -133,9 +133,9 @@ class CnchiApp(BaseObject):
 
         controller = Controller()
 
+        self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.widget.add_window(self._main_window.widget)
         self._main_window.widget.show_all()
-        self._main_window.widget.set_position(Gtk.WindowPosition.CENTER)
 
     def already_running(self):
         """ Check to see if we're already running """

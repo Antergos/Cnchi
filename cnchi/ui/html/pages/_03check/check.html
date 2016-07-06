@@ -7,28 +7,11 @@
  #}
 {% block page_styles %}
 	<style>
-		html { background: #000000; }
-		html, .cnchi_app { height: 100%; }
-
-		body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
-
-		.header { display: none; }
+		body, html, .cnchi_app { background: #FFFFFF; color: #32373c; font-weight: 400; height: 100%; }
 
 		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
 
-		h3 { font-size: 18px; font-family: 'Open Sans'; }
-
-		.heading { text-align: center; margin-bottom: 60px; }
-
-		.options_wrapper img { max-width: 100%; text-align: center; }
-
-		.options_wrapper > div { text-align: center; }
-
-		.options_wrapper p { font-size: 17px; margin-bottom: 20px; }
-
-		.options_wrapper button { font-size: 17px; }
-
-		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+		h3 { font-size: 18px; font-family: 'Open Sans', sans-serif; }
 	</style>
 {% endblock page_styles %}
 
@@ -40,7 +23,7 @@
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper et-page">
 		<div class="grid-100 heading">
-			<h1>What would you like to do?</h1>
+			<h3>{{ _('For best results, please ensure the following:') }}</h3>
 		</div>
 		<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
 			<div class="grid-50 try_it">
@@ -82,6 +65,7 @@
 			}
 
 			initialize() {
+				//$('.content_wrapper').animateCss('flipInX');
 				this.register_event_handlers();
 			}
 
@@ -91,10 +75,8 @@
 					cnchi.emit_signal('tryit-selected');
 				});
 				$('.install_it button').on('click', () => {
-					$('.content_wrapper').animateCss('magictime holeOut', () => {
-						cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
-						cnchi.emit_signal('installit-selected');
-					});
+					cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
+					cnchi.emit_signal('installit-selected');
 				});
 			}
 		}
@@ -102,8 +84,6 @@
 		$(window).on('page-loaded', () => {
 			new {{ page_name|capitalize() }}Page();
 		});
-
-		// Putting this here so that it fires ASAP otherwise the animation looks glitchy.
 		$('.content_wrapper').animateCss('magictime swashIn');
 
 	</script>

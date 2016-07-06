@@ -26,10 +26,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.html.pages._html_page import HTMLPage
+from ui.html.pages._html_page import HTMLPage, json, Gtk
 
 
-class UpdatePage(HTMLPage):
+class CheckPage(HTMLPage):
     """
     The first page shown when the app starts.
 
@@ -38,7 +38,7 @@ class UpdatePage(HTMLPage):
 
     """
 
-    def __init__(self, name='update', *args, **kwargs):
+    def __init__(self, name='check', *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
@@ -50,10 +50,23 @@ class UpdatePage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.signals = []
+
+        self._create_signals()
+        self._connect_signals()
+
+    def _connect_signals(self):
+        pass
+
+    def _get_default_template_vars(self):
+        signals = json.dumps(self.signals)
+        return {'page_name': self.name, 'signals': signals}
+
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        raise NotImplementedError
+        self._set_active_tab()
+        # self._main_window.widget.set_position(Gtk.WindowPosition.CENTER)
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        raise NotImplementedError
+        pass

@@ -30,6 +30,7 @@ __all__ = ['ALL_PAGES']
 
 from ._01language.language import LanguagePage
 from ._02welcome.welcome import WelcomePage
+from ._03check.check import CheckPage
 
 
 class AllPages:
@@ -38,4 +39,5 @@ class AllPages:
 ALL_PAGES = AllPages()
 ALL_PAGES.language = LanguagePage
 ALL_PAGES.welcome = WelcomePage
+ALL_PAGES.check = CheckPage
 

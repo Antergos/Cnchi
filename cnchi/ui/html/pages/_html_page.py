@@ -27,11 +27,11 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from gettext import gettext
+import json
 
 from jinja2 import Environment, FileSystemLoader, PrefixLoader
 
-from ui.base_widgets import DataObject, SharedData, Page
+from ui.base_widgets import DataObject, SharedData, Page, Gtk
 
 
 class HTMLPage(Page):
@@ -45,7 +45,8 @@ class HTMLPage(Page):
     """
 
     _tpl = SharedData('_tpl')
-    _tpl_setup_running = SharedData('_tpl_setup_running')
+    _tpl_setup_ran = SharedData('_tpl_setup_running')
+    _tabs_list = SharedData('_tabs_list')
 
     def __init__(self, name='HTMLPage', tpl_engine='jinja', *args, **kwargs):
         """
@@ -62,8 +63,8 @@ class HTMLPage(Page):
 
         self.signals = []
 
-        if self._tpl is None and self._tpl_setup_running is None:
-            self._tpl_setup_running = True
+        if self._tpl is None and self._tpl_setup_ran is None:
+            self._tpl_setup_ran = True
             self._initialize_template_engine()
 
         if self._pages_data is None:
@@ -71,12 +72,20 @@ class HTMLPage(Page):
             self._pages_data = DataObject()
             self._pages_data.has_data = False
 
+        if self._tabs_list is None:
+            self.logger.debug('Generating main navigation tabs list..')
+            self._generate_tabs_list()
+
     def _create_signals(self):
         for _signal in self.signals:
             self._main_window.create_custom_signal(_signal)
 
             if _signal not in self.allowed_signals:
                 self.allowed_signals.append(_signal)
+
+    def _generate_tabs_list(self):
+        tabs = self._pages_helper.get_page_names()
+        self._tabs_list = [(t, False) for t in tabs]
 
     def _get_default_template_vars(self):
         return {'page_name': self.name}
@@ -92,6 +101,9 @@ class HTMLPage(Page):
         self._tpl.add_extension('jinja2.ext.do')
         self._tpl.add_extension('jinja2.ext.i18n')
         self._tpl.install_null_translations(newstyle=True)
+
+    def _set_active_tab(self):
+        self._tabs_list = [(t, self.name == t) for t in self._tabs_list]
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """

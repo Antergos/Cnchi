@@ -25,7 +25,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-html, body { padding: 0px; margin: 0px; }
+
+/*
+ * These styles target multiple pages.
+ *
+ */
+
+html { padding: 1px; -webkit-app-region: drag}
+html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; -webkit-app-region: no-drag }
 
 
 /* ============================================== *\
@@ -35,6 +42,14 @@ html, body { padding: 0px; margin: 0px; }
 .header_top { height: 70px; background-color: #2e66b9; }
 .header_bottom { height: 58px; background-color: #3b70d0; }
 
+
+/* ============================================== *\
+ * --------->>> MAIN CONTENT WRAPPER <<<--------- *
+\* ============================================== */
+
+.main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
+
+.heading { text-align: center; margin-bottom: 60px; }
 
 /* ============================================== *\
  * -->>> CUSTOM COLORS FOR WAVES ANIMATION <<<--- *
@@ -49,36 +64,7 @@ html, body { padding: 0px; margin: 0px; }
 }
 
 
-
 /* ============================================== *\
  * ------------->>> Animations <<<--------------- *
 \* ============================================== */
 
-.in-rotateUnfoldLeft {
-	-webkit-transform-origin: 100% 50%;
-	-webkit-animation: rotateUnfoldLeft .7s both ease;
-	transform-origin: 100% 50%;
-	animation: rotateUnfoldLeft .7s both ease;
-}
-
-.out-moveToRightFade {
-	-webkit-animation: moveToRightFade .7s ease both;
-	-moz-animation: moveToRightFade .7s ease both;
-	animation: moveToRightFade .7s ease both;
-}
-
-@-webkit-keyframes rotateUnfoldLeft {
-	from { opacity: 0; -webkit-transform: translateX(-100%) rotateY(-90deg); }
-}
-
-@keyframes rotateUnfoldLeft {
-	from { opacity: 0; transform: translateX(-100%) rotateY(-90deg); }
-}
-
-@-webkit-keyframes moveToRightFade {
-	to { opacity: 0.3; -webkit-transform: translateX(100%); }
-}
-
-@keyframes moveToRightFade {
-	to { opacity: 0.3; transform: translateX(100%); }
-}
