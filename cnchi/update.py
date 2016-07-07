@@ -27,7 +27,7 @@
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-""" Module to update Cnchi """
+""" Update Module """
 
 import json
 import hashlib
@@ -35,9 +35,12 @@ import os
 import logging
 import shutil
 
-import misc.extra as misc
-
 import requests
+
+import misc.extra as misc
+from info import CNCHI_VERSION
+from _base_object import BaseObject
+from installation.pacman.pac import Pac
 
 _update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
 _master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
@@ -47,60 +50,23 @@ _src_dir = os.path.dirname(__file__) or '.'
 _base_dir = os.path.join(_src_dir, "..")
 
 
-def get_md5_from_file(filename):
-    with open(filename, 'rb') as myfile:
-        buf = myfile.read()
-        md5 = get_md5_from_text(buf)
-    return md5
+
+class Updater(BaseObject):
+
+    def __init__(self, name='update', *args, **kwargs):
+        super().__init__(name=name, *args, **kwargs)
+
+        self.update_available = False
+        self.repo_version = ''
+        self.pacman = Pac()
+        self.alpm = self.pacman.get_handle()
+
+        self.pacman.refresh()
+        self._compare_versions()
+
+    def _compare_versions(self):
 
 
-def get_md5_from_text(text):
-    """ Gets md5 hash from str """
-    md5 = hashlib.md5()
-    md5.update(text)
-    return md5.hexdigest()
-
-
-class Updater(object):
-    def __init__(self, local_cnchi_version, force_update=False):
-        self.remote_version = ""
-        self.local_cnchi_version = local_cnchi_version
-        self.md5s = {}
-
-        self.force = force_update
-
-        if not os.path.exists(_update_info):
-            logging.debug(
-                "Cannot not find %s file. "
-                "Cnchi will not be able to update itself.",
-                _update_info)
-            return
-
-        # Get local info (local update.info)
-        with open(_update_info, "r") as local_update_info:
-            response = local_update_info.read()
-            if response:
-                update_info = json.loads(response)
-                self.local_files = update_info['files']
-
-        try:
-            req = requests.get(_update_info_url, stream=True, timeout=5)
-        except requests.exceptions.ConnectionError as conn_error:
-            logging.error(conn_error)
-            return
-
-        if req.status_code == requests.codes.ok:
-            txt = ""
-            for chunk in req.iter_content(1024):
-                if chunk:
-                    txt += chunk.decode()
-            if txt:
-                update_info = json.loads(txt)
-                self.remote_version = update_info['version']
-                for remote_file in update_info['files']:
-                    self.md5s[remote_file['name']] = remote_file['md5']
-                logging.info("Internet version: %s", self.remote_version)
-                self.force = force_update
 
     def is_remote_version_newer(self):
         """ Returns true if the Internet version of Cnchi is
@@ -110,7 +76,7 @@ class Updater(object):
             return False
 
         # Version is always: x.y.z
-        local_ver = self.local_cnchi_version.split(".")
+        local_ver = self.local_version.split(".")
         remote_ver = self.remote_version.split(".")
 
         local = [int(local_ver[0]), int(local_ver[1]), int(local_ver[2])]

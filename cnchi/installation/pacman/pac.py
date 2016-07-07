@@ -58,7 +58,7 @@ except ImportError as err:
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
 
-class Pac(object):
+class Pac:
     """ Communicates with libalpm using pyalpm """
 
     def __init__(self, conf_path="/etc/pacman.conf", callback_queue=None):

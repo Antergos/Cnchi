@@ -71,7 +71,9 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         self._controller.exit_app()
 
     def install_it_selected_cb(self, *args):
-        self.go_to_next_page()
+        # Have we been updated to the latest version?
+        self._do_update_check()
+        #self.go_to_next_page()
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
