@@ -381,7 +381,7 @@ class Pac(object):
                         level=2,
                         style='sync')
         else:
-            repos = dict((database.name, database) for database in self.handle.get_syncdbs())
+            repos = OrderedDict((database.name, database) for database in self.handle.get_syncdbs())
             for pkg_name in pkg_names:
                 result_ok, pkg = self.find_sync_package(pkg_name, repos)
                 if result_ok:
@@ -396,7 +396,7 @@ class Pac(object):
 
     def get_package_info(self, pkg_name):
         """ Get information about packages like pacman -Si """
-        repos = dict((database.name, database) for database in self.handle.get_syncdbs())
+        repos = OrderedDict((database.name, database) for database in self.handle.get_syncdbs())
         result_ok, pkg = self.find_sync_package(pkg_name, repos)
         if result_ok:
             info = pkginfo.get_pkginfo(pkg, level=2, style='sync')
