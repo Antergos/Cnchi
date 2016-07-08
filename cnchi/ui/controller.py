@@ -67,17 +67,20 @@ class Controller(BaseObject, metaclass=Singleton):
         self._pages_helper = PagesHelper()
         self.set_current_page(0)
 
-    def emit_js(self, name, *args):
+    def do_restart(self):
+        pass
+
+    def emit_js(self, cmd, *args):
         """
-        Trigger and pass data to a JavaScript event in the web_view.
+        Pass data to a JavaScript handler in the web_view.
 
         Args:
-            name (str): The name of the JavaScript event to trigger.
-            *args (str): Arguments to pass to the event handler (optional).
+            cmd (str): The name of the JavaScript function to call.
+            *args (str): Arguments to pass to the function (optional).
 
         """
 
-        msg = json.dumps([name] + list(args))
+        msg = json.dumps([cmd] + list(args))
         self._web_view.run_javascript(self._emit_js_tpl.format(msg), None, None, None)
 
     def exit_app(self):
@@ -106,4 +109,18 @@ class Controller(BaseObject, metaclass=Singleton):
 
         page.prepare()
         self._web_view.load_uri(page_uri)
+
+    def trigger_js_event(self, event_name, *args):
+        """
+        Trigger a JavaScript event and optionally pass data to handler in the web_view.
+
+        Args:
+            event_name (str): The name of the JavaScript event to trigger.
+            *args (str): Arguments to pass to the event handlers (optional).
+
+        """
+
+        self.emit_js( 'trigger_event', event_name, *args)
+
+
 

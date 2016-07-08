@@ -403,6 +403,22 @@ class Pac:
             info = {}
         return info
 
+    def get_packages_with_available_update(self):
+        if self.handle is None:
+            logging.error("alpm is not initialised")
+            raise pyalpm.error
+
+        to_upgrade = []
+        transaction = self.init_transaction()
+
+        if transaction:
+            transaction.sysupgrade(False)
+            to_upgrade.extend(transaction.to_add + transaction.to_remove)
+
+            transaction.release()
+
+        return to_upgrade
+
     def queue_event(self, event_type, event_text=""):
         """ Queues events to the event list in the GUI thread """
 

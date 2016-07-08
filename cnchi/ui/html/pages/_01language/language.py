@@ -58,7 +58,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         super().__init__(name=name, *args, **kwargs)
 
         self.languages = []
-        self.signals = ['language-selected']
+        self.signals.extend(['language-selected'])
         self.selected_language = None
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
@@ -71,6 +71,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         self._connect_signals()
 
     def _connect_signals(self):
+        super()._connect_signals()
         self._main_window.connect('language-selected', self.language_selected_cb)
 
     def _get_default_template_vars(self):

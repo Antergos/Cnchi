@@ -31,6 +31,7 @@ import json
 
 from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
+from updater import Updater
 
 
 class WelcomePage(HTMLPage, metaclass=Singleton):
@@ -54,26 +55,29 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals = ['tryit-selected', 'installit-selected']
+        self.signals.extend(['tryit-selected', 'installit-selected', 'do-update-check',
+                             'update-available', 'update-result-ready', 'do-restart'])
 
         self._create_signals()
         self._connect_signals()
 
     def _connect_signals(self):
+        super()._connect_signals()
         self._main_window.connect('tryit-selected', self.try_it_selected_cb)
-        self._main_window.connect('installit-selected', self.install_it_selected_cb)
+        self._main_window.connect('installit-selected', self.go_to_next_page)
+        self._main_window.connect('do-update-check', self.do_update_check)
+        self._main_window.connect('do-restart', self._controller.do_restart)
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         return {'page_name': self.name, 'signals': signals}
 
+    def do_update_check(self):
+        updater = Updater()
+        updater.do_update_check()
+
     def try_it_selected_cb(self, *args):
         self._controller.exit_app()
-
-    def install_it_selected_cb(self, *args):
-        # Have we been updated to the latest version?
-        self._do_update_check()
-        #self.go_to_next_page()
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

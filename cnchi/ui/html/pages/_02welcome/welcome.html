@@ -29,6 +29,8 @@
 		.options_wrapper button { font-size: 17px; }
 
 		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+
+		.hideme { display: none; }
 	</style>
 {% endblock page_styles %}
 
@@ -38,11 +40,34 @@
  # Page Content (Appears below the header)
  #}
 {% block main_content %}
-	<div class="grid-100 grid-parent content_wrapper et-page">
+	<div class="grid-100 grid-parent content_wrapper">
 		<div class="grid-100 heading">
-			<h1>What would you like to do?</h1>
+			<h1>{{ _('Installer Update') }}</h1>
+			<h3>{{ _('Checking for the latest installer version...') }}</h3>
 		</div>
-		<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
+		<div class="grid-50 prefix-25 suffix-25 grid-parent options_wrapper">
+			<div class="progress active">
+				<div class="indeterminate"></div>
+			</div>
+			<div class="preloader-wrapper hideme">
+				<div class="spinner-layer">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="grid-100 heading hideme">
+			<h1>{{ _('What would you like to do?') }}</h1>
+		</div>
+		<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper hideme">
 			<div class="grid-50 try_it">
 				<img src="{{ RESOURCES_DIR }}/images/try-it.svg" width="200" alt="Icon for 'Try It' option"/>
 				<p id="tryit_description">{{ _('Try Antergos without making any changes to your system.') }}</p>
@@ -83,19 +108,57 @@
 
 			initialize() {
 				this.register_event_handlers();
+				$('update_check').fadeIn();
+			}
+
+			installit_button_clicked_cb() {
+				$('.content_wrapper').animateCss('magictime holeOut', () => {
+					cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
+					cnchi.emit_signal('installit-selected');
+				});
 			}
 
 			register_event_handlers() {
-				$('.try_it button').on('click', () => {
-					cnchi.log('"Try It" was selected. Sending signal to Cnchi..');
-					cnchi.emit_signal('tryit-selected');
-				});
-				$('.install_it button').on('click', () => {
-					$('.content_wrapper').animateCss('magictime holeOut', () => {
-						cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
-						cnchi.emit_signal('installit-selected');
-					});
-				});
+				$('.try_it button').on('click', this.tryit_button_clicked_cb);
+				$('.install_it button').on('click', this.installit_button_clicked_cb);
+				$(window).on('update-available', this.update_available_cb());
+				$(window).on('update-result-ready', this.update_result_ready_cb);
+			}
+
+			tryit_button_clicked_cb() {
+				cnchi.log('"Try It" was selected. Sending signal to Cnchi..');
+				cnchi.emit_signal('tryit-selected');
+			}
+
+			update_available_cb() {
+				$('h3').not('.hideme h3').fadeOut().text('{{ _('An installer update is avaialble. Please wait while the update is applied.') }}').fadeIn();
+				$('.progress.active, .preloader-wrapper').toggleClass('hideme active');
+			}
+
+			update_result_ready_cb(data) {
+				$('.preloader-wrapper').toggleClass('hideme active');
+
+				if (true === data.result && true === data.restart) {
+					$('h1').not('.hideme h1').fadeOut().text('{{ _('Update Complete.') }}').fadeIn();
+					$('h3').not('.hideme h3').fadeOut().text('{{ _('Restarting the installer. One moment..') }}').fadeIn();
+					$('.progress').removeClass('hideme active');
+
+					setTimeout(() => {
+						cnchi.emit_signal('do-restart');
+					}, 2500);
+
+
+				} else if (true === data.result) {
+					$('h1').not('.hideme h1').fadeOut().text('{{ _('Update Check Complete') }}').fadeIn();
+					$('h3').not('.hideme h3').fadeOut().text('{{ _('You are using the latest version and can proceed with your installation!') }}').fadeIn();
+
+					setTimeout(() => {
+						$('.heading, .option_wrapper').toggleClass('hideme');
+					}, 2500);
+
+				} else {
+					// Either the update check or the update itself failed.
+				}
 			}
 		}
 
@@ -104,7 +167,7 @@
 		});
 
 		// Putting this here so that it fires ASAP otherwise the animation looks glitchy.
-		$('.content_wrapper').animateCss('magictime swashIn');
+		//$('.content_wrapper').animateCss('magictime swashIn');
 
 	</script>
 {% endblock page_script %}

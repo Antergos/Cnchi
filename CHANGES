@@ -1,3 +1,4 @@
+[2016-07-06 22:53:39 -0500]  missed these two instances where we were not retaining the order of..  Dustin Falgout  {e50567b}
 [2016-07-06 22:50:00 -0500]  working on update check                                                Dustin Falgout  {0be8fd5}
 [2016-07-06 07:45:51 -0500]  yep.. more progress                                                    Dustin Falgout  {38ba354}
 [2016-07-06 05:41:43 -0500]  a bit more progress                                                    Dustin Falgout  {f5fca81}
