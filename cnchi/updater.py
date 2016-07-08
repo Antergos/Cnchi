@@ -26,29 +26,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
 """ Update Module """
 
-import json
-import hashlib
 import os
-import logging
-import shutil
+from threading import Thread
 
-import requests
-
-import misc.extra as misc
-from info import CNCHI_VERSION
-from _base_object import BaseObject
+from _base_object import BaseObject, GLib
 from installation.pacman.pac import Pac
-
-_update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
-_master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
-_update_info = "/usr/share/cnchi/update.info"
-
-_src_dir = os.path.dirname(__file__) or '.'
-_base_dir = os.path.join(_src_dir, "..")
-
 
 
 class Updater(BaseObject):
@@ -57,11 +41,23 @@ class Updater(BaseObject):
         super().__init__(name=name, *args, **kwargs)
 
         self.repo_version = ''
+        self.pacman = None
+
+
+    def _emit_signal(self, signal_name, *args):
+        self._controller.trigger_js_event(signal_name, *args)
+
+    def _initialize_alpm(self):
         self.pacman = Pac()
 
     def is_repo_version_newer(self):
+        if self.pacman is None:
+            self._initialize_alpm()
+
         self.pacman.refresh()
+
         pkg_objs = self.pacman.get_packages_with_available_update()
+
         return [p for p in pkg_objs if p and 'cnchi' == p.name]
 
     def is_remote_version_newer(self, remote_version, local_version):
@@ -94,10 +90,22 @@ class Updater(BaseObject):
         restart = False
 
         if self.is_repo_version_newer():
-            self._controller.trigger_js_event('update-available')
+            GLib.idle_add(self._emit_signal, 'update-available')
             result = self.pacman.install(['cnchi']) > -1
             restart = result
 
         res = dict(result=result, restart=restart)
 
-        self._controller.trigger_js_event('update-result-ready', res)
+        GLib.idle_add(self._emit_signal, 'update-result-ready', res)
+
+
+def _do_update_check():
+    updater = Updater()
+    updater.do_update_check()
+
+
+def do_update_check():
+    thrd = Thread(target=_do_update_check)
+
+    thrd.start()
+

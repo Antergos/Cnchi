@@ -1,3 +1,4 @@
+[2016-07-08 02:29:11 -0500]  will will need to check for updates in another thread or process b/..  Dustin Falgout  {a25a5b5}
 [2016-07-08 02:00:54 -0500]  not done with updater yet but need to commit it anyway before chang..  Dustin Falgout  {c526d2d}
 [2016-07-06 22:53:39 -0500]  missed these two instances where we were not retaining the order of..  Dustin Falgout  {e50567b}
 [2016-07-06 22:50:00 -0500]  working on update check                                                Dustin Falgout  {0be8fd5}

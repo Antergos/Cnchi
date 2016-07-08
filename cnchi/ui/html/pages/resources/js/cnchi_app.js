@@ -92,7 +92,7 @@ class CnchiApp {
 	}
 
 	js_bridge_handler(args) {
-		let cmd, log_prefix = this._get_log_message_prefix(this.js_bridge_handler);
+		let cmd, _args = [], log_prefix = this._get_log_message_prefix(this.js_bridge_handler);
 
 		if (! args.length) {
 			this.log(`${log_prefix} at least one argument is required!`);
@@ -106,13 +106,21 @@ class CnchiApp {
 			return;
 		}
 
-		if (args.length === 1) {
-			args = args.pop();
+		for (let arg of args) {
+			try {
+				_args.push(JSON.parse(arg));
+			} catch(e) {
+				_args.push(arg);
+			}
 		}
 
-		this.log(`${log_prefix} Running command: ${cmd} with args: ${args}...`);
+		if (_args.length === 1) {
+			_args = _args.pop();
+		}
 
-		this[cmd](args);
+		this.log(`${log_prefix} Running command: ${cmd} with args: ${_args}...`);
+
+		this[cmd](_args);
 	}
 
 	log(msg) {

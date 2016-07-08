@@ -150,7 +150,7 @@
 			update_result_ready_cb(data) {
 				$('.preloader-wrapper').toggleClass('hideme active');
 
-				if (true === data[0].result && true === data[0].restart) {
+				if (true === data.result && true === data.restart) {
 					// Update was installed successfully.
 					_page.$update_wrapper.find('h1')
 						.fadeOut()
@@ -167,8 +167,8 @@
 					}, 2500);
 
 
-				} else if (true === data[0].result) {
-					// We already hae the latest version.
+				} else if (true === data.result) {
+					// We already have the latest version.
 					_page.$update_wrapper.find('h1')
 						.fadeOut()
 						.text('{{ _('Update Check Complete') }}')

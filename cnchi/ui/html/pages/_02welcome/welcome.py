@@ -31,7 +31,7 @@ import json
 
 from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
-from updater import Updater
+from updater import do_update_check
 
 
 class WelcomePage(HTMLPage, metaclass=Singleton):
@@ -73,8 +73,7 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         return {'page_name': self.name, 'signals': signals}
 
     def do_update_check(self, *args):
-        updater = Updater()
-        updater.do_update_check()
+        do_update_check()
 
     def try_it_selected_cb(self, *args):
         self._controller.exit_app()

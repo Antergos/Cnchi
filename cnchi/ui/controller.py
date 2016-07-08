@@ -80,7 +80,14 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        msg = json.dumps([cmd] + list(args))
+        _args = []
+
+        for _arg in list(args):
+            if isinstance(_arg, (list, dict)):
+                _arg = json.dumps(_arg)
+            _args.append(_arg)
+
+        msg = json.dumps([cmd] + _args)
         self._web_view.run_javascript(self._emit_js_tpl.format(msg), None, None, None)
 
     def exit_app(self):

@@ -76,7 +76,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self.widget.set_app_paintable(True)
 
     def _connect_signals(self):
-        self.widget.connect('delete-event', self.delete_event_cb)
+        # self.widget.connect('delete-event', self.delete_event_cb)
         self.widget.connect('window-state-event', self.window_state_event_cb)
 
     def connect(self, signal_name, callback):
