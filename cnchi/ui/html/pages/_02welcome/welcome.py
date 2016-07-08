@@ -72,7 +72,7 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         signals = json.dumps(self.signals)
         return {'page_name': self.name, 'signals': signals}
 
-    def do_update_check(self):
+    def do_update_check(self, *args):
         updater = Updater()
         updater.do_update_check()
 

@@ -62,7 +62,7 @@ class Updater(BaseObject):
     def is_repo_version_newer(self):
         self.pacman.refresh()
         pkg_objs = self.pacman.get_packages_with_available_update()
-        return [p for p in pkg_objs if p and 'cnchi' == p['name']]
+        return [p for p in pkg_objs if p and 'cnchi' == p.name]
 
     def is_remote_version_newer(self, remote_version, local_version):
         """ Returns true if the Internet version of Cnchi is
