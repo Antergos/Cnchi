@@ -136,6 +136,10 @@ class CnchiApp {
 		if (Array.isArray(event)) {
 			args = event;
 			event = args.shift();
+
+			if ( args.length === 1 ) {
+				args = args.pop();
+			}
 		}
 
 		console.log(`triggering event: ${event} with args: ${args}`);

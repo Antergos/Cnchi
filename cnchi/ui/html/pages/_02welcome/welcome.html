@@ -43,6 +43,15 @@
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
+		<div class="grid-100 grid-parent update_no_internet_wrapper">
+			<div class="grid-100 heading">
+				<h1>{{ _('We\'re Unable To Access The Internet') }}</h1>
+				<h3>{{ _('A stable internet connection is required in order to continue.') }}</h3>
+			</div>
+			<div class="grid-50 prefix-25 suffix-25 grid-parent">
+				<p>More details go here....</p>
+			</div>
+		</div>
 		<div class="grid-100 grid-parent update_check_wrapper">
 			<div class="grid-100 heading">
 				<h1>{{ _('Installer Update') }}</h1>
@@ -52,7 +61,7 @@
 				<div class="progress active">
 					<div class="indeterminate"></div>
 				</div>
-				<div class="preloader-wrapper hideme">
+				<div class="preloader-wrapper">
 					<div class="spinner-layer">
 						<div class="circle-clipper left">
 							<div class="circle"></div>
@@ -67,7 +76,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="grid-100 grid-parent welcome_wrapper hideme">
+		<div class="grid-100 grid-parent welcome_wrapper">
 			<div class="grid-100 heading">
 				<h1>{{ _('What would you like to do?') }}</h1>
 			</div>
@@ -108,16 +117,59 @@
 				this.signals = JSON.parse('{{ signals }}');
 				this.$update_wrapper = $('.update_check_wrapper');
 				this.$welcome_wrapper = $('.welcome_wrapper');
+				this.$connection_wrapper = $('.no_internet_wrapper');
+				this.has_connection = false;
 
 				this.register_allowed_signals();
 				this.initialize();
 			}
 
+			connection_check_result_ready_cb( event, result ) {
+				console.log(result);
+				_page.has_connection = result;
+			}
+
+			do_has_connection_check() {
+				if ( false === this.has_connection ) {
+					cnchi.emit_signal('do-connection-check');
+				}
+			}
+
 			initialize() {
+				let check, timer = 0, connection_msg_shown = false;
+
+				for (let $wrapper of [this.$connection_wrapper, this.$update_wrapper, this.$welcome_wrapper]) {
+					$wrapper.hide();
+				}
+
 				this.register_event_handlers();
-				setTimeout(() => {
-					cnchi.emit_signal('do-update-check');
-				}, 2500);
+
+				check = setInterval(() => {
+					if (0 === timer || timer % 10000 === 0) {
+						this.do_has_connection_check();
+					}
+
+					if ( false === connection_msg_shown && false === this.has_connection ) {
+						this.$connection_wrapper.fadeIn();
+						connection_msg_shown = true;
+					}
+					if ( true === this.has_connection ) {
+						clearInterval(check);
+						this.initialize_finish();
+					}
+				}, 2000);
+			}
+
+			initialize_finish() {
+				this.$connection_wrapper.fadeOut()
+					.promise()
+					.done(() => {
+						this.$update_wrapper.fadeIn()
+							.promise()
+							.done(() => {
+								cnchi.emit_signal('do-update-check');
+							});
+					});
 			}
 
 			installit_button_clicked_cb() {
@@ -132,6 +184,7 @@
 				$('.install_it button').on('click', this.installit_button_clicked_cb);
 				$(window).on('update-available', this.update_available_cb);
 				$(window).on('update-result-ready', this.update_result_ready_cb);
+				$(window).on('connection-check-result-ready', this.connection_check_result_ready_cb)
 			}
 
 			tryit_button_clicked_cb() {
@@ -140,17 +193,28 @@
 			}
 
 			update_available_cb() {
-				_page.$update_wrapper.find('h3')
-					.fadeOut()
-					.text('{{ _('An installer update is available. Please wait while the update is applied.') }}')
-					.fadeIn();
-				$('.progress.active, .preloader-wrapper').toggleClass('hideme active');
+				let $heading = _page.$update_wrapper.find('h3');
+
+				$heading.fadeOut()
+					.promise()
+					.done(() => {
+						$heading.text('{{ _('An installer update is available. Please wait while the update is applied.') }}');
+						$heading.fadeIn()
+							.promise()
+							.done(() => {
+								$('.progress.active, .preloader-wrapper').toggleClass('active');
+							});
+					});
 			}
 
 			update_result_ready_cb( event, data ) {
 				let $headings = _page.$update_wrapper.find('h1, h3');
 
-				$('.progress').toggleClass('hideme active');
+				$('.progress.active, .preloader-wrapper.active').toggleClass('hideme active');
+
+				if ( true === data.result ) {
+					localStorage.setItem('cnchi::welcome::update-check-passed', true);
+				}
 
 				if ( true === data.result && true === data.restart ) {
 					// Update was installed successfully.

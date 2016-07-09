@@ -415,12 +415,15 @@ def get_nm_state():
         return state
 
 
-def has_connection():
+def has_connection(callback=None, *args):
     """ Checks if we have an Internet connection """
     urls = [
         'http://130.206.13.20',
         'http://173.194.40.112',
-        'http://104.27.140.167']
+        'http://104.27.140.167'
+    ]
+    _args = list(args)
+    _connected = False
 
     for url in urls:
         try:
@@ -428,15 +431,19 @@ def has_connection():
         except (OSError, timeout, urllib.error.URLError) as url_err:
             logging.warning(url_err)
         else:
-            return True
+            _connected = True
 
-    # We cannot connect to any url, let's ask NetworkManager
-    # Problem: In a Virtualbox VM this returns true even when
-    # the host OS has no connection
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-        return True
+    if not _connected:
+        # We cannot connect to any url, let's ask NetworkManager
+        # Problem: In a Virtualbox VM this returns true even when
+        # the host OS has no connection
+        _connected = (get_nm_state() == NM_STATE_CONNECTED_GLOBAL)
 
-    return False
+    if callback is None:
+        return _connected
+    else:
+        _args = _args + [_connected]
+        callback(*_args)
 
 def add_connection_watch(func):
     """ Add connection watch to Networkmanager """

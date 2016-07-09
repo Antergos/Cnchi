@@ -32,6 +32,7 @@ import json
 from ui.base_widgets import Singleton
 from ui.html.pages._html_page import HTMLPage
 from updater import do_update_check
+from misc.extra import has_connection
 
 
 class WelcomePage(HTMLPage, metaclass=Singleton):
@@ -56,7 +57,8 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         super().__init__(name=name, *args, **kwargs)
 
         self.signals.extend(['tryit-selected', 'installit-selected', 'do-update-check',
-                             'update-available', 'update-result-ready', 'do-restart'])
+                             'update-available', 'update-result-ready', 'do-restart',
+                             'do-connection-check', 'connection-check-result-ready'])
 
         self._create_signals()
         self._connect_signals()
@@ -65,14 +67,22 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         super()._connect_signals()
         self._main_window.connect('tryit-selected', self.try_it_selected_cb)
         self._main_window.connect('installit-selected', self.go_to_next_page)
-        self._main_window.connect('do-update-check', self.do_update_check)
+        self._main_window.connect('do-update-check', self.do_update_check_cb)
         self._main_window.connect('do-restart', self._controller.do_restart)
+        self._main_window.connect('do-connection-check', self.do_has_connection_check_cb)
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         return {'page_name': self.name, 'signals': signals}
 
-    def do_update_check(self, *args):
+    def do_has_connection_check_cb(self, *args):
+        self._controller.run_in_new_thread(
+            has_connection,
+            self._controller.trigger_js_event,
+            'connection-check-result-ready'
+        )
+
+    def do_update_check_cb(self, *args):
         do_update_check()
 
     def try_it_selected_cb(self, *args):

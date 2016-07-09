@@ -95,7 +95,7 @@
 				this.cache_key = 'cnchi::language::selected';
 
 				this.register_allowed_signals();
-				this.maybe_skip_this_page();
+				this.maybe_skip_to_page();
 				this.initialize();
 			}
 
@@ -107,10 +107,13 @@
 				this.register_event_handlers();
 			}
 
-			maybe_skip_this_page() {
-				let selected_language = localStorage.getItem(this.cache_key);
+			maybe_skip_to_page() {
+				let selected_language = localStorage.getItem(this.cache_key),
+					update_check_passed = localStorage.getItem('cnchi::welcome::update-check-passed');
 
-				if (null !== selected_language) {
+				if (null !== selected_language && null !== update_check_passed) {
+					cnchi.emit_signal('go-to-next-page', 1);
+				} else if ( null !== selected_language ) {
 					cnchi.emit_signal('go-to-next-page');
 				}
 			}

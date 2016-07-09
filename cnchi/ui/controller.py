@@ -32,8 +32,9 @@ import json
 import sys
 from random import choice
 from string import ascii_uppercase
+from threading import Thread
 
-from ui.base_widgets import BaseObject, Singleton, WebKit2
+from ui.base_widgets import BaseObject, Singleton, GLib, WebKit2
 from ui.main_window import MainWindow
 from ui.html.main_container import MainContainer
 from ui.html.pages_helper import PagesHelper
@@ -54,6 +55,8 @@ class Controller(BaseObject, metaclass=Singleton):
     def __init__(self, name='controller', *args, **kwargs):
 
         super().__init__(name=name, *args, **kwargs)
+
+        self.current_page = None
 
         main_window = MainWindow()
         main_container = MainContainer()
@@ -111,10 +114,16 @@ class Controller(BaseObject, metaclass=Singleton):
 
         _logger(msg, *args)
 
+    def run_in_new_thread(self, _callable, *args):
+        thrd = Thread(target=_callable, args=args)
+
+        thrd.start()
+
     def set_current_page(self, identifier):
         self.logger.debug('set_current_page(%s)', identifier)
         page = self._pages_helper.get_page(identifier)
         page_uri = 'cnchi://{0}'.format(page.name)
+        self.current_page = page.name
 
         if page is None:
             raise ValueError('page cannot be None!')
@@ -132,7 +141,7 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        self.emit_js( 'trigger_event', event_name, *args)
+        self.emit_js('trigger_event', event_name, *args)
 
 
 

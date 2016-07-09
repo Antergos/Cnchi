@@ -77,7 +77,7 @@ class HTMLPage(Page):
             self._generate_tabs_list()
 
     def _connect_signals(self):
-        self._main_window.connect('go-to-next-page', self.go_to_next_page)
+        self._main_window.connect('go-to-next-page', self.go_to_next_page, )
 
     def _create_signals(self):
         for _signal in self.signals:
@@ -118,9 +118,14 @@ class HTMLPage(Page):
     def get_previous_page_index(self):
         return self._pages.helper.page_names.index(self.name) - 1
 
-    def go_to_next_page(self):
+    def go_to_next_page(self, obj=None, next_plus=0):
+        if self.name != self._controller.current_page:
+            return
+
         self.store_values()
-        self._controller.set_current_page(self.get_next_page_index())
+        self._controller.set_current_page(self.get_next_page_index() + next_plus)
+
+        return True
 
     def prepare(self):
         """ This must be implemented by subclasses """
