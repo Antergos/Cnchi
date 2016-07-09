@@ -47,7 +47,7 @@ String.prototype.capitalize = function () {
  */
 $.fn.extend({
 	animateCss: function (animationName, callback) {
-		var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+		let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 		$(this).addClass(animationName).one(animationEnd, function () {
 			$(this).removeClass(animationName);
 			if (callback) {
@@ -91,36 +91,33 @@ class CnchiApp {
 		document.title = `_BR::${msg}`;
 	}
 
-	js_bridge_handler(args) {
-		let cmd, _args = [], log_prefix = this._get_log_message_prefix(this.js_bridge_handler);
+	js_bridge_handler(args_var_name) {
+		let data, cmd, args, log_prefix = this._get_log_message_prefix(this.js_bridge_handler);
 
-		if (! args.length) {
-			this.log(`${log_prefix} at least one argument is required!`);
+		console.log(window[args_var_name]);
+		console.log(data);
+
+		args = window[args_var_name].args;
+		cmd = window[args_var_name].cmd;
+
+		if (! cmd.length) {
+			this.log(`${log_prefix} "cmd" is required!`);
 			return;
 		}
-
-		cmd = args.shift();
 
 		if ($.inArray(cmd, this.cmds) < 0) {
 			this.log(`${log_prefix} cmd: "${cmd}" is not in the list of allowed commands!`);
 			return;
 		}
 
-		for (let arg of args) {
-			try {
-				_args.push(JSON.parse(arg));
-			} catch(e) {
-				_args.push(arg);
-			}
+
+		if (args.length === 1) {
+			args = args.pop();
 		}
 
-		if (_args.length === 1) {
-			_args = _args.pop();
-		}
+		this.log(`${log_prefix} Running command: ${cmd} with args: ${args}...`);
 
-		this.log(`${log_prefix} Running command: ${cmd} with args: ${_args}...`);
-
-		this[cmd](_args);
+		this[cmd](args);
 	}
 
 	log(msg) {

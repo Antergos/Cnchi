@@ -98,7 +98,7 @@
 
 		class {{ page_name|capitalize() }}Page extends CnchiPage {
 			constructor() {
-				if (null !== _page) {
+				if ( null !== _page ) {
 					return _page;
 				}
 
@@ -147,41 +147,43 @@
 				$('.progress.active, .preloader-wrapper').toggleClass('hideme active');
 			}
 
-			update_result_ready_cb(data) {
-				$('.preloader-wrapper').toggleClass('hideme active');
+			update_result_ready_cb( event, data ) {
+				let $headings = _page.$update_wrapper.find('h1, h3');
 
-				if (true === data.result && true === data.restart) {
+				$('.progress').toggleClass('hideme active');
+
+				if ( true === data.result && true === data.restart ) {
 					// Update was installed successfully.
-					_page.$update_wrapper.find('h1')
-						.fadeOut()
-						.text('{{ _('Update Complete.') }}')
-						.fadeIn();
-					_page.$update_wrapper.find('h3')
-						.fadeOut()
-						.text('{{ _('Restarting the installer. One moment..') }}')
-						.fadeIn();
-					$('.progress').removeClass('hideme active');
+					$headings.fadeOut()
+						.promise()
+						.done(() => {
+							$headings.filter('h1').text('{{ _('Update Complete.') }}');
+							$headings.filter('h3').text('{{ _('Restarting the installer. One moment..') }}');
+							$headings.fadeIn()
+								.promise()
+								.done(() => {
+									setTimeout(() => {
+										cnchi.emit_signal('do-restart');
+									}, 3500);
+								});
+						});
 
-					setTimeout(() => {
-						cnchi.emit_signal('do-restart');
-					}, 2500);
-
-
-				} else if (true === data.result) {
+				} else if ( true === data.result ) {
 					// We already have the latest version.
-					_page.$update_wrapper.find('h1')
-						.fadeOut()
-						.text('{{ _('Update Check Complete') }}')
-						.fadeIn();
-					_page.$update_wrapper.find('h3')
-						.fadeOut()
-						.text('{{ _('You are using the latest version and can proceed with your installation!') }}')
-						.fadeIn();
-
-					setTimeout(() => {
-						_page.$update_wrapper.toggleClass('hideme');
-						_page.$welcome_wrapper.toggleClass('hideme');
-					}, 2500);
+					$headings.fadeOut()
+						.promise()
+						.done(() => {
+							$headings.filter('h1').text('{{ _('Update Check Complete') }}');
+							$headings.filter('h3').text('{{ _('You are using the latest version and can proceed with your installation!') }}');
+							$headings.fadeIn()
+								.promise()
+								.done(() => {
+									setTimeout(() => {
+										_page.$update_wrapper.toggleClass('hideme');
+										_page.$welcome_wrapper.toggleClass('hideme');
+									}, 3500);
+								});
+						});
 
 				} else {
 					// Either the update check or the update itself failed.

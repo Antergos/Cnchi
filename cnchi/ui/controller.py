@@ -30,6 +30,8 @@
 
 import json
 import sys
+from random import choice
+from string import ascii_uppercase
 
 from ui.base_widgets import BaseObject, Singleton, WebKit2
 from ui.main_window import MainWindow
@@ -47,7 +49,7 @@ class Controller(BaseObject, metaclass=Singleton):
 
     """
 
-    _emit_js_tpl = 'window.cnchi.js_bridge_handler({0});'
+    _emit_js_tpl = 'window.{0} = {1}; window.cnchi.js_bridge_handler("{0}");'
 
     def __init__(self, name='controller', *args, **kwargs):
 
@@ -62,6 +64,11 @@ class Controller(BaseObject, metaclass=Singleton):
 
     def _connect_signals_to_callbacks(self):
         self._main_window.widget.connect('on-js', self.js_log_message_cb)
+
+    @staticmethod
+    def _generate_js_temp_variable_name():
+        var = ''.join(choice(ascii_uppercase) for i in range(6))
+        return '__{}'.format(var)
 
     def _initialize_pages(self):
         self._pages_helper = PagesHelper()
@@ -80,15 +87,13 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        _args = []
-
-        for _arg in list(args):
-            if isinstance(_arg, (list, dict)):
-                _arg = json.dumps(_arg)
-            _args.append(_arg)
-
-        msg = json.dumps([cmd] + _args)
-        self._web_view.run_javascript(self._emit_js_tpl.format(msg), None, None, None)
+        msg = dict(cmd=cmd, args=list(args))
+        var = self._generate_js_temp_variable_name()
+        self.logger.debug(msg)
+        msg = json.dumps(msg)
+        msg = self._emit_js_tpl.format(var, msg)
+        self.logger.debug(msg)
+        self._web_view.run_javascript(msg, None, None, None)
 
     def exit_app(self):
         sys.exit(0)
