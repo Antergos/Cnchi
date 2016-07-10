@@ -20,9 +20,22 @@
 	<div class="grid-container grid-parent cnchi_app">
 		{% block cnchi_app %}
 			<div class="grid-100 grid-parent header">
-				{% block header %}
-					<div class="grid-100 header_top">
-
+				{%- block header -%}
+					<div class="grid-100 grid-parent header_top">
+						<div class="grid-25 suffix-25 grid-parent logo_container">
+							<div class="grid-25 grid-parent">
+								<img src="{{ RESOURCES_DIR }}/images/overlay.png" alt="Antergos logo" class="logo"/>
+							</div>
+							<div class="grid-75 grid-parent">Cnchi {{ _('Installer') }}</div>
+						</div>
+						<div class="grid-25 grid-parent prefix-25 window_buttons">
+							<div class="grid-20 prefix-55 suffix-5">
+								<a class="waves-effect waves-light btn-flat"><i class="material-icons">remove</i></a>
+							</div>
+							<div class="grid-20">
+								<a class="waves-effect waves-light btn-flat"><i class="material-icons">close</i></a>
+							</div>
+						</div>
 					</div>
 					<div class="grid-100 header_bottom">
 						{% if tabs_list is defined %}
@@ -32,7 +45,7 @@
 							<div class="determinate" style="width: 8%"></div>
 						</div>
 					</div>
-				{% endblock header %}
+				{%- endblock header -%}
 			</div>
 			<div class="grid-100 grid-parent main_content">
 				{% block main_content %}

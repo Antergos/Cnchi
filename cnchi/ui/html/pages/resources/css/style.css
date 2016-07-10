@@ -47,6 +47,15 @@ html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px;
 .header_bottom .tabs .tab a:hover, .header_bottom .tabs .tab a.active { background-color: #3f7ae4; }
 .header_bottom .tabs .indicator { display: none; }
 .header .progress { height: 3px; margin: 0px; }
+.header .logo_container { text-align: left; max-height: 100%; font-family: Raleway, 'Open Sans', sans-serif; font-size: 28px; font-weight: 400; }
+.header .logo { max-height: 40px; margin: 15px; }
+.header .logo_container div { height: 70px; }
+.header .logo_container div:last-child { line-height: 71px; }
+.header .window_buttons a { width: auto !important; height: auto !important; padding: 10px !important; cursor: default; }
+.header .window_buttons { text-align: right; color: rgba(0,0,0,0.1); }
+.header .window_buttons a i { transition: color 0.2s linear; }
+.header .window_buttons a:hover i { color: #ffffff; }
+.header .window_buttons div:last-child { text-align: left; }
 
 
 	/* ============================================== *\
