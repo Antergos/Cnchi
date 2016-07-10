@@ -92,6 +92,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
         self.logger.debug('%s language selected!', lang[0])
         self.selected_language = lang
         # TODO: Apply the selected language if its not English!
+        self.can_go_to_next_page = True
         self.go_to_next_page()
 
     def langcode_to_lang(self, display_map):

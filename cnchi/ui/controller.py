@@ -140,6 +140,7 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
+        self._main_window.emit(event_name, *args)
         self.emit_js('trigger_event', event_name, *args)
 
 

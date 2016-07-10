@@ -26,7 +26,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.html.pages._html_page import HTMLPage, json, Gtk
+import os
+
+from ui.html.pages._html_page import HTMLPage, json
 
 
 class CheckPage(HTMLPage):
@@ -51,12 +53,30 @@ class CheckPage(HTMLPage):
         super().__init__(name=name, *args, **kwargs)
 
         self.signals = []
+        self.checked_items = []
 
         self._create_signals()
         self._connect_signals()
 
     def _connect_signals(self):
         pass
+
+    @staticmethod
+    def _get_checked_items_info():
+        return {
+            'reboot_required': (
+                'error', 'Reboot Required', 'You must reboot before retrying again.'
+            ),
+
+        }
+
+
+    def _do_checks(self):
+        items = self._get_checked_items_info()
+
+        if os.path.exists("/tmp/.cnchi_partitioning_completed"):
+            self.checked_items.append(items['reboot_required'])
+
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
@@ -65,8 +85,10 @@ class CheckPage(HTMLPage):
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         self._set_active_tab()
-        # self._main_window.widget.set_position(Gtk.WindowPosition.CENTER)
+        self._do_checks()
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        pass
+        self.logger.info('We have Internet connection.')
+        self.logger.info("We're connected to a power source.")
+        self.logger.info('We have enough disk space.')

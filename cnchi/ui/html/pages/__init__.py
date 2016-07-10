@@ -28,13 +28,13 @@
 
 __all__ = ['ALL_PAGES']
 
-from ._01language.language import LanguagePage
-from ._02welcome.welcome import WelcomePage
-from ._03check.check import CheckPage
-from ._04location.location import LocationPage
-from ._05desktop.desktop import DesktopPage
-from ._06features.features import FeaturesPage
-from ._07disk_setup.disk_setup import DiskSetupPage
+from ._01_language.language import LanguagePage
+from ._02_welcome.welcome import WelcomePage
+from ._03_check.check import CheckPage
+from ._04_location.location import LocationPage
+from ._05_desktop.desktop import DesktopPage
+from ._06_features.features import FeaturesPage
+from ._07_disk_setup.disk_setup import DiskSetupPage
 
 
 class AllPages:

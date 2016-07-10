@@ -115,3 +115,33 @@
 		{% endfor %}
 	</div>
 {% endmacro %}
+
+
+
+{#
+ # Outputs HTML for a collection (listbox styled <ul>).
+ #
+ # Args:
+ #     items  (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
+ #                           item info tuple should contain 3 things: material icon name, heading, & subheading.
+ #                           For example: [('check_circle', 'Updated', 'Cnchi is up-to-date')].
+ #     _class (str):         Optional css class for the collection.
+ #
+ #}
+{% macro collection(items, _class='') %}
+	{% if items %}
+		{% if '' != _class %}
+			{% set _class = ' %s'|format(_class) %}
+		{% endif %}
+
+		<ul class="collection{{ _class }}">
+			{% for item in items %}
+				<li class="collection-item avatar">
+					<i class="material-icons">{{ item[0] }}</i>
+					<span class="title">{{ item[1] }}</span>
+					<p>{{ item[2] }}</p>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endmacro %}

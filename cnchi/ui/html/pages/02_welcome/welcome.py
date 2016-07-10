@@ -70,6 +70,7 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         self._main_window.connect('do-update-check', self.do_update_check_cb)
         self._main_window.connect('do-restart', self._controller.do_restart)
         self._main_window.connect('do-connection-check', self.do_has_connection_check_cb)
+        self._main_window.connect('update-result-ready', self.update_result_ready_cb)
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
@@ -85,8 +86,12 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
     def do_update_check_cb(self, *args):
         do_update_check()
 
+
     def try_it_selected_cb(self, *args):
         self._controller.exit_app()
+
+    def update_result_ready_cb(self, obj, result, *args):
+        self.logger.debug([result, args])
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

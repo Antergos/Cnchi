@@ -62,6 +62,7 @@ class HTMLPage(Page):
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
         self.signals = ['go-to-next-page']
+        self.can_go_to_next_page = False
 
         if self._tpl is None and self._tpl_setup_ran is None:
             self._tpl_setup_ran = True
