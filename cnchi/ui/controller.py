@@ -92,10 +92,9 @@ class Controller(BaseObject, metaclass=Singleton):
 
         msg = dict(cmd=cmd, args=list(args))
         var = self._generate_js_temp_variable_name()
-        self.logger.debug(msg)
         msg = json.dumps(msg)
         msg = self._emit_js_tpl.format(var, msg)
-        self.logger.debug(msg)
+
         self._web_view.run_javascript(msg, None, None, None)
 
     def exit_app(self):
