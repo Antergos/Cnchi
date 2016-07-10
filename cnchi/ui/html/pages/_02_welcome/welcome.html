@@ -130,7 +130,7 @@
 				this.has_connection = false;
 
 				this.register_allowed_signals();
-				this.maybe_skip_to_next_page();
+				// this.maybe_skip_to_next_page();
 				this.initialize();
 			}
 
@@ -215,7 +215,7 @@
 				$heading.fadeOut()
 					.promise()
 					.done(() => {
-						$heading.text('{{ _('An installer update is available. Please wait while the update is applied.') }}');
+						$heading.text("{{ _('An installer update is available. Please wait while the update is applied.') }}");
 						$heading.fadeIn()
 							.promise()
 							.done(() => {
@@ -238,8 +238,8 @@
 					$headings.fadeOut()
 						.promise()
 						.done(() => {
-							$headings.filter('h1').text('{{ _('Update Complete.') }}');
-							$headings.filter('h3').text('{{ _('Restarting the installer. One moment..') }}');
+							$headings.filter('h1').text("{{ _('Update Complete.') }}");
+							$headings.filter('h3').text("{{ _('Restarting the installer. One moment..') }}");
 							$headings.fadeIn()
 								.promise()
 								.done(() => {
@@ -254,8 +254,8 @@
 					$headings.fadeOut()
 						.promise()
 						.done(() => {
-							$headings.filter('h1').text('{{ _('Update Check Complete') }}');
-							$headings.filter('h3').text('{{ _('You are using the latest version and can proceed with your installation!') }}');
+							$headings.filter('h1').text("{{ _('Update Check Complete') }}");
+							$headings.filter('h3').text("{{ _('You are using the latest version and can proceed with your installation!') }}");
 							$headings.fadeIn()
 								.promise()
 								.done(() => {

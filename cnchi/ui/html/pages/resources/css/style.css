@@ -58,9 +58,9 @@ html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px;
 .header .window_buttons div:last-child { text-align: left; }
 
 
-	/* ============================================== *\
-	 * --------->>> MAIN CONTENT WRAPPER <<<--------- *
-	\* ============================================== */
+/* ============================================== *\
+ * --------->>> MAIN CONTENT WRAPPER <<<--------- *
+\* ============================================== */
 
 .main_content { display: flex; justify-content: center; align-items: center; height: 100%; }
 

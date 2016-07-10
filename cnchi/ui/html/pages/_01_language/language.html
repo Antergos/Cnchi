@@ -95,12 +95,11 @@
 				this.cache_key = 'cnchi::language::selected';
 
 				this.register_allowed_signals();
-				this.maybe_skip_to_next_page();
+				// this.maybe_skip_to_next_page();
 				this.initialize();
 			}
 
 			initialize() {
-				//$('.content_wrapper').animateCss('magictime spaceIn');
 				$('html, body').css({'background': '#383A41', 'opacity': 1});
 				$('select').material_select();
 
