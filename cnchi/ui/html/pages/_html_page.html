@@ -56,6 +56,13 @@
 	{% endblock scripts %}
 
 	{% block page_script %}{% endblock page_script %}
+
+	<script>
+		$(window).on('page-loaded', () => {
+			new {{ page_name|capitalize() }}Page();
+		});
+	</script>
+
 {% endblock body %}
 </body>
 </html>

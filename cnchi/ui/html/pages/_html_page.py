@@ -122,6 +122,9 @@ class HTMLPage(Page):
         if self.name != self._controller.current_page:
             return
 
+        if not next_plus:
+            next_plus = 0
+
         self.store_values()
         self._controller.set_current_page(self.get_next_page_index() + next_plus)
 
