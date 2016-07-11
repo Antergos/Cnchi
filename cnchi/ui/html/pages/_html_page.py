@@ -78,7 +78,7 @@ class HTMLPage(Page):
             self._generate_tabs_list()
 
     def _connect_signals(self):
-        self._main_window.connect('go-to-next-page', self.go_to_next_page, )
+        self._main_window.connect('go-to-next-page', self.go_to_next_page)
 
     def _create_signals(self):
         for _signal in self.signals:

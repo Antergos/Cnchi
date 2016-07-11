@@ -63,10 +63,6 @@ class Controller(BaseObject, metaclass=Singleton):
 
         main_window.widget.add(self._web_view)
         self._initialize_pages()
-        self._connect_signals_to_callbacks()
-
-    def _connect_signals_to_callbacks(self):
-        self._main_window.widget.connect('on-js', self.js_log_message_cb)
 
     @staticmethod
     def _generate_js_temp_variable_name():

@@ -34,6 +34,7 @@ from .base_widgets import (
     Gdk,
     GLib,
     GObject,
+    WebKit2,
     BaseWidget,
     Singleton
 )
@@ -52,12 +53,16 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         super().__init__(name=name, *args, **kwargs)
 
         self._state = {}
+        self.is_dragging = False
+        self._button_press_hook_id = None
 
         # Default window size
         self._main_window_width = 1120
         self._main_window_height = 721
 
-        self.create_custom_signal('on-js')
+        self.create_custom_signal('window-dragging-start')
+        self.create_custom_signal('window-dragging-stop')
+        self.allowed_signals.extend(['window-dragging-start', 'window-dragging-stop'])
 
         self._apply_window_settings()
         self._connect_signals()
@@ -77,7 +82,18 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
     def _connect_signals(self):
         # self.widget.connect('delete-event', self.delete_event_cb)
-        self.widget.connect('window-state-event', self.window_state_event_cb)
+        self.connect('window-state-event', self.window_state_event_cb)
+        self.connect('window-dragging-start', self.window_dragging_cb)
+        self.connect('window-dragging-stop', self.window_dragging_cb)
+
+        signal_id = GObject.signal_lookup('button-press-event', WebKit2.WebView)
+        self._button_press_hook_id = GObject.signal_add_emission_hook(
+            signal_id, 0, self.button_press_event_cb, None
+        )
+
+
+    def button_press_event_cb(self, ihint, param_values, data):
+        self.logger.debug([ihint, param_values, data])
 
     def connect(self, signal_name, callback):
         self.widget.connect(signal_name, callback)
@@ -107,6 +123,9 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         else:
             self.widget.fullscreen()
             self._controller.emit_js('trigger_event', 'window-fullscreen')
+
+    def window_dragging_cb(self, window, event, *args):
+        pass
 
     def window_state_event_cb(self, window, event, *args):
         self._state['maximized'] = event.new_window_state & Gdk.WindowState.MAXIMIZED
