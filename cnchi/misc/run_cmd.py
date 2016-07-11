@@ -33,10 +33,28 @@ import logging
 import subprocess
 import sys
 import traceback
+import os
+
+from functools import wraps
 
 from misc.extra import InstallError
 
 DEST_DIR = "/install"
+
+
+def ensure_excecutable(func, *args, **kwargs):
+    """ Decorator that ensures file is executable before attempting to execute it. """
+    _args = list(*args)
+    cmd = None if not _args or DEST_DIR in _args[0] else _args[0]
+
+    if cmd and os.path.exists(cmd) and not os.access(cmd, os.X_OK):
+        os.chmod(cmd, 0o777)
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return _decorated_function
 
 
 def log_exception_info():
@@ -49,6 +67,7 @@ def log_exception_info():
         logging.error(line.rstrip())
 
 
+@ensure_excecutable
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
          stdin=None, debug=True):
     """ Helper function to make a system call
@@ -58,18 +77,20 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     msg: Error message to log (if empty the command called will be logged) """
 
     output = None
+
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
+
     try:
         output = subprocess.check_output(
             cmd,
             stdin=stdin,
             stderr=subprocess.STDOUT,
             timeout=timeout)
-        if output:
-            output = output.decode()
+        output = output.decode()
+        if output and debug:
             output = output.strip('\n')
-            output = output.strip()
-            if debug:
-                logging.debug(output)
+            logging.debug(output)
         return output
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
         err_output = err.output.decode().strip("\n")
@@ -99,6 +120,9 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
 
     for element in cmd:
         full_cmd.append(element)
+
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
 
     try:
         proc = subprocess.Popen(
@@ -151,8 +175,13 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
         return False
 
 
+@ensure_excecutable
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
+
+    if not os.environ.get('CNCHI_RUNNING', False):
+        os.environ['CNCHI_RUNNING'] = 'True'
+
     try:
         proc = subprocess.Popen(
             cmd,
