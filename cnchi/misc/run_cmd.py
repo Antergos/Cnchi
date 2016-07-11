@@ -47,7 +47,7 @@ def ensure_excecutable(func, *args, **kwargs):
     _args = list(*args)
     cmd = None if not _args or DEST_DIR in _args[0] else _args[0]
 
-    if cmd and os.path.exits(cmd) and not os.access(path, os.X_OK):
+    if cmd and os.path.exists(cmd) and not os.access(cmd, os.X_OK):
         os.chmod(cmd, 0o777)
 
     @wraps(func)
