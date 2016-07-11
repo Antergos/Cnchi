@@ -31,7 +31,14 @@ import json
 
 from jinja2 import Environment, FileSystemLoader, PrefixLoader
 
-from ui.base_widgets import DataObject, SharedData, Page, Gtk
+from ui.base_widgets import (
+    DataObject,
+    Singleton,
+    SharedData,
+    Page,
+    bg_thread,
+    Gtk
+)
 
 
 class HTMLPage(Page):

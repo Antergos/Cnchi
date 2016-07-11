@@ -29,8 +29,7 @@
 import os
 import json
 
-from ui.base_widgets import Singleton
-from ui.html.pages._html_page import HTMLPage
+from ui.html.pages._html_page import HTMLPage, Singleton, bg_thread
 from updater import do_update_check
 from misc.extra import has_connection
 
@@ -76,16 +75,13 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
         signals = json.dumps(self.signals)
         return {'page_name': self.name, 'signals': signals}
 
+    @bg_thread
     def do_has_connection_check_cb(self, *args):
-        self._controller.run_in_new_thread(
-            has_connection,
-            self._controller.trigger_js_event,
-            'connection-check-result-ready'
-        )
+        has_connection(self._controller.trigger_js_event, 'connection-check-result-ready')
 
+    @bg_thread
     def do_update_check_cb(self, *args):
         do_update_check()
-
 
     def try_it_selected_cb(self, *args):
         self._controller.exit_app()

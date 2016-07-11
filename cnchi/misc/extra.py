@@ -37,6 +37,8 @@ import urllib
 from socket import timeout
 import random
 import string
+from functools import wraps
+from threading  import Thread
 
 try:
     import misc.osextras as osextras
@@ -47,6 +49,21 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 _DROPPED_PRIVILEGES = 0
+
+
+def bg_thread(func, *args, **kwargs):
+    """
+    Decorator that creates a new thread in which to run the wrapped function,
+    starts the thread, and then returns immediately.
+
+    """
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        __thread = Thread(target=func, args=args, kwargs=kwargs, daemon=True)
+        __thread.start()
+
+    return _decorated_function
 
 
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):

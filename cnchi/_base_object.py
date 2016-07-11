@@ -35,9 +35,24 @@ import gi
 # gi.require_versions({'Gtk': '3.0', 'WebKit2': '4.0'})
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
-from gi.repository import Gdk, GLib, Gio, GObject, Gtk, WebKit2
+from gi.repository import (
+    Gdk,
+    GLib,
+    Gio,
+    GObject,
+    Gtk,
+    WebKit2
+)
 
-from _settings import DataObject, NonSharedData, SharedData, settings
+from _settings import (
+    DataObject,
+    NonSharedData,
+    SharedData,
+    settings
+)
+
+from misc.extra import bg_thread
+
 
 TE = 'gtkbuilder'
 BO = 'base_object'

@@ -37,7 +37,8 @@ from _base_object import (
     Gtk,
     WebKit2,
     BaseObject,
-    DataObject
+    DataObject,
+    bg_thread
 )
 
 from _settings import NonSharedData, SharedData, settings

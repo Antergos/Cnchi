@@ -34,7 +34,7 @@ from random import choice
 from string import ascii_uppercase
 from threading import Thread
 
-from ui.base_widgets import BaseObject, Singleton, GLib, WebKit2
+from ui.base_widgets import BaseObject, Singleton, bg_thread, GLib, WebKit2
 from ui.main_window import MainWindow
 from ui.html.main_container import MainContainer
 from ui.html.pages_helper import PagesHelper
