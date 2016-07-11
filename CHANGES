@@ -1,3 +1,4 @@
+[2016-07-10 23:59:10 -0500]  created a decorator for running methods in a background thread         Dustin Falgout  {89c9c54}
 [2016-07-10 23:33:18 -0500]  cherry-pick bug fix from stable                                        Dustin Falgout  {e4e7d26}
 [2016-07-10 19:57:50 -0500]  tried to get window dragging to work but wasnt successful :-/          Dustin Falgout  {0c6b247}
 [2016-07-10 15:39:36 -0500]  disable skipping pages until closer to production                      Dustin Falgout  {6c7b160}

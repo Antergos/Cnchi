@@ -137,7 +137,23 @@
 		<ul class="collection{{ _class }}">
 			{% for item in items %}
 				<li class="collection-item avatar">
-					<i class="material-icons">{{ item[0] }}</i>
+					{% if 'pending' == item[0] %}
+						<div class="preloader-wrapper small active circle">
+							<div class="spinner-layer">
+								<div class="circle-clipper left">
+									<div class="circle"></div>
+								</div>
+								<div class="gap-patch">
+									<div class="circle"></div>
+								</div>
+								<div class="circle-clipper right">
+									<div class="circle"></div>
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<i class="material-icons circle">{{ item[0] }}</i>
+					{% endif %}
 					<span class="title">{{ item[1] }}</span>
 					<p>{{ item[2] }}</p>
 				</li>

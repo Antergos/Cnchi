@@ -65,27 +65,58 @@ class CheckPage(HTMLPage):
     def _get_checked_items_info():
         return {
             'reboot_required': (
-                'error', 'Reboot Required', 'You must reboot before retrying again.'
+                'error',
+                _('Reboot Required'),
+                _('You must reboot before retrying again.')
             ),
-
+            'enough_space': (
+                'pending',
+                _('Has Enough Storage Space'),
+                _('This system has at least 10GB* of available storage space.')
+            ),
+            'power_source': (
+                'pending',
+                _('Has Power Source'),
+                _('This system is connected to a power source.')
+            ),
+            'latest_cnchi': (
+                'pending',
+                _('Installer Updated'),
+                _('Cnchi is up to date.')
+            ),
+            'recent_iso': (
+                'pending',
+                _('Install Media Is Recent'),
+                _('This system was booted from a recent ISO image.')
+            )
         }
 
-
-    def _do_checks(self):
+    def get_checks_info(self):
         items = self._get_checked_items_info()
 
         if os.path.exists("/tmp/.cnchi_partitioning_completed"):
             self.checked_items.append(items['reboot_required'])
 
+        for item, item_info in items.items():
+            if 'reboot_required' == item:
+                continue
+            self.checked_items.append(item_info)
+
+        return self.checked_items
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
-        return {'page_name': self.name, 'signals': signals, 'tabs_list': self._tabs_list}
+        checked_items = self.get_checks_info()
+        return {
+            'page_name': self.name,
+            'signals': signals,
+            'tabs_list': self._tabs_list,
+            'checked_items': checked_items
+        }
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         self._set_active_tab()
-        self._do_checks()
 
     def store_values(self):
         """ This must be implemented by subclasses """
