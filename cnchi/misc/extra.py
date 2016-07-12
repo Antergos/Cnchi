@@ -567,17 +567,11 @@ def gtk_refresh():
 def remove_temp_files():
     """ Remove Cnchi temporary files """
     temp_files = [
-        ".setup-running",
-        ".km-running",
-        "setup-pacman-running",
-        "setup-mkinitcpio-running",
-        ".tz-running",
-        ".setup",
-        "Cnchi.log"]
+        "cnchi.pid", ".km-running", ".tz-running", ".setup",
+        "setup-pacman-running", "setup-mkinitcpio-running", "cnchi.log"]
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
-            # FIXME: Some of these tmp files are created with sudo privileges
             with raised_privileges():
                 os.remove(path)
 

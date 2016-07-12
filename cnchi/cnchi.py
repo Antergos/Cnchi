@@ -32,19 +32,8 @@
 import os
 import sys
 
-
 # Set initial value for "_" to appease PyCharm
 _ = lambda x: x
-
-# CNCHI_PATH = "/usr/share/cnchi"
-# sys.path.append(CNCHI_PATH)
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
-# sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
 
 import argparse
 import logging
@@ -64,6 +53,7 @@ try:
     BUGSNAG_ERROR = None
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
+    print("Error importing bugsnag: ", err)
 
 try:
     from _base_object import BaseObject, Gio, Gtk
@@ -86,7 +76,7 @@ FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 class CnchiApp(BaseObject):
     """ Cnchi Installer """
 
-    TMP_RUNNING = '/tmp/.setup-running'
+    TMP_PID_FILE = '/tmp/cnchi.pid'
 
     def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
 
@@ -98,6 +88,7 @@ class CnchiApp(BaseObject):
 
         # Command line options
         self.cmd_line = cmd_line
+
 
     def _pre_activation_checks(self):
         can_activate = True
@@ -116,21 +107,19 @@ class CnchiApp(BaseObject):
                     "If you are sure that the installer is not already running\n"
                     "you can run this installer using the --force option\n"
                     "or you can manually delete the offending file.\n\n"
-                    "Offending file: '{0}'").format(self.TMP_RUNNING)
+                    "Offending file: '{0}'").format(self.TMP_PID_FILE)
             show.error(None, msg)
 
         return can_activate
 
     def activate_cb(self, app):
-        if not self._pre_activation_checks:
+        if not self._pre_activation_checks():
             return
 
-        #with open(self.TMP_RUNNING, "w") as tmp_file:
-        #    txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
-        #    tmp_file.write(txt)
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
+        # ??
         controller = Controller()
 
         self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
@@ -139,18 +128,14 @@ class CnchiApp(BaseObject):
 
     def already_running(self):
         """ Check to see if we're already running """
-        if os.path.exists(self.TMP_RUNNING):
-            logging.debug("File %s already exists.", self.TMP_RUNNING)
-            with open(self.TMP_RUNNING) as setup:
-                lines = setup.readlines()
-            if len(lines) >= 2:
-                try:
-                    pid = int(lines[1].strip('\n'))
-                except ValueError as err:
-                    logging.debug(err)
-                    logging.debug("Cannot read PID value.")
-                    return True
-            else:
+        if os.path.exists(self.TMP_PID_FILE):
+            logging.debug("File %s already exists.", self.TMP_PID_FILE)
+            with open(self.TMP_PID_FILE) as setup:
+                line = setup.readline()
+            try:
+                pid = int(line.strip('\n'))
+            except ValueError as err:
+                logging.debug(err)
                 logging.debug("Cannot read PID value.")
                 return True
 
@@ -160,7 +145,7 @@ class CnchiApp(BaseObject):
             else:
                 # Cnchi with pid 'pid' is no longer running, we can safely
                 # remove the offending file and continue.
-                os.remove(self.TMP_RUNNING)
+                os.remove(self.TMP_PID_FILE)
         return False
 
 
