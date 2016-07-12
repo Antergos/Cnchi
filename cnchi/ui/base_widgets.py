@@ -27,39 +27,40 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-import os
+# Standard Lib
+from _base_object import (
+    json,
+    os
+)
 
+# 3rd-party Libs
 from _base_object import (
     Gdk,
     Gio,
     GLib,
     GObject,
     Gtk,
-    WebKit2,
-    BaseObject,
-    DataObject,
-    bg_thread
+    WebKit2
 )
 
-from _settings import NonSharedData, SharedData, settings
+# This application
+from _base_object import (
+    BaseObject,
+    bg_thread,
+    DataObject,
+    NonSharedData,
+    SharedData,
+    Singleton
+)
 
 VERTICAL = Gtk.Orientation.VERTICAL
 HORIZONTAL = Gtk.Orientation.HORIZONTAL
 
 
-class Singleton(type):
-    _instance = None
-
-    def __call__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__call__(*args, **kwargs)
-
-        return cls._instance
-
-
 class BaseWidget(BaseObject):
     """
-    Base class for all of Cnchi's UI classes.
+    Base class for UI classes that have a corresponding `GtkWidget` which is
+    accessible via the class's `widget` attribute.
 
     Class Attributes:
         See Also `BaseObject.__doc__`

@@ -26,17 +26,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import json
-import locale
-import gettext
+# Standard Lib
+from _base_object import (
+    gettext,
+    json,
+    locale,
+    os
+)
 
-from ui.base_widgets import Singleton
-from ui.html.pages._html_page import HTMLPage, DataObject
+# 3rd-party Libs
+# from _base_object import ()
+
+# This Application
+from ui.html.pages._html_page import HTMLPage
 import misc.i18n as i18n
 
 
-class LanguagePage(HTMLPage, metaclass=Singleton):
+class LanguagePage(HTMLPage):
     """
     The first page shown when the app starts. It facilitates language selection (translations).
 
@@ -67,6 +73,7 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             'languagelist.txt.gz'
         )
         self.set_languages_list()
+        self._create_and_connect_signals()
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)

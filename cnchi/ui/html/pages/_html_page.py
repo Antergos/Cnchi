@@ -26,22 +26,33 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import json
+# Standard Lib
+from _base_object import (
+    os
+)
 
-from jinja2 import Environment, FileSystemLoader, PrefixLoader
-
+# 3rd-party Libs
 from ui.base_widgets import (
-    DataObject,
-    Singleton,
-    SharedData,
-    Page,
-    bg_thread,
     Gtk
 )
 
+from jinja2 import (
+    Environment,
+    FileSystemLoader,
+    PrefixLoader
+)
 
-class HTMLPage(Page):
+# This application
+from ui.base_widgets import (
+    bg_thread,
+    DataObject,
+    Page,
+    SharedData,
+    Singleton,
+)
+
+
+class HTMLPage(Page, metaclass=Singleton):
     """
     Base class for HTML UI pages.
 
@@ -74,6 +85,7 @@ class HTMLPage(Page):
         if self._tpl is None and self._tpl_setup_ran is None:
             self._tpl_setup_ran = True
             self._initialize_template_engine()
+            self._create_and_connect_special_signals()
 
         if self._pages_data is None:
             self.logger.debug('creating data object in _pages_data for %s..', name)
@@ -113,10 +125,11 @@ class HTMLPage(Page):
 
         """
 
-        self._main_window.connect('go-to-next-page', self.go_to_next_page)
+        __signals = []
 
         for _signal in self.signals:
-            if _signal.starts_with('_'):
+            if _signal.startswith('--'):
+                __signals.append(_signal)
                 continue
 
             cb_name = '{}_cb'.format(_signal.replace('-', '_'))
@@ -124,13 +137,24 @@ class HTMLPage(Page):
             result_signal = '{}-result'.format(_signal)
             _signal = 'do-{}'.format(_signal)
 
-            if _signal not in self.allowed_signals:
-                self.allowed_signals.append(_signal)
-                self.allowed_signals.append(result_signal)
-                self._main_window.create_custom_signal(_signal)
-                self._main_window.create_custom_signal(result_signal)
+            for __signal in [_signal, result_signal]:
+                if __signal not in self._allowed_signals:
+                    self._allowed_signals.append(__signal)
+                    self._main_window.create_custom_signal(__signal)
+                    __signals.append(__signal)
 
             self._main_window.connect(_signal, callback)
+
+        self.signals = __signals
+
+    def _create_and_connect_special_signals(self):
+        # TODO: This is garbage. Come up with something better.
+        for _signal, callback in [('go-to-next-page', self.go_to_next_page), ('trigger_event', '')]:
+            if _signal not in self._allowed_signals:
+                self._allowed_signals.append(_signal)
+                self._main_window.create_custom_signal(_signal)
+                if '' != callback:
+                    self._main_window.connect(_signal, callback)
 
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()

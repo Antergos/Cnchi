@@ -28,8 +28,6 @@
 
 """ Update Module """
 
-import os
-from threading import Thread
 
 from _base_object import BaseObject, GLib
 from installation.pacman.pac import Pac
@@ -50,19 +48,30 @@ class Updater(BaseObject):
     def _initialize_alpm(self):
         self.pacman = Pac()
 
-    def is_repo_version_newer(self):
-        if self.pacman is None:
-            self._initialize_alpm()
+    def do_update_check(self):
+        result = True
+        restart = False
 
-        self.pacman.refresh()
+        if self.is_repo_version_newer():
+            # Signal the UI to inform it that we are going to update Cnchi.
+            GLib.idle_add(self._emit_signal, '--update-available')
 
-        pkg_objs = self.pacman.get_packages_with_available_update()
+            result = self.pacman.install(['cnchi']) > -1
+            restart = result
 
-        return [p for p in pkg_objs if p and 'cnchi' == p.name]
+        res = dict(result=result, restart=restart)
+
+        GLib.idle_add(self._emit_signal, 'update-check-result', res)
 
     def is_remote_version_newer(self, remote_version, local_version):
-        """ Returns true if the Internet version of Cnchi is
-            newer than the local one """
+        """
+        If `remote_version` is newer than `local_version` returns True else False
+
+        Notes:
+            We are not currently using this method. It is being retained because it
+            could be useful in the future.
+
+        """
 
         if not remote_version:
             return False
@@ -85,27 +94,17 @@ class Updater(BaseObject):
 
         return False
 
-    def do_update_check(self):
-        result = True
-        restart = False
+    def is_repo_version_newer(self):
+        if self.pacman is None:
+            self._initialize_alpm()
 
-        if self.is_repo_version_newer():
-            GLib.idle_add(self._emit_signal, 'update-available')
-            result = self.pacman.install(['cnchi']) > -1
-            restart = result
+        self.pacman.refresh()
 
-        res = dict(result=result, restart=restart)
+        pkg_objs = self.pacman.get_packages_with_available_update()
 
-        GLib.idle_add(self._emit_signal, 'update-result-ready', res)
-
-
-def _do_update_check():
-    updater = Updater()
-    updater.do_update_check()
+        return [p for p in pkg_objs if p and 'cnchi' == p.name]
 
 
 def do_update_check():
-    thrd = Thread(target=_do_update_check)
-
-    thrd.start()
-
+    updater = Updater()
+    updater.do_update_check()

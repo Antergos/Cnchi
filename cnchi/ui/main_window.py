@@ -29,12 +29,17 @@
 
 """ Main Cnchi Window """
 
+# 3rd-party Libs
 from .base_widgets import (
-    Gtk,
     Gdk,
     GLib,
     GObject,
-    WebKit2,
+    Gtk,
+    WebKit2
+)
+
+# This application
+from .base_widgets import (
     BaseWidget,
     Singleton
 )
@@ -62,7 +67,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
         self.create_custom_signal('window-dragging-start')
         self.create_custom_signal('window-dragging-stop')
-        self.allowed_signals.extend(['window-dragging-start', 'window-dragging-stop'])
+        self._allowed_signals.extend(['window-dragging-start', 'window-dragging-stop'])
 
         self._apply_window_settings()
         self._connect_signals()

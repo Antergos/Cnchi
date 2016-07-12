@@ -28,13 +28,26 @@
 
 """ UI Controller Module """
 
-import json
-import sys
-from random import choice
-from string import ascii_uppercase
-from threading import Thread
+# Standard Lib
+from _base_object import (
+    ascii_uppercase,
+    choice,
+    json,
+    os,
+    sys
+)
 
-from ui.base_widgets import BaseObject, Singleton, bg_thread, GLib, WebKit2
+# 3rd-party Libs
+# from _base_object import ()
+
+# This application
+from _base_object import (
+    BaseObject,
+    bg_thread,
+    Singleton
+)
+
+
 from ui.main_window import MainWindow
 from ui.html.main_container import MainContainer
 from ui.html.pages_helper import PagesHelper
@@ -86,9 +99,15 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        msg = dict(cmd=cmd, args=list(args))
+        if cmd.startswith('--'):
+            cmd = cmd[2:]
+
+        if cmd not in self._allowed_signals:
+            self.logger.error('Signal: %s is not allowed!', cmd)
+            return
+
+        msg = json.dumps(dict(cmd=cmd, args=list(args)))
         var = self._generate_js_temp_variable_name()
-        msg = json.dumps(msg)
         msg = self._emit_js_tpl.format(var, msg)
 
         self._web_view.run_javascript(msg, None, None, None)
@@ -108,11 +127,6 @@ class Controller(BaseObject, metaclass=Singleton):
         _logger = getattr(self.logger, level)
 
         _logger(msg, *args)
-
-    def run_in_new_thread(self, _callable, *args):
-        thrd = Thread(target=_callable, args=args)
-
-        thrd.start()
 
     def set_current_page(self, identifier):
         self.logger.debug('set_current_page(%s)', identifier)

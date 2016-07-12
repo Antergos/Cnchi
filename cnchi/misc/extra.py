@@ -435,9 +435,9 @@ def get_nm_state():
 def has_connection(callback=None, *args):
     """ Checks if we have an Internet connection """
     urls = [
-        'http://130.206.13.20',
-        'http://173.194.40.112',
-        'http://104.27.140.167'
+        'http://google.com',
+        'http://yandex.ru',
+        'http://baidu.com'
     ]
     _args = list(args)
     _connected = False

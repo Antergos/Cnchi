@@ -26,7 +26,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.html.pages._html_page import HTMLPage, json, Gtk
+# Standard Lib
+from _base_object import (
+    json
+)
+
+# This Application
+from ui.html.pages._html_page import HTMLPage
 
 
 class SummaryPage(HTMLPage):

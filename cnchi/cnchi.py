@@ -70,7 +70,7 @@ try:
     from ui.controller import Controller
 except ImportError as err:
     msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
-    logging.error(msg)
+    logging.exception(msg)
     sys.exit(1)
 
 # Useful vars for gettext (translations)

@@ -187,10 +187,10 @@
 				}
 			}
 
-			installit_button_clicked_cb(event) {
+			install_it_button_clicked_cb( event ) {
 				_page.$welcome_wrapper.animateCss('magictime holeOut', () => {
 					cnchi.log('"Install It" was selected. Sending signal to backend..');
-					cnchi.emit_signal('installit-selected');
+					cnchi.emit_signal('do-install-it-selected');
 				});
 			}
 
@@ -203,16 +203,16 @@
 			}
 
 			register_event_handlers() {
-				$('.try_it button').on('click', this.tryit_button_clicked_cb);
-				$('.install_it button').on('click', this.installit_button_clicked_cb);
+				$('.try_it button').on('click', this.try_it_button_clicked_cb);
+				$('.install_it button').on('click', this.install_it_button_clicked_cb);
 				$(window).on('update-available', this.update_available_cb);
-				$(window).on('update-result-ready', this.update_result_ready_cb);
-				$(window).on('connection-check-result-ready', this.connection_check_result_ready_cb)
+				$(window).on('update-check-result', this.update_result_ready_cb);
+				$(window).on('connection-check-result', this.connection_check_result_ready_cb)
 			}
 
-			tryit_button_clicked_cb(event) {
+			try_it_button_clicked_cb( event ) {
 				cnchi.log('"Try It" was selected. Sending signal to backend..');
-				cnchi.emit_signal('tryit-selected');
+				cnchi.emit_signal('do-try-it-selected');
 			}
 
 			update_available_cb() {

@@ -26,15 +26,19 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import json
 
-from ui.html.pages._html_page import HTMLPage, Singleton, bg_thread
+# Standard Lib
+from _base_object import (
+    json
+)
+
+# This Application
+from ui.html.pages._html_page import HTMLPage, bg_thread
 from updater import do_update_check
 from misc.extra import has_connection
 
 
-class WelcomePage(HTMLPage, metaclass=Singleton):
+class WelcomePage(HTMLPage):
     """
     This page provides the user with a choice: (Try It or Install It).
 
@@ -68,14 +72,14 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
     def connection_check_cb(self, *args):
         has_connection(self._controller.trigger_js_event, 'connection-check-result')
 
-    def install_it_selected_cb(self):
+    def install_it_selected_cb(self, *args):
         self.go_to_next_page()
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         pass
 
-    def restart_cb(self):
+    def restart_cb(self, *args):
         self._controller.do_restart()
 
     def store_values(self):
@@ -88,6 +92,3 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
     @bg_thread
     def update_check_cb(self, *args):
         do_update_check()
-
-    def update_result_ready_cb(self, obj, result, *args):
-        self.logger.debug([result, args])

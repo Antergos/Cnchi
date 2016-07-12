@@ -26,7 +26,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.html.pages._html_page import HTMLPage, json, Gtk
+# Standard Lib
+from _base_object import (
+    json
+)
+
+# This Application
+from ui.html.pages._html_page import HTMLPage
 
 
 class DesktopPage(HTMLPage):
@@ -52,11 +58,9 @@ class DesktopPage(HTMLPage):
 
         self.signals = []
 
-        self._create_signals()
-        self._connect_signals()
 
-    def _connect_signals(self):
-        pass
+        self._create_and_connect_signals()
+
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)

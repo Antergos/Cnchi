@@ -26,9 +26,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+# Standard Lib
+import gettext
+import json
+import locale
 import logging
 import os
+import sys
+from random import choice
+from string import ascii_uppercase
 
+# 3rd-party Libs
 import gi
 
 # Once 3.22 is released we will be able to do this:
@@ -37,18 +45,19 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
 from gi.repository import (
     Gdk,
-    GLib,
     Gio,
+    GLib,
     GObject,
     Gtk,
     WebKit2
 )
 
+# This application
 from _settings import (
     DataObject,
     NonSharedData,
-    SharedData,
-    settings
+    settings,
+    SharedData
 )
 
 from misc.extra import bg_thread
@@ -70,20 +79,20 @@ class BaseObject:
         TPL_DIR      (str): Abs path to the app's UI templates (derived from UI_DIR).
         BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
 
-        _cnchi_app      (BaseWidget):      The application object.
-        _controller     (BaseWidget):      The app's ui controller object.
-        _main_container (BaseWidget):      The app's main ui container object.
-        _main_window    (BaseWidget):      The app's main window object.
-        _pages_data     (SharedData):      Descriptor that provides access to the app's ui
-                                           pages' data (storage for `Page.store_values()`)
-        _web_view       (BaseWidget):      The app's ui web view object.
+        _cnchi_app       (BaseWidget):      The application object.
+        _controller      (BaseWidget):      The app's ui controller object.
+        _main_container  (BaseWidget):      The app's main ui container object.
+        _main_window     (BaseWidget):      The app's main window object.
+        _pages_data      (SharedData):      Descriptor that provides access to the app's ui
+                                            pages' data (storage for `Page.store_values()`)
+        _web_view        (BaseWidget):      The app's ui web view object.
 
-        allowed_signals (list):            List of signals allowed over the python/js bridge.
-        logger          (logging.Handler): The app's log handler.
-        settings        (SharedData):      Descriptor that provides access to the app's
-                                           Settings object.
-        widget          (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
-                                           for this object.
+        _allowed_signals (list):            List of signals allowed over the python/js bridge.
+        logger           (logging.Handler): The app's log handler.
+        settings         (SharedData):      Descriptor that provides access to the app's
+                                            Settings object.
+        widget           (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
+                                            for this object.
 
     """
 
@@ -102,7 +111,7 @@ class BaseObject:
     _pages_data = NonSharedData('_pages_data')
     _web_view = SharedData('_web_view')
 
-    allowed_signals = SharedData('allowed_signals')
+    _allowed_signals = SharedData('_allowed_signals')
     logger = None
     log_wrap = '-'
     settings = SharedData('settings', from_dict=settings)
@@ -126,8 +135,8 @@ class BaseObject:
 
         self.template = self.ui = None
 
-        if self.allowed_signals is None:
-            self.allowed_signals = []
+        if self._allowed_signals is None:
+            self._allowed_signals = []
 
         self._check_for_main_components(name)
 
@@ -147,4 +156,14 @@ class BaseObject:
 
             if attrib is None:
                 setattr(self, attrib_name, self)
+
+
+class Singleton(type):
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+
+        return cls._instance
 

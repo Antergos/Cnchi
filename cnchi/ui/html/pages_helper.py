@@ -26,10 +26,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import logging
+# Standard Lib
+from _base_object import (
+    os
+)
 
-from ui.base_widgets import BaseWidget, SharedData, Singleton
+# 3rd-party Libs
+# from _base_object import ()
+
+# This application
+from ui.base_widgets import (
+    bg_thread,
+    BaseWidget,
+    SharedData,
+    Singleton,
+)
 
 from .pages import ALL_PAGES
 

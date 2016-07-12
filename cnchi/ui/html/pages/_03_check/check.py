@@ -26,9 +26,15 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
+# Standard Lib
+from _base_object import (
+    os,
+    json
+)
 
-from ui.html.pages._html_page import HTMLPage, bg_thread, json
+# This Application
+from _base_object import bg_thread
+from ui.html.pages._html_page import HTMLPage
 
 
 class CheckPage(HTMLPage):
@@ -52,14 +58,10 @@ class CheckPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals = ['space-check', 'power-check', 'update-check', 'iso-check']
+        self.signals.extend(['space-check', 'power-check', 'update-check', 'iso-check'])
         self.checked_items = []
 
-        self._create_signals()
-        self._connect_signals()
-
-    def _connect_signals(self):
-
+        self._create_and_connect_signals()
 
     @staticmethod
     def _get_checked_items_info():
@@ -121,6 +123,18 @@ class CheckPage(HTMLPage):
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         self._set_active_tab()
+
+    def iso_check_cb(self, *args):
+        pass
+
+    def power_check_cb(self, *args):
+        pass
+
+    def space_check_cb(self, *args):
+        pass
+
+    def update_check_cb(self, *args):
+        pass
 
     def store_values(self):
         """ This must be implemented by subclasses """

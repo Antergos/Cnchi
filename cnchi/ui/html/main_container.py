@@ -26,22 +26,26 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import io
-import json
-import logging
+# Standard Lib
+from _base_object import (
+    json,
+    os
+)
 
-from ui.base_widgets import (
+# 3rd-party Libs
+from _base_object import (
     Gdk,
     Gio,
     Gtk,
-    WebKit2,
+    WebKit2
+)
+
+# This Application
+from ui.base_widgets import (
     BaseWidget,
     DataObject,
     Singleton
 )
-
-from .pages import *
 
 
 class MainContainer(BaseWidget, metaclass=Singleton):
@@ -165,7 +169,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             # grab the requested URI
             uri = decision.get_request().get_uri()
-            logging.debug(uri)
+            self.logger.debug(uri)
 
     def load_changed_cb(self, view, event):
         if WebKit2.LoadEvent.FINISHED != event:
@@ -195,7 +199,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             name = incoming.pop(0)
             args = incoming
 
-            if name not in self.allowed_signals:
+            if name not in self._allowed_signals:
                 self.logger.error('Signal: %s not allowed!', name)
                 return
 
@@ -203,7 +207,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             self._main_window.widget.emit(name, args)
 
         except Exception as err:
-            logging.exception(err)
+            self.logger.exception(err)
 
     def uri_request_cb(self, request):
         path = request.get_uri()
@@ -211,15 +215,15 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         if '?' in path:
             path, query = path.split('?')
 
-        page = self._get_page_name_from_uri(path)
+        page_name = self._get_page_name_from_uri(path)
 
         if '.' in path:
             self.logger.debug('Loading app resource: {0}'.format(path))
-            self._uri_request_finish_resource(page, request)
+            self._uri_request_finish_resource(page_name, request)
 
-        elif page in self._pages_helper.page_names:
-            self.logger.debug('Loading app page: {0}'.format(page))
-            self._uri_request_finish_page(page, request)
+        elif page_name in self._pages_helper.page_names:
+            self.logger.debug('Loading app page: {0}'.format(page_name))
+            self._uri_request_finish_page(page_name, request)
 
         else:
             raise Exception('Path is not valid: {0}'.format(path))
