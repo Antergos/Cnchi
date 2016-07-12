@@ -28,7 +28,7 @@
 
 import os
 
-from ui.html.pages._html_page import HTMLPage, json
+from ui.html.pages._html_page import HTMLPage, bg_thread, json
 
 
 class CheckPage(HTMLPage):
@@ -52,57 +52,49 @@ class CheckPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals = []
+        self.signals = ['space-check', 'power-check', 'update-check', 'iso-check']
         self.checked_items = []
 
         self._create_signals()
         self._connect_signals()
 
     def _connect_signals(self):
-        pass
+
 
     @staticmethod
     def _get_checked_items_info():
         return {
             'reboot_required': (
-                'error',
-                _('Reboot Required'),
-                _('You must reboot before retrying again.')
+                'close',
+                'red',
+                _('No Incomplete Install Attempts'),
+                _('You must reboot before trying again.')
             ),
             'enough_space': (
-                'pending',
+                'remove',
+                'gray',
                 _('Has Enough Storage Space'),
                 _('This system has at least 10GB* of available storage space.')
             ),
             'power_source': (
-                'pending',
+                'remove',
+                'gray',
                 _('Has Power Source'),
                 _('This system is connected to a power source.')
             ),
             'latest_cnchi': (
-                'pending',
+                'remove',
+                'gray',
                 _('Installer Updated'),
                 _('Cnchi is up to date.')
             ),
             'recent_iso': (
-                'pending',
+                'remove',
+                'gray',
                 _('Install Media Is Recent'),
-                _('This system was booted from a recent ISO image.')
+                _('This system was booted using a recent ISO image.')
             )
         }
-
-    def get_checks_info(self):
-        items = self._get_checked_items_info()
-
-        if os.path.exists("/tmp/.cnchi_partitioning_completed"):
-            self.checked_items.append(items['reboot_required'])
-
-        for item, item_info in items.items():
-            if 'reboot_required' == item:
-                continue
-            self.checked_items.append(item_info)
-
-        return self.checked_items
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
@@ -113,6 +105,18 @@ class CheckPage(HTMLPage):
             'tabs_list': self._tabs_list,
             'checked_items': checked_items
         }
+
+    def get_checks_info(self):
+        items = self._get_checked_items_info()
+
+        if os.path.exists("/tmp/.cnchi_partitioning_completed"):
+            self.checked_items.append(items['reboot_required'])
+
+        for item, item_info in items.items():
+            if item_info not in self.checked_items:
+                self.checked_items.append(item_info)
+
+        return self.checked_items
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

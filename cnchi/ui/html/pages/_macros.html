@@ -122,42 +122,31 @@
  # Outputs HTML for a collection (listbox styled <ul>).
  #
  # Args:
- #     items  (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
- #                           item info tuple should contain 3 things: material icon name, heading, & subheading.
- #                           For example: [('check_circle', 'Updated', 'Cnchi is up-to-date')].
- #     _class (str):         Optional css class for the collection.
+ #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
+ #                            item info tuple should contain 4 things: material icon name, icon color, heading, &
+ #                            subheading. For example: [('check_circle', 'green', 'Updated', 'Cnchi is up-to-date')].
+ #     _class  (str):         Optional css class for the collection.
+ #     columns (int):         Split into this number of columns.
  #
  #}
-{% macro collection(items, _class='') %}
+{% macro collection(items, _class='', columns=1) %}
 	{% if items %}
 		{% if '' != _class %}
 			{% set _class = ' %s'|format(_class) %}
 		{% endif %}
 
-		<ul class="collection{{ _class }}">
-			{% for item in items %}
-				<li class="collection-item avatar">
-					{% if 'pending' == item[0] %}
-						<div class="preloader-wrapper small active circle">
-							<div class="spinner-layer">
-								<div class="circle-clipper left">
-									<div class="circle"></div>
-								</div>
-								<div class="gap-patch">
-									<div class="circle"></div>
-								</div>
-								<div class="circle-clipper right">
-									<div class="circle"></div>
-								</div>
-							</div>
-						</div>
-					{% else %}
-						<i class="material-icons circle">{{ item[0] }}</i>
-					{% endif %}
-					<span class="title">{{ item[1] }}</span>
-					<p>{{ item[2] }}</p>
-				</li>
-			{% endfor %}
-		</ul>
+		{% for column in items|slice(columns) %}
+			<div class="grid-50">
+				<ul class="collection{{ _class }}">
+					{% for item in column %}
+						<li class="collection-item avatar">
+							<i class="material-icons circle {{ item[1] }}">{{ item[0] }}</i>
+							<span class="title">{{ item[2] }}</span>
+							<p>{{ item[3] }}</p>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endfor %}
 	{% endif %}
 {% endmacro %}

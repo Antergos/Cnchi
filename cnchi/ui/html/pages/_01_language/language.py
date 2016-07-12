@@ -67,12 +67,6 @@ class LanguagePage(HTMLPage, metaclass=Singleton):
             'languagelist.txt.gz'
         )
         self.set_languages_list()
-        self._create_signals()
-        self._connect_signals()
-
-    def _connect_signals(self):
-        super()._connect_signals()
-        self._main_window.connect('language-selected', self.language_selected_cb)
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)

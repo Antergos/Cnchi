@@ -55,44 +55,39 @@ class WelcomePage(HTMLPage, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals.extend(['tryit-selected', 'installit-selected', 'do-update-check',
-                             'update-available', 'update-result-ready', 'do-restart',
-                             'do-connection-check', 'connection-check-result-ready'])
+        self.signals.extend(['try-it-selected', 'install-it-selected', 'update-check',
+                             '--update-available', 'restart', 'connection-check'])
 
-        self._create_signals()
-        self._connect_signals()
-
-    def _connect_signals(self):
-        super()._connect_signals()
-        self._main_window.connect('tryit-selected', self.try_it_selected_cb)
-        self._main_window.connect('installit-selected', self.go_to_next_page)
-        self._main_window.connect('do-update-check', self.do_update_check_cb)
-        self._main_window.connect('do-restart', self._controller.do_restart)
-        self._main_window.connect('do-connection-check', self.do_has_connection_check_cb)
-        self._main_window.connect('update-result-ready', self.update_result_ready_cb)
+        self._create_and_connect_signals()
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         return {'page_name': self.name, 'signals': signals}
 
     @bg_thread
-    def do_has_connection_check_cb(self, *args):
-        has_connection(self._controller.trigger_js_event, 'connection-check-result-ready')
+    def connection_check_cb(self, *args):
+        has_connection(self._controller.trigger_js_event, 'connection-check-result')
 
-    @bg_thread
-    def do_update_check_cb(self, *args):
-        do_update_check()
-
-    def try_it_selected_cb(self, *args):
-        self._controller.exit_app()
-
-    def update_result_ready_cb(self, obj, result, *args):
-        self.logger.debug([result, args])
+    def install_it_selected_cb(self):
+        self.go_to_next_page()
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         pass
 
+    def restart_cb(self):
+        self._controller.do_restart()
+
     def store_values(self):
         super().store_values()
         self._main_window.toggle_maximize()
+
+    def try_it_selected_cb(self, *args):
+        self._controller.exit_app()
+
+    @bg_thread
+    def update_check_cb(self, *args):
+        do_update_check()
+
+    def update_result_ready_cb(self, obj, result, *args):
+        self.logger.debug([result, args])

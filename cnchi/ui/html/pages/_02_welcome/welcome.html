@@ -170,15 +170,21 @@
 			}
 
 			initialize_finish() {
-				this.$connection_wrapper.fadeOut()
-					.promise()
-					.done(() => {
-						this.$update_wrapper.fadeIn()
-							.promise()
-							.done(() => {
-								cnchi.emit_signal('do-update-check');
-							});
-					});
+				if ( this.$connection_wrapper.is(':visible') ) {
+					this.$connection_wrapper.fadeOut()
+						.promise()
+						.done(_show_update_wrapper);
+				} else {
+					_show_update_wrapper();
+				}
+
+				function _show_update_wrapper() {
+					_page.$update_wrapper.fadeIn()
+						.promise()
+						.done(() => {
+							cnchi.emit_signal('do-update-check');
+						});
+				}
 			}
 
 			installit_button_clicked_cb(event) {

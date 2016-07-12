@@ -68,7 +68,7 @@ class HTMLPage(Page):
 
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
-        self.signals = ['go-to-next-page']
+        self.signals = []
         self.can_go_to_next_page = False
 
         if self._tpl is None and self._tpl_setup_ran is None:
@@ -84,14 +84,53 @@ class HTMLPage(Page):
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
 
-    def _connect_signals(self):
+
+    def _create_and_connect_signals(self):
+        """
+        Creates the page's signals and connects them to their callbacks (handlers).
+        Signals should be appended to `self.signals` prior to calling this method.
+
+        A corresponding result signal will be created for each signal and added to the
+        allowed signals list automatically. Signal names will have 'do-' prepended to them.
+        Their corresponding result signal will have '-result' appended to it.
+
+        The name of the callback method that will be registered for each signal will be the
+        signal name as it appears in `self.signals` at the time of calling this method with
+        hyphens replaced by underscores and should end with '_cb'.
+
+        Signal names that start with two hyphens are ignored by this method.
+
+        Example:
+            >>> self.signals = ['some-action', 'some-other-action', '--private-action']
+            >>> self._create_and_connect_signals()
+            >>> self.signals
+                ['do-some-action', 'some-action-result', 'do-other-action',
+                 'other-action-result', '_private_action']
+
+            With the above, these callback methods would have been registered (they must exist):
+                'do-some-action':  `self.some_action_cb`
+                'do-other-action': `self.other_action_cb`
+
+        """
+
         self._main_window.connect('go-to-next-page', self.go_to_next_page)
 
-    def _create_signals(self):
         for _signal in self.signals:
+            if _signal.starts_with('_'):
+                continue
+
+            cb_name = '{}_cb'.format(_signal.replace('-', '_'))
+            callback = getattr(self, cb_name)
+            result_signal = '{}-result'.format(_signal)
+            _signal = 'do-{}'.format(_signal)
+
             if _signal not in self.allowed_signals:
                 self.allowed_signals.append(_signal)
+                self.allowed_signals.append(result_signal)
                 self._main_window.create_custom_signal(_signal)
+                self._main_window.create_custom_signal(result_signal)
+
+            self._main_window.connect(_signal, callback)
 
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()
