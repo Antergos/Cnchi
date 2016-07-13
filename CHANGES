@@ -1,3 +1,4 @@
+[2016-07-13 09:22:52 -0500]  some progress                                                          Dustin Falgout  {cc3696d}
 [2016-07-12 03:31:31 -0500]  done with signal system. also reorganized imports and worked on che..  Dustin Falgout  {afaa972}
 [2016-07-12 01:19:28 -0500]  implementing a standardize system for signals/callbacks. almost fin..  Dustin Falgout  {cff0728}
 [2016-07-11 00:46:12 -0500]  some work on check screen                                              Dustin Falgout  {130b560}

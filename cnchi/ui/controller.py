@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# ui_controller.py
+# controller.py
 #
 # Copyright © 2013-2016 Antergos
 #
@@ -152,6 +152,3 @@ class Controller(BaseObject, metaclass=Singleton):
 
         GLib.idle_add(self._main_window.emit, event_name, *args)
         GLib.idle_add(self.emit_js, 'trigger_event', event_name, *args)
-
-
-
