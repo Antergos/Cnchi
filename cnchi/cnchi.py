@@ -468,7 +468,7 @@ def init_cnchi():
     #    sys.exit(1)
 
     # Check ISO version where Cnchi is running from
-    # if not check_iso_version():
+    # if not do_iso_check():
     #    sys.exit(1)
 
     # if not cmd_line.disable_update:

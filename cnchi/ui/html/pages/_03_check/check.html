@@ -18,9 +18,10 @@
 
 		.content_wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center;}
 
-		.heading { text-align: center; margin: 0px; }
+		.heading { text-align: center; margin: 0px; margin-bottom: 35px; }
 
 		.checked_items li { opacity: 0 }
+		.checked_items i { transition: all 0.2s ease-in-out; }
 	</style>
 {% endblock page_styles %}
 
@@ -68,10 +69,32 @@
 			initialize() {
 				this.register_event_handlers();
 				Materialize.showStaggeredList('.checked_items');
+
+				$('.checked_items li').each(() => {
+					let check = $(this).attr('id').replace('_', '-'),
+						signal = `do-${check}`;
+
+					cnchi.emit_signal(signal);
+				});
+			}
+
+			checks_results_cb(event, event_name, result) {
+				console.log(JSON.stringify(event));
+				if ( true !== result ) {
+					return;
+				}
+				let css_id = event_name.replace('-ready', '').replace('-', '_'),
+					selector = `#${css_id}`;
+
+				$(selector).find('i').removeClass('red').addClass('green').text('check');
 			}
 
 			register_event_handlers() {
+				let events = ['power-check-result', 'update-check-result', 'iso-check-result', 'space-check-result'];
 
+				for (let event of events) {
+					$(window).on(event, this.checks_results_cb);
+				}
 			}
 		}
 

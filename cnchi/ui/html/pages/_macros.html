@@ -123,8 +123,9 @@
  #
  # Args:
  #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
- #                            item info tuple should contain 4 things: material icon name, icon color, heading, &
- #                            subheading. For example: [('check_circle', 'green', 'Updated', 'Cnchi is up-to-date')].
+ #                            item info tuple should contain 5 things: css id, material icon name, icon color,
+ #                            heading, & subheading.
+ #                            For example: [('cnchi_updated', 'check', 'green', 'Updated', 'Cnchi is up-to-date')].
  #     _class  (str):         Optional css class for the collection.
  #     columns (int):         Split into this number of columns.
  #
@@ -139,10 +140,10 @@
 			<div class="grid-50">
 				<ul class="collection{{ _class }}">
 					{% for item in column %}
-						<li class="collection-item avatar">
-							<i class="material-icons circle {{ item[1] }}">{{ item[0] }}</i>
-							<span class="title">{{ item[2] }}</span>
-							<p>{{ item[3] }}</p>
+						<li id="{{ item[0] }}" class="collection-item avatar">
+							<i class="material-icons circle {{ item[2] }}">{{ item[1] }}</i>
+							<span class="title">{{ item[3] }}</span>
+							<p>{{ item[4] }}</p>
 						</li>
 					{% endfor %}
 				</ul>

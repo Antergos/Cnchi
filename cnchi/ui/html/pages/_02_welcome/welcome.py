@@ -31,11 +31,9 @@
 from _base_object import (
     json
 )
-
-# This Application
-from ui.html.pages._html_page import HTMLPage, bg_thread
-from updater import do_update_check
 from misc.extra import has_connection
+from modules.update import UpdateModule
+from ui.html.pages._html_page import HTMLPage, bg_thread
 
 
 class WelcomePage(HTMLPage):
@@ -70,7 +68,7 @@ class WelcomePage(HTMLPage):
 
     @bg_thread
     def connection_check_cb(self, *args):
-        has_connection(self._controller.trigger_js_event, 'connection-check-result')
+        self._controller.trigger_js_event('connection-check-result', has_connection())
 
     def install_it_selected_cb(self, *args):
         self.go_to_next_page()
@@ -91,4 +89,12 @@ class WelcomePage(HTMLPage):
 
     @bg_thread
     def update_check_cb(self, *args):
-        do_update_check()
+        updater = UpdateModule()
+
+        for response in updater.do_update_check():
+            self.logger.debug(response)
+            if isinstance(response, str) and response.startswith('--'):
+                self._controller.trigger_js_event(response)
+
+            elif isinstance(response, dict):
+                self._controller.trigger_js_event('update-check-result', response)

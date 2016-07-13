@@ -28,12 +28,12 @@
 
 """ Update Module """
 
-
-from _base_object import BaseObject, GLib
+from ._base_module import BaseModule
+from _base_object import GLib
 from installation.pacman.pac import Pac
 
 
-class Updater(BaseObject):
+class UpdateModule(BaseModule):
 
     def __init__(self, name='update', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)
@@ -41,9 +41,6 @@ class Updater(BaseObject):
         self.repo_version = ''
         self.pacman = None
 
-
-    def _emit_signal(self, signal_name, *args):
-        self._controller.trigger_js_event(signal_name, *args)
 
     def _initialize_alpm(self):
         self.pacman = Pac()
@@ -54,14 +51,14 @@ class Updater(BaseObject):
 
         if self.is_repo_version_newer():
             # Signal the UI to inform it that we are going to update Cnchi.
-            GLib.idle_add(self._emit_signal, '--update-available')
+            yield '--update-available'
 
             result = self.pacman.install(['cnchi']) > -1
             restart = result
 
-        res = dict(result=result, restart=restart)
+        self.settings.cnchi_is_updated = result
+        yield dict(result=result, restart=restart)
 
-        GLib.idle_add(self._emit_signal, 'update-check-result', res)
 
     def is_remote_version_newer(self, remote_version, local_version):
         """
@@ -104,7 +101,3 @@ class Updater(BaseObject):
 
         return [p for p in pkg_objs if p and 'cnchi' == p.name]
 
-
-def do_update_check():
-    updater = Updater()
-    updater.do_update_check()

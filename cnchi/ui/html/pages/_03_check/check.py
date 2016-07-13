@@ -34,8 +34,9 @@ from _base_object import (
 
 # This Application
 from _base_object import bg_thread
+from modules.check import SystemCheckModule
+from modules.update import UpdateModule
 from ui.html.pages._html_page import HTMLPage
-
 
 class CheckPage(HTMLPage):
     """
@@ -58,6 +59,9 @@ class CheckPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.check_module = SystemCheckModule()
+        self.update_module = UpdateModule()
+
         self.signals.extend(['space-check', 'power-check', 'update-check', 'iso-check'])
         self.checked_items = []
 
@@ -67,30 +71,35 @@ class CheckPage(HTMLPage):
     def _get_checked_items_info():
         return {
             'reboot_required': (
+                'reboot_required',
                 'close',
                 'red',
                 _('No Incomplete Install Attempts'),
                 _('You must reboot before trying again.')
             ),
             'enough_space': (
+                'enough_space',
                 'remove',
                 'gray',
-                _('Has Enough Storage Space'),
+                _('Enough Storage Space'),
                 _('This system has at least 10GB* of available storage space.')
             ),
             'power_source': (
+                'power_source',
                 'remove',
                 'gray',
-                _('Has Power Source'),
+                _('Power Source Connected'),
                 _('This system is connected to a power source.')
             ),
             'latest_cnchi': (
+                'latest_cnchi',
                 'remove',
                 'gray',
                 _('Installer Updated'),
                 _('Cnchi is up to date.')
             ),
             'recent_iso': (
+                'recent_iso',
                 'remove',
                 'gray',
                 _('Install Media Is Recent'),
@@ -124,17 +133,22 @@ class CheckPage(HTMLPage):
         """ Prepare to become the current (visible) page. """
         self._set_active_tab()
 
+    @bg_thread
     def iso_check_cb(self, *args):
-        pass
+        self._controller.trigger_js_event('iso-check-result', self.check_module.do_iso_check())
 
+    @bg_thread
     def power_check_cb(self, *args):
-        pass
+        result = False if self.check_module.on_battery_power() else True
+        self._controller.trigger_js_event('power-check-result', result)
 
+    @bg_thread
     def space_check_cb(self, *args):
         pass
 
+    @bg_thread
     def update_check_cb(self, *args):
-        pass
+        self._controller.trigger_js_event('update-check-result', self.settings.cnchi_is_updated)
 
     def store_values(self):
         """ This must be implemented by subclasses """

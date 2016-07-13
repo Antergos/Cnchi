@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 #
-#  info.py
+#  base_module.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2016 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -26,12 +26,30 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+from _base_object import BaseObject
 
-""" Set some Cnchi global constants """
+TE = 'gtkbuilder'
+BM = 'base_module'
 
-CNCHI_VERSION = "0.15.118"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+class BaseModule(BaseObject):
+    """
+    Base class for all of Cnchi's modules. Modules house logic that is not directly
+    related to rendering the UI. Modules' methods are always called from a background thread
+    so that they do not block the UI.
+
+    Class Attributes:
+        See Also `BaseObject.__doc__`
+
+    """
+
+    def __init__(self, name=BM, *args, **kwargs):
+        """
+        Attributes:
+            name (str): A name for this object (all objects must have unique name).
+            See Also: `BaseObject.__doc__`
+
+        """
+
+        super().__init__(name=name, *args, **kwargs)
+

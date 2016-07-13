@@ -66,6 +66,19 @@ def bg_thread(func, *args, **kwargs):
     return _decorated_function
 
 
+def does_callback(func, *args, **kwargs):
+    """
+    Decorator that prepends the function/method name to a function or method's *args.
+
+    """
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        func(func.__func__.__name__, *args, **kwargs)
+
+    return _decorated_function
+
+
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
     """ Copy an entire tree with files and folders """
     for item in os.listdir(src_dir):

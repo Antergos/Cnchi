@@ -38,7 +38,7 @@ from _base_object import (
 )
 
 # 3rd-party Libs
-# from _base_object import ()
+from _base_object import GLib
 
 # This application
 from _base_object import (
@@ -150,8 +150,8 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        self._main_window.emit(event_name, *args)
-        self.emit_js('trigger_event', event_name, *args)
+        GLib.idle_add(self._main_window.emit, event_name, *args)
+        GLib.idle_add(self.emit_js, 'trigger_event', event_name, *args)
 
 
 

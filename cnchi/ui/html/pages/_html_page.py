@@ -33,7 +33,8 @@ from _base_object import (
 
 # 3rd-party Libs
 from ui.base_widgets import (
-    Gtk
+    Gtk,
+    GLib
 )
 
 from jinja2 import (

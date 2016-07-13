@@ -28,10 +28,13 @@
 
 """ Classes and data descriptor objects for the storage and retrieval of shared data/settings. """
 
+from threading import RLock
+
 try:
     from config import settings
 except Exception:
     pass
+
 
 class DataObject:
     """
@@ -44,6 +47,7 @@ class DataObject:
 
     def __init__(self, from_dict=None):
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
+        self._lock = RLock()
         self._initialized = False
 
         if _from_dict and not self._initialized:
@@ -54,7 +58,12 @@ class DataObject:
 
     def __getattr__(self, item):
         setattr(self, item, None)
-        return None
+
+    def __setattr__(self, attr, value):
+        if '_lock' == attr:
+            super().__setattr__(attr, value)
+        with self._lock:
+            super().__setattr__(attr, value)
 
 
 class SharedData:
@@ -125,5 +134,3 @@ class NonSharedData:
             self._data[instance.name] = None
 
         return res
-
-

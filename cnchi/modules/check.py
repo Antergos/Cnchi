@@ -32,12 +32,9 @@ from socket import gethostname
 
 import dbus
 
-import info
 import misc.extra as misc
-import show_message as show
-import updater
+from ._base_module import BaseModule
 from misc.run_cmd import call
-from _base_object import BaseObject
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -47,7 +44,7 @@ UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 8000000000
 
 
-class SystemCheck(BaseObject):
+class SystemCheckModule(BaseModule):
     """
     Utility class for performing various system and environment checks.
 
@@ -61,16 +58,28 @@ class SystemCheck(BaseObject):
 
         self.has_space = None
 
+    def do_iso_check(self):
+        """ Hostname contains the ISO version """
+        # TODO: Make this actually check if iso version is recent
 
-    def on_battery_power(self):
-        """ Checks if we are on battery power """
-        if not self.has_battery():
-            return False
+        hostname = gethostname()
+        # ant-year.month[-min]
+        prefix = 'ant-'
+        if hostname.startswith(prefix):
+            # We're running form the ISO, register which version.
+            self.settings.is_iso = True
+            suffix = '-min' if hostname.endswith('-min') else ''
+            version = hostname[len(prefix):-len(suffix)]
 
-        bus = dbus.SystemBus()
-        upower = bus.get_object(UPOWER, UPOWER_PATH)
-        if misc.get_prop(upower, UPOWER_PATH, 'OnBattery'):
-            return True
+            self.logger.debug('Running from ISO version %s', version)
+
+            cache_dir = '/home/antergos/.cache/chromium'
+            if os.path.exists(cache_dir):
+                shutil.rmtree(cache_dir)
+        else:
+            self.logger.debug('Not running from ISO (dev mode?)')
+
+        return True
 
     def has_battery(self):
         """ Checks if we have a battery """
@@ -113,56 +122,13 @@ class SystemCheck(BaseObject):
 
         return False
 
-    def check_iso_version(self):
-        """ Hostname contains the ISO version """
-        # TODO: Make this actually check if iso version is recent
+    def on_battery_power(self):
+        """ Checks if we are on battery power """
+        if not self.has_battery():
+            return False
 
-        hostname = gethostname()
-        # ant-year.month[-min]
-        prefix = 'ant-'
-        if hostname.startswith(prefix):
-            # We're running form the ISO, register which version.
-            self.settings.is_iso = True
-            suffix = '-min' if hostname.endswith('-min') else ''
-            version = hostname[len(prefix):-len(suffix)]
+        bus = dbus.SystemBus()
+        upower = bus.get_object(UPOWER, UPOWER_PATH)
+        if misc.get_prop(upower, UPOWER_PATH, 'OnBattery'):
+            return True
 
-            self.logger.debug('Running from ISO version %s', version)
-
-            cache_dir = '/home/antergos/.cache/chromium'
-            if os.path.exists(cache_dir):
-                shutil.rmtree(cache_dir)
-        else:
-            self.logger.debug('Not running from ISO (dev mode?)')
-
-        return True
-
-    def prepare(self, direction=None):
-        """ Load screen """
-        self.updated = self.ui.get_object("updated")
-        self.latest_iso = self.ui.get_object("latest_iso")
-        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        self.prepare_power_source = self.ui.get_object("prepare_power_source")
-        self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
-
-        assert self.prepare_network_connection != None, "Error loading check.ui"
-
-        result = self.check_all()
-
-        self.set_valign(Gtk.Align.START)
-        self.show_all()
-        Container.params["forward_button"].set_sensitive(result)
-
-        # Set timer
-        self.timeout_id = GLib.timeout_add(5000, self.on_timer)
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Check')
