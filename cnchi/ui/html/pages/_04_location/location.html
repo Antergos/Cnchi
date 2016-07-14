@@ -25,16 +25,15 @@
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper et-page">
 		<div class="grid-100 heading">
-			<h3>{{ _('For best results, please ensure the following:') }}</h3>
+      <h1>{{ _('Location') }}</h1>
+			<h3>{{ _('Choose your location:') }}</h3>
 		</div>
-		<div class="grid-90 prefix-5 suffix-5 grid-parent">
-			<div class="grid-50 try_it">
-
-			</div>
-			<div class="grid-50 install_it">
-
-			</div>
+    <div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
+      <!-- LISTBOX GOES HERE! -->
 		</div>
+    <div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
+    <input type="checkbox" name="show_all_locations">{{ _('Show all locations')}}
+    </div>
 	</div>
 {% endblock main_content %}
 
@@ -47,7 +46,7 @@
 	<script>
 		let _page = null;
 
-		class {{ page_name|capitalize() }}Page extends CnchiPage {
+		class LocationPage extends CnchiPage {
 			constructor() {
 				if (null !== _page) {
 					return _page;
@@ -58,31 +57,31 @@
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');
 
+        this.$selection_wrapper = $('.selection_wrapper');
+        this.$show_all_locations_wrapper = $('.show_all_locations_wrapper');
+
 				this.register_allowed_signals();
 				this.initialize();
 			}
 
 			initialize() {
 				//$('.content_wrapper').animateCss('flipInX');
-				this.register_event_handlers();
+				//this.register_event_handlers();
+        for ( let signal of this.signals ) {
+					if ( signal.indexOf('do-') > -1 ) {
+						cnchi.emit_signal(signal);
+					}
+				}
 			}
 
-			register_event_handlers() {
-				$('.try_it button').on('click', () => {
-					cnchi.log('"Try It" was selected. Sending signal to Cnchi..');
-					cnchi.emit_signal('tryit-selected');
-				});
-				$('.install_it button').on('click', () => {
-					cnchi.log('"Install It" was selected. Sending signal to Cnchi..');
-					cnchi.emit_signal('installit-selected');
-				});
+      register_event_handlers() {
+        $('.show_all_locations_wrapper input').on('click', this.show_all_locations_input_clicked_cb);
 			}
-		}
 
-		$(window).on('page-loaded', () => {
-			new {{ page_name|capitalize() }}Page();
-		});
-		$('.content_wrapper').animateCss('magictime swashIn');
+      show_all_locations_input_clicked_cb (event) {
+        cnchi.emit_signal('do-show-all-locations');
+      }
+    }
 
 	</script>
 {% endblock page_script %}

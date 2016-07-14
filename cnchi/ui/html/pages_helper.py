@@ -72,7 +72,6 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.logger.debug([self.PAGES_DIR, self.all_pages])
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'html/pages')
 
@@ -83,11 +82,12 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
             self.page_names = self.get_page_names()
 
-        self.logger.debug([self.PAGES_DIR, self.all_pages])
+        self.logger.debug([self.PAGES_DIR, self.page_names])
 
     def _find_page_directories(self):
         if not self._page_dirs:
             _dirs = os.listdir(os.path.join(self.UI_DIR, 'html/pages'))
+            _dirs.sort()
             _page_dirs = [d for d in _dirs if '_' in d and '__' not in d and '.' not in d]
             self._page_dirs.extend(_page_dirs)
 
@@ -129,6 +129,7 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
     def get_page_object(self, page_identifier):
         """ Get a page object by name or by index """
+
         if isinstance(page_identifier, int):
             _page = self._get_page_object_by_index(page_identifier)
         elif isinstance(page_identifier, str):

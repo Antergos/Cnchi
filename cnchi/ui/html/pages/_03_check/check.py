@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  welcome.py
+#  check.py
 #
 #  Copyright © 2016 Antergos
 #

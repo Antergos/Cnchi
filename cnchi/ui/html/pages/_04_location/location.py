@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  welcome.py
+#  location.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -26,8 +26,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
-from ui.html.pages._html_page import HTMLPage
+# Standard Lib
+from _base_object import (
+    os,
+    json
+)
 
+from ui.html.pages._html_page import HTMLPage
 
 class LocationPage(HTMLPage):
     """
@@ -50,6 +55,10 @@ class LocationPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self.signals.extend(['show-all-locations'])
+
+        self._create_and_connect_signals()
+
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         raise NotImplementedError
@@ -57,3 +66,6 @@ class LocationPage(HTMLPage):
     def store_values(self):
         """ This must be implemented by subclasses """
         raise NotImplementedError
+
+    def install_it_selected_cb(self, *args):
+        self.logger.debug("SHOW ALL LOCATIONS ********************+")
