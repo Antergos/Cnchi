@@ -32,6 +32,7 @@
  */
 
 html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px; font-weight: 400; max-width: 100%; overflow: hidden; }
+h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
 
 
 /* ============================================== *\
@@ -39,16 +40,18 @@ html, body { margin: 0px; font-family: 'Open Sans', sans-serif; font-size: 16px;
 \* ============================================== */
 
 .header { color: #ffffff; padding: 0px;}
-.header_top { height: 70px; background-color: #2e66b9; }
+.header_top { height: 68px; background-color: #2e66b9; }
+.header_top .cnchi_title { -webkit-user-select: none; cursor: default; }
 .header_bottom { height: 58px; background-color: #3b70d0; padding: 0px; }
 .header_bottom .row, .header_bottom .col { padding: 0px; margin: 0px; }
 .header_bottom .tabs, .header_bottom .tab { background-color: transparent; height: 58px; line-height: 58px; }
+.header_bottom .tabs a { cursor: default; }
 .header_bottom .tabs a, .header_bottom .tabs a:hover { color: #ffffff; }
 .header_bottom .tabs .tab a:hover, .header_bottom .tabs .tab a.active { background-color: #3f7ae4; }
 .header_bottom .tabs .indicator { display: none; }
 .header .progress { height: 3px; margin: 0px; }
 .header .logo_container { text-align: left; max-height: 100%; font-family: Raleway, 'Open Sans', sans-serif; font-size: 28px; font-weight: 400; }
-.header .logo { max-height: 40px; margin: 15px; }
+.header .logo { max-height: 38px; margin: 17px 15px; }
 .header .logo_container div { height: 70px; }
 .header .logo_container div:last-child { line-height: 71px; }
 .header .window_buttons a { width: auto !important; height: auto !important; padding: 5px; top: 25px; cursor: default; max-height: 40px; line-height: 1; }

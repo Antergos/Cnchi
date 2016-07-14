@@ -12,15 +12,16 @@
 
 		.main_content { height: 593px; }
 
-		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 26px; text-align: center; font-weight: 400; margin-top: 0px; }
 
 		h3 { font-size: 18px; font-family: 'Open Sans', sans-serif; }
 
-		.content_wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center;}
+		.content_wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; -webkit-user-select: none; }
 
 		.heading { text-align: center; margin: 0px; margin-bottom: 35px; }
 
-		.checked_items li { opacity: 0 }
+		.checked_items li { opacity: 0; background-color: #f4f8fc; cursor: default; }
+
 		.checked_items i { transition: all 0.2s ease-in-out; }
 	</style>
 {% endblock page_styles %}
@@ -33,10 +34,11 @@
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
 		<div class="grid-100 heading">
+			<h1>{{ _('Preinstall Check') }}</h1>
 			<h3>{{ _('For best results, please ensure the following:') }}</h3>
 		</div>
 
-		<div class="grid-80 prefix-10 suffix-10 grid-parent">
+		<div class="grid-90 prefix-5 suffix-5 grid-parent">
 			{{ collection(checked_items, 'checked_items', 2) }}
 		</div>
 	</div>
@@ -53,7 +55,7 @@
 
 		class CheckPage extends CnchiPage {
 			constructor() {
-				if (null !== _page) {
+				if ( null !== _page ) {
 					return _page;
 				}
 
@@ -63,37 +65,37 @@
 				this.signals = JSON.parse('{{ signals }}');
 
 				this.register_allowed_signals();
+				this.register_event_handlers();
 				this.initialize();
 			}
 
 			initialize() {
-				this.register_event_handlers();
 				Materialize.showStaggeredList('.checked_items');
 
-				$('.checked_items li').each(() => {
-					let check = $(this).attr('id').replace('_', '-'),
-						signal = `do-${check}`;
-
-					cnchi.emit_signal(signal);
-				});
+				for ( let signal of this.signals ) {
+					if ( signal.indexOf('do-') > -1 ) {
+						cnchi.emit_signal(signal);
+					}
+				}
 			}
 
-			checks_results_cb(event, event_name, result) {
-				console.log(JSON.stringify(event));
-				if ( true !== result ) {
-					return;
-				}
-				let css_id = event_name.replace('-ready', '').replace('-', '_'),
+			checks_results_cb( event, result ) {
+				let color = ( true === result ) ? 'green' : 'red',
+					icon = ( true === result ) ? 'check' : 'close',
+					signal = event.type.replace('-result', ''),
+					css_id = signal.replace(/-/g, '_'),
 					selector = `#${css_id}`;
 
-				$(selector).find('i').removeClass('red').addClass('green').text('check');
+				console.log(selector);
+
+				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
 			}
 
 			register_event_handlers() {
-				let events = ['power-check-result', 'update-check-result', 'iso-check-result', 'space-check-result'];
-
-				for (let event of events) {
-					$(window).on(event, this.checks_results_cb);
+				for ( let signal of this.signals ) {
+					if ( signal.indexOf('-result') > -1 ) {
+						$(window).on(signal, this.checks_results_cb);
+					}
 				}
 			}
 		}

@@ -62,7 +62,7 @@ class CheckPage(HTMLPage):
         self.check_module = SystemCheckModule()
         self.update_module = UpdateModule()
 
-        self.signals.extend(['space-check', 'power-check', 'update-check', 'iso-check'])
+        self.signals.extend(['space-check', 'power-check', 'update-check-final', 'iso-check'])
         self.checked_items = []
 
         self._create_and_connect_signals()
@@ -77,29 +77,29 @@ class CheckPage(HTMLPage):
                 _('No Incomplete Install Attempts'),
                 _('You must reboot before trying again.')
             ),
-            'enough_space': (
-                'enough_space',
+            'space_check': (
+                'space_check',
                 'remove',
                 'gray',
                 _('Enough Storage Space'),
                 _('This system has at least 10GB* of available storage space.')
             ),
-            'power_source': (
-                'power_source',
+            'power_check': (
+                'power_check',
                 'remove',
                 'gray',
                 _('Power Source Connected'),
                 _('This system is connected to a power source.')
             ),
-            'latest_cnchi': (
-                'latest_cnchi',
+            'update_check_final': (
+                'update_check_final',
                 'remove',
                 'gray',
                 _('Installer Updated'),
                 _('Cnchi is up to date.')
             ),
-            'recent_iso': (
-                'recent_iso',
+            'iso_check': (
+                'iso_check',
                 'remove',
                 'gray',
                 _('Install Media Is Recent'),
@@ -120,7 +120,7 @@ class CheckPage(HTMLPage):
     def get_checks_info(self):
         items = self._get_checked_items_info()
 
-        if os.path.exists("/tmp/.cnchi_partitioning_completed"):
+        if os.path.exists('/tmp/.cnchi_partitioning_completed'):
             self.checked_items.append(items['reboot_required'])
 
         for item, item_info in items.items():
@@ -135,7 +135,8 @@ class CheckPage(HTMLPage):
 
     @bg_thread
     def iso_check_cb(self, *args):
-        self._controller.trigger_js_event('iso-check-result', self.check_module.do_iso_check())
+        result = self.check_module.do_iso_check()
+        self._controller.trigger_js_event('iso-check-result', result)
 
     @bg_thread
     def power_check_cb(self, *args):
@@ -144,11 +145,13 @@ class CheckPage(HTMLPage):
 
     @bg_thread
     def space_check_cb(self, *args):
-        pass
+        result = self.check_module.has_enough_space()
+        self._controller.trigger_js_event('space-check-result', result)
 
     @bg_thread
-    def update_check_cb(self, *args):
-        self._controller.trigger_js_event('update-check-result', self.settings.cnchi_is_updated)
+    def update_check_final_cb(self, *args):
+        result = self.settings.cnchi_is_updated
+        self._controller.trigger_js_event('update-check-final-result', result)
 
     def store_values(self):
         """ This must be implemented by subclasses """

@@ -1,4 +1,9 @@
+[2016-07-13 09:24:03 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {ecd5b15}
 [2016-07-13 09:22:52 -0500]  some progress                                                          Dustin Falgout  {cc3696d}
+[2016-07-12 19:03:58 +0200]  Fix file name in description                                               karasu      {2b111f9}
+[2016-07-12 18:48:09 +0200]  Added script to run Cnchi. I didn't want to modify "run" one. This ..      karasu      {270a483}
+[2016-07-12 18:47:50 +0200]  Remove unused link                                                         karasu      {d7bc209}
+[2016-07-12 18:46:38 +0200]  Add policykit file to ease running Cnchi                                   karasu      {f3274e0}
 [2016-07-12 03:31:31 -0500]  done with signal system. also reorganized imports and worked on che..  Dustin Falgout  {afaa972}
 [2016-07-12 01:19:28 -0500]  implementing a standardize system for signals/callbacks. almost fin..  Dustin Falgout  {cff0728}
 [2016-07-11 00:46:12 -0500]  some work on check screen                                              Dustin Falgout  {130b560}
