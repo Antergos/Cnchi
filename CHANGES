@@ -1,3 +1,4 @@
+[2016-07-15 00:22:59 -0500]  rename _html_page.py to html_page.py for consistency.                  Dustin Falgout  {b29b9be}
 [2016-07-15 00:19:47 -0500]  forgot to update imports with last commit                              Dustin Falgout  {cd37085}
 [2016-07-15 00:18:11 -0500]  moved features from top-level tab to desktop tab                       Dustin Falgout  {8cf409b}
 [2016-07-14 23:53:40 -0500]  rearrange the order of events on  the welcome page so we show Try-i..  Dustin Falgout  {1a5482a}

@@ -187,14 +187,102 @@ class CnchiApp {
 }
 
 
-class CnchiPage {
+/**
+ * Manages a tab in the UI.
+ * @prop {jQuery}   $tab   A jQuery object for the tab's HTML element in the DOM.
+ * @prop {string}   id     The CSS ID for the tab.
+ * @prop {string}   name   A name for this tab. It will be used in the navigation tab buttons.
+ * @prop {CnchiTab} parent This tab's parent tab (the page this tab appears on).
+ */
+class CnchiTab {
+	/**
+	 * Creates a new {@link CnchiTab} object.
+	 * @param {jQuery}   $tab     {@link CnchiTab.$tab}
+	 * @param {string}   [id]     {@link CnchiTab.id}
+	 * @param {CnchiTab} [parent] {@link CnchiTab.parent}
+	 */
+	constructor( $tab = null, id = '', parent = null ) {
+		let log_prefix = cnchi._get_log_message_prefix(CnchiPageTab);
+
+		if (null === $tab && '' === id) {
+			cnchi.log(`${log_prefix} ERROR: One of [$tab, id] required!`);
+			return;
+		}
+
+		this.$tab = ( null !== $tab ) ? $tab : $(`#${id}`);
+		this.id = $tab.attr('id');
+		this.name = $tab.attr('data-name');
+		this.parent = parent;
+	}
+}
+
+
+/**
+ * Manages a page in the installation process. A page is actually a top-level tab in the UI that
+ * can either house itself only or it can house itself and a number of other tabs. If a page
+ * does not have more than one tab, no navigation tab buttons will be displayed on the page.
+ * @extends CnchiTab
+ */
+class CnchiPage extends CnchiTab {
 	constructor() {
 		this.signals = [];
+		this.tabs = [];
+		this.current_tab = null;
+		this.has_tabs = $('.page_tab').length ? true : false;
+
 	}
 
+	/**
+	 * Calls prepare_tabs method if this page has tabs.
+	 */
+	maybe_prepare_tabs() {
+		if ( true === this.has_tabs ) {
+			this.prepare_tabs();
+		}
+	}
+
+	/**
+	 * Locates the tabs' containers in the DOM and uses them to create a `CnchiPageTab` object for each tab.
+	 * Also ensures that `this.tabs`, `this.current_tab`, & `this.${tab_name}` are set properly.
+	 */
+	prepare_tabs() {
+		$('.page_tab').each( (index, element) => {
+			let tab_name =
+
+			this[tab_name] = $(this);
+			this.tabs.push(tab_name);
+		});
+	}
+
+	/**
+	 * Add this page's signals to `CnchiApp.signals` array.
+	 */
 	register_allowed_signals() {
 		for ( let signal of this.signals ) {
 			cnchi.signals.push(signal);
+		}
+	}
+
+	/**
+	 * Sets the current tab to
+	 * @param identifier
+	 */
+	show_tab( identifier ) {
+		let $tab = null;
+
+		if ( identifier instanceof jQuery ) {
+			$tab = identifier;
+		} else if ('string' === typeof identifier) {
+			$tab = $(identifier);
+		} else if ('number' === typeof identifier) {
+			$tab = $(this.tabs[identifier]);
+		}
+
+		if (null !== $tab) {
+			$tab.fadeIn();
+		} else {
+			let log_prefix = cnchi._get_log_message_prefix(this.show_tab);
+			cnchi.log(`${log_prefix} ERROR: Tab cannot be null!`)
 		}
 	}
 }
