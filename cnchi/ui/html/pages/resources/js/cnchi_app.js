@@ -27,17 +27,17 @@
 
 
 /**
- * This is used to access our classes from within jQuery callbacks.
+ * Whether or not the {@link CnchiApp} object has been created.
  */
-let _self = null;
+let _cnchi_exists = false;
 
 
 /**
- * Capitalize a string.
+ * Capitalizes a string.
  *
  * @returns {string}
  */
-String.prototype.capitalize = function () {
+String.prototype.capitalise = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
@@ -46,11 +46,18 @@ String.prototype.capitalize = function () {
  * jQuery plugin to make using animate.css library more convenient.
  */
 $.fn.extend({
-	animateCss: function ( animationName, callback ) {
-		let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-		$(this).addClass(animationName).one(animationEnd, function () {
-			setTimeout(() => {
-				$(this).removeClass(animationName);
+	/**
+	 * Animate an element and once animation ends call callback if one is provided.
+	 *
+	 * @arg {String}   animation_name CSS class name for the animation.
+	 * @arg {function} [callback]     Function to call after the animation completes.
+	 */
+	animateCss: function( animation_name, callback ) {
+		let animation_end = 'webkitAnimationEnd animationend';
+
+		$(this).addClass(animation_name).one(animation_end, function() {
+			setTimeout(function() {
+				$(this).removeClass(animation_name);
 			}, 1000);
 
 			if ( callback ) {
@@ -60,38 +67,33 @@ $.fn.extend({
 	}
 });
 
-
+/**
+ * The main application object. It follows the Singleton pattern.
+ *
+ * @prop {jQuery}   $header  A jQuery object corresponding to the app's header in the DOM.
+ * @prop {boolean}  loaded   Whether or not the `page-loaded` event has fired.
+ * @prop {String[]} cmds     The commands the app will accept from Python -> JS Bridge.
+ * @prop {String[]} signals  The signals the app will allow to be sent via JS Bridge -> Python.
+ * @prop {boolean}  dragging Whether or not the window is currently being dragged.
+ */
 class CnchiApp {
 
 	constructor() {
-		if ( null !== _self ) {
-			return _self;
+		if ( false !== _cnchi_exists ) {
+			return cnchi;
 		}
 
-		_self = this;
 		this.loaded = false;
 		this.cmds = ['trigger_event'];
 		this.signals = ['window-dragging-start', 'window-dragging-stop'];
-		this._dragging = false;
+		this.dragging = false;
 		this.$header = $('.header');
 
-		this._register_event_handlers();
-
-		return _self
-	}
-
-	_get_log_message_prefix( caller ) {
-		return `CnchiApp.${caller.name}:`;
-	}
-
-	_register_event_handlers() {
-		$(window).on('page-loaded', this.page_loaded_handler);
-		this.$header.on('mousedown', '*', this.header_mousedown_cb);
-		this.$header.on('mouseup', '*', this.header_mouseup_cb);
+		this.register_event_handlers();
 	}
 
 	emit_signal( ...args ) {
-		let msg = JSON.stringify(args), log_prefix = this._get_log_message_prefix(this.emit_signal);
+		let msg = JSON.stringify(args), log_prefix = this.get_log_message_prefix(this.emit_signal);
 
 		if ( $.inArray(args[0], this.signals) < 0 ) {
 			this.log(`${log_prefix} cmd: "${args[0]}" is not in the list of allowed signals!`);
@@ -103,9 +105,13 @@ class CnchiApp {
 		document.title = `_BR::${msg}`;
 	}
 
+	get_log_message_prefix( caller ) {
+		return `CnchiApp.${caller.name}:`;
+	}
+
 	header_mousedown_cb( event ) {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
-		if (null === $target) {
+		if ( null === $target ) {
 			console.log('no target!');
 			return;
 		}
@@ -132,7 +138,7 @@ class CnchiApp {
 	}
 
 	js_bridge_handler( args_var_name ) {
-		let data, cmd, args, log_prefix = this._get_log_message_prefix(this.js_bridge_handler);
+		let data, cmd, args, log_prefix = this.get_log_message_prefix(this.js_bridge_handler);
 
 		args = window[args_var_name].args;
 		cmd = window[args_var_name].cmd;
@@ -167,6 +173,12 @@ class CnchiApp {
 		}
 	}
 
+	register_event_handlers() {
+		$(window).on('page-loaded', this.page_loaded_handler);
+		this.$header.on('mousedown', '*', this.header_mousedown_cb);
+		this.$header.on('mouseup', '*', this.header_mouseup_cb);
+	}
+
 	trigger_event( event ) {
 		let args = [];
 
@@ -189,6 +201,7 @@ class CnchiApp {
 
 /**
  * Manages a tab in the UI.
+ *
  * @prop {jQuery}   $tab   A jQuery object for the tab's HTML element in the DOM.
  * @prop {string}   id     The CSS ID for the tab.
  * @prop {string}   name   A name for this tab. It will be used in the navigation tab buttons.
@@ -197,14 +210,15 @@ class CnchiApp {
 class CnchiTab {
 	/**
 	 * Creates a new {@link CnchiTab} object.
-	 * @param {jQuery}   $tab     {@link CnchiTab.$tab}
-	 * @param {string}   [id]     {@link CnchiTab.id}
-	 * @param {CnchiTab} [parent] {@link CnchiTab.parent}
+	 *
+	 * @arg {jQuery}   $tab     {@link CnchiTab.$tab}
+	 * @arg {string}   [id]     {@link CnchiTab.id}
+	 * @arg {CnchiTab} [parent] {@link CnchiTab.parent}
 	 */
 	constructor( $tab = null, id = '', parent = null ) {
-		let log_prefix = cnchi._get_log_message_prefix(CnchiPageTab);
+		let log_prefix = cnchi.get_log_message_prefix(CnchiPageTab);
 
-		if (null === $tab && '' === id) {
+		if ( null === $tab && '' === id ) {
 			cnchi.log(`${log_prefix} ERROR: One of [$tab, id] required!`);
 			return;
 		}
@@ -219,43 +233,75 @@ class CnchiTab {
 
 /**
  * Manages a page in the installation process. A page is actually a top-level tab in the UI that
- * can either house itself only or it can house itself and a number of other tabs. If a page
- * does not have more than one tab, no navigation tab buttons will be displayed on the page.
+ * can optionally house a number of other tabs in addition to itself (a page is also a tab).
+ * If a page does not have any other (than itself) tabs, no navigation buttons will
+ * be displayed on the page.
+ *
  * @extends CnchiTab
+ *
+ * @prop {CnchiTab}   current_tab The tab that is currently visible on the page.
+ * @prop {boolean}    has_tabs    Whether or not this page has mulitple tabs.
+ * @prop {string[]}   signals     Names of signals used by the page to communicate with backend.
+ * @prop {CnchiTab[]} tabs        This page's tabs. One tab is always implied (the page itself).
+ *
  */
 class CnchiPage extends CnchiTab {
-	constructor() {
+
+	constructor( $tab = null, id = '' ) {
+		super($tab, id);
 		this.signals = [];
 		this.tabs = [];
 		this.current_tab = null;
 		this.has_tabs = $('.page_tab').length ? true : false;
 
-	}
-
-	/**
-	 * Calls prepare_tabs method if this page has tabs.
-	 */
-	maybe_prepare_tabs() {
 		if ( true === this.has_tabs ) {
 			this.prepare_tabs();
 		}
+
 	}
 
 	/**
-	 * Locates the tabs' containers in the DOM and uses them to create a `CnchiPageTab` object for each tab.
-	 * Also ensures that `this.tabs`, `this.current_tab`, & `this.${tab_name}` are set properly.
+	 * Returns a jQuery object for the tab represented by `identifier`.
+	 *
+	 * @arg {CnchiTab|jQuery|string|number} An identifier by which to locate the tab.
+	 *
+	 * @returns {jQuery|null}
+	 */
+	get_tab_jquery_object( identifier ) {
+		let $tab = null;
+
+		if ( identifier instanceof CnchiTab ) {
+			$tab = identifier.$tab;
+		} else if ( identifier instanceof jQuery ) {
+			$tab = identifier;
+		} else if ( 'string' === typeof identifier ) {
+			$tab = $(identifier);
+		} else if ( 'number' === typeof identifier ) {
+			let tab_name = this.tabs[identifier];
+			$tab = this[tab_name].$tab;
+		}
+
+		return $tab;
+	}
+
+	/**
+	 * Locates the tabs' containers in the DOM and uses them to create `CnchiTab` objects for
+	 * the tabs. Also ensures that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s)
+	 * are properly set.
 	 */
 	prepare_tabs() {
-		$('.page_tab').each( (index, element) => {
-			let tab_name =
+		$('.page_tab').each(( index, element ) => {
+			let tab_name = $(element).attr('id'),
+				prop_name = `${tab_name}_tab`,
+				$tab = $(tab_name);
 
-			this[tab_name] = $(this);
+			this[prop_name] = new CnchiTab($tab, tab_name, this);
 			this.tabs.push(tab_name);
 		});
 	}
 
 	/**
-	 * Add this page's signals to `CnchiApp.signals` array.
+	 * Adds this page's signals to {@link CnchiApp.signals} array.
 	 */
 	register_allowed_signals() {
 		for ( let signal of this.signals ) {
@@ -264,24 +310,17 @@ class CnchiPage extends CnchiTab {
 	}
 
 	/**
-	 * Sets the current tab to
-	 * @param identifier
+	 * Sets the current tab to the tab represented by `identifier`.
+	 *
+	 * @arg {CnchiTab|jQuery|string|number} See {@link CnchiPage#get_tab_jquery_object}.
 	 */
 	show_tab( identifier ) {
-		let $tab = null;
+		let $tab = this.get_tab_jquery_object(identifier);
 
-		if ( identifier instanceof jQuery ) {
-			$tab = identifier;
-		} else if ('string' === typeof identifier) {
-			$tab = $(identifier);
-		} else if ('number' === typeof identifier) {
-			$tab = $(this.tabs[identifier]);
-		}
-
-		if (null !== $tab) {
+		if ( null !== $tab ) {
 			$tab.fadeIn();
 		} else {
-			let log_prefix = cnchi._get_log_message_prefix(this.show_tab);
+			let log_prefix = cnchi.get_log_message_prefix(this.show_tab);
 			cnchi.log(`${log_prefix} ERROR: Tab cannot be null!`)
 		}
 	}
