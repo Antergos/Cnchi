@@ -18,7 +18,7 @@
 
 		h3 { font-size: 18px; font-family: 'Open Sans'; }
 
-		.heading { text-align: center; margin-bottom: 60px; }
+		.heading { text-align: center; margin-bottom: 30px; }
 
 		.options_wrapper img { max-width: 100%; text-align: center; }
 
@@ -32,6 +32,10 @@
 
 		.hideme { display: none; }
 
+		.welcome_wrapper { opacity: 0; -webkit-animation-fill-mode: forwards !important; animation-fill-mode: forwards !important; }
+
+		.welcome_wrapper.showme { opacity: 1; -webkit-animation-fill-mode: forwards !important; animation-fill-mode: forwards !important; }
+
 		.preloader-wrapper { margin: 0 auto; }
 	</style>
 {% endblock page_styles %}
@@ -44,16 +48,24 @@
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
 
-		<!-- NO INTERNET CONNECTION DETECTED MSG -->
-		<div class="grid-100 grid-parent update_no_internet_wrapper hideme">
+		<!-- WELCOME OPTIONS -->
+		<div class="grid-100 grid-parent welcome_wrapper">
 			<div class="grid-100 heading">
-				<h1>{{ _('We\'re Unable To Access The Internet') }}</h1>
-				<h3>{{ _('A stable internet connection is required in order to continue.') }}</h3>
+				<h1>{{ _('What would you like to do?') }}</h1>
 			</div>
-			<div class="grid-50 prefix-25 suffix-25 grid-parent">
-				<p>More details go here....</p>
+			<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
+				<div class="grid-50 try_it">
+					<img src="{{ RESOURCES_DIR }}/images/try-it.svg" width="200" alt="Icon for 'Try It' option"/>
+					<p id="tryit_description">{{ _('Try Antergos without making any changes to your system.') }}</p>
+					<button class="waves-effect waves-purple btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="tryit_description">{{ _('Try It') }}</button>
+				</div>
+				<div class="grid-50 install_it">
+					<img src="{{ RESOURCES_DIR }}/images/install-it.svg" width="200" alt="Icon for 'Install It' option"/>
+					<p id="installit_description">{{ _('Create a permanent place for Antergos on your system.') }}</p>
+					<button class="waves-effect waves-pink btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="installit_description">{{ _('Install It') }}</button>
+				</div>
 			</div>
-		</div> <!-- /END NO INTERNET CONNECTION DETECTED MSG -->
+		</div> <!-- /END WELCOME OPTIONS -->
 
 
 		<!-- CNCHI UPDATE CHECK -->
@@ -83,24 +95,17 @@
 		</div> <!-- /END CNCHI UPDATE CHECK -->
 
 
-		<!-- WELCOME OPTIONS -->
-		<div class="grid-100 grid-parent welcome_wrapper hideme">
+		<!-- NO INTERNET CONNECTION DETECTED MSG -->
+		<div class="grid-100 grid-parent update_no_internet_wrapper hideme">
 			<div class="grid-100 heading">
-				<h1>{{ _('What would you like to do?') }}</h1>
+				<h1>{{ _('We\'re Unable To Access The Internet') }}</h1>
+				<h3>{{ _('A stable internet connection is required in order to continue.') }}</h3>
 			</div>
-			<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
-				<div class="grid-50 try_it">
-					<img src="{{ RESOURCES_DIR }}/images/try-it.svg" width="200" alt="Icon for 'Try It' option"/>
-					<p id="tryit_description">{{ _('Try Antergos without making any changes to your system.') }}</p>
-					<button class="waves-effect waves-purple btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="tryit_description">{{ _('Try It') }}</button>
-				</div>
-				<div class="grid-50 install_it">
-					<img src="{{ RESOURCES_DIR }}/images/install-it.svg" width="200" alt="Icon for 'Install It' option"/>
-					<p id="installit_description">{{ _('Create a permanent place for Antergos on your system.') }}</p>
-					<button class="waves-effect waves-pink btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="installit_description">{{ _('Install It') }}</button>
-				</div>
+			<div class="grid-50 prefix-25 suffix-25 grid-parent">
+				<!-- TODO: no connection detected copy -->
+				<p>More details go here....</p>
 			</div>
-		</div> <!-- /END WELCOME OPTIONS -->
+		</div> <!-- /END NO INTERNET CONNECTION DETECTED MSG -->
 
 	</div> <!-- /END .content_wrapper -->
 {% endblock main_content %}
@@ -131,11 +136,16 @@
 
 				this.register_allowed_signals();
 				// this.maybe_skip_to_next_page();
+				this.register_event_handlers();
 				this.initialize();
 			}
 
-			connection_check_result_ready_cb( event, result ) {
+			connection_check_result_cb( event, result ) {
 				_page.has_connection = result;
+
+				if ( false === result ) {
+					_page.$connection_wrapper.fadeIn();
+				}
 			}
 
 			do_has_connection_check() {
@@ -144,32 +154,13 @@
 				}
 			}
 
-			initialize() {
-				let check, timer = 0, connection_msg_shown = false;
+			do_update_check() {
+				if ( false === this.has_connection ) {
+					// TODO: Finish implementing JS -> Python logging so we can use log levels (debug/error/etc)
+					console.log('An internet connection is required in order to check for installer update.');
+					return;
+				}
 
-				this.register_event_handlers();
-
-				check = setInterval(() => {
-					if (0 === timer || timer % 10000 === 0) {
-						this.do_has_connection_check();
-					}
-
-					if ( false === connection_msg_shown && false === this.has_connection ) {
-						this.$connection_wrapper.fadeIn();
-						connection_msg_shown = true;
-					}
-
-					if ( true === this.has_connection ) {
-						clearInterval(check);
-						this.initialize_finish();
-					}
-
-					timer += 500
-
-				}, 500);
-			}
-
-			initialize_finish() {
 				if ( this.$connection_wrapper.is(':visible') ) {
 					this.$connection_wrapper.fadeOut()
 						.promise()
@@ -187,10 +178,32 @@
 				}
 			}
 
+			initialize() {
+				this.$welcome_wrapper.animateCss('magictime swashIn', () => {
+					_page.$welcome_wrapper.addClass('showme');
+				});
+			}
+
 			install_it_button_clicked_cb( event ) {
-				_page.$welcome_wrapper.animateCss('magictime holeOut', () => {
-					cnchi.log('"Install It" was selected. Sending signal to backend..');
-					cnchi.emit_signal('do-install-it-selected');
+				_page.$welcome_wrapper.animateCss('magictime swashOut', () => {
+					let check, timer = 0;
+
+					_page.$welcome_wrapper.hide(0);
+
+					check = setInterval(() => {
+						// Tell backend to do connection check every 10 seconds.
+						if ( 0 === timer || timer % 10000 === 0 ) {
+							_page.do_has_connection_check();
+						}
+
+						if ( true === _page.has_connection ) {
+							clearInterval(check);
+							_page.do_update_check();
+						}
+
+						timer += 500
+
+					}, 250);
 				});
 			}
 
@@ -206,12 +219,11 @@
 				$('.try_it button').on('click', this.try_it_button_clicked_cb);
 				$('.install_it button').on('click', this.install_it_button_clicked_cb);
 				$(window).on('update-available', this.update_available_cb);
-				$(window).on('update-check-result', this.update_result_ready_cb);
-				$(window).on('connection-check-result', this.connection_check_result_ready_cb)
+				$(window).on('update-check-result', this.update_check_result_cb);
+				$(window).on('connection-check-result', this.connection_check_result_cb)
 			}
 
 			try_it_button_clicked_cb( event ) {
-				cnchi.log('"Try It" was selected. Sending signal to backend..');
 				cnchi.emit_signal('do-try-it-selected');
 			}
 
@@ -230,7 +242,7 @@
 					});
 			}
 
-			update_result_ready_cb( event, data ) {
+			update_check_result_cb( event, data ) {
 				let $headings = _page.$update_wrapper.find('h1, h3');
 
 				$('.progress.active, .preloader-wrapper.active').toggleClass('hideme active');
@@ -267,7 +279,7 @@
 								.done(() => {
 									setTimeout(() => {
 										_page.$update_wrapper.hide();
-										_page.$welcome_wrapper.fadeIn();
+										cnchi.emit_signal('do-install-it-selected');
 									}, 4500);
 								});
 						});

@@ -49,7 +49,10 @@ $.fn.extend({
 	animateCss: function ( animationName, callback ) {
 		let animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 		$(this).addClass(animationName).one(animationEnd, function () {
-			$(this).removeClass(animationName);
+			setTimeout(() => {
+				$(this).removeClass(animationName);
+			}, 1000);
+
 			if ( callback ) {
 				callback();
 			}

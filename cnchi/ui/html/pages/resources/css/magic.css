@@ -1368,14 +1368,8 @@ Copyright (c) 2014 Christian Pucci
     -webkit-transform: scale(0, 0);
   }
 
-  90% {
-    opacity: 1;
-    -webkit-transform-origin: 50% 50%;
-    -webkit-transform: scale(0.9, 0.9);
-  }
-
   100% {
-  	opacity: 1;
+    opacity: 1;
     -webkit-transform-origin: 50% 50%;
     -webkit-transform: scale(1, 1);
   }
@@ -1387,14 +1381,8 @@ Copyright (c) 2014 Christian Pucci
     transform: scale(0, 0);
   }
 
-  90% {
-    opacity: 1;
-    transform-origin: 50% 50%;
-    transform: scale(0.9, 0.9);
-  }
-
   100% {
-  	opacity: 1;
+    opacity: 1;
     transform-origin: 50% 50%;
     transform: scale(1, 1);
   }
