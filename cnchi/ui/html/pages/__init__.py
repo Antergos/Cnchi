@@ -33,8 +33,7 @@ from ._02_welcome.welcome import WelcomePage
 from ._03_check.check import CheckPage
 from ._04_location.location import LocationPage
 from ._05_desktop.desktop import DesktopPage
-from ._06_features.features import FeaturesPage
-from ._07_disk_setup.disk_setup import DiskSetupPage
+from ._06_disk_setup.disk_setup import DiskSetupPage
 
 
 class AllPages:
@@ -46,6 +45,5 @@ ALL_PAGES.welcome = WelcomePage
 ALL_PAGES.check = CheckPage
 ALL_PAGES.location = LocationPage
 ALL_PAGES.desktop = DesktopPage
-ALL_PAGES.features = FeaturesPage
 ALL_PAGES.disk_setup = DiskSetupPage
 
