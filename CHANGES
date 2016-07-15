@@ -1,3 +1,4 @@
+[2016-07-14 23:53:40 -0500]  rearrange the order of events on  the welcome page so we show Try-i..  Dustin Falgout  {1a5482a}
 [2016-07-14 20:34:47 +0200]  Fixed bug in pages_helper. Playing with location, nothing serious y..      karasu      {72ec355}
 [2016-07-14 01:49:30 -0500]  check page is done :triumph:                                           Dustin Falgout  {8c06e09}
 [2016-07-13 09:24:03 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {ecd5b15}
