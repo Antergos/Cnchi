@@ -32,7 +32,7 @@ from _base_object import (
 )
 
 # This Application
-from ui.html.pages._html_page import HTMLPage
+from ui.html.pages.html_page import HTMLPage
 
 
 class DesktopPage(HTMLPage):

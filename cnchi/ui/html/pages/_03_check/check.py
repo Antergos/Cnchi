@@ -36,7 +36,7 @@ from _base_object import (
 from _base_object import bg_thread
 from modules.check import SystemCheckModule
 from modules.update import UpdateModule
-from ui.html.pages._html_page import HTMLPage
+from ui.html.pages.html_page import HTMLPage
 
 class CheckPage(HTMLPage):
     """
