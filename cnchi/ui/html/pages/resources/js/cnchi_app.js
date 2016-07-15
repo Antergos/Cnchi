@@ -92,12 +92,31 @@ class CnchiApp {
 		this.register_event_handlers();
 	}
 
+	/**
+	 * Sends an allowed signal and optional arguments to the backend via the Python<->JS Bridge.
+	 *
+	 * @arg {...String|Array|Object} args The first arg should always be the name of the signal.
+	 *
+	 * @example
+	 * emit_signal( 'do-some-action' );
+	 * @example
+	 * emit_signal( 'do-some-action', arg1, arg2 );
+	 */
 	emit_signal( ...args ) {
-		let msg = JSON.stringify(args), log_prefix = this.get_log_message_prefix(this.emit_signal);
+		let msg = '', log_prefix = this.get_log_message_prefix(this.emit_signal);
 
 		if ( $.inArray(args[0], this.signals) < 0 ) {
 			this.log(`${log_prefix} cmd: "${args[0]}" is not in the list of allowed signals!`);
 			return;
+		}
+
+		// Convert any non-string args to JSON strings so that we have a single string to send.
+		for (let _arg of args) {
+			if (_arg instanceof Array || _arg instanceof Object) {
+				_arg = JSON.stringify(_arg);
+			}
+
+			msg = `${msg}${_arg}`;
 		}
 
 		this.log(`${log_prefix} Emitting signal: "${msg}" via python bridge...`);
@@ -105,43 +124,79 @@ class CnchiApp {
 		document.title = `_BR::${msg}`;
 	}
 
+	/**
+	 * Returns a string in the form of `CnchiApp.${caller.name}` for use in log messages.
+	 *
+	 * @arg {function} caller Reference to the calling function.
+	 *
+	 * @example
+	 * // returns "CnchiApp.emit_js:"
+	 * get_log_message_prefix( this.emit_js );
+	 *
+	 * @returns {string}
+	 */
 	get_log_message_prefix( caller ) {
 		return `CnchiApp.${caller.name}:`;
 	}
 
+	/**
+	 * Header `mousedown` event callback. Intended to be used to implement window dragging.
+	 * However, dragging doesn't work at the moment (probably because of some bug in GTK)
+	 *
+	 * @arg {jQuery.Event} event
+	 */
 	header_mousedown_cb( event ) {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+
 		if ( null === $target ) {
 			console.log('no target!');
 			return;
 		}
+
 		if ( $target.closest('.no-drag').length || true === _self._dragging ) {
 			console.log(`mousedown returning! ${_self._dragging}`);
 			return;
 		}
+
 		_self._dragging = true;
 		_self.emit_signal('window-dragging-start', 'window-dragging-start');
 	}
 
+	/**
+	 * Header `mouseup` event callback.
+	 *
+	 * @see CnchiApp.header_mousedown_cb
+	 */
 	header_mouseup_cb( event ) {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+
 		if ( null === $target ) {
 			console.log('no target!');
 			return;
 		}
+
 		if ( $target.closest('.no-drag').length || false === _self._dragging ) {
 			console.log(`mouseup returning! ${_self._dragging}`);
 			return;
 		}
+
 		_self._dragging = false;
+
 		_self.emit_signal('window-dragging-stop', 'window-dragging-stop');
 	}
 
-	js_bridge_handler( args_var_name ) {
+	/**
+	 * Handles messages sent from the backend via the Python<->JS Bridge. Messages are
+	 * injected into the global scope as an `Object` referenced by a unique variable. The
+	 * variable name is then passed to this method so it can access the message.
+	 *
+	 * @arg msg_obj_var_name
+	 */
+	js_bridge_handler( msg_obj_var_name ) {
 		let data, cmd, args, log_prefix = this.get_log_message_prefix(this.js_bridge_handler);
 
-		args = window[args_var_name].args;
-		cmd = window[args_var_name].cmd;
+		args = window[msg_obj_var_name].args;
+		cmd = window[msg_obj_var_name].cmd;
 
 		if ( !cmd.length ) {
 			this.log(`${log_prefix} "cmd" is required!`);
@@ -153,7 +208,6 @@ class CnchiApp {
 			return;
 		}
 
-
 		if ( args.length === 1 ) {
 			args = args.pop();
 		}
@@ -163,11 +217,18 @@ class CnchiApp {
 		this[cmd](args);
 	}
 
+	/**
+	 * Outputs a log message.
+	 *
+	 * @arg msg
+	 *
+	 * @todo Finish implementing JS->Python logging facility so we can stop using console.log()
+	 */
 	log( msg ) {
 		console.log(msg)
 	}
 
-	page_loaded_handler( page ) {
+	page_loaded_handler( event, page ) {
 		if ( false === _self.loaded ) {
 			_self.loaded = true;
 		}
@@ -326,5 +387,10 @@ class CnchiPage extends CnchiTab {
 	}
 }
 
-window.CnchiPage = CnchiPage;
-window.cnchi = new CnchiApp();
+
+if ( false === _cnchi_exists ) {
+	window.cnchi = new CnchiApp();
+	window.CnchiPage = CnchiPage;
+	_cnchi_exists = true;
+}
+
