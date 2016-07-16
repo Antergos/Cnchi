@@ -457,11 +457,12 @@ def has_connection(callback=None, *args):
 
     for url in urls:
         try:
-            urllib.request.urlopen(url, timeout=5)
+            urllib.request.urlopen(url, timeout=1)
         except (OSError, timeout, urllib.error.URLError) as url_err:
             logging.warning(url_err)
         else:
             _connected = True
+            break
 
     if not _connected:
         # We cannot connect to any url, let's ask NetworkManager
