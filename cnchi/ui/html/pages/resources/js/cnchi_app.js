@@ -95,7 +95,6 @@ class CnchiApp {
 	 *
 	 * @example
 	 * emit_signal( 'do-some-action' );
-	 * @example
 	 * emit_signal( 'do-some-action', arg1, arg2 );
 	 */
 	emit_signal( ...args ) {
@@ -191,7 +190,7 @@ class CnchiApp {
 	/**
 	 * Handles messages sent from the backend via the Python<->JS Bridge. Messages are
 	 * injected into the global scope as an `Object` referenced by a unique variable. The
-	 * variable name is then passed to this method so it can access the message.
+	 * variable name is then passed to this method as a string so it can access the message.
 	 *
 	 * @arg msg_obj_var_name
 	 */
@@ -239,10 +238,16 @@ class CnchiApp {
 
 	register_event_handlers() {
 		$(window).on('page-loaded', this.page_loaded_handler);
-		this.$header.on('mousedown', '*', this.header_mousedown_cb);
-		this.$header.on('mouseup', '*', this.header_mouseup_cb);
+		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
+		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}
 
+	/**
+	 * Triggers an event for signal received from backend with optional arguments.
+	 *
+	 * @arg {String|Array} event Either the event name or an Array where the first item is
+	 *                           the event name and remaining items are args to pass to callback.
+	 */
 	trigger_event( event ) {
 		let args = [];
 
