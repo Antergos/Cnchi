@@ -38,17 +38,17 @@ _CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
 #	_PYTHON="/usr/bin/python3"
 #fi
 
-_policy_file='org.freedesktop.policykit.cnchi.policy'
+_policy_file='com.antergos.pkexec.cnchi.policy'
 [[ -f "/usr/share/polkit-1/actions/${_policy_file}" ]] || {
-	sudo cp "utils/${_policy_file}" /usr/share/polkit-1/actions/ && sudo systemctl restart polkit
+	sudo cp "policykit/actions/${_policy_file}" /usr/share/polkit-1/actions/ && sudo systemctl restart polkit
 }
 
 #if [[ -z "$1" ]]; then
 #	sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 #else
 	# Running through PyCharm Debugger
-	echo "$*"
-	pkexec $_PYTHON ${@} 2>&1
+	#echo "$*"
+	pkexec $_PYTHON ${@} #2>&1
 #fi
 
 
