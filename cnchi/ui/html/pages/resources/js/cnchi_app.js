@@ -43,29 +43,25 @@ String.prototype.capitalise = function() {
 
 
 /**
- * jQuery plugin to make using animate.css library more convenient.
+ * Animate an element and once animation ends call callback if one is provided.
+ *
+ * @arg {String}   animation_name CSS class name for the animation.
+ * @arg {function} [callback]     Function to call after the animation completes.
  */
-$.fn.extend({
-	/**
-	 * Animate an element and once animation ends call callback if one is provided.
-	 *
-	 * @arg {String}   animation_name CSS class name for the animation.
-	 * @arg {function} [callback]     Function to call after the animation completes.
-	 */
-	animateCss: function( animation_name, callback ) {
-		let animation_end = 'webkitAnimationEnd animationend';
+$.fn.animateCss = function( animation_name, callback ) {
+	let animation_end = 'webkitAnimationEnd animationend';
 
-		$(this).addClass(animation_name).one(animation_end, function() {
-			setTimeout(function() {
-				$(this).removeClass(animation_name);
-			}, 1000);
+	this.addClass(animation_name).one(animation_end, () => {
+		setTimeout(() => {
+			this.removeClass(animation_name);
+		}, 1000);
 
-			if ( 'function' === typeof callback ) {
-				callback();
-			}
-		});
-	}
-});
+		if ( callback ) {
+			callback();
+		}
+	});
+};
+
 
 /**
  * The main application object. It follows the Singleton pattern.
@@ -114,7 +110,7 @@ class CnchiApp {
 		for ( let _arg of args ) {
 			if ( Array === typeof _arg || _arg instanceof Object ) {
 				_arg = JSON.stringify(_arg);
-			} else if ('string' === typeof _arg) {
+			} else if ( 'string' === typeof _arg ) {
 				_arg = `"${_arg}"`;
 			}
 
