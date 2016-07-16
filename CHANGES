@@ -1,3 +1,4 @@
+[2016-07-15 05:39:06 -0500]  just need to tweak the html templates on the pages and we will be b..  Dustin Falgout  {75f6bdf}
 [2016-07-15 04:56:11 -0500]  some more progress                                                     Dustin Falgout  {c809a75}
 [2016-07-15 03:06:43 -0500]  working on better OOP approach to manage pages in JavaScript. This ..  Dustin Falgout  {9a26f94}
 [2016-07-15 00:22:59 -0500]  rename _html_page.py to html_page.py for consistency.                  Dustin Falgout  {b29b9be}

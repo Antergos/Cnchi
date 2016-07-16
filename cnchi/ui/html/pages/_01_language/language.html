@@ -83,12 +83,13 @@
 		let _page = null;
 
 		class LanguagePage extends CnchiPage {
-			constructor() {
+
+			constructor( id ) {
 				if (null !== _page) {
 					return _page;
 				}
 
-				super();
+				super($(id), id);
 
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');

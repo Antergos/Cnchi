@@ -120,12 +120,13 @@
 		let _page = null;
 
 		class WelcomePage extends CnchiPage {
-			constructor() {
+			constructor( id ) {
 				if ( null !== _page ) {
 					return _page;
 				}
 
-				super();
+
+				super($(id), id);
 
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');
@@ -185,7 +186,9 @@
 			}
 
 			install_it_button_clicked_cb( event ) {
+				console.log('clicked!');
 				_page.$welcome_wrapper.animateCss('magictime swashOut', () => {
+					console.log('callback!');
 					let check, timer = 0;
 
 					_page.$welcome_wrapper.hide(0);
@@ -289,6 +292,5 @@
 				}
 			}
 		}
-
 	</script>
 {% endblock page_script %}

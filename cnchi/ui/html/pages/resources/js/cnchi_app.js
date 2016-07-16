@@ -60,7 +60,7 @@ $.fn.extend({
 				$(this).removeClass(animation_name);
 			}, 1000);
 
-			if ( callback ) {
+			if ( 'function' === typeof callback ) {
 				callback();
 			}
 		});
@@ -103,7 +103,7 @@ class CnchiApp {
 	 * emit_signal( 'do-some-action', arg1, arg2 );
 	 */
 	emit_signal( ...args ) {
-		let msg = '', log_prefix = this.get_log_message_prefix(this.emit_signal);
+		let msg = '[', _args = [], log_prefix = this.get_log_message_prefix(this.emit_signal);
 
 		if ( $.inArray(args[0], this.signals) < 0 ) {
 			this.log(`${log_prefix} cmd: "${args[0]}" is not in the list of allowed signals!`);
@@ -111,13 +111,18 @@ class CnchiApp {
 		}
 
 		// Convert any non-string args to JSON strings so that we have a single string to send.
-		for (let _arg of args) {
-			if (_arg instanceof Array || _arg instanceof Object) {
+		for ( let _arg of args ) {
+			if ( Array === typeof _arg || _arg instanceof Object ) {
 				_arg = JSON.stringify(_arg);
+			} else if ('string' === typeof _arg) {
+				_arg = `"${_arg}"`;
 			}
 
-			msg = `${msg}${_arg}`;
+			msg = `${msg}${_arg}, `;
 		}
+
+		msg = msg.replace(/, $/, '');
+		msg = `${msg}]`;
 
 		this.log(`${log_prefix} Emitting signal: "${msg}" via python bridge...`);
 
@@ -144,6 +149,8 @@ class CnchiApp {
 	 * However, dragging doesn't work at the moment (probably because of some bug in GTK)
 	 *
 	 * @arg {jQuery.Event} event
+	 *
+	 * @todo Find a way to make this work.
 	 */
 	header_mousedown_cb( event ) {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
@@ -153,13 +160,13 @@ class CnchiApp {
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || true === _self._dragging ) {
-			console.log(`mousedown returning! ${_self._dragging}`);
+		if ( $target.closest('.no-drag').length || true === cnchi._dragging ) {
+			console.log(`mousedown returning! ${cnchi._dragging}`);
 			return;
 		}
 
-		_self._dragging = true;
-		_self.emit_signal('window-dragging-start', 'window-dragging-start');
+		cnchi._dragging = true;
+		cnchi.emit_signal('window-dragging-start', 'window-dragging-start');
 	}
 
 	/**
@@ -175,14 +182,14 @@ class CnchiApp {
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || false === _self._dragging ) {
-			console.log(`mouseup returning! ${_self._dragging}`);
+		if ( $target.closest('.no-drag').length || false === cnchi._dragging ) {
+			console.log(`mouseup returning! ${cnchi._dragging}`);
 			return;
 		}
 
-		_self._dragging = false;
+		cnchi._dragging = false;
 
-		_self.emit_signal('window-dragging-stop', 'window-dragging-stop');
+		cnchi.emit_signal('window-dragging-stop', 'window-dragging-stop');
 	}
 
 	/**
@@ -229,8 +236,8 @@ class CnchiApp {
 	}
 
 	page_loaded_handler( event, page ) {
-		if ( false === _self.loaded ) {
-			_self.loaded = true;
+		if ( false === cnchi.loaded ) {
+			cnchi.loaded = true;
 		}
 	}
 
@@ -276,17 +283,17 @@ class CnchiTab {
 	 * @arg {string}   [id]     {@link CnchiTab.id}
 	 * @arg {CnchiTab} [parent] {@link CnchiTab.parent}
 	 */
-	constructor( $tab = null, id = '', parent = null ) {
-		let log_prefix = cnchi.get_log_message_prefix(CnchiPageTab);
+	constructor( $tab, id, parent ) {
+		let log_prefix = cnchi.get_log_message_prefix(CnchiTab);
 
 		if ( null === $tab && '' === id ) {
 			cnchi.log(`${log_prefix} ERROR: One of [$tab, id] required!`);
 			return;
 		}
 
-		this.$tab = ( null !== $tab ) ? $tab : $(`#${id}`);
-		this.id = $tab.attr('id');
-		this.name = $tab.attr('data-name');
+		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${id}`);
+		this.id = this.$tab.attr('id');
+		this.name = this.$tab.attr('data-name');
 		this.parent = parent;
 	}
 }
@@ -308,8 +315,8 @@ class CnchiTab {
  */
 class CnchiPage extends CnchiTab {
 
-	constructor( $tab = null, id = '' ) {
-		super($tab, id);
+	constructor( $tab, id ) {
+		super($tab, id, null);
 		this.signals = [];
 		this.tabs = [];
 		this.current_tab = null;
@@ -333,10 +340,13 @@ class CnchiPage extends CnchiTab {
 
 		if ( identifier instanceof CnchiTab ) {
 			$tab = identifier.$tab;
+
 		} else if ( identifier instanceof jQuery ) {
 			$tab = identifier;
+
 		} else if ( 'string' === typeof identifier ) {
 			$tab = $(identifier);
+
 		} else if ( 'number' === typeof identifier ) {
 			let tab_name = this.tabs[identifier];
 			$tab = this[tab_name].$tab;
@@ -373,7 +383,7 @@ class CnchiPage extends CnchiTab {
 	/**
 	 * Sets the current tab to the tab represented by `identifier`.
 	 *
-	 * @arg {CnchiTab|jQuery|string|number} See {@link CnchiPage#get_tab_jquery_object}.
+	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.
 	 */
 	show_tab( identifier ) {
 		let $tab = this.get_tab_jquery_object(identifier);
@@ -391,6 +401,7 @@ class CnchiPage extends CnchiTab {
 if ( false === _cnchi_exists ) {
 	window.cnchi = new CnchiApp();
 	window.CnchiPage = CnchiPage;
+	window.CnchiTab = CnchiTab;
 	_cnchi_exists = true;
 }
 

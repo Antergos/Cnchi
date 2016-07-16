@@ -44,7 +44,7 @@
 					</div>
 				{%- endblock header -%}
 			</div>
-			<div class="grid-100 grid-parent main_content">
+			<div id="{{ page_name }}" class="grid-100 grid-parent main_content" data-name="{{ page_name|capitalize() }}">
 				{% block main_content %}
 				{% endblock main_content %}
 			</div>
@@ -69,7 +69,7 @@
 
 	<script>
 		$(window).on('page-loaded', () => {
-			new {{ page_name|capitalize() }}Page();
+			new {{ page_name|capitalize() }}Page('{{ page_name }}');
 		});
 	</script>
 
