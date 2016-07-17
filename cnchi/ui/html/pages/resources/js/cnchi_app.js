@@ -126,8 +126,8 @@ class Logger {
 	 * @arg {Function|String} [caller=''] The method calling this log method.
 	 */
 	info( msg, caller = '' ) {
-		msg = this._process_message( msg, caller );
-		this._write_log( msg, 'info' );
+		msg = this._process_message(msg, caller);
+		this._write_log(msg, 'info');
 	}
 
 	/**
@@ -310,7 +310,7 @@ class CnchiApp extends CnchiObject {
 		args = window[msg_obj_var_name].args;
 		cmd = window[msg_obj_var_name].cmd;
 
-		if ( ! cmd.length ) {
+		if ( !cmd.length ) {
 			this.logger.error('"cmd" is required!', this.js_bridge_handler);
 			return;
 		}
@@ -397,6 +397,33 @@ class CnchiTab extends CnchiObject {
 		this.id = this.$tab.attr('id');
 		this.name = this.$tab.attr('data-name');
 		this.parent = parent;
+		this.is_page = ( null === this.parent );
+		this.locked = true;
+		this.$tab_button = this.get_tab_button();
+
+		this._maybe_unlock();
+
+	}
+
+	_do_unlock( key ) {
+		this.$tab_button.removeClass('locked');
+		localStorage.setItem( key, 'true' );
+	}
+
+	_maybe_unlock() {
+		let key = `unlocked_tabs::${this.id}`,
+			unlocked = ( null !== localStorage.getItem(key) );
+
+		if ( true === unlocked || true === this.is_page ) {
+			this._do_unlock( key );
+		}
+	}
+
+	get_tab_button() {
+		let selector = `[href="#_${this.id}"]`,
+			$container = ( true === this.is_page ) ? this.$tab : cnchi.$header;
+
+			return $container.find('.navigation_buttons').children(selector).parent();
 	}
 }
 
@@ -491,7 +518,11 @@ class CnchiPage extends CnchiTab {
 		let $tab = this.get_tab_jquery_object(identifier);
 
 		if ( null !== $tab ) {
-			$tab.fadeIn();
+			this.current_tab.$tab.fadeOut()
+				.promise()
+				.done(() => {
+					$tab.fadeIn();
+				});
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)
 		}
