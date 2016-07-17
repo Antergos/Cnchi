@@ -88,6 +88,13 @@
 					selector = `#${css_id}`;
 
 				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
+				_page.maybe_unlock_next_tab( selector );
+			}
+
+			maybe_unlock_next_tab( selector ) {
+				if ( ! $(selector).find('.red, .gray').length ) {
+					this.unlock_next_tab();
+				}
 			}
 
 			register_event_handlers() {

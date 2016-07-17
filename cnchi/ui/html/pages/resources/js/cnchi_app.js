@@ -450,6 +450,7 @@ class CnchiPage extends CnchiTab {
 		this.tabs = [];
 		this.current_tab = null;
 		this.has_tabs = $('.page_tab').length ? true : false;
+		this.next_tab_animation_interval = null;
 
 		if ( true === this.has_tabs ) {
 			this.prepare_tabs();
@@ -525,6 +526,16 @@ class CnchiPage extends CnchiTab {
 				});
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)
+		}
+	}
+
+	_unlock_next_tab() {
+		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
+	}
+
+	unlock_next_tab() {
+		if ( false === this.has_tabs ) {
+			this.next_tab_animation_interval = setInterval( this._unlock_next_tab, 4000);
 		}
 	}
 }
