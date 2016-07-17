@@ -1,3 +1,4 @@
+[2016-07-17 03:02:28 -0500]  its still rough around the edges but it will do                        Dustin Falgout  {bb432da}
 [2016-07-17 02:32:57 -0500]  now just need to hook up the python side and then all logging will ..  Dustin Falgout  {09f806b}
 [2016-07-16 20:28:39 -0500]  still working on logging. going to make App, Tab, & Page classes ex..  Dustin Falgout  {d94f376}
 [2016-07-16 19:59:10 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {6ceaf03}

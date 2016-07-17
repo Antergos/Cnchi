@@ -376,7 +376,7 @@ class CnchiTab extends CnchiObject {
 		super();
 
 		if ( null === $tab && '' === id ) {
-			cnchi.log('One of [$tab, id] required!');
+			this.logger.error('One of [$tab, id] required!', this.constructor);
 			return;
 		}
 

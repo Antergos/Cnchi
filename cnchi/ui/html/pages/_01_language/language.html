@@ -124,7 +124,7 @@
 					 */
 					localStorage.setItem(_page.cache_key, true);
 
-					cnchi.log(`${lang} language was selected`);
+					this.logger.debug(`${lang} language was selected`);
 
 					$('.content_wrapper').animateCss('magictime holeOut', () => {
 						$('.content_wrapper').hide(0);
