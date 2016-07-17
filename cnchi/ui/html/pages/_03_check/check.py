@@ -110,12 +110,10 @@ class CheckPage(HTMLPage):
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         checked_items = self.get_checks_info()
-        return {
-            'page_name': self.name,
-            'signals': signals,
-            'top_level_tabs': self._top_level_tabs,
-            'checked_items': checked_items
-        }
+        tpl_vars = super()._get_default_template_vars()
+        tpl_vars.update({'signals': signals, 'checked_items': checked_items})
+
+        return tpl_vars
 
     def get_checks_info(self):
         items = self._get_checked_items_info()

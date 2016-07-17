@@ -113,11 +113,10 @@ class Logger {
 	 * @private
 	 */
 	_write_log( msg, level ) {
-		console.log(`_write_log: msg: ${msg} level: ${level}`);
 		let esc_msg = msg.replace(/"/g, '\\"');
 		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
-		document.title = msg;
+		cnchi._bridge_message_queue.push(msg);
 	}
 
 	/**
@@ -194,8 +193,22 @@ class CnchiApp extends CnchiObject {
 		this.dragging = false;
 		this.$header = $('.header');
 		this._logger = null;
+		this._bridge_message_queue = [];
+		this.bmq_worker = null;
 
 		this.register_event_handlers();
+		this._start_bridge_message_queue_worker();
+	}
+
+
+	_start_bridge_message_queue_worker() {
+		this.bmq_worker = setInterval(() => {
+			if ( this._bridge_message_queue.length === 0 ) {
+				return;
+			}
+
+			document.title = this._bridge_message_queue.shift();
+		}, 100);
 	}
 
 	/**
@@ -231,7 +244,7 @@ class CnchiApp extends CnchiObject {
 
 		this.logger.debug(`Emitting signal: "${msg}" via python bridge...`);
 
-		document.title = `_BR::${msg}`;
+		this._bridge_message_queue.push(`_BR::${msg}`);
 	}
 
 

@@ -64,7 +64,10 @@ class WelcomePage(HTMLPage):
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
-        return {'page_name': self.name, 'signals': signals}
+        tpl_vars = super()._get_default_template_vars()
+        tpl_vars.update({'signals': signals})
+
+        return tpl_vars
 
     @bg_thread
     def connection_check_cb(self, *args):

@@ -1,3 +1,4 @@
+[2016-07-17 06:15:39 -0500]  change _tabs_list to top_level_tabs to avoid confusion with pages t..  Dustin Falgout  {e33573e}
 [2016-07-17 05:45:30 -0500]  not important                                                          Dustin Falgout  {fc78b55}
 [2016-07-17 03:06:17 -0500]  some leftover calls to cnchi.log                                       Dustin Falgout  {7b61b94}
 [2016-07-17 03:02:28 -0500]  its still rough around the edges but it will do                        Dustin Falgout  {bb432da}

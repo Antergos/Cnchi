@@ -77,7 +77,10 @@ class LanguagePage(HTMLPage):
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
-        return {'page_name': self.name, 'languages': self.languages, 'signals': signals}
+        tpl_vars = super()._get_default_template_vars()
+        tpl_vars.update({'languages': self.languages, 'signals': signals})
+
+        return tpl_vars
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]

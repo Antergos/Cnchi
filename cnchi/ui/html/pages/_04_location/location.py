@@ -66,12 +66,10 @@ class LocationPage(HTMLPage):
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
-        return {
-            'page_name': self.name,
-            'signals': signals,
-            'top_level_tabs': self._top_level_tabs,
-            'tabs': self.tabs
-        }
+        tpl_vars = super()._get_default_template_vars()
+        tpl_vars.update({'signals': signals, 'tabs': self.tabs})
+
+        return tpl_vars
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

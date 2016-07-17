@@ -81,6 +81,7 @@ class HTMLPage(Page, metaclass=Singleton):
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
         self.signals = []
+        self.tabs = []
         self.can_go_to_next_page = False
 
         if self._tpl is None and self._tpl_setup_ran is None:
@@ -163,7 +164,7 @@ class HTMLPage(Page, metaclass=Singleton):
         self._top_level_tabs = [(t, False) for t in tabs if t not in excluded]
 
     def _get_default_template_vars(self):
-        return {'page_name': self.name}
+        return {'page_name': self.name, 'top_level_tabs': self._top_level_tabs}
 
     def _initialize_template_engine(self):
         resources_path = 'cnchi://{}'.format(os.path.join(self.PAGES_DIR, 'resources'))
@@ -178,7 +179,7 @@ class HTMLPage(Page, metaclass=Singleton):
         self._tpl.install_null_translations(newstyle=True)
 
     def _set_active_tab(self):
-        self._tabs_list = [(t, self.name == t) for t in self._tabs_list]
+        self._top_level_tabs = [(t, self.name == t) for t in self._top_level_tabs]
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """

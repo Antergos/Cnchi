@@ -104,7 +104,7 @@
 		<div class="col s12">
 			<ul class="tabs">
 				{% for tab in tabs %}
-					<li class="tab col s3{{ conditional_text(tab[1], ' active') }}">
+					<li class="tab col s3 locked{{ conditional_text(tab[1], ' active') }}">
 						<a href="#{{ tab[0]|lower() }}" class="{{ conditional_text(tab[1], 'active') }}">{{ tab[0] }}</a>
 					</li>
 				{% endfor %}

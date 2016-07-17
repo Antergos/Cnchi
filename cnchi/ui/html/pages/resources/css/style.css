@@ -49,6 +49,8 @@ h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
 .header_bottom .tabs a, .header_bottom .tabs a:hover { color: #ffffff; }
 .header_bottom .tabs .tab a:hover, .header_bottom .tabs .tab a.active { background-color: #3f7ae4; }
 .header_bottom .tabs .indicator { display: none; }
+
+.header_bottom .tabs .locked a, .header_bottom .tabs .locked a:hover { color: #bbbbbb; }
 .header .progress { height: 3px; margin: 0px; }
 .header .logo_container { text-align: left; max-height: 100%; font-family: Raleway, 'Open Sans', sans-serif; font-size: 28px; font-weight: 400; }
 .header .logo { max-height: 38px; margin: 17px 15px; }
