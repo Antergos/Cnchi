@@ -120,12 +120,13 @@ class CheckPage(HTMLPage):
     def get_checks_info(self):
         items = self._get_checked_items_info()
 
-        if os.path.exists('/tmp/.cnchi_partitioning_completed'):
-            self.checked_items.append(items['reboot_required'])
-
         for item, item_info in items.items():
             if item_info not in self.checked_items:
-                self.checked_items.append(item_info)
+                if item != 'reboot_required':
+                    self.checked_items.append(item_info)
+
+        if os.path.exists('/tmp/.cnchi_partitioning_completed'):
+            self.checked_items.append(items['reboot_required'])
 
         return self.checked_items
 
