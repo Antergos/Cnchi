@@ -1,5 +1,7 @@
 {% extends 'pages/html_page.html' %}
 
+{% from 'pages/_macros.html' import tabbed_navigation with context %}
+
 
 {#
  # CSS Styles Specific To This Page
@@ -23,6 +25,7 @@
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
+		{{ tabbed_navigation(tabs) }}
 		<div class="grid-100 heading">
 			<h1>{{ _('Location') }}</h1>
 			<h3>{{ _('Choose your location:') }}</h3>

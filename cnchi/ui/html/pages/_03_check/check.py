@@ -113,7 +113,7 @@ class CheckPage(HTMLPage):
         return {
             'page_name': self.name,
             'signals': signals,
-            'tabs_list': self._tabs_list,
+            'top_level_tabs': self._top_level_tabs,
             'checked_items': checked_items
         }
 

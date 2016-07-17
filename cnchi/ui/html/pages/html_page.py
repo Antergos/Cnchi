@@ -65,7 +65,7 @@ class HTMLPage(Page, metaclass=Singleton):
 
     _tpl = SharedData('_tpl')
     _tpl_setup_ran = SharedData('_tpl_setup_running')
-    _tabs_list = SharedData('_tabs_list')
+    _top_level_tabs = SharedData('_top_level_tabs')
 
     def __init__(self, name='HTMLPage', tpl_engine='jinja', *args, **kwargs):
         """
@@ -93,7 +93,7 @@ class HTMLPage(Page, metaclass=Singleton):
             self._pages_data = DataObject()
             self._pages_data.has_data = False
 
-        if self._tabs_list is None:
+        if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
 
@@ -160,7 +160,7 @@ class HTMLPage(Page, metaclass=Singleton):
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()
         excluded = ['language', 'welcome']
-        self._tabs_list = [(t, False) for t in tabs if t not in excluded]
+        self._top_level_tabs = [(t, False) for t in tabs if t not in excluded]
 
     def _get_default_template_vars(self):
         return {'page_name': self.name}

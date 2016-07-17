@@ -56,8 +56,22 @@ class LocationPage(HTMLPage):
         super().__init__(name=name, *args, **kwargs)
 
         self.signals.extend(['show-all-locations'])
+        self.tabs.extend([
+            (_('Location'), True),
+            (_('Keyboard Layout'), False),
+            (_('Timezone'), False)
+        ])
 
         self._create_and_connect_signals()
+
+    def _get_default_template_vars(self):
+        signals = json.dumps(self.signals)
+        return {
+            'page_name': self.name,
+            'signals': signals,
+            'top_level_tabs': self._top_level_tabs,
+            'tabs': self.tabs
+        }
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
@@ -67,5 +81,5 @@ class LocationPage(HTMLPage):
         """ This must be implemented by subclasses """
         raise NotImplementedError
 
-    def install_it_selected_cb(self, *args):
+    def show_all_locations_cb(self, *args):
         self.logger.debug("SHOW ALL LOCATIONS ********************+")

@@ -58,15 +58,11 @@ class SummaryPage(HTMLPage):
 
         self.signals = []
 
-        self._create_signals()
-        self._connect_signals()
-
-    def _connect_signals(self):
-        pass
+        self._create_and_connect_signals()
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
-        return {'page_name': self.name, 'signals': signals, 'tabs_list': self._tabs_list}
+        return {'page_name': self.name, 'signals': signals, 'top_level_tabs': self._top_level_tabs}
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
