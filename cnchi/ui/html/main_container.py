@@ -114,18 +114,25 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             'enable_write_console_messages_to_stdout': False
         }
 
+    def _get_website_data_dirs(self):
+        return {
+            'base-data-directory': self.WK_DATA_DIR,
+            'base-cache-directory': self.WK_CACHE_DIR
+        }
+
     def _initialize_web_view(self):
-        self._wv_parts.content_mgr = WebKit2.UserContentManager()
-        self._wv_parts.context = WebKit2.WebContext.get_default()
+        self._wv_parts.data_mgr = WebKit2.WebsiteDataManager(**self._get_website_data_dirs())
+        data_mgr = self._wv_parts.data_mgr
+        self._wv_parts.context = WebKit2.WebContext.new_with_website_data_manager(data_mgr)
         self._wv_parts.security_manager = self._wv_parts.context.get_security_manager()
 
         self._apply_webkit_settings()
 
-        self._web_view = WebKit2.WebView.new_with_user_content_manager(self._wv_parts.content_mgr)
+        self._web_view = WebKit2.WebView.new_with_context(self._wv_parts.context)
 
         self._web_view.set_settings(self._wv_parts.settings)
 
-    def _set_background_color_for_web_view(self, color='rgba(56,58,65,1)'):
+    def _set_background_color_for_web_view(self, color='rgba(56, 58, 65, 0.5)'):
         _color = Gdk.RGBA()
         _color.parse(color)
 
@@ -134,8 +141,8 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
     def _set_up_style_provider(self):
         style_provider = Gtk.CssProvider()
-        bg_color = 'background-color: rgba(56, 58, 65, 1);'
-        box_shadow = 'box-shadow: 0 1px 1px rgba(0,0,0,.04);'
+        bg_color = 'background-color: rgba(56, 58, 65, 0.5);'
+        box_shadow = 'box-shadow: 0 1px 1px rgba(0, 0, 0, .04);'
         data = 'window, .main_window {{\n{0}\n{1}\n}}\n'.format(bg_color, box_shadow)
 
         style_provider.load_from_data(data.encode('utf-8'))

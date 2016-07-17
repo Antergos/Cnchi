@@ -78,6 +78,8 @@ class BaseObject:
         PAGES_DIR    (str): Abs path to the app's HTML UI's pages (derived from UI_DIR).
         TPL_DIR      (str): Abs path to the app's UI templates (derived from UI_DIR).
         BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
+        WK_CACHE_DIR (str): Abs path to the app's webkit cache directory.
+        WK_DATA_DIR  (str): Abs path to the app's webkit data directory.
 
         _cnchi_app       (BaseWidget):      The application object.
         _controller      (BaseWidget):      The app's ui controller object.
@@ -102,6 +104,8 @@ class BaseObject:
     PAGES_DIR = os.path.join(UI_DIR, 'html/pages')
     TPL_DIR = os.path.join(UI_DIR, 'tpl')
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
+    WK_CACHE_DIR = '/var/cache/cnchi'
+    WK_DATA_DIR = '/var/tmp/cnchi'
 
     _cnchi_app = SharedData('_cnchi_app')
     _controller = SharedData('_controller')

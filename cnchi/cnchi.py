@@ -41,6 +41,7 @@ import logging.handlers
 import gettext
 import locale
 import uuid
+import shutil
 
 import misc.extra as misc
 import show_message as show
@@ -89,6 +90,14 @@ class CnchiApp(BaseObject):
         # Command line options
         self.cmd_line = cmd_line
 
+    def _maybe_clear_webkit_data(self):
+        _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
+
+        for _dir in _dirs:
+            if os.path.exists(_dir) and 'development' == info.CNCHI_RELEASE_STAGE:
+                shutil.rmtree(_dir)
+
+            os.makedirs(_dir, 0o777, exist_ok=True)
 
     def _pre_activation_checks(self):
         can_activate = True
@@ -116,11 +125,12 @@ class CnchiApp(BaseObject):
         if not self._pre_activation_checks():
             return
 
+        self._maybe_clear_webkit_data()
+
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
-        # ??
-        controller = Controller()
+        Controller()
 
         self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.widget.add_window(self._main_window.widget)
