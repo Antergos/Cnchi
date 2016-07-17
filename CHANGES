@@ -1,4 +1,6 @@
+[2016-07-16 18:23:05 -0500]  Merge branch 'experimental' of github.com:lots0logs/cnchi-dev into ..  Dustin Falgout  {a6fbf6c}
 [2016-07-16 18:21:42 -0500]  add more doc comments                                                  Dustin Falgout  {99bef19}
+[2016-07-16 17:13:45 +0200]  Makes Internet detection quicker.                                          karasu      {acbe508}
 [2016-07-15 22:15:39 -0500]  add more doc comments                                                  Dustin Falgout  {44a2893}
 [2016-07-15 22:01:01 -0500]  :triumph:                                                              Dustin Falgout  {7141e5b}
 [2016-07-15 21:39:59 -0500]  almost got it..welcome page has an issue with firing events but im ..  Dustin Falgout  {33e6010}

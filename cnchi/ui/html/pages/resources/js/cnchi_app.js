@@ -63,6 +63,43 @@ $.fn.animateCss = function( animation_name, callback ) {
 };
 
 
+class CnchiLogger {
+
+	_write_log( msg, level ) {
+		console.log(`_write_log: msg: ${msg} level: ${level}`);
+		msg = msg.replace('"', '\\"');
+		_msg = `_BR::["do-log-msg", "${level}", "${msg}"]`;
+
+		document.title = _msg;
+	}
+
+	info( msg ) {
+		msg = `[${info.caller}]: ${msg}`;
+		this._write_log( msg, 'info' );
+	}
+
+	debug( msg ) {
+		msg = `[${debug.caller}]: ${msg}`;
+		this._write_log(msg, 'debug');
+	}
+
+	warning( msg ) {
+		msg = `[${warning.caller}]: ${msg}`;
+		this._write_log(msg, 'warning');
+	}
+
+	error( msg ) {
+		msg = `[${error.caller}]: ${msg}`;
+		this._write_log(msg, 'error');
+	}
+
+	exception( msg, trace ) {
+		msg = `[${exception.caller}]: ${msg}`;
+		this._write_log(msg, 'exception');
+	}
+}
+
+
 /**
  * The main application object. It follows the Singleton pattern.
  *
@@ -84,7 +121,9 @@ class CnchiApp {
 		this.signals = ['window-dragging-start', 'window-dragging-stop'];
 		this.dragging = false;
 		this.$header = $('.header');
+		this._logger = null;
 
+		this.initialize_logger();
 		this.register_event_handlers();
 	}
 
@@ -124,6 +163,11 @@ class CnchiApp {
 		document.title = `_BR::${msg}`;
 	}
 
+
+	get logger() {
+
+	}
+
 	/**
 	 * Returns a string in the form of `CnchiApp.${caller.name}` for use in log messages.
 	 *
@@ -141,7 +185,8 @@ class CnchiApp {
 
 	/**
 	 * Header `mousedown` event callback. Intended to be used to implement window dragging.
-	 * However, dragging doesn't work at the moment (probably because of some bug in GTK)
+	 * There is no official api for our use-case. Still, it appears to be possible. However,
+	 * it doesn't work at the moment (probably because of some bug in GTK).
 	 *
 	 * @arg {jQuery.Event} event
 	 *
@@ -185,6 +230,15 @@ class CnchiApp {
 		cnchi._dragging = false;
 
 		cnchi.emit_signal('window-dragging-stop', 'window-dragging-stop');
+	}
+
+
+	initialize_logger() {
+		this._logger = {
+			info: () => {
+
+			}
+		}
 	}
 
 	/**
