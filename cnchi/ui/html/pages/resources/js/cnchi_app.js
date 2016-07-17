@@ -65,6 +65,10 @@ $.fn.animateCss = function( animation_name, callback ) {
 
 class CnchiLogger {
 
+	constructor( log_prefix ) {
+		this.log_prefix = log_prefix;
+	}
+
 	_write_log( msg, level ) {
 		console.log(`_write_log: msg: ${msg} level: ${level}`);
 		msg = msg.replace('"', '\\"');
@@ -74,29 +78,42 @@ class CnchiLogger {
 	}
 
 	info( msg ) {
-		msg = `[${info.caller}]: ${msg}`;
+		msg = `[${this.log_prefix}.${this.info.caller}]: ${msg}`;
 		this._write_log( msg, 'info' );
 	}
 
 	debug( msg ) {
-		msg = `[${debug.caller}]: ${msg}`;
+		msg = `[${this.log_prefix}.${this.debug.caller}]: ${msg}`;
 		this._write_log(msg, 'debug');
 	}
 
 	warning( msg ) {
-		msg = `[${warning.caller}]: ${msg}`;
+		msg = `[${this.log_prefix}.${this.warning.caller}]: ${msg}`;
 		this._write_log(msg, 'warning');
 	}
 
 	error( msg ) {
-		msg = `[${error.caller}]: ${msg}`;
+		msg = `[${this.log_prefix}.${this.error.caller}]: ${msg}`;
 		this._write_log(msg, 'error');
 	}
 
 	exception( msg, trace ) {
-		msg = `[${exception.caller}]: ${msg}`;
+		msg = `[${this.log_prefix}.${this.exception.caller}]: ${msg}`;
 		this._write_log(msg, 'exception');
 	}
+}
+
+
+
+class CnchiObject {
+	constructor() {
+		this._logger = null;
+	}
+
+	get logger() {
+		return this._logger;
+	}
+
 }
 
 

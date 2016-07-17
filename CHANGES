@@ -1,3 +1,7 @@
+[2016-07-16 19:59:10 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {6ceaf03}
+[2016-07-16 19:58:57 -0500]  working on logging facility.                                           Dustin Falgout  {a1c526d}
+[2016-07-17 01:56:06 +0200]  Merge branch 'experimental' of github.com:lots0logs/cnchi-dev into ..      karasu      {de95ce5}
+[2016-07-17 01:52:05 +0200]  Add reboot required if file exists (I hope I got it correctly)             karasu      {dd594d9}
 [2016-07-16 18:23:05 -0500]  Merge branch 'experimental' of github.com:lots0logs/cnchi-dev into ..  Dustin Falgout  {a6fbf6c}
 [2016-07-16 18:21:42 -0500]  add more doc comments                                                  Dustin Falgout  {99bef19}
 [2016-07-16 17:13:45 +0200]  Makes Internet detection quicker.                                          karasu      {acbe508}
