@@ -22,7 +22,7 @@
  # Page Content (Appears below the header)
  #}
 {% block main_content %}
-	<div class="grid-100 grid-parent content_wrapper et-page">
+	<div class="grid-100 grid-parent content_wrapper">
 		<div class="grid-100 heading">
 			<h1>{{ _('Location') }}</h1>
 			<h3>{{ _('Choose your location:') }}</h3>
@@ -46,7 +46,7 @@
 		let _page = null;
 
 		class LocationPage extends CnchiPage {
-			constructor() {
+			constructor( $tab, id ) {
 				if ( null !== _page ) {
 					return _page;
 				}

@@ -114,7 +114,7 @@ class Logger {
 	 */
 	_write_log( msg, level ) {
 		console.log(`_write_log: msg: ${msg} level: ${level}`);
-		let esc_msg = msg.replace('"', '\\"');
+		let esc_msg = msg.replace(/"/g, '\\"');
 		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
 		document.title = msg;

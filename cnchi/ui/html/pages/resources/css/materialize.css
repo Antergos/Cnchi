@@ -6,11 +6,8 @@
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
   src: local('Material Icons'),
   local('MaterialIcons-Regular'),
-  url(MaterialIcons-Regular.woff2) format('woff2'),
-  url(MaterialIcons-Regular.woff) format('woff'),
   url(MaterialIcons-Regular.ttf) format('truetype');
 }
 
@@ -31,12 +28,6 @@
   -webkit-font-smoothing: antialiased;
   /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
-  font-feature-settings: 'liga';
 }
 
 .materialize-red {
@@ -2631,11 +2622,6 @@ input[type=range] + .thumb {
 
 .no-padding {
   padding: 0 !important; }
-
-/* This is needed for some mobile phones to display the Google Icon font properly */
-.material-icons {
-  text-rendering: optimizeLegibility;
-  font-feature-settings: 'liga'; }
 
 .container {
   margin: 0 auto;

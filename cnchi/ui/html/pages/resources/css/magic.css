@@ -1012,7 +1012,7 @@ Copyright (c) 2014 Christian Pucci
 }
 @-webkit-keyframes slideLeft {
   0% {
-    -webkit-transform-origin: 0 0;;
+    -webkit-transform-origin: 0 0;
     -webkit-transform: translateX(0%);
   }
 
@@ -1174,7 +1174,7 @@ Copyright (c) 2014 Christian Pucci
   100% {
     opacity: 1;
     -webkit-transform-origin: 100% 100%;
-    -webkit-transform: scale(1, 1) translate(0px, 0px);;
+    -webkit-transform: scale(1, 1) translate(0px, 0px);
   }
 }
 @keyframes swap {
