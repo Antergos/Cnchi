@@ -421,9 +421,9 @@ class CnchiTab extends CnchiObject {
 
 	get_tab_button() {
 		let selector = `[href="#_${this.id}"]`,
-			$container = ( true === this.is_page ) ? this.$tab : cnchi.$header;
+			$container = ( true === this.is_page ) ? cnchi.$header : this.$tab;
 
-			return $container.find('.navigation_buttons').children(selector).parent();
+			return $container.find('.navigation_buttons').find(selector).parent();
 	}
 }
 

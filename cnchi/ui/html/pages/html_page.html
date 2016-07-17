@@ -72,7 +72,7 @@
 
 	<script>
 		$(window).on('page-loaded', () => {
-			new {{ page_name|capitalize() }}Page('{{ page_name }}');
+			new {{ page_name|capitalize() }}Page(null, '{{ page_name }}');
 		});
 	</script>
 

@@ -51,15 +51,16 @@
  #}
 {% block page_script %}
 	<script>
-		let _page = null;
+		window._page = null;
 
 		class CheckPage extends CnchiPage {
+
 			constructor( $tab, id ) {
 				if ( null !== _page ) {
 					return _page;
 				}
 
-				super($tab, id);
+				super($tab, id, null);
 
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');
@@ -85,8 +86,6 @@
 					signal = event.type.replace('-result', ''),
 					css_id = signal.replace(/-/g, '_'),
 					selector = `#${css_id}`;
-
-				console.log(selector);
 
 				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
 			}
