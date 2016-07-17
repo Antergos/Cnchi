@@ -186,7 +186,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         page_name = self._get_page_name_from_uri(view.get_uri())
 
-        self._controller.emit_js('trigger_event', 'page-loaded', page_name)
+        self._controller.emit_js('trigger-event', 'page-loaded', page_name)
 
         if not self.cnchi_loaded and 'language' == page_name:
             self.cnchi_loaded = True
@@ -198,7 +198,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         incoming = view.get_title()
         self.logger.debug('title changed!')
 
-        # check for "_BR::" prefix to determine we're crossing the python/JS bridge
+        # Check for "_BR::" prefix to determine if its a message from our JavaScript UI.
         if not incoming or not incoming.startswith('_BR::'):
             return
 

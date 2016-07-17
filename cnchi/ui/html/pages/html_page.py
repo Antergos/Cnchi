@@ -80,14 +80,13 @@ class HTMLPage(Page, metaclass=Singleton):
 
         super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
-        self.signals = []
+        self.signals = ['go-to-next-page', '--trigger-event']
         self.tabs = []
         self.can_go_to_next_page = False
 
         if self._tpl is None and self._tpl_setup_ran is None:
             self._tpl_setup_ran = True
             self._initialize_template_engine()
-            self._create_and_connect_special_signals()
 
         if self._pages_data is None:
             self.logger.debug('creating data object in _pages_data for %s..', name)
@@ -97,7 +96,6 @@ class HTMLPage(Page, metaclass=Singleton):
         if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
-
 
     def _create_and_connect_signals(self):
         """
@@ -112,51 +110,44 @@ class HTMLPage(Page, metaclass=Singleton):
         signal name as it appears in `self.signals` at the time of calling this method with
         hyphens replaced by underscores and should end with '_cb'.
 
-        Signal names that start with two hyphens are ignored by this method.
+        A callback is not automatically connected for signals that start with two hyphens.
 
         Example:
             >>> self.signals = ['some-action', 'some-other-action', '--private-action']
             >>> self._create_and_connect_signals()
             >>> self.signals
                 ['do-some-action', 'some-action-result', 'do-other-action',
-                 'other-action-result', '_private_action']
+                 'other-action-result', 'private-action']
 
-            With the above, these callback methods would have been registered (they must exist):
+            With the above, these callback methods will have been registered (they must exist):
                 'do-some-action':  `self.some_action_cb`
                 'do-other-action': `self.other_action_cb`
 
         """
 
-        __signals = []
+        signals = []
 
         for _signal in self.signals:
-            if _signal.startswith('--'):
-                __signals.append(_signal)
-                continue
+            result_signal_name = '{}-result'.format(_signal)
+            signal_name = 'do-{}'.format(_signal) if not _signal.startswith('--') else _signal[2:]
 
-            cb_name = '{}_cb'.format(_signal.replace('-', '_'))
-            callback = getattr(self, cb_name)
-            result_signal = '{}-result'.format(_signal)
-            _signal = 'do-{}'.format(_signal)
+            signals_to_add = [
+                s for s in [signal_name, result_signal_name]
+                if s not in self._allowed_signals
+            ]
 
-            for __signal in [_signal, result_signal]:
-                if __signal not in self._allowed_signals:
-                    self._allowed_signals.append(__signal)
-                    self._main_window.create_custom_signal(__signal)
-                    __signals.append(__signal)
+            for name in signals_to_add:
+                self._allowed_signals.append(name)
+                self._main_window.create_custom_signal(name)
+                signals.append(name)
 
-            self._main_window.connect(_signal, callback)
+            if not _signal.startswith('--'):
+                callback_name = '{}_cb'.format(_signal.replace('-', '_'))
+                callback = getattr(self, callback_name)
 
-        self.signals = __signals
+                self._main_window.connect(signal_name, callback)
 
-    def _create_and_connect_special_signals(self):
-        # TODO: This is garbage. Come up with something better.
-        for _signal, callback in [('go-to-next-page', self.go_to_next_page), ('trigger_event', '')]:
-            if _signal not in self._allowed_signals:
-                self._allowed_signals.append(_signal)
-                self._main_window.create_custom_signal(_signal)
-                if '' != callback:
-                    self._main_window.connect(_signal, callback)
+        self.signals = signals
 
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()
@@ -202,6 +193,9 @@ class HTMLPage(Page, metaclass=Singleton):
         self._controller.set_current_page(self.get_next_page_index() + next_plus)
 
         return True
+
+    def go_to_next_page_cb(self, obj=None, next_plus=0):
+        self.go_to_next_page(obj, next_plus)
 
     def prepare(self):
         """ This must be implemented by subclasses """

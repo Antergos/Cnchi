@@ -91,11 +91,10 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self.connect('window-dragging-start', self.window_dragging_cb)
         self.connect('window-dragging-stop', self.window_dragging_cb)
 
-        signal_id = GObject.signal_lookup('button-press-event', WebKit2.WebView)
-        self._button_press_hook_id = GObject.signal_add_emission_hook(
-            signal_id, 0, self.button_press_event_cb, None
-        )
-
+        # signal_id = GObject.signal_lookup('button-press-event', WebKit2.WebView)
+        # self._button_press_hook_id = GObject.signal_add_emission_hook(
+        #    signal_id, 0, self.button_press_event_cb, None
+        # )
 
     def button_press_event_cb(self, ihint, param_values, data):
         self.logger.debug([ihint, param_values, data])
@@ -116,18 +115,18 @@ class MainWindow(BaseWidget, metaclass=Singleton):
     def toggle_maximize(self):
         if self.widget.is_maximized():
             self.widget.unmaximize()
-            self._controller.emit_js('trigger_event', 'window-unmaximized')
+            self._controller.trigger_js_event('window-unmaximized')
         else:
             self.widget.maximize()
-            self._controller.emit_js('trigger_event', 'window-maximized')
+            self._controller.trigger_js_event('window-maximized')
 
     def toggle_fullscreen(self):
         if self._state.get('fullscreen', False):
             self.widget.unfullscreen()
-            self._controller.emit_js('trigger_event', 'window-unfullscreen')
+            self._controller.trigger_js_event('window-unfullscreen')
         else:
             self.widget.fullscreen()
-            self._controller.emit_js('trigger_event', 'window-fullscreen')
+            self._controller.trigger_js_event('window-fullscreen')
 
     def window_dragging_cb(self, window, event, *args):
         pass

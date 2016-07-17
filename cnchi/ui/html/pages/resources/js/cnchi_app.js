@@ -533,6 +533,7 @@ class CnchiPage extends CnchiTab {
 		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
 	}
 
+
 	unlock_next_tab() {
 		if ( false === this.has_tabs ) {
 			this.next_tab_animation_interval = setInterval( this._unlock_next_tab, 4000);

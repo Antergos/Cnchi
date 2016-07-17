@@ -99,13 +99,11 @@ class Controller(BaseObject, metaclass=Singleton):
 
         """
 
-        if cmd.startswith('--'):
-            cmd = cmd[2:]
-
         if cmd not in self._allowed_signals:
             self.logger.error('Signal: %s is not allowed!', cmd)
             return
 
+        cmd = cmd.replace('-', '_')
         msg = json.dumps(dict(cmd=cmd, args=list(args)))
         var = self._generate_js_temp_variable_name()
         msg = self._emit_js_tpl.format(var, msg)
@@ -116,7 +114,7 @@ class Controller(BaseObject, metaclass=Singleton):
         sys.exit(0)
 
     def js_log_message_cb(self, level, msg, *args):
-        # TODO: Modify logging formatter so that it doesnt include this methods name/location.
+        # TODO: Modify logging formatter so that it doesnt include this method's name/location.
         level = level if level else 'debug'
 
         _logger = getattr(self.logger, level)
@@ -124,7 +122,6 @@ class Controller(BaseObject, metaclass=Singleton):
         _logger(msg, *args)
 
     def set_current_page(self, identifier):
-        self.logger.debug('set_current_page(%s)', identifier)
         page = self._pages_helper.get_page(identifier)
         page_uri = 'cnchi://{0}'.format(page.name)
         self.current_page = page.name
@@ -146,4 +143,4 @@ class Controller(BaseObject, metaclass=Singleton):
         """
 
         GLib.idle_add(self._main_window.emit, event_name, *args)
-        GLib.idle_add(self.emit_js, 'trigger_event', event_name, *args)
+        GLib.idle_add(self.emit_js, 'trigger-event', event_name, *args)
