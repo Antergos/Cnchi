@@ -25,6 +25,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+'use strict';
 
 /**
  * Whether or not the {@link CnchiApp} object has been created.
@@ -63,57 +64,109 @@ $.fn.animateCss = function( animation_name, callback ) {
 };
 
 
-class CnchiLogger {
+/**
+ * Sends log messages via the Python<->JS Bridge to our Python logging handler.
+ *
+ * @prop {String} log_prefix      A string that will be prepended to log messages.
+ * @prop {String} _unknown_method A string used for calling method name when one isn't provided.
+ */
+class Logger {
 
+	/**
+	 * Creates a new Logger instance.
+	 *
+	 * @arg {String} log_prefix {@link Logger.log_prefix}
+	 */
 	constructor( log_prefix ) {
 		this.log_prefix = log_prefix;
+		this._unknown_method = '@unknown@';
 	}
 
+	/**
+	 * Determines and returns the caller name based on value of `caller` argument
+	 *
+	 * @arg {Function|String} caller
+	 * @returns {String}
+	 * @private
+	 */
+	_get_caller_name( caller ) {
+		return ( '' !== caller ) ? caller.name : this._unknown_method;
+	}
+
+	/**
+	 * Prepares a message to be sent to Python logging facility.
+	 *
+	 * @arg {String} msg    The message to be logged.
+	 * @arg {String} caller The name of the caller or an empty string.
+	 * @returns {string}
+	 * @private
+	 */
+	_process_message( msg, caller ) {
+		return `[${this.log_prefix}.${this._get_caller_name(caller)}]: ${msg}`;
+	}
+
+	/**
+	 * Sends a message to the Python logging facility.
+	 *
+	 * @arg {String} msg   The message to be sent.
+	 * @arg {String} level The logging level to use for the message.
+	 * @private
+	 */
 	_write_log( msg, level ) {
 		console.log(`_write_log: msg: ${msg} level: ${level}`);
-		msg = msg.replace('"', '\\"');
-		_msg = `_BR::["do-log-msg", "${level}", "${msg}"]`;
+		let esc_msg = msg.replace('"', '\\"');
+		msg = `_BR::["do-log-msg", "${level}", "${esc_msg}"]`;
 
-		document.title = _msg;
+		document.title = msg;
 	}
 
-	info( msg ) {
-		msg = `[${this.log_prefix}.${this.info.caller}]: ${msg}`;
+	/**
+	 * Sends a message to Python logging facility where logging level == method name.
+	 *
+	 * @arg {String}          msg         The message to be logged.
+	 * @arg {Function|String} [caller=''] The method calling this log method.
+	 */
+	info( msg, caller = '' ) {
+		msg = this._process_message( msg, caller );
 		this._write_log( msg, 'info' );
 	}
 
-	debug( msg ) {
-		msg = `[${this.log_prefix}.${this.debug.caller}]: ${msg}`;
+	/**
+	 * @see Logger.info
+	 */
+	debug( msg, caller = '' ) {
+		msg = this._process_message(msg, caller);
 		this._write_log(msg, 'debug');
 	}
 
-	warning( msg ) {
-		msg = `[${this.log_prefix}.${this.warning.caller}]: ${msg}`;
+	/**
+	 * @see Logger.info
+	 */
+	warning( msg, caller = '' ) {
+		msg = this._process_message(msg, caller);
 		this._write_log(msg, 'warning');
 	}
 
-	error( msg ) {
-		msg = `[${this.log_prefix}.${this.error.caller}]: ${msg}`;
+	/**
+	 * @see Logger.info
+	 */
+	error( msg, caller = '' ) {
+		msg = this._process_message(msg, caller);
 		this._write_log(msg, 'error');
-	}
-
-	exception( msg, trace ) {
-		msg = `[${this.log_prefix}.${this.exception.caller}]: ${msg}`;
-		this._write_log(msg, 'exception');
 	}
 }
 
 
-
+/**
+ * A base object for all Cnchi* objects. It sets up the logger property.
+ *
+ * @prop {Logger} logger The logger object.
+ */
 class CnchiObject {
+
 	constructor() {
-		this._logger = null;
+		this.logger = new Logger(this.constructor.name);
 	}
-
-	get logger() {
-		return this._logger;
-	}
-
 }
 
 
@@ -126,12 +179,14 @@ class CnchiObject {
  * @prop {String[]} signals  The signals the app will allow to be sent via JS Bridge -> Python.
  * @prop {boolean}  dragging Whether or not the window is currently being dragged.
  */
-class CnchiApp {
+class CnchiApp extends CnchiObject {
 
 	constructor() {
 		if ( false !== _cnchi_exists ) {
 			return cnchi;
 		}
+
+		super();
 
 		this.loaded = false;
 		this.cmds = ['trigger_event'];
@@ -140,7 +195,6 @@ class CnchiApp {
 		this.$header = $('.header');
 		this._logger = null;
 
-		this.initialize_logger();
 		this.register_event_handlers();
 	}
 
@@ -154,10 +208,10 @@ class CnchiApp {
 	 * emit_signal( 'do-some-action', arg1, arg2 );
 	 */
 	emit_signal( ...args ) {
-		let msg = '[', _args = [], log_prefix = this.get_log_message_prefix(this.emit_signal);
+		let msg = '[', _args = [];
 
 		if ( $.inArray(args[0], this.signals) < 0 ) {
-			this.log(`${log_prefix} cmd: "${args[0]}" is not in the list of allowed signals!`);
+			this.logger.error(`cmd: "${args[0]}" is not in the list of allowed signals!`);
 			return;
 		}
 
@@ -175,30 +229,11 @@ class CnchiApp {
 		msg = msg.replace(/, $/, '');
 		msg = `${msg}]`;
 
-		this.log(`${log_prefix} Emitting signal: "${msg}" via python bridge...`);
+		this.logger.debug(`Emitting signal: "${msg}" via python bridge...`);
 
 		document.title = `_BR::${msg}`;
 	}
 
-
-	get logger() {
-
-	}
-
-	/**
-	 * Returns a string in the form of `CnchiApp.${caller.name}` for use in log messages.
-	 *
-	 * @arg {function} caller Reference to the calling function.
-	 *
-	 * @example
-	 * // returns "CnchiApp.emit_js:"
-	 * get_log_message_prefix( this.emit_js );
-	 *
-	 * @returns {string}
-	 */
-	get_log_message_prefix( caller ) {
-		return `CnchiApp.${caller.name}:`;
-	}
 
 	/**
 	 * Header `mousedown` event callback. Intended to be used to implement window dragging.
@@ -213,12 +248,12 @@ class CnchiApp {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
 
 		if ( null === $target ) {
-			console.log('no target!');
+			this.logger.debug('no target!');
 			return;
 		}
 
 		if ( $target.closest('.no-drag').length || true === cnchi._dragging ) {
-			console.log(`mousedown returning! ${cnchi._dragging}`);
+			this.logger.debug(`mousedown returning! ${cnchi._dragging}`);
 			return;
 		}
 
@@ -235,27 +270,18 @@ class CnchiApp {
 		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
 
 		if ( null === $target ) {
-			console.log('no target!');
+			this.logger.debug('no target!');
 			return;
 		}
 
 		if ( $target.closest('.no-drag').length || false === cnchi._dragging ) {
-			console.log(`mouseup returning! ${cnchi._dragging}`);
+			this.logger.debug(`mouseup returning! ${cnchi._dragging}`);
 			return;
 		}
 
 		cnchi._dragging = false;
 
 		cnchi.emit_signal('window-dragging-stop', 'window-dragging-stop');
-	}
-
-
-	initialize_logger() {
-		this._logger = {
-			info: () => {
-
-			}
-		}
 	}
 
 	/**
@@ -266,18 +292,20 @@ class CnchiApp {
 	 * @arg msg_obj_var_name
 	 */
 	js_bridge_handler( msg_obj_var_name ) {
-		let data, cmd, args, log_prefix = this.get_log_message_prefix(this.js_bridge_handler);
+		let data, cmd, args;
 
 		args = window[msg_obj_var_name].args;
 		cmd = window[msg_obj_var_name].cmd;
 
-		if ( !cmd.length ) {
-			this.log(`${log_prefix} "cmd" is required!`);
+		if ( ! cmd.length ) {
+			this.logger.error('"cmd" is required!', this.js_bridge_handler);
 			return;
 		}
 
 		if ( $.inArray(cmd, this.cmds) < 0 ) {
-			this.log(`${log_prefix} cmd: "${cmd}" is not in the list of allowed commands!`);
+			this.logger.error(
+				`cmd: "${cmd}" is not in the list of allowed commands!`, this.js_bridge_handler
+			);
 			return;
 		}
 
@@ -285,20 +313,9 @@ class CnchiApp {
 			args = args.pop();
 		}
 
-		this.log(`${log_prefix} Running command: ${cmd} with args: ${args}...`);
+		this.logger.debug(`Running command: ${cmd} with args: ${args}...`, this.js_bridge_handler);
 
 		this[cmd](args);
-	}
-
-	/**
-	 * Outputs a log message.
-	 *
-	 * @arg msg
-	 *
-	 * @todo Finish implementing JS->Python logging facility so we can stop using console.log()
-	 */
-	log( msg ) {
-		console.log(msg)
 	}
 
 	page_loaded_handler( event, page ) {
@@ -308,7 +325,7 @@ class CnchiApp {
 	}
 
 	register_event_handlers() {
-		$(window).on('page-loaded', this.page_loaded_handler);
+		//$(window).on('page-loaded', this.page_loaded_handler);
 		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
 		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}
@@ -331,7 +348,7 @@ class CnchiApp {
 			}
 		}
 
-		console.log(`triggering event: ${event} with args: ${args}`);
+		this.logger.debug(`triggering event: ${event} with args: ${args}`, this.trigger_event);
 
 		$(window).trigger(event, args);
 	}
@@ -347,7 +364,7 @@ class CnchiApp {
  * @prop {string}   name   A name for this tab. It will be used in the navigation tab buttons.
  * @prop {CnchiTab} parent This tab's parent tab (the page this tab appears on).
  */
-class CnchiTab {
+class CnchiTab extends CnchiObject {
 	/**
 	 * Creates a new {@link CnchiTab} object.
 	 *
@@ -356,10 +373,10 @@ class CnchiTab {
 	 * @arg {CnchiTab} [parent] {@link CnchiTab.parent}
 	 */
 	constructor( $tab, id, parent ) {
-		let log_prefix = cnchi.get_log_message_prefix(CnchiTab);
+		super();
 
 		if ( null === $tab && '' === id ) {
-			cnchi.log(`${log_prefix} ERROR: One of [$tab, id] required!`);
+			cnchi.log('One of [$tab, id] required!');
 			return;
 		}
 
@@ -464,7 +481,7 @@ class CnchiPage extends CnchiTab {
 			$tab.fadeIn();
 		} else {
 			let log_prefix = cnchi.get_log_message_prefix(this.show_tab);
-			cnchi.log(`${log_prefix} ERROR: Tab cannot be null!`)
+			cnchi.log(`Tab cannot be null!`)
 		}
 	}
 }
@@ -472,6 +489,8 @@ class CnchiPage extends CnchiTab {
 
 if ( false === _cnchi_exists ) {
 	window.cnchi = new CnchiApp();
+	window.CnchiLogger = CnchiLogger;
+	window.CnchiObject = CnchiObject;
 	window.CnchiPage = CnchiPage;
 	window.CnchiTab = CnchiTab;
 	_cnchi_exists = true;
