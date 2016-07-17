@@ -115,14 +115,9 @@ class Controller(BaseObject, metaclass=Singleton):
     def exit_app(self):
         sys.exit(0)
 
-    def js_log_message_cb(self, called, msg, *args):
-        if not called or 'logger' not in called:
-            return
-
-        level = 'debug'
-
-        if '.' in called:
-            level = called.split('.')[-1]
+    def js_log_message_cb(self, level, msg, *args):
+        # TODO: Modify logging formatter so that it doesnt include this methods name/location.
+        level = level if level else 'debug'
 
         _logger = getattr(self.logger, level)
 

@@ -115,7 +115,7 @@ class Logger {
 	_write_log( msg, level ) {
 		console.log(`_write_log: msg: ${msg} level: ${level}`);
 		let esc_msg = msg.replace('"', '\\"');
-		msg = `_BR::["do-log-msg", "${level}", "${esc_msg}"]`;
+		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
 		document.title = msg;
 	}
@@ -480,8 +480,7 @@ class CnchiPage extends CnchiTab {
 		if ( null !== $tab ) {
 			$tab.fadeIn();
 		} else {
-			let log_prefix = cnchi.get_log_message_prefix(this.show_tab);
-			cnchi.log(`Tab cannot be null!`)
+			this.logger.debug('Tab cannot be null!', this.show_tab)
 		}
 	}
 }
@@ -489,7 +488,7 @@ class CnchiPage extends CnchiTab {
 
 if ( false === _cnchi_exists ) {
 	window.cnchi = new CnchiApp();
-	window.CnchiLogger = CnchiLogger;
+	window.Logger = Logger;
 	window.CnchiObject = CnchiObject;
 	window.CnchiPage = CnchiPage;
 	window.CnchiTab = CnchiTab;

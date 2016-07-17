@@ -111,7 +111,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             'enable_developer_extras': True,
             'javascript_can_open_windows_automatically': True,
             'allow_file_access_from_file_urls': True,
-            'enable_write_console_messages_to_stdout': True,
+            'enable_write_console_messages_to_stdout': False
         }
 
     def _initialize_web_view(self):
@@ -130,11 +130,13 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         _color.parse(color)
 
         self._web_view.set_background_color(_color)
-        # self._set_transparent_background()
+        self._set_up_style_provider()
 
-    def _set_transparent_background(self):
+    def _set_up_style_provider(self):
         style_provider = Gtk.CssProvider()
-        data = 'window, .main_window {\nbackground-color: rgba(56, 58, 65, 1);\n}\n'
+        bg_color = 'background-color: rgba(56, 58, 65, 1);'
+        box_shadow = 'box-shadow: 0 1px 1px rgba(0,0,0,.04);'
+        data = 'window, .main_window {{\n{0}\n{1}\n}}\n'.format(bg_color, box_shadow)
 
         style_provider.load_from_data(data.encode('utf-8'))
 
@@ -199,12 +201,14 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             name = incoming.pop(0)
             args = incoming
 
-            if name not in self._allowed_signals:
+            if name not in self._allowed_signals and name != 'do-log-message':
                 self.logger.error('Signal: %s not allowed!', name)
                 return
 
-            # emit our python/js bridge signal
-            self._main_window.widget.emit(name, args)
+            if 'do-log-message' == name:
+                self._controller.js_log_message_cb(*args)
+            else:
+                self._main_window.widget.emit(name, args)
 
         except Exception as err:
             self.logger.exception(err)
