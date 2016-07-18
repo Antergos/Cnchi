@@ -407,7 +407,8 @@ class CnchiTab extends CnchiObject {
 
 	_do_unlock( key ) {
 		this.$tab_button.removeClass('locked');
-		localStorage.setItem( key, 'true' );
+		this.$tab_button.on('click', this.tab_button_clicked_cb);
+		localStorage.setItem(key, 'true');
 	}
 
 	_maybe_unlock() {
@@ -415,15 +416,20 @@ class CnchiTab extends CnchiObject {
 			unlocked = ( null !== localStorage.getItem(key) );
 
 		if ( true === unlocked || true === this.is_page ) {
-			this._do_unlock( key );
+			this._do_unlock(key);
 		}
 	}
 
 	get_tab_button() {
-		let selector = `[href="#_${this.id}"]`,
+		let selector = `[href="cnchi://${this.id}"]`,
 			$container = ( true === this.is_page ) ? cnchi.$header : this.$tab;
 
-			return $container.find('.navigation_buttons').find(selector).parent();
+		return $container.find('.navigation_buttons').find(selector).parent();
+	}
+
+	tab_button_clicked_cb( event ) {
+		let goto = $(event.target).closest('a').attr('href');
+
 	}
 }
 
@@ -536,7 +542,7 @@ class CnchiPage extends CnchiTab {
 
 	unlock_next_tab() {
 		if ( false === this.has_tabs ) {
-			this.next_tab_animation_interval = setInterval( this._unlock_next_tab, 4000);
+			this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
 		}
 	}
 }

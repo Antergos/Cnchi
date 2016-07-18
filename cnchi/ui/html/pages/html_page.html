@@ -62,7 +62,7 @@
 			<script>
 				$('ul.tabs').tabs();
 				setTimeout(() => {
-					$('ul.tabs, ul.tabs *').off('click');
+					$('ul.tabs, ul.tabs *').off('click.materialize');
 				}, 1000);
 			</script>
 		{% endif %}
