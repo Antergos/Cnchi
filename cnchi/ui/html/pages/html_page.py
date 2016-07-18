@@ -152,10 +152,13 @@ class HTMLPage(Page, metaclass=Singleton):
     def _generate_tabs_list(self):
         tabs = self._pages_helper.get_page_names()
         excluded = ['language', 'welcome']
-        self._top_level_tabs = [(t, False) for t in tabs if t not in excluded]
+        self._top_level_tabs = [t for t in tabs if t not in excluded]
 
     def _get_default_template_vars(self):
-        return {'page_name': self.name, 'top_level_tabs': self._top_level_tabs}
+        return {'page_name': self.name, 'top_level_tabs': self._get_top_level_tabs()}
+
+    def _get_top_level_tabs(self):
+        return [(t, self.name == t) for t in self._top_level_tabs]
 
     def _initialize_template_engine(self):
         resources_path = 'cnchi://{}'.format(os.path.join(self.PAGES_DIR, 'resources'))
@@ -168,9 +171,6 @@ class HTMLPage(Page, metaclass=Singleton):
         self._tpl.add_extension('jinja2.ext.do')
         self._tpl.add_extension('jinja2.ext.i18n')
         self._tpl.install_null_translations(newstyle=True)
-
-    def _set_active_tab(self):
-        self._top_level_tabs = [(t, self.name == t) for t in self._top_level_tabs]
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """

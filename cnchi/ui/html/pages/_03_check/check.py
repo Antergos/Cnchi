@@ -130,7 +130,7 @@ class CheckPage(HTMLPage):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        self._set_active_tab()
+        pass
 
     @bg_thread
     def iso_check_cb(self, *args):

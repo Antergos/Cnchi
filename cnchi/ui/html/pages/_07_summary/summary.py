@@ -66,7 +66,7 @@ class SummaryPage(HTMLPage):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        self._set_active_tab()
+        self._get_top_level_tabs()
         # self._main_window.widget.set_position(Gtk.WindowPosition.CENTER)
 
     def store_values(self):

@@ -72,10 +72,16 @@ h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
 .check .main_content, .has_tabs .main_content, .has_tabs .content_wrapper { height: 593px }
 .has_tabs .content_wrapper .content { height: 535px; }
 .has_tabs .content_wrapper { align-items: stretch; }
-.has_tabs .content_wrapper .navigation_buttons { height: 58px; background: #f1f5f9; color: #8e969e;}
+.navigation_wrapper { background: #f1f5f9; width: 100%; }
+.has_tabs .content_wrapper .navigation_buttons { height: 58px; background: #f1f5f9; color: #8e969e; width: 55%; margin-top: 5px; }
 .has_tabs .content_wrapper .navigation_buttons a { color: #8e969e; }
 .has_tabs .content_wrapper .navigation_buttons .tab:hover a, .has_tabs .content_wrapper .navigation_buttons .tab:hover { color: #3f7ae4; background: #ffffff; }
 .has_tabs .content_wrapper .tabs .locked a, .has_tabs .content_wrapper .tabs .locked a:hover { color: #abb3bb; background-color: #f1f5f9; }
+
+/* ============================================== *\
+ * -------------->>> PAGE TABS <<<--------------- *
+\* ============================================== */
+.page_tab { display: none; }
 
 
 /* ============================================== *\

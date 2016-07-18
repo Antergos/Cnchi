@@ -10,9 +10,9 @@
 	<style>
 		body, html, .cnchi_app { background: #FFFFFF; color: #32373c; font-weight: 400; height: 100%; }
 
-		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 26px; text-align: center; font-weight: 400; margin-top: 0px; }
 
-		h3 { font-size: 18px; font-family: 'Open Sans', sans-serif; }
+		h3 { font-size: 20px; font-family: 'Open Sans', sans-serif; }
 
 		.heading { text-align: center; margin: 30px 0px; }
 	</style>
@@ -25,19 +25,38 @@
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
+	<!-- TAB NAVIGATION BUTTONS -->
+	<div class="grid-100 grid-parent navigation_wrapper">
 		{{ tabbed_navigation(tabs, '1') }}
+	</div> <!-- /END TAB NAVIGATION BUTTONS -->
+
+		<!-- PAGE CONTENT -->
 		<div class="grid-100 grid-parent content">
-			<div class="grid-100 heading">
-				<h1>{{ _('Location') }}</h1>
-				<h3>{{ _('Choose your location:') }}</h3>
-			</div>
-			<div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
-				<!-- LISTBOX GOES HERE! -->
-			</div>
-			<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
-				<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
-			</div>
-		</div>
+
+			<!-- LOCATION TAB -->
+			<div class="grid-100 grid-parent page_tab">
+				<div class="grid-100 heading">
+					<h3>{{ _('Choose your location:') }}</h3>
+				</div>
+				<div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
+					<!-- LISTBOX GOES HERE! -->
+				</div>
+				<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
+					<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
+				</div>
+			</div> <!-- /END LOCATION TAB -->
+
+			<!-- KEYBOARD LAYOUT TAB -->
+			<div class="grid-100 grid-parent page_tab">
+
+			</div> <!-- /END KEYBOARD LAYOUT TAB -->
+
+			<!-- TIMEZONE TAB -->
+			<div class="grid-100 grid-parent page_tab">
+
+			</div> <!-- /END TIMEZONE TAB -->
+
+		</div> <!-- /END PAGE CONTENT -->
 	</div>
 {% endblock main_content %}
 
@@ -48,7 +67,7 @@
  #}
 {% block page_script %}
 	<script>
-		let _page = null;
+		window._page = null;
 
 		class LocationPage extends CnchiPage {
 			constructor( $tab, id ) {

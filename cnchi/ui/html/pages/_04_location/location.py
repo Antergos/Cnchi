@@ -34,6 +34,7 @@ from _base_object import (
 
 from ui.html.pages.html_page import HTMLPage
 
+
 class LocationPage(HTMLPage):
     """
     The first page shown when the app starts.
@@ -68,12 +69,13 @@ class LocationPage(HTMLPage):
         signals = json.dumps(self.signals)
         tpl_vars = super()._get_default_template_vars()
         tpl_vars.update({'signals': signals, 'tabs': self.tabs})
+        self.logger.debug(self._top_level_tabs)
 
         return tpl_vars
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        raise NotImplementedError
+        pass
 
     def store_values(self):
         """ This must be implemented by subclasses """
