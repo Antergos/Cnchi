@@ -25,16 +25,18 @@
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
-		{{ tabbed_navigation(tabs) }}
-		<div class="grid-100 heading">
-			<h1>{{ _('Location') }}</h1>
-			<h3>{{ _('Choose your location:') }}</h3>
-		</div>
-		<div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
-			<!-- LISTBOX GOES HERE! -->
-		</div>
-		<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
-			<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
+		{{ tabbed_navigation(tabs, '1') }}
+		<div class="grid-100 grid-parent content">
+			<div class="grid-100 heading">
+				<h1>{{ _('Location') }}</h1>
+				<h3>{{ _('Choose your location:') }}</h3>
+			</div>
+			<div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
+				<!-- LISTBOX GOES HERE! -->
+			</div>
+			<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
+				<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
+			</div>
 		</div>
 	</div>
 {% endblock main_content %}
@@ -54,7 +56,7 @@
 					return _page;
 				}
 				super();
-				
+
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');
 

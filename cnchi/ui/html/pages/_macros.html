@@ -95,16 +95,17 @@
  # Outputs HTML for Cnchi's tabbed navigation.
  #
  # Args:
- #     tabs (list[tuple]): List of tuples containing a tab label and whether or not it is the active tab.
- #                         For example: [('Check', True), ('Location', False)].
+ #     tabs         (list[tuple]): List of tuples containing a tab label and whether or not it is the active tab.
+ #                                 For example: [('Check', True), ('Location', False)].
+ #     column_width (str):         Column size (a number in the range 1-12)
  #
  #}
-{% macro tabbed_navigation(tabs) %}
+{% macro tabbed_navigation(tabs, column_width='3') %}
 	<div class="row navigation_buttons">
 		<div class="col s12">
 			<ul class="tabs">
 				{% for tab in tabs %}
-					<li class="tab col s3 locked{{ conditional_text(tab[1], ' active') }}">
+					<li class="tab col s{{ column_width }} locked{{ conditional_text(tab[1], ' active') }}">
 						<a href="cnchi://{{ tab[0]|lower()|replace(' ', '_') }}" class="{{ conditional_text(tab[1], 'active') }}">{{ tab[0] }}</a>
 					</li>
 				{% endfor %}

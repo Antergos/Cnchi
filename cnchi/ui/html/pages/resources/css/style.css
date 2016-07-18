@@ -43,12 +43,12 @@ h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
 .header_top { height: 68px; background-color: #2e66b9; }
 .header_top .cnchi_title { -webkit-user-select: none; cursor: default; }
 .header_bottom { height: 58px; background-color: #3b70d0; padding: 0px; }
-.header_bottom .row, .header_bottom .col { padding: 0px; margin: 0px; }
-.header_bottom .tabs, .header_bottom .tab { background-color: transparent; height: 58px; line-height: 58px; }
-.header_bottom .tabs a { cursor: default; }
-.header_bottom .tabs a, .header_bottom .tabs a:hover { color: #ffffff; }
+.navigation_buttons.row, .navigation_buttons .col { padding: 0px; margin: 0px; }
+.navigation_buttons .tabs, .navigation_buttons .tab { background-color: transparent; height: 58px; line-height: 58px; }
+.navigation_buttons .tabs a { cursor: default; }
+.navigation_buttons .tabs a, .navigation_buttons .tabs a:hover { color: #ffffff; }
 .header_bottom .tabs .tab a:hover, .header_bottom .tabs .tab a.active { background-color: #3f7ae4; }
-.header_bottom .tabs .indicator { display: none; }
+.navigation_buttons .tabs .indicator { display: none; }
 
 .header_bottom .tabs .locked a, .header_bottom .tabs .locked a:hover { color: #cccccc; background-color: #3b70d0; }
 .header .progress { height: 3px; margin: 0px; }
@@ -67,8 +67,15 @@ h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
 /* ============================================== *\
  * --------->>> MAIN CONTENT WRAPPER <<<--------- *
 \* ============================================== */
-
-.main_content { height: 100%; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; -webkit-justify-content: center; justify-content: center; -webkit-align-items: center; align-items: center; }
+.main_content, .has_tabs .content_wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.has_tabs .main_content { display: block; }
+.check .main_content, .has_tabs .main_content, .has_tabs .content_wrapper { height: 593px }
+.has_tabs .content_wrapper .content { height: 535px; }
+.has_tabs .content_wrapper { align-items: stretch; }
+.has_tabs .content_wrapper .navigation_buttons { height: 58px; background: #f1f5f9; color: #8e969e;}
+.has_tabs .content_wrapper .navigation_buttons a { color: #8e969e; }
+.has_tabs .content_wrapper .navigation_buttons .tab:hover a, .has_tabs .content_wrapper .navigation_buttons .tab:hover { color: #3f7ae4; background: #ffffff; }
+.has_tabs .content_wrapper .tabs .locked a, .has_tabs .content_wrapper .tabs .locked a:hover { color: #abb3bb; background-color: #f1f5f9; }
 
 
 /* ============================================== *\

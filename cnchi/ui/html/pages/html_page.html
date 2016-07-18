@@ -1,4 +1,4 @@
-{% from 'pages/_macros.html' import tabbed_navigation with context %}
+{% from 'pages/_macros.html' import tabbed_navigation, conditional_text with context %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@
 	{% endblock head %}
 </head>
 
-<body class="{% block body_class %}{{ page_name }}{% endblock body_class %}">
+<body class="{% block body_class %}{{ page_name }}{{ conditional_text(tabs, ' has_tabs') }}{% endblock body_class %}">
 {% block body %}
 	<div class="grid-container grid-parent cnchi_app">
 		{% block cnchi_app %}
