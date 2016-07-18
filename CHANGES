@@ -1,3 +1,4 @@
+[2016-07-18 00:35:11 -0500]  finalizing the structure/flow for pages that include their own tabs.   Dustin Falgout  {3dd684b}
 [2016-07-17 23:25:12 -0500]  even more work on navigating between pages                             Dustin Falgout  {35352f8}
 [2016-07-17 19:25:04 -0500]  more work on navigating between pages                                  Dustin Falgout  {d183777}
 [2016-07-17 18:57:15 -0500]  cleanup signals code so its easier to read and understand.             Dustin Falgout  {845d372}

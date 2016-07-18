@@ -106,7 +106,7 @@
 			<ul class="tabs">
 				{% for tab in tabs %}
 					<li class="tab col s{{ column_width }} locked{{ conditional_text(tab[1], ' active') }}">
-						<a href="cnchi://{{ tab[0]|lower()|replace(' ', '_') }}" class="{{ conditional_text(tab[1], 'active') }}">{{ tab[0] }}</a>
+						<a href="cnchi://{{ tab[0]|lower()|replace(' ', '_') }}" class="{{ conditional_text(tab[1], ' active') }}">{{ tab[0] }}</a>
 					</li>
 				{% endfor %}
 			</ul>

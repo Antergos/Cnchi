@@ -393,6 +393,7 @@ class CnchiTab extends CnchiObject {
 			return;
 		}
 
+		this.logger.debug([$tab, id, parent]);
 		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${id}`);
 		this.id = this.$tab.attr('id');
 		this.name = this.$tab.attr('data-name');
@@ -422,14 +423,23 @@ class CnchiTab extends CnchiObject {
 
 	get_tab_button() {
 		let selector = `[href="cnchi://${this.id}"]`,
-			$container = ( true === this.is_page ) ? cnchi.$header : this.$tab;
+			$container = ( true === this.is_page ) ? $('.cnchi_app') : this.$tab;
 
 		return $container.find('.navigation_buttons').find(selector).parent();
 	}
 
 	tab_button_clicked_cb( event ) {
-		let goto = $(event.target).closest('a').attr('href');
+		event.preventDefault();
+		let $target = $(event.target);
 
+		if ( $target.closest('locked').length ) {
+			return;
+		}
+		$('.content').fadeOut()
+			.promise()
+			.done(() => {
+				window.location = $target.closest('a').attr('href');
+			});
 	}
 }
 
@@ -499,10 +509,9 @@ class CnchiPage extends CnchiTab {
 	prepare_tabs() {
 		$('.page_tab').each(( index, element ) => {
 			let tab_name = $(element).attr('id'),
-				prop_name = `${tab_name}_tab`,
-				$tab = $(tab_name);
+				prop_name = ('' !== tab_name ) ? `${tab_name}_tab` : this.id;
 
-			this[prop_name] = new CnchiTab($tab, tab_name, this);
+			this[prop_name] = new CnchiTab($(element), tab_name, this);
 			this.tabs.push(tab_name);
 		});
 	}

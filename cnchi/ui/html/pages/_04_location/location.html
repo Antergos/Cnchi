@@ -74,7 +74,8 @@
 				if ( null !== _page ) {
 					return _page;
 				}
-				super();
+
+				super( $tab, id );
 
 				_page = this;
 				this.signals = JSON.parse('{{ signals }}');
