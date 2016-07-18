@@ -35,10 +35,7 @@ import os
 import re
 import sys
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError:
-    import xml.etree.ElementTree as eTree
+
 
 import gi
 gi.require_version('Gtk', '3.0')

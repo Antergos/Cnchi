@@ -35,7 +35,7 @@ from installation.pacman.pac import Pac
 
 class UpdateModule(BaseModule):
 
-    def __init__(self, name='update', *args, **kwargs):
+    def __init__(self, name='_update', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)
 
         self.repo_version = ''
