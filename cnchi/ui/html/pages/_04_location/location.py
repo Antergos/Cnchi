@@ -64,6 +64,7 @@ class LocationPage(HTMLPage):
         ])
 
         self._create_and_connect_signals()
+        self._initialize_page_data()
 
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
@@ -72,6 +73,11 @@ class LocationPage(HTMLPage):
         self.logger.debug(self._top_level_tabs)
 
         return tpl_vars
+
+    def _get_initial_page_data(self):
+        return {
+            'show_all_locations': False
+        }
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

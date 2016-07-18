@@ -1,3 +1,4 @@
+[2016-07-18 03:39:30 -0500]  fix bug in previous commit                                             Dustin Falgout  {ea9f2e2}
 [2016-07-18 03:35:42 -0500]  working on location page                                               Dustin Falgout  {7749452}
 [2016-07-18 01:27:34 -0500]  finalizing the structure/flow for pages that include their own tabs.   Dustin Falgout  {605ee2e}
 [2016-07-18 00:35:11 -0500]  finalizing the structure/flow for pages that include their own tabs.   Dustin Falgout  {3dd684b}

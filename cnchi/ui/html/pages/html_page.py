@@ -91,7 +91,6 @@ class HTMLPage(Page, metaclass=Singleton):
         if self._pages_data is None:
             self.logger.debug('creating data object in _pages_data for %s..', name)
             self._pages_data = DataObject()
-            self._pages_data.has_data = False
 
         if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
@@ -157,6 +156,9 @@ class HTMLPage(Page, metaclass=Singleton):
     def _get_default_template_vars(self):
         return {'page_name': self.name, 'top_level_tabs': self._get_top_level_tabs()}
 
+    def _get_initial_page_data(self):
+        return None
+
     def _get_top_level_tabs(self):
         return [(t, self.name == t) for t in self._top_level_tabs]
 
@@ -171,6 +173,11 @@ class HTMLPage(Page, metaclass=Singleton):
         self._tpl.add_extension('jinja2.ext.do')
         self._tpl.add_extension('jinja2.ext.i18n')
         self._tpl.install_null_translations(newstyle=True)
+
+    def _initialize_page_data(self):
+        if not hasattr(self._pages_data, self.name):
+            from_dict = self._get_initial_page_data()
+            setattr(self._pages_data, self.name, DataObject(from_dict=from_dict))
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """

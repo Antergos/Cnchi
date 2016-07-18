@@ -101,6 +101,41 @@ class LocationModule(BaseModule):
 
         self.locales = locales
 
+    def get_location_collection_items(self):
+        areas = self.get_areas()
+        country = self.settings.timezone_country
+        top_items = []
+
+        def _not_top_item(item):
+            if country and '(' + country + ')' in item:
+                top_items.append(item)
+                return False
+            return True
+
+        items = [a for a in areas if _not_top_item(a)]
+
+        if top_items:
+            items = top_items.extend(items)
+
+        return items
+
+    def get_areas(self):
+        lang_code = self.settings.language_code
+        show_all_locations = self._pages_data.location.show_all_locations
+        areas = [
+            self.locales[locale_name]
+            for locale_name in self.locales
+            if show_all_locations or lang_code in locale_name
+        ]
+
+        if not areas:
+            # When we don't find any country we put all language codes.
+            areas = [self.locales[locale_name] for locale_name in self.locales]
+
+        areas.sort()
+
+        return areas
+
     def load_locales(self):
         self._load_locale_codes_and_language_names()
         self._load_country_codes()
