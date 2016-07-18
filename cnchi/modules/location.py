@@ -96,6 +96,7 @@ class LocationModule(BaseModule):
             locale_name: '{0}, {1}'.format(self.locales[locale_name], countries[country_code])
             for country_code in countries
             for locale_name in self.locales
+            if country_code in self.locales[locale_name]
         }
 
         self.locales = locales
