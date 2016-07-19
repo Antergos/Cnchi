@@ -1,6 +1,6 @@
 {% extends 'pages/html_page.html' %}
 
-{% from 'pages/_macros.html' import tabbed_navigation with context %}
+{% from 'pages/_macros.html' import tabbed_navigation, collection_text_only with context %}
 
 
 {#
@@ -36,10 +36,11 @@
 			<!-- LOCATION TAB -->
 			<div class="grid-100 grid-parent page_tab">
 				<div class="grid-100 heading">
-					<h3>{{ _('Choose your location:') }}</h3>
+					<h1>{{ _('Please Choose Your Location:') }}</h1>
+					<h3>{{ _('The location you choose will be applied to your installation.') }}</h3>
 				</div>
-				<div class="grid-90 prefix-5 suffix-5 grid-parent selection_wrapper">
-					<!-- LISTBOX GOES HERE! -->
+				<div class="grid-90 prefix-5 suffix-5 grid-parent collection_wrapper">
+					{{ collection_text_only(locations) }}
 				</div>
 				<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
 					<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}

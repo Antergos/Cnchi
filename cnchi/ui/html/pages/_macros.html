@@ -120,7 +120,7 @@
 
 
 {#
- # Outputs HTML for a collection (listbox styled <ul>).
+ # Outputs HTML for a collection (listbox styled <ul>) that includes an avatar or icon.
  #
  # Args:
  #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
@@ -145,6 +145,38 @@
 							<i class="material-icons circle {{ item[2] }}">{{ item[1] }}</i>
 							<span class="title">{{ item[3] }}</span>
 							<p>{{ item[4] }}</p>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+
+{#
+ # Outputs HTML for a collection (listbox styled <ul>) that includes only text.
+ #
+ # Args:
+ #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
+ #                            item info tuple should contain 2 things: css id and the text content.
+ #                            For example: [('english', 'English (USA)')].
+ #     _class  (str):         Optional css class for the collection.
+ #     columns (int):         Split into this number of columns.
+ #
+ #}
+{% macro collection_text_only(items, _class='', columns=1) %}
+	{% if items %}
+		{% if '' != _class %}
+			{% set _class = ' %s'|format(_class) %}
+		{% endif %}
+
+		{% for column in items|slice(columns) %}
+			<div class="grid-50">
+				<ul class="collection{{ _class }}">
+					{% for item in column %}
+						<li id="{{ item[0] }}" class="collection-item">
+							{{ item[1] }}
 						</li>
 					{% endfor %}
 				</ul>

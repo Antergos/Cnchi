@@ -93,10 +93,10 @@ class LocationModule(BaseModule):
         root = tree.getroot()
         countries = {child.attrib['value']: child.text for child in root}
         locales = {
-            locale_name: '{0}, {1}'.format(self.locales[locale_name], countries[country_code])
-            for country_code in countries
-            for locale_name in self.locales
-            if country_code in self.locales[locale_name]
+            l_name: dict(lang=self.locales[l_name], country=countries[c_code], locale=l_name[:-6])
+            for c_code in countries
+            for l_name in self.locales
+            if '(' + c_code + ')' in self.locales[l_name]
         }
 
         self.locales = locales
@@ -107,7 +107,7 @@ class LocationModule(BaseModule):
         top_items = []
 
         def _not_top_item(item):
-            if country and '(' + country + ')' in item:
+            if country and '(' + country + ')' in item.values():
                 top_items.append(item)
                 return False
             return True

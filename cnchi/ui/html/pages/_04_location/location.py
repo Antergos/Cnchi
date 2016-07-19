@@ -33,6 +33,7 @@ from _base_object import (
 )
 
 from ui.html.pages.html_page import HTMLPage
+from modules.location import LocationModule
 
 
 class LocationPage(HTMLPage):
@@ -56,6 +57,9 @@ class LocationPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self._module = None
+        self.locations = None
+        self.locations_items = []
         self.signals.extend(['show-all-locations'])
         self.tabs.extend([
             (_('Location'), True),
@@ -69,8 +73,7 @@ class LocationPage(HTMLPage):
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         tpl_vars = super()._get_default_template_vars()
-        tpl_vars.update({'signals': signals, 'tabs': self.tabs})
-        self.logger.debug(self._top_level_tabs)
+        tpl_vars.update({'signals': signals, 'tabs': self.tabs, 'locations': self.locations_items})
 
         return tpl_vars
 
@@ -81,7 +84,9 @@ class LocationPage(HTMLPage):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        pass
+        self._module = LocationModule()
+        self.locations = info = self._module.get_location_collection_items()
+        self.locations_items = [(info[lname]['locale'], info[lname]['language']) for lname in info]
 
     def store_values(self):
         """ This must be implemented by subclasses """

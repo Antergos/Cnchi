@@ -19,10 +19,8 @@ trap cleanup EXIT QUIT TERM
 
 if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
 	sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
-fi
-
-if [[ -d /usr/share/cnchi ]]; then
-	sudo rm /usr/share/cnchi
+elif [[ -h /usr/share/cnchi ]]; then
+	cleanup
 fi
 
 CNCHI_DIR=`pwd`
