@@ -1,3 +1,4 @@
+[2016-07-20 01:05:23 -0500]  finally got the tabs classes to work right (javascript)                Dustin Falgout  {8c71fb7}
 [2016-07-19 21:35:14 -0500]  didnt realize i had so many changes since last commit (oops :grimac..  Dustin Falgout  {cb37ec0}
 [2016-07-18 23:44:14 -0500]  working on location page                                               Dustin Falgout  {2286de7}
 [2016-07-18 04:22:23 -0500]  some adjustments to _pages_data implementation while working on loc..  Dustin Falgout  {ad54a4a}

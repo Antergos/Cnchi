@@ -96,6 +96,8 @@ class HTMLPage(Page, metaclass=Singleton):
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
 
+        self._initialize_page_data()
+
     def _create_and_connect_signals(self):
         """
         Creates the page's signals and connects them to their callbacks (handlers).
@@ -157,7 +159,7 @@ class HTMLPage(Page, metaclass=Singleton):
         return {'page_name': self.name, 'top_level_tabs': self._get_top_level_tabs()}
 
     def _get_initial_page_data(self):
-        return None
+        return dict()
 
     def _get_top_level_tabs(self):
         return [(t, self.name == t) for t in self._top_level_tabs]
@@ -175,7 +177,7 @@ class HTMLPage(Page, metaclass=Singleton):
         self._tpl.install_null_translations(newstyle=True)
 
     def _initialize_page_data(self):
-        if not hasattr(self._pages_data, self.name):
+        if getattr(self._pages_data, self.name) is None:
             from_dict = self._get_initial_page_data()
             setattr(self._pages_data, self.name, DataObject(from_dict=from_dict))
 
@@ -187,7 +189,7 @@ class HTMLPage(Page, metaclass=Singleton):
         return self._pages_helper.page_names.index(self.name) + 1
 
     def get_previous_page_index(self):
-        return self._pages.helper.page_names.index(self.name) - 1
+        return self._pages_helper.page_names.index(self.name) - 1
 
     def go_to_next_page(self, obj=None, next_plus=0):
         if self.name != self._controller.current_page:

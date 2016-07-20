@@ -74,6 +74,7 @@ class LocationPage(HTMLPage):
         signals = json.dumps(self.signals)
         tpl_vars = super()._get_default_template_vars()
         tpl_vars.update({'signals': signals, 'tabs': self.tabs, 'locations': self.locations_items})
+        self.logger.debug(tpl_vars)
 
         return tpl_vars
 
@@ -86,7 +87,9 @@ class LocationPage(HTMLPage):
         """ Prepare to become the current (visible) page. """
         self._module = LocationModule()
         self.locations = info = self._module.get_location_collection_items()
-        self.locations_items = [(info[lname]['locale'], info[lname]['language']) for lname in info]
+        self.logger.debug(self.locations)
+        self.logger.debug(info)
+        self.locations_items = [(lname['locale'], lname['country']) for lname in info]
 
     def store_values(self):
         """ This must be implemented by subclasses """

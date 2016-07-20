@@ -59,6 +59,8 @@ class LocationModule(BaseModule):
 
         self.locales = {}
 
+        self.load_locales()
+
     def _load_locale_codes_and_language_names(self):
         xml_path = os.path.join(self.TOP_DIR, 'data', 'locale', 'locales.xml')
 
@@ -132,7 +134,7 @@ class LocationModule(BaseModule):
             # When we don't find any country we put all language codes.
             areas = [self.locales[locale_name] for locale_name in self.locales]
 
-        areas.sort()
+        areas = sorted(areas, key=lambda k: k['lang'])
 
         return areas
 

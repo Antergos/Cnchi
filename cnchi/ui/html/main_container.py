@@ -154,6 +154,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
     def _uri_request_finish_page(self, page, request):
         page_obj = self._pages_helper.get_page(page)
+        page_obj.prepare()
         data = page_obj.render_template_as_bytes()
 
         request.finish(

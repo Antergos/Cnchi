@@ -129,7 +129,6 @@ class Controller(BaseObject, metaclass=Singleton):
         if page is None:
             raise ValueError('page cannot be None!')
 
-        page.prepare()
         self._web_view.load_uri(page_uri)
 
     def trigger_js_event(self, event_name, *args):

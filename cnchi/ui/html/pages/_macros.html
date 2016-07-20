@@ -172,14 +172,12 @@
 		{% endif %}
 
 		{% for column in items|slice(columns) %}
-			<div class="grid-50">
-				<ul class="collection{{ _class }}">
+			<div class="grid-100">
+				<div class="collection{{ _class }}">
 					{% for item in column %}
-						<li id="{{ item[0] }}" class="collection-item">
-							{{ item[1] }}
-						</li>
+						<a href="#" id="{{ item[0] }}" class="collection-item">{{ item[1] }}</a>
 					{% endfor %}
-				</ul>
+				</div>
 			</div>
 		{% endfor %}
 	{% endif %}
