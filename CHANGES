@@ -1,3 +1,4 @@
+[2016-07-20 18:58:22 +0200]  Log EVERYTHING from alpm to /tmp/cnchi-alpm.log                            karasu      {2e6a645}
 [2016-07-20 16:54:08 +0200]  Do not copy xz packages to provided cache, do it only to destination.      karasu      {3fecf36}
 [2016-07-10 23:36:05 -0500]  fix typos. im glad I didnt update the package at the time I made th..  Dustin Falgout  {7fdf451}
 [2016-07-06 22:56:51 -0500]  missed these two instances where we were not retaining the order of..  Dustin Falgout  {0e5e8bb}

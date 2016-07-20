@@ -617,7 +617,7 @@ class Pac(object):
         # File logger
         try:
             file_handler = logging.FileHandler('/tmp/cnchi-alpm.log', mode='w')
-            file_handler.setLevel(log_level)
+            file_handler.setLevel(logging.DEBUG)
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
         except PermissionError as permission_error:
