@@ -1,3 +1,4 @@
+[2016-07-20 19:07:05 +0200]  Another one. I should have created a new branch                            karasu      {c6bf571}
 [2016-07-20 19:04:33 +0200]  Bugfix                                                                     karasu      {d579e2b}
 [2016-07-20 18:58:22 +0200]  Log EVERYTHING from alpm to /tmp/cnchi-alpm.log                            karasu      {2e6a645}
 [2016-07-20 16:54:08 +0200]  Do not copy xz packages to provided cache, do it only to destination.      karasu      {3fecf36}
