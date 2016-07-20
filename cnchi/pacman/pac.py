@@ -503,8 +503,7 @@ class Pac(object):
         if len(action) > 0:
             self.queue_event('info', action)
 
-    @staticmethod
-    def cb_log(level, line):
+    def cb_log(self, level, line):
         """ Log pyalpm warning and error messages.
             Possible message types:
             LOG_ERROR, LOG_WARNING, LOG_DEBUG, LOG_FUNCTION """
