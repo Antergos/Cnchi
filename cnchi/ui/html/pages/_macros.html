@@ -182,3 +182,39 @@
 		{% endfor %}
 	{% endif %}
 {% endmacro %}
+
+
+{#
+ # Outputs HTML for the parent container of a group of collapsable elements (eg. accordions).
+ # This macro should be called from a `call` block containing the collapsable items macro.
+ #
+ # Args:
+ #     _class  (str): Optional css class for the collection.
+ #
+ #}
+{% macro collapsable_items_container(_class='') %}
+	{% if '' != _class %}
+		{% set _class = ' %s'|format(_class) %}
+	{% endif %}
+	<ul class="collapsible{{ _class }}" data-collapsible="accordion">
+		{{ caller() }}
+	</ul>
+{% endmacro %}
+
+
+{#
+ # Outputs HTML for one or more collapsable element(s) (eg. accordions/toggles).
+ #
+ # Args:
+ #     items  (list[tuples]): List of tuples container the info for each element.
+ #                            Tuple contents: css class, title, contents.
+ #                            Example: ('US', 'United States', 'some contents...')
+ #
+ #}
+{% macro collapsable_items(items) %}
+	{% for item in items %}
+		<li>
+			<div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+			<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+		</li>
+{% endmacro %}

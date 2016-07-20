@@ -95,7 +95,12 @@ class LocationModule(BaseModule):
         root = tree.getroot()
         countries = {child.attrib['value']: child.text for child in root}
         locales = {
-            l_name: dict(lang=self.locales[l_name], country=countries[c_code], locale=l_name[:-6])
+            l_name: dict(
+                language=self.locales[l_name],
+                country=countries[c_code],
+                locale=l_name[:-6],
+                label='{0}, {1} ({2})'.format(countries[c_code], self.locales[l_name], c_code)
+            )
             for c_code in countries
             for l_name in self.locales
             if '(' + c_code + ')' in self.locales[l_name]
@@ -134,7 +139,7 @@ class LocationModule(BaseModule):
             # When we don't find any country we put all language codes.
             areas = [self.locales[locale_name] for locale_name in self.locales]
 
-        areas = sorted(areas, key=lambda k: k['lang'])
+        areas = sorted(areas, key=lambda k: k['label'])
 
         return areas
 
