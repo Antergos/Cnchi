@@ -238,18 +238,21 @@ class Download(object):
 
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
-                copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                self.copy_to_cache_threads += [copy_to_cache_thread]
-                copy_to_cache_thread.start()
+
+                # TODO : Rethink this. Providec cache can be the ISO itself, so we
+                # can leave the ISO without any space and the installation will fail.
+
+                # copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
+                # self.copy_to_cache_threads += [copy_to_cache_thread]
+                # copy_to_cache_thread.start()
 
                 # Get out of the for loop, as we managed
                 # to download the package
                 break
             else:
                 # requests failed to obtain the file. Wrong url?
-                logging.debug(
-                    "Can't download %s, Cnchi will try another mirror.",
-                    url)
+                msg = "Can't download %s, Cnchi will try another mirror."
+                logging.debug(msg, url)
                 # delays for 60 seconds
                 time.sleep(60)
 
