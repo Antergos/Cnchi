@@ -70,6 +70,9 @@ class Pac(object):
 
         self.handle = None
 
+        self.logger = None
+        self.setup_logger()
+
         # Some download indicators (used in cb_dl callback)
         self.last_dl_filename = None
         self.last_dl_progress = 0
@@ -508,6 +511,10 @@ class Pac(object):
 
         # Strip ending '\n'
         line = line.rstrip()
+
+        # Log everything to cnchi-alpm.log
+        self.logger.debug(line)
+
         ignore = False
         partials = ['error 0',
                     'error 32',
@@ -595,6 +602,27 @@ class Pac(object):
         else:
             return False
 
+    def setup_logger(self):
+        """ Configure our logger """
+        self.logger = logging.getLogger(__name__)
+        self.logger.handlers = []
+
+        self.logger.setLevel(logging.DEBUG)
+
+        # Log format
+        formatter = logging.Formatter(
+            fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+
+        # File logger
+        try:
+            file_handler = logging.FileHandler('/tmp/cnchi-alpm.log', mode='w')
+            file_handler.setLevel(log_level)
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+        except PermissionError as permission_error:
+            print("Can't open /tmp/cnchi-alpm.log : ", permission_error)
+
 
 def test():
     """ Test case """
@@ -626,6 +654,9 @@ def test():
     pacman_options = {"downloadonly": True}
     # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()
+
+
+
 
 if __name__ == "__main__":
     test()
