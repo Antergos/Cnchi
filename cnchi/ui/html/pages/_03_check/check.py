@@ -38,6 +38,7 @@ from modules.check import SystemCheckModule
 from modules.update import UpdateModule
 from ui.html.pages.html_page import HTMLPage
 
+
 class CheckPage(HTMLPage):
     """
     The first page shown when the app starts.
@@ -59,8 +60,8 @@ class CheckPage(HTMLPage):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.check_module = SystemCheckModule()
-        self.update_module = UpdateModule()
+        self.check_module = None
+        self.update_module = None
 
         self.signals.extend(['space-check', 'power-check', 'update-check-final', 'iso-check'])
         self.checked_items = []
@@ -130,7 +131,8 @@ class CheckPage(HTMLPage):
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
-        pass
+        self.update_module = UpdateModule()
+        self.check_module = SystemCheckModule()
 
     @bg_thread
     def iso_check_cb(self, *args):
@@ -149,8 +151,12 @@ class CheckPage(HTMLPage):
 
     @bg_thread
     def update_check_final_cb(self, *args):
-        result = self.settings.cnchi_is_updated
-        self._controller.trigger_js_event('update-check-final-result', result)
+        for response in self.update_module.do_update_check(False):
+            if isinstance(response, str) and response.startswith('--'):
+                self._controller.trigger_js_event(response)
+
+            elif isinstance(response, dict):
+                self._controller.trigger_js_event('update-check-final-result', response['result'])
 
     def store_values(self):
         """ This must be implemented by subclasses """

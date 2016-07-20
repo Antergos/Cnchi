@@ -71,14 +71,14 @@
 		window._page = null;
 
 		class LocationPage extends CnchiPage {
-			constructor( $tab, id ) {
-				if ( null !== _page ) {
-					return _page;
+			constructor( id ) {
+				if ( null !== window._page ) {
+					return window._page;
 				}
 
-				super( $tab, id );
+				super( id );
 
-				_page = this;
+				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
 
 				this.$selection_wrapper = $('.selection_wrapper');
@@ -106,6 +106,8 @@
 				cnchi.emit_signal('do-show-all-locations');
 			}
 		}
+
+		window.LocationPage = LocationPage;
 
 	</script>
 {% endblock page_script %}

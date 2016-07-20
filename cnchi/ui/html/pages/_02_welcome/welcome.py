@@ -95,7 +95,6 @@ class WelcomePage(HTMLPage):
         updater = UpdateModule()
 
         for response in updater.do_update_check():
-            self.logger.debug(response)
             if isinstance(response, str) and response.startswith('--'):
                 self._controller.trigger_js_event(response)
 

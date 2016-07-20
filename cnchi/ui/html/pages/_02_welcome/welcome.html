@@ -117,18 +117,17 @@
  #}
 {% block page_script %}
 	<script>
-		let _page = null;
+		window._page = null;
 
 		class WelcomePage extends CnchiPage {
 			constructor( id ) {
-				if ( null !== _page ) {
-					return _page;
+				if ( null !== window._page ) {
+					return window._page;
 				}
 
+				super( id );
 
-				super($(id), id);
-
-				_page = this;
+				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
 				this.$update_wrapper = $('.update_check_wrapper');
 				this.$welcome_wrapper = $('.welcome_wrapper');

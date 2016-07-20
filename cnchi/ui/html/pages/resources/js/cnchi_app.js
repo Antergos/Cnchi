@@ -460,12 +460,17 @@ class CnchiTab extends CnchiObject {
  */
 class CnchiPage extends CnchiTab {
 
-	constructor( $tab, id ) {
+	constructor( id ) {
+		let has_tabs = $('.page_tab').length ? true : false,
+			$tab = (true === has_tabs) ? $('.page_tab').first() : $(`#${id}`);
+
 		super($tab, id, null);
+
 		this.signals = [];
 		this.tabs = [];
 		this.current_tab = null;
-		this.has_tabs = $('.page_tab').length ? true : false;
+		this.$page = (true === this.is_page) ? $tab : this.parent.$page;
+		this.$tab = $tab;
 		this.next_tab_animation_interval = null;
 
 		if ( true === this.has_tabs ) {
@@ -508,6 +513,13 @@ class CnchiPage extends CnchiTab {
 	 */
 	prepare_tabs() {
 		$('.page_tab').each(( index, element ) => {
+			if (0 === index) {
+				this.current_tab = this;
+				this.$tab.fadeIn();
+				this.$tab_button.removeClass('locked').addClass('active');
+				// Don't create a `CnchiTab` object for the first tab since it is the current page.
+				return;
+			}
 			let tab_name = $(element).attr('id'),
 				prop_name = ('' !== tab_name ) ? `${tab_name}_tab` : this.id;
 
@@ -551,6 +563,7 @@ class CnchiPage extends CnchiTab {
 
 	unlock_next_tab() {
 		if ( false === this.has_tabs ) {
+			this._unlock_next_tab();
 			this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
 		}
 	}

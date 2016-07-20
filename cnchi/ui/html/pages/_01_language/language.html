@@ -80,18 +80,18 @@
  #}
 {% block page_script %}
 	<script>
-		let _page = null;
+		window._page = null;
 
 		class LanguagePage extends CnchiPage {
 
 			constructor( id ) {
-				if (null !== _page) {
-					return _page;
+				if ( null !== window._page ) {
+					return window._page;
 				}
 
-				super($(id), id);
+				super( id );
 
-				_page = this;
+				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
 				this.cache_key = 'cnchi::language::selected';
 

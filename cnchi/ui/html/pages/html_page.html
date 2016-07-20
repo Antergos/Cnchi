@@ -72,9 +72,8 @@
 	{% block page_script %}{% endblock page_script %}
 
 	<script>
-		$(window).on('page-loaded', () => {
-			new {{ page_name|capitalize() }}Page(null, '{{ page_name }}');
-		});
+		{% set PageClass = '%sPage'|format(page_name|capitalize()) %}
+		$(window).on('page-loaded', () => new {{ PageClass }}('{{ page_name }}'));
 	</script>
 
 {% endblock body %}

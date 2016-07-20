@@ -41,15 +41,17 @@ class UpdateModule(BaseModule):
         self.repo_version = ''
         self.pacman = None
 
-
-    def _initialize_alpm(self):
+    def _initialize_alpm(self, force_refresh=True):
         self.pacman = Pac()
 
-    def do_update_check(self):
+        if force_refresh:
+            self.pacman.refresh()
+
+    def do_update_check(self, force_refresh=True):
         result = True
         restart = False
 
-        if self.is_repo_version_newer():
+        if self.is_repo_version_newer(force_refresh):
             # Signal the UI to inform it that we are going to update Cnchi.
             yield '--update-available'
 
@@ -59,8 +61,8 @@ class UpdateModule(BaseModule):
         self.settings.cnchi_is_updated = result
         yield dict(result=result, restart=restart)
 
-
-    def is_remote_version_newer(self, remote_version, local_version):
+    @staticmethod
+    def is_remote_version_newer(remote_version, local_version):
         """
         If `remote_version` is newer than `local_version` returns True else False
 
@@ -91,11 +93,9 @@ class UpdateModule(BaseModule):
 
         return False
 
-    def is_repo_version_newer(self):
+    def is_repo_version_newer(self, force_refresh=True):
         if self.pacman is None:
-            self._initialize_alpm()
-
-        self.pacman.refresh()
+            self._initialize_alpm(force_refresh)
 
         pkg_objs = self.pacman.get_packages_with_available_update()
 
