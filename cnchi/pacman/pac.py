@@ -512,8 +512,7 @@ class Pac(object):
         line = line.rstrip()
 
         # Log everything to cnchi-alpm.log
-        # this also logs everything to cnchi.log
-        #self.logger.debug(line)
+        self.logger.debug(line)
 
         ignore = False
         partials = ['error 0',
@@ -608,6 +607,8 @@ class Pac(object):
         self.logger.handlers = []
 
         self.logger.setLevel(logging.DEBUG)
+
+        self.logger.propagate = False
 
         # Log format
         formatter = logging.Formatter(

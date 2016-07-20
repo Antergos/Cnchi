@@ -1,3 +1,4 @@
+[2016-07-20 19:12:15 +0200]  Must check logging documentation                                           karasu      {3e06dc2}
 [2016-07-20 19:07:05 +0200]  Another one. I should have created a new branch                            karasu      {c6bf571}
 [2016-07-20 19:04:33 +0200]  Bugfix                                                                     karasu      {d579e2b}
 [2016-07-20 18:58:22 +0200]  Log EVERYTHING from alpm to /tmp/cnchi-alpm.log                            karasu      {2e6a645}
