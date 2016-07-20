@@ -207,14 +207,22 @@
  #
  # Args:
  #     items  (list[tuples]): List of tuples container the info for each element.
- #                            Tuple contents: css class, title, contents.
- #                            Example: ('US', 'United States', 'some contents...')
+ #                            Tuple contents: css class, icon class or img src url, title, contents.
+ #                            Example: ('US', 'cnchi://...', 'United States', 'some contents...')
  #
  #}
 {% macro collapsable_items(items) %}
 	{% for item in items %}
-		<li>
-			<div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-			<div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+		{% if item[1].startswith('cnchi://') %}
+			{% set icon_or_image = '<img src="%s" class="flag z-depth-1" />'|format(item[1]) %}
+		{% elif '' != item[1] %}
+			{% set icon_or_image = '<i class="material-icons">%s</i>'|format(item[1]) %}
+		{% else %}
+			{% set icon_or_image = '' %}
+		{% endif %}
+		<li class="{{ item[0] }}">
+			<div class="collapsible-header">{{ icon_or_image }} {{ item[2] }}</div>
+			<div class="collapsible-body"><p>{{ item[3] }}</p></div>
 		</li>
+	{% endfor %}
 {% endmacro %}

@@ -58,6 +58,7 @@ class LocationModule(BaseModule):
         super().__init__(name=name, *args, **kwargs)
 
         self.locales = {}
+        self.locales_by_country = {}
 
         self.load_locales()
 
@@ -98,15 +99,22 @@ class LocationModule(BaseModule):
             l_name: dict(
                 language=self.locales[l_name],
                 country=countries[c_code],
-                locale=l_name[:-6],
-                label='{0}, {1} ({2})'.format(countries[c_code], self.locales[l_name], c_code)
+                c_code=c_code,
+                locale=l_name[:-6]
             )
             for c_code in countries
             for l_name in self.locales
             if '(' + c_code + ')' in self.locales[l_name]
         }
 
+        by_country = {v['c_code']: [] for k, v in locales.items()}
+        _ = [
+            by_country[ldict['c_code']].append(ldict)
+            for lname, ldict in locales.items()
+        ]
+
         self.locales = locales
+        self.locales_by_country = by_country
 
     def get_location_collection_items(self):
         areas = self.get_areas()
@@ -114,7 +122,7 @@ class LocationModule(BaseModule):
         top_items = []
 
         def _not_top_item(item):
-            if country and '(' + country + ')' in item.values():
+            if country and [l for l in item if country == l['c_code']]:
                 top_items.append(item)
                 return False
             return True
@@ -129,17 +137,19 @@ class LocationModule(BaseModule):
     def get_areas(self):
         lang_code = self.settings.language_code
         show_all_locations = self._pages_data.location.show_all_locations
+        all_areas = self.locales_by_country
+        self.logger.debug(all_areas)
         areas = [
-            self.locales[locale_name]
-            for locale_name in self.locales
-            if show_all_locations or lang_code in locale_name
+            all_areas[c_code]
+            for c_code in all_areas
+            if show_all_locations or lang_code in [cdict['locale'] for cdict in all_areas[c_code]]
         ]
 
         if not areas:
             # When we don't find any country we put all language codes.
-            areas = [self.locales[locale_name] for locale_name in self.locales]
+            areas = [all_areas[c_code] for c_code in all_areas]
 
-        areas = sorted(areas, key=lambda k: k['label'])
+        areas = sorted(areas, key=lambda l: l[0]['country'])
 
         return areas
 

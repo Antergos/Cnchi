@@ -1,6 +1,10 @@
 {% extends 'pages/html_page.html' %}
 
-{% from 'pages/_macros.html' import tabbed_navigation, collection_text_only with context %}
+{% from 'pages/_macros.html' import
+	tabbed_navigation,
+	collection_text_only,
+	collapsable_items_container,
+	collapsable_items with context %}
 
 
 {#
@@ -16,9 +20,12 @@
 
 		.heading { text-align: center; margin: 30px 0px; }
 
-		.collection_wrapper .collection { max-height: 280px; overflow: auto; }
+		.collection_wrapper .collapsible { max-height: 305px; overflow-y: auto; overflow-x: hidden; box-shadow: none; }
 
-		.collection a.collection-item { opacity: 0; cursor: default; padding: 15px 25px; text-align: center; color: #32373c; }
+		.collection a.collection-item { cursor: default; padding: 15px 25px; line-height: 1; text-align: center; color: #32373c; }
+
+		.collapsible li { opacity: 0; line-height: 1; }
+		.collapsible li .collapsible-header { padding: 5px; line-height: 1; }
 
 		.collection a.collection-item:not(.active):hover { cursor: default; background-color: #f1f5f9;}
 	</style>
@@ -44,8 +51,22 @@
 				<div class="grid-100 heading">
 					<h1>{{ _('Please Choose Your Location:') }}</h1>
 				</div>
-				<div class="grid-60 prefix-20 suffix-20 grid-parent collection_wrapper">
-					{{ collection_text_only(locations) }}
+				<div class="grid-70 prefix-15 suffix-15 grid-parent collection_wrapper">
+					{% call collapsable_items_container() %}
+						{% for country_languages in locations %}
+							{% set lang_items = [] %}
+
+							{% for lang in country_languages %}
+								{% do lang_items.append((lang['locale'], lang['language'])) %}
+							{% endfor %}
+
+							{% set contents = collection_text_only(lang_items) %}
+							{% set language = country_languages[0] %}
+							{% set flag_img = '%s/images/country_flags/%s.jpg'|format(RESOURCES_DIR, language['c_code']|lower()) %}
+
+							{{ collapsable_items([(language['c_code'], flag_img, language['country'], contents)])  }}
+						{% endfor %}
+					{% endcall %}
 				</div>
 				<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
 					<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
@@ -94,7 +115,7 @@
 			}
 
 			initialize() {
-				Materialize.showStaggeredList('.collection');
+				Materialize.showStaggeredList('.collapsible');
 
 				for ( let signal of this.signals ) {
 					if ( signal.indexOf('do-') > -1 ) {

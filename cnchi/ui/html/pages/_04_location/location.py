@@ -89,7 +89,7 @@ class LocationPage(HTMLPage):
         self.locations = info = self._module.get_location_collection_items()
         self.logger.debug(self.locations)
         self.logger.debug(info)
-        self.locations_items = [(lname['locale'], lname['label']) for lname in info]
+        self.locations_items = info
 
     def store_values(self):
         """ This must be implemented by subclasses """
