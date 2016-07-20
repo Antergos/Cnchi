@@ -86,11 +86,12 @@
 					selector = `#${css_id}`;
 
 				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
-				_page.maybe_unlock_next_tab(selector);
+				_page.maybe_unlock_next_tab();
 			}
 
-			maybe_unlock_next_tab( selector ) {
-				if ( !$(selector).find('.red, .gray').length ) {
+			maybe_unlock_next_tab() {
+				if ( ! $('.content_wrapper').find('.red, .gray').length ) {
+					cnchi.logger.debug('fired!', _page.maybe_unlock_next_tab);
 					_page.unlock_next_tab();
 				}
 			}

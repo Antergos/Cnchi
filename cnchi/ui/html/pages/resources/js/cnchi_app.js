@@ -117,6 +117,7 @@ class Logger {
 		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
 		cnchi._bridge_message_queue.push(msg);
+		console.log(msg);
 	}
 
 	/**
@@ -395,7 +396,7 @@ class CnchiTab extends CnchiObject {
 
 		this.logger.debug([$tab, id, parent]);
 		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${id}`);
-		this.id = this.$tab.attr('id');
+		this.id = id;
 		this.name = this.$tab.attr('data-name');
 		this.parent = parent;
 		this.is_page = ( null === this.parent );
@@ -468,14 +469,18 @@ class CnchiPage extends CnchiTab {
 
 		this.signals = [];
 		this.tabs = [];
+		this.has_tabs = has_tabs;
 		this.current_tab = null;
 		this.$page = (true === this.is_page) ? $tab : this.parent.$page;
 		this.$tab = $tab;
+		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
 		this.next_tab_animation_interval = null;
 
 		if ( true === this.has_tabs ) {
 			this.prepare_tabs();
 		}
+
+		this.maybe_unlock_top_level_tabs();
 
 	}
 
@@ -506,6 +511,17 @@ class CnchiPage extends CnchiTab {
 		return $tab;
 	}
 
+	maybe_unlock_top_level_tabs() {
+		this.$top_navigation_buttons.children().each(( index, element ) => {
+			$(element).removeClass('locked');
+
+			if ( $(element).hasClass('active') ) {
+				// This button is for the current page. Don't unlock anymore buttons.
+				return false;
+			}
+		})
+	}
+
 	/**
 	 * Locates the tabs' containers in the DOM and uses them to create `CnchiTab` objects for
 	 * the tabs. Also ensures that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s)
@@ -513,7 +529,7 @@ class CnchiPage extends CnchiTab {
 	 */
 	prepare_tabs() {
 		$('.page_tab').each(( index, element ) => {
-			if (0 === index) {
+			if ( 0 === index ) {
 				this.current_tab = this;
 				this.$tab.fadeIn();
 				this.$tab_button.removeClass('locked').addClass('active');
@@ -557,11 +573,13 @@ class CnchiPage extends CnchiTab {
 	}
 
 	_unlock_next_tab() {
+		cnchi.logger.debug('fired!', _page._unlock_next_tab);
 		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
 	}
 
 
 	unlock_next_tab() {
+		cnchi.logger.debug('fired!', _page.unlock_next_tab);
 		if ( false === this.has_tabs ) {
 			this._unlock_next_tab();
 			this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
