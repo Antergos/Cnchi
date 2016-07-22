@@ -161,6 +161,35 @@ class BaseObject:
             if attrib is None:
                 setattr(self, attrib_name, self)
 
+    @staticmethod
+    def toggle_bool(value):
+        """
+        Given a `bool`, returns the opposite `bool` value.
+        Given a `str` value representing a bool, returns the opposite bool value as a `str`.
+
+        Args:
+            value (str|bool): Value to toggle.
+
+        Examples:
+            >>> bool_string_helper('False')
+            'True'
+            >>> bool_string_helper(True)
+            False
+
+        Raises:
+            ValueError: If value is not of type(bool|str) or if str value not in ['True', 'False'].
+
+        """
+
+        if isinstance(value, str) and value in ['True', 'False']:
+            return 'True' if 'False' == value else 'False'
+        elif isinstance(value, bool):
+            return False if value else True
+        else:
+            raise ValueError(
+                'value must be of type(bool|str["True", "False"]). {0} given.'.format(type(value))
+            )
+
 
 class Singleton(type):
     _instance = None

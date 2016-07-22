@@ -73,8 +73,12 @@ class LocationPage(HTMLPage):
     def _get_default_template_vars(self):
         signals = json.dumps(self.signals)
         tpl_vars = super()._get_default_template_vars()
-        tpl_vars.update({'signals': signals, 'tabs': self.tabs, 'locations': self.locations_items})
-        self.logger.debug(tpl_vars)
+        tpl_vars.update({
+            'signals': signals,
+            'tabs': self.tabs,
+            'locations': self.locations_items,
+            'show_all_locations': self._pages_data.location.show_all_locations
+        })
 
         return tpl_vars
 
@@ -97,4 +101,6 @@ class LocationPage(HTMLPage):
         raise NotImplementedError
 
     def show_all_locations_cb(self, *args):
-        self.logger.debug("SHOW ALL LOCATIONS ********************+")
+        current_val = self._pages_data.location.show_all_locations
+        self._pages_data.location.show_all_locations = self.toggle_bool(current_val)
+

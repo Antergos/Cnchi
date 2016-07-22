@@ -484,6 +484,11 @@ class CnchiPage extends CnchiTab {
 
 	}
 
+	_unlock_next_tab() {
+		cnchi.logger.debug('fired!', _page._unlock_next_tab);
+		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
+	}
+
 	/**
 	 * Returns a jQuery object for the tab represented by `identifier`.
 	 *
@@ -570,11 +575,6 @@ class CnchiPage extends CnchiTab {
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)
 		}
-	}
-
-	_unlock_next_tab() {
-		cnchi.logger.debug('fired!', _page._unlock_next_tab);
-		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
 	}
 
 

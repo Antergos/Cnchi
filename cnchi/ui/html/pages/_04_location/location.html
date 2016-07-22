@@ -4,7 +4,8 @@
 	tabbed_navigation,
 	collection_text_only,
 	collapsable_items_container,
-	collapsable_items with context %}
+	collapsable_items,
+	conditional_text with context %}
 
 
 {#
@@ -19,6 +20,7 @@
 		h3 { font-size: 18px; font-family: 'Open Sans', sans-serif; }
 
 		.heading { text-align: center; margin: 30px 0px 15px; }
+
 		.collection_wrapper { box-shadow: 0 2px 7px rgba(0, 0, 0, .1); }
 
 		.collection_wrapper .collapsible { max-height: 305px; overflow-y: auto; overflow-x: hidden; box-shadow: none; margin: 0px; }
@@ -26,11 +28,20 @@
 		.collection a.collection-item { cursor: default; padding: 15px 25px; line-height: 1; text-align: center; color: #32373c; }
 
 		.collapsible li { opacity: 0; line-height: 1; }
+
 		.collapsible li .collapsible-header { cursor: default; padding: 5px; padding-left: 13px; line-height: 1; display: flex; align-content: center; align-items: center; }
 
 		.collapsible li .collapsible-body .grid-100 { padding: 0px; }
+
 		.collapsible li .collapsible-header img { margin-right: 15px; }
-		.collection a.collection-item:not(.active):hover { cursor: default; background-color: #f1f5f9;}
+
+		.collection a.collection-item:not(.active):hover { cursor: default; background-color: #f1f5f9; }
+
+		.show_all_locations_wrapper { margin-top: 15px; padding-left: 15px; }
+
+		label { -webkit-user-select: none; cursor: default; }
+
+		input { cursor: default; }
 	</style>
 {% endblock page_styles %}
 
@@ -41,10 +52,10 @@
  #}
 {% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
-	<!-- TAB NAVIGATION BUTTONS -->
-	<div class="grid-100 grid-parent navigation_wrapper">
-		{{ tabbed_navigation(tabs, '1') }}
-	</div> <!-- /END TAB NAVIGATION BUTTONS -->
+		<!-- TAB NAVIGATION BUTTONS -->
+		<div class="grid-100 grid-parent navigation_wrapper">
+			{{ tabbed_navigation(tabs, '1') }}
+		</div> <!-- /END TAB NAVIGATION BUTTONS -->
 
 		<!-- PAGE CONTENT -->
 		<div class="grid-100 grid-parent content">
@@ -54,7 +65,7 @@
 				<div class="grid-100 heading">
 					<h1>{{ _('Please Choose Your Location:') }}</h1>
 				</div>
-				<div class="grid-60 prefix-20 suffix-20 grid-parent collection_wrapper">
+				<div class="grid-50 prefix-25 suffix-25 grid-parent collection_wrapper">
 					{% call collapsable_items_container() %}
 						{% for country_languages in locations %}
 							{% set lang_items = [] %}
@@ -67,12 +78,13 @@
 							{% set language = country_languages[0] %}
 							{% set flag_img = '%s/images/country_flags/%s.jpg'|format(RESOURCES_DIR, language['c_code']|lower()) %}
 
-							{{ collapsable_items([(language['c_code'], flag_img, language['country'], contents)])  }}
+							{{ collapsable_items([(language['c_code'], flag_img, language['country'], contents)]) }}
 						{% endfor %}
 					{% endcall %}
 				</div>
-				<div class="grid-90 prefix-5 suffix-5 grid-parent show_all_locations_wrapper">
-					<input type="checkbox" name="show_all_locations">{{ _('Show all locations') }}
+				<div class="grid-50 prefix-25 suffix-25 grid-parent show_all_locations_wrapper">
+					<input type="checkbox" id="show_all_locations" name="show_all_locations"{{ conditional_text(show_all_locations, ' checked') }}>
+					<label for="show_all_locations">{{ _('Show all locations') }}</label>
 				</div>
 			</div> <!-- /END LOCATION TAB -->
 
@@ -105,34 +117,32 @@
 					return window._page;
 				}
 
-				super( id );
+				super(id);
 
 				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
 
-				this.$selection_wrapper = $('.selection_wrapper');
-				this.$show_all_locations_wrapper = $('.show_all_locations_wrapper');
+				this.$show_all_locations = $('#show_all_locations');
+				this.show_all_locations = this.$show_all_locations.prop('checked');
 
 				this.register_allowed_signals();
+				this.register_event_handlers();
 				this.initialize();
 			}
 
 			initialize() {
 				Materialize.showStaggeredList('.collapsible');
-
-				for ( let signal of this.signals ) {
-					if ( signal.indexOf('do-') > -1 ) {
-						cnchi.emit_signal(signal);
-					}
-				}
 			}
 
 			register_event_handlers() {
-				$('.show_all_locations_wrapper input').on('click', this.show_all_locations_input_clicked_cb);
+				this.$show_all_locations.on('click', this.show_all_locations_clicked_cb);
 			}
 
-			show_all_locations_input_clicked_cb( event ) {
+			show_all_locations_clicked_cb( event ) {
 				cnchi.emit_signal('do-show-all-locations');
+				setTimeout(() => {
+					location.reload();
+				}, 250)
 			}
 		}
 
