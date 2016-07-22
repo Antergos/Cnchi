@@ -38,7 +38,7 @@
 					</div>
 					<div class="grid-100 header_bottom no-drag">
 						{% if top_level_tabs is defined %}
-							{{ tabbed_navigation(top_level_tabs) }}
+							{{ tabbed_navigation(top_level_tabs, top_level=True) }}
 						{% endif %}
 						<div class="progress">
 							<div class="determinate" style="width: 8%"></div>

@@ -422,8 +422,23 @@ class CnchiTab extends CnchiObject {
 		}
 	}
 
+	_page_tab_button_clicked_cb( $target ) {
+		console.log('clicked!');
+	}
+
+	_tab_button_clicked_cb( $target ) {
+		if ( $target.closest('locked').length ) {
+			return;
+		}
+		$('.content').fadeOut()
+			.promise()
+			.done(() => {
+				window.location = $target.find('a').attr('href');
+			});
+	}
+
 	get_tab_button() {
-		let selector = `[href="cnchi://${this.id}"]`,
+		let selector = `[href\$="${this.id}"]`,
 			$container = ( true === this.is_page ) ? $('.cnchi_app') : this.$tab;
 
 		return $container.find('.navigation_buttons').find(selector).parent();
@@ -431,16 +446,13 @@ class CnchiTab extends CnchiObject {
 
 	tab_button_clicked_cb( event ) {
 		event.preventDefault();
-		let $target = $(event.target);
+		let $target = $(event.currentTarget);
 
-		if ( $target.closest('locked').length ) {
-			return;
+		if ( $target.is('.header_bottom *') ) {
+			_page._tab_button_clicked_cb($target);
+		} else {
+			_page._page_tab_button_clicked_cb($target);
 		}
-		$('.content').fadeOut()
-			.promise()
-			.done(() => {
-				window.location = $target.closest('a').attr('href');
-			});
 	}
 }
 
@@ -485,8 +497,16 @@ class CnchiPage extends CnchiTab {
 	}
 
 	_unlock_next_tab() {
-		cnchi.logger.debug('fired!', _page._unlock_next_tab);
-		_page.$tab_button.next().removeClass('locked').animateCss('animated tada');
+		let $tab_button,
+			last_tab_name = `${_page.tabs[_page.tabs.length - 1]}_tab`;
+
+		if ( true === _page.has_tabs && _page.current_tab !== _page[last_tab_name] ) {
+			$tab_button = _page.$tab_button.filter('.main_content .navigation_buttons li');
+		} else {
+			$tab_button = _page.$tab_button;
+		}
+
+		$tab_button.next().removeClass('locked').animateCss('animated tada');
 	}
 
 	/**
@@ -546,6 +566,7 @@ class CnchiPage extends CnchiTab {
 
 			this[prop_name] = new CnchiTab($(element), tab_name, this);
 			this.tabs.push(tab_name);
+			this[prop_name].$tab_button.on('click', this.tab_button_click_cb);
 		});
 	}
 
@@ -605,13 +626,9 @@ class CnchiPage extends CnchiTab {
 		}
 	}
 
-
 	unlock_next_tab() {
-		cnchi.logger.debug('fired!', _page.unlock_next_tab);
-		if ( false === this.has_tabs ) {
-			this._unlock_next_tab();
-			this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
-		}
+		this._unlock_next_tab();
+		this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
 	}
 }
 

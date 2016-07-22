@@ -100,13 +100,18 @@
  #     column_width (str):         Column size (a number in the range 1-12)
  #
  #}
-{% macro tabbed_navigation(tabs, column_width='3') %}
+{% macro tabbed_navigation(tabs, column_width='3', top_level=False) %}
+	{% if top_level %}
+		{% set prefix = 'cnchi://' %}
+	{% else %}
+		{% set prefix = '#' %}
+	{% endif %}
 	<div class="row navigation_buttons">
 		<div class="col s12">
 			<ul class="tabs">
 				{% for tab in tabs %}
 					<li class="tab col s{{ column_width }} locked{{ conditional_text(tab[1], ' active') }}">
-						<a href="cnchi://{{ tab[0]|lower()|replace(' ', '_') }}" class="{{ conditional_text(tab[1], ' active') }}">{{ tab[0] }}</a>
+						<a href="{{ '%s%s'|format(prefix, tab[0]|lower()|replace(' ', '_')) }}" class="{{ conditional_text(tab[1], ' active') }}">{{ tab[0] }}</a>
 					</li>
 				{% endfor %}
 			</ul>
