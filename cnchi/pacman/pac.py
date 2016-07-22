@@ -37,7 +37,7 @@ import logging
 import os
 import queue
 import inspect
-
+import traceback
 from collections import OrderedDict
 
 try:
@@ -158,6 +158,7 @@ class Pac(object):
         except pyalpm.error as pyalpm_error:
             msg = _("Can't finalize alpm transaction: %s")
             logging.error(msg, pyalpm_error)
+            traceback.print_exc()
         finally:
             logging.debug("Releasing alpm transaction...")
             transaction.release()
