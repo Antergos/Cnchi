@@ -86,10 +86,11 @@ class LocationPage(HTMLPage):
     def prepare(self):
         """ Prepare to become the current (visible) page. """
         self._module = LocationModule()
-        self.locations = info = self._module.get_location_collection_items()
-        self.logger.debug(self.locations)
-        self.logger.debug(info)
-        self.locations_items = info
+        self.locations = self._module.get_location_collection_items()
+        self.locations_items = [
+            sorted(langs, key=lambda d: d['language'])
+            for langs in self.locations
+        ]
 
     def store_values(self):
         """ This must be implemented by subclasses """
