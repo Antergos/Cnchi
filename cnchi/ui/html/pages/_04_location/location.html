@@ -27,7 +27,7 @@
 
 		.collection_wrapper { box-shadow: 0 2px 7px rgba(0, 0, 0, .1); }
 
-		.collection_wrapper .collapsible { height: 305px; box-shadow: none; margin: 0px; overflow-x: hidden; overflow-y: scroll; list-style: none;}
+		.collection_wrapper .collapsible { height: 305px; box-shadow: none; margin: 0px; overflow-x: hidden; overflow-y: scroll; list-style: none; }
 
 		.collection a.collection-item { cursor: default; padding: 15px 25px; line-height: 1; text-align: center; color: #32373c; }
 
@@ -37,8 +37,10 @@
 
 		.collapsible li .collapsible-header i { transform: rotate(90deg); float: right; margin: 13px; padding: 0px; line-height: 1; transition: transform 0.3s ease-in-out; }
 
-		.collapsible li .collapsible-header.active i { transform: rotate(0deg); }
+		.collapsible li.active .collapsible-header i { transform: rotate(0deg); }
+
 		.collapsible li .collapsible-header .icon_wrap { width: 82%; }
+
 		.collapsible li .collapsible-body .grid-100 { padding: 0px; }
 
 		.collapsible li .collapsible-header img { margin-right: 15px; }
@@ -132,6 +134,7 @@
 
 				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
+				this.location = null;
 
 				this.$show_all_locations = $('#show_all_locations');
 				this.show_all_locations = this.$show_all_locations.prop('checked');
@@ -145,11 +148,15 @@
 			init_locations_list() {
 				let icon = $('<div class="icon_wrap"><i class="material-icons">add</i></div>');
 
-				this.$locations_list.children().each(function(index) {
-					$(icon).clone().appendTo($(this).find('.collapsible-header'));
-					$(this).on('click', _page.locations_list_item_clicked_cb);
+				this.$locations_list.children().each(function( index ) {
+					let $header = $(this).find('.collapsible-header'),
+						$body = $(this).find('.collapsible-body');
 
-					if (index > 5) {
+					$(icon).clone().appendTo($header);
+					$header.on('click', _page.locations_list_item_header_clicked_cb);
+					$body.find('.collection').children().on('click', _page.location_selected_cb);
+
+					if ( index > 5 ) {
 						$(this).addClass('future');
 					}
 
@@ -178,18 +185,46 @@
 				this.init_locations_list();
 			}
 
-			locations_list_item_clicked_cb( event ) {
-				setTimeout(function() {
-					let $target = $(event.target),
-						$header = $target.find('.collapsible-header'),
-						$last_active = $target.siblings('_active');
+			location_selected_cb( event ) {
+				let $location = $(event.target),
+					location = $location.attr('id');
 
-					$target.removeClass('_active');
-					$header.find('i').text('remove');
-					$last_active.find('i').text('add');
-					$last_active.removeClass('_active');
-					$target.addClass('_active');
+				$location.addClass('active');
+
+				if ( null !== _page.location ) {
+					$(_page.location).removeClass('active');
+				}
+
+				_page.location = location;
+				_page.unlock_next_tab();
+			}
+
+			locations_list_item_header_clicked_cb( event ) {
+				// Allow time for animation to complete
+				setTimeout(function() {
+					let $header = $(event.currentTarget).closest('.collapsible-header'),
+						$parent = $header.parent(),
+						$last_active = ($parent.hasClass('_active')) ? $parent : $parent.siblings('._active');
+
+					_page.locations_list_item_header_close($last_active);
+
+					if ( $parent.is($last_active) ) {
+						return;
+					}
+
+					_page.locations_list_item_header_open($parent);
+
 				}, 250);
+			}
+
+			locations_list_item_header_close( $header ) {
+				$header.find('i').text('add');
+				$header.removeClass('_active');
+			}
+
+			locations_list_item_header_open( $header ) {
+				$header.find('i').text('remove');
+				$header.addClass('_active');
 			}
 
 			register_event_handlers() {
@@ -199,7 +234,7 @@
 			show_all_locations_clicked_cb( event ) {
 				cnchi.emit_signal('do-show-all-locations');
 				setTimeout(() => {
-					_page.reload_element( '.collection_wrapper', _page.init_locations_list );
+					_page.reload_element('.collection_wrapper', _page.init_locations_list);
 				}, 250)
 			}
 		}
