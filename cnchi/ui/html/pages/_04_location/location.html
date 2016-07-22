@@ -35,6 +35,10 @@
 
 		.collapsible li .collapsible-header { cursor: default; padding: 5px; padding-left: 13px; line-height: 1; display: flex; align-content: center; align-items: center; }
 
+		.collapsible li .collapsible-header i { transform: rotate(90deg); float: right; margin: 13px; padding: 0px; line-height: 1; transition: transform 0.3s ease-in-out; }
+
+		.collapsible li .collapsible-header.active i { transform: rotate(0deg); }
+		.collapsible li .collapsible-header .icon_wrap { width: 82%; }
 		.collapsible li .collapsible-body .grid-100 { padding: 0px; }
 
 		.collapsible li .collapsible-header img { margin-right: 15px; }
@@ -139,10 +143,16 @@
 			}
 
 			init_locations_list() {
+				let icon = $('<div class="icon_wrap"><i class="material-icons">add</i></div>');
+
 				this.$locations_list.children().each(function(index) {
+					$(icon).clone().appendTo($(this).find('.collapsible-header'));
+					$(this).on('click', _page.locations_list_item_clicked_cb);
+
 					if (index > 5) {
 						$(this).addClass('future');
 					}
+
 					new Waypoint.Inview({
 						element: $(this),
 						context: _page.$locations_list,
@@ -168,8 +178,18 @@
 				this.init_locations_list();
 			}
 
-			locations_list_scrolled_cb( event ) {
-				this.$locations_list.children(':visible').toggleClass('future');
+			locations_list_item_clicked_cb( event ) {
+				setTimeout(function() {
+					let $target = $(event.target),
+						$header = $target.find('.collapsible-header'),
+						$last_active = $target.siblings('_active');
+
+					$target.removeClass('_active');
+					$header.find('i').text('remove');
+					$last_active.find('i').text('add');
+					$last_active.removeClass('_active');
+					$target.addClass('_active');
+				}, 250);
 			}
 
 			register_event_handlers() {
