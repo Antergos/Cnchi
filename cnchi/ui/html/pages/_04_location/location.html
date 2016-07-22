@@ -7,6 +7,10 @@
 	collapsable_items,
 	conditional_text with context %}
 
+{% block before_page_styles %}
+{% endblock before_page_styles %}
+
+
 
 {#
  # CSS Styles Specific To This Page
@@ -23,11 +27,11 @@
 
 		.collection_wrapper { box-shadow: 0 2px 7px rgba(0, 0, 0, .1); }
 
-		.collection_wrapper .collapsible { max-height: 305px; overflow-y: auto; overflow-x: hidden; box-shadow: none; margin: 0px; }
+		.collection_wrapper .collapsible { height: 305px; box-shadow: none; margin: 0px; overflow-x: hidden; overflow-y: scroll; list-style: none;}
 
 		.collection a.collection-item { cursor: default; padding: 15px 25px; line-height: 1; text-align: center; color: #32373c; }
 
-		.collapsible li { opacity: 0; line-height: 1; }
+		.collapsible li { line-height: 1; }
 
 		.collapsible li .collapsible-header { cursor: default; padding: 5px; padding-left: 13px; line-height: 1; display: flex; align-content: center; align-items: center; }
 
@@ -61,12 +65,12 @@
 		<div class="grid-100 grid-parent content">
 
 			<!-- LOCATION TAB -->
-			<div class="grid-100 grid-parent page_tab">
+			<div class="grid-100 grid-parent page_tab" data-name="{{ tabs[0][0]|lower() }}">
 				<div class="grid-100 heading">
 					<h1>{{ _('Please Choose Your Location:') }}</h1>
 				</div>
 				<div class="grid-50 prefix-25 suffix-25 grid-parent collection_wrapper">
-					{% call collapsable_items_container() %}
+					{% call collapsable_items_container('grow') %}
 						{% for country_languages in locations %}
 							{% set lang_items = [] %}
 
@@ -89,12 +93,12 @@
 			</div> <!-- /END LOCATION TAB -->
 
 			<!-- KEYBOARD LAYOUT TAB -->
-			<div class="grid-100 grid-parent page_tab">
+			<div class="grid-100 grid-parent page_tab" data-name="{{ tabs[1][0]|lower() }}">
 
 			</div> <!-- /END KEYBOARD LAYOUT TAB -->
 
 			<!-- TIMEZONE TAB -->
-			<div class="grid-100 grid-parent page_tab">
+			<div class="grid-100 grid-parent page_tab" data-name="{{ tabs[2][0]|lower() }}">
 
 			</div> <!-- /END TIMEZONE TAB -->
 
@@ -108,6 +112,9 @@
  # Javascript For This Page
  #}
 {% block page_script %}
+	<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.inview.min.js"></script>
 	<script>
 		window._page = null;
 
@@ -124,14 +131,45 @@
 
 				this.$show_all_locations = $('#show_all_locations');
 				this.show_all_locations = this.$show_all_locations.prop('checked');
+				this.$locations_list = $('ul.collapsible');
 
 				this.register_allowed_signals();
 				this.register_event_handlers();
 				this.initialize();
 			}
 
+			init_locations_list() {
+				this.$locations_list.children().each(function(index) {
+					if (index > 5) {
+						$(this).addClass('future');
+					}
+					new Waypoint.Inview({
+						element: $(this),
+						context: _page.$locations_list,
+						enter: function( direction ) {
+							if ( 'down' === direction ) {
+								$(this.element).removeClass('future');
+							} else {
+								$(this.element).removeClass('past');
+							}
+						},
+						exited: function( direction ) {
+							if ( 'down' === direction ) {
+								$(this.element).addClass('past');
+							} else {
+								$(this.element).addClass('future');
+							}
+						}
+					});
+				});
+			}
+
 			initialize() {
-				Materialize.showStaggeredList('.collapsible');
+				this.init_locations_list();
+			}
+
+			locations_list_scrolled_cb( event ) {
+				this.$locations_list.children(':visible').toggleClass('future');
 			}
 
 			register_event_handlers() {
@@ -141,7 +179,7 @@
 			show_all_locations_clicked_cb( event ) {
 				cnchi.emit_signal('do-show-all-locations');
 				setTimeout(() => {
-					location.reload();
+					_page.reload_element( '.collection_wrapper', _page.init_locations_list );
 				}, 250)
 			}
 		}

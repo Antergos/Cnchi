@@ -12,6 +12,7 @@
 		<link rel="stylesheet" id="magiccss_styles" href="{{ RESOURCES_DIR }}/css/magic.css" type="text/css" media="all">
 		<link rel="stylesheet" id="animatecss_styles" href="{{ RESOURCES_DIR }}/css/animate.css" type="text/css" media="all">
 		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/css/style.css" type="text/css" media="all">
+		{% block before_page_styles %}{% endblock before_page_styles %}
 		{% block page_styles %}{% endblock page_styles %}
 	{% endblock head %}
 </head>

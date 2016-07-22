@@ -77,7 +77,8 @@ class LocationPage(HTMLPage):
             'signals': signals,
             'tabs': self.tabs,
             'locations': self.locations_items,
-            'show_all_locations': self._pages_data.location.show_all_locations
+            'show_all_locations': self._pages_data.location.show_all_locations,
+            'list_items': []
         })
 
         return tpl_vars

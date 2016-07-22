@@ -559,6 +559,34 @@ class CnchiPage extends CnchiTab {
 	}
 
 	/**
+	 * Reloads a single element on the page. The result is the same as if the entire page
+	 * had been reloaded, except only that single element will actually change.
+	 *
+	 * @arg {String}   selector A CSS selector that matches only one element on the page.
+	 * @arg {Function} callback An optional callback to be called after element is reloaded.
+	 */
+	reload_element( selector, callback ) {
+		let url = `cnchi://${_page.name}`;
+
+		this.$page.find(selector).fadeOut()
+			.promise()
+			.done(function() {
+				let $old_el = $(this);
+
+				$.get(url, function( data ) {
+					let $new_el = $(data).find(selector);
+					$old_el.replaceWith($new_el).fadeIn()
+						.promise()
+						.done(() => {
+							if ( callback ) {
+								callback();
+							}
+						});
+				});
+			});
+	}
+
+	/**
 	 * Sets the current tab to the tab represented by `identifier`.
 	 *
 	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.

@@ -105,3 +105,22 @@ h1, h2, h3, h4, h5, h6 { -webkit-user-select: none; cursor: default; }
  * ------------->>> Animations <<<--------------- *
 \* ============================================== */
 
+.grow li {
+	-webkit-transition: all 600ms ease;
+	transition: all 600ms ease;
+	-webkit-transform-origin: 50% 50%;
+	-moz-transform-origin: 50% 50%;
+	-ms-transform-origin: 50% 50%;
+	-o-transform-origin: 50% 50%;
+	transform-origin: 50% 50%;
+}
+
+.grow li.past {
+	-webkit-transform: scale(0.01);
+	transform: scale(0.01);
+}
+
+.grow li.future {
+	-webkit-transform: scale(0.01);
+	transform: scale(0.01);
+}
