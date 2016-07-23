@@ -422,11 +422,11 @@ class CnchiTab extends CnchiObject {
 		}
 	}
 
-	_page_tab_button_clicked_cb( $target ) {
+	_page_tab_button_clicked_handler( $target ) {
 		console.log('clicked!');
 	}
 
-	_tab_button_clicked_cb( $target ) {
+	_tab_button_clicked_handler( $target ) {
 		if ( $target.closest('locked').length ) {
 			return;
 		}
@@ -448,10 +448,10 @@ class CnchiTab extends CnchiObject {
 		event.preventDefault();
 		let $target = $(event.currentTarget);
 
-		if ( $target.is('.header_bottom *') ) {
-			_page._tab_button_clicked_cb($target);
+		if ( $('.header_bottom').has( $target ) ) {
+			_page._tab_button_clicked_handler($target);
 		} else {
-			_page._page_tab_button_clicked_cb($target);
+			_page._page_tab_button_clicked_handler($target);
 		}
 	}
 }
