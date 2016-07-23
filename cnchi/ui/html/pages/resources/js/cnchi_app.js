@@ -402,12 +402,16 @@ class CnchiTab extends CnchiObject {
 		this.is_page = ( null === this.parent );
 		this.locked = true;
 		this.$tab_button = this.get_tab_button();
+		this.previous = null;
+		this.next = null;
 
 		this._maybe_unlock();
 
 	}
 
-	_do_unlock( key ) {
+	_do_unlock() {
+		let key = `unlocked_tabs::${this.id}`;
+
 		this.$tab_button.removeClass('locked');
 		this.$tab_button.on('click', this.tab_button_clicked_cb);
 		localStorage.setItem(key, 'true');
@@ -418,7 +422,7 @@ class CnchiTab extends CnchiObject {
 			unlocked = ( null !== localStorage.getItem(key) );
 
 		if ( true === unlocked || true === this.is_page ) {
-			this._do_unlock(key);
+			this._do_unlock();
 		}
 	}
 
@@ -439,16 +443,17 @@ class CnchiTab extends CnchiObject {
 
 	get_tab_button() {
 		let selector = `[href\$="${this.id}"]`,
-			$container = ( true === this.is_page ) ? $('.cnchi_app') : this.$tab;
+			$container = ( true === this.is_page ) ? $('.cnchi_app') : $('.main_content');
 
 		return $container.find('.navigation_buttons').find(selector).parent();
 	}
 
 	tab_button_clicked_cb( event ) {
-		event.preventDefault();
 		let $target = $(event.currentTarget);
 
-		if ( $('.header_bottom').has( $target ) ) {
+		console.log(event);
+
+		if ( $('.header_bottom').has($target) ) {
 			_page._tab_button_clicked_handler($target);
 		} else {
 			_page._page_tab_button_clicked_handler($target);
@@ -496,17 +501,26 @@ class CnchiPage extends CnchiTab {
 
 	}
 
-	_unlock_next_tab() {
-		let $tab_button,
-			last_tab_name = `${_page.tabs[_page.tabs.length - 1]}_tab`;
+	_assign_next_and_previous_tab_props() {
+		for ( let [index, value] of this.tabs.entries() ) {
+			value.previous = (index > 0) ? this.tabs[index - 1] : this;
+			value.next = (index < (this.tabs.length - 1)) ? this.tabs[index + 1] : null;
+		}
+	}
 
-		if ( true === _page.has_tabs && _page.current_tab !== _page[last_tab_name] ) {
-			$tab_button = _page.$tab_button.filter('.main_content .navigation_buttons li');
-		} else {
-			$tab_button = _page.$tab_button;
+	_unlock_next_tab_animated() {
+		let _this = ( this instanceof CnchiTab ) ? this : _page.current_tab,
+			$tab_button = _this.$tab_button.next();
+
+		if ( true === _this.has_tabs && _this.current_tab !== _this.last_tab ) {
+			$tab_button = this.$tab_button.filter('.main_content .navigation_buttons li').next();
 		}
 
-		$tab_button.next().removeClass('locked').animateCss('animated tada');
+		if ($tab_button.hasClass('locked')) {
+			$tab_button.on('click', _this.tab_button_clicked_cb).removeClass('locked');
+		}
+
+		$tab_button.animateCss('animated tada');
 	}
 
 	/**
@@ -526,7 +540,7 @@ class CnchiPage extends CnchiTab {
 			$tab = identifier;
 
 		} else if ( 'string' === typeof identifier ) {
-			$tab = $(identifier);
+			$tab = $(`#${identifier}`);
 
 		} else if ( 'number' === typeof identifier ) {
 			let tab_name = this.tabs[identifier];
@@ -538,9 +552,11 @@ class CnchiPage extends CnchiTab {
 
 	maybe_unlock_top_level_tabs() {
 		this.$top_navigation_buttons.children().each(( index, element ) => {
-			$(element).removeClass('locked');
+			let $tab_button = $(element);
 
-			if ( $(element).hasClass('active') ) {
+			$tab_button.removeClass('locked');
+
+			if ( $tab_button.hasClass('active') ) {
 				// This button is for the current page. Don't unlock anymore buttons.
 				return false;
 			}
@@ -553,20 +569,27 @@ class CnchiPage extends CnchiTab {
 	 * are properly set.
 	 */
 	prepare_tabs() {
-		$('.page_tab').each(( index, element ) => {
+		let $page_tabs = $('.page_tab');
+		this.current_tab = this;
+
+		this.$tab.fadeIn();
+		this.$tab_button.removeClass('locked').addClass('active');
+
+		$page_tabs.each(( index, element ) => {
+			// Don't create a `CnchiTab` object for the first tab since it is the current page.
 			if ( 0 === index ) {
-				this.current_tab = this;
-				this.$tab.fadeIn();
-				this.$tab_button.removeClass('locked').addClass('active');
-				// Don't create a `CnchiTab` object for the first tab since it is the current page.
 				return;
 			}
+
 			let tab_name = $(element).attr('id'),
-				prop_name = ('' !== tab_name ) ? `${tab_name}_tab` : this.id;
+				prop_name = `${tab_name}_tab`;
 
 			this[prop_name] = new CnchiTab($(element), tab_name, this);
-			this.tabs.push(tab_name);
-			this[prop_name].$tab_button.on('click', this.tab_button_click_cb);
+			this.tabs.push(this[prop_name]);
+
+			if ( index === ($page_tabs.length - 1) ) {
+				this._assign_next_and_previous_tab_props();
+			}
 		});
 	}
 
@@ -627,8 +650,10 @@ class CnchiPage extends CnchiTab {
 	}
 
 	unlock_next_tab() {
-		this._unlock_next_tab();
-		this.next_tab_animation_interval = setInterval(this._unlock_next_tab, 4000);
+		this._unlock_next_tab_animated();
+		this.next_tab_animation_interval = setInterval(() => {
+			this._unlock_next_tab_animated();
+		}, 4000);
 	}
 }
 

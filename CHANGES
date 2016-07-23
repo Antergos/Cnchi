@@ -1,3 +1,4 @@
+[2016-07-22 23:39:49 -0500]  add ARIA attribs where necessary (for accessibility)                   Dustin Falgout  {59d711f}
 [2016-07-22 23:14:04 -0500]  not important                                                          Dustin Falgout  {1e04c9f}
 [2016-07-22 10:30:41 -0500]  more progress                                                          Dustin Falgout  {1dc892b}
 [2016-07-22 09:44:34 -0500]  fix issue with accordion state changes                                 Dustin Falgout  {da1865e}
