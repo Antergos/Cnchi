@@ -178,9 +178,9 @@
 
 		{% for column in items|slice(columns) %}
 			<div class="grid-100">
-				<div class="collection{{ _class }}">
+				<div class="collection{{ _class }}" role="listbox">
 					{% for item in column %}
-						<a href="#" id="{{ item[0] }}" class="collection-item">{{ item[1] }}</a>
+						<a href="#" id="{{ item[0] }}" class="collection-item" role="option">{{ item[1] }}</a>
 					{% endfor %}
 				</div>
 			</div>
@@ -201,7 +201,7 @@
 	{% if '' != _class %}
 		{% set _class = ' %s'|format(_class) %}
 	{% endif %}
-	<ul class="collapsible{{ _class }}" data-collapsible="accordion">
+	<ul class="collapsible{{ _class }}" data-collapsible="accordion" role="tablist">
 		{{ caller() }}
 	</ul>
 {% endmacro %}
@@ -226,8 +226,8 @@
 			{% set icon_or_image = '' %}
 		{% endif %}
 		<li class="{{ item[0] }}">
-			<div class="collapsible-header">{{ icon_or_image }} {{ item[2] }}</div>
-			<div class="collapsible-body">{{ item[3] }}</div>
+			<div id="{{ 'tab%s_header'|format(loop.index) }}" class="collapsible-header" role="tab" aria-controls="{{ 'tab%s_body'|format(loop.index) }}">{{ icon_or_image }} {{ item[2] }}</div>
+			<div id="{{ 'tab%s_body'|format(loop.index) }}" class="collapsible-body" role="tabpanel" aria-labelledby="{{ 'tab%s_header'|format(loop.index) }}">{{ item[3] }}</div>
 		</li>
 	{% endfor %}
 {% endmacro %}
