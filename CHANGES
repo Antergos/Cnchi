@@ -1,3 +1,4 @@
+[2016-07-22 20:49:41 +0200]  Show stack info.                                                           karasu      {35d2c4b}
 [2016-07-20 19:18:29 +0200]  This should prevent logging to cnchi.log from cnchi-alpm logger.           karasu      {254b9a8}
 [2016-07-20 19:12:15 +0200]  Must check logging documentation                                           karasu      {3e06dc2}
 [2016-07-20 19:07:05 +0200]  Another one. I should have created a new branch                            karasu      {c6bf571}

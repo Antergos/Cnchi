@@ -605,7 +605,6 @@ class Pac(object):
     def setup_logger(self):
         """ Configure our logger """
         self.logger = logging.getLogger(__name__)
-        self.logger.handlers = []
 
         self.logger.setLevel(logging.DEBUG)
 
@@ -616,14 +615,15 @@ class Pac(object):
             fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S")
 
-        # File logger
-        try:
-            file_handler = logging.FileHandler('/tmp/cnchi-alpm.log', mode='w')
-            file_handler.setLevel(logging.DEBUG)
-            file_handler.setFormatter(formatter)
-            self.logger.addHandler(file_handler)
-        except PermissionError as permission_error:
-            print("Can't open /tmp/cnchi-alpm.log : ", permission_error)
+        if not self.logger.hasHandlers():
+            # File logger
+            try:
+                file_handler = logging.FileHandler('/tmp/cnchi-alpm.log', mode='w')
+                file_handler.setLevel(logging.DEBUG)
+                file_handler.setFormatter(formatter)
+                self.logger.addHandler(file_handler)
+            except PermissionError as permission_error:
+                print("Can't open /tmp/cnchi-alpm.log : ", permission_error)
 
 
 def test():
