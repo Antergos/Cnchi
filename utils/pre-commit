@@ -14,41 +14,44 @@
 # number) and create a GIT tag.
 
 
-INFO_PY="cnchi/info.py"
+INFO_PY='cnchi/info.py'
 
-
-
-if [[ -e "${INFO_PY}" ]]; then
-	BASE_STRING=$(python ${INFO_PY})
-	BASE_LIST=($(echo $BASE_STRING | tr '.' ' '))
-	V_MAJOR=${BASE_LIST[0]}
-	V_MINOR=${BASE_LIST[1]}
-	V_PATCH=${BASE_LIST[2]}
-	echo "Current version : $BASE_STRING"
-	V_PATCH=$((V_PATCH + 1))
-	SUGGESTED_VERSION="$V_MAJOR.$V_MINOR.$V_PATCH"
-
-	echo "Will set new version to be $SUGGESTED_VERSION"
-	sed -i "s|$BASE_STRING|$SUGGESTED_VERSION|g" ${INFO_PY}
-	git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.14.0"...HEAD > CHANGES
-
-	echo "updating update.info..."
-	python utils/generate_update_info.py
-
-	echo "checking file permissions..."
-	utils/fix-permissions.sh
-
-	echo "checking for changes to pre-commit hook..."
-	if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
-		echo "updating pre-commit hook..."
-		cp utils/pre-commit .git/hooks
-	fi
-
-	git add CHANGES ${INFO_PY} update.info
-
-	exit 0;
-else
-	echo "Could not find a VERSION file"
-	exit 1;
-
+echo 'checking for changes to pre-commit hook...'
+if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
+	echo 'updating pre-commit hook...'
+	cp utils/pre-commit .git/hooks
+	chmod +x .git/hooks/pre-commit
+	# Run updated pre-commit hook script
+	.git/hooks/pre-commit
+	# Exit with the exit status of the updated script.
+	exit $?
 fi
+
+# Exit with failed status if we cannot find info.py
+[[ -e "${INFO_PY}" ]] || { echo 'Could not find a info.py!'; exit 1; }
+
+
+BASE_STRING=$(python3 "${INFO_PY}")
+BASE_LIST=($(echo "${BASE_STRING}" | tr '.' ' '))
+V_MAJOR="${BASE_LIST[0]}"
+V_MINOR="${BASE_LIST[1]}"
+V_PATCH="${BASE_LIST[2]}"
+
+echo "Current version : ${BASE_STRING}"
+V_PATCH=$((V_PATCH + 1))
+SUGGESTED_VERSION="${V_MAJOR}.${V_MINOR}.${V_PATCH}"
+
+echo "New version : ${SUGGESTED_VERSION}"
+sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${INFO_PY}"
+
+echo 'Updating CHANGES file...'
+git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.14.0"...HEAD > CHANGES
+
+echo "Updating latest.json..."
+python utils/generate_update_info.py
+
+echo "Checking file permissions..."
+utils/fix-permissions.sh
+
+git add CHANGES "${INFO_PY}" dist/latest.json && exit 0;
+
