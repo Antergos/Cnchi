@@ -63,7 +63,7 @@ def create_update_info():
 
     myfiles = get_files("/usr/share/cnchi") or get_files(".")
 
-    txt = '{"version":"{{0}}"}'.format(info.CNCHI_VERSION)
+    txt = '{{"version":"{}"}}'.format(info.CNCHI_VERSION)
 
     # for filename in myfiles:
     #     md5 = get_md5(filename)
