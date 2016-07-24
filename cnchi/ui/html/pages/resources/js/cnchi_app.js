@@ -479,8 +479,9 @@ class CnchiTab extends CnchiObject {
 class CnchiPage extends CnchiTab {
 
 	constructor( id ) {
-		let has_tabs = $('.page_tab').length ? true : false,
-			$tab = (true === has_tabs) ? $('.page_tab').first() : $(`#${id}`);
+		let $page_tabs = $('.page_tab'),
+			has_tabs = $page_tabs.length ? true : false,
+			$tab = (true === has_tabs) ? $page_tabs.first() : $(`#${id}`);
 
 		super($tab, id, null);
 
