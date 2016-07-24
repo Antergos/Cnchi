@@ -20,7 +20,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-""" This script generates an update.info file used to update Cnchi """
+""" This script generates an latest.json file used by Cnchi to check the latest version """
 
 import os
 import hashlib
@@ -40,7 +40,7 @@ def get_files(path):
     """ Returns all files from a directory """
     all_files = []
     skip_names = [
-        "__pycache__", ".git", "CHANGES", "info.py", "update.info", ".tx/", "utils/"]
+        "__pycache__", ".git", "CHANGES", "info.py", "latest.json", ".tx/", "utils/"]
     if os.path.exists(path):
         for dpath, d, files in os.walk(path):
             for f in files:
@@ -63,7 +63,7 @@ def create_update_info():
 
     myfiles = get_files("/usr/share/cnchi") or get_files(".")
 
-    txt = '{"version":"%s","files":[\n' % info.CNCHI_VERSION
+    txt = '{"version":"{{0}}"}'.format(info.CNCHI_VERSION)
 
     # for filename in myfiles:
     #     md5 = get_md5(filename)
@@ -73,9 +73,8 @@ def create_update_info():
 
     # remove last comma and close
     # txt = txt[:-3]
-    txt += ']}\n'
 
-    with open("update.info", "w") as update_info:
+    with open("dist/latest.json", "w") as update_info:
         update_info.write(txt)
 
 if __name__ == '__main__':

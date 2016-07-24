@@ -48,7 +48,7 @@ echo 'Updating CHANGES file...'
 git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.14.0"...HEAD > CHANGES
 
 echo "Updating latest.json..."
-python utils/generate_update_info.py
+python utils/generate_latest_json.py
 
 echo "Checking file permissions..."
 utils/fix-permissions.sh
