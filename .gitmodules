@@ -1,0 +1,3 @@
+[submodule "cnchi/ui/html/pages/resources/includes/keyboard"]
+	path = cnchi/ui/html/pages/resources/includes/keyboard
+	url = git@github.com:antergos/keyboard.git
