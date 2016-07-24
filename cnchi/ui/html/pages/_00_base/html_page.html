@@ -55,7 +55,8 @@
 
 	{% block scripts %}
 
-		<script src="{{ RESOURCES_DIR }}/js/jquery-3.0.0.min.js"></script>
+		<script src="{{ RESOURCES_DIR }}/js/jquery-3.1.0.min.js"></script>
+		{% block after_jquery %}{% endblock after_jquery %}
 		<script src="{{ RESOURCES_DIR }}/js/materialize.min.js"></script>
 		<script src="{{ RESOURCES_DIR }}/js/cnchi_app.js"></script>
 
