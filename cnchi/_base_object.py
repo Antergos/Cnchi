@@ -53,7 +53,7 @@ from gi.repository import (
 )
 
 # This application
-from _settings import (
+from _data import (
     DataObject,
     NonSharedData,
     settings,
