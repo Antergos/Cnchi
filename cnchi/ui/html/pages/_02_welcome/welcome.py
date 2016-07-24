@@ -33,7 +33,7 @@ from _base_object import (
 )
 from misc.extra import has_connection
 from modules.update import UpdateModule
-from pages._00_base.html_page import HTMLPage, bg_thread
+from .._00_base.html_page import HTMLPage, bg_thread
 
 
 class WelcomePage(HTMLPage):

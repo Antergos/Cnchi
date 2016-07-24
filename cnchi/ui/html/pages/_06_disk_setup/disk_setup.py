@@ -32,7 +32,7 @@ from _base_object import (
 )
 
 # This Application
-from pages._00_base.html_page import HTMLPage
+from .._00_base.html_page import HTMLPage
 
 
 class DiskSetupPage(HTMLPage):

@@ -31,7 +31,7 @@ from _base_object import (
     json
 )
 from modules.location import LocationModule
-from pages._00_base.html_page import HTMLPage
+from .._00_base.html_page import HTMLPage
 
 
 class LocationPage(HTMLPage):

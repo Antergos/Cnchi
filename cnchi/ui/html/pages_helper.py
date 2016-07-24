@@ -86,9 +86,13 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
     def _find_page_directories(self):
         if not self._page_dirs:
+            excluded = ['__', '.', '00']
             _dirs = os.listdir(os.path.join(self.UI_DIR, 'html/pages'))
             _dirs.sort()
-            _page_dirs = [d for d in _dirs if '_' in d and '__' not in d and '.' not in d]
+            _page_dirs = [
+                d for d in _dirs
+                if '_' in d and not [x for x in excluded if x in d]
+            ]
             self._page_dirs.extend(_page_dirs)
 
     def _get_page_object_by_index(self, index):
