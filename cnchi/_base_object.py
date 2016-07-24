@@ -81,9 +81,9 @@ class BaseObject:
         WK_CACHE_DIR (str): Abs path to the app's webkit cache directory.
         WK_DATA_DIR  (str): Abs path to the app's webkit data directory.
 
-        _cnchi_app       (BaseWidget):      The application object.
-        _controller      (BaseWidget):      The app's ui controller object.
-        _main_container  (BaseWidget):      The app's main ui container object.
+        _cnchi_app       (BaseObject):      The application object.
+        _controller      (BaseObject):      The app's ui controller object.
+        _main_container  (BaseObject):      The app's main ui container object.
         _main_window     (BaseWidget):      The app's main window object.
         _pages_data      (SharedData):      Descriptor that provides access to the app's ui
                                             pages' data (storage for `Page.store_values()`)

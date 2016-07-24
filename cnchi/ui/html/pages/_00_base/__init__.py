@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 #
-#  info.py
+#  ${file.fileName}
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright ©  Antergos
 #
-#  This file is part of Cnchi.
+#  This file is part of The Antergos Build Server, (AntBS).
 #
-#  Cnchi is free software; you can redistribute it and/or modify
+#  AntBS is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation; either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  Cnchi is distributed in the hope that it will be useful,
+#  AntBS is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -24,14 +24,4 @@
 #  by works containing it is required.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
-
-
-""" Set some Cnchi global constants """
-
-CNCHI_VERSION = "0.15.182"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
-
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+#  along with AntBS; If not, see <http://www.gnu.org/licenses/>.

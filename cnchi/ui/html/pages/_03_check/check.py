@@ -27,16 +27,14 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 # Standard Lib
+from _base_object import bg_thread
 from _base_object import (
     os,
     json
 )
-
-# This Application
-from _base_object import bg_thread
 from modules.check import SystemCheckModule
 from modules.update import UpdateModule
-from ui.html.pages.html_page import HTMLPage
+from pages._00_base.html_page import HTMLPage
 
 
 class CheckPage(HTMLPage):

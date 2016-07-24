@@ -28,12 +28,10 @@
 
 # Standard Lib
 from _base_object import (
-    os,
     json
 )
-
-from ui.html.pages.html_page import HTMLPage
 from modules.location import LocationModule
+from pages._00_base.html_page import HTMLPage
 
 
 class LocationPage(HTMLPage):

@@ -27,19 +27,13 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 # Standard Lib
+import misc.i18n as i18n
 from _base_object import (
-    gettext,
     json,
     locale,
     os
 )
-
-# 3rd-party Libs
-# from _base_object import ()
-
-# This Application
-from ui.html.pages.html_page import HTMLPage
-import misc.i18n as i18n
+from pages._00_base.html_page import HTMLPage
 
 
 class LanguagePage(HTMLPage):
