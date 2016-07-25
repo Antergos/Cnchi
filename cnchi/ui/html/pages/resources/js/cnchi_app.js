@@ -426,19 +426,14 @@ class CnchiTab extends CnchiObject {
 		}
 	}
 
-	_page_tab_button_clicked_handler( $target ) {
-		console.log('clicked!');
-	}
-
-	_tab_button_clicked_handler( $target ) {
-		if ( $target.closest('locked').length ) {
+	_tab_button_clicked_handler( $tab_button ) {
+		if ( $tab_button.hasClass('locked') ) {
 			return;
 		}
-		$('.content').fadeOut()
-			.promise()
-			.done(() => {
-				window.location = $target.find('a').attr('href');
-			});
+
+		let id = $tab_button.attr('href');
+
+		$(window).trigger('page-change-current-tab', [id.replace('#', '')]);
 	}
 
 	get_tab_button() {
@@ -451,12 +446,11 @@ class CnchiTab extends CnchiObject {
 	tab_button_clicked_cb( event ) {
 		let $target = $(event.currentTarget);
 
-		console.log(event);
-
-		if ( $('.header_bottom').has($target) ) {
-			_page._tab_button_clicked_handler($target);
-		} else {
-			_page._page_tab_button_clicked_handler($target);
+		if ( ! $('.header_bottom').has($target) ) {
+			event.preventDefault();
+			console.log('clicked!');
+			console.log(event);
+			_page._tab_button_clicked_handler($target.closest('.tab'));
 		}
 	}
 }
@@ -499,6 +493,7 @@ class CnchiPage extends CnchiTab {
 		}
 
 		this.maybe_unlock_top_level_tabs();
+		$(window).on('page-change-current-tab', this.change_current_tab_cb)
 
 	}
 
@@ -513,7 +508,7 @@ class CnchiPage extends CnchiTab {
 		let _this = ( this instanceof CnchiTab ) ? this : _page.current_tab,
 			$tab_button = _this.$tab_button.next();
 
-		if ( true === _this.has_tabs && _this.current_tab !== _this.last_tab ) {
+		if ( true === _this.has_tabs && _this.current_tab !== _this.tabs[_this.tabs.length + 1] ) {
 			$tab_button = this.$tab_button.filter('.main_content .navigation_buttons li').next();
 		}
 
@@ -522,6 +517,26 @@ class CnchiPage extends CnchiTab {
 		}
 
 		$tab_button.animateCss('animated tada');
+	}
+
+	change_current_tab_cb( id ) {
+		console.log('change current tab fired!');
+		_page.current_tab = _page.get_tab_by_id(id);
+
+		_page.reload_element(`#${id}`);
+	}
+
+	get_tab_by_id( id ) {
+		let tab;
+
+		for (let tab_obj of _page.tabs) {
+			if (tab_obj.id === id) {
+				tab = tab_obj;
+				break;
+			}
+		}
+
+		return tab;
 	}
 
 	/**
@@ -611,7 +626,7 @@ class CnchiPage extends CnchiTab {
 	 * @arg {Function} callback An optional callback to be called after element is reloaded.
 	 */
 	reload_element( selector, callback ) {
-		let url = `cnchi://${_page.name}`;
+		let url = `cnchi://${_page.id}`;
 
 		this.$page.find(selector).fadeOut()
 			.promise()

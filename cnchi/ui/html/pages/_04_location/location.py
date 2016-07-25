@@ -31,7 +31,8 @@ from _base_object import (
     json
 )
 from modules.location import LocationModule
-from .._00_base.html_page import HTMLPage
+from modules.keymap import KeymapModule
+from .._00_base.html_page import HTMLPage, bg_thread
 
 
 class LocationPage(HTMLPage):
@@ -58,7 +59,10 @@ class LocationPage(HTMLPage):
         self._module = None
         self.locations = None
         self.locations_items = []
-        self.signals.extend(['show-all-locations'])
+        self.keyboard_layouts = []
+        self.page_tabs_requsted = []
+
+        self.signals.extend(['show-all-locations', 'load-keyboard-layouts'])
         self.tabs.extend([
             (_('Location'), True),
             (_('Keyboard Layout'), False),
@@ -76,15 +80,25 @@ class LocationPage(HTMLPage):
             'tabs': self.tabs,
             'locations': self.locations_items,
             'show_all_locations': self._pages_data.location.show_all_locations,
-            'list_items': []
+            'list_items': [],
+            'keyboard_layouts': self.keyboard_layouts
         })
 
         return tpl_vars
 
     def _get_initial_page_data(self):
         return {
-            'show_all_locations': False
+            'show_all_locations': False,
+            'keyboard_layout': None,
+            'keyboard_variant': None
         }
+
+    @bg_thread
+    def load_keyboard_layouts_cb(self, *args):
+        if not self.keyboard_layouts:
+            keymap_module = KeymapModule()
+            keymap_module.initialize()
+            self.keyboard_layouts = keymap_module.get_keyboard_layouts_list()
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

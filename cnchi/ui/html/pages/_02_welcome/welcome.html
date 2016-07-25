@@ -135,7 +135,7 @@
 				this.has_connection = false;
 
 				this.register_allowed_signals();
-				// this.maybe_skip_to_next_page();
+				this.maybe_skip_to_next_page();
 				this.register_event_handlers();
 				this.initialize();
 			}
@@ -182,6 +182,8 @@
 				this.$welcome_wrapper.animateCss('magictime swashIn', () => {
 					_page.$welcome_wrapper.addClass('showme');
 				});
+
+				cnchi.emit_signal('do-install-it-selected');
 			}
 
 			install_it_button_clicked_cb( event ) {

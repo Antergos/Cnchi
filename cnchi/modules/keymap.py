@@ -46,61 +46,44 @@ class KeymapModule(BaseModule):
     def __init__(self, name='_keymap', *args, **kwargs):
         super().__init__(name=name, *args, *kwargs)
 
-        self.prepared = False
-        self.keyboard_layout = self.keyboard_variant = None
+        self.keyboard_layout = self.keyboard_variant = self.kbd_names = None
 
-        base_xml_path = os.path.join(self.TOP_DIR, 'data', 'base.xml')
-        self.kbd_names = keyboard_names.KeyboardNames(base_xml_path)
+        self.base_xml_path = os.path.join(self.TOP_DIR, 'data', 'base.xml')
 
-    def clear(self):
-        self.keyboard_layout = {'code': None, 'description': None}
-        self.keyboard_variant = {'code': None, 'description': None}
+    @staticmethod
+    def _reset():
+        data = {'code': None, 'description': None}
+        return data, data
 
     def initialize(self):
-        # TODO: Stopped here.....
-        if self.keyboard_layout['code'] is None:
-            country_code = self.settings.country_code
-            description = self.kbd_names.get_layout_description(country_code)
-            self.keyboard_layout['code'] = country_code
+        self.kbd_names = keyboard_names.KeyboardNames(self.base_xml_path)
+        country_code = self.settings.country_code
+        description = self.kbd_names.get_layout_description(country_code)
 
-            self.clear()
+        self.keyboard_layout, self.keyboard_variant = self._reset()
+        self.keyboard_layout['code'] = country_code
 
-            if description:
-                self.keyboard_layout['description'] = description
-                # specific variant cases
-                country_name = self.settings.country_name
-                language_name = self.settings.language_name
+        if description:
+            self.keyboard_layout['description'] = description
+            # specific variant cases
+            country_name = self.settings.country_name
+            language_name = self.settings.language_name
 
-                if country_name == "Spain" and language_name == "Catalan":
-                    self.keyboard_variant['code'] = "cat"
-                    variant_desc = self.kbd_names.get_variant_description(
-                        country_code,
-                        "cat")
-                    self.keyboard_variant['description'] = variant_desc
-                elif country_name == "Canada" and language_name == "English":
-                    self.keyboard_variant['code'] = "eng"
-                    variant_desc = self.kbd_names.get_variant_description(
-                        country_code,
-                        "eng")
-                    self.keyboard_variant['description'] = variant_desc
+            # if country_name == "Spain" and language_name == "Catalan":
+            #     self.keyboard_variant['code'] = "cat"
+            #     variant_desc = self.kbd_names.get_variant_description(
+            #         country_code,
+            #         "cat")
+            #     self.keyboard_variant['description'] = variant_desc
+            # elif country_name == "Canada" and language_name == "English":
+            #     self.keyboard_variant['code'] = "eng"
+            #     variant_desc = self.kbd_names.get_variant_description(
+            #         country_code,
+            #         "eng")
+            #     self.keyboard_variant['description'] = variant_desc
 
-                self.select_in_treeview(
-                    self.keymap_treeview,
-                    self.keyboard_layout['description'],
-                    self.keyboard_variant['description'])
-
-                # Immediately set new keymap
-                # (this way entry widget will work as it should)
-                self.set_keymap()
-            else:
-                logging.debug(
-                    _("Can't match a keymap for country code '%s'"),
-                    country_code)
-                self.keyboard_layout = {'code': None, 'description': None}
-                self.keyboard_variant = {'code': None, 'description': None}
-
-        self.prepare_called = True
-        self.show_all()
+            # Immediately set new keymap
+            # (this way entry widget will work as it should)
 
     def get_keyboard_layouts_list(self):
         layouts = self.kbd_names.get_layouts()

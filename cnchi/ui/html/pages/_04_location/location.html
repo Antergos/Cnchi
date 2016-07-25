@@ -111,7 +111,26 @@
 
 				<!-- Keyboard Layouts List Container -->
 				<div class="grid-30 grid-parent keyboard_layouts_list">
+					{% if keyboard_layouts %}
+						{% call collapsable_items_container('grow') %}
+							{% for keyboard_layout, kbd_variants in keyboard_layouts.items() %}
+								{% set variants = [] %}
 
+								{% for variant in  kbd_variants %}
+									{% do variants.append((variant, variant)) %}
+								{% endfor %}
+
+								{% set contents = collection_text_only(variants) %}
+
+								{% set title %}
+									<div class="title">{{ keyboard_layout }}</div>
+								{% endset %}
+
+
+								{{ collapsable_items([(keyboard_layout, '', title, contents)]) }}
+							{% endfor %}
+						{% endcall %}
+					{% endif %}
 				</div> <!-- /END Keyboard Layouts List Container -->
 
 				<!-- Keyboard Widget Outer Container -->
@@ -175,23 +194,24 @@
 
 				this.$show_all_locations = $('#show_all_locations');
 				this.show_all_locations = this.$show_all_locations.prop('checked');
-				this.$locations_list = $('ul.collapsible');
+				this.$locations_list = $('ul.collapsible:not(#keyboard_layout ul)');
+				this.$kbd_layouts_list = $('#keyboard_layout ul.collapsible');
 
 				this.register_allowed_signals();
 				this.register_event_handlers();
 				this.initialize();
 			}
 
-			init_locations_list() {
+			init_collapsable_list( $list, selected_callback ) {
 				let icon = $('<div class="icon_wrap"><i class="material-icons">add</i></div>');
 
-				this.$locations_list.children().each(function( index ) {
+				$list.children().each(function( index ) {
 					let $header = $(this).find('.collapsible-header'),
 						$body = $(this).find('.collapsible-body');
 
 					$(icon).clone().appendTo($header);
-					$header.on('click', _page.locations_list_item_header_clicked_cb);
-					$body.find('.collection').children().on('click', _page.location_selected_cb);
+					$header.on('click', _page.collapsible_list_item_header_clicked_cb);
+					$body.find('.collection').children().on('click', selected_callback);
 
 					if ( index > 5 ) {
 						$(this).addClass('future');
@@ -219,7 +239,8 @@
 			}
 
 			initialize() {
-				this.init_locations_list();
+				this.init_collapsable_list(this.$locations_list, this.location_selected_cb);
+				cnchi.emit_signal('do-load-keyboard-layouts');
 			}
 
 			location_selected_cb( event ) {
@@ -236,30 +257,30 @@
 				_page.unlock_next_tab();
 			}
 
-			locations_list_item_header_clicked_cb( event ) {
+			collapsible_list_item_header_clicked_cb( event ) {
 				// Allow time for animation to complete
 				setTimeout(function() {
 					let $header = $(event.currentTarget).closest('.collapsible-header'),
 						$parent = $header.parent(),
 						$last_active = ($parent.hasClass('_active')) ? $parent : $parent.siblings('._active');
 
-					_page.locations_list_item_header_close($last_active);
+					_page.collapsible_list_item_header_close($last_active);
 
 					if ( $parent.is($last_active) ) {
 						return;
 					}
 
-					_page.locations_list_item_header_open($parent);
+					_page.collapsible_list_item_header_open($parent);
 
 				}, 250);
 			}
 
-			locations_list_item_header_close( $header ) {
+			collapsible_list_item_header_close( $header ) {
 				$header.find('i').text('add');
 				$header.removeClass('_active');
 			}
 
-			locations_list_item_header_open( $header ) {
+			collapsible_list_item_header_open( $header ) {
 				$header.find('i').text('remove');
 				$header.addClass('_active');
 			}
@@ -271,7 +292,7 @@
 			show_all_locations_clicked_cb( event ) {
 				cnchi.emit_signal('do-show-all-locations');
 				setTimeout(() => {
-					_page.reload_element('.collection_wrapper', _page.init_locations_list);
+					_page.reload_element('.collection_wrapper', _page.init_collapsable_list);
 				}, 250)
 			}
 		}
