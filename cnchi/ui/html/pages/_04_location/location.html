@@ -70,7 +70,9 @@
 		<!-- PAGE CONTENT -->
 		<div class="grid-100 grid-parent content">
 
-			<!-- LOCATION TAB -->
+			<!--------------
+			   LOCATION TAB
+			 ---------------->
 			<div class="grid-100 grid-parent page_tab" data-name="{{ tabs[0][0]|lower() }}">
 				<div class="grid-100 heading">
 					<h1>{{ _('Please Choose Your Location:') }}</h1>
@@ -101,12 +103,40 @@
 				</div>
 			</div> <!-- /END LOCATION TAB -->
 
-			<!-- KEYBOARD LAYOUT TAB -->
+
+			<!--------------------
+			  KEYBOARD LAYOUT TAB
+			 ---------------------->
 			<div id="{{ tabs[1][0]|lower()|replace(' ', '_') }}" class="grid-100 grid-parent page_tab" data-name="{{ tabs[1][0]|lower() }}">
+
+				<!-- Keyboard Layouts List Container -->
+				<div class="grid-30 grid-parent keyboard_layouts_list">
+
+				</div> <!-- /END Keyboard Layouts List Container -->
+
+				<!-- Keyboard Widget Outer Container -->
+				<div class="grid-70 grid-parent keyboard_widget_container">
+					<div class="grid-100 heading">
+						<p>{{ _('Select your desired keyboard layout and variant (if applicable). You can use the input field below the keyboard widget to test your selection.') }}</p>
+					</div>
+
+					<div class="grid-100 keyboard_widget">
+
+					</div>
+
+					<div class="grid-100 input_field_container">
+
+					</div>
+
+
+				</div> <!-- /END Keyboard Widget Outer Container -->
 
 			</div> <!-- /END KEYBOARD LAYOUT TAB -->
 
-			<!-- TIMEZONE TAB -->
+
+			<!--------------
+			   TIMEZONE TAB
+			 ---------------->
 			<div id="{{ tabs[2][0]|lower()|replace(' ', '_') }}" class="grid-100 grid-parent page_tab" data-name="{{ tabs[2][0]|lower() }}">
 
 			</div> <!-- /END TIMEZONE TAB -->
@@ -121,7 +151,7 @@
  # Javascript For This Page
  #}
 {% block after_jquery %}
-	<script src="{{ RESOURCES_DIR }}/js/jquery.migrate-3.0.0.js"></script>
+	<script src="{{ RESOURCES_DIR }}/js/jquery-migrate-3.0.0.js"></script>
 {% endblock after_jquery %}
 
 {% block page_script %}
