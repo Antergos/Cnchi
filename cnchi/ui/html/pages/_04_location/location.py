@@ -99,6 +99,7 @@ class LocationPage(HTMLPage):
             keymap_module = KeymapModule()
             keymap_module.initialize()
             self.keyboard_layouts = keymap_module.get_keyboard_layouts_list()
+            self.logger.debug(self.keyboard_layouts)
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """

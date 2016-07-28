@@ -158,7 +158,8 @@ class Logger {
 
 
 /**
- * A base object for all Cnchi* objects. It sets up the logger property.
+ * A base object for all Cnchi* objects. It sets up the logger and
+ * binds `this` to the class for all class methods.
  *
  * @prop {Logger} logger The logger object.
  */
@@ -166,6 +167,31 @@ class CnchiObject {
 
 	constructor() {
 		this.logger = new Logger(this.constructor.name);
+		this._bind_this();
+	}
+
+	/**
+	 * Binds `this` to the class for all class methods.
+	 *
+	 * @private
+	 */
+	_bind_this() {
+		let excluded = ['constructor', '_bind_this', 'not_excluded'];
+
+		function not_excluded(method, context) {
+			let _excluded = excluded.findIndex(excluded_method => method === excluded_method) > -1,
+				is_method = 'function' === typeof context[method];
+
+			return is_method && ! _excluded;
+		}
+
+		for ( let obj = this; obj; obj = Object.getPrototypeOf(obj) ) {
+			for ( let method of Object.getOwnPropertyNames(obj) ) {
+				if ( not_excluded(method, this) ) {
+					this[method] = this[method].bind(this);
+				}
+			}
+		}
 	}
 }
 
@@ -339,7 +365,7 @@ class CnchiApp extends CnchiObject {
 	}
 
 	register_event_handlers() {
-		//$(window).on('page-loaded', this.page_loaded_handler);
+		//$(window).on('page-loaded', (event) => this.page_loaded_handler(event));
 		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
 		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}
@@ -431,7 +457,7 @@ class CnchiTab extends CnchiObject {
 			return;
 		}
 
-		let id = $tab_button.attr('href');
+		let id = $tab_button.children('a').attr('href');
 
 		$(window).trigger('page-change-current-tab', [id.replace('#', '')]);
 	}
@@ -444,13 +470,15 @@ class CnchiTab extends CnchiObject {
 	}
 
 	tab_button_clicked_cb( event ) {
-		let $target = $(event.currentTarget);
+		let $target = $(event.currentTarget),
+			$tab_button = $target.closest('.tab');
+		console.log(event);
 
-		if ( ! $('.header_bottom').has($target) ) {
+		if ( !$('.header_bottom').has($tab_button).length ) {
 			event.preventDefault();
 			console.log('clicked!');
 			console.log(event);
-			_page._tab_button_clicked_handler($target.closest('.tab'));
+			_page._tab_button_clicked_handler($tab_button);
 		}
 	}
 }
@@ -512,25 +540,23 @@ class CnchiPage extends CnchiTab {
 			$tab_button = this.$tab_button.filter('.main_content .navigation_buttons li').next();
 		}
 
-		if ($tab_button.hasClass('locked')) {
-			$tab_button.on('click', _this.tab_button_clicked_cb).removeClass('locked');
+		if ( $tab_button.hasClass('locked') ) {
+			$tab_button.on('click', _page.tab_button_clicked_cb).removeClass('locked');
 		}
 
 		$tab_button.animateCss('animated tada');
 	}
 
-	change_current_tab_cb( id ) {
+	change_current_tab_cb( event, id ) {
 		console.log('change current tab fired!');
-		_page.current_tab = _page.get_tab_by_id(id);
-
-		_page.reload_element(`#${id}`);
+		_page.reload_element(`#${id}`, _page.show_tab);
 	}
 
 	get_tab_by_id( id ) {
 		let tab;
 
-		for (let tab_obj of _page.tabs) {
-			if (tab_obj.id === id) {
+		for ( let tab_obj of _page.tabs ) {
+			if ( tab_obj.id === id ) {
 				tab = tab_obj;
 				break;
 			}
@@ -639,7 +665,7 @@ class CnchiPage extends CnchiTab {
 						.promise()
 						.done(() => {
 							if ( callback ) {
-								callback();
+								callback(selector);
 							}
 						});
 				});
@@ -652,13 +678,14 @@ class CnchiPage extends CnchiTab {
 	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.
 	 */
 	show_tab( identifier ) {
-		let $tab = this.get_tab_jquery_object(identifier);
+		let tab = this.get_tab_by_id(identifier.replace('#', ''));
 
-		if ( null !== $tab ) {
+		if ( null !== tab.$tab ) {
 			this.current_tab.$tab.fadeOut()
 				.promise()
 				.done(() => {
-					$tab.fadeIn();
+					this.current_tab = tab;
+					tab.$tab.fadeIn();
 				});
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)

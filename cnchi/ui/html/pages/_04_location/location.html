@@ -113,21 +113,26 @@
 				<div class="grid-30 grid-parent keyboard_layouts_list">
 					{% if keyboard_layouts %}
 						{% call collapsable_items_container('grow') %}
-							{% for keyboard_layout, kbd_variants in keyboard_layouts.items() %}
+							{% for keyboard_layout in keyboard_layouts %}
 								{% set variants = [] %}
 
-								{% for variant in  kbd_variants %}
-									{% do variants.append((variant, variant)) %}
+								{% for key, value in keyboard_layout.items() %}
+									{% if 'id' != key %}
+
+										{% for variant in  value %}
+											{% do variants.append((variant, variant)) %}
+										{% endfor %}
+
+										{% set contents = collection_text_only(variants) %}
+
+										{% set title %}
+											<div class="title">{{ key }}</div>
+										{% endset %}
+									{% else %}
+										{{ collapsable_items([(keyboard_layout, value, title, contents)]) }}
+									{% endif %}
 								{% endfor %}
 
-								{% set contents = collection_text_only(variants) %}
-
-								{% set title %}
-									<div class="title">{{ keyboard_layout }}</div>
-								{% endset %}
-
-
-								{{ collapsable_items([(keyboard_layout, '', title, contents)]) }}
 							{% endfor %}
 						{% endcall %}
 					{% endif %}
