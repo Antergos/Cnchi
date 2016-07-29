@@ -486,7 +486,7 @@ class CnchiTab extends CnchiObject {
 
 /**
  * Manages a page in the installation process. A page is actually a top-level tab in the UI that
- * can optionally house a number of other tabs in addition to itself (a page is also a tab).
+ * can optionally house a number of other tabs in addition to itself (since a page is also a tab).
  * If a page does not have any other (than itself) tabs, no navigation buttons will
  * be displayed on the page.
  *
@@ -549,7 +549,8 @@ class CnchiPage extends CnchiTab {
 
 	change_current_tab_cb( event, id ) {
 		console.log('change current tab fired!');
-		_page.reload_element(`#${id}`, _page.show_tab);
+		clearInterval(this.next_tab_animation_interval);
+		this.reload_element(`#${id}`, this.show_tab);
 	}
 
 	get_tab_by_id( id ) {
@@ -652,16 +653,17 @@ class CnchiPage extends CnchiTab {
 	 * @arg {Function} callback An optional callback to be called after element is reloaded.
 	 */
 	reload_element( selector, callback ) {
-		let url = `cnchi://${_page.id}`;
+		let url = `cnchi://${_page.id}`,
+			$old_el = this.$page.find(selector),
+			$new_el;
 
-		this.$page.find(selector).fadeOut()
+		$old_el.hide(0)
 			.promise()
-			.done(function() {
-				let $old_el = $(this);
-
+			.done(() => {
 				$.get(url, function( data ) {
-					let $new_el = $(data).find(selector);
-					$old_el.replaceWith($new_el).fadeIn()
+					$new_el = $(data).find(selector);
+
+					$old_el.replaceWith($new_el).show(0)
 						.promise()
 						.done(() => {
 							if ( callback ) {
@@ -684,8 +686,16 @@ class CnchiPage extends CnchiTab {
 			this.current_tab.$tab.fadeOut()
 				.promise()
 				.done(() => {
+					this.current_tab.$tab_button.removeClass('active');
+
+					tab.$tab_button.addClass('active');
+					tab.$tab.fadeIn()
+						.promise()
+						.done(() => {
+							$(window).trigger('page-change-current-tab-done');
+						});
+
 					this.current_tab = tab;
-					tab.$tab.fadeIn();
 				});
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)

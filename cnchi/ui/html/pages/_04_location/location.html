@@ -129,7 +129,7 @@
 											<div class="title">{{ key }}</div>
 										{% endset %}
 									{% else %}
-										{{ collapsable_items([(keyboard_layout, value, title, contents)]) }}
+										{{ collapsable_items([(keyboard_layout['id'], '', title, contents)]) }}
 									{% endif %}
 								{% endfor %}
 
@@ -196,6 +196,8 @@
 				window._page = this;
 				this.signals = JSON.parse('{{ signals }}');
 				this.location = null;
+				this.layout = null;
+				this.variant = null;
 
 				this.$show_all_locations = $('#show_all_locations');
 				this.show_all_locations = this.$show_all_locations.prop('checked');
@@ -248,6 +250,20 @@
 				cnchi.emit_signal('do-load-keyboard-layouts');
 			}
 
+			keyboard_layout_selected_cb( event ) {
+				let $variant = $(event.target),
+					variant = $variant.attr('id');
+
+				$variant.addClass('active');
+
+				if ( null !== _page.variant ) {
+					$(`#${_page.variant}`).removeClass('active');
+				}
+
+				_page.variant = variant;
+				_page.unlock_next_tab();
+			}
+
 			location_selected_cb( event ) {
 				let $location = $(event.target),
 					location = $location.attr('id');
@@ -290,8 +306,16 @@
 				$header.addClass('_active');
 			}
 
+			current_tab_changed_cb() {
+				if ('keyboard_layout' === this.current_tab.id) {
+					this.$kbd_layouts_list = $('#keyboard_layout ul.collapsible');
+					this.init_collapsable_list(this.$kbd_layouts_list, this.keyboard_layout_selected_cb);
+				}
+			}
+
 			register_event_handlers() {
 				this.$show_all_locations.on('click', this.show_all_locations_clicked_cb);
+				$(window).on('page-change-current-tab-done', this.current_tab_changed_cb)
 			}
 
 			show_all_locations_clicked_cb( event ) {
