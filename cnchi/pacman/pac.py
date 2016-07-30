@@ -261,8 +261,9 @@ class Pac(object):
         repos = OrderedDict()
         repo_order = []
         one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
-        antdb = [db for db in self.handle.get_syncdbs() if 'antergos' == db.name]
-        antdb = OrderedDict((antdb[0].name, antdb[0]))
+        db_match = [db for db in self.handle.get_syncdbs() if 'antergos' == db.name]
+        antdb = OrderedDict()
+        antdb[db_match[0].name] = db_match[1]
         one_repo_groups = [antdb.read_grp(one_repo_group) for one_repo_group in one_repo_groups]
         one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
                          for pkg in one_repo_group[1] if one_repo_group}

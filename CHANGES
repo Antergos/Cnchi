@@ -1,3 +1,4 @@
+[2016-07-30 17:13:12 -0500]  :unamused:                                                             Dustin Falgout  {3c73131}
 [2016-07-30 13:29:58 -0500]  fix bug from my previous commit. also try to fix keyboard widget.      Dustin Falgout  {3fdc92b}
 [2016-07-29 23:43:58 -0500]  make sure CNCHI_RUNNING env var is set before installing any packag..  Dustin Falgout  {5e9ed4f}
 [2016-07-29 23:34:03 -0500]  :stuck_out_tongue_winking_eye:                                         Dustin Falgout  {5a12b38}
