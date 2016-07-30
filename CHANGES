@@ -1,3 +1,4 @@
+[2016-07-29 23:10:00 -0500]  fix keyboard widget                                                    Dustin Falgout  {fe17883}
 [2016-07-29 22:29:07 -0500]  working on #633 ...needs testing!!                                     Dustin Falgout  {f7c82df}
 [2016-07-29 20:11:55 -0500]  add more debug messages to alpm methods to help identify issues. (c..  Dustin Falgout  {7441f37}
 [2016-07-23 13:13:54 +0200]  Do not delete and add file handler each time                               karasu      {219194f}

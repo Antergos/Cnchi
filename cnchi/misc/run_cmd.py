@@ -37,7 +37,7 @@ import os
 
 from functools import wraps
 
-from misc.extra import InstallError
+from misc.extra import InstallError, raised_privileges
 
 DEST_DIR = "/install"
 
@@ -48,7 +48,11 @@ def ensure_excecutable(func, *args, **kwargs):
     cmd = None if not _args or DEST_DIR in _args[0] else _args[0]
 
     if cmd and os.path.exists(cmd) and not os.access(cmd, os.X_OK):
-        os.chmod(cmd, 0o777)
+        try:
+            os.chmod(cmd, 0o777)
+        except Exception:
+            with raised_privileges:
+                os.chmod(cmd, 0o777)
 
     @wraps(func)
     def _decorated_function(*args, **kwargs):
