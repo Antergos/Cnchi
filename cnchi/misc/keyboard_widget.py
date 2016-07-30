@@ -40,6 +40,8 @@ from gi.repository import Gtk, GObject
 
 import cairo
 
+from misc.run_cmd import call
+
 
 def unicode_to_string(raw):
     """ U+ , or +U+ ... to string """
@@ -436,7 +438,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            cfile = subprocess.check_output(cmd).decode().split('\n')
+            cfile = call(cmd)
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",
