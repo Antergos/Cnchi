@@ -226,6 +226,10 @@ class Installation(object):
             with misc.raised_privileges():
                 os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
 
+        # Make sure the antergos-repo-priority package's alpm hook doesn't run.
+        if not os.environ.get('CNCHI_RUNNING', False):
+            os.environ['CNCHI_RUNNING'] = 'True'
+
         msg = _("Installing using the '{0}' method").format(self.method)
         self.queue_event('info', msg)
 
