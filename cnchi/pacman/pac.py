@@ -93,6 +93,7 @@ class Pac(object):
         if conf_path is not None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
             self.initialize_alpm()
+            logging.debug('ALPM REPO DB ORDER IS: %s', self.config.repo_order)
         else:
             raise pyalpm.error
 
@@ -258,11 +259,14 @@ class Pac(object):
         # `alpm.handle.get_syncdbs()` returns a list (the order is important) so we
         # have to ensure we don't clobber the priority of the repos.
         repos = OrderedDict()
+        repo_order = []
 
         for syncdb in self.handle.get_syncdbs():
+            repo_order.append(syncdb)
             repos[syncdb.name] = syncdb
 
         targets = []
+        logging.debug('REPO DB ORDER IS: %s', repo_order)
         for name in pkgs:
             result_ok, pkg = self.find_sync_package(name, repos)
             if result_ok:
@@ -288,6 +292,7 @@ class Pac(object):
 
         # Discard duplicates
         targets = list(set(targets))
+        logging.debug(targets)
 
         if len(targets) == 0:
             logging.error("No targets found")
