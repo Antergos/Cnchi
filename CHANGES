@@ -1,3 +1,4 @@
+[2016-07-29 20:11:55 -0500]  add more debug messages to alpm methods to help identify issues. (c..  Dustin Falgout  {7441f37}
 [2016-07-23 13:13:54 +0200]  Do not delete and add file handler each time                               karasu      {219194f}
 [2016-07-22 20:49:41 +0200]  Show stack info.                                                           karasu      {35d2c4b}
 [2016-07-20 19:18:29 +0200]  This should prevent logging to cnchi.log from cnchi-alpm logger.           karasu      {254b9a8}

@@ -48,7 +48,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as eTree
 
-MAX_URLS = 10
+MAX_URLS = 15
 
 
 def get_info(metalink):
@@ -334,20 +334,33 @@ def build_download_queue(alpm, args=None):
     missing_deps = list()
     found = set()
 
+    one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
+    antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
+    antdb = antdb[0]
+    one_repo_groups = [antdb.read_grp(one_repo_group) for one_repo_group in one_repo_groups]
+    one_repo_pkgs = {pkg for one_repo_group in one_repo_groups for pkg in one_repo_group[1]}
+
     # foreign_names = set()
     # not_found = set()
 
     for pkg in requested:
         other_grp = PkgSet()
         for db in handle.get_syncdbs():
+            if pkg in one_repo_pkgs and 'antergos' != db.name:
+                # pkg should be sourced from the antergos repo only.
+                db = antdb
+
             syncpkg = db.get_pkg(pkg)
+
             if syncpkg:
                 other.add(syncpkg)
+                break
             else:
                 syncgrp = db.read_grp(pkg)
                 if syncgrp:
                     found.add(pkg)
                     other_grp |= PkgSet(syncgrp[1])
+                    break
         else:
             other |= other_grp
 
