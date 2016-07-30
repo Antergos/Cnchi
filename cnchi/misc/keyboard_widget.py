@@ -439,7 +439,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            with raised_privileges:
+            with raised_privileges as privileged:
                 cfile = call(cmd)
         except subprocess.CalledProcessError as process_error:
             logging.error(
