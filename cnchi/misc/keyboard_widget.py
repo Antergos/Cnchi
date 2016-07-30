@@ -41,6 +41,7 @@ from gi.repository import Gtk, GObject
 import cairo
 
 from misc.run_cmd import call
+from misc.extra import raised_privileges
 
 
 def unicode_to_string(raw):
@@ -438,7 +439,8 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            cfile = call(cmd)
+            with raised_privileges:
+                cfile = call(cmd)
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",

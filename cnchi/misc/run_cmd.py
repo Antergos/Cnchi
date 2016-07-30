@@ -106,7 +106,7 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
         else:
             msg = "{0}: {1}".format(msg, err_output)
         if not error and not fatal:
-            if not warning:
+            if not warning or "['umount', '-l'," in msg:
                 logging.debug(msg)
             else:
                 logging.warning(msg)

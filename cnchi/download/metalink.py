@@ -338,7 +338,8 @@ def build_download_queue(alpm, args=None):
     antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
     antdb = antdb[0]
     one_repo_groups = [antdb.read_grp(one_repo_group) for one_repo_group in one_repo_groups]
-    one_repo_pkgs = {pkg for one_repo_group in one_repo_groups for pkg in one_repo_group[1]}
+    one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
+                     for pkg in one_repo_group[1] if one_repo_group}
 
     # foreign_names = set()
     # not_found = set()

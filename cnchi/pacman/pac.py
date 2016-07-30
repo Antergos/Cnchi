@@ -260,6 +260,12 @@ class Pac(object):
         # have to ensure we don't clobber the priority of the repos.
         repos = OrderedDict()
         repo_order = []
+        one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
+        antdb = [db for db in self.handle.get_syncdbs() if 'antergos' == db.name]
+        antdb = OrderedDict((antdb[0].name, antdb[0]))
+        one_repo_groups = [antdb.read_grp(one_repo_group) for one_repo_group in one_repo_groups]
+        one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
+                         for pkg in one_repo_group[1] if one_repo_group}
 
         for syncdb in self.handle.get_syncdbs():
             repo_order.append(syncdb)
@@ -267,8 +273,16 @@ class Pac(object):
 
         targets = []
         logging.debug('REPO DB ORDER IS: %s', repo_order)
+
         for name in pkgs:
-            result_ok, pkg = self.find_sync_package(name, repos)
+            _repos = repos
+
+            if name in one_repo_pkgs:
+                # pkg should be sourced from the antergos repo only.
+                _repos = antdb
+
+            result_ok, pkg = self.find_sync_package(name, _repos)
+
             if result_ok:
                 # Check that added package is not in our conflicts list
                 if pkg.name not in conflicts:
