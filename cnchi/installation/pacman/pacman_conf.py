@@ -157,6 +157,7 @@ class PacmanConfig(collections.OrderedDict):
         self.options["GPGDir"] = "/etc/pacman.d/gnupg/"
         self.options["LogFile"] = "/var/log/pacman.log"
         self.options["Architecture"] = os.uname()[-1]
+        self.repo_order = []
         if conf is not None:
             self.load_from_file(conf)
         if options is not None:
@@ -219,6 +220,7 @@ class PacmanConfig(collections.OrderedDict):
 
         # set sync databases
         for repo, servers in self.repos.items():
+            self.repo_order.append(repo)
             database = handle.register_syncdb(repo, 0)
             db_servers = []
             for raw_url in servers:
