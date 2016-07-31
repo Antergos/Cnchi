@@ -131,7 +131,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def populate_devices(self):
         """ Fill list with devices """
-        with misc.raised_privileges():
+        with misc.raised_privileges() as privileged:
             device_list = parted.getAllDevices()
 
         self.device_store.remove_all()

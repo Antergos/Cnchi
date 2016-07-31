@@ -224,7 +224,7 @@ class Updater(object):
                         full_path.split("/tmp/Cnchi-master/")[1])
                     if os.path.isfile(dst_full_path):
                         try:
-                            with misc.raised_privileges():
+                            with misc.raised_privileges() as privileged:
                                 logging.debug(
                                     _("Copying %s to %s..."),
                                     full_path,

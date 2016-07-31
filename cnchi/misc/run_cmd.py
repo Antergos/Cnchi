@@ -54,7 +54,7 @@ def ensure_excecutable(func, *args, **kwargs):
         try:
             os.chmod(cmd[0], 0o777)
         except Exception:
-            with raised_privileges:
+            with raised_privileges() as privileged:
                 os.chmod(cmd[0], 0o777)
 
     @wraps(func)

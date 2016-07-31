@@ -1979,7 +1979,7 @@ class InstallationAdvanced(GtkBaseBox):
             show.warning(self.get_main_window(), msg)
             if swap_partition == partition_path:
                 cmd = ["swapoff", partition_path]
-                with misc.raised_privileges():
+                with misc.raised_privileges() as privileged:
                     call(cmd)
                 logging.debug("Swap partition %s unmounted", partition_path)
             else:
@@ -2252,7 +2252,7 @@ class InstallationAdvanced(GtkBaseBox):
                         txt = txt.format(partition_path, vol_name)
                         logging.info(txt)
 
-                        with misc.raised_privileges():
+                        with misc.raised_privileges() as privileged:
                             ap.setup_luks(
                                 luks_device=partition_path,
                                 luks_name=vol_name,

@@ -223,8 +223,7 @@ class Installation(object):
         # catch it here and then raise an InstallError exception.
 
         if not os.path.exists(DEST_DIR):
-            with misc.raised_privileges():
-                os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
+            os.makedirs(DEST_DIR, mode=0o755, exist_ok=True)
 
         # Make sure the antergos-repo-priority package's alpm hook doesn't run.
         if not os.environ.get('CNCHI_RUNNING', False):
@@ -243,8 +242,7 @@ class Installation(object):
         # be in place. We must delete it or this new installation will fail
         db_lock = os.path.join(DEST_DIR, "var/lib/pacman/db.lck")
         if os.path.exists(db_lock):
-            with misc.raised_privileges():
-                os.remove(db_lock)
+            os.remove(db_lock)
             logging.debug("%s deleted", db_lock)
 
         # Create some needed folders

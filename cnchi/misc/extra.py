@@ -187,7 +187,7 @@ def raise_privileges(func):
 
     @wraps(func)
     def helper(*args, **kwargs):
-        with raised_privileges():
+        with raised_privileges() as privileged:
             return func(*args, **kwargs)
 
     return helper
@@ -554,7 +554,7 @@ def remove_temp_files():
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
             # FIXME: Some of these tmp files are created with sudo privileges
-            with raised_privileges():
+            with raised_privileges() as privileged:
                 os.remove(path)
 
 
