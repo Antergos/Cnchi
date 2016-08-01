@@ -1,3 +1,4 @@
+[2016-07-31 19:59:11 -0500]  fix keyboard widget once and for all :triumph:                         Dustin Falgout  {40dc356}
 [2016-07-31 16:36:50 -0500]  make sure all calls to raised_privileges contextmanager are threads..  Dustin Falgout  {12c7de1}
 [2016-07-30 17:18:11 -0500]  fix bug from earlier today                                             Dustin Falgout  {01e81ca}
 [2016-07-30 17:13:12 -0500]  :unamused:                                                             Dustin Falgout  {3c73131}
