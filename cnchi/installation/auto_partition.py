@@ -592,9 +592,9 @@ class AutoPartition(object):
         # Partition sizes are expressed in MiB
         # Get just the disk size in MiB
         device = self.auto_device
-        device_name = call(["basename", device])
-        base_path = os.path.join("/sys/block", device_name)
-        size_path = os.path.join(base_path, "size")
+        device_name = os.path.split(device)[1]
+        size_path = os.path.join("/sys/block", device_name, 'size')
+        base_path = os.path.split(size_path)[0]
         if os.path.exists(size_path):
             logical_path = os.path.join(base_path, "queue/logical_block_size")
             with open(logical_path, 'r') as f:
