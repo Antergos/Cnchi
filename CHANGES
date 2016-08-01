@@ -1,3 +1,4 @@
+[2016-07-31 23:37:02 -0500]  minor code style adjustment and also tweaked the ensure_executable ..  Dustin Falgout  {17e422c}
 [2016-07-31 22:56:10 -0500]  use os.path lib to manipulate device path in auto_partition.py to a..  Dustin Falgout  {b25ce64}
 [2016-07-31 21:14:12 -0500]  fix typo. fixes #637                                                   Dustin Falgout  {a69fba0}
 [2016-07-31 19:59:11 -0500]  fix keyboard widget once and for all :triumph:                         Dustin Falgout  {40dc356}

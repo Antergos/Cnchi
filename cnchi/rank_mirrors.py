@@ -72,7 +72,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
     @staticmethod
     def sync():
         """ Synchronize cached writes to persistent storage """
-        with misc.raised_privileges() as _:
+        with misc.raised_privileges() as __:
             try:
                 subprocess.check_call(['sync'])
             except subprocess.CalledProcessError as why:
@@ -82,7 +82,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
     def update_mirrorlist(self):
         """ Make sure we have the latest antergos-mirrorlist files """
-        with misc.raised_privileges() as _:
+        with misc.raised_privileges() as __:
             try:
                 cmd = [
                     'pacman',
@@ -256,7 +256,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     # Uncomment Antergos mirror
                     lines[i] = lines[i].lstrip("#")
 
-            with misc.raised_privileges() as _:
+            with misc.raised_privileges() as __:
                 # Write new one
                 with open(self.antergos_mirrorlist, 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
@@ -266,7 +266,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         if os.path.exists("/usr/bin/rankmirrors"):
             self.uncomment_antergos_mirrors()
 
-            with misc.raised_privileges() as _:
+            with misc.raised_privileges() as __:
                 try:
                     # Store rankmirrors output in a temporary file
                     with tempfile.TemporaryFile(mode='w+t') as temp_file:
@@ -300,7 +300,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             )
 
         # Write modified Arch mirrorlist
-        with misc.raised_privileges() as _:
+        with misc.raised_privileges() as __:
             with open(self.arch_mirrorlist, 'w') as arch_mirrors:
                 arch_mirrors.write(output)
         self.sync()

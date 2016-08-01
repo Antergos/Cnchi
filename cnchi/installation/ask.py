@@ -80,7 +80,7 @@ def check_alongside_disk_layout():
 def load_zfs():
     cmd = ["modprobe", "zfs"]
     try:
-        with misc.raised_privileges() as _:
+        with misc.raised_privileges() as __:
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug("ZFS kernel module loaded successfully.")
     except subprocess.CalledProcessError as err:
