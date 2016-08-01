@@ -43,23 +43,27 @@ from misc.extra import InstallError, raised_privileges
 DEST_DIR = "/install"
 
 
-def ensure_excecutable(func, *args, **kwargs):
-    """ Decorator that ensures file is executable before attempting to execute it. """
-    _args = list(*args)
-    cmd = None if not _args or DEST_DIR in _args[0] else list(_args[0])
+def ensured_executable(cmd):
+    """
+    Ensures file is executable before attempting to execute it.
+
+    Args:
+        cmd (list): The command to check.
+
+    Returns:
+        True if successful, False otherwise.
+
+    """
+    cmd = list(cmd)
 
     if cmd and not shutil.which(cmd[0]) and os.path.exists(cmd[0]):
         try:
             os.chmod(cmd[0], 0o777)
         except Exception:
-            with raised_privileges() as _:
+            with raised_privileges() as __:
                 os.chmod(cmd[0], 0o777)
 
-    @wraps(func)
-    def _decorated_function(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return _decorated_function
+    return shutil.which(cmd[0]) is not None
 
 
 def log_exception_info():
@@ -72,7 +76,6 @@ def log_exception_info():
         logging.error(line.rstrip())
 
 
-@ensure_excecutable
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
          stdin=None, debug=True):
     """ Helper function to make a system call
@@ -85,6 +88,9 @@ def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,
     
     if not os.environ.get('CNCHI_RUNNING', False):
         os.environ['CNCHI_RUNNING'] = 'True'
+
+    if not ensured_executable(cmd):
+        logging.error('ensured_executable failed for cmd: %s', cmd)
     
     try:
         output = subprocess.check_output(
@@ -181,12 +187,14 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
         return False
 
 
-@ensure_excecutable
 def popen(cmd, warning=True, error=False, fatal=False, msg=None, stdin=subprocess.PIPE):
     """ Helper function that calls Popen (useful if we need to use pipes) """
     
     if not os.environ.get('CNCHI_RUNNING', False):
         os.environ['CNCHI_RUNNING'] = 'True'
+
+    if not ensured_executable(cmd):
+        logging.error('ensured_executable failed for cmd: %s', cmd)
     
     try:
         proc = subprocess.Popen(
