@@ -110,6 +110,7 @@ class Slides(GtkBaseBox):
                 self._apply_webkit_settings()
                 self.web_view = WebKit2.WebView.new_with_settings(self.web_view_settings)
                 self.web_view.connect('context-menu', lambda _a, _b, _c, _d: True)
+                self.web_view.set_hexpand(True)
                 self.web_view.load_uri(SLIDES_URI)
             except IOError as io_error:
                 logging.warning(io_error)
