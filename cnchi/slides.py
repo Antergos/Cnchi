@@ -37,8 +37,8 @@ import queue
 
 import gi
 gi.require_version('Gtk', '3.0')
-gi.require_version('WebKit', '3.0')
-from gi.repository import Gtk, GLib, WebKit
+gi.require_version('WebKit2', '4.0')
+from gi.repository import Gtk, GLib, WebKit2
 
 import show_message as show
 import misc.extra as misc
@@ -69,8 +69,9 @@ class Slides(GtkBaseBox):
         self.should_pulse = False
 
         self.web_view = None
+        self.web_view_settings = None
 
-        self.scrolled_window = self.ui.get_object("scrolledwindow")
+        self.web_view_box = self.ui.get_object("scrolledwindow")
 
         GLib.timeout_add(1000, self.manage_events_from_cb_queue)
 
@@ -81,20 +82,40 @@ class Slides(GtkBaseBox):
 
         self.header.set_subtitle(_("Installing Antergos..."))
 
+    @staticmethod
+    def _get_settings_for_webkit():
+        return {
+            'enable_developer_extras': False,
+            'javascript_can_open_windows_automatically': True,
+            'allow_file_access_from_file_urls': True,
+            'enable_write_console_messages_to_stdout': True
+        }
+
+    def _apply_webkit_settings(self):
+        self.web_view_settings = WebKit2.Settings()
+        all_settings = self._get_settings_for_webkit()
+
+        for setting_name, value in all_settings.items():
+            setting_name = 'set_{}'.format(setting_name)
+            set_setting = getattr(self.web_view_settings, setting_name)
+
+            set_setting(value)
+
     def prepare(self, direction):
         """ Prepare slides screen """
         # We don't load webkit until we reach this screen
         if self.web_view is None:
             # Add a webkit view and load our html file to show the slides
             try:
-                self.web_view = WebKit.WebView()
+                self._apply_webkit_settings()
+                self.web_view = WebKit2.WebView.new_with_settings(self.web_view_settings)
+                self.web_view.connect('context-menu', lambda _a, _b, _c, _d: True)
                 self.web_view.load_uri(SLIDES_URI)
             except IOError as io_error:
                 logging.warning(io_error)
 
-            self.scrolled_window.add(self.web_view)
-            self.scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
-            self.scrolled_window.set_size_request(800, 335)
+            self.web_view_box.add(self.web_view)
+            self.web_view_box.set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
@@ -277,6 +298,6 @@ class Slides(GtkBaseBox):
 
 
 if __name__ == '__main__':
-    from test_screen import _, run
+    from test_screen import run
 
     run('Slides')

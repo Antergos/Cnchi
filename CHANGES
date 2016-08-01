@@ -1,3 +1,4 @@
+[2016-08-01 00:11:41 -0500]  try to put a bandaid on the slider style issue to hold us over unti..  Dustin Falgout  {dbe0082}
 [2016-07-31 23:49:11 -0500]  that was dumb (see previous commit) :sweat_smile:                      Dustin Falgout  {331a637}
 [2016-07-31 23:37:02 -0500]  minor code style adjustment and also tweaked the ensure_executable ..  Dustin Falgout  {17e422c}
 [2016-07-31 22:56:10 -0500]  use os.path lib to manipulate device path in auto_partition.py to a..  Dustin Falgout  {b25ce64}
