@@ -440,7 +440,7 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         try:
             with raised_privileges() as privileged:
-                cfile = call(cmd)
+                cfile = call(cmd).split('\n')
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",

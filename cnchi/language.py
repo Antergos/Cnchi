@@ -152,7 +152,15 @@ class Language(GtkBaseBox):
         if locale_code is None:
             locale_code, encoding = locale.getdefaultlocale()
 
-        os.environ["LANG"] = locale_code
+        if 'en' == locale_code:
+            # Perl expects LANG to be in this format, otherwise it complains which
+            # messes up the keyboard widget.
+            locale_code = language = 'en_US.UTF-8'
+        else:
+            language = '{}.UTF-8:en_US.UTF-8'.format(locale_code)
+
+        os.environ['LANG'] = locale_code
+        os.environ['LANGUAGE'] = language
 
         try:
             lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code])
