@@ -93,7 +93,7 @@ class Process(multiprocessing.Process):
             self.create_metalinks_list()
 
             self.queue_event('info', _("Getting your disk(s) ready for Antergos..."))
-            with misc.raised_privileges() as privileged:
+            with misc.raised_privileges() as _:
                 self.install_screen.run_format()
 
             path = "/tmp/.cnchi_partitioning_completed"
@@ -103,7 +103,7 @@ class Process(multiprocessing.Process):
                 part_file.write("# formatting their hard disk(s)\n")
 
             self.queue_event('info', _("Installation will start now!"))
-            with misc.raised_privileges() as privileged:
+            with misc.raised_privileges() as _:
                 self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(

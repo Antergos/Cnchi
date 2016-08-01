@@ -34,6 +34,7 @@ import subprocess
 import sys
 import traceback
 import os
+import shutil
 
 from functools import wraps
 
@@ -45,16 +46,13 @@ DEST_DIR = "/install"
 def ensure_excecutable(func, *args, **kwargs):
     """ Decorator that ensures file is executable before attempting to execute it. """
     _args = list(*args)
-    cmd = None if not _args or DEST_DIR in _args[0] else _args[0]
+    cmd = None if not _args or DEST_DIR in _args[0] else list(_args[0])
 
-    if isinstance(cmd, str):
-        cmd = list(cmd)
-
-    if cmd and os.path.exists(cmd[0]) and not os.access(cmd[0], os.X_OK):
+    if cmd and not shutil.which(cmd[0]) and os.path.exists(cmd[0]):
         try:
             os.chmod(cmd[0], 0o777)
         except Exception:
-            with raised_privileges() as privileged:
+            with raised_privileges() as _:
                 os.chmod(cmd[0], 0o777)
 
     @wraps(func)

@@ -446,7 +446,7 @@ def update_cnchi():
         new_argv.append("--disable-update")
 
         # Run another instance of Cnchi (which will be the new version)
-        with misc.raised_privileges() as privileged:
+        with misc.raised_privileges() as _:
             os.execl(sys.executable, *([sys.executable] + new_argv))
         sys.exit(0)
 
