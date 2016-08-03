@@ -44,7 +44,8 @@ from _base_object import (
 from ui.base_widgets import (
     BaseWidget,
     DataObject,
-    Singleton
+    Singleton,
+    bg_thread
 )
 
 
@@ -152,6 +153,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
+    @bg_thread
     def _uri_request_finish_page(self, page, request):
         page_obj = self._pages_helper.get_page(page)
         page_obj.prepare()
@@ -162,6 +164,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             Gio.content_type_guess(None, data)[0]
         )
 
+    @bg_thread
     def _uri_request_finish_resource(self, path, request):
         if path.startswith(self.APP_DIR) and os.path.exists(path):
             request.finish(

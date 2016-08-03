@@ -533,7 +533,7 @@ class CnchiPage extends CnchiTab {
 	}
 
 	_unlock_next_tab_animated() {
-		let _this = ( this instanceof CnchiTab ) ? this : _page.current_tab,
+		let _this = ( this instanceof CnchiTab ) ? this : this.current_tab,
 			$tab_button = _this.$tab_button.next();
 
 		if ( true === _this.has_tabs && _this.current_tab !== _this.tabs[_this.tabs.length + 1] ) {
@@ -653,15 +653,18 @@ class CnchiPage extends CnchiTab {
 	 * @arg {Function} callback An optional callback to be called after element is reloaded.
 	 */
 	reload_element( selector, callback ) {
-		let url = `cnchi://${_page.id}`,
+		let url = `cnchi://${this.id}`,
 			$old_el = this.$page.find(selector),
 			$new_el;
+
+		console.log([url, selector]);
 
 		$old_el.hide(0)
 			.promise()
 			.done(() => {
 				$.get(url, function( data ) {
 					$new_el = $(data).find(selector);
+					console.log($new_el);
 
 					$old_el.replaceWith($new_el).show(0)
 						.promise()
