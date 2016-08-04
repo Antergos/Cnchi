@@ -90,7 +90,8 @@ class KeymapModule(BaseModule):
         self.logger.debug(layouts)
         return [{
                     str(layouts[layout_name]): [str(v) for v in layouts[layout_name].variants],
-                    'id': layout_name}
+                    'id': layout_name,
+                    'title': str(layouts[layout_name])}
                 for layout_name in layouts]
 
     def set_keymap(self, layout, variant=None):

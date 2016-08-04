@@ -25,9 +25,9 @@
 
 		.heading { text-align: center; margin: 30px 0px 15px; }
 
-		.collection_wrapper { box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
+		.collection_wrapper, .keyboard_layouts_list { box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); }
 
-		.collection_wrapper .collapsible { border: none !important; height: 305px; box-shadow: none; margin: 0px; overflow-x: hidden; overflow-y: scroll; list-style: none; }
+		.collection_wrapper .collapsible, .keyboard_layouts_list .collapsible { border: none !important; height: 305px; box-shadow: none; margin: 0px; overflow-x: hidden; overflow-y: scroll; list-style: none; }
 
 		.collection a.collection-item { cursor: default; padding: 15px 25px; line-height: 1; text-align: center; color: #32373c; }
 
@@ -56,6 +56,13 @@
 		label { -webkit-user-select: none; cursor: default; }
 
 		input { cursor: default; }
+
+		.keyboard_layouts_list .collapsible { height: 475px; }
+
+		#keyboard_layout .grid-30 { padding: 30px; }
+		#keyboard_layout .grid-70 { padding-right: 30px; }
+		#keyboard_layout .grid-70 p { text-align: left; }
+
 	</style>
 {% endblock page_styles %}
 
@@ -115,35 +122,32 @@
 			<div id="{{ tabs[1][0]|lower()|replace(' ', '_') }}" class="grid-100 grid-parent page_tab" data-name="{{ tabs[1][0]|lower() }}">
 
 				<!-- Keyboard Layouts List Container -->
-				<div class="grid-30 grid-parent keyboard_layouts_list">
+				<div class="grid-30 grid-parent">
+					<div class="keyboard_layouts_list">
 					{% if keyboard_layouts %}
 						{% call collapsable_items_container('grow') %}
 							{% for keyboard_layout in keyboard_layouts %}
 								{% set variants = [] %}
-								{%  set layout_index = loop.index %}
+								{% set layout_index = loop.index %}
+								{% set variant_key = keyboard_layout['title'] %}
 
-								{% for key, value in keyboard_layout.items() %}
-									{% if 'id' != key %}
-
-										{% for variant in value %}
-											{% do variants.append((variant, variant)) %}
-										{% else %}
-											{% do variants.append((key, key)) %}
-										{% endfor %}
-
-										{% set contents = collection_text_only(variants) %}
-
-										{% set title %}
-											<div class="title">{{ key }}</div>
-										{% endset %}
-									{% else %}
-										{{ collapsable_items([(keyboard_layout['id'], '', title, contents, layout_index)]) }}
-									{% endif %}
+								{% for variant in keyboard_layout[variant_key] %}
+									{% do variants.append((variant, variant)) %}
+								{% else %}
+									{% do variants.append((variant_key, variant_key)) %}
 								{% endfor %}
 
+								{% set contents = collection_text_only(variants) %}
+
+								{% set title %}
+									<div class="title">{{ variant_key }}</div>
+								{% endset %}
+
+								{{ collapsable_items([(keyboard_layout['id'], '', title, contents, layout_index)]) }}
 							{% endfor %}
 						{% endcall %}
 					{% endif %}
+					</div>
 				</div> <!-- /END Keyboard Layouts List Container -->
 
 				<!-- Keyboard Widget Outer Container -->
@@ -218,13 +222,10 @@
 			}
 
 			init_collapsable_list( $list, selected_callback, initially_visible_num ) {
-				let icon = $('<div class="icon_wrap"><i class="material-icons">add</i></div>');
-
 				$list.children().each(( index, element ) => {
 					let $header = $(element).find('.collapsible-header'),
 						$body = $(element).find('.collapsible-body');
 
-					$(icon).clone().appendTo($header);
 					$header.on('click', this.collapsible_list_item_header_clicked_cb);
 					$body.find('.collection').children().on('click', selected_callback);
 

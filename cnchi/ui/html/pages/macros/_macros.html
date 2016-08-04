@@ -226,7 +226,7 @@
 			{% set icon_or_image = '' %}
 		{% endif %}
 		<li class="{{ item[0] }} {{ '%s_tab'|format(item[0]) }}">
-			<div id="{{ '%s_tab%s_header'|format(item[0], item[4]) }}" class="collapsible-header" role="tab" aria-controls="{{ '%s_tab%s_body'|format(item[0], item[4]) }}">{{ icon_or_image }} {{ item[2] }}</div>
+			<div id="{{ '%s_tab%s_header'|format(item[0], item[4]) }}" class="collapsible-header" role="tab" aria-controls="{{ '%s_tab%s_body'|format(item[0], item[4]) }}">{{ icon_or_image }} {{ item[2] }} <div class="icon_wrap"><i class="material-icons">add</i></div></div>
 			<div id="{{ '%s_tab%s_body'|format(item[0], item[4]) }}" class="collapsible-body" role="tabpanel" aria-labelledby="{{ '%s_tab%s_header'|format(item[0], item[4]) }}">{{ item[3] }}</div>
 		</li>
 	{% endfor %}
