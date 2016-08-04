@@ -1,3 +1,5 @@
+[2016-08-03 00:33:01 -0500]  syncing local with github                                              Dustin Falgout  {86108ba}
+[2016-07-29 20:07:53 -0500]  add more debug messages to alpm methods to help identify issues.       Dustin Falgout  {800a584}
 [2016-07-29 00:56:46 -0500]  more work on keyboard layout tab..                                     Dustin Falgout  {2f998bd}
 [2016-07-27 20:02:07 -0500]  Automatically bind `this` to the class for all class methods. Also ..  Dustin Falgout  {d56aba7}
 [2016-07-24 22:47:28 -0500]  stopping point...                                                      Dustin Falgout  {4970b3d}

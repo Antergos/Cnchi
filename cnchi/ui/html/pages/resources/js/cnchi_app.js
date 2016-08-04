@@ -511,7 +511,7 @@ class CnchiPage extends CnchiTab {
 		this.tabs = [];
 		this.has_tabs = has_tabs;
 		this.current_tab = null;
-		this.$page = (true === this.is_page) ? $tab : this.parent.$page;
+		this.$page = (true === this.is_page) ? $('.main_content') : this.parent.$page;
 		this.$tab = $tab;
 		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
 		this.next_tab_animation_interval = null;
@@ -657,16 +657,17 @@ class CnchiPage extends CnchiTab {
 			$old_el = this.$page.find(selector),
 			$new_el;
 
-		console.log([url, selector]);
+		console.log([url, this.$page]);
 
 		$old_el.hide(0)
 			.promise()
 			.done(() => {
-				$.get(url, function( data ) {
+				$.get(url, ( data ) => {
 					$new_el = $(data).find(selector);
 					console.log($new_el);
 
-					$old_el.replaceWith($new_el).show(0)
+					$old_el.replaceWith($new_el);
+					$new_el.show(0)
 						.promise()
 						.done(() => {
 							if ( callback ) {

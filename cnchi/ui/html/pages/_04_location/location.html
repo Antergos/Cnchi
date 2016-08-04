@@ -85,6 +85,7 @@
 					{% call collapsable_items_container('grow') %}
 						{% for country_languages in locations %}
 							{% set lang_items = [] %}
+							{%  set layout_index = loop.index %}
 
 							{% for lang in country_languages %}
 								{% do lang_items.append((lang['locale'], lang['language'])) %}
@@ -97,7 +98,7 @@
 							{% endset %}
 							{% set flag_img = '%s/images/country_flags/%s.jpg'|format(RESOURCES_DIR, language['c_code']|lower()) %}
 
-							{{ collapsable_items([(language['c_code'], flag_img, title, contents)]) }}
+							{{ collapsable_items([(language['c_code'], flag_img, title, contents, layout_index)]) }}
 						{% endfor %}
 					{% endcall %}
 				</div>
@@ -119,12 +120,15 @@
 						{% call collapsable_items_container('grow') %}
 							{% for keyboard_layout in keyboard_layouts %}
 								{% set variants = [] %}
+								{%  set layout_index = loop.index %}
 
 								{% for key, value in keyboard_layout.items() %}
 									{% if 'id' != key %}
 
-										{% for variant in  value %}
+										{% for variant in value %}
 											{% do variants.append((variant, variant)) %}
+										{% else %}
+											{% do variants.append((key, key)) %}
 										{% endfor %}
 
 										{% set contents = collection_text_only(variants) %}
@@ -133,7 +137,7 @@
 											<div class="title">{{ key }}</div>
 										{% endset %}
 									{% else %}
-										{{ collapsable_items([(keyboard_layout['id'], '', title, contents)]) }}
+										{{ collapsable_items([(keyboard_layout['id'], '', title, contents, layout_index)]) }}
 									{% endif %}
 								{% endfor %}
 
@@ -213,7 +217,7 @@
 				this.initialize();
 			}
 
-			init_collapsable_list( $list, selected_callback ) {
+			init_collapsable_list( $list, selected_callback, initially_visible_num ) {
 				let icon = $('<div class="icon_wrap"><i class="material-icons">add</i></div>');
 
 				$list.children().each(( index, element ) => {
@@ -224,7 +228,7 @@
 					$header.on('click', this.collapsible_list_item_header_clicked_cb);
 					$body.find('.collection').children().on('click', selected_callback);
 
-					if ( index > 5 ) {
+					if ( index > initially_visible_num ) {
 						$(element).addClass('future');
 					}
 
@@ -250,7 +254,7 @@
 			}
 
 			initialize() {
-				this.init_collapsable_list(this.$locations_list, this.location_selected_cb);
+				this.init_collapsable_list(this.$locations_list, this.location_selected_cb, 5);
 				cnchi.emit_signal('do-load-keyboard-layouts');
 			}
 
@@ -314,7 +318,8 @@
 				console.log(`current_tab_changed_cb(): current_tab is: ${this.current_tab.id}`);
 				if ('keyboard_layout' === this.current_tab.id) {
 					this.$kbd_layouts_list = $('#keyboard_layout ul.collapsible');
-					this.init_collapsable_list(this.$kbd_layouts_list, this.keyboard_layout_selected_cb);
+					console.log(['keyboard_layouts_list', this.$kbd_layouts_list]);
+					this.init_collapsable_list(this.$kbd_layouts_list, this.keyboard_layout_selected_cb, 8);
 				}
 			}
 
