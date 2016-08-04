@@ -59,9 +59,15 @@
 
 		.keyboard_layouts_list .collapsible { height: 475px; }
 
-		#keyboard_layout .grid-30 { padding: 30px; }
-		#keyboard_layout .grid-70 { padding-right: 30px; }
-		#keyboard_layout .grid-70 p { text-align: left; }
+		#keyboard_layout .grid-35 { padding: 30px; }
+
+		#keyboard_layout .grid-65 { padding-right: 30px; }
+
+		#keyboard_layout .grid-65 p { text-align: left; }
+
+		#keyboard_layout .collapsible-body .collection { display: flex; flex-wrap: wrap; justify-content: stretch; }
+
+		#keyboard_layout .collapsible-body .collection a { flex: 1 1 auto; }
 
 	</style>
 {% endblock page_styles %}
@@ -70,8 +76,7 @@
 
 {#
  # Page Content (Appears below the header)
- #}
-{% block main_content %}
+ #}{% block main_content %}
 	<div class="grid-100 grid-parent content_wrapper">
 		<!-- TAB NAVIGATION BUTTONS -->
 		<div class="grid-100 grid-parent navigation_wrapper">
@@ -92,13 +97,13 @@
 					{% call collapsable_items_container('grow') %}
 						{% for country_languages in locations %}
 							{% set lang_items = [] %}
-							{%  set layout_index = loop.index %}
+							{% set layout_index = loop.index %}
 
-							{% for lang in country_languages %}
-								{% do lang_items.append((lang['locale'], lang['language'])) %}
-							{% endfor %}
+					{% for lang in country_languages %}
+						{% do lang_items.append((lang['locale'], lang['language'])) %}
+					{% endfor %}
 
-							{% set contents = collection_text_only(lang_items) %}
+					{% set contents = collection_text_only(lang_items) %}
 							{% set language = country_languages[0] %}
 							{% set title %}
 								<div class="title">{{ language['country'] }}</div>
@@ -122,22 +127,23 @@
 			<div id="{{ tabs[1][0]|lower()|replace(' ', '_') }}" class="grid-100 grid-parent page_tab" data-name="{{ tabs[1][0]|lower() }}">
 
 				<!-- Keyboard Layouts List Container -->
-				<div class="grid-30 grid-parent">
+				<div class="grid-35 grid-parent">
 					<div class="keyboard_layouts_list">
 					{% if keyboard_layouts %}
 						{% call collapsable_items_container('grow') %}
 							{% for keyboard_layout in keyboard_layouts %}
-								{% set variants = [] %}
+								{% set _none = _('None') %}
+								{% set variants = [_none] %}
 								{% set layout_index = loop.index %}
 								{% set variant_key = keyboard_layout['title'] %}
 
-								{% for variant in keyboard_layout[variant_key] %}
-									{% do variants.append((variant, variant)) %}
-								{% else %}
-									{% do variants.append((variant_key, variant_key)) %}
-								{% endfor %}
+						{% for variant in keyboard_layout[variant_key] %}
+							{% do variants.append((variant, variant)) %}
+						{% else %}
+							{% do variants.append((variant_key, variant_key)) %}
+						{% endfor %}
 
-								{% set contents = collection_text_only(variants) %}
+						{% set contents = collection_text_only(variants) %}
 
 								{% set title %}
 									<div class="title">{{ variant_key }}</div>
@@ -151,7 +157,7 @@
 				</div> <!-- /END Keyboard Layouts List Container -->
 
 				<!-- Keyboard Widget Outer Container -->
-				<div class="grid-70 grid-parent keyboard_widget_container">
+				<div class="grid-65 grid-parent keyboard_widget_container">
 					<div class="grid-100 heading">
 						<p>{{ _('Select your desired keyboard layout and variant (if applicable). You can use the input field below the keyboard widget to test your selection.') }}</p>
 					</div>
@@ -178,9 +184,7 @@
 			</div> <!-- /END TIMEZONE TAB -->
 
 		</div> <!-- /END PAGE CONTENT -->
-	</div>
-{% endblock main_content %}
-
+	</div>{% endblock main_content %}
 
 
 {#
@@ -203,18 +207,18 @@
 					return window._page;
 				}
 
-				super(id);
+				super( id );
 
 				window._page = this;
-				this.signals = JSON.parse('{{ signals }}');
+				this.signals = JSON.parse( '{{ signals }}' );
 				this.location = null;
 				this.layout = null;
 				this.variant = null;
 
-				this.$show_all_locations = $('#show_all_locations');
-				this.show_all_locations = this.$show_all_locations.prop('checked');
-				this.$locations_list = $('ul.collapsible:not(#keyboard_layout ul)');
-				this.$kbd_layouts_list = $('#keyboard_layout ul.collapsible');
+				this.$show_all_locations = $( '#show_all_locations' );
+				this.show_all_locations = this.$show_all_locations.prop( 'checked' );
+				this.$locations_list = $( 'ul.collapsible:not(#keyboard_layout ul)' );
+				this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 
 				this.register_allowed_signals();
 				this.register_event_handlers();
@@ -222,51 +226,51 @@
 			}
 
 			init_collapsable_list( $list, selected_callback, initially_visible_num ) {
-				$list.children().each(( index, element ) => {
-					let $header = $(element).find('.collapsible-header'),
-						$body = $(element).find('.collapsible-body');
+				$list.children().each( ( index, element ) => {
+					let $header = $( element ).find( '.collapsible-header' ),
+						$body = $( element ).find( '.collapsible-body' );
 
-					$header.on('click', this.collapsible_list_item_header_clicked_cb);
-					$body.find('.collection').children().on('click', selected_callback);
+					$header.on( 'click', this.collapsible_list_item_header_clicked_cb );
+					$body.find( '.collection' ).children().on( 'click', selected_callback );
 
 					if ( index > initially_visible_num ) {
-						$(element).addClass('future');
+						$( element ).addClass( 'future' );
 					}
 
-					new Waypoint.Inview({
-						element: $(element),
-						context: _page.$locations_list,
+					new Waypoint.Inview( {
+						element: $( element ),
+						context: $list,
 						enter: function( direction ) {
 							if ( 'down' === direction ) {
-								$(this.element).removeClass('future');
+								$( this.element ).removeClass( 'future' );
 							} else {
-								$(this.element).removeClass('past');
+								$( this.element ).removeClass( 'past' );
 							}
 						},
 						exited: function( direction ) {
 							if ( 'down' === direction ) {
-								$(this.element).addClass('past');
+								$( this.element ).addClass( 'past' );
 							} else {
-								$(this.element).addClass('future');
+								$( this.element ).addClass( 'future' );
 							}
 						}
-					});
-				});
+					} );
+				} );
 			}
 
 			initialize() {
-				this.init_collapsable_list(this.$locations_list, this.location_selected_cb, 5);
-				cnchi.emit_signal('do-load-keyboard-layouts');
+				this.init_collapsable_list( this.$locations_list, this.location_selected_cb, 5 );
+				cnchi.emit_signal( 'do-load-keyboard-layouts' );
 			}
 
 			keyboard_layout_selected_cb( event ) {
-				let $variant = $(event.target),
-					variant = $variant.attr('id');
+				let $variant = $( event.target ),
+					variant = $variant.attr( 'id' );
 
-				$variant.addClass('active');
+				$variant.addClass( 'active' );
 
 				if ( null !== this.variant ) {
-					$(`#${this.variant}`).removeClass('active');
+					$( `#${this.variant}` ).removeClass( 'active' );
 				}
 
 				this.variant = variant;
@@ -274,13 +278,13 @@
 			}
 
 			location_selected_cb( event ) {
-				let $location = $(event.target),
-					location = $location.attr('id');
+				let $location = $( event.target ),
+					location = $location.attr( 'id' );
 
-				$location.addClass('active');
+				$location.addClass( 'active' );
 
 				if ( null !== this.location ) {
-					$(`#${this.location}`).removeClass('active');
+					$( `#${this.location}` ).removeClass( 'active' );
 				}
 
 				this.location = location;
@@ -289,51 +293,53 @@
 
 			collapsible_list_item_header_clicked_cb( event ) {
 				// Allow time for animation to complete
-				setTimeout(() => {
-					let $header = $(event.currentTarget).closest('.collapsible-header'),
+				setTimeout( () => {
+					let $header = $( event.currentTarget ).closest( '.collapsible-header' ),
 						$parent = $header.parent(),
-						$last_active = ($parent.hasClass('_active')) ? $parent : $parent.siblings('._active');
+						$last_active = ($parent.hasClass( '_active' )) ? $parent : $parent.siblings( '._active' );
 
-					this.collapsible_list_item_header_close($last_active);
+					console.log( [ $header, $parent, $last_active ] );
 
-					if ( $parent.is($last_active) ) {
+					this.collapsible_list_item_header_close( $last_active );
+
+					if ( $parent.is( $last_active ) ) {
 						return;
 					}
 
-					this.collapsible_list_item_header_open($parent);
+					this.collapsible_list_item_header_open( $parent );
 
-				}, 250);
+				}, 250 );
 			}
 
 			collapsible_list_item_header_close( $header ) {
-				$header.find('i').text('add');
-				$header.removeClass('_active');
+				$header.find( 'i' ).text( 'add' );
+				$header.removeClass( '_active' );
 			}
 
 			collapsible_list_item_header_open( $header ) {
-				$header.find('i').text('remove');
-				$header.addClass('_active');
+				$header.find( 'i' ).text( 'remove' );
+				$header.addClass( '_active' );
 			}
 
 			current_tab_changed_cb() {
-				console.log(`current_tab_changed_cb(): current_tab is: ${this.current_tab.id}`);
-				if ('keyboard_layout' === this.current_tab.id) {
-					this.$kbd_layouts_list = $('#keyboard_layout ul.collapsible');
-					console.log(['keyboard_layouts_list', this.$kbd_layouts_list]);
-					this.init_collapsable_list(this.$kbd_layouts_list, this.keyboard_layout_selected_cb, 8);
+				console.log( `current_tab_changed_cb(): current_tab is: ${this.current_tab.id}` );
+				if ( 'keyboard_layout' === this.current_tab.id ) {
+					this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
+					this.$kbd_layouts_list.collapsible();
+					this.init_collapsable_list( this.$kbd_layouts_list, this.keyboard_layout_selected_cb, 8 );
 				}
 			}
 
 			register_event_handlers() {
-				this.$show_all_locations.on('click', this.show_all_locations_clicked_cb);
-				$(window).on('page-change-current-tab-done', this.current_tab_changed_cb)
+				this.$show_all_locations.on( 'click', this.show_all_locations_clicked_cb );
+				$( window ).on( 'page-change-current-tab-done', this.current_tab_changed_cb )
 			}
 
 			show_all_locations_clicked_cb( event ) {
-				cnchi.emit_signal('do-show-all-locations');
-				setTimeout(() => {
-					this.reload_element('.collection_wrapper', this.init_collapsable_list);
-				}, 250)
+				cnchi.emit_signal( 'do-show-all-locations' );
+				setTimeout( () => {
+					this.reload_element( '.collection_wrapper', this.init_collapsable_list );
+				}, 250 )
 			}
 		}
 
