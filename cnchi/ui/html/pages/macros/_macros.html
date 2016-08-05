@@ -197,11 +197,11 @@
  #     _class  (str): Optional css class for the collection.
  #
  #}
-{% macro collapsable_items_container(_class='') %}
+{% macro collapsable_items_container(_class='', num_visible_items=5) %}
 	{% if '' != _class %}
 		{% set _class = ' %s'|format(_class) %}
 	{% endif %}
-	<ul class="collapsible{{ _class }}" data-collapsible="accordion" role="tablist">
+	<ul class="collapsible{{ _class }}" data-collapsible="accordion" data-num_visible_items="{{ num_visible_items }}" role="tablist">
 		{{ caller() }}
 	</ul>
 {% endmacro %}
@@ -230,4 +230,135 @@
 			<div id="{{ '%s_tab%s_body'|format(item[0], item[4]) }}" class="collapsible-body" role="tabpanel" aria-labelledby="{{ '%s_tab%s_header'|format(item[0], item[4]) }}">{{ item[3] }}</div>
 		</li>
 	{% endfor %}
+{% endmacro %}
+
+
+{#
+ # Outputs JavaScript for collapsable element(s) (eg. accordions/toggles).
+ #}
+{% macro collapsable_items_javascript(script_tags=False) %}
+	{% if script_tags %}
+		<script>
+	{% endif %}
+
+	class CollapsibleContainers extends CnchiObject {
+		constructor() {
+			super();
+			this.collapsibles = [];
+
+			this.initialize();
+		}
+
+		initialize() {
+			this._find_collapsibles();
+			this._maybe_setup_collapsibles();
+		}
+
+		_find_collapsibles() {
+			$( 'ul.collapsible' ).each( ( index, element ) => {
+				let $collapsible = $( element );
+
+				if ( this.collapsibles.findIndex( $c => $collapsible.is( $c ) ) === - 1 ) {
+					// $container is not in our collapsibles array, let's add it.
+					this.collapsibles.push( $collapsible );
+				}
+			} );
+		}
+
+		_get_collapsible_from_event( event ) {
+			let $target = $( event.currentTarget ).closest( '.collapsible' ),
+				$result;
+
+			for ( let $collapsible of this.collapsibles ) {
+				if ( $collapsible.is( $target ) ) {
+					$result = $collapsible;
+					break;
+				}
+			}
+
+			return $result;
+		}
+
+		_header_close( $header ) {
+			$header.find( 'i' ).text( 'add' );
+			$header.removeClass( '_active' );
+		}
+
+		_header_open( $header ) {
+			$header.find( 'i' ).text( 'remove' );
+			$header.addClass( '_active' );
+		}
+
+		_maybe_setup_collapsibles() {
+			for ( let $collapsible of this.collapsibles ) {
+				let num_visible_items = $collapsible.data( 'num_visible_items' ) || 5,
+					initialized = $collapsible.data( 'initialized' ) ? true : false;
+
+				if ( false === initialized ) {
+					$collapsible.collapsible();
+					this._setup_collapsible( $collapsible, num_visible_items );
+					$collapsible.data( 'initialized', true );
+				}
+			}
+		}
+
+		_setup_collapsible( $collapsible, num_visible_items ) {
+			$collapsible.on( 'click', '.collapsible-header', this.header_clicked_cb );
+			$collapsible.on( 'click', '.collection li', this.collection_item_clicked_cb );
+
+			$collapsible.children().each( ( index, element ) => {
+				if ( index > num_visible_items ) {
+					$( element ).addClass( 'future' );
+				}
+
+				new Waypoint.Inview( {
+					element: $( element ),
+					context: $collapsible,
+					enter: function( direction ) {
+						if ( 'down' === direction ) {
+							$( this.element ).removeClass( 'future' );
+						} else {
+							$( this.element ).removeClass( 'past' );
+						}
+					},
+					exited: function( direction ) {
+						if ( 'down' === direction ) {
+							$( this.element ).addClass( 'past' );
+						} else {
+							$( this.element ).addClass( 'future' );
+						}
+					}
+				} );
+			} );
+		}
+
+		collection_item_clicked_cb( event ) {
+			let $collapsible = this._get_collapsible_from_event( event );
+			$collapsible.trigger( 'collection-item-selected', event );
+		}
+
+		header_clicked_cb( event ) {
+			// Allow time for animation to complete
+			setTimeout( () => {
+				let $header = $( event.currentTarget ).closest( '.collapsible-header' ),
+					$parent = $header.parent(),
+					$last_active = ($parent.hasClass( '_active' )) ? $parent : $parent.siblings( '._active' );
+
+				console.log( [ $header, $parent, $last_active ] );
+
+				this._header_close( $last_active );
+
+				if ( $parent.is( $last_active ) ) {
+					return;
+				}
+
+				this._header_open( $parent );
+
+			}, 325 );
+		}
+	}
+
+	{% if script_tags %}
+		</script>
+	{% endif %}
 {% endmacro %}

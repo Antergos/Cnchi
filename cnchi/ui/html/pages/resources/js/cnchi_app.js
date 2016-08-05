@@ -607,7 +607,7 @@ class CnchiPage extends CnchiTab {
 	}
 
 	/**
-	 * Locates the tabs' containers in the DOM and uses them to create `CnchiTab` objects for
+	 * Locates the tabs' collapsibles in the DOM and uses them to create `CnchiTab` objects for
 	 * the tabs. Also ensures that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s)
 	 * are properly set.
 	 */
