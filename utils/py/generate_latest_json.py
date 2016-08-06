@@ -24,7 +24,13 @@
 
 import os
 import hashlib
-import info
+import sys
+
+CNCHI_PATH = "/usr/share/cnchi"
+sys.path.append(CNCHI_PATH)
+sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
+
+import cnchi.info as info
 
 
 def get_md5(file_name):

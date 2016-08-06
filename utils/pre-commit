@@ -1,20 +1,16 @@
 #!/bin/bash
-
+#
 # looks for a file name info.py in the src directory,
 # the contents of which should be a semantic version number
 # such as "1.2.3"
-
+#
 # this script will display the current version, automatically
-# suggest a "minor" version update, and ask for input to use
-# the suggestion, or a newly entered value.
+# update version files. then the script will pull a list of changes
+# from git history and update the CHANGES file.
 
-# once the new version number is determined, the script will
-# pull a list of changes from git history, prepend this to
-# a file called CHANGES (under the title of the new version
-# number) and create a GIT tag.
-
-
+_LOCK='/tmp/.CNCHI_PRE_COMMIT_LOCK'
 INFO_PY='cnchi/info.py'
+_IS_JETBRAINS=''
 
 echo 'checking for changes to pre-commit hook...'
 if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
@@ -27,9 +23,27 @@ if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
 	exit $?
 fi
 
+for _ide in pycharm intellij clion
+do
+	if [[ "${LD_LIBRARY_PATH}" = *"${_ide}"* ]]; then
+		export _IS_JETBRAINS='True'
+		break
+	fi
+done
+
+# Work-around issue in Jetbrains IDEs caused by their use of `git commit --only`
+# Basically, the first time the hook runs it will exit with non-zero status
+# causing the commit to be aborted so that the IDE will notice the additional changed
+# files and add them to its call to `git commit --only`. Before doing so the hook
+# will perform its normal tasks (updating version in files and updating CHANGES file)
+# and it will set a lock file. If the lock file is detected we know that this is not
+# the first attempt and so we unset the lock and so we immediately exit with zero status.
+[[ 'True' = "${_IS_JETBRAINS}" && -f "${_LOCK}" ]] && { rm "${_LOCK}"; exit 0; }
+
+[[ 'True' = "${_IS_JETBRAINS}" ]] && touch "${_LOCK}"
+
 # Exit with failed status if we cannot find info.py
 [[ -e "${INFO_PY}" ]] || { echo 'Could not find a info.py!'; exit 1; }
-
 
 BASE_STRING=$(python3 "${INFO_PY}")
 BASE_LIST=($(echo "${BASE_STRING}" | tr '.' ' '))
@@ -46,13 +60,14 @@ sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${INFO_PY}"
 sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" README.md
 
 echo 'Updating CHANGES file...'
-git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "${BASE_STRING}"...HEAD > CHANGES
+{ grep -q '`master`' README.md && HISTORY_FROM=$((V_MINOR - 1)); } || HISTORY_FROM="${V_MINOR}"
+git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "0.${HISTORY_FROM}.x...HEAD" > CHANGES
 
 echo "Updating latest.json..."
-python utils/py/generate_latest_json.py
+python3 utils/py/generate_latest_json.py
 
 echo "Checking file permissions..."
 utils/sh/fix-permissions.sh
 
-git add CHANGES README.md "${INFO_PY}" dist/latest.json && exit 0;
+git add CHANGES README.md "${INFO_PY}" dist/latest.json && exit 1;
 
