@@ -7,19 +7,19 @@ You are viewing the `master` branch.
 
 ## Current Status
 
-This is the latest, unreleased version of Cnchi code, AKA: **Cnchi Next**.
+This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 
-|Development Stage|Version| Code State|
------------------ | -------------- | -------- |
-|*Cnchi Legacy*|*v0.12.46*|*Frozen*|
-|Cnchi Stable|v0.14.x|Bug Fixes Only|
-|**Cnchi Next** | **v0.15.x** | **Active Development**|
+|Development Stage|Branch|Version| Code Status|
+----------------- | -------------- | -------------- | -------- |
+|*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
+|Cnchi Stable|0.14.x|v0.14.140|Bug Fixes Only|
+|**Cnchi Next**|**master**|**v0.15.200**|**Active Development**|
 
 
 ## Usage:
 
 ```sh
-sudo -E cnchi.py
+$ cnchi
 ```
 
 #### Optional parameters:
@@ -43,7 +43,7 @@ sudo -E cnchi.py
 
 To create logs to help debug problems:
 ```sh
-sudo -E cnchi.py -dv -s bugsnag
+$ cnchi -dv -s bugsnag
 ```
 
 ## Reporting bugs:

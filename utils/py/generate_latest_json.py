@@ -39,8 +39,7 @@ def get_md5(file_name):
 def get_files(path):
     """ Returns all files from a directory """
     all_files = []
-    skip_names = [
-        "__pycache__", ".git", "CHANGES", "info.py", "latest.json", ".tx/", "utils/"]
+    skip_names = ["__pycache__", ".git", "CHANGES", "info.py", "latest.json", ".tx/", "utils/"]
     if os.path.exists(path):
         for dpath, d, files in os.walk(path):
             for f in files:
@@ -50,7 +49,6 @@ def get_files(path):
                     if skip in file_path:
                         path_OK = False
                 if path_OK:
-                    print(file_path)
                     all_files.append(file_path)
     else:
         all_files = False

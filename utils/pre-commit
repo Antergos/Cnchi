@@ -43,15 +43,16 @@ SUGGESTED_VERSION="${V_MAJOR}.${V_MINOR}.${V_PATCH}"
 
 echo "New version : ${SUGGESTED_VERSION}"
 sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${INFO_PY}"
+sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" README.md
 
 echo 'Updating CHANGES file...'
-git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "v0.14.0"...HEAD > CHANGES
+git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "${BASE_STRING}"...HEAD > CHANGES
 
 echo "Updating latest.json..."
-python utils/generate_latest_json.py
+python utils/py/generate_latest_json.py
 
 echo "Checking file permissions..."
-utils/fix-permissions.sh
+utils/sh/fix-permissions.sh
 
-git add CHANGES "${INFO_PY}" dist/latest.json && exit 0;
+git add CHANGES README.md "${INFO_PY}" dist/latest.json && exit 0;
 

@@ -1,278 +1,118 @@
-[2016-08-06 01:40:58 -0500]  trying to clean up a bit before merging into cnchi master              Dustin Falgout  {e033374}
-[2016-08-05 00:32:09 -0500]  move collapsible list javascript code to _macros.html and generaliz..  Dustin Falgout  {68f532e}
-[2016-08-04 11:41:28 -0500]  finally some progress                                                  Dustin Falgout  {35b62de}
-[2016-08-04 09:09:21 -0500]  finally some progress                                                  Dustin Falgout  {335b1b7}
-[2016-08-04 04:59:04 -0500]  still working on location page. have some kinks to work out :grimac..  Dustin Falgout  {52a9e7c}
-[2016-08-03 00:33:01 -0500]  syncing local with github                                              Dustin Falgout  {86108ba}
-[2016-07-29 20:07:53 -0500]  add more debug messages to alpm methods to help identify issues.       Dustin Falgout  {800a584}
-[2016-07-29 00:56:46 -0500]  more work on keyboard layout tab..                                     Dustin Falgout  {2f998bd}
-[2016-07-27 20:02:07 -0500]  Automatically bind `this` to the class for all class methods. Also ..  Dustin Falgout  {d56aba7}
-[2016-07-24 22:47:28 -0500]  stopping point...                                                      Dustin Falgout  {4970b3d}
-[2016-07-24 19:33:08 -0500]  stopping point...                                                      Dustin Falgout  {f00a02b}
-[2016-07-24 19:14:09 -0500]  working on keyboard layout tab/module                                  Dustin Falgout  {493ce7e}
-[2016-07-24 18:16:23 -0500]  fix imports                                                            Dustin Falgout  {5724943}
-[2016-07-24 17:53:31 -0500]  update jquery                                                          Dustin Falgout  {34700cc}
-[2016-07-24 17:36:26 -0500]  update submodule ref                                                   Dustin Falgout  {824f0b8}
-[2016-07-24 15:08:48 -0500]  add keyboard widget repo as a git submodule                            Dustin Falgout  {368ae46}
-[2016-07-24 14:59:46 -0500]  even more housekeeping                                                 Dustin Falgout  {15647f5}
-[2016-07-24 14:49:29 -0500]  more housekeeping                                                      Dustin Falgout  {94f0bd2}
-[2016-07-24 14:45:25 -0500]  fix typo                                                               Dustin Falgout  {3e4dbf0}
-[2016-07-24 14:40:50 -0500]  checking to see if my changes to precommit hook were picked up auto..  Dustin Falgout  {c1457c2}
-[2016-07-24 14:38:32 -0500]  not even sure we will use this anymore but just in case...             Dustin Falgout  {f348ea5}
-[2016-07-24 14:33:34 -0500]  housekeeping                                                           Dustin Falgout  {d986c48}
-[2016-07-24 14:04:28 -0500]  not important                                                          Dustin Falgout  {e800fea}
-[2016-07-23 01:58:23 -0500]  rework low-level UI code a bit to make it easier to understand and ..  Dustin Falgout  {dbe37d1}
-[2016-07-22 23:39:49 -0500]  add ARIA attribs where necessary (for accessibility)                   Dustin Falgout  {59d711f}
-[2016-07-22 23:14:04 -0500]  not important                                                          Dustin Falgout  {1e04c9f}
-[2016-07-22 10:30:41 -0500]  more progress                                                          Dustin Falgout  {1dc892b}
-[2016-07-22 09:44:34 -0500]  fix issue with accordion state changes                                 Dustin Falgout  {da1865e}
-[2016-07-22 05:20:28 -0500]  more progress                                                          Dustin Falgout  {dde7945}
-[2016-07-22 04:26:39 -0500]  add some utility libs. almost done with location tab.                  Dustin Falgout  {b681bd5}
-[2016-07-22 00:32:42 -0500]  not important                                                          Dustin Falgout  {4ee1083}
-[2016-07-21 23:25:58 -0500]  almost finished with the location tab of the location page :D          Dustin Falgout  {b9f2ec1}
-[2016-07-20 05:47:11 -0500]  still needs work but its getting there...                              Dustin Falgout  {818aee1}
-[2016-07-20 03:52:36 -0500]  country flags                                                          Dustin Falgout  {7fe5e1e}
-[2016-07-20 03:50:24 -0500]  more progress                                                          Dustin Falgout  {6274c61}
-[2016-07-20 02:23:32 -0500]  more progress                                                          Dustin Falgout  {35d4136}
-[2016-07-20 01:05:23 -0500]  finally got the tabs classes to work right (javascript)                Dustin Falgout  {8c71fb7}
-[2016-07-19 21:35:14 -0500]  didnt realize i had so many changes since last commit (oops :grimac..  Dustin Falgout  {cb37ec0}
-[2016-07-18 23:44:14 -0500]  working on location page                                               Dustin Falgout  {2286de7}
-[2016-07-18 04:22:23 -0500]  some adjustments to _pages_data implementation while working on loc..  Dustin Falgout  {ad54a4a}
-[2016-07-18 03:39:30 -0500]  fix bug in previous commit                                             Dustin Falgout  {ea9f2e2}
-[2016-07-18 03:35:42 -0500]  working on location page                                               Dustin Falgout  {7749452}
-[2016-07-18 01:27:34 -0500]  finalizing the structure/flow for pages that include their own tabs.   Dustin Falgout  {605ee2e}
-[2016-07-18 00:35:11 -0500]  finalizing the structure/flow for pages that include their own tabs.   Dustin Falgout  {3dd684b}
-[2016-07-17 23:25:12 -0500]  even more work on navigating between pages                             Dustin Falgout  {35352f8}
-[2016-07-17 19:25:04 -0500]  more work on navigating between pages                                  Dustin Falgout  {d183777}
-[2016-07-17 18:57:15 -0500]  cleanup signals code so its easier to read and understand.             Dustin Falgout  {845d372}
-[2016-07-17 17:15:29 -0500]  still working on tab navigation                                        Dustin Falgout  {6ffcbc9}
-[2016-07-17 16:34:11 -0500]  still working on tab navigation                                        Dustin Falgout  {ef004b9}
-[2016-07-17 15:49:53 -0500]  still working on tab navigation                                        Dustin Falgout  {e7cb181}
-[2016-07-17 08:08:05 -0500]  use custom cache/data dirs for webkit. automatically clear them for..  Dustin Falgout  {392546a}
-[2016-07-17 07:01:05 -0500]  more work on tabs. had to make a few more adjustments.                 Dustin Falgout  {ac768d8}
-[2016-07-17 06:15:39 -0500]  change _tabs_list to top_level_tabs to avoid confusion with pages t..  Dustin Falgout  {e33573e}
-[2016-07-17 05:45:30 -0500]  not important                                                          Dustin Falgout  {fc78b55}
-[2016-07-17 03:06:17 -0500]  some leftover calls to cnchi.log                                       Dustin Falgout  {7b61b94}
-[2016-07-17 03:02:28 -0500]  its still rough around the edges but it will do                        Dustin Falgout  {bb432da}
-[2016-07-17 02:32:57 -0500]  now just need to hook up the python side and then all logging will ..  Dustin Falgout  {09f806b}
-[2016-07-16 20:28:39 -0500]  still working on logging. going to make App, Tab, & Page classes ex..  Dustin Falgout  {d94f376}
-[2016-07-16 19:59:10 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {6ceaf03}
-[2016-07-16 19:58:57 -0500]  working on logging facility.                                           Dustin Falgout  {a1c526d}
-[2016-07-17 01:56:06 +0200]  Merge branch 'experimental' of github.com:lots0logs/cnchi-dev into ..      karasu      {de95ce5}
-[2016-07-17 01:52:05 +0200]  Add reboot required if file exists (I hope I got it correctly)             karasu      {dd594d9}
-[2016-07-16 18:23:05 -0500]  Merge branch 'experimental' of github.com:lots0logs/cnchi-dev into ..  Dustin Falgout  {a6fbf6c}
-[2016-07-16 18:21:42 -0500]  add more doc comments                                                  Dustin Falgout  {99bef19}
-[2016-07-16 17:13:45 +0200]  Makes Internet detection quicker.                                          karasu      {acbe508}
-[2016-07-15 22:15:39 -0500]  add more doc comments                                                  Dustin Falgout  {44a2893}
-[2016-07-15 22:01:01 -0500]  :triumph:                                                              Dustin Falgout  {7141e5b}
-[2016-07-15 21:39:59 -0500]  almost got it..welcome page has an issue with firing events but im ..  Dustin Falgout  {33e6010}
-[2016-07-15 05:39:06 -0500]  just need to tweak the html templates on the pages and we will be b..  Dustin Falgout  {75f6bdf}
-[2016-07-15 04:56:11 -0500]  some more progress                                                     Dustin Falgout  {c809a75}
-[2016-07-15 03:06:43 -0500]  working on better OOP approach to manage pages in JavaScript. This ..  Dustin Falgout  {9a26f94}
-[2016-07-15 00:22:59 -0500]  rename _html_page.py to html_page.py for consistency.                  Dustin Falgout  {b29b9be}
-[2016-07-15 00:19:47 -0500]  forgot to update imports with last commit                              Dustin Falgout  {cd37085}
-[2016-07-15 00:18:11 -0500]  moved features from top-level tab to desktop tab                       Dustin Falgout  {8cf409b}
-[2016-07-14 23:53:40 -0500]  rearrange the order of events on  the welcome page so we show Try-i..  Dustin Falgout  {1a5482a}
-[2016-07-14 20:34:47 +0200]  Fixed bug in pages_helper. Playing with location, nothing serious y..      karasu      {72ec355}
-[2016-07-14 01:49:30 -0500]  check page is done :triumph:                                           Dustin Falgout  {8c06e09}
-[2016-07-13 09:24:03 -0500]  Merge remote-tracking branch 'origin/experimental' into experimental   Dustin Falgout  {ecd5b15}
-[2016-07-13 09:22:52 -0500]  some progress                                                          Dustin Falgout  {cc3696d}
-[2016-07-12 19:03:58 +0200]  Fix file name in description                                               karasu      {2b111f9}
-[2016-07-12 18:48:09 +0200]  Added script to run Cnchi. I didn't want to modify "run" one. This ..      karasu      {270a483}
-[2016-07-12 18:47:50 +0200]  Remove unused link                                                         karasu      {d7bc209}
-[2016-07-12 18:46:38 +0200]  Add policykit file to ease running Cnchi                                   karasu      {f3274e0}
-[2016-07-12 03:31:31 -0500]  done with signal system. also reorganized imports and worked on che..  Dustin Falgout  {afaa972}
-[2016-07-12 01:19:28 -0500]  implementing a standardize system for signals/callbacks. almost fin..  Dustin Falgout  {cff0728}
-[2016-07-11 00:46:12 -0500]  some work on check screen                                              Dustin Falgout  {130b560}
-[2016-07-10 23:59:10 -0500]  created a decorator for running methods in a background thread         Dustin Falgout  {89c9c54}
-[2016-07-10 23:33:18 -0500]  cherry-pick bug fix from stable                                        Dustin Falgout  {e4e7d26}
-[2016-07-10 19:57:50 -0500]  tried to get window dragging to work but wasnt successful :-/          Dustin Falgout  {0c6b247}
-[2016-07-10 15:39:36 -0500]  disable skipping pages until closer to production                      Dustin Falgout  {6c7b160}
-[2016-07-10 05:11:30 -0500]  some work on top header                                                Dustin Falgout  {4f54b1e}
-[2016-07-10 03:33:44 -0500]  now I remember why I made the directory names start with "_" in the..  Dustin Falgout  {5a1f3a3}
-[2016-07-10 03:31:36 -0500]  working on check page                                                  Dustin Falgout  {14ac56b}
-[2016-07-10 01:39:10 -0500]  cleaning up directory structure a bit                                  Dustin Falgout  {d0407b3}
-[2016-07-10 01:31:23 -0500]  done with welcome page but it still needs to be tested while runnin..  Dustin Falgout  {87d4deb}
-[2016-07-09 02:40:14 -0500]  needs a bit more work but its close...                                 Dustin Falgout  {862f930}
-[2016-07-08 23:51:43 -0500]  :triumph:                                                              Dustin Falgout  {c634a60}
-[2016-07-08 06:31:52 -0500]  almost done with updater                                               Dustin Falgout  {152bf12}
-[2016-07-08 02:29:11 -0500]  will will need to check for updates in another thread or process b/..  Dustin Falgout  {a25a5b5}
-[2016-07-08 02:00:54 -0500]  not done with updater yet but need to commit it anyway before chang..  Dustin Falgout  {c526d2d}
-[2016-07-06 22:53:39 -0500]  missed these two instances where we were not retaining the order of..  Dustin Falgout  {e50567b}
-[2016-07-06 22:50:00 -0500]  working on update check                                                Dustin Falgout  {0be8fd5}
-[2016-07-06 07:45:51 -0500]  yep.. more progress                                                    Dustin Falgout  {38ba354}
-[2016-07-06 05:41:43 -0500]  a bit more progress                                                    Dustin Falgout  {f5fca81}
-[2016-07-06 03:00:11 -0500]  decided to stop fighting with GTK and transparent window background..  Dustin Falgout  {b8ec005}
-[2016-07-05 18:01:46 -0500]  sync local with github                                                 Dustin Falgout  {5144994}
-[2016-07-04 23:57:45 -0500]  hooked up signals for try it/install it buttons. tried some animati..  Dustin Falgout  {a66d33c}
-[2016-07-04 21:35:39 -0500]  its coming together now. lots of work left to do though                Dustin Falgout  {a3695d0}
-[2016-07-04 11:42:40 -0500]  working on python/js bridge                                            Dustin Falgout  {a3a8123}
-[2016-07-04 08:58:51 -0500]  just realizing we're going to need an event class to manage communi..  Dustin Falgout  {740bcc3}
-[2016-07-04 08:44:14 -0500]  hooking up language.py into new UI                                     Dustin Falgout  {8a60a71}
-[2016-07-04 07:16:02 -0500]  hooking up language.py into new UI                                     Dustin Falgout  {5acd0bb}
-[2016-07-04 05:19:41 -0500]  finally getting somewhere with this!                                   Dustin Falgout  {1724101}
-[2016-07-03 20:46:32 -0500]  :triumph:                                                              Dustin Falgout  {0ac0808}
-[2016-07-03 20:23:37 -0500]  don't allow more than one instance of the main ui components classes   Dustin Falgout  {3b4229b}
-[2016-07-03 02:56:52 -0500]  progress                                                               Dustin Falgout  {bca5abd}
-[2016-07-02 23:40:24 -0500]  progress                                                               Dustin Falgout  {4c861c5}
-[2016-07-02 22:14:42 -0500]  Fix code comment.                                                      Dustin Falgout  {cf838bc}
-[2016-07-02 22:02:29 -0500]  Fix issue where we were clobbering the prioity of repos from pacman..  Dustin Falgout  {d223667}
-[2016-07-02 19:15:22 -0500]  fix pages helper                                                       Dustin Falgout  {7b55704}
-[2016-07-02 16:04:03 -0500]  save point                                                             Dustin Falgout  {30b5b69}
-[2016-07-02 14:39:29 -0500]  trying to get better organized                                         Dustin Falgout  {4c8180a}
-[2016-07-02 11:49:06 -0500]  vendor libs                                                            Dustin Falgout  {7eb67ad}
-[2016-07-02 01:49:43 -0500]  working on the page flow structure                                     Dustin Falgout  {6d720aa}
-[2016-07-02 00:33:57 -0500]  okay finally got the low-level stuff done. now get to move onto the..  Dustin Falgout  {a309503}
-[2016-07-02 00:09:30 -0500]  still working on decoupling cnchi classes from Gtk classes             Dustin Falgout  {9b2a9a1}
-[2016-07-01 18:16:35 -0500]  still working on decoupling cnchi classes from Gtk classes             Dustin Falgout  {4b5a503}
-[2016-07-01 17:31:58 -0500]  thought of a different implementation style..this is just a save po..  Dustin Falgout  {922a36a}
-[2016-07-01 05:41:14 -0500]  more work...                                                           Dustin Falgout  {2b6aba9}
-[2016-07-01 02:51:16 -0500]  still working on this                                                  Dustin Falgout  {6ccef05}
-[2016-06-30 15:54:46 -0500]  more work...                                                           Dustin Falgout  {f3045ce}
-[2016-06-30 00:14:33 -0500]  more work...                                                           Dustin Falgout  {3932af3}
-[2016-06-29 21:24:42 -0500]  still getting organized so I can actually test my idea                 Dustin Falgout  {19f221f}
-[2016-06-29 20:40:14 -0500]  working on trying something to see how/if it works (still not there..  Dustin Falgout  {cdf838f}
-[2016-06-29 19:53:46 -0500]  working on trying something to see how/if it works (not there yet).    Dustin Falgout  {ed650eb}
-[2016-06-29 18:59:18 -0500]  working on trying something to see how/if it works.                    Dustin Falgout  {9661a11}
-[2016-06-07 22:15:31 +0200]  Forgot this                                                                karasu      {9682290}
-[2016-06-07 22:13:45 +0200]  This is no longer needed                                                   karasu      {753b995}
-[2016-06-07 22:04:59 +0200]  Finally! I managed to make it work using old __init__ style.               karasu      {5634d5e}
-[2016-06-05 09:02:21 +0200]  Use pcmanfm instead of thunar in Openbox                                   karasu      {b1ac7f6}
-[2016-05-30 22:23:23 -0500]  uses requests instead of urlib in select_packages.py                   Dustin Falgout  {1c6060e}
-[2016-05-30 19:30:38 +0200]  I'm not sure about this as I do not see the welcome page.                  karasu      {6536166}
-[2016-05-23 11:07:12 +0200]  Should we pass the container here?                                         karasu      {40a0f7a}
-[2016-05-22 19:04:02 +0200]  Removed deprecated styles.                                                 karasu      {fdded31}
-[2016-05-22 18:58:31 +0200]  Fixing check and welcome pages                                             karasu      {c7a5fca}
-[2016-05-22 18:45:48 +0200]  Fix template dir                                                           karasu      {ed8dbb0}
-[2016-05-22 14:16:20 +0200]  Redefined class variables and instance variables.                          karasu      {c306200}
-[2016-05-13 19:47:21 +0200]  I hope this is ok. I see page constructor has changed (only in chec..      karasu      {659ec62}
-[2016-05-13 12:52:09 +0200]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                    karasu      {2d82bee}
-[2016-05-13 12:49:39 +0200]  Changing to new folder structure                                           karasu      {e4be1f8}
-[2016-05-13 12:48:19 +0200]  Changing to new folder structure                                           karasu      {56e3c42}
-[2016-05-12 22:47:42 +0200]  Finally. I'll start working on Cnchi again ;)                              karasu      {c891209}
-[2016-05-11 07:22:27 -0500]  working  on header class                                               Dustin Falgout  {05c74ef}
-[2016-05-02 06:37:26 -0500]  add default value for tpl dir in page class                            Dustin Falgout  {6850576}
-[2016-05-02 06:31:04 -0500]  move glade template dir                                                Dustin Falgout  {9e08f02}
-[2016-05-02 00:49:51 -0500]  progress is still slow                                                 Dustin Falgout  {0708ee4}
-[2016-04-30 23:30:35 -0500]  progress is slow                                                       Dustin Falgout  {32386ca}
-[2016-04-30 18:12:07 -0500]  :grimacing:                                                            Dustin Falgout  {824bf73}
-[2016-04-30 14:39:37 -0500]  decided use of get/set methods to prefix attributes was a dumb idea    Dustin Falgout  {e7419e7}
-[2016-04-29 07:49:09 -0500]  oops forgot to do "git add"                                            Dustin Falgout  {0c841e2}
-[2016-04-29 07:48:31 -0500]  I know we been busy but I guess we gotta start somewhere so here go..  Dustin Falgout  {50aea48}
-[2016-04-08 02:51:16 -0500]  fix an import that i missed--though it doesnt change anything (we'r..  Dustin Falgout  {57c9723}
-[2016-04-08 02:48:17 -0500]  started work on implementing our plan for an OO code structure         Dustin Falgout  {653036b}
-[2016-04-03 18:18:14 +0200]  Show GLib error :p                                                         karasu      {0af99f6}
-[2016-04-03 18:17:02 +0200]  Fail "graciously" if CSS can't be loaded                                   karasu      {c05249b}
-[2016-04-03 05:53:23 -0500]  adjust the header a bit                                                Dustin Falgout  {a4f247d}
-[2016-04-03 05:35:03 -0500]  fix state boxes on check.py                                            Dustin Falgout  {6db0cf5}
-[2016-04-03 05:33:34 -0500]  getting us back in order, still lots to do                             Dustin Falgout  {4efa23a}
-[2016-04-03 03:02:27 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {121825d}
-[2016-04-03 03:00:42 -0500]  styles for gtk 3.20                                                    Dustin Falgout  {68d776f}
-[2016-03-30 19:52:59 +0200]  Enable Enlightenment (to start testing it)                                 karasu      {c94e795}
-[2016-03-29 17:14:50 +0200]  Version                                                                    karasu      {df3b936}
-[2016-03-25 15:43:42 +0100]  Do not install libreoffice-installer                                       karasu      {b2cf423}
-[2016-03-25 12:38:55 +0100]  Select English (US) as keyboard layout if none is selected by user         karasu      {ea17b9d}
-[2016-03-25 11:54:23 +0100]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into pages         karasu      {cd68b83}
-[2016-03-22 04:35:31 -0500]  Merge branch 'pages' of github.com:lots0logs/cnchi-dev                 Dustin Falgout  {c77eeec}
-[2016-03-20 01:21:05 -0500]  going to work on cleaning things up a bit during the next few hours..  Dustin Falgout  {420911c}
-[2016-03-17 21:46:47 +0100]  Nothing at all...                                                          karasu      {606145e}
-[2016-03-17 21:42:49 +0100]  margin_start margin_end                                                    karasu      {c28ee0f}
-[2016-03-17 21:13:45 +0100]  Not finished. There're still duplicated attributes (current_stack, ..      karasu      {60b2aad}
-[2016-03-17 21:05:00 +0100]  Now it's working as it was working before the split, or so it seems        karasu      {c27a3c3}
-[2016-03-17 20:58:01 +0100]  Still working on it                                                        karasu      {eac268c}
-[2016-03-16 20:07:09 +0100]  More work dividing both files                                              karasu      {7fd3e5e}
-[2016-03-16 14:17:13 +0100]  I'm trying to simplify main_window.py using a new pages.py. Hopeful..      karasu      {6da1e4b}
-[2016-03-15 21:27:07 +0100]  Nothing new, just comments                                                 karasu      {12cfedd}
-[2016-03-15 17:25:26 +0100]  Nothing important or new                                                   karasu      {2e6ccc5}
-[2016-03-15 09:55:09 +0100]  Added some comments, just to myself                                        karasu      {b01e4c4}
-[2016-03-14 22:32:55 +0100]  Catch requests.exceptions.ChunkedEncodingError in download_requests        karasu      {9ae34e0}
-[2016-03-06 10:34:31 +0100]  Working on LUKS+ZFS                                                        karasu      {d80e1d9}
-[2016-03-04 08:42:19 +0100]  Add update keyring to testing.sh (are we still using this script?)         karasu      {e3fb286}
-[2016-03-03 20:50:23 +0100]  Remove free inode number caching. This option may slow down your sy..      karasu      {b0b4528}
-[2016-03-03 20:09:18 +0100]  Working on input_system                                                    karasu      {7d73f2c}
-[2016-03-02 20:06:18 +0100]  Do not try to get label info from a mapper device (lvm, ...)               karasu      {94e9774}
-[2016-03-02 19:16:52 +0100]  More work done in installing (firefox/kde/libreoffice) language pac..      karasu      {f5d5336}
-[2016-03-02 12:37:44 +0100]  I know, these three functions should be one. I'll do it asap               karasu      {9fedf15}
-[2016-03-02 10:02:01 +0100]  We compare with language code, not locale                                  karasu      {fe957c5}
-[2016-02-29 23:15:00 +0100]  Still unfinished. Don't fail if libreoffice/firefox language packag..      karasu      {88f2763}
-[2016-02-28 18:18:33 +0100]  Clean package selection (checks attributes in a cleaner way, but I ..      karasu      {652cbe8}
-[2016-02-28 09:13:07 -0600]  fixed a few odds and ends. everything is back to the working state ..  Dustin Falgout  {0594226}
-[2016-02-28 08:30:22 -0600]  update translations.                                                   Dustin Falgout  {7c2b5bc}
-[2016-02-28 08:06:53 -0600]  cleaning up                                                            Dustin Falgout  {0a49eb8}
-[2016-02-28 08:02:07 -0600]  Merge branch 'master' of github.com:antergos/cnchi                     Dustin Falgout  {9d3000d}
-[2016-02-28 11:58:37 +0100]  Try not to issue an exception if upower is not present                     karasu      {237a092}
+[2016-08-01 05:19:12 -0500]  make the slider visible                                                Dustin Falgout  {510b63a}
+[2016-08-01 01:25:07 -0500]  don't use ensured_executable as a decorator because it wasn't worki..  Dustin Falgout  {700267b}
+[2016-08-01 00:39:29 -0500]  go ahead and switch slides.py over to WebKit2 (resolves the whitesp..  Dustin Falgout  {97bf09f}
+[2016-08-01 00:11:41 -0500]  try to put a bandaid on the slider style issue to hold us over unti..  Dustin Falgout  {dbe0082}
+[2016-07-31 23:49:11 -0500]  that was dumb (see previous commit) :sweat_smile:                      Dustin Falgout  {331a637}
+[2016-07-31 23:37:02 -0500]  minor code style adjustment and also tweaked the ensure_executable ..  Dustin Falgout  {17e422c}
+[2016-07-31 22:56:10 -0500]  use os.path lib to manipulate device path in auto_partition.py to a..  Dustin Falgout  {b25ce64}
+[2016-07-31 21:14:12 -0500]  fix typo. fixes #637                                                   Dustin Falgout  {a69fba0}
+[2016-07-31 19:59:11 -0500]  fix keyboard widget once and for all :triumph:                         Dustin Falgout  {40dc356}
+[2016-07-31 16:36:50 -0500]  make sure all calls to raised_privileges contextmanager are threads..  Dustin Falgout  {12c7de1}
+[2016-07-30 17:18:11 -0500]  fix bug from earlier today                                             Dustin Falgout  {01e81ca}
+[2016-07-30 17:13:12 -0500]  :unamused:                                                             Dustin Falgout  {3c73131}
+[2016-07-30 13:29:58 -0500]  fix bug from my previous commit. also try to fix keyboard widget.      Dustin Falgout  {3fdc92b}
+[2016-07-29 23:43:58 -0500]  make sure CNCHI_RUNNING env var is set before installing any packag..  Dustin Falgout  {5e9ed4f}
+[2016-07-29 23:34:03 -0500]  :stuck_out_tongue_winking_eye:                                         Dustin Falgout  {5a12b38}
+[2016-07-29 23:30:35 -0500]  :unamused:                                                             Dustin Falgout  {9ad0bbb}
+[2016-07-29 23:10:00 -0500]  fix keyboard widget                                                    Dustin Falgout  {fe17883}
+[2016-07-29 22:29:07 -0500]  working on #633 ...needs testing!!                                     Dustin Falgout  {f7c82df}
+[2016-07-29 20:11:55 -0500]  add more debug messages to alpm methods to help identify issues. (c..  Dustin Falgout  {7441f37}
+[2016-07-23 13:13:54 +0200]  Do not delete and add file handler each time                               karasu      {219194f}
+[2016-07-22 20:49:41 +0200]  Show stack info.                                                           karasu      {35d2c4b}
+[2016-07-20 19:18:29 +0200]  This should prevent logging to cnchi.log from cnchi-alpm logger.           karasu      {254b9a8}
+[2016-07-20 19:12:15 +0200]  Must check logging documentation                                           karasu      {3e06dc2}
+[2016-07-20 19:07:05 +0200]  Another one. I should have created a new branch                            karasu      {c6bf571}
+[2016-07-20 19:04:33 +0200]  Bugfix                                                                     karasu      {d579e2b}
+[2016-07-20 18:58:22 +0200]  Log EVERYTHING from alpm to /tmp/cnchi-alpm.log                            karasu      {2e6a645}
+[2016-07-20 16:54:08 +0200]  Do not copy xz packages to provided cache, do it only to destination.      karasu      {3fecf36}
+[2016-07-10 23:36:05 -0500]  fix typos. im glad I didnt update the package at the time I made th..  Dustin Falgout  {7fdf451}
+[2016-07-06 22:56:51 -0500]  missed these two instances where we were not retaining the order of..  Dustin Falgout  {0e5e8bb}
+[2016-07-02 22:13:36 -0500]  Fix code comment.                                                      Dustin Falgout  {c959107}
+[2016-07-02 22:08:59 -0500]  Fix issue where we were clobbering the prioity of repos from pacman..  Dustin Falgout  {bd782fa}
+[2016-07-02 16:56:38 -0500]  fix keyboard widget (for real this time)                               Dustin Falgout  {15a927d}
+[2016-06-25 14:51:52 -0500]  fix keyboard widget missing                                            Dustin Falgout  {64ece1b}
+[2016-06-21 18:10:16 -0400]  Update install.py (#625)                                                     Wyn       {1f0c2ca}
+[2016-06-20 22:41:15 -0500]  fix typo                                                               Dustin Falgout  {e4b6ea1}
+[2016-06-20 22:38:09 -0500]  bump version                                                           Dustin Falgout  {bcf5d10}
+[2016-06-20 22:36:01 -0500]  code cleanup                                                           Dustin Falgout  {0d5f4a4}
+[2016-06-20 23:22:21 -0400]  Update install.py (#623)                                                     Wyn       {74daaeb}
+[2016-06-20 12:26:13 -0500]  bump version                                                           Dustin Falgout  {abf19e0}
+[2016-06-20 18:36:01 +0200]  Fix typo in cnchi/installation/select_packages.py (#1) (#621)           Jaime García   {510cf1a}
+[2016-06-19 00:04:05 -0400]  Update README.md (#619)                                                      Wyn       {74ff221}
+[2016-06-18 23:59:25 -0400]  Update README.md (#618)                                                      Wyn       {a31cd87}
+[2016-06-14 00:40:43 -0500]  fix error in logic from previous commit                                Dustin Falgout  {c38a136}
+[2016-06-14 00:35:42 -0500]  exclude sourceforge geo redirector from mirrorlist (again :grimacin..  Dustin Falgout  {67a7457}
+[2016-06-13 23:45:32 -0500]  use install id as user name in bugsnag so we can easily locate logs..  Dustin Falgout  {129fbbd}
+[2016-06-13 22:57:15 -0500]  remove patch for install failures related to cinnamon as it was dum..  Dustin Falgout  {301aa75}
+[2016-06-06 22:50:13 +0200]  Merge pull request #611 from Wyn10/patch-2                                 karasu      {44ccd43}
+[2016-06-06 22:49:57 +0200]  Merge pull request #610 from Wyn10/patch-1                                 karasu      {9d93713}
+[2016-06-06 16:38:04 -0400]  Update cnchi.py                                                              Wyn       {1b3c183}
+[2016-06-06 16:36:27 -0400]  Update README.md                                                             Wyn       {3259e47}
+[2016-06-06 17:56:33 +0200]  bugfix: Store uuid in advanced+luks                                        karasu      {e3d6c8e}
+[2016-06-06 17:52:47 +0200]  Fix for issue #595                                                         karasu      {dd989c1}
+[2016-06-06 17:04:47 +0200]  Disable chromium feature in base install                                   karasu      {e14eb44}
+[2016-06-05 19:40:52 +0200]  Avoid using raise outside try/except block                                 karasu      {6efcef9}
+[2016-06-05 19:18:43 +0200]  Trying to fix issue #609                                                   karasu      {711c9b7}
+[2016-06-05 09:04:55 +0200]  Use pcmanfm in Openbox instead of thunar                                   karasu      {ea31f1e}
+[2016-06-04 06:45:18 -0500]  fix logic bug in previously unreachable code. bug is not related to..  Dustin Falgout  {63d08e8}
+[2016-06-04 04:25:43 -0500]  remove cached cinnamon pkgs before attempting to recover from failu..  Dustin Falgout  {35906dd}
+[2016-06-03 18:24:15 -0500]  dont try to regain privleges when we already have them. (related to..  Dustin Falgout  {9102e11}
+[2016-06-03 01:28:51 -0500]  prevent exception from bubbling up to top so we can try to recover ..  Dustin Falgout  {d7042a7}
+[2016-06-02 20:43:25 -0500]  workaround for mirror issues. Hopefully will address #605              Dustin Falgout  {4f371de}
+[2016-06-01 00:04:03 -0500]  update desktop configs                                                 Dustin Falgout  {70de9c9}
+[2016-05-31 22:58:23 -0500]  fix some deprecated styles                                             Dustin Falgout  {4af245b}
+[2016-05-31 22:15:57 -0500]  fixes cinnamon install issue mentioned in #605                         Dustin Falgout  {2ab5c27}
+[2016-05-31 22:08:48 -0500]  working on #605                                                        Dustin Falgout  {24b0a6c}
+[2016-05-31 09:13:42 -0500]  fix bug with packages.xml parsing that I introduced yesterday          Dustin Falgout  {35f46da}
+[2016-05-31 13:16:39 +0200]  Clarify SMB feature description                                            karasu      {50199f4}
+[2016-05-30 22:45:38 -0500]  don't use verify=False as its not needed with requests lib             Dustin Falgout  {5e7066d}
+[2016-05-30 22:23:23 -0500]  use requests instead of urlib in select_packages.py (cherry picked ..  Dustin Falgout  {5984f2c}
+[2016-05-30 14:21:25 -0500]  whoops :sweat_smile:                                                   Dustin Falgout  {03129f5}
+[2016-05-30 14:20:38 -0500]  ensure CNCHI_RUNNING env variable is set                               Dustin Falgout  {8cb8960}
+[2016-05-29 18:32:12 +0200]  Merge pull request #604 from gburd/patch-1                                 karasu      {4b9f921}
+[2016-05-29 12:26:35 -0400]  split on int() type                                                     Gregory Burd   {fc93b09}
+[2016-05-29 14:33:06 +0200]  Remove some unnecessary debug messages                                     karasu      {fd3cbea}
+[2016-05-29 14:23:37 +0200]  - Chromium is a feature (enabled by default) - Features screen alwa..      karasu      {f9b949e}
+[2016-05-28 19:44:58 +0200]  Do not show nvidia proprietary option if i950 is also detected (qui..      karasu      {3291e38}
+[2016-05-28 12:03:01 +0200]  Forgot pre-hook as I was using a clean clonned repo :(                     karasu      {15bcf52}
+[2016-05-28 12:01:07 +0200]  Remove nvidia option until detection is fixed for Optimus cards            karasu      {f0ccb05}
+[2016-05-23 09:07:29 +0200]  Merge pull request #600 from hacklabr/master                               karasu      {dc52dc5}
+[2016-05-23 00:41:26 +0000]  Update select_packages.py                                               Bruno Martin   {e7df94e}
+[2016-05-07 11:42:24 -0500]  update cnchi.pot                                                       Dustin Falgout  {539f5e0}
+[2016-05-07 11:36:58 -0500]  improve copy                                                           Dustin Falgout  {10257c7}
+[2016-05-07 11:26:36 -0500]  provide the user with their install id number in fatal error messag..  Dustin Falgout  {cf6d58c}
+[2016-05-07 11:29:13 -0400]  Tell the user where the log file is stored. (#588)                           Wyn       {90ffd56}
+[2016-05-01 23:50:49 -0500]  Add networkmanager to common packages                                  Dustin Falgout  {5c2d1b8}
+[2016-04-28 20:54:30 +0200]  Merge pull request #567 from Wyn10/patch-1                                 karasu      {e8fca47}
+[2016-04-24 10:28:26 +0200]  Merge pull request #581 from prescott66/patch-8                            karasu      {91a0f80}
+[2016-04-24 09:42:04 +0200]  Add gnome-keyring package to MATE installation                           Dušan Kazik   {16622c4}
+[2016-04-21 19:32:36 +0200]  Fix typo in enlightenment                                                  karasu      {8538880}
+[2016-04-18 22:37:13 +0200]  Merge branch 'master' of github.com:Antergos/Cnchi                         karasu      {32fea35}
+[2016-04-18 22:36:03 +0200]  Update Enlightenment packages' list                                        karasu      {5e88342}
+[2016-04-18 10:40:45 +0200]  Merge pull request #577 from BojanStipic/patch-2                           karasu      {8cc7bc0}
+[2016-04-18 10:39:51 +0200]  Merge pull request #576 from BojanStipic/patch-1                           karasu      {1bcc5c8}
+[2016-04-17 13:03:09 +0200]  Add linux-headers when in Virtualbox. Fixes #578                           karasu      {a2a9bad}
+[2016-04-14 20:25:47 +0200]  change default_groups                                                   Bojan Stipic   {c276979}
+[2016-04-13 22:49:11 +0200]  fix if statement in set_hooks_and_modules                               Bojan Stipic   {b2625a0}
+[2016-04-09 20:51:53 +0200]  Merge pull request #574 from Wyn10/patch-2                                 karasu      {fe98e01}
+[2016-04-09 11:58:04 -0400]  Update lamp.py                                                               Wyn       {76bd46f}
+[2016-03-28 02:16:16 -0500]  Update packages.xml. Fixes #570                                        Dustin Falgout  {1763efd}
+[2016-03-18 22:07:33 -0400]  Update packages.xml                                                          Wyn       {b57c079}
+[2016-03-14 22:29:44 +0100]  Catch requests.exceptions.ChunkedEncodingError in download_requests        karasu      {840aca6}
+[2016-03-12 06:32:05 +0100]  Do not show bootloader label and combo in zfs in non uefi systems (..      karasu      {62e9335}
+[2016-03-12 06:11:23 +0100]  Merge pull request #565 from karasu/master                                 karasu      {38f4d2b}
+[2016-03-09 20:07:53 +0100]  Fixes issue #552 (until Arch decides to change it)                         karasu      {e85ceb8}
+[2016-03-08 19:34:12 +0100]  Should fix swap in fstab (zfs)                                             karasu      {474bced}
+[2016-03-08 19:25:52 +0100]  Show full version in window header (helps users to report bugs)            karasu      {33e522d}
+[2016-03-08 19:24:02 +0100]  Enable zfs-mount service                                                   karasu      {36f5f16}
+[2016-03-08 19:20:35 +0100]  Fix zfs on EFI systems (issue #555)                                        karasu      {59debc3}
+[2016-03-04 20:17:51 +0100]  Do not fail if can't read dbus property                                    karasu      {564c035}
 [2016-02-27 17:17:57 +0100]  Fix typo. Should fix #547                                                  karasu      {e81d030}
-[2016-02-27 17:16:37 +0100]  Fixes issue #547                                                           karasu      {c26867b}
-[2016-02-27 17:14:23 +0100]  Force timezone window to have a height of 400                              karasu      {68dff5a}
-[2016-02-27 15:03:13 +0100]  Log error messages in create_fs                                            karasu      {cde989f}
-[2016-02-27 14:27:22 +0100]  Rename fs_module.py to filesystems.py                                      karasu      {a7eb0bc}
-[2016-02-27 13:37:18 +0100]  Avoid umount warning messages                                              karasu      {a47950c}
 [2016-02-26 21:26:24 +0100]  Fixes issue #550 - Needs testing                                           karasu      {7dfce5b}
-[2016-02-26 21:25:26 +0100]  Fix typos, my bad.                                                         karasu      {a86292f}
-[2016-02-26 21:22:02 +0100]  Should fix issue #550                                                      karasu      {690f3e8}
-[2016-02-25 12:30:19 +0100]  Added fcitx input source (asian languages) packages to packages.xml..      karasu      {19777b5}
-[2016-02-24 10:01:21 +0100]  Just poking around. Nothing interesting.                                   karasu      {9a18217}
-[2016-02-24 09:06:41 +0100]  Be able to give Cnchi a different widthxheight window size (on low ..      karasu      {0aade9a}
-[2016-02-24 08:48:22 +0100]  Do not use cmd_line as a global var                                        karasu      {082625a}
-[2016-02-23 09:59:08 +0100]  Do not fail if harddisk is too small for having a /home in another ..      karasu      {145cdb9}
-[2016-02-23 09:55:42 +0100]  Fixes issue #543                                                           karasu      {244fc06}
 [2016-02-23 09:21:46 +0100]  Do not show "process not found" as it disturbs me ;)                       karasu      {263a2ba}
 [2016-02-20 20:27:51 +0100]  Fixes issue #543                                                           karasu      {2dee942}
 [2016-02-20 05:23:03 -0600]  Merge branch 'master' of github.com:antergos/cnchi into stable         Dustin Falgout  {795b336}
 [2016-02-20 05:22:25 -0600]  fix title/subtitle that i broke yesterday                              Dustin Falgout  {934f221}
-[2016-02-20 04:16:04 -0600]  fix uncaught exception in logging_utils (cherry picked from commit ..  Dustin Falgout  {626d198}
-[2016-02-18 22:56:48 -0600]  dont display minor version part in title (cherry picked from commit..  Dustin Falgout  {28a9526}
-[2016-02-18 14:14:17 -0600]  add issue template (cherry picked from commit 6486156)                 Dustin Falgout  {8b66ebd}
-[2016-02-17 14:58:23 -0600]  resume doesn't seem to work in zfs (cherry picked from commit e29e3..      karasu      {58073e9}
-[2016-02-17 13:35:29 -0600]  typo (cherry picked from commit 028a363)                                   karasu      {921d37a}
-[2016-02-17 13:33:25 -0600]  Still playing with swap in zfs (cherry picked from commit 9f89a2d)         karasu      {8d9f3eb}
-[2016-02-17 13:23:42 -0600]  Working on zfs swap vol (cherry picked from commit af6bf75)                karasu      {74c0983}
-[2016-02-17 12:54:51 -0600]  Use mkswap correctly on zfs. Do not unmount zfs and mount again, no..      karasu      {a17b8a7}
-[2016-02-17 12:15:06 -0600]  Some small changes (do not fix swap size in zfs) (cherry picked fro..      karasu      {e015f72}
-[2016-02-17 11:52:03 -0600]  libreoffice language pack selection rewritten (changes nothing, fix..      karasu      {1333e48}
-[2016-02-17 02:53:25 -0600]  OK. Tests show that modify_grub_default() works. (cherry picked fro..      karasu      {be33b0f}
-[2016-02-16 13:36:46 -0600]  /etc/default/grub is not updated as it should. Hope this fixes it. ..      karasu      {8dbf6e7}
-[2016-02-16 13:20:59 -0600]  Set zfs config to True when using zfs (cherry picked from commit d3..      karasu      {20329d8}
-[2016-02-16 11:18:21 -0600]  Use /tmp (cherry picked from commit e219b3a)                               karasu      {fda7eb6}
-[2016-02-16 02:54:56 -0600]  Force using bash in run script (cherry picked from commit 4a4df0a)         karasu      {4a14fda}
-[2016-02-16 02:38:28 -0600]  Fix do_destroy_zfs_pools (cherry picked from commit a318fcf)               karasu      {c24bd5c}
-[2016-02-16 02:27:18 -0600]  Tries to delete all previous antergos zfs pools. (cherry picked fro..      karasu      {4460168}
-[2016-02-14 12:04:25 -0600]  and.... typo. (cherry picked from commit cdaee39)                          karasu      {24c7a58}
-[2016-02-14 11:53:43 -0600]  Umount /install/home (cherry picked from commit 8bfaabb)                   karasu      {7065dbf}
-[2016-02-14 10:58:29 -0600]  get_pool_id was returning wrong id if more than one zfs pool was de..      karasu      {191e8a1}
-[2016-02-14 10:40:43 -0600]  Typo (cherry picked from commit 984ce4e)                                   karasu      {af02342}
-[2016-02-14 10:35:19 -0600]  Forgot to check for zfs mounts (cherry picked from commit 819929d)         karasu      {40f9876}
-[2016-02-14 10:33:35 -0600]  Try empty /install before creating zfs pool (cherry picked from com..      karasu      {cfb53c0}
-[2016-02-14 08:25:29 -0600]  Fix little typo (cherry picked from commit 1f16099)                        karasu      {565a619}
-[2016-02-13 08:19:03 -0600]  Can't set a mountpoint for swap... silly me. (cherry picked from co..      karasu      {2b79169}
-[2016-02-13 04:48:35 -0600]  Create /home mounting it in /install/home (cherry picked from commi..      karasu      {8bd11fa}
-[2016-02-12 12:59:13 -0600]  Hope this fixes home volume creation (cherry picked from commit 4df..      karasu      {c75bcac}
-[2016-02-12 04:06:19 -0600]  Do not set /home size. THIS NEEDS TESTING (cherry picked from commi..      karasu      {1dc9504}
-[2016-02-12 02:38:36 -0600]  Hope this works (it was failing when trying to show pyalpm_error) (..      karasu      {e447853}
-[2016-02-10 22:14:39 -0600]  filter the logs sent to bugsnag to reduce payload size (cherry pick..  Dustin Falgout  {724b5c7}
-[2016-02-10 21:40:55 -0600]  hopefully fix boot after install with zfs (cherry picked from commi..  Dustin Falgout  {967e5fe}
-[2016-02-10 09:09:21 -0600]  :unamused: (cherry picked from commit e631436)                         Dustin Falgout  {a3583a9}
-[2016-02-10 08:59:05 -0600]  forgot this (cherry picked from commit 1bda903)                        Dustin Falgout  {c49753d}
-[2016-02-10 08:43:31 -0600]  fix destroy command (cherry picked from commit 77d05bc)                Dustin Falgout  {c4735d1}
-[2016-02-09 02:40:11 -0600]  Forgot \n (cherry picked from commit 2a7a10b)                              karasu      {e0f6e52}
-[2016-02-09 02:39:10 -0600]  Set lightdm session-wrapper (https://forum.antergos.com/topic/3840/..      karasu      {5539e3a}
-[2016-02-09 01:20:05 -0600]  adjusting alpm logging verbosity (again). (cherry picked from commi..  Dustin Falgout  {1d05a51}
-[2016-02-08 08:43:26 -0600]  alpm is too noisy (cherry picked from commit 780d753)                  Dustin Falgout  {e17af6a}
-[2016-02-08 08:42:20 -0600]  i think its will work once rebuild isos (cherry picked from commit ..  Dustin Falgout  {5866eb0}
-[2016-02-08 05:39:03 -0600]  try workaround for grub (cherry picked from commit 19acc17)            Dustin Falgout  {c17d080}
-[2016-02-08 03:59:42 -0600]  fix /home vol size calculation (cherry picked from commit ea43c95)     Dustin Falgout  {2b0df4d}
-[2016-02-08 03:45:22 -0600]  fix old typo (cherry picked from commit a0381ec)                       Dustin Falgout  {4f6698a}
-[2016-02-08 03:30:55 -0600]  handle when size is a float string (cherry picked from commit 61a7d..  Dustin Falgout  {249ddd5}
-[2016-02-08 01:48:39 -0600]  tweaked pyalpm callback logging (cherry picked from commit fd53900)    Dustin Falgout  {da9ada5}
-[2016-02-08 01:09:40 -0600]  :unamused: (cherry picked from commit fd17728)                         Dustin Falgout  {ab3e50a}
-[2016-02-08 00:31:25 -0600]  still working on zfs (cherry picked from commit 81741e8)               Dustin Falgout  {bf0e2e7}
-[2016-02-07 22:49:04 -0600]  fix typos (cherry picked from commit b331bff)                          Dustin Falgout  {612fc1c}
-[2016-02-07 22:44:19 -0600]  working on #531 and #524 (cherry picked from commit dd38aca)           Dustin Falgout  {9c30ef0}
-[2016-02-07 20:54:47 -0600]  adjustments to previous commit for sending logs to bugsnag (cherry ..  Dustin Falgout  {cc6f288}
-[2016-02-07 17:47:19 -0600]  include logs in exception data sent to bugsnag (cherry picked from ..  Dustin Falgout  {8ff2df4}
-[2016-02-07 01:33:12 -0600]  fix grub install with zfs (cherry picked from commit 7595d90)          Dustin Falgout  {f9effde}
-[2016-02-07 00:35:32 -0600]  Fixes #529 (cherry picked from commit 1bedcf0)                         Dustin Falgout  {be056ff}
-[2016-02-18 23:03:50 -0600]  fix flash icon and iso version detection (cherry picked from commit..  Dustin Falgout  {e14a477}
 [2016-02-19 09:00:40 +0100]  Do not fail if harddisk is too small for having a /home in another ..      karasu      {51a9769}
 [2016-02-18 23:03:50 -0600]  fix flash icon and iso version detection                               Dustin Falgout  {a812a0a}
 [2016-02-18 22:56:48 -0600]  dont display minor version part in title                               Dustin Falgout  {8f848c2}
@@ -328,98 +168,13 @@
 [2016-02-07 01:33:12 -0600]  fix grub install with zfs                                              Dustin Falgout  {7595d90}
 [2016-02-07 00:35:32 -0600]  Fixes #529                                                             Dustin Falgout  {1bedcf0}
 [2016-02-04 18:43:34 +0100]  Fixes issue #527                                                           karasu      {b6da70c}
-[2016-02-04 18:40:20 +0100]  Fixes issue #527                                                           karasu      {fe0d6d8}
 [2016-02-04 08:02:51 -0600]  Fixes half issue #524 (cherry picked from commit 08f82e9)              Dustin Falgout  {053e4c5}
 [2016-02-04 08:01:10 -0600]  trying to fix issue with setting locale that I found while testing ..  Dustin Falgout  {a318d29}
-[2016-02-04 07:59:11 -0600]  trying to fix issue with setting locale that I found while testing ..  Dustin Falgout  {c90e40b}
-[2016-02-04 07:40:07 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev                Dustin Falgout  {9942b93}
 [2016-02-04 07:30:14 -0600]  just needed to bump ver                                                Dustin Falgout  {7398ce9}
-[2016-02-04 10:28:59 +0100]  Fixes half issue #524                                                      karasu      {08f82e9}
 [2016-02-04 03:10:41 -0600]  fix file permissions (cherry picked from commit d211fa8)               Dustin Falgout  {4ebb065}
-[2016-02-04 03:05:32 -0600]  Merge remote-tracking branch 'origin/master'                           Dustin Falgout  {1e144d3}
-[2016-02-04 02:56:52 -0600]  fix file permissions                                                   Dustin Falgout  {d211fa8}
-[2016-02-03 09:32:19 +0100]  Do not fail if pyalpm is not available (I need this to test Cnchi i..      karasu      {663ab90}
-[2016-02-01 23:10:19 -0600]  update readme. update pot file                                         Dustin Falgout  {3729edf}
-[2016-02-01 22:46:41 -0600]  merge branch playing into master                                       Dustin Falgout  {2adc641}
-[2016-02-01 22:39:59 -0600]  start v0.15 dev cycle                                                  Dustin Falgout  {ebc1964}
 [2016-02-01 22:36:46 -0600]  fix version                                                            Dustin Falgout  {066e57e}
 [2016-02-01 21:02:36 -0600]  further obfuscate the url and api key to avoid spam bots harvesting..  Dustin Falgout  {1e7d94a}
-[2016-02-01 20:41:39 -0600]  further obfuscate the url and api key to avoid spam bots harvesting..  Dustin Falgout  {8ac523c}
 [2016-02-01 09:11:12 -0600]  minor changes to logging context handler                               Dustin Falgout  {ced7869}
 [2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils (cherry picked from commit ..  Dustin Falgout  {3489a66}
 [2016-02-01 08:20:17 -0600]  update precommit hook                                                  Dustin Falgout  {a73314a}
-[2016-01-29 00:57:05 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b017186}
-[2016-01-24 17:30:39 -0600]  more work on UI                                                        Dustin Falgout  {83c9789}
-[2016-01-24 16:44:27 -0600]  fix uncaught exception in logging_utils                                Dustin Falgout  {723548d}
-[2016-01-24 15:59:40 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {a43b53e}
-[2016-01-17 19:20:25 -0600]  even more work on ui                                                   Dustin Falgout  {288d56c}
-[2016-01-17 15:55:57 -0600]  more work on ui                                                        Dustin Falgout  {ae2d69b}
-[2016-01-17 09:10:20 -0600]  more work on ui                                                        Dustin Falgout  {1b51930}
-[2016-01-17 08:03:15 -0600]  add gettext domain to all ui files                                     Dustin Falgout  {5b2ac07}
-[2016-01-17 06:40:31 -0600]  :delirious:                                                            Dustin Falgout  {3f0d764}
-[2016-01-16 02:27:11 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b7a7c5c}
-[2016-01-13 06:43:53 -0600]  working on installation_ask screen                                     Dustin Falgout  {834a85e}
-[2016-01-13 05:20:48 -0600]  gtk sucks :unamused:                                                   Dustin Falgout  {98c9f68}
-[2016-01-12 00:15:02 -0600]  fixed "show all locations" (location screen)                           Dustin Falgout  {cc34446}
-[2016-01-11 23:48:13 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {a9d22e2}
-[2016-01-02 10:37:56 -0600]  fighting with gtk over the window size :unamused:                      Dustin Falgout  {1c01073}
-[2016-01-02 08:22:25 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {795068f}
-[2015-12-31 06:05:58 -0600]  worked on more styles                                                  Dustin Falgout  {fa3ddb5}
-[2015-12-31 00:10:01 -0600]  also from merge conflicts                                              Dustin Falgout  {5c0a5d8}
-[2015-12-31 00:08:44 -0600]  missed this when I fixed conflicts in previous commit                  Dustin Falgout  {b5a7cae}
-[2015-12-30 23:53:22 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1a2ec84}
-[2015-12-29 19:15:57 -0600]  hide nav buttons on slides screen                                      Dustin Falgout  {bde1a6b}
-[2015-12-29 17:51:36 -0600]  fix bug in auto_partition                                              Dustin Falgout  {6d260a9}
-[2015-12-29 17:24:14 -0600]  fixed issue when changing screens after the user screen                Dustin Falgout  {c2f065d}
-[2015-12-29 06:26:02 -0600]  new styles for switches                                                Dustin Falgout  {7029e5e}
-[2015-12-29 05:23:55 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {b7d3311}
-[2015-12-29 03:19:53 -0600]  lets go back tp disabling the try-it button instead                    Dustin Falgout  {c73d536}
-[2015-12-29 03:11:07 -0600]  fix page loading for minimal maybe                                     Dustin Falgout  {748f7d1}
-[2015-12-29 02:57:21 -0600]  fix page loading for minimal                                           Dustin Falgout  {8ab8ae6}
-[2015-12-29 02:48:02 -0600]  fix page loading for minimal                                           Dustin Falgout  {a2545f1}
-[2015-12-27 20:10:53 -0600]  location screen style tweaks                                           Dustin Falgout  {0dd3c72}
-[2015-12-27 16:20:55 -0600]  not really satisfied with the check screen style but I'm not fighti..  Dustin Falgout  {20daa53}
-[2015-12-27 10:28:52 -0600]  popovers are annoying                                                  Dustin Falgout  {8b94b17}
-[2015-12-27 07:15:17 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {3b2d2d9}
-[2015-12-24 19:22:17 -0600]  more work on ui refresh                                                Dustin Falgout  {84baf0d}
-[2015-12-24 15:23:26 -0600]  oops                                                                   Dustin Falgout  {fb92fcf}
-[2015-12-24 15:20:20 -0600]  some changes to make generating pot file easier                        Dustin Falgout  {1c29356}
-[2015-12-24 06:33:17 -0600]  fix typo                                                               Dustin Falgout  {8ad0a43}
-[2015-12-24 06:26:14 -0600]  fix typo                                                               Dustin Falgout  {68ae49f}
-[2015-12-24 03:13:47 -0600]  nothing important                                                      Dustin Falgout  {31b7271}
-[2015-12-24 02:55:09 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {d0d060b}
-[2015-12-23 00:13:35 -0600]  make sure our font is available                                        Dustin Falgout  {d7778af}
-[2015-12-20 19:39:39 -0600]  Fixes antergos/Cnchi#491                                               Dustin Falgout  {84ebc07}
-[2015-12-20 06:07:05 -0600]  its ready for some testing I think!                                    Dustin Falgout  {5cf9d58}
-[2015-12-20 04:40:40 -0600]  automatically select location based on detected timezone.              Dustin Falgout  {931f3bc}
-[2015-12-20 00:39:51 -0600]  ...                                                                    Dustin Falgout  {33bb652}
-[2015-12-19 22:52:12 -0600]  more progress                                                          Dustin Falgout  {19fa9d1}
-[2015-12-19 21:42:54 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {66e631b}
-[2015-12-19 01:03:02 -0600]  more progress                                                          Dustin Falgout  {e8cf54f}
-[2015-12-18 20:43:33 -0600]  more progress                                                          Dustin Falgout  {7691c70}
-[2015-12-17 02:40:46 -0600]  :triumphant:                                                           Dustin Falgout  {b72ae33}
-[2015-12-16 00:37:15 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {1c02887}
-[2015-12-12 04:47:35 -0600]  sync local                                                             Dustin Falgout  {c2bedcb}
-[2015-12-11 00:27:37 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {2779a81}
-[2015-12-08 12:51:50 -0600]  call store values everytime row selection event fires for language ..  Dustin Falgout  {d16cb58}
-[2015-12-08 12:32:26 -0600]  yep..still working on UI                                               Dustin Falgout  {bd4ae4f}
-[2015-12-07 02:37:22 -0600]  you guessed it..more work on UI                                        Dustin Falgout  {d74980c}
-[2015-12-06 07:17:28 -0600]  fix logo font                                                          Dustin Falgout  {3ae5469}
-[2015-12-06 05:48:05 -0600]  more progress                                                          Dustin Falgout  {fd6114a}
-[2015-12-06 02:21:40 -0600]  more work on ui refresh                                                Dustin Falgout  {f5294e6}
-[2015-12-06 00:36:06 -0600]  fix language popover's behavior                                        Dustin Falgout  {57d2355}
-[2015-12-05 23:47:33 -0600]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into playing   Dustin Falgout  {2b2762d}
-[2015-12-05 00:41:54 -0600]  working on UI refresh                                                  Dustin Falgout  {62aec24}
-[2015-12-04 00:51:54 -0600]  okay, what started out as playing around is now getting serious :wi..  Dustin Falgout  {4ca8a37}
-[2015-12-03 23:35:33 +0100]  Fix typo                                                                   karasu      {3ab3d10}
-[2015-12-03 22:39:53 +0100]  Require webkit version, too                                                karasu      {fd9fa7e}
-[2015-12-03 22:37:41 +0100]  Split a big function. Needs testing!                                       karasu      {a607c59}
-[2015-12-03 17:02:04 +0100]  Must quit                                                                  karasu      {382a6fc}
-[2015-12-03 15:55:42 +0100]  pep8 on download.py                                                        karasu      {1fec610}
-[2015-12-03 14:35:07 +0100]  More pep8                                                                  karasu      {d10ec76}
-[2015-12-03 14:20:02 +0100]  pep8                                                                       karasu      {759edb0}
-[2015-12-03 14:19:32 +0100]  pep8 user_info                                                             karasu      {7076bff}
-[2015-12-03 13:58:54 +0100]  pep8 updater.py                                                            karasu      {198ffc0}
-[2015-12-03 13:46:33 +0100]  More pep8                                                                  karasu      {35086e4}
-[2015-12-02 09:50:57 +0100]  Catch OSError when calling setxkbmap, too.                                 karasu      {821a971}
-[2015-12-01 19:39:25 -0600]  just playing...                                                        Dustin Falgout  {7354e5f}
+[2015-08-20 10:18:27 +0200]  Merge pull request #1 from Antergos/master                                 karasu      {605cec2}
