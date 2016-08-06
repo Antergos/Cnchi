@@ -481,15 +481,36 @@
 	</zfs>
 
 	<locale_fonts>
-		<chinese>
+		<fonts lang="zh_TW, zh_CN">
 			<pkgname>opendesktop-fonts</pkgname>
-		</chinese>
+			<pkgname>adobe-source-han-sans-cn-fonts</pkgname>
+			<pkgname>adobe-source-han-sans-tw-fonts</pkgname>
+		</fonts>
+		<fonts lang="ja">
+			<pkgname>adobe-source-han-sans-jp-fonts</pkgname>
+			<pkgname>ttf-sazanami</pkgname>
+			<pkgname>otf-ipafont</pkgname>
+		</fonts>
+		<fonts lang="ko">
+			<pkgname>adobe-source-han-sans-kr-fonts</pkgname>
+			<pkgname>ttf-baekmuk</pkgname>
+		</fonts>
 	</locale_fonts>
-	<locale_fonts>
-		<chinese>
-			<pkgname>opendesktop-fonts</pkgname>
-		</chinese>
-	</locale_fonts>
+
+	<input_systems>
+		<fcitx lang="zh_TW, zh_CN, ja, ko">
+			<package>fcitx</package>
+			<package lib="gtk">fcitx-configtool</package>
+			<package lib="qt">kcm-fcitx</package>
+			<package lib="gtk">fcitx-gtk2</package>
+	 		<package lib="gtk">fcitx-gtk3</package>
+		 	<package lib="qt">fcitx-qt4</package>
+			<package lib="qt">fcitx-qt5</package>
+			<package lang="zh_TW, zh_CN">fcitx-googlepinyin</package>
+			<package lang="ja">fcitx-mozc</package>
+			<package lang="ko">fcitx-hangul</package>
+		</fcitx>
+	</input_systems>
 
 	<bootloaders>
 		<bootloader name="grub2">

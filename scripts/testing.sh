@@ -7,18 +7,15 @@ arg="$1"
 check_keys="$(pacman-key -l | grep Antergos)"
 
 notify_user () {
-
-       sudo -u antergos notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
+  sudo -u antergos notify-send -t 10000 -a "Cnchi" -i /usr/share/cnchi/data/images/antergos/antergos-icon.png "$1"
 }
 
 do_update () {
-
-# Update Cnchi with latest testing code
+  # Update Cnchi with latest testing code
 	echo "Removing existing Cnchi..."
 	killall python
 	mv  /usr/share/cnchi /usr/share/cnchi.old;
 	if [[ ${development} = "True" ]]; then
-
 		notify_user "Getting latest version of Cnchi from development branch..."
 		echo "Getting latest version of Cnchi from development branch..."
 		# Check commandline arguments to choose repo
@@ -38,26 +35,19 @@ do_update () {
 		{ pacman -Syy --noconfirm cnchi && return 0; } || { mv  /usr/share/cnchi.old /usr/share/cnchi \
 		&& notify_user "Something went wrong. Update failed." && return 1; }
 	fi
-
 }
 
 start_cnchi () {
-
 	# Start Cnchi with appropriate options
 	notify_user "Starting Cnchi..."
 	echo "Starting Cnchi..."
 	if [[ ${development} = "True" ]]; then
 		cnchi -d -v -p /usr/share/cnchi/data/packages.xml &
 		exit 0;
-
-
 	else
-
 		cnchi -d -v &
 		exit 0;
-
 	fi
-
 }
 
 if [[ ${arg} = "development" ]]; then
@@ -65,23 +55,29 @@ if [[ ${arg} = "development" ]]; then
 else
 	stable=True
 fi
+
 # Check if this is the first time we are executed.
 if ! [ -f "${previous}" ]; then
 	touch ${previous};
 	# Find the best mirrors (fastest and latest)
-#    notify_user "Selecting the best mirrors..."
-#	echo "Selecting the best mirrors..."
-#	echo "Testing Arch mirrors..."
-#	reflector -p http -l 30 -f 5 --save /etc/pacman.d/mirrorlist;
-#	echo "Done."
-#	sudo -u antergos wget http://antergos.info/antergos-mirrorlist
-#	echo "Testing Antergos mirrors..."
-#	rankmirrors -n 0 -r antergos antergos-mirrorlist > /tmp/antergos-mirrorlist
-#	cp /tmp/antergos-mirrorlist /etc/pacman.d/
-#	echo "Done."
+  #    notify_user "Selecting the best mirrors..."
+  #	echo "Selecting the best mirrors..."
+  #	echo "Testing Arch mirrors..."
+  #	reflector -p http -l 30 -f 5 --save /etc/pacman.d/mirrorlist;
+  #	echo "Done."
+  #	sudo -u antergos wget http://antergos.info/antergos-mirrorlist
+  #	echo "Testing Antergos mirrors..."
+  #	rankmirrors -n 0 -r antergos antergos-mirrorlist > /tmp/antergos-mirrorlist
+  #	cp /tmp/antergos-mirrorlist /etc/pacman.d/
+  #	echo "Done."
+
+  # Update pacman keys
+  pacman -Syy --noconfirm archlinux-keyring antergos-keyring
+
+  # Init pacman keyring
 	if [[ ${check_keys} = '' ]]; then
-	pacman-key --init
-	pacman-key --populate archlinux antergos
+	  pacman-key --init
+	  pacman-key --populate archlinux antergos
 	fi
 
 	# Install any packages that haven't been added to the iso yet but are needed.
@@ -102,18 +98,14 @@ if ! [ -f "${previous}" ]; then
 	else
 		modprobe -a f2fs dm-mod;
 	fi
-	
 else
-    notify_user "Previous testing setup detected, skipping downloads..."
+  notify_user "Previous testing setup detected, skipping downloads..."
 	echo "Previous testing setup detected, skipping downloads..."
 	echo "Verifying that nothing is mounted from a previous install attempt."
 	umount -lf /install/boot >/dev/null 2&>1
 	umount -lf /install >/dev/null 2&>1
-
 fi
 
-
 do_update && start_cnchi
-
 
 exit 1;

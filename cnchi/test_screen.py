@@ -44,7 +44,7 @@ def get_screen(screen_name, params):
         import desktop
         screen = desktop.DesktopAsk(params)
     elif screen_name == "Check":
-        import check
+        from modules import check
         screen = check.Check(params)
     elif screen_name == "Timezone":
         import timezone
@@ -129,7 +129,7 @@ def run(screen_name):
     params = {
         'title': "Cnchi",
         'main_window': window,
-        'ui_dir': "/usr/share/cnchi/ui",
+        'UI_DIR': "/usr/share/cnchi/ui",
         'disable_tryit': False,
         'settings': settings,
         'forward_button': Gtk.Button.new(),

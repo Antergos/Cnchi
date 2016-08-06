@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if ! [[ -d cnchi ]] && [[ -d ../cnchi ]]; then
+	cd ..
+fi
+
+/usr/lib/python3.5/Tools/i18n/pygettext.py -a -d cnchi_py -p /tmp -v cnchi/*.py cnchi/*/*.py
+python utils/rm_empty_strings_pot.py
+
+find . -type f -name '*.ui' -fprint /tmp/cnchi_files
+xgettext -a  --from-code UTF-8 -o /tmp/cnchi_ui.pot -d cnchi -f /tmp/cnchi_files --omit-header
+msgcat -o /tmp/cnchi_tmp.pot /tmp/cnchi_py.pot /tmp/cnchi_ui.pot
+cp po/cnchi.pot /tmp
+msgcat -o po/cnchi.pot --use-first  /tmp/cnchi.pot /tmp/cnchi_tmp.pot
+

@@ -1,0 +1,297 @@
+{% extends 'pages/_00_base/html_page.html' %}
+
+
+{#
+ # CSS Styles Specific To This Page
+ #}
+{% block page_styles %}
+	<style>
+		html { background: #000000; }
+
+		html, .cnchi_app { height: 100%; }
+
+		body { background: #383A41; color: #ECECED; font-weight: 400; height: 100%; }
+
+		.header { display: none; }
+
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 36px; text-align: center; font-weight: 400; margin-top: 0px; }
+
+		h3 { font-size: 18px; font-family: 'Open Sans'; }
+
+		.heading { text-align: center; margin-bottom: 30px; }
+
+		.options_wrapper img { max-width: 100%; text-align: center; }
+
+		.options_wrapper > div { text-align: center; }
+
+		.options_wrapper p { font-size: 17px; margin-bottom: 20px; }
+
+		.options_wrapper button { font-size: 17px; }
+
+		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+
+		.hideme { display: none; }
+
+		.welcome_wrapper { opacity: 0; -webkit-animation-fill-mode: forwards !important; animation-fill-mode: forwards !important; }
+
+		.welcome_wrapper.showme { opacity: 1; -webkit-animation-fill-mode: forwards !important; animation-fill-mode: forwards !important; }
+
+		.preloader-wrapper { margin: 0 auto; }
+	</style>
+{% endblock page_styles %}
+
+
+
+{#
+ # Page Content (Appears below the header)
+ #}
+{% block main_content %}
+	<div class="grid-100 grid-parent content_wrapper">
+
+		<!-- WELCOME OPTIONS -->
+		<div class="grid-100 grid-parent welcome_wrapper">
+			<div class="grid-100 heading">
+				<h1>{{ _('What would you like to do?') }}</h1>
+			</div>
+			<div class="grid-90 prefix-5 suffix-5 grid-parent options_wrapper">
+				<div class="grid-50 try_it">
+					<img src="{{ RESOURCES_DIR }}/images/try-it.svg" width="200" alt="Icon for 'Try It' option"/>
+					<p id="tryit_description">{{ _('Try Antergos without making any changes to your system.') }}</p>
+					<button class="waves-effect waves-purple btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="tryit_description">{{ _('Try It') }}</button>
+				</div>
+				<div class="grid-50 install_it">
+					<img src="{{ RESOURCES_DIR }}/images/install-it.svg" width="200" alt="Icon for 'Install It' option"/>
+					<p id="installit_description">{{ _('Create a permanent place for Antergos on your system.') }}</p>
+					<button class="waves-effect waves-pink btn-large blue-grey lighten-4 blue-grey-text text-darken-4" aria-describedby="installit_description">{{ _('Install It') }}</button>
+				</div>
+			</div>
+		</div> <!-- /END WELCOME OPTIONS -->
+
+
+		<!-- CNCHI UPDATE CHECK -->
+		<div class="grid-100 grid-parent update_check_wrapper hideme">
+			<div class="grid-100 heading">
+				<h1>{{ _('Installer Update') }}</h1>
+				<h3>{{ _('Checking for the latest installer version...') }}</h3>
+			</div>
+			<div class="grid-10 prefix-45 suffix-45 grid-parent">
+				<div class="progress active">
+					<div class="indeterminate"></div>
+				</div>
+				<div class="preloader-wrapper">
+					<div class="spinner-layer">
+						<div class="circle-clipper left">
+							<div class="circle"></div>
+						</div>
+						<div class="gap-patch">
+							<div class="circle"></div>
+						</div>
+						<div class="circle-clipper right">
+							<div class="circle"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div> <!-- /END CNCHI UPDATE CHECK -->
+
+
+		<!-- NO INTERNET CONNECTION DETECTED MSG -->
+		<div class="grid-100 grid-parent update_no_internet_wrapper hideme">
+			<div class="grid-100 heading">
+				<h1>{{ _('We\'re Unable To Access The Internet') }}</h1>
+				<h3>{{ _('A stable internet connection is required in order to continue.') }}</h3>
+			</div>
+			<div class="grid-50 prefix-25 suffix-25 grid-parent">
+				<!-- TODO: no connection detected copy -->
+				<p>More details go here....</p>
+			</div>
+		</div> <!-- /END NO INTERNET CONNECTION DETECTED MSG -->
+
+	</div> <!-- /END .content_wrapper -->
+{% endblock main_content %}
+
+
+
+{#
+ # Javascript For This Page
+ #}
+{% block page_script %}
+	<script>
+		window._page = null;
+
+		class WelcomePage extends CnchiPage {
+			constructor( id ) {
+				if ( null !== window._page ) {
+					return window._page;
+				}
+
+				super( id );
+
+				window._page = this;
+				this.signals = JSON.parse('{{ signals }}');
+				this.$update_wrapper = $('.update_check_wrapper');
+				this.$welcome_wrapper = $('.welcome_wrapper');
+				this.$connection_wrapper = $('.no_internet_wrapper');
+				this.has_connection = false;
+
+				this.register_allowed_signals();
+				this.maybe_skip_to_next_page();
+				this.register_event_handlers();
+				this.initialize();
+			}
+
+			connection_check_result_cb( event, result ) {
+				_page.has_connection = result;
+
+				if ( false === result ) {
+					_page.$connection_wrapper.fadeIn();
+				}
+			}
+
+			do_has_connection_check() {
+				if ( false === this.has_connection ) {
+					cnchi.emit_signal('do-connection-check');
+				}
+			}
+
+			do_update_check() {
+				if ( false === this.has_connection ) {
+					// TODO: Finish implementing JS -> Python logging so we can use log levels (debug/error/etc)
+					console.log('An internet connection is required in order to check for installer update.');
+					return;
+				}
+
+				if ( this.$connection_wrapper.is(':visible') ) {
+					this.$connection_wrapper.fadeOut()
+						.promise()
+						.done(_show_update_wrapper);
+				} else {
+					_show_update_wrapper();
+				}
+
+				function _show_update_wrapper() {
+					_page.$update_wrapper.fadeIn()
+						.promise()
+						.done(() => {
+							cnchi.emit_signal('do-update-check');
+						});
+				}
+			}
+
+			initialize() {
+				this.$welcome_wrapper.animateCss('magictime swashIn', () => {
+					_page.$welcome_wrapper.addClass('showme');
+				});
+
+				cnchi.emit_signal('do-install-it-selected');
+			}
+
+			install_it_button_clicked_cb( event ) {
+				console.log('clicked!');
+				_page.$welcome_wrapper.animateCss('magictime swashOut', () => {
+					console.log('callback!');
+					let check, timer = 0;
+
+					_page.$welcome_wrapper.hide(0);
+
+					check = setInterval(() => {
+						// Tell backend to do connection check every 10 seconds.
+						if ( 0 === timer || timer % 10000 === 0 ) {
+							_page.do_has_connection_check();
+						}
+
+						if ( true === _page.has_connection ) {
+							clearInterval(check);
+							_page.do_update_check();
+						}
+
+						timer += 500
+
+					}, 250);
+				});
+			}
+
+			maybe_skip_to_next_page() {
+				let update_check_passed = localStorage.getItem('cnchi::welcome::update-check-passed');
+
+				if ( null !== update_check_passed ) {
+					cnchi.emit_signal('do-go-to-next-page');
+				}
+			}
+
+			register_event_handlers() {
+				$('.try_it button').on('click', this.try_it_button_clicked_cb);
+				$('.install_it button').on('click', this.install_it_button_clicked_cb);
+				$(window).on('update-available', this.update_available_cb);
+				$(window).on('update-check-result', this.update_check_result_cb);
+				$(window).on('connection-check-result', this.connection_check_result_cb)
+			}
+
+			try_it_button_clicked_cb( event ) {
+				cnchi.emit_signal('do-try-it-selected');
+			}
+
+			update_available_cb() {
+				let $heading = _page.$update_wrapper.find('h3');
+
+				$heading.fadeOut()
+					.promise()
+					.done(() => {
+						$heading.text("{{ _('An installer update is available. Please wait while the update is applied.') }}");
+						$heading.fadeIn()
+							.promise()
+							.done(() => {
+								$('.progress.active, .preloader-wrapper').toggleClass('active');
+							});
+					});
+			}
+
+			update_check_result_cb( event, data ) {
+				let $headings = _page.$update_wrapper.find('h1, h3');
+
+				$('.progress.active, .preloader-wrapper.active').toggleClass('hideme active');
+
+				if ( true === data.result ) {
+					localStorage.setItem('cnchi::welcome::update-check-passed', true);
+				}
+
+				if ( true === data.result && true === data.restart ) {
+					// Update was installed successfully.
+					$headings.fadeOut()
+						.promise()
+						.done(() => {
+							$headings.filter('h1').text("{{ _('Update Complete.') }}");
+							$headings.filter('h3').text("{{ _('Restarting the installer. One moment..') }}");
+							$headings.fadeIn()
+								.promise()
+								.done(() => {
+									setTimeout(() => {
+										cnchi.emit_signal('do-restart');
+									}, 4500);
+								});
+						});
+
+				} else if ( true === data.result ) {
+					// We already have the latest version.
+					$headings.fadeOut()
+						.promise()
+						.done(() => {
+							$headings.filter('h1').text("{{ _('Update Check Complete') }}");
+							$headings.filter('h3').text("{{ _('You are using the latest version and can proceed with your installation!') }}");
+							$headings.fadeIn()
+								.promise()
+								.done(() => {
+									setTimeout(() => {
+										_page.$update_wrapper.hide();
+										cnchi.emit_signal('do-install-it-selected');
+									}, 4500);
+								});
+						});
+
+				} else {
+					// Either the update check or the update itself failed.
+				}
+			}
+		}
+	</script>
+{% endblock page_script %}

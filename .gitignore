@@ -6,11 +6,9 @@
 # Packages
 *.egg
 *.egg-info
-dist
 build
 eggs
 parts
-bin
 var
 sdist
 develop-eggs
@@ -22,9 +20,6 @@ __pycache__
 # Installer logs
 pip-log.txt
 
-# PyCharm
-debug
-
 
 # Unit test / coverage reports
 .coverage
@@ -33,6 +28,7 @@ nosetests.xml
 
 # Translations
 *.mo
+*.tags
 
 # Mr Developer
 .mr.developer.cfg
@@ -47,5 +43,5 @@ nosetests.xml
 .idea/*.xml
 
 # Documentation
-*.rst
-*.doctree
+#*.rst
+#*.doctree

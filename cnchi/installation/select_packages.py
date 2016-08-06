@@ -39,8 +39,7 @@ except ImportError as err:
 import desktop_info
 import info
 
-
-import pacman.pac as pac
+from installation import pacman as pac
 import misc.extra as misc
 from misc.extra import InstallError
 
@@ -144,28 +143,46 @@ class SelectPackages(object):
             logging.error(message)
             raise InstallError(message)
 
+    def get_desktop_lib(self):
+        """ Returns which widget library our desktop will need """
+        for lib in desktop_info.LIBS:
+            if self.desktop in desktop_info.LIBS[lib]:
+                return lib
+        return None
+
     def add_package(self, pkg):
         """ Adds xml node text to our package list
             returns TRUE if the package is added """
-        lib = desktop_info.LIBS
-        arch = pkg.attrib.get('arch')
         added = False
-        if arch is None or arch == self.my_arch:
+
+        # Check node attributes
+        names = ["arch", "lib", "desktops", "lang"]
+
+        check_attr = {
+            "arch" : self.my_arch,
+            "lib" : self.get_desktop_lib(),
+            "desktops" : self.desktop,
+            "lang" : self.settings.get('language_code')
+        }
+
+        all_check = True
+        for name in names:
+            node_attr = pkg.attrib.get(name)
+            if node_attr and check_attr[name] not in node_attr:
+                all_check = False
+
+        if all_check:
+            conflicts = pkg.attrib.get("conflicts")
+            if conflicts:
+                self.add_conflicts(conflicts)
+            self.packages.append(pkg.text)
+            added = True
             # If package is a Desktop Manager or a Network Manager,
             # save the name to activate the correct service later
             if pkg.attrib.get('dm'):
                 self.settings.set("desktop_manager", pkg.attrib.get('name'))
             if pkg.attrib.get('nm'):
                 self.settings.set("network_manager", pkg.attrib.get('name'))
-            plib = pkg.attrib.get('lib')
-            if plib is None or (plib is not None and self.desktop in lib[plib]):
-                desktops = pkg.attrib.get('desktops')
-                if desktops is None or (desktops is not None and self.desktop in desktops):
-                    conflicts = pkg.attrib.get('conflicts')
-                    if conflicts:
-                        self.add_conflicts(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
-                    added = True
         return added
 
     def select_packages(self):
@@ -230,22 +247,7 @@ class SelectPackages(object):
 
         # Set KDE language pack
         if self.desktop == 'kde':
-            pkg_text = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
-                if locale in lang_packs:
-                    pkg_text = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
-                pkg_text = base_name + lang_code
-            if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg_text)
-                self.packages.append(pkg_text)
+            self.add_language_pack("kde")
 
         try:
             # Detect which hardware drivers are needed
@@ -291,13 +293,8 @@ class SelectPackages(object):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
-        # Add chinese fonts
-        lang_code = self.settings.get("language_code")
-        if lang_code in ["zh_TW", "zh_CN"]:
-            logging.debug("Selecting chinese fonts.")
-            for child in xml_root.iter('chinese'):
-                for pkg in child.iter('pkgname'):
-                    self.add_package(pkg)
+        # Add locale fonts (atm only asian) and input system (if needed)
+        self.add_locale_fonts(xml_root)
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
@@ -337,6 +334,24 @@ class SelectPackages(object):
 
         logging.debug("Packages list: %s", ",".join(self.packages))
 
+    def add_locale_fonts(self, root):
+        """ Adds input system and fonts """
+        # Add locale fonts (add_package checks lang)
+        for child in root.iter('fonts'):
+            for pkg in child.iter('pkgname'):
+                self.add_package(pkg)
+
+        # Add input system if needed for lang_code (we use fcitx)
+        lang_code = self.settings.get("language_code").lower()
+        for input_system in root.iter('input_systems'):
+            name = input_system.get("name").lower()
+            lang = input_system.get("lang").lower()
+            if name == "fcitx" and lang == lang_code:
+                # Check if we need to install this input system
+                for child in root.iter('fcitx'):
+                    for pkg in child.iter('pkgname'):
+                        self.add_package(pkg)
+
     def add_conflicts(self, conflicts):
         """ Maintains a list of conflicting packages """
         if conflicts:
@@ -372,27 +387,27 @@ class SelectPackages(object):
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            lang_name = self.settings.get("language_name").lower()
-            code = None
-            if lang_name == "english":
-                locale = self.settings.get("locale").split('.')[0]
-                if locale in ['en_GB', 'en_ZA']:
-                    # There're some English variants available but not all of them.
-                    code = locale
-            else:
-                # All the other language packs use their language code
-                code = self.settings.get('language_code')
-
-            if code:
-                code = code.replace('_', '-')
-                pkg_text = "libreoffice-fresh-{0}".format(code)
-                logging.debug("Adding libreoffice language package (%s)", pkg_text)
-                self.packages.append(pkg_text)
+            self.add_language_pack("libreoffice")
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
-            # Firefox is available in these languages
-            lang_codes = [
+            self.add_language_pack("firefox")
+
+    def add_language_pack(self, package):
+        lang_codes = {
+            "libreoffice" : [
+                'af', 'am', 'ar', 'as', 'ast', 'be', 'bg', 'bn', 'bn-IN', 'bo',
+                'br', 'brx', 'bs', 'ca', 'ca-valencia', 'cs', 'cy', 'da', 'de',
+                'dgo', 'dz', 'el', 'en-GB', 'en-ZA', 'eo', 'es', 'et', 'eu', 'fa',
+                'fi', 'fr', 'ga', 'gd', 'gl', 'gu', 'he', 'hi', 'hr', 'hu', 'id',
+                'is', 'it', 'ja', 'ka', 'kk', 'km', 'kmr-Latn', 'kn', 'ko', 'kok',
+                'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn', 'mni', 'mr',
+                'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om', 'or', 'pa-IN',
+                'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat', 'sd', 'sdk',
+                'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss', 'st', 'sv',
+                'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt', 'ug', 'uk',
+                'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu'],
+            "firefox" : [
                 'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
                 'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
                 'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
@@ -402,11 +417,28 @@ class SelectPackages(object):
                 'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
                 'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
                 'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
-                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
+                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw'],
+            "kde" : [
+                'ar', 'bg', 'bs', 'ca', 'ca@valencia', 'cs', 'da', 'de', 'el',
+                'en-gb', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'ga', 'gl',
+                'he', 'hi', 'hr', 'hu', 'ia', 'id', 'is', 'it', 'ja', 'kk', 'km',
+                'ko', 'kok', 'ks', 'lb', 'lo', 'lt', 'lv', 'mai', 'mk', 'ml', 'mn',
+                'mni', 'mr', 'my', 'nb', 'ne', 'nl', 'nn', 'nr', 'nso', 'oc', 'om',
+                'or', 'pa-IN', 'pl', 'pt', 'pt-BR', 'ro', 'ru', 'rw', 'sa-IN', 'sat',
+                'sd', 'sdk', 'si', 'sid', 'sk', 'sl', 'sq', 'sr', 'sr-Latn', 'ss',
+                'st', 'sv', 'sw-TZ', 'ta', 'te', 'tg', 'th', 'tn', 'tr', 'ts', 'tt',
+                'ug', 'uk', 'uz', 've', 'vi', 'xh', 'zh-CN', 'zh-TW', 'zu']}
 
-            logging.debug("Add firefox language package")
-            lang_code = self.settings.get('language_code')
-            lang_code = lang_code.replace('_', '-')
-            if lang_code in lang_codes:
-                pkg_text = "firefox-i18n-{0}".format(lang_code)
-                self.packages.append(pkg_text)
+        base_names = {
+            "libreoffice" : "libreoffice-fresh",
+            "firefox" : "firefox-i18n",
+            "kde" : "kde-l10n"}
+
+        lang_code = self.settings.get("language_code").lower()
+        lang_code = lang_code.replace('_', '-')
+        if package in lang_codes and lang_code in lang_codes[package]:
+            pkg_text = "{0}-{1}".format(base_names[package], code)
+            logging.debug("Adding %s (%s) language package: %s", package, lang_code, pkg_text)
+            self.packages.append(pkg_text)
+        else:
+            logging.warning("Couldn't find %s (%s) language package", package, lang_code)

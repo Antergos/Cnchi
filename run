@@ -4,49 +4,53 @@
 # This script is a helper that the developers use to call Cnchi (testing purposes only)
 # Please, do not use if your intention is to do a "normal" installation
 
-cleanup() {
-	if [[ -h /usr/share/cnchi ]]; then
-		sudo unlink /usr/share/cnchi
-		sudo mv /usr/share/cnchi.tmp /usr/share/cnchi > /dev/null 2>&1
-	fi
-	sudo killall python3 > /dev/null 2>&1
-}
-
-trap cleanup EXIT
-
-
-if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
-	sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
-fi
-
-cnchi_dir=`pwd`
-sudo ln -sf $cnchi_dir /usr/share/cnchi
-
-#clear_fcache='False'
-#for file in ${cnchi_dir}/data/fonts/OpenSans**
-#do
-#	file_name=$(basename ${file})
-#	if ! [[ -f /usr/share/fonts/TTF/${file_name} ]]; then
-#		sudo cp ${file} /usr/share/fonts/TTF
-#		clear_fcache='True'
-#	fi
-#done
-#
-#if [[ "${clear_fcache}" = 'True' ]]; then
-#	fc-cache -s -f -v
-#fi
-
-
+CNCHI_DIR=`pwd`
+_DEFAULT_DIR=/usr/share/cnchi
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
+_CNCHI_OPTIONS="-d -v --disable-rank-mirrors" #-s bugsnag"
+_POLICY_FILE='com.antergos.pkexec.cnchi.policy'
+_CNCHI_BIN="/usr/share/cnchi/dist/bin/cnchi"
 
-if [ -f /usr/bin/python3 ]; then
-    _PYTHON="/usr/bin/python3"
+# If we aren't running on Arch make sure we use python3
+[[ -f /etc/arch-release ]] || _PYTHON="/usr/bin/python3"
+
+# Removes symlink and moves cnchi that was installed
+# via pacman back to /usr/share/cnchi
+cleanup() {
+	if [[ -h "${_DEFAULT_DIR}" ]]; then
+		sudo unlink "${_DEFAULT_DIR}"
+		sudo mv "${_DEFAULT_DIR}.tmp" "${_DEFAULT_DIR}" > /dev/null 2>&1
+	fi
+	_pid=$(cat /tmp/cnchi.pid)
+	echo ${_pid}
+	sudo kill ${_pid}
+}
+# Make sure we cleanup upon exiting.
+trap cleanup EXIT QUIT TERM
+
+# If /usr/share/cnchi exists, is not a symlink, and is not the current directory then it was installed
+# with pacman (so its not our development copy). Move it out of the way temporarily.
+if [[ -d "${_DEFAULT_DIR}" && "${CNCHI_DIR}" != "${_DEFAULT_DIR}" && ! -h "${_DEFAULT_DIR}" ]]; then
+	sudo mv "${_DEFAULT_DIR}" "${_DEFAULT_DIR}.tmp" > /dev/null 2>&1
+elif [[ -h "${_DEFAULT_DIR}" ]]; then
+	cleanup
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+# Symlink our development copy to /usr/share/cnchi only if we weren't called from that directory
+[[ "${CNCHI_DIR}" != "${_DEFAULT_DIR}" ]] && sudo ln -sf "${CNCHI_DIR}" "${_DEFAULT_DIR}"
 
-exit 0
 
+# If our polkit policy file is not installed, install it and then restart polkit
+[[ -f "/usr/share/polkit-1/actions/${_POLICY_FILE}" ]] || {
+	sudo cp "dist/polkit-1/actions/${_POLICY_FILE}" /usr/share/polkit-1/actions && sudo systemctl restart polkit
+}
+
+
+if [[ -z "$1" ]]; then
+	pkexec $_CNCHI_BIN $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+else
+	# Running through PyCharm Debugger
+	pkexec $_PYTHON ${@} #2>&1
+fi

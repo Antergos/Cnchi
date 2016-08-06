@@ -1,0 +1,83 @@
+{% from 'pages/macros/_macros.html' import tabbed_navigation, conditional_text with context %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head %}
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
+		<title></title>
+		<link rel="stylesheet" id="unsemantic_grid" href="{{ RESOURCES_DIR }}/css/unsemantic-grid.css" type="text/css" media="all">
+		<link rel="stylesheet" id="materialize_styles" href="{{ RESOURCES_DIR }}/css/materialize.css" type="text/css" media="all">
+		<link rel="stylesheet" id="magiccss_styles" href="{{ RESOURCES_DIR }}/css/magic.css" type="text/css" media="all">
+		<link rel="stylesheet" id="animatecss_styles" href="{{ RESOURCES_DIR }}/css/animate.css" type="text/css" media="all">
+		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/css/style.css" type="text/css" media="all">
+		{% block before_page_styles %}{% endblock before_page_styles %}
+		{% block page_styles %}{% endblock page_styles %}
+	{% endblock head %}
+</head>
+
+<body class="{% block body_class %}{{ page_name }}{{ conditional_text(tabs, ' has_tabs') }}{% endblock body_class %}">
+{% block body %}
+	<div class="grid-container grid-parent cnchi_app">
+		{% block cnchi_app %}
+			<div class="grid-100 grid-parent header">
+				{%- block header -%}
+					<div class="grid-100 grid-parent header_top">
+						<div class="grid-25 suffix-25 grid-parent logo_container">
+							<div class="grid-25 grid-parent">
+								<img src="{{ RESOURCES_DIR }}/images/overlay.png" alt="Antergos logo" class="logo"/>
+							</div>
+							<div class="grid-75 grid-parent cnchi_title">Cnchi {{ _('Installer') }}</div>
+						</div>
+						<div class="grid-25 grid-parent prefix-25 window_buttons">
+							<a class="waves-effect waves-light waves-circle btn-flat no-drag"><i class="material-icons">remove</i></a>
+							<a class="waves-effect waves-light waves-circle btn-flat no-drag"><i class="material-icons">fullscreen</i></a>
+							<a class="waves-effect waves-light waves-circle btn-flat no-drag"><i class="material-icons">close</i></a>
+						</div>
+					</div>
+					<div class="grid-100 header_bottom no-drag">
+						{% if top_level_tabs is defined %}
+							{{ tabbed_navigation(top_level_tabs, top_level=True) }}
+						{% endif %}
+						<div class="progress">
+							<div class="determinate" style="width: 8%"></div>
+						</div>
+					</div>
+				{%- endblock header -%}
+			</div>
+			<div id="{{ page_name }}" class="grid-100 grid-parent main_content" data-name="{{ page_name|capitalize() }}">
+				{% block main_content %}
+				{% endblock main_content %}
+			</div>
+		{% endblock cnchi_app %}
+	</div>
+
+	{% block scripts %}
+
+		<script src="{{ RESOURCES_DIR }}/js/jquery-3.1.0.min.js"></script>
+		{% block after_jquery %}{% endblock after_jquery %}
+		<script src="{{ RESOURCES_DIR }}/js/materialize.min.js"></script>
+		<script src="{{ RESOURCES_DIR }}/js/cnchi_app.js"></script>
+
+		{% if top_level_tabs is defined %}
+			<script>
+				$('ul.tabs').tabs();
+				setTimeout(() => {
+					$('ul.tabs, ul.tabs *').off('click.materialize');
+				}, 1000);
+			</script>
+		{% endif %}
+
+	{% endblock scripts %}
+
+	{% block page_script %}{% endblock page_script %}
+
+	<script>
+		{% set PageClass = '%sPage'|format(page_name|capitalize()) %}
+		$(window).on('page-loaded', () => new {{ PageClass }}('{{ page_name }}'));
+	</script>
+
+{% endblock body %}
+</body>
+</html>

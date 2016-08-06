@@ -1,0 +1,140 @@
+{% extends 'pages/_00_base/html_page.html' %}
+
+{% from 'pages/macros/_macros.html' import conditional_text %}
+
+
+
+{#
+ # CSS Styles Specific To This Page
+ #}
+{% block page_styles %}
+	<style>
+		html, body { background: #000000; }
+
+		html, body { padding: 0px; margin: 0px; background: transparent; opacity: 0; transition: opacity 0.3s ease-in; }
+		html, .cnchi_app { height: 100%; }
+
+		body { opacity: 0; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
+
+		.header { display: none; }
+
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 32px; text-align: center; font-weight: 400; margin-top: 0px; }
+
+		h3 { font-size: 18px; font-family: 'Open Sans'; }
+
+		.heading { text-align: center; }
+
+		.heading img { margin-bottom: 20px; max-width: 175px; }
+
+		.language_selection { padding-top: 30px; padding-bottom: 30px; font-family: 'Open Sans'; }
+
+		.language_selection form { max-width: 100%; }
+
+		.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+
+		.btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
+
+		.btn_wrapper i { font-size: 2.2rem; }
+	</style>
+{% endblock page_styles %}
+
+
+
+{#
+ # Page Content (Appears below the header)
+ #}
+{% block main_content %}
+	<div class="grid-100 grid-parent content_wrapper">
+		<div class="grid-100 heading">
+			<img src="{{ RESOURCES_DIR }}/images/overlay.png" alt="Antergos logo"/>
+			<h1>{{ _('Welcome To Antergos!') }}</h1>
+			<h3>{{ _('Please select a language to continue.') }}</h3>
+		</div>
+		<div class="grid-30 grid-parent prefix-35 suffix-35 language_selection">
+			<div class="grid-100">
+				<form>
+					<div class="input-field">
+						<select id="language_select">
+							<option value="" disabled>{{ _('Choose a language') }}</option>
+							{% for language in languages %}
+								{% set condition = language[1] %}
+								<option value="{{ language[0] }}"{{ conditional_text(condition, ' selected') }}>{{ language[0] }}</option>
+							{% endfor %}
+						</select>
+						<label for="language_select">{{ _('Installer Language') }}</label>
+					</div>
+				</form>
+			</div>
+			<div class="grid-100 btn_wrapper">
+				<button id="continue_btn" aria-label="Continue" class="waves-effect waves-circle btn-floating btn-large waves-light pink accent-2">
+					<i class="material-icons">forward</i></button>
+			</div>
+		</div>
+	</div>
+{% endblock main_content %}
+
+
+
+{#
+ # Javascript For This Page
+ #}
+{% block page_script %}
+	<script>
+		window._page = null;
+
+		class LanguagePage extends CnchiPage {
+
+			constructor( id ) {
+				if ( null !== window._page ) {
+					return window._page;
+				}
+
+				super( id );
+
+				window._page = this;
+				this.signals = JSON.parse('{{ signals }}');
+				this.cache_key = 'cnchi::language::selected';
+
+				this.register_allowed_signals();
+				this.maybe_skip_to_next_page();
+				this.initialize();
+			}
+
+			initialize() {
+				$('html, body').css({'background': '#383A41', 'opacity': 1});
+				$('select').material_select();
+
+				cnchi.emit_signal('do-go-to-next-page');
+
+				this.register_event_handlers();
+			}
+
+			maybe_skip_to_next_page() {
+				let selected_language = localStorage.getItem(this.cache_key);
+
+				if (null !== selected_language) {
+					cnchi.emit_signal('do-go-to-next-page');
+				}
+			}
+
+			register_event_handlers() {
+				$('.btn_wrapper button').on('click', () => {
+					let lang = $('select').val();
+
+					/* Changing the language will mean needing to restart Cnchi. Save this key in cache
+					 * temporarily so we don't show this page after being restarted once.
+					 */
+					localStorage.setItem(_page.cache_key, true);
+
+					this.logger.debug(`${lang} language was selected`);
+
+					$('.content_wrapper').animateCss('magictime holeOut', () => {
+						$('.content_wrapper').hide(0);
+						cnchi.emit_signal('do-language-selected', lang);
+					});
+				});
+			}
+		}
+
+	</script>
+{% endblock page_script %}

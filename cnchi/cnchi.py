@@ -31,34 +31,21 @@
 
 import os
 import sys
-import shutil
 
-CNCHI_PATH = "/usr/share/cnchi"
-sys.path.append(CNCHI_PATH)
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
+# Set initial value for "_" to appease PyCharm
+_ = lambda x: x
 
+import argparse
 import logging
 import logging.handlers
 import gettext
 import locale
 import uuid
-import gi
-import requests
-import json
-
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, Gtk, GObject
+import shutil
 
 import misc.extra as misc
 import show_message as show
 import info
-import updater
 from logging_utils import ContextFilter
 
 try:
@@ -67,90 +54,98 @@ try:
     BUGSNAG_ERROR = None
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
+    print("Error importing bugsnag: ", err)
+
+try:
+    from _base_object import BaseObject, Gio, Gtk
+    from ui.controller import Controller
+except ImportError as err:
+    msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
+    logging.exception(msg)
+    sys.exit(1)
 
 # Useful vars for gettext (translations)
-APP_NAME = "cnchi"
-LOCALE_DIR = "/usr/share/locale"
-
-# Command line options
-cmd_line = None
+APP_NAME = 'cnchi'
+LOCALE_DIR = '/usr/share/locale'
 
 # At least this GTK version is needed
 GTK_VERSION_NEEDED = "3.18.0"
 
+FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
-class CnchiApp(Gtk.Application):
-    """ Main Cnchi App class """
 
-    def __init__(self):
-        """ Constructor. Call base class """
-        Gtk.Application.__init__(self,
-                                 application_id="com.antergos.cnchi",
-                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self.TMP_RUNNING = "/tmp/.setup-running"
+class CnchiApp(BaseObject):
+    """ Cnchi Installer """
 
-    def do_activate(self):
-        """ Override the 'activate' signal of GLib.Application. """
-        try:
-            import main_window
-        except ImportError as err:
-            msg = "Cannot create Cnchi main window: {0}".format(err)
-            logging.error(msg)
-            sys.exit(1)
+    TMP_PID_FILE = '/tmp/cnchi.pid'
 
-        # Check if we have administrative privileges
-        if os.getuid() != 0:
+    def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
+
+        super().__init__(name=name, logger=logger, *args, **kwargs)
+
+        self.widget = Gtk.Application(application_id='com.antergos.cnchi', flags=FLAGS)
+
+        self.widget.connect('activate', self.activate_cb)
+
+        # Command line options
+        self.cmd_line = cmd_line
+
+    def _maybe_clear_webkit_data(self):
+        _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
+
+        for _dir in _dirs:
+            if os.path.exists(_dir) and 'development' == info.CNCHI_RELEASE_STAGE:
+                shutil.rmtree(_dir)
+
+            os.makedirs(_dir, 0o777, exist_ok=True)
+
+    def _pre_activation_checks(self):
+        can_activate = True
+
+        # Make sure we have administrative privileges
+        if os.getuid() != 0 and not self.cmd_line.z_hidden:
+            can_activate = False
             msg = _('This installer must be run with administrative privileges, '
                     'and cannot continue without them.')
             show.error(None, msg)
-            return
 
-        # Check if we're already running
+        # Make sure we're not already running
         if self.already_running():
+            can_activate = False
             msg = _("You cannot run two instances of this installer.\n\n"
                     "If you are sure that the installer is not already running\n"
                     "you can run this installer using the --force option\n"
                     "or you can manually delete the offending file.\n\n"
-                    "Offending file: '{0}'").format(self.TMP_RUNNING)
+                    "Offending file: '{0}'").format(self.TMP_PID_FILE)
             show.error(None, msg)
+
+        return can_activate
+
+    def activate_cb(self, app):
+        if not self._pre_activation_checks():
             return
 
-        window = main_window.MainWindow(self, cmd_line)
-        self.add_window(window)
-        window.show()
+        self._maybe_clear_webkit_data()
 
-        with open(self.TMP_RUNNING, "w") as tmp_file:
-            txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
-            tmp_file.write(txt)
+        with open('/tmp/cnchi.pid', "w") as tmp_file:
+            tmp_file.write(str(os.getpid()))
 
-        # This is unnecessary as show_all is called in MainWindow
-        # window.show_all()
+        Controller()
 
-        # def do_startup(self):
-        # """ Override the 'startup' signal of GLib.Application. """
-        # Gtk.Application.do_startup(self)
-
-        # Application main menu (we don't need one atm)
-        # Leaving this here for future reference
-        # menu = Gio.Menu()
-        # menu.append("About", "win.about")
-        # menu.append("Quit", "app.quit")
-        # self.set_app_menu(menu)
+        self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
+        self.widget.add_window(self._main_window.widget)
+        self._main_window.widget.show_all()
 
     def already_running(self):
-        """ Check if we're already running """
-        if os.path.exists(self.TMP_RUNNING):
-            logging.debug("File %s already exists.", self.TMP_RUNNING)
-            with open(self.TMP_RUNNING) as setup:
-                lines = setup.readlines()
-            if len(lines) >= 2:
-                try:
-                    pid = int(lines[1].strip('\n'))
-                except ValueError as err:
-                    logging.debug(err)
-                    logging.debug("Cannot read PID value.")
-                    return True
-            else:
+        """ Check to see if we're already running """
+        if os.path.exists(self.TMP_PID_FILE):
+            logging.debug("File %s already exists.", self.TMP_PID_FILE)
+            with open(self.TMP_PID_FILE) as setup:
+                line = setup.readline()
+            try:
+                pid = int(line.strip('\n'))
+            except ValueError as err:
+                logging.debug(err)
                 logging.debug("Cannot read PID value.")
                 return True
 
@@ -160,11 +155,11 @@ class CnchiApp(Gtk.Application):
             else:
                 # Cnchi with pid 'pid' is no longer running, we can safely
                 # remove the offending file and continue.
-                os.remove(self.TMP_RUNNING)
+                os.remove(self.TMP_PID_FILE)
         return False
 
 
-def setup_logging():
+def setup_logging(cmd_line):
     """ Configure our logger """
     logger = logging.getLogger()
 
@@ -181,8 +176,9 @@ def setup_logging():
     logger.addFilter(context_filter.filter)
 
     # Log format
+    log_format = "%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s"
     formatter = logging.Formatter(
-        fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
+        fmt=log_format,
         datefmt="%Y-%m-%d %H:%M:%S")
 
     # File logger
@@ -244,6 +240,8 @@ def setup_logging():
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
             logging.info("Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
+
+    return logger
 
 
 def check_gtk_version():
@@ -326,13 +324,13 @@ def check_iso_version():
             shutil.rmtree(cache_dir)
     else:
         logging.debug("Not running from ISO")
+        return False
+
     return True
 
 
 def parse_options():
     """ argparse http://docs.python.org/3/howto/argparse.html """
-
-    import argparse
 
     desc = _("Cnchi v{0} - Antergos Installer").format(info.CNCHI_VERSION)
     parser = argparse.ArgumentParser(description=desc)
@@ -366,9 +364,12 @@ def parse_options():
         help=_("Install the packages referenced by a local xml instead of the default ones"),
         nargs='?')
     parser.add_argument(
+        "-r", "--resolution",
+        help=_("Specify Cnchi screen with and height (useful for low res screens) (format is widthxheight)"),
+        nargs='?')
+    parser.add_argument(
         "-s", "--log-server",
-        help=_("Choose to which log server send Cnchi logs."
-               " Expects a hostname or an IP address"),
+        help=_("Choose to which log server send Cnchi logs. Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
         "-u", "--update",
@@ -380,7 +381,7 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "--disable-rank-mirrors",
-        help=_("Does not attempt to rank Arch and Antergos mirrors during installation"),
+        help=_("Do not try to rank Arch and Antergos mirrors during installation"),
         action="store_true")
     parser.add_argument(
         "-v", "--verbose",
@@ -398,59 +399,6 @@ def parse_options():
     return parser.parse_args()
 
 
-def threads_init():
-    """
-    For applications that wish to use Python threads to interact with the GNOME platform,
-    GObject.threads_init() must be called prior to running or creating threads and starting
-    main loops (see notes below for PyGObject 3.10 and greater). Generally, this should be done
-    in the first stages of an applications main entry point or right after importing GObject.
-    For multi-threaded GUI applications Gdk.threads_init() must also be called prior to running
-    Gtk.main() or Gio/Gtk.Application.run().
-    """
-    minor = Gtk.get_minor_version()
-    micro = Gtk.get_micro_version()
-
-    if minor == 10 and micro < 2:
-        # Unfortunately these versions of PyGObject suffer a bug
-        # which require a workaround to get threading working properly.
-        # Workaround: Force GIL creation
-        import threading
-        threading.Thread(target=lambda: None).start()
-
-    # Since version 3.10.2, calling threads_init is no longer needed.
-    # See: https://wiki.gnome.org/PyGObject/Threading
-    if minor < 10 or (minor == 10 and micro < 2):
-        GObject.threads_init()
-        # Gdk.threads_init()
-
-
-def update_cnchi():
-    """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(
-        force_update=cmd_line.update,
-        local_cnchi_version=info.CNCHI_VERSION)
-
-    if upd.update():
-        logging.info("Program updated! Restarting...")
-        misc.remove_temp_files()
-        if cmd_line.update:
-            # Remove -u and --update options from new call
-            new_argv = []
-            for argv in sys.argv:
-                if argv != "-u" and argv != "--update":
-                    new_argv.append(argv)
-        else:
-            new_argv = sys.argv
-
-        # Do not try to update again now
-        new_argv.append("--disable-update")
-
-        # Run another instance of Cnchi (which will be the new version)
-        with misc.raised_privileges() as __:
-            os.execl(sys.executable, *([sys.executable] + new_argv))
-        sys.exit(0)
-
-
 def setup_gettext():
     """ This allows to translate all py texts (not the glade ones) """
 
@@ -464,14 +412,16 @@ def setup_gettext():
 
 def check_for_files():
     """ Check for some necessary files. Cnchi can't run without them """
+
     paths = [
         "/usr/share/cnchi",
-        "/usr/share/cnchi/ui",
+        "/usr/share/cnchi/cnchi/ui/tpl",
         "/usr/share/cnchi/data",
         "/usr/share/cnchi/data/locale"]
 
     for path in paths:
         if not os.path.exists(path):
+            print(path)
             print(_("Cnchi files not found. Please, install Cnchi using pacman"))
             return False
 
@@ -479,18 +429,13 @@ def check_for_files():
 
 
 def init_cnchi():
-    """ This function initialises Cnchi """
-
-    # Sets SIGTERM handler, so Cnchi can clean up before exiting
-    # signal.signal(signal.SIGTERM, sigterm_handler)
+    """ This function prepares for Cnchi's initialization """
 
     # Configures gettext to be able to translate messages, using _()
     setup_gettext()
 
     # Command line options
-    global cmd_line
     cmd_line = parse_options()
-
 
     if cmd_line.version:
         print(_("Cnchi (Antergos Installer) version {0}").format(info.CNCHI_VERSION))
@@ -503,7 +448,7 @@ def init_cnchi():
     misc.drop_privileges()
 
     # Setup our logging framework
-    setup_logging()
+    logger = setup_logging(cmd_line)
 
     # Check Cnchi is correctly installed
     if not check_for_files():
@@ -514,24 +459,24 @@ def init_cnchi():
         sys.exit(1)
 
     # Check installed pyalpm and libalpm versions
-    if not check_pyalpm_version():
-        sys.exit(1)
+    #if not check_pyalpm_version():
+    #    sys.exit(1)
 
     # Check ISO version where Cnchi is running from
-    if not check_iso_version():
-        sys.exit(1)
+    # if not do_iso_check():
+    #    sys.exit(1)
 
     # if not cmd_line.disable_update:
-        # update_cnchi()
+        # update_cnchi(cmd_line)
 
     # Init PyObject Threads
-    threads_init()
+    # threads_init()
+    return cmd_line, logger
 
 
 if __name__ == '__main__':
-    init_cnchi()
-
+    cmd_line, logger = init_cnchi()
     # Create Gtk Application
-    app = CnchiApp()
-    exit_status = app.run(None)
+    app = CnchiApp(cmd_line=cmd_line, logger=logger)
+    exit_status = app.widget.run(None)
     sys.exit(exit_status)

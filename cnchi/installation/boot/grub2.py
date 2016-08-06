@@ -36,7 +36,7 @@ import subprocess
 import re
 
 try:
-    import parted3.fs_module as fs
+    import storage.filesystems as fs
     from installation import special_dirs
     from misc.run_cmd import call, chroot_call
     from misc.extra import random_generator

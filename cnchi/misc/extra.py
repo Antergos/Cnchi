@@ -37,6 +37,8 @@ import urllib
 from socket import timeout
 import random
 import string
+from functools import wraps
+from threading  import Thread
 
 try:
     import misc.osextras as osextras
@@ -47,6 +49,34 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 
 _DROPPED_PRIVILEGES = 0
+
+
+def bg_thread(func, *args, **kwargs):
+    """
+    Decorator that creates a new thread in which to run the wrapped function,
+    starts the thread, and then returns immediately.
+
+    """
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        __thread = Thread(target=func, args=args, kwargs=kwargs, daemon=True)
+        __thread.start()
+
+    return _decorated_function
+
+
+def does_callback(func, *args, **kwargs):
+    """
+    Decorator that prepends the function/method name to a function or method's *args.
+
+    """
+
+    @wraps(func)
+    def _decorated_function(*args, **kwargs):
+        func(func.__func__.__name__, *args, **kwargs)
+
+    return _decorated_function
 
 
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
@@ -187,7 +217,7 @@ def raise_privileges(func):
 
     @wraps(func)
     def helper(*args, **kwargs):
-        with raised_privileges() as privileged:
+        with raised_privileges() as __:
             return func(*args, **kwargs)
 
     return helper
@@ -389,8 +419,8 @@ def get_prop(obj, iface, prop):
     """ Get network interface property """
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-    except (dbus.DBusException, dbus.exceptions.DBusException) as err:
-        logging.warning(err)
+    except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
+        logging.warning(dbus_err)
         return None
 
 
@@ -415,28 +445,36 @@ def get_nm_state():
         return state
 
 
-def has_connection():
+def has_connection(callback=None, *args):
     """ Checks if we have an Internet connection """
     urls = [
-        'http://130.206.13.20',
-        'http://173.194.40.112',
-        'http://104.27.140.167']
+        'http://google.com',
+        'http://yandex.ru',
+        'http://baidu.com'
+    ]
+    _args = list(args)
+    _connected = False
 
     for url in urls:
         try:
-            urllib.request.urlopen(url, timeout=5)
+            urllib.request.urlopen(url, timeout=1)
         except (OSError, timeout, urllib.error.URLError) as url_err:
             logging.warning(url_err)
         else:
-            return True
+            _connected = True
+            break
 
-    # We cannot connect to any url, let's ask NetworkManager
-    # Problem: In a Virtualbox VM this returns true even when
-    # the host OS has no connection
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-        return True
+    if not _connected:
+        # We cannot connect to any url, let's ask NetworkManager
+        # Problem: In a Virtualbox VM this returns true even when
+        # the host OS has no connection
+        _connected = (get_nm_state() == NM_STATE_CONNECTED_GLOBAL)
 
-    return False
+    if callback is None:
+        return _connected
+    else:
+        _args = _args + [_connected]
+        callback(*_args)
 
 def add_connection_watch(func):
     """ Add connection watch to Networkmanager """
@@ -543,18 +581,13 @@ def gtk_refresh():
 def remove_temp_files():
     """ Remove Cnchi temporary files """
     temp_files = [
-        ".setup-running",
-        ".km-running",
-        "setup-pacman-running",
-        "setup-mkinitcpio-running",
-        ".tz-running",
-        ".setup",
-        "Cnchi.log"]
+        "cnchi.pid", ".km-running", ".tz-running", ".setup",
+        "setup-pacman-running", "setup-mkinitcpio-running", "cnchi.log"]
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
             # FIXME: Some of these tmp files are created with sudo privileges
-            with raised_privileges() as privileged:
+            with raised_privileges() as __:
                 os.remove(path)
 
 

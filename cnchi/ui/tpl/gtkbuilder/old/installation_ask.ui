@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="cnchi">
+	<requires lib="gtk+" version="3.18"/>
+	<object class="GtkBox" id="installation_ask">
+		<property name="visible">True</property>
+		<property name="can_focus">False</property>
+		<property name="halign">center</property>
+		<property name="valign">center</property>
+		<property name="hexpand">True</property>
+		<property name="orientation">vertical</property>
+		<property name="spacing">25</property>
+		<child> <!-- BEGIN CHILD 1  -->
+			<object class="GtkLabel" id="introduction">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="halign">center</property>
+				<property name="valign">start</property>
+				<property name="label" translatable="yes">How would you like to proceed?</property>
+				<property name="wrap">True</property>
+				<style>
+					<class name="ask_intro_text"/>
+				</style>
+			</object>
+			<packing>
+				<property name="expand">False</property>
+				<property name="fill">True</property>
+				<property name="position">0</property>
+			</packing>
+		</child> <!-- END CHILD 1 -->
+		<child> <!-- BEGIN CHILD 2 -->
+			<object class="GtkBox" id="ask_wrapper">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="halign">center</property>
+				<property name="valign">center</property>
+				<property name="orientation">horizontal</property>
+				<property name="homogeneous">True</property>
+				<property name="hexpand">False</property>
+				<property name="spacing">45</property>
+				<style>
+					<class name="ask_wrapper"/>
+				</style>
+				<child> <!-- BEGIN CHILD 2::1 -->
+					<object class="GtkBox" id="automatic_container">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+						<property name="halign">center</property>
+						<property name="valign">center</property>
+						<property name="orientation">vertical</property>
+						<child> <!-- BEGIN CHILD 2::1::1 -->
+							<object class="GtkToggleButton" id="automatic_radiobutton">
+								<property name="label" translatable="yes">Automatic</property>
+								<property name="visible">True</property>
+								<property name="can_focus">True</property>
+								<property name="receives_default">False</property>
+								<property name="halign">center</property>
+								<signal name="clicked" handler="on_automatic_radiobutton_toggled" swapped="no"/>
+								<style>
+									<class name="automatic_radiobutton"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">True</property>
+								<property name="position">0</property>
+							</packing>
+						</child> <!-- END CHILD 2::1::1 -->
+						<child> <!-- BEGIN CHILD 2::1::2 -->
+							<object class="GtkLabel" id="automatic_description">
+								<property name="visible">True</property>
+								<property name="can_focus">False</property>
+								<property name="halign">center</property>
+								<property name="label" translatable="yes">Erase a drive and install Antergos.</property>
+								<property name="wrap">True</property>
+								<style>
+									<class name="ask_label"/>
+									<class name="ask_label_automatic"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">True</property>
+								<property name="position">1</property>
+							</packing>
+						</child> <!-- END CHILD 2::1::2 -->
+					</object>
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">True</property>
+						<property name="position">0</property>
+					</packing>
+				</child> <!-- END CHILD 2::1 -->
+				<child> <!-- BEGIN CHILD 2::2 -->
+					<object class="GtkBox" id="advanced_wrapper">
+						<property name="hexpand">False</property>
+						<property name="halign">center</property>
+						<property name="valign">center</property>
+						<property name="orientation">vertical</property>
+						<child> <!-- BEGIN CHILD 2::2::1 -->
+							<object class="GtkToggleButton" id="advanced_radiobutton">
+								<property name="label" translatable="yes">Advanced</property>
+								<property name="visible">True</property>
+								<property name="can_focus">True</property>
+								<property name="receives_default">False</property>
+								<property name="halign">center</property>
+								<signal name="clicked" handler="on_advanced_radiobutton_toggled" swapped="no"/>
+								<style>
+									<class name="advanced_radiobutton"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">False</property>
+								<property name="position">0</property>
+							</packing>
+						</child> <!-- END CHILD 2::2::1 -->
+						<child> <!-- BEGIN CHILD 2::2::2 -->
+							<object class="GtkLabel" id="advanced_description">
+								<property name="visible">True</property>
+								<property name="can_focus">False</property>
+								<property name="halign">center</property>
+								<property name="label" translatable="yes">Choose where Antergos should be installed.</property>
+								<style>
+									<class name="ask_label"/>
+									<class name="ask_label_advanced"/>
+								</style>
+							</object>
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">True</property>
+								<property name="position">1</property>
+							</packing>
+						</child> <!-- END CHILD 2::2::2 -->
+					</object>
+				</child> <!-- END CHILD 2::2 -->
+			</object>
+			<packing>
+				<property name="expand">False</property>
+				<property name="fill">False</property>
+				<property name="position">1</property>
+			</packing>
+		</child> <!-- END CHILD 2 -->
+		<child> <!-- BEGIN CHILD 3 -->
+			<object class="GtkBox" id="stack_wrapper">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="halign">fill</property>
+				<property name="valign">end</property>
+				<property name="orientation">horizontal</property>
+				<child> <!-- BEGIN CHILD 3::1 -->
+					<object class="GtkStack" id="ask_stack_advanced">
+						<property name="halign">fill</property>
+						<property name="valign">center</property>
+						<property name="hexpand">True</property>
+						<property name="transition_type">over-left-right</property>
+						<child> <!-- BEGIN CHILD 3::1::1 -->
+							<object class="GtkBox" id="automatic_options_wrapper">
+								<property name="visible">True</property>
+								<property name="homogeneous">True</property>
+								<property name="can_focus">False</property>
+								<property name="halign">fill</property>
+								<property name="valign">center</property>
+								<property name="orientation">horizontal</property>
+								<property name="spacing">105</property>
+								<child> <!-- BEGIN CHILD 3::1::1::1 -->
+									<object class="GtkBox" id="automatic_options_wrapper1">
+										<property name="visible">True</property>
+										<property name="can_focus">False</property>
+										<property name="halign">fill</property>
+										<property name="valign">center</property>
+										<property name="orientation">vertical</property>
+										<property name="spacing">40</property>
+										<child> <!-- BEGIN CHILD 3::1::1::1::1 -->
+											<object class="GtkBox" id="encrypt_container">
+												<property name="orientation">vertical</property>
+												<property name="spacing">15</property>
+												<property name="halign">end</property>
+												<child>
+													<object class="GtkLabel" id="encrypt_label">
+														<property name="label" translatable="yes">Encrypt this installation.</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkSwitch" id="encrypt_checkbutton">
+														<property name="visible">True</property>
+														<property name="can_focus">True</property>
+														<property name="receives_default">False</property>
+														<property name="halign">center</property>
+														<property name="width_request">200</property>
+														<style>
+															<class name="switch"/>
+														</style>
+													</object>
+													<packing>
+														<property name="expand">False</property>
+														<property name="fill">True</property>
+														<property name="position">1</property>
+													</packing>
+												</child>
+											</object>
+										</child>  <!-- END CHILD 3::1::1::1::1 -->
+										<child>  <!-- BEGIN CHILD 3::1::1::1::2 -->
+											<object class="GtkBox" id="lvm_container">
+												<property name="orientation">vertical</property>
+												<property name="spacing">15</property>
+												<property name="halign">end</property>
+												<child>
+													<object class="GtkLabel" id="lvm_label">
+														<property name="label" translatable="yes">Use LVM with this installation.</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkSwitch" id="lvm_checkbutton">
+														<property name="visible">True</property>
+														<property name="can_focus">True</property>
+														<property name="receives_default">False</property>
+														<property name="halign">center</property>
+														<property name="width_request">200</property>
+														<signal name="notify::active" handler="on_automatic_lvm_checkbutton_toggled" swapped="no"/>
+														<style>
+															<class name="switch"/>
+														</style>
+													</object>
+													<packing>
+														<property name="expand">False</property>
+														<property name="fill">True</property>
+														<property name="position">2</property>
+													</packing>
+												</child>
+											</object>
+										</child>  <!-- END CHILD 3::1::1::1::2 -->
+									</object>
+								</child> <!-- END CHILD 3::1::1::1 -->
+								<child> <!-- BEGIN CHILD 3::1::1::2 -->
+									<object class="GtkBox" id="automatic_options_wrapper2">
+										<property name="visible">True</property>
+										<property name="can_focus">False</property>
+										<property name="halign">fill</property>
+										<property name="valign">center</property>
+										<property name="orientation">vertical</property>
+										<property name="spacing">40</property>
+										<child>  <!-- BEGIN CHILD 3::1::1::2::1 -->
+											<object class="GtkBox" id="zfs_container">
+												<property name="spacing">15</property>
+												<property name="orientation">vertical</property>
+												<property name="halign">start</property>
+												<child>
+													<object class="GtkLabel" id="zfs_label">
+														<property name="label" translatable="yes">Use ZFS with this installation.</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkSwitch" id="zfs_checkbutton">
+														<property name="visible">True</property>
+														<property name="can_focus">True</property>
+														<property name="receives_default">False</property>
+														<property name="halign">center</property>
+														<property name="width_request">200</property>
+														<signal name="notify::active" handler="on_automatic_zfs_checkbutton_toggled" swapped="no"/>
+														<style>
+															<class name="switch"/>
+														</style>
+													</object>
+													<packing>
+														<property name="expand">False</property>
+														<property name="fill">True</property>
+														<property name="position">1</property>
+													</packing>
+												</child>
+											</object>
+										</child>  <!-- END CHILD 3::1::1::2::1 -->
+										<child>  <!-- BEGIN CHILD 3::1::1::2::2 -->
+											<object class="GtkBox" id="home_container">
+												<property name="spacing">15</property>
+												<property name="orientation">vertical</property>
+												<property name="halign">start</property>
+												<child>
+													<object class="GtkLabel" id="home_label">
+														<property name="label" translatable="yes">Use separate Home partition.</property>
+													</object>
+												</child>
+												<child>
+													<object class="GtkSwitch" id="home_checkbutton">
+														<property name="visible">True</property>
+														<property name="can_focus">True</property>
+														<property name="receives_default">False</property>
+														<property name="halign">center</property>
+														<property name="width_request">200</property>
+														<style>
+															<class name="switch"/>
+														</style>
+													</object>
+													<packing>
+														<property name="expand">False</property>
+														<property name="fill">True</property>
+														<property name="position">2</property>
+													</packing>
+												</child>
+											</object>
+										</child>  <!-- END CHILD 3::1::1::2::2 -->
+									</object>
+								</child> <!-- END CHILD 3::1::1::2 -->
+							</object>
+						</child> <!-- END CHILD 3::1::1 -->
+						<child> <!-- BEGIN CHILD 3::1::2 -->
+							<object class="GtkBox" id="advanced_options_wrapper"></object>
+						</child> <!-- END CHILD 3::1::2 -->
+					</object>
+				</child> <!-- END CHILD 3::1 -->
+			</object>
+			<packing>
+				<property name="padding">15</property>
+			</packing>
+		</child> <!-- END CHILD 3 -->
+	</object>
+</interface>

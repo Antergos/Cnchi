@@ -29,18 +29,21 @@
 
 """ Format and Installation process module. """
 
-import multiprocessing
-import subprocess
-import traceback
 import logging
-import sys
+import multiprocessing
 import queue
+import subprocess
+import sys
+import traceback
 
-import pyalpm
+try:
+    import pyalpm
+except ImportError:
+    pass
 
 import misc.extra as misc
 
-from download import download
+from installation.download import download
 
 from installation import select_packages as pack
 
@@ -94,7 +97,14 @@ class Process(multiprocessing.Process):
 
             self.queue_event('info', _("Getting your disk(s) ready for Antergos..."))
             with misc.raised_privileges() as __:
-                self.install_screen.run_format()
+                if self.settings.get('is_iso'):
+                    self.install_screen.run_format()
+
+            path = "/tmp/.cnchi_partitioning_completed"
+            with open(path, 'w') as part_file:
+                part_file.write("# File created by Cnchi to force\n")
+                part_file.write("# users to reboot before retry\n")
+                part_file.write("# formatting their hard disk(s)\n")
 
             path = "/tmp/.cnchi_partitioning_completed"
             with open(path, 'w') as part_file:
@@ -104,7 +114,8 @@ class Process(multiprocessing.Process):
 
             self.queue_event('info', _("Installation will start now!"))
             with misc.raised_privileges() as __:
-                self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
+                if self.settings.get('is_iso'):
+                    self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(
                 process_error.cmd,

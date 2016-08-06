@@ -1,0 +1,108 @@
+{% extends 'pages/_00_base/html_page.html' %}
+
+{% from 'pages/macros/_macros.html' import collection %}
+
+
+{#
+ # CSS Styles Specific To This Page
+ #}
+{% block page_styles %}
+	<style>
+		body, html, .cnchi_app { background: #FFFFFF; color: #32373c; font-weight: 400; height: 100%; }
+
+		h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 26px; text-align: center; font-weight: 400; margin-top: 0px; }
+
+		h3 { font-size: 18px; font-family: 'Open Sans', sans-serif; }
+
+		.content_wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; -webkit-user-select: none; }
+
+		.heading { text-align: center; margin: 0px; margin-bottom: 35px; }
+
+		.checked_items li { opacity: 0; background-color: #f4f8fc; cursor: default; }
+
+		.checked_items i { transition: all 0.2s ease-in-out; }
+	</style>
+{% endblock page_styles %}
+
+
+
+{#
+ # Page Content (Appears below the header)
+ #}
+{% block main_content %}
+	<div class="grid-100 grid-parent content_wrapper">
+		<div class="grid-100 heading">
+			<h1>{{ _('Preinstall Check') }}</h1>
+			<h3>{{ _('For best results, please ensure the following:') }}</h3>
+		</div>
+
+		<div class="grid-90 prefix-5 suffix-5 grid-parent">
+			{{ collection(checked_items, 'checked_items', 2) }}
+		</div>
+	</div>
+{% endblock main_content %}
+
+
+
+{#
+ # Javascript For This Page
+ #}
+{% block page_script %}
+	<script>
+		window._page = null;
+
+		class CheckPage extends CnchiPage {
+
+			constructor( id ) {
+				if ( null !== window._page ) {
+					return window._page;
+				}
+
+				super(id);
+
+				window._page = this;
+				this.signals = JSON.parse('{{ signals }}');
+
+				this.register_allowed_signals();
+				this.register_event_handlers();
+				this.initialize();
+			}
+
+			initialize() {
+				Materialize.showStaggeredList('.checked_items');
+
+				for ( let signal of this.signals ) {
+					if ( signal.indexOf('do-') > -1 ) {
+						cnchi.emit_signal(signal);
+					}
+				}
+			}
+
+			checks_results_cb( event, result ) {
+				let color = ( true === result ) ? 'green' : 'red',
+					icon = ( true === result ) ? 'check' : 'close',
+					signal = event.type.replace('-result', ''),
+					css_id = signal.replace(/-/g, '_'),
+					selector = `#${css_id}`;
+
+				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
+				_page.maybe_unlock_next_tab();
+			}
+
+			maybe_unlock_next_tab() {
+				if ( ! $('.content_wrapper').find('.red, .gray').length ) {
+					_page.unlock_next_tab();
+				}
+			}
+
+			register_event_handlers() {
+				for ( let signal of this.signals ) {
+					if ( signal.indexOf('-result') > -1 ) {
+						$(window).on(signal, this.checks_results_cb);
+					}
+				}
+			}
+		}
+
+	</script>
+{% endblock page_script %}

@@ -1,0 +1,364 @@
+{#
+ # _macros.html
+ #
+ # Copyright © 2013-2016 Antergos
+ #
+ # This file is part of Cnchi.
+ #
+ # Cnchi is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Cnchi is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ # GNU General Public License for more details.
+ #
+ # The following additional terms are in effect as per Section 7 of the license:
+ #
+ # The preservation of all legal notices and author attributions in
+ # the material or in the Appropriate Legal Notices displayed
+ # by works containing it is required.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
+ #}
+
+{# Macros (Reusable Code Snippets) #}
+
+
+{#
+ # Generates HTML for text with icon.
+ #
+ # Args:
+ #     icon_info  (dict): Dict which maps one or more icon_class(es) & icon_color(s) to possible `text` values.
+ #     text       (str):  The text to display next to the icon. Not required when calling this
+ #                        macro from another macro. You should place text inside call block instead.
+ #
+ #}
+{% macro text_with_icon(icon_info, text=None) %}
+	{% if text is none %}
+		{% set text = caller() %}
+	{% endif %}
+
+	{% set icon_class = icon_info.class %}
+	{% set icon_color = icon_info.color %}
+
+	{% if icon_info.class is mapping %}
+		{% set icon_class = icon_info.class[text] %}
+	{% endif %}
+
+	{% if icon_info.color is mapping %}
+		{% set icon_color = icon_info.color[text] %}
+	{% endif %}
+
+	<i class="fa fa-{{ icon_class }}" style="color: {{ icon_color }}"></i> {{ text }}
+{% endmacro %}
+
+
+{#
+ # Outputs "readonly" if condition evaluates to a truthy value.
+ #
+ # Args:
+ #     condition (mixed): If condition is truthy, output "readonly".
+ #
+ #}
+{%- macro readonly(condition) -%}
+	{%- if condition -%}
+		readonly
+	{%- endif -%}
+{%- endmacro -%}
+
+
+{#
+ # Outputs `text` if condition evaluates to a truthy value.
+ #
+ # Args:
+ #     condition (mixed): If condition is truthy, output "checked".
+ #     text      (str):   The text to output. Not required when calling this macro from another macro;
+ #                        you should place text inside call block instead.
+ #
+ #}
+{%- macro conditional_text(condition, text=None) -%}
+	{% if text is none %}
+		{% set text = caller() %}
+	{% endif %}
+	{%- if condition -%}
+		{{ text }}
+	{%- endif -%}
+{%- endmacro -%}
+
+
+
+{#
+ # Outputs HTML for Cnchi's tabbed navigation.
+ #
+ # Args:
+ #     tabs         (list[tuple]): List of tuples containing a tab label and whether or not it is the active tab.
+ #                                 For example: [('Check', True), ('Location', False)].
+ #     column_width (str):         Column size (a number in the range 1-12)
+ #
+ #}
+{% macro tabbed_navigation(tabs, column_width='3', top_level=False) %}
+	{% if top_level %}
+		{% set prefix = 'cnchi://' %}
+	{% else %}
+		{% set prefix = '#' %}
+	{% endif %}
+	<div class="row navigation_buttons">
+		<div class="col s12">
+			<ul class="tabs">
+				{% for tab in tabs %}
+					<li class="tab col s{{ column_width }} locked{{ conditional_text(tab[1], ' active') }}">
+						<a href="{{ '%s%s'|format(prefix, tab[0]|lower()|replace(' ', '_')) }}" class="{{ conditional_text(tab[1], ' active') }}">{{ tab[0] }}</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% for tab in tabs %}
+			<div id="_{{ tab[0]|lower() }}" class="col s12"></div>
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+
+
+{#
+ # Outputs HTML for a collection (listbox styled <ul>) that includes an avatar or icon.
+ #
+ # Args:
+ #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
+ #                            item info tuple should contain 5 things: css id, material icon name, icon color,
+ #                            heading, & subheading.
+ #                            For example: [('cnchi_updated', 'check', 'green', 'Updated', 'Cnchi is up-to-date')].
+ #     _class  (str):         Optional css class for the collection.
+ #     columns (int):         Split into this number of columns.
+ #
+ #}
+{% macro collection(items, _class='', columns=1) %}
+	{% if items %}
+		{% if '' != _class %}
+			{% set _class = ' %s'|format(_class) %}
+		{% endif %}
+
+		{% for column in items|slice(columns) %}
+			<div class="grid-50">
+				<ul class="collection{{ _class }}">
+					{% for item in column %}
+						<li id="{{ item[0] }}" class="collection-item avatar">
+							<i class="material-icons circle {{ item[2] }}">{{ item[1] }}</i>
+							<span class="title">{{ item[3] }}</span>
+							<p>{{ item[4] }}</p>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+
+{#
+ # Outputs HTML for a collection (listbox styled <ul>) that includes only text.
+ #
+ # Args:
+ #     items   (list[tuple]): List of tuples where each tuple contains info for an item in the collection. Each
+ #                            item info tuple should contain 2 things: css id and the text content.
+ #                            For example: [('english', 'English (USA)')].
+ #     _class  (str):         Optional css class for the collection.
+ #     columns (int):         Split into this number of columns.
+ #
+ #}
+{% macro collection_text_only(items, _class='', columns=1) %}
+	{% if items %}
+		{% if '' != _class %}
+			{% set _class = ' %s'|format(_class) %}
+		{% endif %}
+
+		{% for column in items|slice(columns) %}
+			<div class="grid-100">
+				<div class="collection{{ _class }}" role="listbox">
+					{% for item in column %}
+						<a href="#" id="{{ item[0] }}" class="collection-item" role="option">{{ item[1] }}</a>
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+
+{#
+ # Outputs HTML for the parent container of a group of collapsable elements (eg. accordions).
+ # This macro should be called from a `call` block containing the collapsable items macro.
+ #
+ # Args:
+ #     _class  (str): Optional css class for the collection.
+ #
+ #}
+{% macro collapsable_items_container(_class='', num_visible_items=5) %}
+	{% if '' != _class %}
+		{% set _class = ' %s'|format(_class) %}
+	{% endif %}
+	<ul class="collapsible{{ _class }}" data-collapsible="accordion" data-num_visible_items="{{ num_visible_items }}" role="tablist">
+		{{ caller() }}
+	</ul>
+{% endmacro %}
+
+
+{#
+ # Outputs HTML for one or more collapsable element(s) (eg. accordions/toggles).
+ #
+ # Args:
+ #     items  (list[tuples]): List of tuples container the info for each element.
+ #                            Tuple contents: css class, icon class or img src url, title, contents.
+ #                            Example: ('US', 'cnchi://...', 'United States', 'some contents...')
+ #
+ #}
+{% macro collapsable_items(items) %}
+	{% for item in items %}
+		{% if item[1].startswith('cnchi://') %}
+			{% set icon_or_image = '<img src="%s" class="flag z-depth-1" />'|format(item[1]) %}
+		{% elif '' != item[1] %}
+			{% set icon_or_image = '<i class="material-icons">%s</i>'|format(item[1]) %}
+		{% else %}
+			{% set icon_or_image = '' %}
+		{% endif %}
+		<li class="{{ item[0] }} {{ '%s_tab'|format(item[0]) }}">
+			<div id="{{ '%s_tab%s_header'|format(item[0], item[4]) }}" class="collapsible-header" role="tab" aria-controls="{{ '%s_tab%s_body'|format(item[0], item[4]) }}">{{ icon_or_image }} {{ item[2] }} <div class="icon_wrap"><i class="material-icons">add</i></div></div>
+			<div id="{{ '%s_tab%s_body'|format(item[0], item[4]) }}" class="collapsible-body" role="tabpanel" aria-labelledby="{{ '%s_tab%s_header'|format(item[0], item[4]) }}">{{ item[3] }}</div>
+		</li>
+	{% endfor %}
+{% endmacro %}
+
+
+{#
+ # Outputs JavaScript for collapsable element(s) (eg. accordions/toggles).
+ #}
+{% macro collapsable_items_javascript(script_tags=False) %}
+	{% if script_tags %}
+		<script>
+	{% endif %}
+
+	class CollapsibleContainers extends CnchiObject {
+		constructor() {
+			super();
+			this.collapsibles = [];
+
+			this.initialize();
+		}
+
+		initialize() {
+			this._find_collapsibles();
+			this._maybe_setup_collapsibles();
+		}
+
+		_find_collapsibles() {
+			$( 'ul.collapsible' ).each( ( index, element ) => {
+				let $collapsible = $( element );
+
+				if ( this.collapsibles.findIndex( $c => $collapsible.is( $c ) ) === - 1 ) {
+					// $container is not in our collapsibles array, let's add it.
+					this.collapsibles.push( $collapsible );
+				}
+			} );
+		}
+
+		_get_collapsible_from_event( event ) {
+			let $target = $( event.currentTarget ).closest( '.collapsible' ),
+				$result;
+
+			for ( let $collapsible of this.collapsibles ) {
+				if ( $collapsible.is( $target ) ) {
+					$result = $collapsible;
+					break;
+				}
+			}
+
+			return $result;
+		}
+
+		_header_close( $header ) {
+			$header.find( 'i' ).text( 'add' );
+			$header.removeClass( '_active' );
+		}
+
+		_header_open( $header ) {
+			$header.find( 'i' ).text( 'remove' );
+			$header.addClass( '_active' );
+		}
+
+		_maybe_setup_collapsibles() {
+			for ( let $collapsible of this.collapsibles ) {
+				let num_visible_items = $collapsible.data( 'num_visible_items' ) || 5,
+					initialized = $collapsible.data( 'initialized' ) ? true : false;
+
+				if ( false === initialized ) {
+					$collapsible.collapsible();
+					this._setup_collapsible( $collapsible, num_visible_items );
+					$collapsible.data( 'initialized', true );
+				}
+			}
+		}
+
+		_setup_collapsible( $collapsible, num_visible_items ) {
+			$collapsible.on( 'click', '.collapsible-header', this.header_clicked_cb );
+			$collapsible.on( 'click', '.collection li', this.collection_item_clicked_cb );
+
+			$collapsible.children().each( ( index, element ) => {
+				if ( index > num_visible_items ) {
+					$( element ).addClass( 'future' );
+				}
+
+				new Waypoint.Inview( {
+					element: $( element ),
+					context: $collapsible,
+					enter: function( direction ) {
+						if ( 'down' === direction ) {
+							$( this.element ).removeClass( 'future' );
+						} else {
+							$( this.element ).removeClass( 'past' );
+						}
+					},
+					exited: function( direction ) {
+						if ( 'down' === direction ) {
+							$( this.element ).addClass( 'past' );
+						} else {
+							$( this.element ).addClass( 'future' );
+						}
+					}
+				} );
+			} );
+		}
+
+		collection_item_clicked_cb( event ) {
+			let $collapsible = this._get_collapsible_from_event( event );
+			$collapsible.trigger( 'collection-item-selected', event );
+		}
+
+		header_clicked_cb( event ) {
+			// Allow time for animation to complete
+			setTimeout( () => {
+				let $header = $( event.currentTarget ).closest( '.collapsible-header' ),
+					$parent = $header.parent(),
+					$last_active = ($parent.hasClass( '_active' )) ? $parent : $parent.siblings( '._active' );
+
+				console.log( [ $header, $parent, $last_active ] );
+
+				this._header_close( $last_active );
+
+				if ( $parent.is( $last_active ) ) {
+					return;
+				}
+
+				this._header_open( $parent );
+
+			}, 325 );
+		}
+	}
+
+	{% if script_tags %}
+		</script>
+	{% endif %}
+{% endmacro %}
