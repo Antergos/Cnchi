@@ -11,7 +11,7 @@ _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-d -v --disable-rank-mirrors" #-s bugsnag"
 _POLICY_FILE='com.antergos.pkexec.cnchi.policy'
-_CNCHI_BIN="/usr/share/cnchi/bin/cnchi"
+_CNCHI_BIN="/usr/share/cnchi/dist/bin/cnchi"
 
 # If we aren't running on Arch make sure we use python3
 [[ -f /etc/arch-release ]] || _PYTHON="/usr/bin/python3"
