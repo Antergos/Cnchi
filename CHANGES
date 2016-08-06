@@ -1,3 +1,6 @@
+[2016-08-06 05:06:17 -0500]  update pre-commit hook to work-around jetbrains ides annoyance.        Dustin Falgout  {9a39582}
+[2016-08-06 04:59:26 -0500]  update pre-commit hook to work-around jetbrains ides annoyance.        Dustin Falgout  {031dd72}
+[2016-08-06 04:52:41 -0500]  update pre-commit hook to work-around jetbrains ides annoyance.        Dustin Falgout  {95bff50}
 [2016-08-06 03:19:45 -0500]  update pre-commit hook. few other odds and ends                        Dustin Falgout  {e94994b}
 [2016-08-06 02:51:21 -0500]  Merge branch 'master' of github.com:lots0logs/cnchi-dev into master    Dustin Falgout  {eed02b2}
 [2016-08-06 02:22:55 -0500]  update readme                                                          Dustin Falgout  {56d0314}
