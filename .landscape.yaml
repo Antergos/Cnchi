@@ -3,3 +3,11 @@ pylint:
     - undefined-variable
 python-targets:
     - 3
+max-line-length: 99
+ignore-paths:
+    - cnchi/ui/gtk
+    - utils
+    - data
+ignore-patterns:
+    - (cnchi\/ui\/html\/pages\/resources\/js\/[^cn]{2}.+)
+    - (cnchi\/ui\/html\/pages\/resources\/css\/[^sty]{3}.+)
