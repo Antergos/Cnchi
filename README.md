@@ -1,7 +1,7 @@
 # Cnchi
 **Graphical Installer for Antergos Linux**
 
-<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a> &nbsp;&nbsp;&nbsp;[![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
+[![Codacy](https://img.shields.io/codacy/04b4ac624a0149efb8b4e9d143167660.svg?style=flat-square)](https://www.codacy.com/app/Antergos/Cnchi)&nbsp;&nbsp;![Python 3.5](https://img.shields.io/badge/Python-3.5-blue.svg)
 
 You are viewing the `master` branch.
 
