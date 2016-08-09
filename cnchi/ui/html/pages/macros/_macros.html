@@ -292,7 +292,7 @@
 		_maybe_setup_collapsibles() {
 			for ( let $collapsible of this.collapsibles ) {
 				let num_visible_items = $collapsible.data( 'num_visible_items' ) || 5,
-					initialized = $collapsible.data( 'initialized' ) ? true : false;
+					initialized = 'undefined' !== typeof $collapsible.data( 'initialized' );
 
 				if ( false === initialized ) {
 					$collapsible.collapsible();
@@ -304,7 +304,7 @@
 
 		_setup_collapsible( $collapsible, num_visible_items ) {
 			$collapsible.on( 'click', '.collapsible-header', this.header_clicked_cb );
-			$collapsible.on( 'click', '.collection li', this.collection_item_clicked_cb );
+			$collapsible.on( 'click', '.collection-item', this.collection_item_clicked_cb );
 
 			$collapsible.children().each( ( index, element ) => {
 				if ( index > num_visible_items ) {
@@ -344,7 +344,7 @@
 					$parent = $header.parent(),
 					$last_active = ($parent.hasClass( '_active' )) ? $parent : $parent.siblings( '._active' );
 
-				console.log( [ $header, $parent, $last_active ] );
+				console.log( [ event, $header, $parent, $last_active ] );
 
 				this._header_close( $last_active );
 

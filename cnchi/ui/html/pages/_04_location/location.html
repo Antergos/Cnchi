@@ -233,8 +233,8 @@
 				cnchi.emit_signal( 'do-load-keyboard-layouts' );
 			}
 
-			keyboard_layout_selected_cb( event ) {
-				let $variant = $( event.target ),
+			keyboard_layout_selected_cb( event, original_event ) {
+				let $variant = $( original_event.target ),
 					variant = $variant.attr( 'id' );
 
 				$variant.addClass( 'active' );
@@ -247,8 +247,8 @@
 				this.unlock_next_tab();
 			}
 
-			location_selected_cb( event ) {
-				let $location = $( event.target ),
+			location_selected_cb( event, original_event ) {
+				let $location = $( original_event.target ),
 					location = $location.attr( 'id' );
 
 				$location.addClass( 'active' );
