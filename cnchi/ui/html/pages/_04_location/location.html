@@ -6,6 +6,7 @@
 	collapsable_items_container,
 	collapsable_items,
 	collapsable_items_javascript,
+	keyboard_widget,
 	conditional_text with context %}
 
 {% block before_page_styles %}
@@ -69,6 +70,7 @@
 		#keyboard_layout .collapsible-body .collection { display: flex; flex-wrap: wrap; justify-content: stretch; }
 
 		#keyboard_layout .collapsible-body .collection a { flex: 1 1 auto; }
+		#widget_container { position: relative; width: 100%; height: 350px; }
 
 	</style>
 {% endblock page_styles %}
@@ -164,7 +166,9 @@
 					</div>
 
 					<div class="grid-100 keyboard_widget">
-
+						{% if keyboard_layouts %}
+							{{ keyboard_widget() }}
+						{% endif %}
 					</div>
 
 					<div class="grid-100 input_field_container">
@@ -267,6 +271,7 @@
 					this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 					this.collapsible_containers.initialize();
 					this.$kbd_layouts_list.on( 'collection-item-selected', this.keyboard_layout_selected_cb );
+					let kbd_widget = new window.KeyboardWidget('en');
 				}
 			}
 
