@@ -369,7 +369,7 @@
  #}
 {% macro keyboard_widget_styles_and_scripts() %}
 	<!-- keyboard widget css & script -->
-	<link href="{{ RESOURCES_DIR }}/includes/keyboard/css/keyboard.css" rel="stylesheet">
+	<link href="{{ RESOURCES_DIR }}/css/keyboard-dark.css" rel="stylesheet">
 	<script src="{{ RESOURCES_DIR }}/includes/keyboard/js/jquery.keyboard.js"></script>
 
 	<!-- css for the preview keyset extension -->
@@ -436,7 +436,7 @@
 				reposition   : true,
 
 				// preview added above keyboard if true, original input/textarea used if false
-				usePreview   : true,
+				usePreview   : false,
 
 				// if true, the keyboard will always be visible
 				alwaysOpen   : true,
@@ -572,7 +572,7 @@
 				// Set this to append the keyboard immediately after the input/textarea it
 				// is attached to. This option works best when the input container doesn't
 				// have a set width and when the "tabNavigation" option is true
-				appendLocally: false,
+				appendLocally: true,
 
 				// Append the keyboard to a desired element. This can be a jQuery selector
 				// string or object
