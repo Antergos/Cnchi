@@ -371,6 +371,9 @@
 	<!-- keyboard widget css & script -->
 	<link href="{{ RESOURCES_DIR }}/css/keyboard-dark.css" rel="stylesheet">
 	<script src="{{ RESOURCES_DIR }}/includes/keyboard/js/jquery.keyboard.js"></script>
+	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/layouts/keyboard-layouts-greywyvern.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/languages/fr.min.js"></script>
+
 
 	<!-- css for the preview keyset extension -->
 	<link href="{{ RESOURCES_DIR }}/includes/keyboard/css/keyboard-previewkeyset.css" rel="stylesheet">
@@ -404,23 +407,23 @@
 	class KeyboardWidget extends CnchiObject {
 		constructor(lang_code) {
 			super();
-			this.lang_code = lang_code;
+			this.lang = this._get_lang_from_lang_code(lang_code);
+			this.layout = this._normalize_layout_identifier(lang_code);
+			this.$keyboard = null;
 
 			this.initialize();
 		}
 
 		initialize() {
-			$('#keyboard').keyboard({
+			this.$keyboard = $('#keyboard').keyboard({
 				// set this to ISO 639-1 language code to override language set by the layout
 				// http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 				// language defaults to "en" if not found
-				language     : this.lang_code,  // string or array
+				language     : this.lang,  // string or array
 				rtl          : false, // language direction right-to-left
 
 				// *** choose layout ***
-				layout       : 'qwerty',
-				customLayout : { 'normal': ['{cancel}'] },
-
+				layout       : this.layout,
 				position     : {
 					// optional - null (attach to input/textarea) or a jQuery object
 					// (attach elsewhere)
@@ -688,6 +691,37 @@
 
 			});
 		}
+
+		_get_lang_from_lang_code( lang_code ) {
+			if ( lang_code.indexOf('_') > -1 ) {
+				lang_code = lang_code.split('_')[0]
+			}
+
+			return lang_code;
+		}
+
+		_normalize_layout_identifier(lang_code) {
+			let lang = null, variant = null;
+
+			lang_code = lang_code.toLowerCase();
+
+			if ( lang_code.indexOf('_') > -1 ) {
+				[lang, variant] = lang_code.split( '_' );
+				if ( lang === variant ) {
+					variant = null;
+				}
+			} else {
+				lang = lang_code;
+			}
+
+			if ( null !== variant ) {
+				lang_code = `${lang}-${variant}`;
+			} else {
+				lang_code = lang;
+			}
+
+			return lang_code;
+		}
 	}
 
 	window.KeyboardWidget = KeyboardWidget;
@@ -705,6 +739,5 @@
 	<div id="widget_container">
 		<input type="text" id="keyboard" />
 	</div>
-	{{ keyboard_widget_styles_and_scripts() }}
 	{{ keyboard_widget_javascript(script_tags=True) }}
 {% endmacro %}

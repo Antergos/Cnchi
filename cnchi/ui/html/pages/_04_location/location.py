@@ -60,7 +60,7 @@ class LocationPage(HTMLPage):
         self.locations = None
         self.locations_items = []
         self.keyboard_layouts = []
-        self.page_tabs_requsted = []
+        self.page_tabs_requested = []
 
         self.signals.extend(['show-all-locations', 'load-keyboard-layouts'])
         self.tabs.extend([

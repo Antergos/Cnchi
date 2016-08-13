@@ -7,6 +7,7 @@
 	collapsable_items,
 	collapsable_items_javascript,
 	keyboard_widget,
+	keyboard_widget_styles_and_scripts,
 	conditional_text with context %}
 
 {% block before_page_styles %}
@@ -137,21 +138,18 @@
 					{% if keyboard_layouts %}
 						{% call collapsable_items_container('grow', 8) %}
 							{% for keyboard_layout in keyboard_layouts %}
-								{% set _none = _('None') %}
-								{% set variants = [_none] %}
+								{%set no_variant = (keyboard_layout['id'], keyboard_layout['name']) %}
+								{% set variants = [no_variant] %}
 								{% set layout_index = loop.index %}
-								{% set variant_key = keyboard_layout['title'] %}
 
-								{% for variant in keyboard_layout[variant_key] %}
-									{% do variants.append((variant, variant)) %}
-								{% else %}
-									{% do variants.append((variant_key, variant_key)) %}
+								{% for variant in keyboard_layout['variants'] %}
+									{% do variants.append((variant['id'], variant['name'])) %}
 								{% endfor %}
 
 								{% set contents = collection_text_only(variants) %}
 
 								{% set title %}
-									<div class="title">{{ variant_key }}</div>
+									<div class="title">{{ keyboard_layout['name'] }}</div>
 								{% endset %}
 
 								{{ collapsable_items([(keyboard_layout['id'], '', title, contents, layout_index)]) }}
@@ -202,7 +200,8 @@
 {% endblock after_jquery %}
 
 {% block page_script %}
-	<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>
+	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
+	{{ keyboard_widget_styles_and_scripts() }}
 	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.min.js"></script>
 	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.inview.min.js"></script>
 	<script>
@@ -223,6 +222,7 @@
 				this.location = null;
 				this.layout = null;
 				this.variant = null;
+				this.kbd_widget = null;
 				this.collapsible_containers = new CollapsibleContainers();
 
 				this.$show_all_locations = $( '#show_all_locations' );
@@ -273,7 +273,7 @@
 					this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 					this.collapsible_containers.initialize();
 					this.$kbd_layouts_list.on( 'collection-item-selected', this.keyboard_layout_selected_cb );
-					let kbd_widget = new window.KeyboardWidget('en');
+					this.kbd_widget = new window.KeyboardWidget(this.location);
 				}
 			}
 

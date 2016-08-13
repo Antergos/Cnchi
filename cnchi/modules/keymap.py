@@ -88,11 +88,20 @@ class KeymapModule(BaseModule):
     def get_keyboard_layouts_list(self):
         layouts = self.kbd_names.get_layouts()
         self.logger.debug(layouts)
-        return [{
-                    str(layouts[layout_name]): [str(v) for v in layouts[layout_name].variants],
-                    'id': layout_name,
-                    'title': str(layouts[layout_name])}
-                for layout_name in layouts]
+        return [
+            {
+                'id': layout_name,
+                'name': str(layouts[layout_name]),
+                'variants': [
+                    {
+                        'id': layouts[layout_name].variants[variant].name,
+                        'name': str(layouts[layout_name].variants[variant])
+                    }
+                    for variant in layouts[layout_name].variants
+                ]
+             }
+            for layout_name in layouts
+        ]
 
     def set_keymap(self, layout, variant=None):
         self.settings.keyboard_layout = layout
