@@ -68,12 +68,10 @@
 
 		#keyboard_layout .grid-65 p { text-align: left; }
 
-		#keyboard_layout .collapsible-body .collection { display: flex; flex-wrap: wrap; justify-content: stretch; }
-
-		#keyboard_layout .collapsible-body .collection a { flex: 1 1 auto; }
+		#keyboard_layout .collapsible-body .collection a { font-size: 13px; font-weight: 400; text-align: left;}
+		#keyboard_layout .collapsible-body .collection { text-align: left; }
 		#widget_container { position: relative; width: 100%; height: 350px; }
 		#keyboard_layout #widget_container .kbd_container { left: 30px; top: 80px;}
-		#keyboard_layout #widget_container .kbd_key { background: #ffffff; }
 
 	</style>
 {% endblock page_styles %}
@@ -202,8 +200,6 @@
 {% block page_script %}
 	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
 	{{ keyboard_widget_styles_and_scripts() }}
-	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.min.js"></script>
-	<script src="{{ RESOURCES_DIR }}/js/jquery.waypoints.inview.min.js"></script>
 	<script>
 		{{ collapsable_items_javascript() }}
 
