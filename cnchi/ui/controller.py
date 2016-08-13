@@ -84,7 +84,10 @@ class Controller(BaseObject, metaclass=Singleton):
 
     def _initialize_pages(self):
         self._pages_helper = PagesHelper()
-        self.set_current_page(0)
+        self.logger.debug(self.settings.cmd_line)
+        start_page = 0 if not self.settings.cmd_line.z_hidden else 3
+
+        self.set_current_page(start_page)
 
     def do_restart(self):
         pass

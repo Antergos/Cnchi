@@ -135,7 +135,7 @@
 				this.has_connection = false;
 
 				this.register_allowed_signals();
-				this.maybe_skip_to_next_page();
+				// this.maybe_skip_to_next_page();
 				this.register_event_handlers();
 				this.initialize();
 			}
@@ -156,8 +156,7 @@
 
 			do_update_check() {
 				if ( false === this.has_connection ) {
-					// TODO: Finish implementing JS -> Python logging so we can use log levels (debug/error/etc)
-					console.log('An internet connection is required in order to check for installer update.');
+					this.logger('An internet connection is required in order to check for installer update.');
 					return;
 				}
 
@@ -182,8 +181,6 @@
 				this.$welcome_wrapper.animateCss('magictime swashIn', () => {
 					_page.$welcome_wrapper.addClass('showme');
 				});
-
-				cnchi.emit_signal('do-install-it-selected');
 			}
 
 			install_it_button_clicked_cb( event ) {

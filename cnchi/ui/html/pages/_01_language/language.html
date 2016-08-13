@@ -96,15 +96,13 @@
 				this.cache_key = 'cnchi::language::selected';
 
 				this.register_allowed_signals();
-				this.maybe_skip_to_next_page();
+				// this.maybe_skip_to_next_page();
 				this.initialize();
 			}
 
 			initialize() {
 				$('html, body').css({'background': '#383A41', 'opacity': 1});
 				$('select').material_select();
-
-				cnchi.emit_signal('do-go-to-next-page');
 
 				this.register_event_handlers();
 			}

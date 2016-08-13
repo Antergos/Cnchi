@@ -89,6 +89,7 @@ class CnchiApp(BaseObject):
 
         # Command line options
         self.cmd_line = cmd_line
+        self.settings.cmd_line = cmd_line
 
     def _maybe_clear_webkit_data(self):
         _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
