@@ -279,12 +279,11 @@ class SelectPackages(object):
         # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
         if self.vbox and self.desktop == "base":
             self.packages.append("virtualbox-guest-utils-nox")
+            self.conflicts.append("virtualbox-guest-utils")
 
         # Add linux-lts-headers if LTS kernel is installed in a vbox vm
-        # only if not already appended
         if self.vbox and self.settings.get('feature_lts'):
-            if "linux-lts-headers" not in self.packages:
-                self.packages.append("linux-lts-headers")
+            self.packages.append("linux-lts-headers")
 
         # Add filesystem packages
         logging.debug("Adding filesystem packages")
