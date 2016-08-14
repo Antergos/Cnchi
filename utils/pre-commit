@@ -12,6 +12,8 @@ _LOCK='/tmp/.CNCHI_PRE_COMMIT_LOCK'
 INFO_PY='cnchi/info.py'
 _IS_JETBRAINS=''
 
+echo "$*"
+
 echo 'checking for changes to pre-commit hook...'
 if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
 	echo 'updating pre-commit hook...'
@@ -37,7 +39,7 @@ done
 # files and add them to its call to `git commit --only`. Before doing so the hook
 # will perform its normal tasks (updating version in files and updating CHANGES file)
 # and it will set a lock file. If the lock file is detected we know that this is not
-# the first attempt and so we unset the lock and so we immediately exit with zero status.
+# the first attempt and so we unset the lock and immediately exit with zero status.
 [[ 'True' = "${_IS_JETBRAINS}" && -f "${_LOCK}" ]] && { rm "${_LOCK}"; exit 0; }
 
 [[ 'True' = "${_IS_JETBRAINS}" ]] && touch "${_LOCK}"
