@@ -348,8 +348,7 @@ class CollapsibleContainers extends CnchiObject {
 	<!-- keyboard widget css & script -->
 	<link href="{{ RESOURCES_DIR }}/css/keyboard-dark.css" rel="stylesheet">
 	<script src="{{ RESOURCES_DIR }}/includes/keyboard/js/jquery.keyboard.js"></script>
-	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/layouts/keyboard-layouts-greywyvern.min.js"></script>
-	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/languages/fr.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/layouts/keyboard-layouts-combined.min.js"></script>
 
 
 	<!-- css for the preview keyset extension -->
@@ -382,11 +381,14 @@ class CollapsibleContainers extends CnchiObject {
 	{% endif %}
 
 class KeyboardWidget extends CnchiObject {
-	constructor( lang_code ) {
+	constructor( lang_code, lang_name ) {
 		super();
 		this.lang = this._get_lang_from_lang_code( lang_code );
+		this.lang_name = lang_name.toLowerCase();
 		this.layout = this._normalize_layout_identifier( lang_code );
 		this.$keyboard = null;
+
+		this._check_layout();
 
 		this.initialize();
 	}
@@ -681,6 +683,24 @@ class KeyboardWidget extends CnchiObject {
 			}
 
 		} );
+	}
+
+	_check_layout() {
+		if ( $.keyboard.layouts.hasOwnProperty( this.layout ) ) {
+			return;
+		}
+
+		if ( $.keyboard.layouts.hasOwnProperty( this.lang_name ) ) {
+			this.layout = this.lang_name;
+			return;
+		}
+
+		for ( let layout_name of Object.keys( $.keyboard.layouts ) ) {
+			if ( layout_name.indexOf( this.lang_name ) > -1 ) {
+				this.layout = layout_name;
+				return;
+			}
+		}
 	}
 
 	_get_lang_from_lang_code( lang_code ) {

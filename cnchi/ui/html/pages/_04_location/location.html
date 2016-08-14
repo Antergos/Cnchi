@@ -219,6 +219,7 @@
 				this.layout = null;
 				this.variant = null;
 				this.kbd_widget = null;
+				this.lang_name = null;
 				this.collapsible_containers = new CollapsibleContainers();
 
 				this.$show_all_locations = $( '#show_all_locations' );
@@ -251,7 +252,10 @@
 
 			location_selected_cb( event, original_event ) {
 				let $location = $( original_event.target ),
-					location = $location.attr( 'id' );
+					location = $location.attr( 'id' ),
+					location_name = $location.text();
+
+				this.lang_name = location_name.split(' ')[0];
 
 				$location.addClass( 'active' );
 
@@ -269,7 +273,7 @@
 					this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 					this.collapsible_containers.initialize();
 					this.$kbd_layouts_list.on( 'collection-item-selected', this.keyboard_layout_selected_cb );
-					this.kbd_widget = new window.KeyboardWidget(this.location);
+					this.kbd_widget = new window.KeyboardWidget( this.location, this.lang_name );
 				}
 			}
 
