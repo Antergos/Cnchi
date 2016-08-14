@@ -10,8 +10,14 @@ do
 		mode=$(stat --format '%a' "${_file}")
 		echo "${mode}" > /dev/null
 		sudo chown 1000:100 "${_file}"
-		sudo -u 1000 chmod "${mode}" "${_file}"
-		if ! [[ "${_file}" =~ .*\.git\/.* ]]; then
+
+		if [[ '1000' = "$(id -u)" ]]; then
+			chmod "${mode}" "${_file}"
+		else
+			sudo -u 1000 chmod "${mode}" "${_file}"
+		fi
+
+		if [[ *'.git'* != "${_file}" ]]; then
 			git add "${_file}"
 		fi
 	fi
