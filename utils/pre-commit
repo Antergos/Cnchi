@@ -37,7 +37,7 @@ done
 # files and add them to its call to `git commit --only`. Before doing so the hook
 # will perform its normal tasks (updating version in files and updating CHANGES file)
 # and it will set a lock file. If the lock file is detected we know that this is not
-# the first attempt and so we unset the lock and so we immediately exit with zero status.
+# the first attempt and so we unset the lock and immediately exit with zero status.
 [[ 'True' = "${_IS_JETBRAINS}" && -f "${_LOCK}" ]] && { rm "${_LOCK}"; exit 0; }
 
 [[ 'True' = "${_IS_JETBRAINS}" ]] && touch "${_LOCK}"
@@ -69,5 +69,9 @@ python3 utils/generate_update_info.py
 echo "Checking file permissions..."
 utils/fix-permissions.sh
 
-git add CHANGES README.md "${INFO_PY}" update.info && exit 1;
+git add CHANGES README.md "${INFO_PY}" update.info && {
+	{ [[ 'True' = "${_IS_JETBRAINS}" ]] \
+		&& echo 'JETBRAINS IDE DETECTED: DO COMMIT AGAIN TO FINALIZE IT' \
+		&& exit 1; } || exit 0
+}
 
