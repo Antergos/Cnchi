@@ -282,10 +282,8 @@ class SelectPackages(object):
             self.conflicts.append("virtualbox-guest-utils")
 
         # Add linux-lts-headers if LTS kernel is installed in a vbox vm
-        # only if not already appended
         if self.vbox and self.settings.get('feature_lts'):
-            if "linux-lts-headers" not in self.packages:
-                self.packages.append("linux-lts-headers")
+            self.packages.append("linux-lts-headers")
 
         # Add filesystem packages
         logging.debug("Adding filesystem packages")
