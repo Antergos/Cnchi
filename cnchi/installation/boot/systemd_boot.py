@@ -115,13 +115,13 @@ class SystemdBoot(object):
             conf['lts'] = []
             conf['lts'].append("title\tAntergos LTS\n")
             conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
-            conf['lts'].append("initrd\t/initramfs-linux-lts.img")
+            conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
             conf['lts'].append("options\t{0}\n\n".format(options))
 
             conf['lts_fallback'] = []
             conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
             conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
-            conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img")
+            conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
             conf['lts_fallback'].append("options\t{0}\n\n".format(options))
 
         # Write boot entries
