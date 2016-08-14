@@ -1,22 +1,23 @@
 # Cnchi
-**Graphical Installer for Antergos Linux**
+**A modern, flexible system installer for Linux**
 
-[![Codacy](https://img.shields.io/codacy/04b4ac624a0149efb8b4e9d143167660.svg?style=flat-square)](https://www.codacy.com/app/Antergos/Cnchi)&nbsp;&nbsp;![Python 3.5](https://img.shields.io/badge/Python-3.5-blue.svg?style=flat-square)
+[![Codacy](https://img.shields.io/codacy/04b4ac624a0149efb8b4e9d143167660.svg?style=flat-square)](https://www.codacy.com/app/Antergos/Cnchi)&nbsp;&nbsp;[![Code Health](https://landscape.io/github/Antergos/Cnchi/master/landscape.svg?style=flat-square)](https://landscape.io/github/Antergos/Cnchi/master)
+&nbsp;&nbsp;![Python 3.5](https://img.shields.io/badge/Python-3.5-blue.svg?style=flat-square)
 
-You are viewing the `master` branch.
+*You are viewing the* ***`master`*** *branch*.
 
-## Current Status
+### Current Status
 
 This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|Cnchi Stable|0.14.x|v0.14.142|Bug Fixes Only|
-|**Cnchi Next**|**master**|**v0.15.202**|**Active Development**|
+|Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.142|Bug Fixes Only|
+|**Cnchi Next**|**master**|**v0.15.203**|**Active Development**|
 
 
-## Usage:
+### Usage:
 
 ```sh
 $ cnchi
@@ -46,44 +47,17 @@ To create logs to help debug problems:
 $ cnchi -dv -s bugsnag
 ```
 
-## Reporting bugs:
+### Reporting bugs:
 
 Please report any issues with Cnchi in the issue tracker. Provide all log files along with a detailed description:
 
-* /tmp/cnchi.log
-* /tmp/postinstall.log (if it exists)
-* /tmp/pacman.log (if it exists)
+* `/tmp/cnchi.log`
+* `/tmp/postinstall.log` (if it exists)
+* `/tmp/pacman.log` (if it exists)
 
-## Translations
+### Translations
 
 We manage our translations via [Transifex](https://www.transifex.com/projects/p/antergos)
 
-## Dependencies
-
- - gtk3
- - python3
- - python-cairo
- - python-dbus
- - python-gobject
- - python-mako
- - python-requests
- - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
- - pyalpm (alpm)
- - webkit2gtk
- - upower
- - encfs, pam_encfs
- - iso-codes
- - clutter, clutter-gtk, clutter-gst
- - cheese
-
-## Unit tests
- - python-mock
-
-## Fonts needed by the keyboard widget
- - ttf-aboriginal-sans
- - ttf-indic-otf
- - ttf-khmer
- - ttf-lohit-fonts
- - ttf-myanmar3
- - ttf-thaana-fonts
- - ttf-tlwg
+### Dependencies
+Dependency information is available [here](https://github.com/Antergos/Cnchi/wiki/Dependencies).
