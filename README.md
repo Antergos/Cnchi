@@ -6,7 +6,7 @@
 
 *You are viewing the* ***`master`*** *branch*.
 
-### Current Status
+## Current Status
 
 This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 
@@ -14,16 +14,16 @@ This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
 |Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.142|Bug Fixes Only|
-|**Cnchi Next**|**master**|**v0.15.203**|**Active Development**|
+|**Cnchi Next**|**master**|**v0.15.204**|**Active Development**|
 
 
-### Usage:
+## Usage:
 
 ```sh
 $ cnchi
 ```
 
-#### Optional parameters:
+### Optional parameters:
 
 |Command|Description|
 ----------------- | -------------- |
@@ -47,7 +47,7 @@ To create logs to help debug problems:
 $ cnchi -dv -s bugsnag
 ```
 
-### Reporting bugs:
+## Reporting bugs:
 
 Please report any issues with Cnchi in the issue tracker. Provide all log files along with a detailed description:
 
@@ -55,9 +55,9 @@ Please report any issues with Cnchi in the issue tracker. Provide all log files 
 * `/tmp/postinstall.log` (if it exists)
 * `/tmp/pacman.log` (if it exists)
 
-### Translations
+## Translations
 
 We manage our translations via [Transifex](https://www.transifex.com/projects/p/antergos)
 
-### Dependencies
+## Dependencies
 Dependency information is available [here](https://github.com/Antergos/Cnchi/wiki/Dependencies).

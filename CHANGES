@@ -1,3 +1,4 @@
+[2016-08-14 03:55:08 -0500]  update readme                                                          Dustin Falgout  {dc116a8}
 [2016-08-14 00:44:11 -0700]  Added missing newlines to systemd-boot LTS config. (#641)              Christopher Robert Philabaum {274ebf4}
 [2016-08-13 23:53:11 -0500]  since we arent using this, remove it. we can always add it back lat..  Dustin Falgout  {97f0024}
 [2016-08-13 23:31:52 -0500]  sync with local                                                        Dustin Falgout  {ce2d6e9}
