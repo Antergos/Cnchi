@@ -348,7 +348,8 @@ class CollapsibleContainers extends CnchiObject {
 	<!-- keyboard widget css & script -->
 	<link href="{{ RESOURCES_DIR }}/css/keyboard-dark.css" rel="stylesheet">
 	<script src="{{ RESOURCES_DIR }}/includes/keyboard/js/jquery.keyboard.js"></script>
-	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/layouts/keyboard-layouts-combined.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/includes/keyboard/dist/layouts/keyboard-layouts-greywyvern.min.js"></script>
+	<script src="{{ RESOURCES_DIR }}/includes/keyboard/languages/_combined_translations.js"></script>
 
 
 	<!-- css for the preview keyset extension -->
@@ -389,18 +390,19 @@ class KeyboardWidget extends CnchiObject {
 		this.$keyboard = null;
 
 		this._check_layout();
+		console.log([this.lang, this.layout]);
 
 		this.initialize();
 	}
 
 	initialize() {
+		jQuery.keyboard.language = Object.assign( jQuery.keyboard.language, window.kbd_widget_translations );
+
 		this.$keyboard = $( '#keyboard' ).keyboard( {
 			// set this to ISO 639-1 language code to override language set by the layout
 			// http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 			// language defaults to "en" if not found
 			language: this.lang,  // string or array
-			rtl: false, // language direction right-to-left
-
 			// *** choose layout ***
 			layout: this.layout,
 			position: {
@@ -433,82 +435,6 @@ class KeyboardWidget extends CnchiObject {
 
 			// if true, keyboard will not close if you press escape.
 			ignoreEsc: true,
-
-			// *** change keyboard language & look ***
-			display: {
-				// \u2714 = check mark - same action as accept
-				'a': '\u2714:Accept (Shift-Enter)',
-				'accept': 'Accept:Accept (Shift-Enter)',
-				'alt': 'AltGr:Alternate Graphemes',
-				// \u232b = outlined left arrow with x inside
-				'b': '\u232b:Backspace',
-				'bksp': 'Bksp:Backspace',
-				// \u2716 = big X, close - same action as cancel
-				'c': '\u2716:Cancel (Esc)',
-				'cancel': 'Cancel:Cancel (Esc)',
-				// clear num pad
-				'clear': 'C:Clear',
-				'combo': '\u00f6:Toggle Combo Keys',
-				// decimal point for num pad (optional);
-				// change '.' to ',' for European format
-				'dec': '.:Decimal',
-				// down, then left arrow - enter symbol
-				'e': '\u21b5:Enter',
-				'empty': '\u00a0', // &nbsp;
-				'enter': 'Enter:Enter',
-				// \u2190 = left arrow (move caret)
-				'left': '\u2190',
-				// caps lock
-				'lock': '\u21ea Lock:Caps Lock',
-				'next': 'Next',
-				'prev': 'Prev',
-				// \u2192 = right arrow (move caret)
-				'right': '\u2192',
-				// \u21e7 = thick hollow up arrow
-				's': '\u21e7:Shift',
-				'shift': 'Shift:Shift',
-				// \u00b1 = +/- sign for num pad
-				'sign': '\u00b1:Change Sign',
-				'space': '&nbsp;:Space',
-
-				// \u21e5 = right arrow to bar; used since this virtual
-				// keyboard works with one directional tabs
-				't': '\u21e5:Tab',
-				// \u21b9 is the true tab symbol (left & right arrows)
-				'tab': '\u21e5 Tab:Tab',
-				// replaced by an image
-				'toggle': ' ',
-
-				// added to titles of keys
-				// accept key status when acceptValid:true
-				'valid': 'valid',
-				'invalid': 'invalid',
-				// combo key states
-				'active': 'active',
-				'disabled': 'disabled'
-			},
-
-			// Message added to the key title while hovering, if the mousewheel plugin exists
-			wheelMessage: 'Use mousewheel to see other keys',
-
-			css: {
-				// input & preview
-				input: 'ui-widget-content ui-corner-all',
-				// keyboard container
-				container: 'ui-widget-content ui-widget ui-corner-all ui-helper-clearfix',
-				// keyboard container extra class (same as container, but separate)
-				popup: '',
-				// default state
-				buttonDefault: 'ui-state-default ui-corner-all',
-				// hovered button
-				buttonHover: 'ui-state-hover',
-				// Action keys (e.g. Accept, Cancel, Tab, etc); replaces "actionClass"
-				buttonAction: 'ui-state-active',
-				// used when disabling the decimal button {dec}
-				buttonDisabled: 'ui-state-disabled',
-				// empty button class name {empty}
-				buttonEmpty: 'ui-keyboard-empty'
-			},
 
 			// *** Useability ***
 			// Auto-accept content when clicking outside the keyboard (popup will close)
