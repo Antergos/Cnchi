@@ -58,11 +58,12 @@ class LocationPage(HTMLPage):
 
         self._module = None
         self.locations = None
+        self.timezone_map_enabled = False
         self.locations_items = []
         self.keyboard_layouts = []
         self.page_tabs_requested = []
 
-        self.signals.extend(['show-all-locations', 'load-keyboard-layouts'])
+        self.signals.extend(['show-all-locations', 'load-keyboard-layouts', 'enable-timezone-map'])
         self.tabs.extend([
             (_('Location'), True),
             (_('Keyboard Layout'), False),
@@ -81,7 +82,8 @@ class LocationPage(HTMLPage):
             'locations': self.locations_items,
             'show_all_locations': self._pages_data.location.show_all_locations,
             'list_items': [],
-            'keyboard_layouts': self.keyboard_layouts
+            'keyboard_layouts': self.keyboard_layouts,
+            'timezone_map_enabled': self.timezone_map_enabled
         })
 
         return tpl_vars
@@ -92,6 +94,9 @@ class LocationPage(HTMLPage):
             'keyboard_layout': None,
             'keyboard_variant': None
         }
+
+    def enable_timezone_map_cb(self, *args):
+        self.timezone_map_enabled = True
 
     @bg_thread
     def load_keyboard_layouts_cb(self, *args):

@@ -8,6 +8,8 @@
 	collapsable_items_javascript,
 	keyboard_widget,
 	keyboard_widget_styles_and_scripts,
+	timezone_map,
+	timezone_map_styles_and_scripts,
 	conditional_text with context %}
 
 {% block before_page_styles %}
@@ -68,10 +70,13 @@
 
 		#keyboard_layout .grid-65 p { text-align: left; }
 
-		#keyboard_layout .collapsible-body .collection a { font-size: 13px; font-weight: 400; text-align: left;}
+		#keyboard_layout .collapsible-body .collection a { font-size: 13px; font-weight: 400; text-align: left; }
+
 		#keyboard_layout .collapsible-body .collection { text-align: left; }
+
 		#widget_container { position: relative; width: 100%; height: 350px; }
-		#keyboard_layout #widget_container .kbd_container { left: 30px; top: 80px;}
+
+		#keyboard_layout #widget_container .kbd_container { left: 30px; top: 80px; }
 
 	</style>
 {% endblock page_styles %}
@@ -103,11 +108,11 @@
 							{% set lang_items = [] %}
 							{% set layout_index = loop.index %}
 
-							{% for lang in country_languages %}
-								{% do lang_items.append((lang['locale'], lang['language'])) %}
-							{% endfor %}
+					{% for lang in country_languages %}
+						{% do lang_items.append((lang['locale'], lang['language'])) %}
+					{% endfor %}
 
-							{% set contents = collection_text_only(lang_items) %}
+					{% set contents = collection_text_only(lang_items) %}
 							{% set language = country_languages[0] %}
 							{% set title %}
 								<div class="title">{{ language['country'] }}</div>
@@ -136,15 +141,15 @@
 					{% if keyboard_layouts %}
 						{% call collapsable_items_container('grow', 8) %}
 							{% for keyboard_layout in keyboard_layouts %}
-								{%set no_variant = (keyboard_layout['id'], keyboard_layout['name']) %}
+								{% set no_variant = (keyboard_layout['id'], keyboard_layout['name']) %}
 								{% set variants = [no_variant] %}
 								{% set layout_index = loop.index %}
 
-								{% for variant in keyboard_layout['variants'] %}
-									{% do variants.append((variant['id'], variant['name'])) %}
-								{% endfor %}
+						{% for variant in keyboard_layout['variants'] %}
+							{% do variants.append((variant['id'], variant['name'])) %}
+						{% endfor %}
 
-								{% set contents = collection_text_only(variants) %}
+						{% set contents = collection_text_only(variants) %}
 
 								{% set title %}
 									<div class="title">{{ keyboard_layout['name'] }}</div>
@@ -183,11 +188,14 @@
 			   TIMEZONE TAB
 			 ---------------->
 			<div id="{{ tabs[2][0]|lower()|replace(' ', '_') }}" class="grid-100 grid-parent page_tab" data-name="{{ tabs[2][0]|lower() }}">
+				{% if timezone_map_enabled %}
+					{{ timezone_map() }}
+				{% endif %}
 
 			</div> <!-- /END TIMEZONE TAB -->
-
 		</div> <!-- /END PAGE CONTENT -->
-	</div>{% endblock main_content %}
+	</div>
+{% endblock main_content %}
 
 
 {#
@@ -200,6 +208,7 @@
 {% block page_script %}
 	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
 	{{ keyboard_widget_styles_and_scripts() }}
+	{{ timezone_map_styles_and_scripts() }}
 	<script>
 		{{ collapsable_items_javascript() }}
 
@@ -226,6 +235,7 @@
 				this.show_all_locations = this.$show_all_locations.prop( 'checked' );
 				this.$locations_list = $( 'ul.collapsible:not(#keyboard_layout ul)' );
 				this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
+				this.timezone_map = null;
 
 				this.register_allowed_signals();
 				this.register_event_handlers();
@@ -255,7 +265,7 @@
 					location = $location.attr( 'id' ),
 					location_name = $location.text();
 
-				this.lang_name = location_name.split(' ')[0];
+				this.lang_name = location_name.split( ' ' )[ 0 ];
 
 				$location.addClass( 'active' );
 
@@ -269,17 +279,23 @@
 
 			current_tab_changed_cb() {
 				console.log( `current_tab_changed_cb(): current_tab is: ${this.current_tab.id}` );
+
 				if ( 'keyboard_layout' === this.current_tab.id ) {
 					this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 					this.collapsible_containers.initialize();
-					this.$kbd_layouts_list.on( 'collection-item-selected', this.keyboard_layout_selected_cb );
+					this.$kbd_layouts_list.on( 'collection-item-selected.keyboard_layout', this.keyboard_layout_selected_cb );
 					this.kbd_widget = new window.KeyboardWidget( this.location, this.lang_name );
+
+					cnchi.emit_signal( 'do-enable-timezone-map' );
+
+				} else if ( 'timezone' === this.current_tab.id ) {
+					this.timezone_map = new window.TimezoneMap( this.location );
 				}
 			}
 
 			register_event_handlers() {
 				this.$show_all_locations.on( 'click', this.show_all_locations_clicked_cb );
-				this.$locations_list.on( 'collection-item-selected', this.location_selected_cb );
+				this.$locations_list.on( 'collection-item-selected.location', this.location_selected_cb );
 				$( window ).on( 'page-change-current-tab-done', this.current_tab_changed_cb );
 			}
 
