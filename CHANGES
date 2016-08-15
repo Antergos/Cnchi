@@ -1,5 +1,8 @@
+[2016-08-14 16:49:35 -0500]  working on keyboard widget                                             Dustin Falgout  {5872a6b}
+[2016-08-14 13:55:11 -0700]  Conflicting virtualbox-guest-utils package with virtualbox-guest-ut..  Christopher Robert Philabaum {6aa661f}
 [2016-08-14 05:30:59 -0500]  Added missing newlines to systemd-boot LTS config. (#641)              Dustin Falgout  {0d0cc30}
 [2016-08-14 05:27:27 -0500]  update pre-commit hook                                                 Dustin Falgout  {3ac2c04}
+[2016-08-14 03:24:40 -0700]  Added LTS headers when in Virtualbox VM and LTS is selected (#642)     Christopher Robert Philabaum {5644ba4}
 [2016-08-14 05:15:14 -0500]  bump                                                                   Dustin Falgout  {9824713}
 [2016-08-14 03:57:11 -0500]  update readme                                                          Dustin Falgout  {8db4ec9}
 [2016-08-14 03:55:08 -0500]  update readme                                                          Dustin Falgout  {dc116a8}
