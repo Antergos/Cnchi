@@ -526,22 +526,34 @@ class CnchiPage extends CnchiTab {
 	}
 
 	_assign_next_and_previous_tab_props() {
+		this.previous = null;
+		this.next = this.tabs[0];
+
 		for ( let [index, value] of this.tabs.entries() ) {
-			value.previous = (index > 0) ? this.tabs[index - 1] : this;
-			value.next = (index < (this.tabs.length - 1)) ? this.tabs[index + 1] : null;
+			value.previous = ( index > 0 ) ? this.tabs[index - 1] : this;
+			value.next = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
 		}
 	}
 
-	_unlock_next_tab_animated() {
-		let _this = ( this instanceof CnchiTab ) ? this : this.current_tab,
-			$tab_button = _this.$tab_button.next();
+	_get_next_tab_button() {
+		console.log([this.current_tab]);
+		let $tab_button,
+			on_last_tab_for_page = ( true === this.has_tabs && null === this.current_tab.next );
 
-		if ( true === _this.has_tabs && _this.current_tab !== _this.tabs[_this.tabs.length + 1] ) {
-			$tab_button = this.$tab_button.filter('.main_content .navigation_buttons li').next();
+		if ( false === this.has_tabs || on_last_tab_for_page ) {
+			$tab_button = this.$tab_button.next();
+		} else {
+			$tab_button = this.current_tab.$tab_button.filter('.main_content li').next();
 		}
 
+		return $tab_button;
+	}
+
+	_unlock_next_tab_animated() {
+		let $tab_button = this._get_next_tab_button();
+
 		if ( $tab_button.hasClass('locked') ) {
-			$tab_button.on('click', _page.tab_button_clicked_cb).removeClass('locked');
+			$tab_button.on('click', this.tab_button_clicked_cb).removeClass('locked');
 		}
 
 		$tab_button.animateCss('animated tada');
@@ -556,7 +568,7 @@ class CnchiPage extends CnchiTab {
 	get_tab_by_id( id ) {
 		let tab;
 
-		for ( let tab_obj of _page.tabs ) {
+		for ( let tab_obj of this.tabs ) {
 			if ( tab_obj.id === id ) {
 				tab = tab_obj;
 				break;
@@ -685,6 +697,7 @@ class CnchiPage extends CnchiTab {
 	 */
 	show_tab( identifier ) {
 		let tab = this.get_tab_by_id(identifier.replace('#', ''));
+		console.log([tab, this.current_tab]);
 
 		if ( null !== tab.$tab ) {
 			this.current_tab.$tab.fadeOut()
