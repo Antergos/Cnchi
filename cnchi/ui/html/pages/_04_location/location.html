@@ -207,7 +207,7 @@
 {% block page_script %}
 	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
 	{{ keyboard_widget_styles_and_scripts() }}
-	{% include 'partials/_timezone_map.html' with context %}
+	{% include 'pages/partials/_timezone_map.html' %}
 	<script>
 		{{ collapsable_items_javascript() }}
 

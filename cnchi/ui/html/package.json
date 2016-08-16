@@ -1,0 +1,25 @@
+{
+  "name": "cnchi-installer",
+  "version": "0.15.210",
+  "description": "A modern, flexible system installer for Linux",
+  "main": "cnchi_app.js",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antergos/cnchi.git"
+  },
+  "keywords": [
+    "linux",
+    "installer",
+    "webkit2gtk",
+    "antergos"
+  ],
+  "author": "antergos",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/antergos/cnchi/issues"
+  },
+  "homepage": "https://github.com/antergos/cnchi#readme"
+}

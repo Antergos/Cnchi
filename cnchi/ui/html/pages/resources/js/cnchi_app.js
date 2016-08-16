@@ -454,6 +454,8 @@ class CnchiTab extends CnchiObject {
 
 	_tab_button_clicked_handler( $tab_button ) {
 		if ( $tab_button.hasClass('locked') ) {
+			this.logger.debug('is locked!');
+			console.log('is locked!');
 			return;
 		}
 
@@ -473,6 +475,7 @@ class CnchiTab extends CnchiObject {
 		let $target = $(event.currentTarget),
 			$tab_button = $target.closest('.tab');
 		console.log(event);
+		this.logger.debug(event);
 
 		if ( !$('.header_bottom').has($tab_button).length ) {
 			event.preventDefault();
@@ -561,6 +564,7 @@ class CnchiPage extends CnchiTab {
 
 	change_current_tab_cb( event, id ) {
 		console.log('change current tab fired!');
+		this.logger.debug('change current tab fired!');
 		clearInterval(this.next_tab_animation_interval);
 		this.reload_element(`#${id}`, this.show_tab);
 	}
@@ -615,7 +619,7 @@ class CnchiPage extends CnchiTab {
 				// This button is for the current page. Don't unlock anymore buttons.
 				return false;
 			}
-		})
+		});
 	}
 
 	/**
@@ -669,7 +673,8 @@ class CnchiPage extends CnchiTab {
 			$old_el = this.$page.find(selector),
 			$new_el;
 
-		console.log([url, this.$page]);
+		console.log([url, $old_el]);
+		this.logger.debug([url, $old_el]);
 
 		$old_el.hide(0)
 			.promise()
@@ -710,9 +715,9 @@ class CnchiPage extends CnchiTab {
 						.promise()
 						.done(() => {
 							$(window).trigger('page-change-current-tab-done');
+							this.current_tab = tab;
 						});
 
-					this.current_tab = tab;
 				});
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)

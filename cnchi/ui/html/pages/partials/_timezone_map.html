@@ -61,7 +61,7 @@
 
 		initialize() {
 			for ( let name of Object.keys(window.tzones.zones) ) {
-				this.centers.push( new Center( data.zones[name], this ) );
+				this.centers.push( new Center( window.tzones.zones[name], this ) );
 			}
 
 			$('.map-inset').on('mousemove', this.on_mousemove_cb );

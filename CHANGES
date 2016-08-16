@@ -1,3 +1,5 @@
+[2016-08-16 02:42:00 -0500]  separate partial templates from macros. more work on timezone tab.     Dustin Falgout  {fa0cab5}
+[2016-08-15 00:32:50 -0500]  working on timezone map                                                Dustin Falgout  {6655ae6}
 [2016-08-14 23:24:50 -0500]  working on timezone map                                                Dustin Falgout  {3d77c82}
 [2016-08-14 19:21:52 -0500]  ...                                                                    Dustin Falgout  {949f281}
 [2016-08-14 16:49:35 -0500]  working on keyboard widget                                             Dustin Falgout  {5872a6b}
