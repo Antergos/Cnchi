@@ -1,0 +1,108 @@
+<script src="{{ RESOURCES_DIR }}/js/moment-with-locales.min.js"></script>
+<script src="{{ RESOURCES_DIR }}/js/moment-timezone-with-data-2010-2020.min.js"></script>
+<script src="{{ RESOURCES_DIR }}/js/moment-timezone-meta.js"></script>
+<script>
+	class Center extends CnchiObject {
+		constructor( data, tzmap ) {
+			super();
+			this.tzmap = tzmap;
+			this.name = data.name;
+			this.x = (180 + data.long) / 360;
+			this.y = (90 - data.lat) / 180;
+
+			this.dom = $('<span>')
+			.appendTo(this.tzmap.$map)
+			.css({ left: this.x * 100 + '%', top: this.y * 100 + '%' });
+
+			if ( this.name === this.tzmap.guess ) {
+				this.tzmap.change_center(this);
+			}
+		}
+
+		dist_sqr( x, y ) {
+			let dx = this.x - x,
+				dy = this.y - y;
+			return dx * dx + dy * dy;
+		}
+
+		activate() {
+			let m = moment().tz( this.name );
+			this.tzmap.$label_name.text( this.name );
+			this.tzmap.$label_time.text( m.format("hh:mm a ") + m.zoneAbbr() );
+			this.tzmap.$axisX.css('left', this.x * 100 + '%');
+			this.tzmap.$axisY.css('top', this.y * 100 + '%');
+		}
+
+		deactivate()  {
+			this.dom.removeClass('active');
+		}
+
+	}
+
+	class TimezoneMap extends CnchiObject {
+		constructor( locale ) {
+			super();
+
+			moment.locale( locale );
+
+			this.$map = $('.map-inset');
+			this.$label_name = $('.map-label-name');
+			this.$label_time = $('.map-label-time');
+			this.$axisX = $('.map-axis-x');
+			this.$axisY = $('.map-axis-y');
+			this.width = this.$map.outerWidth();
+			this.height = this.$map.outerHeight();
+			this.last_center = null;
+			this.centers = [];
+			this.guess = moment.tz.guess();
+
+			this.initialize();
+		}
+
+		initialize() {
+			for ( let name of Object.keys(window.tzones.zones) ) {
+				this.centers.push( new Center( data.zones[name], this ) );
+			}
+
+			$('.map-inset').on('mousemove', this.on_mousemove_cb );
+		}
+
+		change_center( center ) {
+			if ( center === this.last_center ) {
+				return;
+			}
+			if ( this.last_center ) {
+				this.last_center.deactivate();
+			}
+			center.activate();
+			this.last_center = center;
+		}
+
+		on_mousemove_cb( event ) {
+			let offset = $( event.currentTarget ).offset(),
+				x = event.pageX - offset.left,
+				y = event.pageY - offset.top,
+				px = x / width,
+				py = y / height,
+				dist,
+				closest_dist = 100,
+				closest_center;
+
+			for ( let center of this.centers ) {
+				dist = this.centers[center].dist_sqr(px, py);
+
+				if ( dist < closest_dist ) {
+					closest_center = this.centers[center];
+					closest_dist = dist;
+				}
+			}
+
+			if ( closest_center ) {
+				this.change_center( closest_center );
+			}
+		}
+	}
+
+	window.TimezoneMap = TimezoneMap;
+	window.Center = Center;
+</script>

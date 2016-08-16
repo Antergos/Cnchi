@@ -1,4 +1,5 @@
-{
+window.tzones = {};
+window.tzones.zones = {
 	"countries": {
 		"AD": {
 			"name": "Andorra",
@@ -1955,7 +1956,7 @@
 		},
 		"Antarctica/Casey": {
 			"name": "Antarctica/Casey",
-			"lat": -65.7167,
+			"lat": - 65.7167,
 			"long": 110.5167,
 			"countries": [
 				"AQ"
@@ -1964,7 +1965,7 @@
 		},
 		"Antarctica/Davis": {
 			"name": "Antarctica/Davis",
-			"lat": -67.4167,
+			"lat": - 67.4167,
 			"long": 77.9667,
 			"countries": [
 				"AQ"
@@ -1973,7 +1974,7 @@
 		},
 		"Antarctica/DumontDUrville": {
 			"name": "Antarctica/DumontDUrville",
-			"lat": -65.3333,
+			"lat": - 65.3333,
 			"long": 140.0167,
 			"countries": [
 				"AQ"
@@ -1982,7 +1983,7 @@
 		},
 		"Antarctica/Mawson": {
 			"name": "Antarctica/Mawson",
-			"lat": -66.4,
+			"lat": - 66.4,
 			"long": 62.8833,
 			"countries": [
 				"AQ"
@@ -1991,8 +1992,8 @@
 		},
 		"Antarctica/Palmer": {
 			"name": "Antarctica/Palmer",
-			"lat": -63.2,
-			"long": -63.9,
+			"lat": - 63.2,
+			"long": - 63.9,
 			"countries": [
 				"AQ"
 			],
@@ -2000,8 +2001,8 @@
 		},
 		"Antarctica/Rothera": {
 			"name": "Antarctica/Rothera",
-			"lat": -66.4333,
-			"long": -67.8667,
+			"lat": - 66.4333,
+			"long": - 67.8667,
 			"countries": [
 				"AQ"
 			],
@@ -2009,7 +2010,7 @@
 		},
 		"Antarctica/Syowa": {
 			"name": "Antarctica/Syowa",
-			"lat": -68.9939,
+			"lat": - 68.9939,
 			"long": 39.59,
 			"countries": [
 				"AQ"
@@ -2018,7 +2019,7 @@
 		},
 		"Antarctica/Troll": {
 			"name": "Antarctica/Troll",
-			"lat": -71.9886,
+			"lat": - 71.9886,
 			"long": 2.535,
 			"countries": [
 				"AQ"
@@ -2027,7 +2028,7 @@
 		},
 		"Antarctica/Vostok": {
 			"name": "Antarctica/Vostok",
-			"lat": -77.6,
+			"lat": - 77.6,
 			"long": 106.9,
 			"countries": [
 				"AQ"
@@ -2036,8 +2037,8 @@
 		},
 		"America/Argentina/Buenos_Aires": {
 			"name": "America/Argentina/Buenos_Aires",
-			"lat": -33.4,
-			"long": -57.55,
+			"lat": - 33.4,
+			"long": - 57.55,
 			"countries": [
 				"AR"
 			],
@@ -2045,8 +2046,8 @@
 		},
 		"America/Argentina/Cordoba": {
 			"name": "America/Argentina/Cordoba",
-			"lat": -30.6,
-			"long": -63.8167,
+			"lat": - 30.6,
+			"long": - 63.8167,
 			"countries": [
 				"AR"
 			],
@@ -2054,8 +2055,8 @@
 		},
 		"America/Argentina/Salta": {
 			"name": "America/Argentina/Salta",
-			"lat": -23.2167,
-			"long": -64.5833,
+			"lat": - 23.2167,
+			"long": - 64.5833,
 			"countries": [
 				"AR"
 			],
@@ -2063,8 +2064,8 @@
 		},
 		"America/Argentina/Jujuy": {
 			"name": "America/Argentina/Jujuy",
-			"lat": -23.8167,
-			"long": -64.7,
+			"lat": - 23.8167,
+			"long": - 64.7,
 			"countries": [
 				"AR"
 			],
@@ -2072,8 +2073,8 @@
 		},
 		"America/Argentina/Tucuman": {
 			"name": "America/Argentina/Tucuman",
-			"lat": -25.1833,
-			"long": -64.7833,
+			"lat": - 25.1833,
+			"long": - 64.7833,
 			"countries": [
 				"AR"
 			],
@@ -2081,8 +2082,8 @@
 		},
 		"America/Argentina/Catamarca": {
 			"name": "America/Argentina/Catamarca",
-			"lat": -27.5333,
-			"long": -64.2167,
+			"lat": - 27.5333,
+			"long": - 64.2167,
 			"countries": [
 				"AR"
 			],
@@ -2090,8 +2091,8 @@
 		},
 		"America/Argentina/La_Rioja": {
 			"name": "America/Argentina/La_Rioja",
-			"lat": -28.5667,
-			"long": -65.15,
+			"lat": - 28.5667,
+			"long": - 65.15,
 			"countries": [
 				"AR"
 			],
@@ -2099,8 +2100,8 @@
 		},
 		"America/Argentina/San_Juan": {
 			"name": "America/Argentina/San_Juan",
-			"lat": -30.4667,
-			"long": -67.4833,
+			"lat": - 30.4667,
+			"long": - 67.4833,
 			"countries": [
 				"AR"
 			],
@@ -2108,8 +2109,8 @@
 		},
 		"America/Argentina/Mendoza": {
 			"name": "America/Argentina/Mendoza",
-			"lat": -31.1167,
-			"long": -67.1833,
+			"lat": - 31.1167,
+			"long": - 67.1833,
 			"countries": [
 				"AR"
 			],
@@ -2117,8 +2118,8 @@
 		},
 		"America/Argentina/San_Luis": {
 			"name": "America/Argentina/San_Luis",
-			"lat": -32.6833,
-			"long": -65.65,
+			"lat": - 32.6833,
+			"long": - 65.65,
 			"countries": [
 				"AR"
 			],
@@ -2126,8 +2127,8 @@
 		},
 		"America/Argentina/Rio_Gallegos": {
 			"name": "America/Argentina/Rio_Gallegos",
-			"lat": -50.3667,
-			"long": -68.7833,
+			"lat": - 50.3667,
+			"long": - 68.7833,
 			"countries": [
 				"AR"
 			],
@@ -2135,8 +2136,8 @@
 		},
 		"America/Argentina/Ushuaia": {
 			"name": "America/Argentina/Ushuaia",
-			"lat": -53.2,
-			"long": -67.7,
+			"lat": - 53.2,
+			"long": - 67.7,
 			"countries": [
 				"AR"
 			],
@@ -2144,8 +2145,8 @@
 		},
 		"Pacific/Pago_Pago": {
 			"name": "Pacific/Pago_Pago",
-			"lat": -13.7333,
-			"long": -169.3,
+			"lat": - 13.7333,
+			"long": - 169.3,
 			"countries": [
 				"AS",
 				"UM"
@@ -2163,7 +2164,7 @@
 		},
 		"Australia/Lord_Howe": {
 			"name": "Australia/Lord_Howe",
-			"lat": -30.45,
+			"lat": - 30.45,
 			"long": 159.0833,
 			"countries": [
 				"AU"
@@ -2172,7 +2173,7 @@
 		},
 		"Antarctica/Macquarie": {
 			"name": "Antarctica/Macquarie",
-			"lat": -53.5,
+			"lat": - 53.5,
 			"long": 158.95,
 			"countries": [
 				"AU"
@@ -2181,7 +2182,7 @@
 		},
 		"Australia/Hobart": {
 			"name": "Australia/Hobart",
-			"lat": -41.1167,
+			"lat": - 41.1167,
 			"long": 147.3167,
 			"countries": [
 				"AU"
@@ -2190,7 +2191,7 @@
 		},
 		"Australia/Currie": {
 			"name": "Australia/Currie",
-			"lat": -38.0667,
+			"lat": - 38.0667,
 			"long": 143.8667,
 			"countries": [
 				"AU"
@@ -2199,7 +2200,7 @@
 		},
 		"Australia/Melbourne": {
 			"name": "Australia/Melbourne",
-			"lat": -36.1833,
+			"lat": - 36.1833,
 			"long": 144.9667,
 			"countries": [
 				"AU"
@@ -2208,7 +2209,7 @@
 		},
 		"Australia/Sydney": {
 			"name": "Australia/Sydney",
-			"lat": -32.1333,
+			"lat": - 32.1333,
 			"long": 151.2167,
 			"countries": [
 				"AU"
@@ -2217,7 +2218,7 @@
 		},
 		"Australia/Broken_Hill": {
 			"name": "Australia/Broken_Hill",
-			"lat": -30.05,
+			"lat": - 30.05,
 			"long": 141.45,
 			"countries": [
 				"AU"
@@ -2226,7 +2227,7 @@
 		},
 		"Australia/Brisbane": {
 			"name": "Australia/Brisbane",
-			"lat": -26.5333,
+			"lat": - 26.5333,
 			"long": 153.0333,
 			"countries": [
 				"AU"
@@ -2235,7 +2236,7 @@
 		},
 		"Australia/Lindeman": {
 			"name": "Australia/Lindeman",
-			"lat": -19.7333,
+			"lat": - 19.7333,
 			"long": 149,
 			"countries": [
 				"AU"
@@ -2244,7 +2245,7 @@
 		},
 		"Australia/Adelaide": {
 			"name": "Australia/Adelaide",
-			"lat": -33.0833,
+			"lat": - 33.0833,
 			"long": 138.5833,
 			"countries": [
 				"AU"
@@ -2253,7 +2254,7 @@
 		},
 		"Australia/Darwin": {
 			"name": "Australia/Darwin",
-			"lat": -11.5333,
+			"lat": - 11.5333,
 			"long": 130.8333,
 			"countries": [
 				"AU"
@@ -2262,7 +2263,7 @@
 		},
 		"Australia/Perth": {
 			"name": "Australia/Perth",
-			"lat": -30.05,
+			"lat": - 30.05,
 			"long": 115.85,
 			"countries": [
 				"AU"
@@ -2271,7 +2272,7 @@
 		},
 		"Australia/Eucla": {
 			"name": "Australia/Eucla",
-			"lat": -30.2833,
+			"lat": - 30.2833,
 			"long": 128.8667,
 			"countries": [
 				"AU"
@@ -2290,7 +2291,7 @@
 		"America/Barbados": {
 			"name": "America/Barbados",
 			"lat": 13.1,
-			"long": -58.3833,
+			"long": - 58.3833,
 			"countries": [
 				"BB"
 			],
@@ -2326,7 +2327,7 @@
 		"Atlantic/Bermuda": {
 			"name": "Atlantic/Bermuda",
 			"lat": 32.2833,
-			"long": -63.2333,
+			"long": - 63.2333,
 			"countries": [
 				"BM"
 			],
@@ -2343,8 +2344,8 @@
 		},
 		"America/La_Paz": {
 			"name": "America/La_Paz",
-			"lat": -15.5,
-			"long": -67.85,
+			"lat": - 15.5,
+			"long": - 67.85,
 			"countries": [
 				"BO"
 			],
@@ -2352,8 +2353,8 @@
 		},
 		"America/Noronha": {
 			"name": "America/Noronha",
-			"lat": -2.15,
-			"long": -31.5833,
+			"lat": - 2.15,
+			"long": - 31.5833,
 			"countries": [
 				"BR"
 			],
@@ -2361,8 +2362,8 @@
 		},
 		"America/Belem": {
 			"name": "America/Belem",
-			"lat": -0.55,
-			"long": -47.5167,
+			"lat": - 0.55,
+			"long": - 47.5167,
 			"countries": [
 				"BR"
 			],
@@ -2370,8 +2371,8 @@
 		},
 		"America/Fortaleza": {
 			"name": "America/Fortaleza",
-			"lat": -2.2833,
-			"long": -37.5,
+			"lat": - 2.2833,
+			"long": - 37.5,
 			"countries": [
 				"BR"
 			],
@@ -2379,8 +2380,8 @@
 		},
 		"America/Recife": {
 			"name": "America/Recife",
-			"lat": -7.95,
-			"long": -33.1,
+			"lat": - 7.95,
+			"long": - 33.1,
 			"countries": [
 				"BR"
 			],
@@ -2388,8 +2389,8 @@
 		},
 		"America/Araguaina": {
 			"name": "America/Araguaina",
-			"lat": -6.8,
-			"long": -47.8,
+			"lat": - 6.8,
+			"long": - 47.8,
 			"countries": [
 				"BR"
 			],
@@ -2397,8 +2398,8 @@
 		},
 		"America/Maceio": {
 			"name": "America/Maceio",
-			"lat": -8.3333,
-			"long": -34.2833,
+			"lat": - 8.3333,
+			"long": - 34.2833,
 			"countries": [
 				"BR"
 			],
@@ -2406,8 +2407,8 @@
 		},
 		"America/Bahia": {
 			"name": "America/Bahia",
-			"lat": -11.0167,
-			"long": -37.4833,
+			"lat": - 11.0167,
+			"long": - 37.4833,
 			"countries": [
 				"BR"
 			],
@@ -2415,8 +2416,8 @@
 		},
 		"America/Sao_Paulo": {
 			"name": "America/Sao_Paulo",
-			"lat": -22.4667,
-			"long": -45.3833,
+			"lat": - 22.4667,
+			"long": - 45.3833,
 			"countries": [
 				"BR"
 			],
@@ -2424,8 +2425,8 @@
 		},
 		"America/Campo_Grande": {
 			"name": "America/Campo_Grande",
-			"lat": -19.55,
-			"long": -53.3833,
+			"lat": - 19.55,
+			"long": - 53.3833,
 			"countries": [
 				"BR"
 			],
@@ -2433,8 +2434,8 @@
 		},
 		"America/Cuiaba": {
 			"name": "America/Cuiaba",
-			"lat": -14.4167,
-			"long": -55.9167,
+			"lat": - 14.4167,
+			"long": - 55.9167,
 			"countries": [
 				"BR"
 			],
@@ -2442,8 +2443,8 @@
 		},
 		"America/Santarem": {
 			"name": "America/Santarem",
-			"lat": -1.5667,
-			"long": -53.1333,
+			"lat": - 1.5667,
+			"long": - 53.1333,
 			"countries": [
 				"BR"
 			],
@@ -2451,8 +2452,8 @@
 		},
 		"America/Porto_Velho": {
 			"name": "America/Porto_Velho",
-			"lat": -7.2333,
-			"long": -62.1,
+			"lat": - 7.2333,
+			"long": - 62.1,
 			"countries": [
 				"BR"
 			],
@@ -2461,7 +2462,7 @@
 		"America/Boa_Vista": {
 			"name": "America/Boa_Vista",
 			"lat": 2.8167,
-			"long": -59.3333,
+			"long": - 59.3333,
 			"countries": [
 				"BR"
 			],
@@ -2469,8 +2470,8 @@
 		},
 		"America/Manaus": {
 			"name": "America/Manaus",
-			"lat": -2.8667,
-			"long": -59.9833,
+			"lat": - 2.8667,
+			"long": - 59.9833,
 			"countries": [
 				"BR"
 			],
@@ -2478,8 +2479,8 @@
 		},
 		"America/Eirunepe": {
 			"name": "America/Eirunepe",
-			"lat": -5.3333,
-			"long": -68.1333,
+			"lat": - 5.3333,
+			"long": - 68.1333,
 			"countries": [
 				"BR"
 			],
@@ -2487,8 +2488,8 @@
 		},
 		"America/Rio_Branco": {
 			"name": "America/Rio_Branco",
-			"lat": -8.0333,
-			"long": -66.2,
+			"lat": - 8.0333,
+			"long": - 66.2,
 			"countries": [
 				"BR"
 			],
@@ -2497,7 +2498,7 @@
 		"America/Nassau": {
 			"name": "America/Nassau",
 			"lat": 25.0833,
-			"long": -76.65,
+			"long": - 76.65,
 			"countries": [
 				"BS"
 			],
@@ -2524,7 +2525,7 @@
 		"America/Belize": {
 			"name": "America/Belize",
 			"lat": 17.5,
-			"long": -87.8,
+			"long": - 87.8,
 			"countries": [
 				"BZ"
 			],
@@ -2533,7 +2534,7 @@
 		"America/St_Johns": {
 			"name": "America/St_Johns",
 			"lat": 47.5667,
-			"long": -51.2833,
+			"long": - 51.2833,
 			"countries": [
 				"CA"
 			],
@@ -2542,7 +2543,7 @@
 		"America/Halifax": {
 			"name": "America/Halifax",
 			"lat": 44.65,
-			"long": -62.4,
+			"long": - 62.4,
 			"countries": [
 				"CA"
 			],
@@ -2551,7 +2552,7 @@
 		"America/Glace_Bay": {
 			"name": "America/Glace_Bay",
 			"lat": 46.2,
-			"long": -58.05,
+			"long": - 58.05,
 			"countries": [
 				"CA"
 			],
@@ -2560,7 +2561,7 @@
 		"America/Moncton": {
 			"name": "America/Moncton",
 			"lat": 46.1,
-			"long": -63.2167,
+			"long": - 63.2167,
 			"countries": [
 				"CA"
 			],
@@ -2569,7 +2570,7 @@
 		"America/Goose_Bay": {
 			"name": "America/Goose_Bay",
 			"lat": 53.3333,
-			"long": -59.5833,
+			"long": - 59.5833,
 			"countries": [
 				"CA"
 			],
@@ -2578,7 +2579,7 @@
 		"America/Blanc-Sablon": {
 			"name": "America/Blanc-Sablon",
 			"lat": 51.4167,
-			"long": -56.8833,
+			"long": - 56.8833,
 			"countries": [
 				"CA"
 			],
@@ -2587,7 +2588,7 @@
 		"America/Toronto": {
 			"name": "America/Toronto",
 			"lat": 43.65,
-			"long": -78.6167,
+			"long": - 78.6167,
 			"countries": [
 				"CA"
 			],
@@ -2596,7 +2597,7 @@
 		"America/Nipigon": {
 			"name": "America/Nipigon",
 			"lat": 49.0167,
-			"long": -87.7333,
+			"long": - 87.7333,
 			"countries": [
 				"CA"
 			],
@@ -2605,7 +2606,7 @@
 		"America/Thunder_Bay": {
 			"name": "America/Thunder_Bay",
 			"lat": 48.3833,
-			"long": -88.75,
+			"long": - 88.75,
 			"countries": [
 				"CA"
 			],
@@ -2614,7 +2615,7 @@
 		"America/Iqaluit": {
 			"name": "America/Iqaluit",
 			"lat": 63.7333,
-			"long": -67.5333,
+			"long": - 67.5333,
 			"countries": [
 				"CA"
 			],
@@ -2623,7 +2624,7 @@
 		"America/Pangnirtung": {
 			"name": "America/Pangnirtung",
 			"lat": 66.1333,
-			"long": -64.2667,
+			"long": - 64.2667,
 			"countries": [
 				"CA"
 			],
@@ -2632,7 +2633,7 @@
 		"America/Atikokan": {
 			"name": "America/Atikokan",
 			"lat": 48.7586,
-			"long": -90.3783,
+			"long": - 90.3783,
 			"countries": [
 				"CA"
 			],
@@ -2641,7 +2642,7 @@
 		"America/Winnipeg": {
 			"name": "America/Winnipeg",
 			"lat": 49.8833,
-			"long": -96.85,
+			"long": - 96.85,
 			"countries": [
 				"CA"
 			],
@@ -2650,7 +2651,7 @@
 		"America/Rainy_River": {
 			"name": "America/Rainy_River",
 			"lat": 48.7167,
-			"long": -93.4333,
+			"long": - 93.4333,
 			"countries": [
 				"CA"
 			],
@@ -2659,7 +2660,7 @@
 		"America/Resolute": {
 			"name": "America/Resolute",
 			"lat": 74.6956,
-			"long": -93.1708,
+			"long": - 93.1708,
 			"countries": [
 				"CA"
 			],
@@ -2668,7 +2669,7 @@
 		"America/Rankin_Inlet": {
 			"name": "America/Rankin_Inlet",
 			"lat": 62.8167,
-			"long": -91.9169,
+			"long": - 91.9169,
 			"countries": [
 				"CA"
 			],
@@ -2677,7 +2678,7 @@
 		"America/Regina": {
 			"name": "America/Regina",
 			"lat": 50.4,
-			"long": -103.35,
+			"long": - 103.35,
 			"countries": [
 				"CA"
 			],
@@ -2686,7 +2687,7 @@
 		"America/Swift_Current": {
 			"name": "America/Swift_Current",
 			"lat": 50.2833,
-			"long": -106.1667,
+			"long": - 106.1667,
 			"countries": [
 				"CA"
 			],
@@ -2695,7 +2696,7 @@
 		"America/Edmonton": {
 			"name": "America/Edmonton",
 			"lat": 53.55,
-			"long": -112.5333,
+			"long": - 112.5333,
 			"countries": [
 				"CA"
 			],
@@ -2704,7 +2705,7 @@
 		"America/Cambridge_Bay": {
 			"name": "America/Cambridge_Bay",
 			"lat": 69.1139,
-			"long": -104.9472,
+			"long": - 104.9472,
 			"countries": [
 				"CA"
 			],
@@ -2713,7 +2714,7 @@
 		"America/Yellowknife": {
 			"name": "America/Yellowknife",
 			"lat": 62.45,
-			"long": -113.65,
+			"long": - 113.65,
 			"countries": [
 				"CA"
 			],
@@ -2722,7 +2723,7 @@
 		"America/Inuvik": {
 			"name": "America/Inuvik",
 			"lat": 68.3497,
-			"long": -132.2833,
+			"long": - 132.2833,
 			"countries": [
 				"CA"
 			],
@@ -2731,7 +2732,7 @@
 		"America/Creston": {
 			"name": "America/Creston",
 			"lat": 49.1,
-			"long": -115.4833,
+			"long": - 115.4833,
 			"countries": [
 				"CA"
 			],
@@ -2740,7 +2741,7 @@
 		"America/Dawson_Creek": {
 			"name": "America/Dawson_Creek",
 			"lat": 59.7667,
-			"long": -119.7667,
+			"long": - 119.7667,
 			"countries": [
 				"CA"
 			],
@@ -2749,7 +2750,7 @@
 		"America/Fort_Nelson": {
 			"name": "America/Fort_Nelson",
 			"lat": 58.8,
-			"long": -121.3,
+			"long": - 121.3,
 			"countries": [
 				"CA"
 			],
@@ -2758,7 +2759,7 @@
 		"America/Vancouver": {
 			"name": "America/Vancouver",
 			"lat": 49.2667,
-			"long": -122.8833,
+			"long": - 122.8833,
 			"countries": [
 				"CA"
 			],
@@ -2767,7 +2768,7 @@
 		"America/Whitehorse": {
 			"name": "America/Whitehorse",
 			"lat": 60.7167,
-			"long": -134.95,
+			"long": - 134.95,
 			"countries": [
 				"CA"
 			],
@@ -2776,7 +2777,7 @@
 		"America/Dawson": {
 			"name": "America/Dawson",
 			"lat": 64.0667,
-			"long": -138.5833,
+			"long": - 138.5833,
 			"countries": [
 				"CA"
 			],
@@ -2784,7 +2785,7 @@
 		},
 		"Indian/Cocos": {
 			"name": "Indian/Cocos",
-			"lat": -11.8333,
+			"lat": - 11.8333,
 			"long": 96.9167,
 			"countries": [
 				"CC"
@@ -2805,7 +2806,7 @@
 		"Africa/Abidjan": {
 			"name": "Africa/Abidjan",
 			"lat": 5.3167,
-			"long": -3.9667,
+			"long": - 3.9667,
 			"countries": [
 				"CI",
 				"BF",
@@ -2823,8 +2824,8 @@
 		},
 		"Pacific/Rarotonga": {
 			"name": "Pacific/Rarotonga",
-			"lat": -20.7667,
-			"long": -158.2333,
+			"lat": - 20.7667,
+			"long": - 158.2333,
 			"countries": [
 				"CK"
 			],
@@ -2832,8 +2833,8 @@
 		},
 		"America/Santiago": {
 			"name": "America/Santiago",
-			"lat": -32.55,
-			"long": -69.3333,
+			"lat": - 32.55,
+			"long": - 69.3333,
 			"countries": [
 				"CL"
 			],
@@ -2841,8 +2842,8 @@
 		},
 		"Pacific/Easter": {
 			"name": "Pacific/Easter",
-			"lat": -26.85,
-			"long": -108.5667,
+			"lat": - 26.85,
+			"long": - 108.5667,
 			"countries": [
 				"CL"
 			],
@@ -2869,7 +2870,7 @@
 		"America/Bogota": {
 			"name": "America/Bogota",
 			"lat": 4.6,
-			"long": -73.9167,
+			"long": - 73.9167,
 			"countries": [
 				"CO"
 			],
@@ -2878,7 +2879,7 @@
 		"America/Costa_Rica": {
 			"name": "America/Costa_Rica",
 			"lat": 9.9333,
-			"long": -83.9167,
+			"long": - 83.9167,
 			"countries": [
 				"CR"
 			],
@@ -2887,7 +2888,7 @@
 		"America/Havana": {
 			"name": "America/Havana",
 			"lat": 23.1333,
-			"long": -81.6333,
+			"long": - 81.6333,
 			"countries": [
 				"CU"
 			],
@@ -2896,7 +2897,7 @@
 		"Atlantic/Cape_Verde": {
 			"name": "Atlantic/Cape_Verde",
 			"lat": 14.9167,
-			"long": -22.4833,
+			"long": - 22.4833,
 			"countries": [
 				"CV"
 			],
@@ -2905,7 +2906,7 @@
 		"America/Curacao": {
 			"name": "America/Curacao",
 			"lat": 12.1833,
-			"long": -69,
+			"long": - 69,
 			"countries": [
 				"CW",
 				"AW",
@@ -2916,7 +2917,7 @@
 		},
 		"Indian/Christmas": {
 			"name": "Indian/Christmas",
-			"lat": -9.5833,
+			"lat": - 9.5833,
 			"long": 105.7167,
 			"countries": [
 				"CX"
@@ -2963,7 +2964,7 @@
 		"America/Santo_Domingo": {
 			"name": "America/Santo_Domingo",
 			"lat": 18.4667,
-			"long": -68.1,
+			"long": - 68.1,
 			"countries": [
 				"DO"
 			],
@@ -2980,8 +2981,8 @@
 		},
 		"America/Guayaquil": {
 			"name": "America/Guayaquil",
-			"lat": -1.8333,
-			"long": -78.1667,
+			"lat": - 1.8333,
+			"long": - 78.1667,
 			"countries": [
 				"EC"
 			],
@@ -2990,7 +2991,7 @@
 		"Pacific/Galapagos": {
 			"name": "Pacific/Galapagos",
 			"lat": 0.9,
-			"long": -88.4,
+			"long": - 88.4,
 			"countries": [
 				"EC"
 			],
@@ -3017,7 +3018,7 @@
 		"Africa/El_Aaiun": {
 			"name": "Africa/El_Aaiun",
 			"lat": 27.15,
-			"long": -12.8,
+			"long": - 12.8,
 			"countries": [
 				"EH"
 			],
@@ -3026,7 +3027,7 @@
 		"Europe/Madrid": {
 			"name": "Europe/Madrid",
 			"lat": 40.4,
-			"long": -2.3167,
+			"long": - 2.3167,
 			"countries": [
 				"ES"
 			],
@@ -3035,7 +3036,7 @@
 		"Africa/Ceuta": {
 			"name": "Africa/Ceuta",
 			"lat": 35.8833,
-			"long": -4.6833,
+			"long": - 4.6833,
 			"countries": [
 				"ES"
 			],
@@ -3044,7 +3045,7 @@
 		"Atlantic/Canary": {
 			"name": "Atlantic/Canary",
 			"lat": 28.1,
-			"long": -14.6,
+			"long": - 14.6,
 			"countries": [
 				"ES"
 			],
@@ -3062,7 +3063,7 @@
 		},
 		"Pacific/Fiji": {
 			"name": "Pacific/Fiji",
-			"lat": -17.8667,
+			"lat": - 17.8667,
 			"long": 178.4167,
 			"countries": [
 				"FJ"
@@ -3071,8 +3072,8 @@
 		},
 		"Atlantic/Stanley": {
 			"name": "Atlantic/Stanley",
-			"lat": -50.3,
-			"long": -56.15,
+			"lat": - 50.3,
+			"long": - 56.15,
 			"countries": [
 				"FK"
 			],
@@ -3108,7 +3109,7 @@
 		"Atlantic/Faroe": {
 			"name": "Atlantic/Faroe",
 			"lat": 62.0167,
-			"long": -5.2333,
+			"long": - 5.2333,
 			"countries": [
 				"FO"
 			],
@@ -3147,7 +3148,7 @@
 		"America/Cayenne": {
 			"name": "America/Cayenne",
 			"lat": 4.9333,
-			"long": -51.6667,
+			"long": - 51.6667,
 			"countries": [
 				"GF"
 			],
@@ -3165,7 +3166,7 @@
 		"Europe/Gibraltar": {
 			"name": "Europe/Gibraltar",
 			"lat": 36.1333,
-			"long": -4.65,
+			"long": - 4.65,
 			"countries": [
 				"GI"
 			],
@@ -3174,7 +3175,7 @@
 		"America/Godthab": {
 			"name": "America/Godthab",
 			"lat": 64.1833,
-			"long": -50.2667,
+			"long": - 50.2667,
 			"countries": [
 				"GL"
 			],
@@ -3183,7 +3184,7 @@
 		"America/Danmarkshavn": {
 			"name": "America/Danmarkshavn",
 			"lat": 76.7667,
-			"long": -17.3333,
+			"long": - 17.3333,
 			"countries": [
 				"GL"
 			],
@@ -3192,7 +3193,7 @@
 		"America/Scoresbysund": {
 			"name": "America/Scoresbysund",
 			"lat": 70.4833,
-			"long": -20.0333,
+			"long": - 20.0333,
 			"countries": [
 				"GL"
 			],
@@ -3201,7 +3202,7 @@
 		"America/Thule": {
 			"name": "America/Thule",
 			"lat": 76.5667,
-			"long": -67.2167,
+			"long": - 67.2167,
 			"countries": [
 				"GL"
 			],
@@ -3218,8 +3219,8 @@
 		},
 		"Atlantic/South_Georgia": {
 			"name": "Atlantic/South_Georgia",
-			"lat": -53.7333,
-			"long": -35.4667,
+			"lat": - 53.7333,
+			"long": - 35.4667,
 			"countries": [
 				"GS"
 			],
@@ -3228,7 +3229,7 @@
 		"America/Guatemala": {
 			"name": "America/Guatemala",
 			"lat": 14.6333,
-			"long": -89.4833,
+			"long": - 89.4833,
 			"countries": [
 				"GT"
 			],
@@ -3247,7 +3248,7 @@
 		"Africa/Bissau": {
 			"name": "Africa/Bissau",
 			"lat": 11.85,
-			"long": -14.4167,
+			"long": - 14.4167,
 			"countries": [
 				"GW"
 			],
@@ -3256,7 +3257,7 @@
 		"America/Guyana": {
 			"name": "America/Guyana",
 			"lat": 6.8,
-			"long": -57.8333,
+			"long": - 57.8333,
 			"countries": [
 				"GY"
 			],
@@ -3274,7 +3275,7 @@
 		"America/Tegucigalpa": {
 			"name": "America/Tegucigalpa",
 			"lat": 14.1,
-			"long": -86.7833,
+			"long": - 86.7833,
 			"countries": [
 				"HN"
 			],
@@ -3283,7 +3284,7 @@
 		"America/Port-au-Prince": {
 			"name": "America/Port-au-Prince",
 			"lat": 18.5333,
-			"long": -71.6667,
+			"long": - 71.6667,
 			"countries": [
 				"HT"
 			],
@@ -3300,7 +3301,7 @@
 		},
 		"Asia/Jakarta": {
 			"name": "Asia/Jakarta",
-			"lat": -5.8333,
+			"lat": - 5.8333,
 			"long": 106.8,
 			"countries": [
 				"ID"
@@ -3318,7 +3319,7 @@
 		},
 		"Asia/Makassar": {
 			"name": "Asia/Makassar",
-			"lat": -4.8833,
+			"lat": - 4.8833,
 			"long": 119.4,
 			"countries": [
 				"ID"
@@ -3327,7 +3328,7 @@
 		},
 		"Asia/Jayapura": {
 			"name": "Asia/Jayapura",
-			"lat": -1.4667,
+			"lat": - 1.4667,
 			"long": 140.7,
 			"countries": [
 				"ID"
@@ -3337,7 +3338,7 @@
 		"Europe/Dublin": {
 			"name": "Europe/Dublin",
 			"lat": 53.3333,
-			"long": -5.75,
+			"long": - 5.75,
 			"countries": [
 				"IE"
 			],
@@ -3363,7 +3364,7 @@
 		},
 		"Indian/Chagos": {
 			"name": "Indian/Chagos",
-			"lat": -6.6667,
+			"lat": - 6.6667,
 			"long": 72.4167,
 			"countries": [
 				"IO"
@@ -3391,7 +3392,7 @@
 		"Atlantic/Reykjavik": {
 			"name": "Atlantic/Reykjavik",
 			"lat": 64.15,
-			"long": -20.15,
+			"long": - 20.15,
 			"countries": [
 				"IS"
 			],
@@ -3411,7 +3412,7 @@
 		"America/Jamaica": {
 			"name": "America/Jamaica",
 			"lat": 17.9681,
-			"long": -75.2067,
+			"long": - 75.2067,
 			"countries": [
 				"JM"
 			],
@@ -3437,7 +3438,7 @@
 		},
 		"Africa/Nairobi": {
 			"name": "Africa/Nairobi",
-			"lat": -0.7167,
+			"lat": - 0.7167,
 			"long": 36.8167,
 			"countries": [
 				"KE",
@@ -3473,8 +3474,8 @@
 		},
 		"Pacific/Enderbury": {
 			"name": "Pacific/Enderbury",
-			"lat": -2.8667,
-			"long": -170.9167,
+			"lat": - 2.8667,
+			"long": - 170.9167,
 			"countries": [
 				"KI"
 			],
@@ -3483,7 +3484,7 @@
 		"Pacific/Kiritimati": {
 			"name": "Pacific/Kiritimati",
 			"lat": 1.8667,
-			"long": -156.6667,
+			"long": - 156.6667,
 			"countries": [
 				"KI"
 			],
@@ -3573,7 +3574,7 @@
 		"Africa/Monrovia": {
 			"name": "Africa/Monrovia",
 			"lat": 6.3,
-			"long": -9.2167,
+			"long": - 9.2167,
 			"countries": [
 				"LR"
 			],
@@ -3618,7 +3619,7 @@
 		"Africa/Casablanca": {
 			"name": "Africa/Casablanca",
 			"lat": 33.65,
-			"long": -6.4167,
+			"long": - 6.4167,
 			"countries": [
 				"MA"
 			],
@@ -3708,7 +3709,7 @@
 		"America/Martinique": {
 			"name": "America/Martinique",
 			"lat": 14.6,
-			"long": -60.9167,
+			"long": - 60.9167,
 			"countries": [
 				"MQ"
 			],
@@ -3725,7 +3726,7 @@
 		},
 		"Indian/Mauritius": {
 			"name": "Indian/Mauritius",
-			"lat": -19.8333,
+			"lat": - 19.8333,
 			"long": 57.5,
 			"countries": [
 				"MU"
@@ -3744,7 +3745,7 @@
 		"America/Mexico_City": {
 			"name": "America/Mexico_City",
 			"lat": 19.4,
-			"long": -98.85,
+			"long": - 98.85,
 			"countries": [
 				"MX"
 			],
@@ -3753,7 +3754,7 @@
 		"America/Cancun": {
 			"name": "America/Cancun",
 			"lat": 21.0833,
-			"long": -85.2333,
+			"long": - 85.2333,
 			"countries": [
 				"MX"
 			],
@@ -3762,7 +3763,7 @@
 		"America/Merida": {
 			"name": "America/Merida",
 			"lat": 20.9667,
-			"long": -88.3833,
+			"long": - 88.3833,
 			"countries": [
 				"MX"
 			],
@@ -3771,7 +3772,7 @@
 		"America/Monterrey": {
 			"name": "America/Monterrey",
 			"lat": 25.6667,
-			"long": -99.6833,
+			"long": - 99.6833,
 			"countries": [
 				"MX"
 			],
@@ -3780,7 +3781,7 @@
 		"America/Matamoros": {
 			"name": "America/Matamoros",
 			"lat": 25.8333,
-			"long": -96.5,
+			"long": - 96.5,
 			"countries": [
 				"MX"
 			],
@@ -3789,7 +3790,7 @@
 		"America/Mazatlan": {
 			"name": "America/Mazatlan",
 			"lat": 23.2167,
-			"long": -105.5833,
+			"long": - 105.5833,
 			"countries": [
 				"MX"
 			],
@@ -3798,7 +3799,7 @@
 		"America/Chihuahua": {
 			"name": "America/Chihuahua",
 			"lat": 28.6333,
-			"long": -105.9167,
+			"long": - 105.9167,
 			"countries": [
 				"MX"
 			],
@@ -3807,7 +3808,7 @@
 		"America/Ojinaga": {
 			"name": "America/Ojinaga",
 			"lat": 29.5667,
-			"long": -103.5833,
+			"long": - 103.5833,
 			"countries": [
 				"MX"
 			],
@@ -3816,7 +3817,7 @@
 		"America/Hermosillo": {
 			"name": "America/Hermosillo",
 			"lat": 29.0667,
-			"long": -109.0333,
+			"long": - 109.0333,
 			"countries": [
 				"MX"
 			],
@@ -3825,7 +3826,7 @@
 		"America/Tijuana": {
 			"name": "America/Tijuana",
 			"lat": 32.5333,
-			"long": -116.9833,
+			"long": - 116.9833,
 			"countries": [
 				"MX"
 			],
@@ -3834,7 +3835,7 @@
 		"America/Bahia_Banderas": {
 			"name": "America/Bahia_Banderas",
 			"lat": 20.8,
-			"long": -104.75,
+			"long": - 104.75,
 			"countries": [
 				"MX"
 			],
@@ -3860,7 +3861,7 @@
 		},
 		"Africa/Maputo": {
 			"name": "Africa/Maputo",
-			"lat": -24.0333,
+			"lat": - 24.0333,
 			"long": 32.5833,
 			"countries": [
 				"MZ",
@@ -3876,7 +3877,7 @@
 		},
 		"Africa/Windhoek": {
 			"name": "Africa/Windhoek",
-			"lat": -21.4333,
+			"lat": - 21.4333,
 			"long": 17.1,
 			"countries": [
 				"NA"
@@ -3885,7 +3886,7 @@
 		},
 		"Pacific/Noumea": {
 			"name": "Pacific/Noumea",
-			"lat": -21.7333,
+			"lat": - 21.7333,
 			"long": 166.45,
 			"countries": [
 				"NC"
@@ -3894,7 +3895,7 @@
 		},
 		"Pacific/Norfolk": {
 			"name": "Pacific/Norfolk",
-			"lat": -28.95,
+			"lat": - 28.95,
 			"long": 167.9667,
 			"countries": [
 				"NF"
@@ -3922,7 +3923,7 @@
 		"America/Managua": {
 			"name": "America/Managua",
 			"lat": 12.15,
-			"long": -85.7167,
+			"long": - 85.7167,
 			"countries": [
 				"NI"
 			],
@@ -3967,8 +3968,8 @@
 		},
 		"Pacific/Niue": {
 			"name": "Pacific/Niue",
-			"lat": -18.9833,
-			"long": -168.0833,
+			"lat": - 18.9833,
+			"long": - 168.0833,
 			"countries": [
 				"NU"
 			],
@@ -3976,7 +3977,7 @@
 		},
 		"Pacific/Auckland": {
 			"name": "Pacific/Auckland",
-			"lat": -35.1333,
+			"lat": - 35.1333,
 			"long": 174.7667,
 			"countries": [
 				"NZ",
@@ -3986,8 +3987,8 @@
 		},
 		"Pacific/Chatham": {
 			"name": "Pacific/Chatham",
-			"lat": -42.05,
-			"long": -175.45,
+			"lat": - 42.05,
+			"long": - 175.45,
 			"countries": [
 				"NZ"
 			],
@@ -3996,7 +3997,7 @@
 		"America/Panama": {
 			"name": "America/Panama",
 			"lat": 8.9667,
-			"long": -78.4667,
+			"long": - 78.4667,
 			"countries": [
 				"PA",
 				"KY"
@@ -4005,8 +4006,8 @@
 		},
 		"America/Lima": {
 			"name": "America/Lima",
-			"lat": -11.95,
-			"long": -76.95,
+			"lat": - 11.95,
+			"long": - 76.95,
 			"countries": [
 				"PE"
 			],
@@ -4014,8 +4015,8 @@
 		},
 		"Pacific/Tahiti": {
 			"name": "Pacific/Tahiti",
-			"lat": -16.4667,
-			"long": -148.4333,
+			"lat": - 16.4667,
+			"long": - 148.4333,
 			"countries": [
 				"PF"
 			],
@@ -4023,8 +4024,8 @@
 		},
 		"Pacific/Marquesas": {
 			"name": "Pacific/Marquesas",
-			"lat": -9,
-			"long": -138.5,
+			"lat": - 9,
+			"long": - 138.5,
 			"countries": [
 				"PF"
 			],
@@ -4032,8 +4033,8 @@
 		},
 		"Pacific/Gambier": {
 			"name": "Pacific/Gambier",
-			"lat": -22.8667,
-			"long": -133.05,
+			"lat": - 22.8667,
+			"long": - 133.05,
 			"countries": [
 				"PF"
 			],
@@ -4041,7 +4042,7 @@
 		},
 		"Pacific/Port_Moresby": {
 			"name": "Pacific/Port_Moresby",
-			"lat": -8.5,
+			"lat": - 8.5,
 			"long": 147.1667,
 			"countries": [
 				"PG"
@@ -4050,7 +4051,7 @@
 		},
 		"Pacific/Bougainville": {
 			"name": "Pacific/Bougainville",
-			"lat": -5.7833,
+			"lat": - 5.7833,
 			"long": 155.5667,
 			"countries": [
 				"PG"
@@ -4087,7 +4088,7 @@
 		"America/Miquelon": {
 			"name": "America/Miquelon",
 			"lat": 47.05,
-			"long": -55.6667,
+			"long": - 55.6667,
 			"countries": [
 				"PM"
 			],
@@ -4095,8 +4096,8 @@
 		},
 		"Pacific/Pitcairn": {
 			"name": "Pacific/Pitcairn",
-			"lat": -24.9333,
-			"long": -129.9167,
+			"lat": - 24.9333,
+			"long": - 129.9167,
 			"countries": [
 				"PN"
 			],
@@ -4105,7 +4106,7 @@
 		"America/Puerto_Rico": {
 			"name": "America/Puerto_Rico",
 			"lat": 18.4683,
-			"long": -65.8939,
+			"long": - 65.8939,
 			"countries": [
 				"PR"
 			],
@@ -4132,7 +4133,7 @@
 		"Europe/Lisbon": {
 			"name": "Europe/Lisbon",
 			"lat": 38.7167,
-			"long": -8.8667,
+			"long": - 8.8667,
 			"countries": [
 				"PT"
 			],
@@ -4141,7 +4142,7 @@
 		"Atlantic/Madeira": {
 			"name": "Atlantic/Madeira",
 			"lat": 32.6333,
-			"long": -15.1,
+			"long": - 15.1,
 			"countries": [
 				"PT"
 			],
@@ -4150,7 +4151,7 @@
 		"Atlantic/Azores": {
 			"name": "Atlantic/Azores",
 			"lat": 37.7333,
-			"long": -24.3333,
+			"long": - 24.3333,
 			"countries": [
 				"PT"
 			],
@@ -4167,8 +4168,8 @@
 		},
 		"America/Asuncion": {
 			"name": "America/Asuncion",
-			"lat": -24.7333,
-			"long": -56.3333,
+			"lat": - 24.7333,
+			"long": - 56.3333,
 			"countries": [
 				"PY"
 			],
@@ -4186,7 +4187,7 @@
 		},
 		"Indian/Reunion": {
 			"name": "Indian/Reunion",
-			"lat": -19.1333,
+			"lat": - 19.1333,
 			"long": 55.4667,
 			"countries": [
 				"RE",
@@ -4464,7 +4465,7 @@
 		},
 		"Pacific/Guadalcanal": {
 			"name": "Pacific/Guadalcanal",
-			"lat": -8.4667,
+			"lat": - 8.4667,
 			"long": 160.2,
 			"countries": [
 				"SB"
@@ -4473,7 +4474,7 @@
 		},
 		"Indian/Mahe": {
 			"name": "Indian/Mahe",
-			"lat": -3.3333,
+			"lat": - 3.3333,
 			"long": 55.4667,
 			"countries": [
 				"SC"
@@ -4511,7 +4512,7 @@
 		"America/Paramaribo": {
 			"name": "America/Paramaribo",
 			"lat": 5.8333,
-			"long": -54.8333,
+			"long": - 54.8333,
 			"countries": [
 				"SR"
 			],
@@ -4520,7 +4521,7 @@
 		"America/El_Salvador": {
 			"name": "America/El_Salvador",
 			"lat": 13.7,
-			"long": -88.8,
+			"long": - 88.8,
 			"countries": [
 				"SV"
 			],
@@ -4538,7 +4539,7 @@
 		"America/Grand_Turk": {
 			"name": "America/Grand_Turk",
 			"lat": 21.4667,
-			"long": -70.8667,
+			"long": - 70.8667,
 			"countries": [
 				"TC"
 			],
@@ -4555,7 +4556,7 @@
 		},
 		"Indian/Kerguelen": {
 			"name": "Indian/Kerguelen",
-			"lat": -48.6472,
+			"lat": - 48.6472,
 			"long": 70.2175,
 			"countries": [
 				"TF"
@@ -4585,8 +4586,8 @@
 		},
 		"Pacific/Fakaofo": {
 			"name": "Pacific/Fakaofo",
-			"lat": -8.6333,
-			"long": -170.7667,
+			"lat": - 8.6333,
+			"long": - 170.7667,
 			"countries": [
 				"TK"
 			],
@@ -4594,7 +4595,7 @@
 		},
 		"Asia/Dili": {
 			"name": "Asia/Dili",
-			"lat": -7.45,
+			"lat": - 7.45,
 			"long": 125.5833,
 			"countries": [
 				"TL"
@@ -4621,8 +4622,8 @@
 		},
 		"Pacific/Tongatapu": {
 			"name": "Pacific/Tongatapu",
-			"lat": -20.8333,
-			"long": -174.8333,
+			"lat": - 20.8333,
+			"long": - 174.8333,
 			"countries": [
 				"TO"
 			],
@@ -4640,7 +4641,7 @@
 		"America/Port_of_Spain": {
 			"name": "America/Port_of_Spain",
 			"lat": 10.65,
-			"long": -60.4833,
+			"long": - 60.4833,
 			"countries": [
 				"TT",
 				"AG",
@@ -4661,7 +4662,7 @@
 		},
 		"Pacific/Funafuti": {
 			"name": "Pacific/Funafuti",
-			"lat": -7.4833,
+			"lat": - 7.4833,
 			"long": 179.2167,
 			"countries": [
 				"TV"
@@ -4716,7 +4717,7 @@
 		"America/New_York": {
 			"name": "America/New_York",
 			"lat": 40.7142,
-			"long": -73.9936,
+			"long": - 73.9936,
 			"countries": [
 				"US"
 			],
@@ -4725,7 +4726,7 @@
 		"America/Detroit": {
 			"name": "America/Detroit",
 			"lat": 42.3314,
-			"long": -82.9542,
+			"long": - 82.9542,
 			"countries": [
 				"US"
 			],
@@ -4734,7 +4735,7 @@
 		"America/Kentucky/Louisville": {
 			"name": "America/Kentucky/Louisville",
 			"lat": 38.2542,
-			"long": -84.2406,
+			"long": - 84.2406,
 			"countries": [
 				"US"
 			],
@@ -4743,7 +4744,7 @@
 		"America/Kentucky/Monticello": {
 			"name": "America/Kentucky/Monticello",
 			"lat": 36.8297,
-			"long": -83.1508,
+			"long": - 83.1508,
 			"countries": [
 				"US"
 			],
@@ -4752,7 +4753,7 @@
 		"America/Indiana/Indianapolis": {
 			"name": "America/Indiana/Indianapolis",
 			"lat": 39.7683,
-			"long": -85.8419,
+			"long": - 85.8419,
 			"countries": [
 				"US"
 			],
@@ -4761,7 +4762,7 @@
 		"America/Indiana/Vincennes": {
 			"name": "America/Indiana/Vincennes",
 			"lat": 38.6772,
-			"long": -86.4714,
+			"long": - 86.4714,
 			"countries": [
 				"US"
 			],
@@ -4770,7 +4771,7 @@
 		"America/Indiana/Winamac": {
 			"name": "America/Indiana/Winamac",
 			"lat": 41.0514,
-			"long": -85.3969,
+			"long": - 85.3969,
 			"countries": [
 				"US"
 			],
@@ -4779,7 +4780,7 @@
 		"America/Indiana/Marengo": {
 			"name": "America/Indiana/Marengo",
 			"lat": 38.3756,
-			"long": -85.6553,
+			"long": - 85.6553,
 			"countries": [
 				"US"
 			],
@@ -4788,7 +4789,7 @@
 		"America/Indiana/Petersburg": {
 			"name": "America/Indiana/Petersburg",
 			"lat": 38.4919,
-			"long": -86.7214,
+			"long": - 86.7214,
 			"countries": [
 				"US"
 			],
@@ -4797,7 +4798,7 @@
 		"America/Indiana/Vevay": {
 			"name": "America/Indiana/Vevay",
 			"lat": 38.7478,
-			"long": -84.9328,
+			"long": - 84.9328,
 			"countries": [
 				"US"
 			],
@@ -4806,7 +4807,7 @@
 		"America/Chicago": {
 			"name": "America/Chicago",
 			"lat": 41.85,
-			"long": -86.35,
+			"long": - 86.35,
 			"countries": [
 				"US"
 			],
@@ -4815,7 +4816,7 @@
 		"America/Indiana/Tell_City": {
 			"name": "America/Indiana/Tell_City",
 			"lat": 37.9531,
-			"long": -85.2386,
+			"long": - 85.2386,
 			"countries": [
 				"US"
 			],
@@ -4824,7 +4825,7 @@
 		"America/Indiana/Knox": {
 			"name": "America/Indiana/Knox",
 			"lat": 41.2958,
-			"long": -85.375,
+			"long": - 85.375,
 			"countries": [
 				"US"
 			],
@@ -4833,7 +4834,7 @@
 		"America/Menominee": {
 			"name": "America/Menominee",
 			"lat": 45.1078,
-			"long": -86.3858,
+			"long": - 86.3858,
 			"countries": [
 				"US"
 			],
@@ -4842,7 +4843,7 @@
 		"America/North_Dakota/Center": {
 			"name": "America/North_Dakota/Center",
 			"lat": 47.1164,
-			"long": -100.7008,
+			"long": - 100.7008,
 			"countries": [
 				"US"
 			],
@@ -4851,7 +4852,7 @@
 		"America/North_Dakota/New_Salem": {
 			"name": "America/North_Dakota/New_Salem",
 			"lat": 46.845,
-			"long": -100.5892,
+			"long": - 100.5892,
 			"countries": [
 				"US"
 			],
@@ -4860,7 +4861,7 @@
 		"America/North_Dakota/Beulah": {
 			"name": "America/North_Dakota/Beulah",
 			"lat": 47.2642,
-			"long": -100.2222,
+			"long": - 100.2222,
 			"countries": [
 				"US"
 			],
@@ -4869,7 +4870,7 @@
 		"America/Denver": {
 			"name": "America/Denver",
 			"lat": 39.7392,
-			"long": -103.0158,
+			"long": - 103.0158,
 			"countries": [
 				"US"
 			],
@@ -4878,7 +4879,7 @@
 		"America/Boise": {
 			"name": "America/Boise",
 			"lat": 43.6136,
-			"long": -115.7975,
+			"long": - 115.7975,
 			"countries": [
 				"US"
 			],
@@ -4887,7 +4888,7 @@
 		"America/Phoenix": {
 			"name": "America/Phoenix",
 			"lat": 33.4483,
-			"long": -111.9267,
+			"long": - 111.9267,
 			"countries": [
 				"US"
 			],
@@ -4896,7 +4897,7 @@
 		"America/Los_Angeles": {
 			"name": "America/Los_Angeles",
 			"lat": 34.0522,
-			"long": -117.7572,
+			"long": - 117.7572,
 			"countries": [
 				"US"
 			],
@@ -4905,7 +4906,7 @@
 		"America/Anchorage": {
 			"name": "America/Anchorage",
 			"lat": 61.2181,
-			"long": -148.0997,
+			"long": - 148.0997,
 			"countries": [
 				"US"
 			],
@@ -4914,7 +4915,7 @@
 		"America/Juneau": {
 			"name": "America/Juneau",
 			"lat": 58.3019,
-			"long": -133.5803,
+			"long": - 133.5803,
 			"countries": [
 				"US"
 			],
@@ -4923,7 +4924,7 @@
 		"America/Sitka": {
 			"name": "America/Sitka",
 			"lat": 57.1764,
-			"long": -134.6981,
+			"long": - 134.6981,
 			"countries": [
 				"US"
 			],
@@ -4932,7 +4933,7 @@
 		"America/Metlakatla": {
 			"name": "America/Metlakatla",
 			"lat": 55.1269,
-			"long": -130.4236,
+			"long": - 130.4236,
 			"countries": [
 				"US"
 			],
@@ -4941,7 +4942,7 @@
 		"America/Yakutat": {
 			"name": "America/Yakutat",
 			"lat": 59.5469,
-			"long": -138.2728,
+			"long": - 138.2728,
 			"countries": [
 				"US"
 			],
@@ -4950,7 +4951,7 @@
 		"America/Nome": {
 			"name": "America/Nome",
 			"lat": 64.5011,
-			"long": -164.5936,
+			"long": - 164.5936,
 			"countries": [
 				"US"
 			],
@@ -4959,7 +4960,7 @@
 		"America/Adak": {
 			"name": "America/Adak",
 			"lat": 51.88,
-			"long": -175.3419,
+			"long": - 175.3419,
 			"countries": [
 				"US"
 			],
@@ -4968,7 +4969,7 @@
 		"Pacific/Honolulu": {
 			"name": "Pacific/Honolulu",
 			"lat": 21.3069,
-			"long": -156.1417,
+			"long": - 156.1417,
 			"countries": [
 				"US",
 				"UM"
@@ -4977,8 +4978,8 @@
 		},
 		"America/Montevideo": {
 			"name": "America/Montevideo",
-			"lat": -33.1167,
-			"long": -55.8167,
+			"lat": - 33.1167,
+			"long": - 55.8167,
 			"countries": [
 				"UY"
 			],
@@ -5005,7 +5006,7 @@
 		"America/Caracas": {
 			"name": "America/Caracas",
 			"lat": 10.5,
-			"long": -65.0667,
+			"long": - 65.0667,
 			"countries": [
 				"VE"
 			],
@@ -5022,7 +5023,7 @@
 		},
 		"Pacific/Efate": {
 			"name": "Pacific/Efate",
-			"lat": -16.3333,
+			"lat": - 16.3333,
 			"long": 168.4167,
 			"countries": [
 				"VU"
@@ -5031,8 +5032,8 @@
 		},
 		"Pacific/Wallis": {
 			"name": "Pacific/Wallis",
-			"lat": -12.7,
-			"long": -175.8333,
+			"lat": - 12.7,
+			"long": - 175.8333,
 			"countries": [
 				"WF"
 			],
@@ -5040,8 +5041,8 @@
 		},
 		"Pacific/Apia": {
 			"name": "Pacific/Apia",
-			"lat": -12.1667,
-			"long": -170.2667,
+			"lat": - 12.1667,
+			"long": - 170.2667,
 			"countries": [
 				"WS"
 			],
@@ -5049,7 +5050,7 @@
 		},
 		"Africa/Johannesburg": {
 			"name": "Africa/Johannesburg",
-			"lat": -25.75,
+			"lat": - 25.75,
 			"long": 28,
 			"countries": [
 				"ZA",
@@ -5059,4 +5060,4 @@
 			"comments": ""
 		}
 	}
-}
+};

@@ -1,6 +1,6 @@
 {% extends 'pages/_00_base/html_page.html' %}
 
-{% from 'pages/macros/_macros.html' import
+{% from 'pages/partials/_macros.html' import
 	tabbed_navigation,
 	collection_text_only,
 	collapsable_items_container,
@@ -9,7 +9,6 @@
 	keyboard_widget,
 	keyboard_widget_styles_and_scripts,
 	timezone_map,
-	timezone_map_styles_and_scripts,
 	conditional_text with context %}
 
 {% block before_page_styles %}
@@ -208,7 +207,7 @@
 {% block page_script %}
 	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
 	{{ keyboard_widget_styles_and_scripts() }}
-	{{ timezone_map_styles_and_scripts() }}
+	{% include 'partials/_timezone_map.html' with context %}
 	<script>
 		{{ collapsable_items_javascript() }}
 
