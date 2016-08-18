@@ -1,0 +1,8 @@
+cnchi/ui/gtk/*
+cnchi/ui/html/node_modules/*
+cnchi/ui/html/pages/resources/includes/*
+cnchi/ui/html/pages/resources/css/vendor/*
+cnchi/ui/html/pages/resources/js/vendor/*
+cnchi/ui/tpl/jinja/*
+cnchi/data/*
+cnchi/utils/*
