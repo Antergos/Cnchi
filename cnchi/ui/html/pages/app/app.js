@@ -59,11 +59,25 @@ class CnchiApp extends CnchiObject {
 		this._logger = null;
 		this._bridge_message_queue = [];
 		this.bmq_worker = null;
+		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
 
 		this.register_event_handlers();
 		this._start_bridge_message_queue_worker();
+		this._maybe_unlock_top_level_tabs();
 	}
 
+	_maybe_unlock_top_level_tabs() {
+		this.$top_navigation_buttons.children().each(( index, element ) => {
+			let $tab_button = $(element);
+
+			$tab_button.removeClass('locked');
+
+			if ( $tab_button.hasClass('active') ) {
+				// This button is for the current page. Don't unlock anymore buttons.
+				return false;
+			}
+		});
+	}
 
 	_start_bridge_message_queue_worker() {
 		this.bmq_worker = setInterval(() => {

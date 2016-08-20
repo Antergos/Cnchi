@@ -16790,7 +16790,7 @@ class CnchiTab extends CnchiObject {
 			event.preventDefault();
 			console.log('clicked!');
 			console.log(event);
-			_page._tab_button_clicked_handler($tab_button);
+			_page.tab_button_clicked_handler($tab_button);
 		}
 	}
 }

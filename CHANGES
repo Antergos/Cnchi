@@ -1,3 +1,5 @@
+[2016-08-20 00:54:47 -0500]  improving structure                                                    Dustin Falgout  {cda773a}
+[2016-08-18 04:18:04 -0500]  cleaning up                                                            Dustin Falgout  {21d565a}
 [2016-08-18 04:09:08 -0500]  syncing local. its a bit of a mess right now, dont pay any attentio..  Dustin Falgout  {0a480c0}
 [2016-08-16 04:04:48 -0500]  add package.json                                                       Dustin Falgout  {27aaee4}
 [2016-08-16 02:42:00 -0500]  separate partial templates from macros. more work on timezone tab.     Dustin Falgout  {fa0cab5}

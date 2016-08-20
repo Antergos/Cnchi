@@ -41,21 +41,21 @@ class CnchiTab extends CnchiObject {
 	 * Creates a new {@link CnchiTab} object.
 	 *
 	 * @arg {jQuery}    $tab     {@link CnchiTab.$tab}
-	 * @arg {string}    [id]     {@link CnchiTab.id}
+	 * @arg {string}    [name]     {@link CnchiTab.name}
 	 * @arg {CnchiPage} [parent] {@link CnchiTab.parent}
 	 */
-	constructor( $tab, id, page ) {
+	constructor( $tab, name, page ) {
 		super();
 
-		let result = this._check_args( $tab, id, page );
+		let result = this._check_args( $tab, name, page );
 
 		if ( true !== result ) {
 			this.logger.error( result, this.constructor );
 		}
 
-		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${id}`);
-		this.$tab_button = this.get_tab_button();
-		this.id = id;
+		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${name}`);
+		this.$tab_button = this._get_tab_button();
+		this.id = name;
 		this.locked = true;
 		this.lock_key = `unlocked_tabs::${this.id}`;
 		this.name = this.$tab.attr('data-name');
@@ -67,11 +67,11 @@ class CnchiTab extends CnchiObject {
 
 	}
 
-	_check_args( $tab, id, page ) {
+	_check_args( $tab, name, page ) {
 		let result = true;
 
-		if ( 'undefined' === typeof $tab && '' === id ) {
-			result = 'One of [$tab, id] required!';
+		if ( 'undefined' === typeof $tab && '' === name ) {
+			result = 'One of [$tab, name] required!';
 
 		} else if ( 'undefined' === typeof page ) {
 			result = 'page is required to create a new CnchiTab!';
@@ -80,51 +80,25 @@ class CnchiTab extends CnchiObject {
 		return result;
 	}
 
-	_do_unlock() {
-		this.$tab_button.removeClass( 'locked' );
-		this.$tab_button.on( 'click', this.tab_button_clicked_cb );
-		localStorage.setItem( this.lock_key, 'true' );
+	_get_tab_button() {
+		let selector = `[href\$="${this.name}"]`,
+			$container = $('.main_content');
+
+		return $container.find('.navigation_buttons').find(selector).parent();
 	}
 
 	_maybe_unlock() {
 		let unlocked = ( null !== localStorage.getItem( this.lock_key ) );
 
 		if ( true === unlocked ) {
-			this._do_unlock();
+			this._unlock();
 		}
 	}
 
-	_tab_button_clicked_handler( $tab_button ) {
-		if ( $tab_button.hasClass('locked') ) {
-			this.logger.debug('is locked!');
-			console.log('is locked!');
-			return;
-		}
-
-		let id = $tab_button.children('a').attr('href');
-
-		$(window).trigger('page-change-current-tab', [id.replace('#', '')]);
-	}
-
-	get_tab_button() {
-		let selector = `[href\$="${this.id}"]`,
-			$container = $('.main_content');
-
-		return $container.find('.navigation_buttons').find(selector).parent();
-	}
-
-	tab_button_clicked_cb( event ) {
-		let $target = $(event.currentTarget),
-			$tab_button = $target.closest('.tab');
-		console.log(event);
-		this.logger.debug(event);
-
-		if ( !$('.header_bottom').has($tab_button).length ) {
-			event.preventDefault();
-			console.log('clicked!');
-			console.log(event);
-			_page._tab_button_clicked_handler($tab_button);
-		}
+	_unlock() {
+		this.$tab_button.removeClass( 'locked' );
+		this.$tab_button.on( 'click', this.tab_button_clicked_cb );
+		localStorage.setItem( this.lock_key, 'true' );
 	}
 }
 

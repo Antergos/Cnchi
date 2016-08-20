@@ -43,52 +43,94 @@
 class CnchiPage extends CnchiObject {
 
 	constructor( id ) {
-		let $page_tabs = $('.page_tab'),
-			has_tabs = $page_tabs.length ? true : false,
-			$tab = ( true === has_tabs ) ? $page_tabs.first() : $(`#${id}`);
-
 		super();
 
 		this.signals = [];
 		this.tabs = [];
-		this.has_tabs = has_tabs;
 		this.current_tab = null;
-		this.$page = (true === this.is_page) ? $('.main_content') : this.parent.$page;
-		this.$tab = $tab;
-		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
+		this.previous_tab = null;
+		this.next_tab = null;
+		this.$page = $('.main_content');
 		this.next_tab_animation_interval = null;
 
-		if ( true === this.has_tabs ) {
-			this.prepare_tabs();
-		}
-
-		this.maybe_unlock_top_level_tabs();
-		$(window).on('page-change-current-tab', this.change_current_tab_cb)
+		this._prepare_tabs();
+		this._register_event_handlers();
+		this._set_current_tab( 0 );
 
 	}
 
 	_assign_next_and_previous_tab_props() {
-		this.previous = null;
-		this.next = this.tabs[0];
+		this.next_tab = ( this.tabs.length > 1 ) ? this.tabs[1] : null;
 
 		for ( let [index, value] of this.tabs.entries() ) {
-			value.previous = ( index > 0 ) ? this.tabs[index - 1] : this;
-			value.next = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
+			value.previous_tab = ( index > 0 ) ? this.tabs[index - 1] : null;
+			value.next_tab = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
 		}
 	}
 
-	_get_next_tab_button() {
-		console.log([this.current_tab]);
-		let $tab_button,
-			on_last_tab_for_page = ( true === this.has_tabs && null === this.current_tab.next );
+	/**
+	 * Locates the page's tabs in the DOM and creates `CnchiTab` objects for them. Also ensures
+	 * that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s) are properly set.
+	 */
+	_prepare_tabs() {
+		let $page_tabs = $('.page_tab');
+		this.$tab.fadeIn();
+		this.$tab_button.removeClass('locked').addClass('active');
 
-		if ( false === this.has_tabs || on_last_tab_for_page ) {
-			$tab_button = this.$tab_button.next();
+		$page_tabs.each(( index, element ) => {
+			let tab_name = $(element).attr('id'),
+				property_name = `${tab_name}_tab`;
+
+			this[property_name] = new CnchiTab( $(element), tab_name, this );
+
+			this.tabs.push( this[property_name] );
+			this[property_name].$tab_button.on( 'click', this.tab_button_clicked_cb );
+
+			if ( index === ( $page_tabs.length - 1 ) ) {
+				this._assign_next_and_previous_tab_props();
+			}
+		});
+	}
+
+	/**
+	 * Adds this page's signals to {@link CnchiApp.signals} array.
+	 */
+	_register_allowed_signals() {
+		for ( let signal of this.signals ) {
+			cnchi.signals.push(signal);
+		}
+	}
+
+	_register_event_handlers() {
+
+	}
+
+	_set_current_tab( identifier ) {
+		let tab;
+
+		if ( Number.isInteger( identifier ) ) {
+			tab = this.tabs[identifier];
 		} else {
-			$tab_button = this.current_tab.$tab_button.filter('.main_content li').next();
+			tab = this.get_tab_by_name( identifier );
 		}
 
-		return $tab_button;
+		this._show_tab( tab );
+	}
+
+	_show_tab( tab ) {
+		let _prepare = () => {
+			this.current_tab = tab;
+			this.current_tab.prepare( 'show' );
+		};
+
+		if ( null !== this.current_tab ) {
+			this.current_tab.prepare( 'hide' )
+				.done(() => {
+					_prepare();
+			});
+		} else {
+			_prepare();
+		}
 	}
 
 	_unlock_next_tab_animated() {
@@ -108,96 +150,9 @@ class CnchiPage extends CnchiObject {
 		this.reload_element(`#${id}`, this.show_tab);
 	}
 
-	get_tab_by_id( id ) {
-		let tab;
-
-		for ( let tab_obj of this.tabs ) {
-			if ( tab_obj.id === id ) {
-				tab = tab_obj;
-				break;
-			}
-		}
-
-		return tab;
-	}
-
-	/**
-	 * Returns a jQuery object for the tab represented by `identifier`.
-	 *
-	 * @arg {CnchiTab|jQuery|string|number} An identifier by which to locate the tab.
-	 *
-	 * @returns {jQuery|null}
-	 */
-	get_tab_jquery_object( identifier ) {
-		let $tab = null;
-
-		if ( identifier instanceof CnchiTab ) {
-			$tab = identifier.$tab;
-
-		} else if ( identifier instanceof jQuery ) {
-			$tab = identifier;
-
-		} else if ( 'string' === typeof identifier ) {
-			$tab = $(`#${identifier}`);
-
-		} else if ( 'number' === typeof identifier ) {
-			let tab_name = this.tabs[identifier];
-			$tab = this[tab_name].$tab;
-		}
-
-		return $tab;
-	}
-
-	maybe_unlock_top_level_tabs() {
-		this.$top_navigation_buttons.children().each(( index, element ) => {
-			let $tab_button = $(element);
-
-			$tab_button.removeClass('locked');
-
-			if ( $tab_button.hasClass('active') ) {
-				// This button is for the current page. Don't unlock anymore buttons.
-				return false;
-			}
-		});
-	}
-
-	/**
-	 * Locates the tabs' collapsibles in the DOM and uses them to create `CnchiTab` objects for
-	 * the tabs. Also ensures that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s)
-	 * are properly set.
-	 */
-	prepare_tabs() {
-		let $page_tabs = $('.page_tab');
-		this.current_tab = this;
-
-		this.$tab.fadeIn();
-		this.$tab_button.removeClass('locked').addClass('active');
-
-		$page_tabs.each(( index, element ) => {
-			// Don't create a `CnchiTab` object for the first tab since it is the current page.
-			if ( 0 === index ) {
-				return;
-			}
-
-			let tab_name = $(element).attr('id'),
-				prop_name = `${tab_name}_tab`;
-
-			this[prop_name] = new CnchiTab($(element), tab_name, this);
-			this.tabs.push(this[prop_name]);
-
-			if ( index === ($page_tabs.length - 1) ) {
-				this._assign_next_and_previous_tab_props();
-			}
-		});
-	}
-
-	/**
-	 * Adds this page's signals to {@link CnchiApp.signals} array.
-	 */
-	register_allowed_signals() {
-		for ( let signal of this.signals ) {
-			cnchi.signals.push(signal);
-		}
+	get_tab_by_name( tab_name ) {
+		let property_name = `${tab_name}_tab`;
+		return this[property_name];
 	}
 
 	/**
@@ -261,6 +216,14 @@ class CnchiPage extends CnchiObject {
 		} else {
 			this.logger.debug('Tab cannot be null!', this.show_tab)
 		}
+	}
+
+	tab_button_clicked_cb( event ) {
+		let $target = $(event.currentTarget),
+			$tab_button = $target.closest('.tab');
+
+		event.preventDefault();
+		_page.tab_button_clicked_handler($tab_button);
 	}
 
 	unlock_next_tab() {
