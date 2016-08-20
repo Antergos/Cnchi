@@ -32,7 +32,8 @@
  * Sends log messages through the Python<->JS Bridge to our Python logging handler.
  *
  * @prop {String} log_prefix      A string that will be prepended to log messages.
- * @prop {String} _unknown_method A string used for the calling method name when one isn't provided.
+ * @prop {String} _unknown_method A string used for the calling method name when one isn't
+ *     provided.
  */
 class CnchiLogger {
 
@@ -66,7 +67,7 @@ class CnchiLogger {
 	 * @private
 	 */
 	_process_message( msg, caller ) {
-		return `[${this.log_prefix}.${this._get_caller_name(caller)}]: ${msg}`;
+		return `[${this.log_prefix}.${this._get_caller_name( caller )}]: ${msg}`;
 	}
 
 	/**
@@ -77,11 +78,11 @@ class CnchiLogger {
 	 * @private
 	 */
 	_write_log( msg, level ) {
-		let esc_msg = msg.replace(/"/g, '\\"');
+		let esc_msg = msg.replace( /"/g, '\\"' );
 		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
-		cnchi._bridge_message_queue.push(msg);
-		console.log(msg);
+		cnchi._bridge_message_queue.push( msg );
+		console.log( msg );
 	}
 
 	/**
@@ -91,32 +92,32 @@ class CnchiLogger {
 	 * @arg {Function|String} [caller=''] The method calling this log method.
 	 */
 	info( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'info');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'info' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	debug( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'debug');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'debug' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	warning( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'warning');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'warning' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	error( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'error');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'error' );
 	}
 }
 

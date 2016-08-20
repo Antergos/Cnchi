@@ -49,17 +49,17 @@ class CnchiObject {
 	_bind_this() {
 		let excluded = ['constructor', '_bind_this', 'not_excluded'];
 
-		function not_excluded(method, context) {
-			let _excluded = excluded.findIndex(excluded_method => method === excluded_method) > -1,
+		function not_excluded( method, context ) {
+			let _excluded = excluded.findIndex( excluded_method => method === excluded_method ) > - 1,
 				is_method = 'function' === typeof context[method];
 
 			return is_method && ! _excluded;
 		}
 
-		for ( let obj = this; obj; obj = Object.getPrototypeOf(obj) ) {
-			for ( let method of Object.getOwnPropertyNames(obj) ) {
-				if ( not_excluded(method, this) ) {
-					this[method] = this[method].bind(this);
+		for ( let obj = this; obj; obj = Object.getPrototypeOf( obj ) ) {
+			for ( let method of Object.getOwnPropertyNames( obj ) ) {
+				if ( not_excluded( method, this ) ) {
+					this[method] = this[method].bind( this );
 				}
 			}
 		}

@@ -34,7 +34,7 @@
  * @returns {string}
  */
 String.prototype.capitalise = function() {
-	return this.charAt(0).toUpperCase() + this.slice(1);
+	return this.charAt( 0 ).toUpperCase() + this.slice( 1 );
 };
 
 
@@ -47,13 +47,13 @@ String.prototype.capitalise = function() {
 $.fn.animateCss = function( animation_name, callback ) {
 	let animation_end = 'webkitAnimationEnd animationend';
 
-	this.addClass(animation_name).one(animation_end, () => {
-		setTimeout(() => {
-			this.removeClass(animation_name);
-		}, 1000);
+	this.addClass( animation_name ).one( animation_end, () => {
+		setTimeout( () => {
+			this.removeClass( animation_name );
+		}, 1000 );
 
 		if ( callback ) {
 			callback();
 		}
-	});
+	} );
 };

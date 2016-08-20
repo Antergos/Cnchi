@@ -55,11 +55,11 @@ class CnchiApp extends CnchiObject {
 		this.cmds = ['trigger_event'];
 		this.signals = ['window-dragging-start', 'window-dragging-stop'];
 		this.dragging = false;
-		this.$header = $('.header');
+		this.$header = $( '.header' );
 		this._logger = null;
 		this._bridge_message_queue = [];
 		this.bmq_worker = null;
-		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
+		this.$top_navigation_buttons = $( '.header_bottom .navigation_buttons .tabs' );
 
 		this.register_event_handlers();
 		this._start_bridge_message_queue_worker();
@@ -67,26 +67,26 @@ class CnchiApp extends CnchiObject {
 	}
 
 	_maybe_unlock_top_level_tabs() {
-		this.$top_navigation_buttons.children().each(( index, element ) => {
-			let $tab_button = $(element);
+		this.$top_navigation_buttons.children().each( ( index, element ) => {
+			let $tab_button = $( element );
 
-			$tab_button.removeClass('locked');
+			$tab_button.removeClass( 'locked' );
 
-			if ( $tab_button.hasClass('active') ) {
+			if ( $tab_button.hasClass( 'active' ) ) {
 				// This button is for the current page. Don't unlock anymore buttons.
 				return false;
 			}
-		});
+		} );
 	}
 
 	_start_bridge_message_queue_worker() {
-		this.bmq_worker = setInterval(() => {
+		this.bmq_worker = setInterval( () => {
 			if ( this._bridge_message_queue.length === 0 ) {
 				return;
 			}
 
 			document.title = this._bridge_message_queue.shift();
-		}, 100);
+		}, 100 );
 	}
 
 	/**
@@ -101,15 +101,15 @@ class CnchiApp extends CnchiObject {
 	emit_signal( ...args ) {
 		let msg = '[', _args = [];
 
-		if ( $.inArray(args[0], this.signals) < 0 ) {
-			this.logger.error(`cmd: "${args[0]}" is not in the list of allowed signals!`);
+		if ( $.inArray( args[0], this.signals ) < 0 ) {
+			this.logger.error( `cmd: "${args[0]}" is not in the list of allowed signals!` );
 			return;
 		}
 
 		// Convert any non-string args to JSON strings so that we have a single string to send.
 		for ( let _arg of args ) {
 			if ( Array === typeof _arg || _arg instanceof Object ) {
-				_arg = JSON.stringify(_arg);
+				_arg = JSON.stringify( _arg );
 			} else if ( 'string' === typeof _arg ) {
 				_arg = `"${_arg}"`;
 			}
@@ -117,12 +117,12 @@ class CnchiApp extends CnchiObject {
 			msg = `${msg}${_arg}, `;
 		}
 
-		msg = msg.replace(/, $/, '');
+		msg = msg.replace( /, $/, '' );
 		msg = `${msg}]`;
 
-		this.logger.debug(`Emitting signal: "${msg}" via python bridge...`);
+		this.logger.debug( `Emitting signal: "${msg}" via python bridge...` );
 
-		this._bridge_message_queue.push(`_BR::${msg}`);
+		this._bridge_message_queue.push( `_BR::${msg}` );
 	}
 
 
@@ -136,20 +136,20 @@ class CnchiApp extends CnchiObject {
 	 * @todo Find a way to make this work.
 	 */
 	header_mousedown_cb( event ) {
-		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+		let $target = event.target ? $( event.target ) : event.currentTarget ? $( event.currentTarget ) : null;
 
 		if ( null === $target ) {
-			this.logger.debug('no target!');
+			this.logger.debug( 'no target!' );
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || true === cnchi._dragging ) {
-			this.logger.debug(`mousedown returning! ${cnchi._dragging}`);
+		if ( $target.closest( '.no-drag' ).length || true === cnchi._dragging ) {
+			this.logger.debug( `mousedown returning! ${cnchi._dragging}` );
 			return;
 		}
 
 		cnchi._dragging = true;
-		cnchi.emit_signal('window-dragging-start', 'window-dragging-start');
+		cnchi.emit_signal( 'window-dragging-start', 'window-dragging-start' );
 	}
 
 	/**
@@ -158,21 +158,21 @@ class CnchiApp extends CnchiObject {
 	 * @see CnchiApp.header_mousedown_cb
 	 */
 	header_mouseup_cb( event ) {
-		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+		let $target = event.target ? $( event.target ) : event.currentTarget ? $( event.currentTarget ) : null;
 
 		if ( null === $target ) {
-			this.logger.debug('no target!');
+			this.logger.debug( 'no target!' );
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || false === cnchi._dragging ) {
-			this.logger.debug(`mouseup returning! ${cnchi._dragging}`);
+		if ( $target.closest( '.no-drag' ).length || false === cnchi._dragging ) {
+			this.logger.debug( `mouseup returning! ${cnchi._dragging}` );
 			return;
 		}
 
 		cnchi._dragging = false;
 
-		cnchi.emit_signal('window-dragging-stop', 'window-dragging-stop');
+		cnchi.emit_signal( 'window-dragging-stop', 'window-dragging-stop' );
 	}
 
 	/**
@@ -188,12 +188,12 @@ class CnchiApp extends CnchiObject {
 		args = window[msg_obj_var_name].args;
 		cmd = window[msg_obj_var_name].cmd;
 
-		if ( !cmd.length ) {
-			this.logger.error('"cmd" is required!', this.js_bridge_handler);
+		if ( ! cmd.length ) {
+			this.logger.error( '"cmd" is required!', this.js_bridge_handler );
 			return;
 		}
 
-		if ( $.inArray(cmd, this.cmds) < 0 ) {
+		if ( $.inArray( cmd, this.cmds ) < 0 ) {
 			this.logger.error(
 				`cmd: "${cmd}" is not in the list of allowed commands!`, this.js_bridge_handler
 			);
@@ -204,9 +204,10 @@ class CnchiApp extends CnchiObject {
 			args = args.pop();
 		}
 
-		this.logger.debug(`Running command: ${cmd} with args: ${args}...`, this.js_bridge_handler);
+		this.logger.debug( `Running command: ${cmd} with args: ${args}...`,
+						   this.js_bridge_handler );
 
-		this[cmd](args);
+		this[cmd]( args );
 	}
 
 	page_loaded_handler( event, page ) {
@@ -230,7 +231,7 @@ class CnchiApp extends CnchiObject {
 	trigger_event( event ) {
 		let args = [];
 
-		if ( Array.isArray(event) ) {
+		if ( Array.isArray( event ) ) {
 			args = event;
 			event = args.shift();
 
@@ -239,9 +240,9 @@ class CnchiApp extends CnchiObject {
 			}
 		}
 
-		this.logger.debug(`triggering event: ${event} with args: ${args}`, this.trigger_event);
+		this.logger.debug( `triggering event: ${event} with args: ${args}`, this.trigger_event );
 
-		$(window).trigger(event, args);
+		$( window ).trigger( event, args );
 	}
 
 }

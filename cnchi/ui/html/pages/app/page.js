@@ -50,7 +50,7 @@ class CnchiPage extends CnchiObject {
 		this.current_tab = null;
 		this.previous_tab = null;
 		this.next_tab = null;
-		this.$page = $('.main_content');
+		this.$page = $( '.main_content' );
 		this.next_tab_animation_interval = null;
 
 		this._prepare_tabs();
@@ -73,15 +73,15 @@ class CnchiPage extends CnchiObject {
 	 * that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s) are properly set.
 	 */
 	_prepare_tabs() {
-		let $page_tabs = $('.page_tab');
+		let $page_tabs = $( '.page_tab' );
 		this.$tab.fadeIn();
-		this.$tab_button.removeClass('locked').addClass('active');
+		this.$tab_button.removeClass( 'locked' ).addClass( 'active' );
 
-		$page_tabs.each(( index, element ) => {
-			let tab_name = $(element).attr('id'),
+		$page_tabs.each( ( index, element ) => {
+			let tab_name = $( element ).attr( 'id' ),
 				property_name = `${tab_name}_tab`;
 
-			this[property_name] = new CnchiTab( $(element), tab_name, this );
+			this[property_name] = new CnchiTab( $( element ), tab_name, this );
 
 			this.tabs.push( this[property_name] );
 			this[property_name].$tab_button.on( 'click', this.tab_button_clicked_cb );
@@ -89,7 +89,7 @@ class CnchiPage extends CnchiObject {
 			if ( index === ( $page_tabs.length - 1 ) ) {
 				this._assign_next_and_previous_tab_props();
 			}
-		});
+		} );
 	}
 
 	/**
@@ -97,7 +97,7 @@ class CnchiPage extends CnchiObject {
 	 */
 	_register_allowed_signals() {
 		for ( let signal of this.signals ) {
-			cnchi.signals.push(signal);
+			cnchi.signals.push( signal );
 		}
 	}
 
@@ -125,9 +125,9 @@ class CnchiPage extends CnchiObject {
 
 		if ( null !== this.current_tab ) {
 			this.current_tab.prepare( 'hide' )
-				.done(() => {
+				.done( () => {
 					_prepare();
-			});
+				} );
 		} else {
 			_prepare();
 		}
@@ -136,18 +136,18 @@ class CnchiPage extends CnchiObject {
 	_unlock_next_tab_animated() {
 		let $tab_button = this._get_next_tab_button();
 
-		if ( $tab_button.hasClass('locked') ) {
-			$tab_button.on('click', this.tab_button_clicked_cb).removeClass('locked');
+		if ( $tab_button.hasClass( 'locked' ) ) {
+			$tab_button.on( 'click', this.tab_button_clicked_cb ).removeClass( 'locked' );
 		}
 
-		$tab_button.animateCss('animated tada');
+		$tab_button.animateCss( 'animated tada' );
 	}
 
 	change_current_tab_cb( event, id ) {
-		console.log('change current tab fired!');
-		this.logger.debug('change current tab fired!');
-		clearInterval(this.next_tab_animation_interval);
-		this.reload_element(`#${id}`, this.show_tab);
+		console.log( 'change current tab fired!' );
+		this.logger.debug( 'change current tab fired!' );
+		clearInterval( this.next_tab_animation_interval );
+		this.reload_element( `#${id}`, this.show_tab );
 	}
 
 	get_tab_by_name( tab_name ) {
@@ -164,29 +164,29 @@ class CnchiPage extends CnchiObject {
 	 */
 	reload_element( selector, callback ) {
 		let url = `cnchi://${this.id}`,
-			$old_el = this.$page.find(selector),
+			$old_el = this.$page.find( selector ),
 			$new_el;
 
-		console.log([url, $old_el]);
-		this.logger.debug([url, $old_el]);
+		console.log( [url, $old_el] );
+		this.logger.debug( [url, $old_el] );
 
-		$old_el.hide(0)
-		.promise()
-		.done(() => {
-			$.get(url, ( data ) => {
-				$new_el = $(data).find(selector);
-				console.log($new_el);
+		$old_el.hide( 0 )
+			   .promise()
+			   .done( () => {
+				   $.get( url, ( data ) => {
+					   $new_el = $( data ).find( selector );
+					   console.log( $new_el );
 
-				$old_el.replaceWith($new_el);
-				$new_el.show(0)
-				.promise()
-				.done(() => {
-					if ( callback ) {
-						callback(selector);
-					}
-				});
-			});
-		});
+					   $old_el.replaceWith( $new_el );
+					   $new_el.show( 0 )
+							  .promise()
+							  .done( () => {
+								  if ( callback ) {
+									  callback( selector );
+								  }
+							  } );
+				   } );
+			   } );
 	}
 
 	/**
@@ -195,42 +195,42 @@ class CnchiPage extends CnchiObject {
 	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.
 	 */
 	show_tab( identifier ) {
-		let tab = this.get_tab_by_id(identifier.replace('#', ''));
-		console.log([tab, this.current_tab]);
+		let tab = this.get_tab_by_id( identifier.replace( '#', '' ) );
+		console.log( [tab, this.current_tab] );
 
 		if ( null !== tab.$tab ) {
 			this.current_tab.$tab.fadeOut()
-			.promise()
-			.done(() => {
-				this.current_tab.$tab_button.removeClass('active');
-
-				tab.$tab_button.addClass('active');
-				tab.$tab.fadeIn()
 				.promise()
-				.done(() => {
-					$(window).trigger('page-change-current-tab-done');
-					this.current_tab = tab;
-				});
+				.done( () => {
+					this.current_tab.$tab_button.removeClass( 'active' );
 
-			});
+					tab.$tab_button.addClass( 'active' );
+					tab.$tab.fadeIn()
+					   .promise()
+					   .done( () => {
+						   $( window ).trigger( 'page-change-current-tab-done' );
+						   this.current_tab = tab;
+					   } );
+
+				} );
 		} else {
-			this.logger.debug('Tab cannot be null!', this.show_tab)
+			this.logger.debug( 'Tab cannot be null!', this.show_tab )
 		}
 	}
 
 	tab_button_clicked_cb( event ) {
-		let $target = $(event.currentTarget),
-			$tab_button = $target.closest('.tab');
+		let $target = $( event.currentTarget ),
+			$tab_button = $target.closest( '.tab' );
 
 		event.preventDefault();
-		_page.tab_button_clicked_handler($tab_button);
+		_page.tab_button_clicked_handler( $tab_button );
 	}
 
 	unlock_next_tab() {
 		this._unlock_next_tab_animated();
-		this.next_tab_animation_interval = setInterval(() => {
+		this.next_tab_animation_interval = setInterval( () => {
 			this._unlock_next_tab_animated();
-		}, 4000);
+		}, 4000 );
 	}
 }
 

@@ -53,12 +53,12 @@ class CnchiTab extends CnchiObject {
 			this.logger.error( result, this.constructor );
 		}
 
-		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${name}`);
+		this.$tab = ( $tab instanceof jQuery ) ? $tab : $( `#${name}` );
 		this.$tab_button = this._get_tab_button();
 		this.id = name;
 		this.locked = true;
 		this.lock_key = `unlocked_tabs::${this.id}`;
-		this.name = this.$tab.attr('data-name');
+		this.name = this.$tab.attr( 'data-name' );
 		this.next = null;
 		this.page = page;
 		this.previous = null;
@@ -82,9 +82,9 @@ class CnchiTab extends CnchiObject {
 
 	_get_tab_button() {
 		let selector = `[href\$="${this.name}"]`,
-			$container = $('.main_content');
+			$container = $( '.main_content' );
 
-		return $container.find('.navigation_buttons').find(selector).parent();
+		return $container.find( '.navigation_buttons' ).find( selector ).parent();
 	}
 
 	_maybe_unlock() {
