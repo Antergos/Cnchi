@@ -46,7 +46,7 @@ class CheckPage(HTMLPage):
 
     """
 
-    def __init__(self, name='check', *args, **kwargs):
+    def __init__(self, name='check', index=0,  *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
@@ -56,7 +56,7 @@ class CheckPage(HTMLPage):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, index=index, *args, **kwargs)
 
         self.check_module = None
         self.update_module = None

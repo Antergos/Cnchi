@@ -7,11 +7,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"/>
 		<title></title>
-		<link rel="stylesheet" id="unsemantic_grid" href="{{ RESOURCES_DIR }}/css/unsemantic-grid.css" type="text/css" media="all">
-		<link rel="stylesheet" id="materialize_styles" href="{{ RESOURCES_DIR }}/css/materialize.css" type="text/css" media="all">
-		<link rel="stylesheet" id="magiccss_styles" href="{{ RESOURCES_DIR }}/css/magic.css" type="text/css" media="all">
-		<link rel="stylesheet" id="animatecss_styles" href="{{ RESOURCES_DIR }}/css/animate.css" type="text/css" media="all">
-		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/css/style.css" type="text/css" media="all">
+		<link rel="stylesheet" id="cnchi_styles" href="{{ RESOURCES_DIR }}/../app/dist/all_styles.css" type="text/css" media="all">
 		{% block before_page_styles %}{% endblock before_page_styles %}
 		{% block page_styles %}{% endblock page_styles %}
 		<script>
@@ -50,35 +46,30 @@
 				{%- endblock header -%}
 			</div>
 			<div id="{{ page_name }}" class="grid-100 grid-parent main_content" data-name="{{ page_name|capitalize() }}">
-				{% block main_content %}
-				{% endblock main_content %}
+				{% block main_content %}{% endblock main_content %}
 			</div>
 		{% endblock cnchi_app %}
 	</div>
 
 	{% block scripts %}
-
-		<script src="{{ RESOURCES_DIR }}/js/jquery-3.1.0.min.js"></script>
-		{% block after_jquery %}{% endblock after_jquery %}
-		<script src="{{ RESOURCES_DIR }}/js/materialize.min.js"></script>
-		<script src="{{ RESOURCES_DIR }}/js/cnchi_app.js"></script>
+		<script src="{{ RESOURCES_DIR }}/../app/dist/bundle.js"></script>
 
 		{% if top_level_tabs is defined %}
 			<script>
-				$('ul.tabs').tabs();
-				setTimeout(() => {
-					$('ul.tabs, ul.tabs *').off('click.materialize');
-				}, 1000);
+				$( 'ul.tabs' ).tabs();
+				setTimeout( () => {
+					$( 'ul.tabs, ul.tabs *' ).off( 'click.materialize' );
+				}, 1000 );
 			</script>
 		{% endif %}
 
 	{% endblock scripts %}
 
-	{% block page_script %}{% endblock page_script %}
+	<script src="{{ '%s/../_%s_%s/%s.js'|format(RESOURCES_DIR, page_index, page_name, page_name) }}"></script>
 
 	<script>
 		{% set PageClass = '%sPage'|format(page_name|capitalize()) %}
-		$(window).on('page-loaded', () => new {{ PageClass }}('{{ page_name }}'));
+		$( window ).on( 'page-loaded', () => new {{ PageClass }}('{{ page_name }}') );
 	</script>
 
 {% endblock body %}

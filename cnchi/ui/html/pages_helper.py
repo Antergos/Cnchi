@@ -95,6 +95,11 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
             ]
             self._page_dirs.extend(_page_dirs)
 
+    def _get_page_index(self, name):
+        # res = [n[1:2] for n in self._page_dirs if name in n]
+        res = self.page_names.index(name)
+        return '' if not res else str(res + 1)
+
     def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
             raise IndexError
@@ -105,13 +110,14 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
 
     def _get_page_object_by_name(self, name):
         if name not in self.all_pages:
-            self._load_page(name)
+            index = self._get_page_index(name).zfill(2)
+            self._load_page(name, index)
 
         return self.all_pages[name]
 
-    def _load_page(self, name):
+    def _load_page(self, name, index):
         page_class = getattr(ALL_PAGES, name)
-        self.all_pages[name] = page_class(name=name)
+        self.all_pages[name] = page_class(name=name, index=index)
 
     def get_page(self, identifier):
         page = None

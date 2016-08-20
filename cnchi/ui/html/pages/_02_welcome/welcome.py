@@ -45,7 +45,7 @@ class WelcomePage(HTMLPage):
 
     """
 
-    def __init__(self, name='welcome', *args, **kwargs):
+    def __init__(self, name='welcome', index=0, *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
@@ -55,7 +55,7 @@ class WelcomePage(HTMLPage):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, index=index, *args, **kwargs)
 
         self.signals.extend(['try-it-selected', 'install-it-selected', 'update-check',
                              '--update-available', 'restart', 'connection-check'])

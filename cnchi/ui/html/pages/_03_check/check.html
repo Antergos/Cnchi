@@ -51,58 +51,7 @@
 	<script>
 		window._page = null;
 
-		class CheckPage extends CnchiPage {
 
-			constructor( id ) {
-				if ( null !== window._page ) {
-					return window._page;
-				}
-
-				super(id);
-
-				window._page = this;
-				this.signals = JSON.parse('{{ signals }}');
-
-				this.register_allowed_signals();
-				this.register_event_handlers();
-				this.initialize();
-			}
-
-			initialize() {
-				Materialize.showStaggeredList('.checked_items');
-
-				for ( let signal of this.signals ) {
-					if ( signal.indexOf('do-') > -1 ) {
-						cnchi.emit_signal(signal);
-					}
-				}
-			}
-
-			checks_results_cb( event, result ) {
-				let color = ( true === result ) ? 'green' : 'red',
-					icon = ( true === result ) ? 'check' : 'close',
-					signal = event.type.replace('-result', ''),
-					css_id = signal.replace(/-/g, '_'),
-					selector = `#${css_id}`;
-
-				$(selector).find('i').removeClass('gray red green').addClass(color).text(icon);
-				_page.maybe_unlock_next_tab();
-			}
-
-			maybe_unlock_next_tab() {
-				if ( ! $('.content_wrapper').find('.red, .gray').length ) {
-					_page.unlock_next_tab();
-				}
-			}
-
-			register_event_handlers() {
-				for ( let signal of this.signals ) {
-					if ( signal.indexOf('-result') > -1 ) {
-						$(window).on(signal, this.checks_results_cb);
-					}
-				}
-			}
-		}
 
 	</script>
 {% endblock page_script %}

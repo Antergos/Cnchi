@@ -44,7 +44,7 @@ class LocationPage(HTMLPage):
 
     """
 
-    def __init__(self, name='location', *args, **kwargs):
+    def __init__(self, name='location', index=0, *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
@@ -54,7 +54,7 @@ class LocationPage(HTMLPage):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, index=index, *args, **kwargs)
 
         self._module = None
         self.locations = None

@@ -67,7 +67,7 @@ class HTMLPage(Page, metaclass=Singleton):
     _tpl_setup_ran = SharedData('_tpl_setup_running')
     _top_level_tabs = SharedData('_top_level_tabs')
 
-    def __init__(self, name='HTMLPage', tpl_engine='jinja', *args, **kwargs):
+    def __init__(self, name='HTMLPage', index=0, tpl_engine='jinja', *args, **kwargs):
         """
         Attributes:
             _tpl (Environment): The Jinja2 template environment.
@@ -83,6 +83,8 @@ class HTMLPage(Page, metaclass=Singleton):
         self.signals = ['go-to-next-page', '--trigger-event']
         self.tabs = []
         self.can_go_to_next_page = False
+        self.index = index
+        self.logger.debug('page index is %s', index)
 
         if self._tpl is None and self._tpl_setup_ran is None:
             self._tpl_setup_ran = True
@@ -156,7 +158,11 @@ class HTMLPage(Page, metaclass=Singleton):
         self._top_level_tabs = [t for t in tabs if t not in excluded]
 
     def _get_default_template_vars(self):
-        return {'page_name': self.name, 'top_level_tabs': self._get_top_level_tabs()}
+        return {
+            'page_name': self.name,
+            'top_level_tabs': self._get_top_level_tabs(),
+            'page_index': self.index
+        }
 
     def _get_initial_page_data(self):
         return dict()
@@ -194,9 +200,6 @@ class HTMLPage(Page, metaclass=Singleton):
     def go_to_next_page(self, obj=None, next_plus=0):
         if self.name != self._controller.current_page:
             return
-
-        if not next_plus:
-            next_plus = 0
 
         self.store_values()
         self._controller.set_current_page(self.get_next_page_index() + next_plus)

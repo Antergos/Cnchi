@@ -1,59 +1,39 @@
 module.exports = function(grunt) {
 
 	grunt.initConfig({
-		pkg: grunt.file.readJSON('package.json'),
-		rollup: {
+		concat: {
 			options: {
-				entry: 'pages/resources/js/cnchi_app.js',
-				globals: {
-					jQuery: '$'
-				},
-				plugins: [
-					nodeResolve({
-						jsnext: true,
-						browser: true
-					})
-				]
+				separator: '\n\n',
+				sourceMap: true
 			},
-			files: {
-				'pages/resources/dist/js/bundle.js': ['pages/resources/js/cnchi_app.js'], // Only one source file is permitted
-			},
-		},
-		uglify: {
-			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-			},
-			dist: {
+			default: {
 				files: {
-					'dist/bundle.min.js': ['pages/resources/dist/js/bundle.js']
-				}
-			}
+					'pages/app/dist/bundle.js': [
+						'pages/resources/js/jquery-3.1.0.min.js',
+						'pages/resources/js/jquery-migrate-3.0.0.js',
+						'pages/resources/js/jquery.waypoints.min.js',
+						'pages/resources/js/jquery.waypoints.inview.min.js',
+						'pages/resources/js/materialize.min.js',
+						'pages/resources/js/moment-timezone-meta.js',
+						'pages/resources/js/moment-with-locales.min.js',
+						'pages/resources/js/moment-timezone-with-data-2010-2020.min.js',
+						'pages/app/utils.js',
+						'pages/app/logger.js',
+						'pages/app/object.js',
+						'pages/app/app.js',
+						'pages/app/tab.js',
+						'pages/app/page.js'
+					],
+					'pages/app/dist/all_styles.css': [
+						'pages/resources/css/vendor/*.css',
+						'pages/resources/css/style.css'
+					],
+				},
+			},
 		},
-		jshint: {
-			files: ['Gruntfile.js', 'pages/resources/js/*.js'],
-			options: {
-				// options here to override JSHint defaults
-				globals: {
-					jQuery: true,
-					console: true,
-					module: true,
-					document: true
-				}
-			}
-		},
-		watch: {
-			files: ['<%= jshint.files %>'],
-			tasks: ['jshint']
-		}
 	});
 
-	//grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-rollup');
+	grunt.loadNpmTasks('grunt-contrib-concat');
 
-	grunt.registerTask('test', ['jshint']);
-
-	grunt.registerTask('default', ['rollup']);
-
+	grunt.registerTask('default', ['concat']);
 };

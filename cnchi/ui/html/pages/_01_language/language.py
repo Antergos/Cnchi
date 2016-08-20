@@ -47,7 +47,7 @@ class LanguagePage(HTMLPage):
 
     """
 
-    def __init__(self, name='language', *args, **kwargs):
+    def __init__(self, name='language', index=0, *args, **kwargs):
         """
         Attributes:
             Also see `HTMLPage.__doc__`.
@@ -57,7 +57,7 @@ class LanguagePage(HTMLPage):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, index=index, *args, **kwargs)
 
         self.languages = []
         self.signals.extend(['language-selected'])
