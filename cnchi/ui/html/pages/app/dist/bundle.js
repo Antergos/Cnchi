@@ -16201,7 +16201,7 @@ doy:4}}),kg.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六
  * @returns {string}
  */
 String.prototype.capitalise = function() {
-	return this.charAt(0).toUpperCase() + this.slice(1);
+	return this.charAt( 0 ).toUpperCase() + this.slice( 1 );
 };
 
 
@@ -16214,15 +16214,15 @@ String.prototype.capitalise = function() {
 $.fn.animateCss = function( animation_name, callback ) {
 	let animation_end = 'webkitAnimationEnd animationend';
 
-	this.addClass(animation_name).one(animation_end, () => {
-		setTimeout(() => {
-			this.removeClass(animation_name);
-		}, 1000);
+	this.addClass( animation_name ).one( animation_end, () => {
+		setTimeout( () => {
+			this.removeClass( animation_name );
+		}, 1000 );
 
 		if ( callback ) {
 			callback();
 		}
-	});
+	} );
 };
 
 
@@ -16260,7 +16260,8 @@ $.fn.animateCss = function( animation_name, callback ) {
  * Sends log messages through the Python<->JS Bridge to our Python logging handler.
  *
  * @prop {String} log_prefix      A string that will be prepended to log messages.
- * @prop {String} _unknown_method A string used for the calling method name when one isn't provided.
+ * @prop {String} _unknown_method A string used for the calling method name when one isn't
+ *     provided.
  */
 class CnchiLogger {
 
@@ -16294,7 +16295,7 @@ class CnchiLogger {
 	 * @private
 	 */
 	_process_message( msg, caller ) {
-		return `[${this.log_prefix}.${this._get_caller_name(caller)}]: ${msg}`;
+		return `[${this.log_prefix}.${this._get_caller_name( caller )}]: ${msg}`;
 	}
 
 	/**
@@ -16305,11 +16306,11 @@ class CnchiLogger {
 	 * @private
 	 */
 	_write_log( msg, level ) {
-		let esc_msg = msg.replace(/"/g, '\\"');
+		let esc_msg = msg.replace( /"/g, '\\"' );
 		msg = `_BR::["do-log-message", "${level}", "${esc_msg}"]`;
 
-		cnchi._bridge_message_queue.push(msg);
-		console.log(msg);
+		cnchi._bridge_message_queue.push( msg );
+		console.log( msg );
 	}
 
 	/**
@@ -16319,32 +16320,32 @@ class CnchiLogger {
 	 * @arg {Function|String} [caller=''] The method calling this log method.
 	 */
 	info( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'info');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'info' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	debug( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'debug');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'debug' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	warning( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'warning');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'warning' );
 	}
 
 	/**
 	 * @see Logger.info
 	 */
 	error( msg, caller = '' ) {
-		msg = this._process_message(msg, caller);
-		this._write_log(msg, 'error');
+		msg = this._process_message( msg, caller );
+		this._write_log( msg, 'error' );
 	}
 }
 
@@ -16403,17 +16404,17 @@ class CnchiObject {
 	_bind_this() {
 		let excluded = ['constructor', '_bind_this', 'not_excluded'];
 
-		function not_excluded(method, context) {
-			let _excluded = excluded.findIndex(excluded_method => method === excluded_method) > -1,
+		function not_excluded( method, context ) {
+			let _excluded = excluded.findIndex( excluded_method => method === excluded_method ) > - 1,
 				is_method = 'function' === typeof context[method];
 
 			return is_method && ! _excluded;
 		}
 
-		for ( let obj = this; obj; obj = Object.getPrototypeOf(obj) ) {
-			for ( let method of Object.getOwnPropertyNames(obj) ) {
-				if ( not_excluded(method, this) ) {
-					this[method] = this[method].bind(this);
+		for ( let obj = this; obj; obj = Object.getPrototypeOf( obj ) ) {
+			for ( let method of Object.getOwnPropertyNames( obj ) ) {
+				if ( not_excluded( method, this ) ) {
+					this[method] = this[method].bind( this );
 				}
 			}
 		}
@@ -16480,24 +16481,38 @@ class CnchiApp extends CnchiObject {
 		this.cmds = ['trigger_event'];
 		this.signals = ['window-dragging-start', 'window-dragging-stop'];
 		this.dragging = false;
-		this.$header = $('.header');
+		this.$header = $( '.header' );
 		this._logger = null;
 		this._bridge_message_queue = [];
 		this.bmq_worker = null;
+		this.$top_navigation_buttons = $( '.header_bottom .navigation_buttons .tabs' );
 
 		this.register_event_handlers();
 		this._start_bridge_message_queue_worker();
+		this._maybe_unlock_top_level_tabs();
 	}
 
+	_maybe_unlock_top_level_tabs() {
+		this.$top_navigation_buttons.children().each( ( index, element ) => {
+			let $tab_button = $( element );
+
+			$tab_button.removeClass( 'locked' );
+
+			if ( $tab_button.hasClass( 'active' ) ) {
+				// This button is for the current page. Don't unlock anymore buttons.
+				return false;
+			}
+		} );
+	}
 
 	_start_bridge_message_queue_worker() {
-		this.bmq_worker = setInterval(() => {
+		this.bmq_worker = setInterval( () => {
 			if ( this._bridge_message_queue.length === 0 ) {
 				return;
 			}
 
 			document.title = this._bridge_message_queue.shift();
-		}, 100);
+		}, 100 );
 	}
 
 	/**
@@ -16512,15 +16527,15 @@ class CnchiApp extends CnchiObject {
 	emit_signal( ...args ) {
 		let msg = '[', _args = [];
 
-		if ( $.inArray(args[0], this.signals) < 0 ) {
-			this.logger.error(`cmd: "${args[0]}" is not in the list of allowed signals!`);
+		if ( $.inArray( args[0], this.signals ) < 0 ) {
+			this.logger.error( `cmd: "${args[0]}" is not in the list of allowed signals!` );
 			return;
 		}
 
 		// Convert any non-string args to JSON strings so that we have a single string to send.
 		for ( let _arg of args ) {
 			if ( Array === typeof _arg || _arg instanceof Object ) {
-				_arg = JSON.stringify(_arg);
+				_arg = JSON.stringify( _arg );
 			} else if ( 'string' === typeof _arg ) {
 				_arg = `"${_arg}"`;
 			}
@@ -16528,12 +16543,12 @@ class CnchiApp extends CnchiObject {
 			msg = `${msg}${_arg}, `;
 		}
 
-		msg = msg.replace(/, $/, '');
+		msg = msg.replace( /, $/, '' );
 		msg = `${msg}]`;
 
-		this.logger.debug(`Emitting signal: "${msg}" via python bridge...`);
+		this.logger.debug( `Emitting signal: "${msg}" via python bridge...` );
 
-		this._bridge_message_queue.push(`_BR::${msg}`);
+		this._bridge_message_queue.push( `_BR::${msg}` );
 	}
 
 
@@ -16547,20 +16562,20 @@ class CnchiApp extends CnchiObject {
 	 * @todo Find a way to make this work.
 	 */
 	header_mousedown_cb( event ) {
-		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+		let $target = event.target ? $( event.target ) : event.currentTarget ? $( event.currentTarget ) : null;
 
 		if ( null === $target ) {
-			this.logger.debug('no target!');
+			this.logger.debug( 'no target!' );
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || true === cnchi._dragging ) {
-			this.logger.debug(`mousedown returning! ${cnchi._dragging}`);
+		if ( $target.closest( '.no-drag' ).length || true === cnchi._dragging ) {
+			this.logger.debug( `mousedown returning! ${cnchi._dragging}` );
 			return;
 		}
 
 		cnchi._dragging = true;
-		cnchi.emit_signal('window-dragging-start', 'window-dragging-start');
+		cnchi.emit_signal( 'window-dragging-start', 'window-dragging-start' );
 	}
 
 	/**
@@ -16569,21 +16584,21 @@ class CnchiApp extends CnchiObject {
 	 * @see CnchiApp.header_mousedown_cb
 	 */
 	header_mouseup_cb( event ) {
-		let $target = event.target ? $(event.target) : event.currentTarget ? $(event.currentTarget) : null;
+		let $target = event.target ? $( event.target ) : event.currentTarget ? $( event.currentTarget ) : null;
 
 		if ( null === $target ) {
-			this.logger.debug('no target!');
+			this.logger.debug( 'no target!' );
 			return;
 		}
 
-		if ( $target.closest('.no-drag').length || false === cnchi._dragging ) {
-			this.logger.debug(`mouseup returning! ${cnchi._dragging}`);
+		if ( $target.closest( '.no-drag' ).length || false === cnchi._dragging ) {
+			this.logger.debug( `mouseup returning! ${cnchi._dragging}` );
 			return;
 		}
 
 		cnchi._dragging = false;
 
-		cnchi.emit_signal('window-dragging-stop', 'window-dragging-stop');
+		cnchi.emit_signal( 'window-dragging-stop', 'window-dragging-stop' );
 	}
 
 	/**
@@ -16599,12 +16614,12 @@ class CnchiApp extends CnchiObject {
 		args = window[msg_obj_var_name].args;
 		cmd = window[msg_obj_var_name].cmd;
 
-		if ( !cmd.length ) {
-			this.logger.error('"cmd" is required!', this.js_bridge_handler);
+		if ( ! cmd.length ) {
+			this.logger.error( '"cmd" is required!', this.js_bridge_handler );
 			return;
 		}
 
-		if ( $.inArray(cmd, this.cmds) < 0 ) {
+		if ( $.inArray( cmd, this.cmds ) < 0 ) {
 			this.logger.error(
 				`cmd: "${cmd}" is not in the list of allowed commands!`, this.js_bridge_handler
 			);
@@ -16615,9 +16630,10 @@ class CnchiApp extends CnchiObject {
 			args = args.pop();
 		}
 
-		this.logger.debug(`Running command: ${cmd} with args: ${args}...`, this.js_bridge_handler);
+		this.logger.debug( `Running command: ${cmd} with args: ${args}...`,
+						   this.js_bridge_handler );
 
-		this[cmd](args);
+		this[cmd]( args );
 	}
 
 	page_loaded_handler( event, page ) {
@@ -16641,7 +16657,7 @@ class CnchiApp extends CnchiObject {
 	trigger_event( event ) {
 		let args = [];
 
-		if ( Array.isArray(event) ) {
+		if ( Array.isArray( event ) ) {
 			args = event;
 			event = args.shift();
 
@@ -16650,9 +16666,9 @@ class CnchiApp extends CnchiObject {
 			}
 		}
 
-		this.logger.debug(`triggering event: ${event} with args: ${args}`, this.trigger_event);
+		this.logger.debug( `triggering event: ${event} with args: ${args}`, this.trigger_event );
 
-		$(window).trigger(event, args);
+		$( window ).trigger( event, args );
 	}
 
 }
@@ -16708,37 +16724,37 @@ class CnchiTab extends CnchiObject {
 	 * Creates a new {@link CnchiTab} object.
 	 *
 	 * @arg {jQuery}    $tab     {@link CnchiTab.$tab}
-	 * @arg {string}    [id]     {@link CnchiTab.id}
+	 * @arg {string}    [name]     {@link CnchiTab.name}
 	 * @arg {CnchiPage} [parent] {@link CnchiTab.parent}
 	 */
-	constructor( $tab, id, page ) {
+	constructor( $tab, name, page ) {
 		super();
 
-		let result = this._check_args( $tab, id, page );
+		let result = this._check_args( $tab, name, page );
 
 		if ( true !== result ) {
 			this.logger.error( result, this.constructor );
 		}
 
-		this.$tab = ( $tab instanceof jQuery ) ? $tab : $(`#${id}`);
-		this.$tab_button = this.get_tab_button();
-		this.id = id;
+		this.$tab = ( $tab instanceof jQuery ) ? $tab : $( `#${name}` );
+		this.$tab_button = this._get_tab_button();
 		this.locked = true;
+		this.loaded = false;
 		this.lock_key = `unlocked_tabs::${this.id}`;
-		this.name = this.$tab.attr('data-name');
-		this.next = null;
+		this.name = name;
+		this.next_tab = null;
 		this.page = page;
-		this.previous = null;
+		this.previous_tab = null;
 
 		this._maybe_unlock();
 
 	}
 
-	_check_args( $tab, id, page ) {
+	_check_args( $tab, name, page ) {
 		let result = true;
 
-		if ( 'undefined' === typeof $tab && '' === id ) {
-			result = 'One of [$tab, id] required!';
+		if ( 'undefined' === typeof $tab && '' === name ) {
+			result = 'One of [$tab, name] required!';
 
 		} else if ( 'undefined' === typeof page ) {
 			result = 'page is required to create a new CnchiTab!';
@@ -16747,52 +16763,48 @@ class CnchiTab extends CnchiObject {
 		return result;
 	}
 
-	_do_unlock() {
-		this.$tab_button.removeClass( 'locked' );
-		this.$tab_button.on( 'click', this.tab_button_clicked_cb );
-		localStorage.setItem( this.lock_key, 'true' );
+	_get_tab_button() {
+		let selector = `[href\$="${this.name}"]`,
+			$container = $( '.main_content' );
+
+		return $container.find( '.navigation_buttons' ).find( selector ).parent();
+	}
+
+	_hide() {
+		return this.$tab.fadeOut().promise();
+	}
+
+	_load_and_show() {
+		return this.page.reload_element( `#${this.name}` ).then( this.$tab.fadeIn().promise() )
 	}
 
 	_maybe_unlock() {
 		let unlocked = ( null !== localStorage.getItem( this.lock_key ) );
 
 		if ( true === unlocked ) {
-			this._do_unlock();
+			this._unlock();
 		}
 	}
 
-	_tab_button_clicked_handler( $tab_button ) {
-		if ( $tab_button.hasClass('locked') ) {
-			this.logger.debug('is locked!');
-			console.log('is locked!');
-			return;
+	_show() {
+		let deferred;
+
+		if ( this.page.tabs[0] === this || this.loaded ) {
+			deferred = this.$tab.fadeIn().promise();
+		} else {
+			deferred = this._load_and_show();
 		}
 
-		let id = $tab_button.children('a').attr('href');
-
-		$(window).trigger('page-change-current-tab', [id.replace('#', '')]);
+		return deferred;
 	}
 
-	get_tab_button() {
-		let selector = `[href\$="${this.id}"]`,
-			$container = $('.main_content');
-
-		return $container.find('.navigation_buttons').find(selector).parent();
+	_unlock() {
+		this.$tab_button.removeClass( 'locked' );
+		this.$tab_button.on( 'click', this.page.tab_button_clicked_cb );
+		localStorage.setItem( this.lock_key, 'true' );
 	}
 
-	tab_button_clicked_cb( event ) {
-		let $target = $(event.currentTarget),
-			$tab_button = $target.closest('.tab');
-		console.log(event);
-		this.logger.debug(event);
-
-		if ( !$('.header_bottom').has($tab_button).length ) {
-			event.preventDefault();
-			console.log('clicked!');
-			console.log(event);
-			_page.tab_button_clicked_handler($tab_button);
-		}
-	}
+	prepare( prepare_to ) {}
 }
 
 window.CnchiTab = CnchiTab;
@@ -16843,161 +16855,126 @@ window.CnchiTab = CnchiTab;
 class CnchiPage extends CnchiObject {
 
 	constructor( id ) {
-		let $page_tabs = $('.page_tab'),
-			has_tabs = $page_tabs.length ? true : false,
-			$tab = ( true === has_tabs ) ? $page_tabs.first() : $(`#${id}`);
-
 		super();
 
 		this.signals = [];
 		this.tabs = [];
-		this.has_tabs = has_tabs;
 		this.current_tab = null;
-		this.$page = (true === this.is_page) ? $('.main_content') : this.parent.$page;
-		this.$tab = $tab;
-		this.$top_navigation_buttons = $('.header_bottom .navigation_buttons .tabs');
+		this.$page = $( '.main_content' );
 		this.next_tab_animation_interval = null;
 
-		if ( true === this.has_tabs ) {
-			this.prepare_tabs();
-		}
+		this._initialize()
+			.then( _ => this._set_current_tab( 0 ) )
+			.catch( err => this.logger.error( err ) );
+	}
 
-		this.maybe_unlock_top_level_tabs();
-		$(window).on('page-change-current-tab', this.change_current_tab_cb)
-
+	_initialize() {
+		return Promise.all(
+			[this._prepare_tabs(), this._register_event_handlers()]
+		);
 	}
 
 	_assign_next_and_previous_tab_props() {
-		this.previous = null;
-		this.next = this.tabs[0];
-
 		for ( let [index, value] of this.tabs.entries() ) {
-			value.previous = ( index > 0 ) ? this.tabs[index - 1] : this;
-			value.next = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
+			value.previous_tab = ( index > 0 ) ? this.tabs[index - 1] : null;
+			value.next_tab = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
 		}
 	}
 
-	_get_next_tab_button() {
-		console.log([this.current_tab]);
-		let $tab_button,
-			on_last_tab_for_page = ( true === this.has_tabs && null === this.current_tab.next );
-
-		if ( false === this.has_tabs || on_last_tab_for_page ) {
-			$tab_button = this.$tab_button.next();
-		} else {
-			$tab_button = this.current_tab.$tab_button.filter('.main_content li').next();
-		}
-
-		return $tab_button;
-	}
-
-	_unlock_next_tab_animated() {
-		let $tab_button = this._get_next_tab_button();
-
-		if ( $tab_button.hasClass('locked') ) {
-			$tab_button.on('click', this.tab_button_clicked_cb).removeClass('locked');
-		}
-
-		$tab_button.animateCss('animated tada');
-	}
-
-	change_current_tab_cb( event, id ) {
-		console.log('change current tab fired!');
-		this.logger.debug('change current tab fired!');
-		clearInterval(this.next_tab_animation_interval);
-		this.reload_element(`#${id}`, this.show_tab);
-	}
-
-	get_tab_by_id( id ) {
-		let tab;
-
-		for ( let tab_obj of this.tabs ) {
-			if ( tab_obj.id === id ) {
-				tab = tab_obj;
-				break;
-			}
-		}
-
-		return tab;
+	_hide_tab( tab ) {
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.hide();
 	}
 
 	/**
-	 * Returns a jQuery object for the tab represented by `identifier`.
-	 *
-	 * @arg {CnchiTab|jQuery|string|number} An identifier by which to locate the tab.
-	 *
-	 * @returns {jQuery|null}
+	 * Locates the page's tabs in the DOM and creates `CnchiTab` objects for them. Also ensures
+	 * that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s) are properly set.
 	 */
-	get_tab_jquery_object( identifier ) {
-		let $tab = null;
+	_prepare_tabs() {
+		let $page_tabs = $( '.page_tab' );
 
-		if ( identifier instanceof CnchiTab ) {
-			$tab = identifier.$tab;
+		$page_tabs.each( ( index, element ) => {
+			let tab_name = $( element ).attr( 'id' ),
+				property_name = `${tab_name}_tab`;
 
-		} else if ( identifier instanceof jQuery ) {
-			$tab = identifier;
+			this[property_name] = new CnchiTab( $( element ), tab_name, this );
 
-		} else if ( 'string' === typeof identifier ) {
-			$tab = $(`#${identifier}`);
+			this.tabs.push( this[property_name] );
 
-		} else if ( 'number' === typeof identifier ) {
-			let tab_name = this.tabs[identifier];
-			$tab = this[tab_name].$tab;
-		}
-
-		return $tab;
-	}
-
-	maybe_unlock_top_level_tabs() {
-		this.$top_navigation_buttons.children().each(( index, element ) => {
-			let $tab_button = $(element);
-
-			$tab_button.removeClass('locked');
-
-			if ( $tab_button.hasClass('active') ) {
-				// This button is for the current page. Don't unlock anymore buttons.
-				return false;
-			}
-		});
-	}
-
-	/**
-	 * Locates the tabs' collapsibles in the DOM and uses them to create `CnchiTab` objects for
-	 * the tabs. Also ensures that `this.tabs`, `this.current_tab`, and `this.<tab_name>_tab`(s)
-	 * are properly set.
-	 */
-	prepare_tabs() {
-		let $page_tabs = $('.page_tab');
-		this.current_tab = this;
-
-		this.$tab.fadeIn();
-		this.$tab_button.removeClass('locked').addClass('active');
-
-		$page_tabs.each(( index, element ) => {
-			// Don't create a `CnchiTab` object for the first tab since it is the current page.
-			if ( 0 === index ) {
-				return;
-			}
-
-			let tab_name = $(element).attr('id'),
-				prop_name = `${tab_name}_tab`;
-
-			this[prop_name] = new CnchiTab($(element), tab_name, this);
-			this.tabs.push(this[prop_name]);
-
-			if ( index === ($page_tabs.length - 1) ) {
+			if ( index === ( $page_tabs.length - 1 ) ) {
 				this._assign_next_and_previous_tab_props();
 			}
-		});
+		} );
+	}
+
+	_prepare_to_hide_tab( tab ) {
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.prepare( 'hide' );
 	}
 
 	/**
 	 * Adds this page's signals to {@link CnchiApp.signals} array.
 	 */
-	register_allowed_signals() {
+	_register_allowed_signals() {
 		for ( let signal of this.signals ) {
-			cnchi.signals.push(signal);
+			cnchi.signals.push( signal );
 		}
+	}
+
+	_prepare_to_show_tab( tab ) {
+		if ( 'undefined' === typeof tab ) {
+			tab = this.current_tab;
+		}
+
+		return tab.prepare( 'show' );
+	}
+
+	_register_event_handlers() {
+
+	}
+
+	/**
+	 * Sets the current tab to the tab represented by `identifier`.
+	 *
+	 * @arg {string|number} identifier Either the tab name or index position in `this.tabs`.
+	 */
+	_set_current_tab( identifier ) {
+		let tab;
+
+		if ( Number.isInteger( identifier ) ) {
+			tab = this.tabs[identifier];
+		} else {
+			tab = this.get_tab_by_name( identifier );
+		}
+
+		this._prepare_to_hide_tab()
+			.then( Promise.all( [this._hide_tab(), this._prepare_to_show_tab( tab )] ) )
+			.then( this._show_tab( tab ) )
+			.catch( err => this.logger.error( err ) );
+	}
+
+	_show_tab( tab ) {
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.show();
+	}
+
+	_unlock_next_tab_animated() {
+		let $tab_button = this._get_next_tab_button();
+
+		if ( $tab_button.hasClass( 'locked' ) ) {
+			$tab_button.on( 'click', this.tab_button_clicked_cb ).removeClass( 'locked' );
+		}
+
+		$tab_button.animateCss( 'animated tada' );
+	}
+
+	change_current_tab_cb( event, id ) {
+		console.log( 'change current tab fired!' );
+		this.logger.debug( 'change current tab fired!' );
+		clearInterval( this.next_tab_animation_interval );
+		this.reload_element( `#${id}`, this.show_tab );
+	}
+
+	get_tab_by_name( tab_name ) {
+		let property_name = `${tab_name}_tab`;
+		return this[property_name];
 	}
 
 	/**
@@ -17007,67 +16984,51 @@ class CnchiPage extends CnchiObject {
 	 * @arg {String}   selector A CSS selector that matches only one element on the page.
 	 * @arg {Function} callback An optional callback to be called after element is reloaded.
 	 */
-	reload_element( selector, callback ) {
-		let url = `cnchi://${this.id}`,
-			$old_el = this.$page.find(selector),
+	reload_element( selector ) {
+		let deferred = $.Deferred(),
+			url = `cnchi://${this.name}`,
+			$old_el = this.$page.find( selector ),
 			$new_el;
 
-		console.log([url, $old_el]);
-		this.logger.debug([url, $old_el]);
+		$old_el.hide( 0 )
+			.promise()
+			.then( $.get( url ) )
+			.then( ( data ) => {
+				$new_el = $( data ).find( selector );
+				console.log( $new_el );
 
-		$old_el.hide(0)
-		.promise()
-		.done(() => {
-			$.get(url, ( data ) => {
-				$new_el = $(data).find(selector);
-				console.log($new_el);
+				$old_el.replaceWith( $new_el );
 
-				$old_el.replaceWith($new_el);
-				$new_el.show(0)
-				.promise()
-				.done(() => {
-					if ( callback ) {
-						callback(selector);
-					}
-				});
-			});
-		});
+				return $new_el.show( 0 ).promise()
+			} )
+			.done( () => {
+				deferred.resolve()
+			} );
+
+		return deferred.promise();
 	}
 
-	/**
-	 * Sets the current tab to the tab represented by `identifier`.
-	 *
-	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.
-	 */
-	show_tab( identifier ) {
-		let tab = this.get_tab_by_id(identifier.replace('#', ''));
-		console.log([tab, this.current_tab]);
+	tab_button_clicked_cb( event ) {
+		let $target = $( event.currentTarget ),
+			$tab_button = $target.closest( '.tab' );
 
-		if ( null !== tab.$tab ) {
-			this.current_tab.$tab.fadeOut()
-			.promise()
-			.done(() => {
-				this.current_tab.$tab_button.removeClass('active');
+		event.preventDefault();
 
-				tab.$tab_button.addClass('active');
-				tab.$tab.fadeIn()
-				.promise()
-				.done(() => {
-					$(window).trigger('page-change-current-tab-done');
-					this.current_tab = tab;
-				});
-
-			});
-		} else {
-			this.logger.debug('Tab cannot be null!', this.show_tab)
+		if ( $tab_button.hasClass( 'locked' ) ) {
+			this.logger.warning(
+				'Tab cannot be shown because it is locked!',
+				this.tab_button_clicked_cb
+			);
 		}
+
+		this._set_current_tab( event.data );
 	}
 
 	unlock_next_tab() {
 		this._unlock_next_tab_animated();
-		this.next_tab_animation_interval = setInterval(() => {
+		this.next_tab_animation_interval = setInterval( () => {
 			this._unlock_next_tab_animated();
-		}, 4000);
+		}, 4000 );
 	}
 }
 

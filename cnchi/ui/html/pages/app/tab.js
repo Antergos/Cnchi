@@ -55,13 +55,13 @@ class CnchiTab extends CnchiObject {
 
 		this.$tab = ( $tab instanceof jQuery ) ? $tab : $( `#${name}` );
 		this.$tab_button = this._get_tab_button();
-		this.id = name;
 		this.locked = true;
+		this.loaded = false;
 		this.lock_key = `unlocked_tabs::${this.id}`;
-		this.name = this.$tab.attr( 'data-name' );
-		this.next = null;
+		this.name = name;
+		this.next_tab = null;
 		this.page = page;
-		this.previous = null;
+		this.previous_tab = null;
 
 		this._maybe_unlock();
 
@@ -87,6 +87,14 @@ class CnchiTab extends CnchiObject {
 		return $container.find( '.navigation_buttons' ).find( selector ).parent();
 	}
 
+	_hide() {
+		return this.$tab.fadeOut().promise();
+	}
+
+	_load_and_show() {
+		return this.page.reload_element( `#${this.name}` ).then( this.$tab.fadeIn().promise() )
+	}
+
 	_maybe_unlock() {
 		let unlocked = ( null !== localStorage.getItem( this.lock_key ) );
 
@@ -95,10 +103,25 @@ class CnchiTab extends CnchiObject {
 		}
 	}
 
+	_show() {
+		let deferred;
+
+		if ( this.page.tabs[0] === this || this.loaded ) {
+			deferred = this.$tab.fadeIn().promise();
+		} else {
+			deferred = this._load_and_show();
+		}
+
+		return deferred;
+	}
+
 	_unlock() {
 		this.$tab_button.removeClass( 'locked' );
-		this.$tab_button.on( 'click', this.tab_button_clicked_cb );
+		this.$tab_button.on( 'click', this.page.tab_button_clicked_cb );
 		localStorage.setItem( this.lock_key, 'true' );
+	}
+
+	prepare( prepare_to ) {
 	}
 }
 

@@ -48,24 +48,29 @@ class CnchiPage extends CnchiObject {
 		this.signals = [];
 		this.tabs = [];
 		this.current_tab = null;
-		this.previous_tab = null;
-		this.next_tab = null;
 		this.$page = $( '.main_content' );
 		this.next_tab_animation_interval = null;
 
-		this._prepare_tabs();
-		this._register_event_handlers();
-		this._set_current_tab( 0 );
+		this._initialize()
+			.then( _ => this._set_current_tab( 0 ) )
+			.catch( err => this.logger.error( err ) );
+	}
 
+	_initialize() {
+		return Promise.all(
+			[this._prepare_tabs(), this._register_event_handlers()]
+		);
 	}
 
 	_assign_next_and_previous_tab_props() {
-		this.next_tab = ( this.tabs.length > 1 ) ? this.tabs[1] : null;
-
 		for ( let [index, value] of this.tabs.entries() ) {
 			value.previous_tab = ( index > 0 ) ? this.tabs[index - 1] : null;
 			value.next_tab = ( index < (this.tabs.length - 1) ) ? this.tabs[index + 1] : null;
 		}
+	}
+
+	_hide_tab( tab ) {
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.hide();
 	}
 
 	/**
@@ -74,8 +79,6 @@ class CnchiPage extends CnchiObject {
 	 */
 	_prepare_tabs() {
 		let $page_tabs = $( '.page_tab' );
-		this.$tab.fadeIn();
-		this.$tab_button.removeClass( 'locked' ).addClass( 'active' );
 
 		$page_tabs.each( ( index, element ) => {
 			let tab_name = $( element ).attr( 'id' ),
@@ -84,12 +87,15 @@ class CnchiPage extends CnchiObject {
 			this[property_name] = new CnchiTab( $( element ), tab_name, this );
 
 			this.tabs.push( this[property_name] );
-			this[property_name].$tab_button.on( 'click', this.tab_button_clicked_cb );
 
 			if ( index === ( $page_tabs.length - 1 ) ) {
 				this._assign_next_and_previous_tab_props();
 			}
 		} );
+	}
+
+	_prepare_to_hide_tab( tab ) {
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.prepare( 'hide' );
 	}
 
 	/**
@@ -101,10 +107,23 @@ class CnchiPage extends CnchiObject {
 		}
 	}
 
+	_prepare_to_show_tab( tab ) {
+		if ( 'undefined' === typeof tab ) {
+			tab = this.current_tab;
+		}
+
+		return tab.prepare( 'show' );
+	}
+
 	_register_event_handlers() {
 
 	}
 
+	/**
+	 * Sets the current tab to the tab represented by `identifier`.
+	 *
+	 * @arg {string|number} identifier Either the tab name or index position in `this.tabs`.
+	 */
 	_set_current_tab( identifier ) {
 		let tab;
 
@@ -114,23 +133,14 @@ class CnchiPage extends CnchiObject {
 			tab = this.get_tab_by_name( identifier );
 		}
 
-		this._show_tab( tab );
+		this._prepare_to_hide_tab()
+			.then( Promise.all( [this._hide_tab(), this._prepare_to_show_tab( tab )] ) )
+			.then( this._show_tab( tab ) )
+			.catch( err => this.logger.error( err ) );
 	}
 
 	_show_tab( tab ) {
-		let _prepare = () => {
-			this.current_tab = tab;
-			this.current_tab.prepare( 'show' );
-		};
-
-		if ( null !== this.current_tab ) {
-			this.current_tab.prepare( 'hide' )
-				.done( () => {
-					_prepare();
-				} );
-		} else {
-			_prepare();
-		}
+		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.show();
 	}
 
 	_unlock_next_tab_animated() {
@@ -162,60 +172,28 @@ class CnchiPage extends CnchiObject {
 	 * @arg {String}   selector A CSS selector that matches only one element on the page.
 	 * @arg {Function} callback An optional callback to be called after element is reloaded.
 	 */
-	reload_element( selector, callback ) {
-		let url = `cnchi://${this.id}`,
+	reload_element( selector ) {
+		let deferred = $.Deferred(),
+			url = `cnchi://${this.name}`,
 			$old_el = this.$page.find( selector ),
 			$new_el;
 
-		console.log( [url, $old_el] );
-		this.logger.debug( [url, $old_el] );
-
 		$old_el.hide( 0 )
-			   .promise()
-			   .done( () => {
-				   $.get( url, ( data ) => {
-					   $new_el = $( data ).find( selector );
-					   console.log( $new_el );
+			.promise()
+			.then( $.get( url ) )
+			.then( ( data ) => {
+				$new_el = $( data ).find( selector );
+				console.log( $new_el );
 
-					   $old_el.replaceWith( $new_el );
-					   $new_el.show( 0 )
-							  .promise()
-							  .done( () => {
-								  if ( callback ) {
-									  callback( selector );
-								  }
-							  } );
-				   } );
-			   } );
-	}
+				$old_el.replaceWith( $new_el );
 
-	/**
-	 * Sets the current tab to the tab represented by `identifier`.
-	 *
-	 * @arg {CnchiTab|jQuery|string|number} identifier See {@link CnchiPage#get_tab_jquery_object}.
-	 */
-	show_tab( identifier ) {
-		let tab = this.get_tab_by_id( identifier.replace( '#', '' ) );
-		console.log( [tab, this.current_tab] );
+				return $new_el.show( 0 ).promise()
+			} )
+			.done( () => {
+				deferred.resolve()
+			} );
 
-		if ( null !== tab.$tab ) {
-			this.current_tab.$tab.fadeOut()
-				.promise()
-				.done( () => {
-					this.current_tab.$tab_button.removeClass( 'active' );
-
-					tab.$tab_button.addClass( 'active' );
-					tab.$tab.fadeIn()
-					   .promise()
-					   .done( () => {
-						   $( window ).trigger( 'page-change-current-tab-done' );
-						   this.current_tab = tab;
-					   } );
-
-				} );
-		} else {
-			this.logger.debug( 'Tab cannot be null!', this.show_tab )
-		}
+		return deferred.promise();
 	}
 
 	tab_button_clicked_cb( event ) {
@@ -223,7 +201,15 @@ class CnchiPage extends CnchiObject {
 			$tab_button = $target.closest( '.tab' );
 
 		event.preventDefault();
-		_page.tab_button_clicked_handler( $tab_button );
+
+		if ( $tab_button.hasClass( 'locked' ) ) {
+			this.logger.warning(
+				'Tab cannot be shown because it is locked!',
+				this.tab_button_clicked_cb
+			);
+		}
+
+		this._set_current_tab( event.data );
 	}
 
 	unlock_next_tab() {
