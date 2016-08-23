@@ -197,11 +197,10 @@ fi
 
 if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.Marco.general theme 'Numix-Frost-Light'
-	gsettings set org.mate.Marco.general visual-bell false
-	gsettings set org.mate.Marco.general num-workspaces 2
+	gsettings set org.mate.Marco.general num-workspaces 1
 	gsettings set org.mate.Marco.general compositing-manager true
 	gsettings set org.mate.Marco.general side-by-side-tiling true
-	gsettings set org.mate.NotificationDaemon theme Slider
+	gsettings set org.mate.NotificationDaemon theme Coco
 	gsettings set org.mate.SettingsDaemon.plugins.datetime active true
 	gsettings set org.mate.SettingsDaemon.plugins.datetime priority 99
 	gsettings set com.linuxmint.mintmenu.plugins.applications categories-mouse-over true
@@ -237,38 +236,14 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.SettingsDaemon.plugins.keyboard priority 6
 	gsettings set org.mate.session idle-delay 5
 	gsettings set org.mate.session logout-prompt true
-	gsettings set org.gnome.desktop.screensaver idle-activation-enabled true
-	gsettings set org.gnome.desktop.screensaver lock-delay 0
-	gsettings set org.gnome.desktop.screensaver lock-enabled true
-	gsettings set org.gnome.desktop.screensaver picture-uri 'file://usr/share/antergos/wallpapers/antergos-wallpaper.png'
-	gsettings set org.gnome.desktop.screensaver primary-color '#023c88'
-	gsettings set org.gnome.desktop.screensaver secondary-color '#5789ca'
-	gsettings set org.gnome.desktop.screensaver show-full-name-in-top-bar true
-	gsettings set org.gnome.desktop.screensaver status-message-enabled true
-	gsettings set org.gnome.desktop.screensaver user-switch-enabled true
 	gsettings set org.mate.SettingsDaemon.plugins.background active true
 	gsettings set org.mate.SettingsDaemon.plugins.background priority 97
 	gsettings set org.mate.applications-browser exec 'chromium'
 	gsettings set org.mate.applications-browser needs-term false
 	gsettings set org.mate.applications-browser nremote true
-	gsettings set org.gnome.desktop.background color-shading-type 'solid'
-	gsettings set org.gnome.desktop.background picture-opacity 100
-	gsettings set org.gnome.desktop.background picture-options 'zoom'
-	gsettings set org.gnome.desktop.background picture-uri 'file:///usr/share/antergos/wallpapers/antergos-wallpaper.png'
-	gsettings set org.gnome.desktop.background primary-color '#023c88'
-	gsettings set org.gnome.desktop.background secondary-color '#5789ca'
-	gsettings set org.gnome.desktop.background show-desktop-icons false
 	gsettings set org.mate.SettingsDaemon.plugins.xsettings active true
 	gsettings set org.mate.SettingsDaemon.plugins.xsettings priority 2
-	gsettings set org.mate.peripherals-keyboard bell-custom-file ''
-	gsettings set org.mate.peripherals-keyboard bell-duration 100
-	gsettings set org.mate.peripherals-keyboard bell-mode 'off'
-	gsettings set org.mate.peripherals-keyboard bell-pitch 400
-	gsettings set org.mate.peripherals-keyboard click true
-	gsettings set org.mate.peripherals-keyboard click-volume 0
-	gsettings set org.mate.peripherals-keyboard delay 500
 	gsettings set org.mate.peripherals-keyboard numlock-state 'on'
-	gsettings set org.mate.peripherals-keyboard rate 30
 	gsettings set org.mate.peripherals-keyboard remember-numlock-state true
 	gsettings set org.mate.peripherals-keyboard repeat true
 	gsettings set org.mate.SettingsDaemon.plugins.xrdb active true
@@ -291,13 +266,10 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set com.linuxmint.mintmenu.plugins.recent sticky false
 	gsettings set com.linuxmint.mintmenu.plugins.recent width 250
 	gsettings set org.mate.caja.sidebar-panels.tree show-only-directories true
-	gsettings set org.gnome.system.dns_sd display-local 'merged'
-	gsettings set org.gnome.system.dns_sd extra-domains ''
 	gsettings set org.mate.panel default-layout 'antergos'
 	gsettings set org.mate.panel confirm-panel-remove true
 	gsettings set org.mate.panel disable-force-quit false
 	gsettings set org.mate.panel disable-log-out false
-	gsettings set org.mate.panel disabled-applets @as []
 	gsettings set org.mate.panel drawer-autoclose true
 	gsettings set org.mate.panel enable-animations true
 	gsettings set org.mate.panel enable-autocompletion true
@@ -305,10 +277,10 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.panel highlight-launchers-on-mouseover true
 	gsettings set org.mate.panel history-mate-run []
 	gsettings set org.mate.panel locked-down false
-	gsettings set org.mate.panel object-id-list "['notification-area', 'clock', 'show-desktop', 'window-list', 'workspace-switcher', 'menu-bar']"
+	gsettings set org.mate.panel object-id-list "['menu', 'show-desktop', 'launcher-1', 'launcher-2', 'launcher-3', 'window-list', 'notification-area', 'clock']"
 	gsettings set org.mate.panel show-program-list false
 	gsettings set org.mate.panel tooltips-enabled true
-	gsettings set org.mate.panel toplevel-id-list "['top', 'bottom']"
+	gsettings set org.mate.panel toplevel-id-list "['bottom']"
 	gsettings set org.mate.SettingsDaemon.plugins.clipboard active true
 	gsettings set org.mate.SettingsDaemon.plugins.clipboard priority 99
 	gsettings set org.mate.SettingsDaemon.plugins.keybindings active true
@@ -347,7 +319,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.gnome.desktop.interface clock-format '12h'
 	gsettings set org.gnome.desktop.interface clock-show-date true
 	gsettings set org.gnome.desktop.interface clock-show-seconds false
-	gsettings set org.gnome.desktop.interface gtk-theme 'Numix-Frost'
+	gsettings set org.gnome.desktop.interface gtk-theme 'Numix-Frost-Light'
 	gsettings set org.gnome.desktop.interface icon-theme 'Numix-Square'
 	gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
 	gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
@@ -377,8 +349,7 @@ if [[ ${DESKTOP} == 'mate' ]]; then
 	gsettings set org.mate.interface enable-animations true
 	gsettings set org.mate.interface file-chooser-backend 'gtk+'
 	gsettings set org.mate.interface font-name 'Sans 10'
-	gsettings set org.mate.interface gtk-color-scheme ''
-	gsettings set org.mate.interface gtk-theme 'Numix-Frost'
+	gsettings set org.mate.interface gtk-theme 'Numix-Frost-Light'
 	gsettings set org.mate.interface icon-theme 'Numix-Square'
 fi
 

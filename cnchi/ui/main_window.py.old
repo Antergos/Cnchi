@@ -172,7 +172,7 @@ class MainWindow(BaseWidget, Gtk.ApplicationWindow):
         self.set_geometry()
 
         # Set window icon
-        icon_path = os.path.join(self.data_dir, "images", "antergos", "antergos-ball.png")
+        icon_path = os.path.join(self.data_dir, "images", "antergos", "antergos-ball-48.png")
         self.set_icon_from_file(icon_path)
 
         # Use our css file
@@ -287,7 +287,7 @@ class MainWindow(BaseWidget, Gtk.ApplicationWindow):
         self.gui["progressbar"].set_name('process_progressbar')
 
         # Top left logo (in header)
-        img_path = os.path.join(self.data_dir, "images", "antergos", "image10.png")
+        img_path = os.path.join(self.data_dir, "images", "antergos", "antergos-ball-26.png")
         if os.path.exists(img_path):
             self.gui["logo"].set_from_file(img_path)
 
