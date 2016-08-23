@@ -1,54 +1,69 @@
-[Toplevel top]
-expand=true
-orientation=top
-size=24
-
 [Toplevel bottom]
 expand=true
 orientation=bottom
-size=24
+size=32
 
-[Object menu-bar]
-object-type=applet
-applet-iid=MintMenuAppletFactory::MintMenuApplet
-toplevel-id=top
-position=0
-locked=true
-
-[Object notification-area]
-object-type=applet
-applet-iid=NotificationAreaAppletFactory::NotificationArea
-toplevel-id=top
+[Object menu]
+object-type=menu
+toplevel-id=bottom
 position=10
-panel-right-stick=true
-locked=true
-
-[Object clock]
-object-type=applet
-applet-iid=ClockAppletFactory::ClockApplet
-toplevel-id=top
-position=0
-panel-right-stick=true
 locked=true
 
 [Object show-desktop]
 object-type=applet
 applet-iid=WnckletFactory::ShowDesktopApplet
 toplevel-id=bottom
-position=0
+position=50
+locked=true
+panel-right-stick=false
+
+[Object launcher-1]
+object-type=launcher
+launcher-location=/usr/share/applications/caja-browser.desktop
+toplevel-id=bottom
+position=82
+panel-right-stick=false
+locked=true
+
+[Object launcher-2]
+object-type=launcher
+launcher-location=/usr/share/applications/chromium.desktop
+toplevel-id=bottom
+position=116
+panel-right-stick=false
+locked=true
+
+[Object launcher-3]
+object-type=launcher
+launcher-location=/usr/share/applications/mate-terminal.desktop
+toplevel-id=bottom
+position=150
+panel-right-stick=false
 locked=true
 
 [Object window-list]
 object-type=applet
 applet-iid=WnckletFactory::WindowListApplet
 toplevel-id=bottom
-position=20
+position=192
 locked=true
+panel-right-stick=false
 
-[Object workspace-switcher]
+[Object notification-area]
 object-type=applet
-applet-iid=WnckletFactory::WorkspaceSwitcherApplet
+applet-iid=NotificationAreaAppletFactory::NotificationArea
 toplevel-id=bottom
-position=0
+position=150
 panel-right-stick=true
 locked=true
+
+[Object clock]
+object-type=applet
+applet-iid=ClockAppletFactory::ClockApplet
+toplevel-id=bottom
+position=276
+panel-right-stick=true
+locked=true
+
+
+

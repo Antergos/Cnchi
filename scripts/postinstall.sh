@@ -369,6 +369,15 @@ postinstall() {
 		/usr/share/antergos/antergos-menu.png \
 		/usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
 
+	cd "${CN_DESTDIR}/usr/share/icons/Numix/24/places" \
+ 		&& mv start-here.svg start-here-numix.svg \
+ 		&& cp /usr/share/cnchi/data/images/antergos/antergos-ball-26.png start-here.png \
+ 		&& cd -
+	cd "${CN_DESTDIR}/usr/share/icons/Numix/32/places" \
+		&& mv start-here.svg start-here-numix.svg \
+ 		&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
+ 		&& cd -
+
 	chroot ${CN_DESTDIR} ln -sf /usr/share/antergos/antergos-menu-logo-dark-bg.png /usr/share/icons/Numix/24x24/places/start-here.png
 
 	## Set desktop-specific settings
