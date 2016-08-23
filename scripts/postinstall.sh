@@ -378,8 +378,6 @@ postinstall() {
  		&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
  		&& cd -
 
-	chroot ${CN_DESTDIR} ln -sf /usr/share/antergos/antergos-menu-logo-dark-bg.png /usr/share/icons/Numix/24x24/places/start-here.png
-
 	## Set desktop-specific settings
 	"${CN_DESKTOP}_settings"
 
