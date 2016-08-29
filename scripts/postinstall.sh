@@ -40,14 +40,11 @@ set_gsettings() {
 	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
 	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
 
-	# I dont know why this isn't working but I don't have anymore time to mess with it right now
-	#systemd-nspawn -D "${CN_DESTDIR}" -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" 2>&1
-
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-	chroot "${CN_DESTDIR}" sudo -u ${CN_USER_NAME} /usr/bin/set-settings ${CN_DESKTOP} > /dev/null 2>&1
+	arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}" > /dev/null 2>&1
 
-	rm ${CN_DESTDIR}/usr/bin/set-settings
+	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
 }
 
@@ -83,6 +80,7 @@ gnome_settings() {
 	fi
 
 	# Ensure that Light Locker starts before gnome-shell
+	# TODO: Need to do this another way
 	sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${CN_DESTDIR}/etc/lightdm/Xsession
 }
 
@@ -255,12 +253,11 @@ kde_settings() {
 
 mate_settings() {
 	# Set MATE in .dmrc
-	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	echo "Session=mate-session" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
+	echo "[Desktop]" > "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
+	echo "Session=mate-session" >> "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
 
 	## Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+	chroot "${CN_DESTDIR}" su -c xdg-user-dirs-update "${CN_USER_NAME}"
 
 	# Set gsettings input-source
 	if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
@@ -268,20 +265,23 @@ mate_settings() {
 	else
 		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
 	fi
-	# Fix for Zukitwo Metacity Theme
-	cp ${CN_DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-2.xml ${CN_DESTDIR}/usr/share/themes/Zukitwo/metacity-1/metacity-theme-1.xml
 
 	# Set gsettings
 	set_gsettings
 
 	# Set MintMenu Favorites
-	if [[ $CN_BROWSER = "firefox" ]]; then
+	if [[ "${CN_BROWSER}" = 'firefox' ]]; then
 		sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/applications.list
 	fi
-	cp /usr/share/cnchi/scripts/postinstall/applications.list ${CN_DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list
 
-	# Copy panel layout
-	cp /usr/share/cnchi/scripts/antergos.layout ${CN_DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
+	cp /usr/share/cnchi/scripts/postinstall/applications.list "${CN_DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list"
+
+	# Copy panel layout and make it the default
+	cd "${CN_DESTDIR}/usr/share/mate-panel/layouts"
+	cp /usr/share/cnchi/scripts/antergos.layout .
+	rm default.layout
+	ln -sr antergos.layout default.layout
+	cd -
 }
 
 nox_settings() {
@@ -351,7 +351,7 @@ postinstall() {
 	fi
 
 	# Configure fontconfig
-	if [ -f "${FONTCONFIG_FILE}" ]; then
+	if [[ -f "${FONTCONFIG_FILE}" ]]; then
 		FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
 		FONTCONFIG_DIR="${CN_DESTDIR}/home/${CN_USER_NAME}/.config/fontconfig"
 		mkdir -p "${FONTCONFIG_DIR}"
@@ -382,9 +382,9 @@ postinstall() {
 	"${CN_DESKTOP}_settings"
 
 	# Set some environment vars
-	env_files=("${CN_DESTDIR}/etc/environment" \
-				"${CN_DESTDIR}/home/${CN_USER_NAME}/.bashrc" \
-				"${CN_DESTDIR}/etc/skel/.bashrc" \
+	env_files=("${CN_DESTDIR}/etc/environment"
+				"${CN_DESTDIR}/home/${CN_USER_NAME}/.bashrc"
+				"${CN_DESTDIR}/etc/skel/.bashrc"
 				"${CN_DESTDIR}/etc/profile")
 
 	for file in "${env_files[@]}"
