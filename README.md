@@ -12,8 +12,8 @@ This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|**Cnchi Stable**|**0.14.x**|**v0.14.150**|**Bug Fixes Only**|
-|Cnchi Next|master|v0.15.199| Active Development|
+|**Cnchi Stable**|**0.14.x**|**v0.14.151**|**Bug Fixes Only**|
+|Cnchi Next|master|v0.15.219| Active Development|
 
 
 ## Usage:
