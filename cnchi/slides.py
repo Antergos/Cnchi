@@ -47,7 +47,8 @@ from gtkbasebox import GtkBaseBox
 
 from logging_utils import ContextFilter
 
-SLIDES_URI = 'file:///usr/share/cnchi/data/slides.html'
+# There is a bug (I guess its a bug) where webkit2 renders local html files as plain text.
+SLIDES_URI = 'https://antergos.com/cnchi-installer-slideshow'
 
 
 class Slides(GtkBaseBox):
@@ -88,7 +89,7 @@ class Slides(GtkBaseBox):
             'enable_developer_extras': False,
             'javascript_can_open_windows_automatically': True,
             'allow_file_access_from_file_urls': True,
-            'enable_write_console_messages_to_stdout': True
+            'enable_write_console_messages_to_stdout': False
         }
 
     def _apply_webkit_settings(self):
