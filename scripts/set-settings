@@ -36,7 +36,7 @@ terminal-profile() {
 	_term=$1
 	_schema="org.${_term}.Terminal.Legacy.Profile:/org/${_term}/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/"
 	gsettings set "org.${_term}.Terminal.ProfilesList" default 'b1dcc9dd-5262-4d8d-a863-c897e6d979b9'
-	gsettings set "org.${_term}.Terminal.ProfilesList list" "['b1dcc9dd-5262-4d8d-a863-c897e6d979b9']"
+	gsettings set "org.${_term}.Terminal.ProfilesList" list "['b1dcc9dd-5262-4d8d-a863-c897e6d979b9']"
 	gsettings set "${_schema}" use-theme-colors false
 	gsettings set "${_schema}" background-color '#262626262626'
 	gsettings set "${_schema}" foreground-color '#F8F8F8F8F2F2'
