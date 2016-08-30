@@ -1,1 +1,2 @@
+[2016-08-30 13:36:04 +0200]  Quick test. Do not use arch-chroot as it tries to mount /proc and o..      karasu      {7c3c0d6}
 [2016-08-30 05:12:09 +0200]  Testing some postinstall changes                                           karasu      {d99cc21}
