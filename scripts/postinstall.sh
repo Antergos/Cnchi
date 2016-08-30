@@ -61,7 +61,7 @@ set_gsettings() {
 
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-	arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
+	chroot --userspec "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
 
 	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
