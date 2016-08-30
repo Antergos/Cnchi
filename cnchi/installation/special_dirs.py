@@ -78,7 +78,7 @@ def mount(dest_dir):
 
     for (mount_type, mount_point, mount_fs_type, mount_options) in mounts:
         mount_point = os.path.join(dest_dir, mount_point)
-        os.makedirs(mountpoint, mode=0o755, exist_ok=True)
+        os.makedirs(mount_point, mode=0o755, exist_ok=True)
         cmd = ["mount", mount_type, mount_point, "-t", mount_fs_type, "-o", mount_options]
         try:
             logging.debug("Mounting %s in %s", mount_type, mount_point)
