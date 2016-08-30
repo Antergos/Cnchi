@@ -301,6 +301,10 @@ class Installation(object):
         # This unmounts (unbinds) /dev and others to /DEST_DIR/dev and others
         special_dirs.umount(DEST_DIR)
 
+        # Run postinstall script (we need special dirs unmounted but dest_dir mounted!)
+        logging.debug("Running postinstall.sh script...")
+        self.set_desktop_settings()
+
         # Finally, try to unmount DEST_DIR
         auto_partition.unmount_all_in_directory(DEST_DIR)
 
@@ -784,9 +788,9 @@ class Installation(object):
                         antlines += '[antergos]\n'
                         antlines += 'SigLevel = PackageRequired\n'
                         antlines += 'Include = /etc/pacman.d/antergos-mirrorlist\n\n'
-                        
+
                         pacman_file.write(antlines)
-                    
+
                     pacman_file.write(pacline)
         else:
             logging.warning("Can't find pacman configuration file")
@@ -1056,6 +1060,33 @@ class Installation(object):
                 zfs_version = file_name.split("-")[1]
         return zfs_version
 
+    def set_desktop_settings(self):
+        """ Runs postinstall.sh that sets DE settings
+            Postinstall script uses arch-chroot, so we don't have to worry
+            about /proc, /dev, ... """
+        logging.debug("Running Cnchi post-install script")
+        keyboard_layout = self.settings.get("keyboard_layout")
+        keyboard_variant = self.settings.get("keyboard_variant")
+        # Call post-install script to fine tune our setup
+        script_path_postinstall = os.path.join(
+            self.settings.get('cnchi'),
+            "scripts",
+            POSTINSTALL_SCRIPT)
+        cmd = [
+            "/usr/bin/bash",
+            script_path_postinstall,
+            self.settings.get('username'),
+            DEST_DIR,
+            self.desktop,
+            self.settings.get("locale"),
+            str(self.vbox),
+            keyboard_layout]
+        # Keyboard variant is optional
+        if keyboard_variant:
+            cmd.append(keyboard_variant)
+        call(cmd, timeout=300)
+        logging.debug("Post install script completed successfully.")
+
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1300,30 +1331,6 @@ class Installation(object):
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
         self.queue_event('info', _("Configuring System Startup..."))
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
-
-        logging.debug("Running Cnchi post-install script")
-        keyboard_layout = self.settings.get("keyboard_layout")
-        keyboard_variant = self.settings.get("keyboard_variant")
-        # Call post-install script to fine tune our setup
-        script_path_postinstall = os.path.join(
-            self.settings.get('cnchi'),
-            "scripts",
-            POSTINSTALL_SCRIPT)
-        cmd = [
-            "/usr/bin/bash",
-            script_path_postinstall,
-            username,
-            DEST_DIR,
-            self.desktop,
-            locale,
-            str(self.vbox),
-            keyboard_layout]
-        # Keyboard variant is optional
-        if keyboard_variant:
-            cmd.append(keyboard_variant)
-
-        call(cmd, timeout=300)
-        logging.debug("Post install script completed successfully.")
 
         # Patch user-dirs-update-gtk.desktop
         self.patch_user_dirs_update_gtk()

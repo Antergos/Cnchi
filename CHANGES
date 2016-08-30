@@ -1,0 +1,14 @@
+[2016-08-30 19:39:12 +0200]  Remove unused file                                                         karasu      {95b738a}
+[2016-08-30 19:34:05 +0200]  Remove -v param                                                            karasu      {744a76d}
+[2016-08-30 19:30:32 +0200]  Run set_settings from postinstall.sh using su and chrooting with ro..      karasu      {dbdf61c}
+[2016-08-30 18:48:12 +0200]  os.path.join does not join two absolute paths :)                           karasu      {0307dd6}
+[2016-08-30 18:27:50 +0200]  Another typo                                                               karasu      {4693afe}
+[2016-08-30 17:43:12 +0200]  Typo                                                                       karasu      {4859126}
+[2016-08-30 17:37:38 +0200]  Now using arch-chroot again. Let's hope this avoids dbus problems. ..      karasu      {d733b42}
+[2016-08-30 17:10:24 +0200]  Playing with mount                                                         karasu      {44d58ec}
+[2016-08-30 14:46:09 +0200]  Restored arch-chroot functions (so I can test it outside Cnchi)            karasu      {51ff800}
+[2016-08-30 14:45:17 +0200]  Let's see if using su helps                                                karasu      {a0d2fba}
+[2016-08-30 14:40:19 +0200]  typo                                                                       karasu      {fac4ee5}
+[2016-08-30 14:29:31 +0200]  Add mount options so we can test postinstall.sh outside Cnchi              karasu      {9e60fdc}
+[2016-08-30 13:36:04 +0200]  Quick test. Do not use arch-chroot as it tries to mount /proc and o..      karasu      {7c3c0d6}
+[2016-08-30 05:12:09 +0200]  Testing some postinstall changes                                           karasu      {d99cc21}

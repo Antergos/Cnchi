@@ -26,6 +26,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+# Set xorg config files
 set_xorg() {
 	cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${CN_DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
 	cp /usr/share/cnchi/scripts/postinstall/99-killX.conf ${CN_DESTDIR}/etc/X11/xorg.conf.d/99-killX.conf
@@ -36,48 +37,53 @@ set_xorg() {
 	fi
 }
 
-set_gsettings() {
-	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
-	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
-
-	mkdir -p "${CN_DESTDIR}/var/run/dbus"
-	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-	arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}" > /dev/null 2>&1
-
-	rm "${CN_DESTDIR}/usr/bin/set-settings"
-	umount -l "${CN_DESTDIR}/var/run/dbus"
-}
-
-gnome_settings() {
-	# Set gsettings input-source
-	if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
-	else
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
-	fi
-
-	# Set gsettings
-	set_gsettings
-
-	# Set gdm shell logo
-	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
-	#systemd-nspawn -D "${CN_DESTDIR}" -u gdm -M CN_GDM gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" &
-	#sleep 5;
-	#machinectl poweroff CN_GDM
-
-	## Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
-
-	# Set skel directory
-	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
-
-	# xscreensaver config
+set_xscreensaver() {
+  # xscreensaver config
 	cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver
 	cp ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver ${CN_DESTDIR}/etc/skel
 
 	if [[ -f ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop ]]; then
 		rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 	fi
+}
+
+set_gsettings() {
+	# Set gsettings input-source
+	if [[ "${CN_KEYBOARD_LAYOUT}" != '' ]]; then
+	  if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
+		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
+	  else
+		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
+	  fi
+	fi
+
+	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
+	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
+
+	mkdir -p "${CN_DESTDIR}/var/run/dbus"
+	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
+
+  arch-chroot "${CN_DESTDIR}" /usr/bin/su - "${CN_USER_NAME}" -c "/usr/bin/set-settings ${CN_DESKTOP}"
+
+	rm "${CN_DESTDIR}/usr/bin/set-settings"
+	umount -l "${CN_DESTDIR}/var/run/dbus"
+}
+
+gnome_settings() {
+	# Set gsettings
+	set_gsettings
+
+	# Set gdm shell logo
+	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
+
+	# Set default directories
+	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+
+	# Set skel directory
+	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+	# xscreensaver config
+	set_xscreensaver
 
 	# Ensure that Light Locker starts before gnome-shell
 	# TODO: Need to do this another way
@@ -85,13 +91,6 @@ gnome_settings() {
 }
 
 cinnamon_settings() {
-	# Set gsettings input-source
-	if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
-	else
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
-	fi
-
 	# Set gsettings
 	set_gsettings
 
@@ -114,8 +113,8 @@ cinnamon_settings() {
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon ${CN_DESTDIR}/etc/skel
 
-	## Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+	# Set default directories
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Populate our wallpapers in Cinnamon Settings
 	chroot ${CN_DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${CN_USER_NAME}/.cinnamon/backgrounds/antergos" ${CN_USER_NAME}
@@ -128,20 +127,23 @@ xfce_settings() {
 	if [[ ${CN_BROWSER} = "chromium" ]]; then
 		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc
 	fi
-	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
+
+  chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
+
 	set_gsettings
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
-	## Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+  # Set default directories
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	echo "Session=xfce" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
+	# Set gtk style for QT apps
 	echo "QT_STYLE_OVERRIDE=gtk" >> ${CN_DESTDIR}/etc/environment
 
 	# Add lxpolkit to autostart apps
@@ -152,7 +154,6 @@ xfce_settings() {
 	cp ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver ${CN_DESTDIR}/etc/skel
 
 	rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
-
 }
 
 openbox_settings() {
@@ -162,15 +163,16 @@ openbox_settings() {
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
+  # Set default directories
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	echo "Session=openbox" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
 	# xscreensaver config
-	cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver
-	cp ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver ${CN_DESTDIR}/etc/skel
-	rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+	set_xscreensaver
 }
 
 lxqt_settings() {
@@ -221,33 +223,7 @@ kde_settings() {
 	cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
 	chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
-	# When applications transition to Qt5 they will look for config files in the standardized (XDG) locations. Create
-	# symlinks during the transitional period until all apps are updated to use the new config file paths.
-	link_config() {
-
-		if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
-			app=${1:6}
-			app_old="/home/${CN_USER_NAME}/.kde4/share/apps/${app}"
-			app_new="/home/${CN_USER_NAME}/.local/share/${app}"
-			chroot ${CN_DESTDIR} "ln -s ${app_old}${app_new}" ${CN_USER_NAME}
-		fi
-		if [[ ${2} != "conf:" ]] && [[ ${2} != "" ]]; then
-			conf=${2:6}
-			conf_old="/home/${CN_USER_NAME}/.kde4/share/config/${conf}"
-			conf_new="/home/${CN_USER_NAME}/.config/${conf}"
-			chroot ${CN_DESTDIR} "ln -s ${conf_old}${conf_new}" ${CN_USER_NAME}
-		fi
-
-	}
-
-	#for i in konsole; do
-	#	link_config apps:${i};
-	#done
-	#for i in kdeglobals; do
-	#	link_config apps: conf:kdeglobals;
-	#done
-
-	## Set default directories
+	# Set default directories
 	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 }
 
@@ -256,15 +232,8 @@ mate_settings() {
 	echo "[Desktop]" > "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
 	echo "Session=mate-session" >> "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
 
-	## Set default directories
+	# Set default directories
 	chroot "${CN_DESTDIR}" su -c xdg-user-dirs-update "${CN_USER_NAME}"
-
-	# Set gsettings input-source
-	if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
-	else
-		sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
-	fi
 
 	# Set gsettings
 	set_gsettings
@@ -325,13 +294,10 @@ enlightenment_settings() {
 	cp /etc/xdg/autostart/lxpolkit.desktop ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart
 
 	# xscreensaver config
-	cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver
-	cp ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver ${CN_DESTDIR}/etc/skel
-	rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+	set_xscreensaver
 }
 
 postinstall() {
-
 	# Specific user configurations
 	if [[ -f /usr/share/applications/firefox.desktop ]]; then
 		export CN_BROWSER=firefox
@@ -339,20 +305,20 @@ postinstall() {
 		export CN_BROWSER=chromium
 	fi
 
-	## Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
+	# Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
 	## Unmute alsa channels
-	chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
+	#chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
 
 	# Configure touchpad. Skip with base installs
-	if [[ base != "${CN_DESKTOP}" ]]; then
+	if [[ "base" != "${CN_DESKTOP}" ]]; then
 		set_xorg
 	fi
 
 	# Configure fontconfig
+	FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
 	if [[ -f "${FONTCONFIG_FILE}" ]]; then
-		FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
 		FONTCONFIG_DIR="${CN_DESTDIR}/home/${CN_USER_NAME}/.config/fontconfig"
 		mkdir -p "${FONTCONFIG_DIR}"
 		cp "${FONTCONFIG_FILE}" "${FONTCONFIG_DIR}"
@@ -378,8 +344,8 @@ postinstall() {
  		&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
  		&& cd -
 
-	## Set desktop-specific settings
-	"${CN_DESKTOP}_settings"
+	# Set desktop-specific settings
+	${CN_DESKTOP}_settings
 
 	# Set some environment vars
 	env_files=("${CN_DESTDIR}/etc/environment"
@@ -402,7 +368,7 @@ postinstall() {
 	# Set lightdm-webkit2-greeter in lightdm.conf. This should have been done here (not in the pkg) all along.
 	sed -i 's|#greeter-session=example-gtk-gnome|greeter-session=lightdm-webkit2-greeter|g' "${CN_DESTDIR}/etc/lightdm/lightdm.conf"
 
-	## Ensure user permissions are set in /home
+	# Ensure user permissions are set in /home
 	chroot "${CN_DESTDIR}" chown -R "${CN_USER_NAME}:users" "/home/${CN_USER_NAME}"
 
 	# Start vbox client services if we are installed in vbox
@@ -410,7 +376,6 @@ postinstall() {
 		# TODO: This should be done differently
 		sed -i 's|echo "X|/usr/bin/VBoxClient-all \&\necho "X|g' "${CN_DESTDIR}/etc/lightdm/Xsession"
 	fi
-
 }
 
 touch /tmp/.postinstall.lock
@@ -422,5 +387,9 @@ CN_LOCALE=$4
 CN_IS_VBOX=$5
 CN_KEYBOARD_LAYOUT=$6
 CN_KEYBOARD_VARIANT=$7
+
+# Use this to test this script (remember to mount /install manually before testing)
+#chroot_setup "${CN_DESTDIR}"
+
 { postinstall; } >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
