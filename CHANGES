@@ -1,3 +1,4 @@
+[2016-08-30 14:40:19 +0200]  typo                                                                       karasu      {fac4ee5}
 [2016-08-30 14:29:31 +0200]  Add mount options so we can test postinstall.sh outside Cnchi              karasu      {9e60fdc}
 [2016-08-30 13:36:04 +0200]  Quick test. Do not use arch-chroot as it tries to mount /proc and o..      karasu      {7c3c0d6}
 [2016-08-30 05:12:09 +0200]  Testing some postinstall changes                                           karasu      {d99cc21}
