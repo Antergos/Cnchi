@@ -63,7 +63,7 @@ set_gsettings() {
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
 
-  arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
+  arch-chroot "${CN_DESTDIR}" /usr/bin/su - "${CN_USER_NAME}" -c "/usr/bin/set-settings ${CN_DESKTOP}"
 
 	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
@@ -308,8 +308,8 @@ postinstall() {
 	# Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	chroot "${CN_DESTDIR}" sed -i 's|UserAccounts|UserList|g' /etc/lightdm/users.conf
 
-	# Unmute alsa channels
-	chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
+	## Unmute alsa channels
+	#chroot "${CN_DESTDIR}" amixer -c 0 -q set Master playback 50% unmute
 
 	# Configure touchpad. Skip with base installs
 	if [[ "base" != "${CN_DESKTOP}" ]]; then
