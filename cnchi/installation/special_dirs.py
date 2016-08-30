@@ -43,17 +43,28 @@ except NameError as err:
 _SPECIAL_DIRS_MOUNTED = False
 
 
-def _get_special_dirs():
-    """ Get special dirs to be mounted or unmounted """
-    special_dirs = ["/dev", "/dev/pts", "/proc", "/sys"]
-    efi = "/sys/firmware/efi/efivars"
-    if os.path.exists(efi):
-        special_dirs.append(efi)
-    return special_dirs
+def _get_mounts():
+    """ Gets all mount parameters for each mount"""
+
+    # (mount_type, mount_point, mount_fs_type, mount_options)
+    mounts = [
+        ("proc", "/proc", "proc", "nosuid,noexec,nodev"),
+        ("sys", "/sys", "sysfs", "nosuid,noexec,nodev,ro"),
+        ("udev", "/dev", "devtmpfs", "mode=0755,nosuid"),
+        ("devpts", "/dev/pts", "devpts", "mode=0620,gid=5,nosuid,noexec"),
+        ("shm", "/dev/shm", "tmpfs", "mode=1777,nosuid,nodev"),
+        ("run", "/run", "tmpfs", "nosuid,nodev,mode=0755"),
+        ("tmp", "/tmp", "tmpfs", "mode=1777,strictatime,nodev,nosuid")]
+
+    efi_dir = "/sys/firmware/efi/efivars"
+    if os.path.exists(efi_dir):
+        mounts.append(("efivarfs", efi_dir, "efivarfs", "nosuid,noexec,nodev"))
+
+    return mounts
 
 
 def mount(dest_dir):
-    """ Mount special directories for our chroot (bind them)"""
+    """ Mount special directories for our chroot """
 
     global _SPECIAL_DIRS_MOUNTED
 
@@ -63,24 +74,20 @@ def mount(dest_dir):
         logging.debug(msg)
         return
 
-    special_dirs = []
-    special_dirs = _get_special_dirs()
+    mounts = _get_mounts()
 
-    for special_dir in special_dirs:
-        mountpoint = os.path.join(dest_dir, special_dir[1:])
+    for (mount_type, mount_point, mount_fs_type, mount_options) in mounts:
+        mount_point = os.path.join(dest_dir, mount_point)
         os.makedirs(mountpoint, mode=0o755, exist_ok=True)
-        # os.chmod(mountpoint, 0o755)
-        cmd = ["mount", "--bind", special_dir, mountpoint]
-        logging.debug(
-            "Mounting special dir '%s' to %s",
-            special_dir,
-            mountpoint)
+        cmd = ["mount", mount_type, mount_point, "-t", mount_fs_type, "-o", mount_options]
         try:
+            logging.debug("Mounting %s in %s", mount_type, mount_point))
             subprocess.check_call(cmd)
+            logging.debug("%s mounted in %s", mount_type, mount_point)
         except subprocess.CalledProcessError as process_error:
             logging.warning(
                 "Unable to mount %s, command %s failed: %s",
-                mountpoint,
+                mount_point,
                 process_error.cmd,
                 process_error.output)
 
@@ -98,21 +105,22 @@ def umount(dest_dir):
         logging.debug(msg)
         return
 
-    special_dirs = []
-    special_dirs = _get_special_dirs()
+    mounts = _get_mounts()
 
-    for special_dir in reversed(special_dirs):
-        mountpoint = os.path.join(dest_dir, special_dir[1:])
-        logging.debug("Unmounting special dir '%s'", format(mountpoint))
+    for (mount_type, mount_point, mount_fs_type, mount_options) in reversed(mounts):
+        mount_point = os.path.join(dest_dir, mount_point)
+        logging.debug("Unmounting %s", format(mount_point))
         try:
-            subprocess.check_call(["umount", mountpoint])
+            subprocess.check_call(["umount", mount_point])
         except subprocess.CalledProcessError:
-            logging.debug("Can't unmount. Trying -l to force it.")
+            logging.debug("Can't unmount %s. Trying -l to force it.", mount_point)
             try:
-                subprocess.check_call(["umount", "-l", mountpoint])
+                subprocess.check_call(["umount", "-l", mount_point])
             except subprocess.CalledProcessError as process_error:
-                txt = "Unable to unmount {0}, command {1} failed: {2}".format(
-                    mountpoint, process_error.cmd, process_error.output)
-                logging.warning(txt)
+                logging.warning(
+                    "Unable to unmount %s, command %s failed: %s",
+                    mount_point,
+                    process_error.cmd,
+                    process_error.output)
 
     _SPECIAL_DIRS_MOUNTED = False
