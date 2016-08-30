@@ -1,3 +1,4 @@
+[2016-08-30 17:10:24 +0200]  Playing with mount                                                         karasu      {44d58ec}
 [2016-08-30 14:46:09 +0200]  Restored arch-chroot functions (so I can test it outside Cnchi)            karasu      {51ff800}
 [2016-08-30 14:45:17 +0200]  Let's see if using su helps                                                karasu      {a0d2fba}
 [2016-08-30 14:40:19 +0200]  typo                                                                       karasu      {fac4ee5}

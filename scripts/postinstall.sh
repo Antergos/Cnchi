@@ -26,41 +26,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-# From arch-chroot
-# These are not used when calling this script from cnchi
-chroot_add_mount() {
-  mount "$@" && CHROOT_ACTIVE_MOUNTS=("$2" "${CHROOT_ACTIVE_MOUNTS[@]}")
-}
-
-chroot_maybe_add_mount() {
-  local cond=$1; shift
-  if eval "$cond"; then
-    chroot_add_mount "$@"
-  fi
-}
-
-chroot_setup() {
-  CHROOT_ACTIVE_MOUNTS=()
-  [[ $(trap -p EXIT) ]] && die '(BUG): attempting to overwrite existing EXIT trap'
-  trap 'chroot_teardown' EXIT
-
-  chroot_maybe_add_mount "! mountpoint -q '$1'" "$1" "$1" --bind &&
-  chroot_add_mount proc "$1/proc" -t proc -o nosuid,noexec,nodev &&
-  chroot_add_mount sys "$1/sys" -t sysfs -o nosuid,noexec,nodev,ro &&
-  #ignore_error chroot_maybe_add_mount "[[ -d '$1/sys/firmware/efi/efivars' ]]" \
-  #    efivarfs "$1/sys/firmware/efi/efivars" -t efivarfs -o nosuid,noexec,nodev &&
-  chroot_add_mount udev "$1/dev" -t devtmpfs -o mode=0755,nosuid &&
-  chroot_add_mount devpts "$1/dev/pts" -t devpts -o mode=0620,gid=5,nosuid,noexec &&
-  chroot_add_mount shm "$1/dev/shm" -t tmpfs -o mode=1777,nosuid,nodev &&
-  chroot_add_mount run "$1/run" -t tmpfs -o nosuid,nodev,mode=0755 &&
-  chroot_add_mount tmp "$1/tmp" -t tmpfs -o mode=1777,strictatime,nodev,nosuid
-}
-
-chroot_teardown() {
-  umount "${CHROOT_ACTIVE_MOUNTS[@]}"
-  unset CHROOT_ACTIVE_MOUNTS
-}
-
 # Set xorg config files
 set_xorg() {
 	cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${CN_DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
@@ -97,7 +62,8 @@ set_gsettings() {
 
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-	chroot "${CN_DESTDIR}" su -c "/usr/bin/set-settings ${CN_DESKTOP}" "${CN_USER_NAME}"
+
+  arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
 
 	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
@@ -109,9 +75,6 @@ gnome_settings() {
 
 	# Set gdm shell logo
 	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
-	#systemd-nspawn -D "${CN_DESTDIR}" -u gdm -M CN_GDM gsettings set org.gnome.login-screen logo "/usr/share/antergos/logo.png" &
-	#sleep 5;
-	#machinectl poweroff CN_GDM
 
 	# Set default directories
 	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
@@ -151,7 +114,7 @@ cinnamon_settings() {
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon ${CN_DESTDIR}/etc/skel
 
 	# Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Populate our wallpapers in Cinnamon Settings
 	chroot ${CN_DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${CN_USER_NAME}/.cinnamon/backgrounds/antergos" ${CN_USER_NAME}
@@ -164,15 +127,16 @@ xfce_settings() {
 	if [[ ${CN_BROWSER} = "chromium" ]]; then
 		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc
 	fi
-	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
+
+  chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
 
 	set_gsettings
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
-	# Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+  # Set default directories
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -198,6 +162,9 @@ openbox_settings() {
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+  # Set default directories
+  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -255,32 +222,6 @@ kde_settings() {
 	cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 	cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
 	chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
-
-	# When applications transition to Qt5 they will look for config files in the standardized (XDG) locations. Create
-	# symlinks during the transitional period until all apps are updated to use the new config file paths.
-	link_config() {
-
-		if [[ ${1} != "apps:" ]] && [[ ${1} != "" ]]; then
-			app=${1:6}
-			app_old="/home/${CN_USER_NAME}/.kde4/share/apps/${app}"
-			app_new="/home/${CN_USER_NAME}/.local/share/${app}"
-			chroot ${CN_DESTDIR} "ln -s ${app_old}${app_new}" ${CN_USER_NAME}
-		fi
-		if [[ ${2} != "conf:" ]] && [[ ${2} != "" ]]; then
-			conf=${2:6}
-			conf_old="/home/${CN_USER_NAME}/.kde4/share/config/${conf}"
-			conf_new="/home/${CN_USER_NAME}/.config/${conf}"
-			chroot ${CN_DESTDIR} "ln -s ${conf_old}${conf_new}" ${CN_USER_NAME}
-		fi
-
-	}
-
-	#for i in konsole; do
-	#	link_config apps:${i};
-	#done
-	#for i in kdeglobals; do
-	#	link_config apps: conf:kdeglobals;
-	#done
 
 	# Set default directories
 	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
@@ -357,7 +298,6 @@ enlightenment_settings() {
 }
 
 postinstall() {
-
 	# Specific user configurations
 	if [[ -f /usr/share/applications/firefox.desktop ]]; then
 		export CN_BROWSER=firefox
