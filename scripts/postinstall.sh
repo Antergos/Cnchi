@@ -26,6 +26,41 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+# From arch-chroot
+# These are not used when calling this script from cnchi
+chroot_add_mount() {
+  mount "$@" && CHROOT_ACTIVE_MOUNTS=("$2" "${CHROOT_ACTIVE_MOUNTS[@]}")
+}
+
+chroot_maybe_add_mount() {
+  local cond=$1; shift
+  if eval "$cond"; then
+    chroot_add_mount "$@"
+  fi
+}
+
+chroot_setup() {
+  CHROOT_ACTIVE_MOUNTS=()
+  [[ $(trap -p EXIT) ]] && die '(BUG): attempting to overwrite existing EXIT trap'
+  trap 'chroot_teardown' EXIT
+
+  chroot_maybe_add_mount "! mountpoint -q '$1'" "$1" "$1" --bind &&
+  chroot_add_mount proc "$1/proc" -t proc -o nosuid,noexec,nodev &&
+  chroot_add_mount sys "$1/sys" -t sysfs -o nosuid,noexec,nodev,ro &&
+  #ignore_error chroot_maybe_add_mount "[[ -d '$1/sys/firmware/efi/efivars' ]]" \
+  #    efivarfs "$1/sys/firmware/efi/efivars" -t efivarfs -o nosuid,noexec,nodev &&
+  chroot_add_mount udev "$1/dev" -t devtmpfs -o mode=0755,nosuid &&
+  chroot_add_mount devpts "$1/dev/pts" -t devpts -o mode=0620,gid=5,nosuid,noexec &&
+  chroot_add_mount shm "$1/dev/shm" -t tmpfs -o mode=1777,nosuid,nodev &&
+  chroot_add_mount run "$1/run" -t tmpfs -o nosuid,nodev,mode=0755 &&
+  chroot_add_mount tmp "$1/tmp" -t tmpfs -o mode=1777,strictatime,nodev,nosuid
+}
+
+chroot_teardown() {
+  umount "${CHROOT_ACTIVE_MOUNTS[@]}"
+  unset CHROOT_ACTIVE_MOUNTS
+}
+
 # Set xorg config files
 set_xorg() {
 	cp /usr/share/cnchi/scripts/postinstall/50-synaptics.conf ${CN_DESTDIR}/etc/X11/xorg.conf.d/50-synaptics.conf
