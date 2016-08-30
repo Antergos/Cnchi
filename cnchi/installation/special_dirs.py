@@ -44,9 +44,10 @@ _SPECIAL_DIRS_MOUNTED = False
 
 
 def _get_mounts():
-    """ Gets all mount parameters for each mount"""
+    """ Gets all mount parameters for each mount """
 
     # (mount_type, mount_point, mount_fs_type, mount_options)
+    # mount_point must be an absolute path
     mounts = [
         ("proc", "/proc", "proc", "nosuid,noexec,nodev"),
         ("sys", "/sys", "sysfs", "nosuid,noexec,nodev,ro"),
@@ -77,7 +78,7 @@ def mount(dest_dir):
     mounts = _get_mounts()
 
     for (mount_type, mount_point, mount_fs_type, mount_options) in mounts:
-        mount_point = os.path.join(dest_dir, mount_point)
+        mount_point = dest_dir + mount_point
         os.makedirs(mount_point, mode=0o755, exist_ok=True)
         cmd = ["mount", mount_type, mount_point, "-t", mount_fs_type, "-o", mount_options]
         try:
@@ -108,7 +109,7 @@ def umount(dest_dir):
     mounts = _get_mounts()
 
     for (mount_type, mount_point, mount_fs_type, mount_options) in reversed(mounts):
-        mount_point = os.path.join(dest_dir, mount_point)
+        mount_point = dest_dir + mount_point
         logging.debug("Unmounting %s", format(mount_point))
         try:
             subprocess.check_call(["umount", mount_point])
