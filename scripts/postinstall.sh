@@ -47,8 +47,8 @@ chroot_setup() {
   chroot_maybe_add_mount "! mountpoint -q '$1'" "$1" "$1" --bind &&
   chroot_add_mount proc "$1/proc" -t proc -o nosuid,noexec,nodev &&
   chroot_add_mount sys "$1/sys" -t sysfs -o nosuid,noexec,nodev,ro &&
-  ignore_error chroot_maybe_add_mount "[[ -d '$1/sys/firmware/efi/efivars' ]]" \
-      efivarfs "$1/sys/firmware/efi/efivars" -t efivarfs -o nosuid,noexec,nodev &&
+  #ignore_error chroot_maybe_add_mount "[[ -d '$1/sys/firmware/efi/efivars' ]]" \
+  #    efivarfs "$1/sys/firmware/efi/efivars" -t efivarfs -o nosuid,noexec,nodev &&
   chroot_add_mount udev "$1/dev" -t devtmpfs -o mode=0755,nosuid &&
   chroot_add_mount devpts "$1/dev/pts" -t devpts -o mode=0620,gid=5,nosuid,noexec &&
   chroot_add_mount shm "$1/dev/shm" -t tmpfs -o mode=1777,nosuid,nodev &&
@@ -97,7 +97,7 @@ set_gsettings() {
 
 	mkdir -p "${CN_DESTDIR}/var/run/dbus"
 	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-	chroot --userspec "${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
+	chroot --userspec="${CN_USER_NAME}" "${CN_DESTDIR}" /usr/bin/set-settings "${CN_DESKTOP}"
 
 	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
@@ -448,8 +448,8 @@ CN_IS_VBOX=$5
 CN_KEYBOARD_LAYOUT=$6
 CN_KEYBOARD_VARIANT=$7
 
-# Use this to test this script
-#chroot_setup "${CN_DESTDIR}" || die "failed to setup chroot %s" "${CN_DESTDIR}"
+# Use this to test this script (remember to mount /install manually before testing)
+#chroot_setup "${CN_DESTDIR}"
 
 { postinstall; } >> /tmp/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
