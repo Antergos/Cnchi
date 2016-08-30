@@ -1,3 +1,4 @@
+[2016-08-30 19:30:32 +0200]  Run set_settings from postinstall.sh using su and chrooting with ro..      karasu      {dbdf61c}
 [2016-08-30 18:48:12 +0200]  os.path.join does not join two absolute paths :)                           karasu      {0307dd6}
 [2016-08-30 18:27:50 +0200]  Another typo                                                               karasu      {4693afe}
 [2016-08-30 17:43:12 +0200]  Typo                                                                       karasu      {4859126}
