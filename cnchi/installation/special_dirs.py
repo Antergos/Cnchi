@@ -81,7 +81,7 @@ def mount(dest_dir):
         os.makedirs(mountpoint, mode=0o755, exist_ok=True)
         cmd = ["mount", mount_type, mount_point, "-t", mount_fs_type, "-o", mount_options]
         try:
-            logging.debug("Mounting %s in %s", mount_type, mount_point))
+            logging.debug("Mounting %s in %s", mount_type, mount_point)
             subprocess.check_call(cmd)
             logging.debug("%s mounted in %s", mount_type, mount_point)
         except subprocess.CalledProcessError as process_error:

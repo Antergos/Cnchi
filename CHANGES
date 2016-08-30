@@ -1,3 +1,4 @@
+[2016-08-30 17:37:38 +0200]  Now using arch-chroot again. Let's hope this avoids dbus problems. ..      karasu      {d733b42}
 [2016-08-30 17:10:24 +0200]  Playing with mount                                                         karasu      {44d58ec}
 [2016-08-30 14:46:09 +0200]  Restored arch-chroot functions (so I can test it outside Cnchi)            karasu      {51ff800}
 [2016-08-30 14:45:17 +0200]  Let's see if using su helps                                                karasu      {a0d2fba}
