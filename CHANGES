@@ -1,3 +1,4 @@
+[2016-08-30 19:39:12 +0200]  Remove unused file                                                         karasu      {95b738a}
 [2016-08-30 19:34:05 +0200]  Remove -v param                                                            karasu      {744a76d}
 [2016-08-30 19:30:32 +0200]  Run set_settings from postinstall.sh using su and chrooting with ro..      karasu      {dbdf61c}
 [2016-08-30 18:48:12 +0200]  os.path.join does not join two absolute paths :)                           karasu      {0307dd6}
