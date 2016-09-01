@@ -1074,6 +1074,7 @@ class Installation(object):
             POSTINSTALL_SCRIPT)
         cmd = [
             "/usr/bin/bash",
+            '-c',
             script_path_postinstall,
             self.settings.get('username'),
             DEST_DIR,
@@ -1084,7 +1085,8 @@ class Installation(object):
         # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        call(cmd, timeout=300)
+        result = call(cmd, timeout=300)
+        logging.debug(result)
         logging.debug("Post install script completed successfully.")
 
     def configure_system(self):
