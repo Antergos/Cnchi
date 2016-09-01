@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # -*- coding: utf-8 -*-
 #
 #  set-settings
@@ -24,7 +24,9 @@
 
 # GNOME, CINNAMON, XFCE and MATE setups
 
-DESKTOP=$1
+CN_DESKTOP=$1
+
+export DISPLAY=:0
 
 # Start DBUS daemon if its not running
 if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then
@@ -285,7 +287,6 @@ mate() {
 	gsettings set org.mate.panel default-layout 'antergos'
 	gsettings set org.mate.panel confirm-panel-remove true
 	gsettings set org.mate.panel disable-force-quit false
-	gsettings set org.mate.panel disable-log-out false
 	gsettings set org.mate.panel drawer-autoclose true
 	gsettings set org.mate.panel enable-animations true
 	gsettings set org.mate.panel enable-autocompletion true
@@ -358,8 +359,6 @@ mate() {
 	gsettings set org.mate.font-rendering hinting 'medium'
 	gsettings set org.mate.font-rendering rgba-order 'rgb'
 	gsettings set org.mate.peripherals-touchpad disable-while-typing false
-	gsettings set org.mate.peripherals-touchpad horiz-scroll-enabled false
-	gsettings set org.mate.peripherals-touchpad scroll-method 2
 	gsettings set org.mate.peripherals-touchpad tap-to-click true
 	gsettings set org.mate.peripherals-touchpad touchpad-enabled true
 	gsettings set org.mate.interface enable-animations true
@@ -381,4 +380,4 @@ enlightenment() {
 }
 
 
-"${DESKTOP}" 2>&1
+"${CN_DESKTOP}" 2>&1
