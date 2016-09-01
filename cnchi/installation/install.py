@@ -305,6 +305,13 @@ class Installation(object):
         logging.debug("Running postinstall.sh script...")
         self.set_desktop_settings()
 
+        # Copy installer log to the new installation
+        logging.debug("Copying install log to /var/log.")
+        self.copy_log()
+
+        self.queue_event('pulse', 'stop')
+        self.queue_event('progress_bar', 'hide')
+
         # Finally, try to unmount DEST_DIR
         auto_partition.unmount_all_in_directory(DEST_DIR)
 
@@ -1074,7 +1081,6 @@ class Installation(object):
             POSTINSTALL_SCRIPT)
         cmd = [
             "/usr/bin/bash",
-            '-c',
             script_path_postinstall,
             self.settings.get('username'),
             DEST_DIR,
@@ -1082,11 +1088,12 @@ class Installation(object):
             self.settings.get("locale"),
             str(self.vbox),
             keyboard_layout]
+
         # Keyboard variant is optional
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        result = call(cmd, timeout=300)
-        logging.debug(result)
+
+        call(cmd, timeout=300)
         logging.debug("Post install script completed successfully.")
 
     def configure_system(self):
@@ -1374,10 +1381,3 @@ class Installation(object):
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")
         chroot_call(["pkgfile", "--update"])
-
-        # Copy installer log to the new installation
-        logging.debug("Copying install log to /var/log.")
-        self.copy_log()
-
-        self.queue_event('pulse', 'stop')
-        self.queue_event('progress_bar', 'hide')
