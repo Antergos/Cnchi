@@ -80,9 +80,6 @@ gnome_settings() {
 	# Set gdm shell logo
 	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
 
-	# Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
-
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
@@ -117,9 +114,6 @@ cinnamon_settings() {
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon ${CN_DESTDIR}/etc/skel
 
-	# Set default directories
-  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
-
 	# Populate our wallpapers in Cinnamon Settings
 	chroot ${CN_DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${CN_USER_NAME}/.cinnamon/backgrounds/antergos" ${CN_USER_NAME}
 }
@@ -132,15 +126,11 @@ xfce_settings() {
 		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc
 	fi
 
-  chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
-
-	set_gsettings
-
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}
 
-  # Set default directories
-  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
+	set_gsettings
 
 	# Set xfce in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -166,9 +156,6 @@ openbox_settings() {
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
-
-  # Set default directories
-  chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set openbox in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -236,9 +223,6 @@ mate_settings() {
 	echo "[Desktop]" > "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
 	echo "Session=mate-session" >> "${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc"
 
-	# Set default directories
-	chroot "${CN_DESTDIR}" su -c xdg-user-dirs-update "${CN_USER_NAME}"
-
 	# Set gsettings
 	set_gsettings
 
@@ -283,9 +267,6 @@ enlightenment_settings() {
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
-
-	# Set default directories
-	chroot ${CN_DESTDIR} su -c xdg-user-dirs-update ${CN_USER_NAME}
 
 	# Set enlightenment in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
