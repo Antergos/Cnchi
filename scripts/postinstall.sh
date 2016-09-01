@@ -66,8 +66,8 @@ set_gsettings() {
 	mkdir -p "${CN_DESTDIR}/var/run/user/1000"
 	chown -R 1000:100 "${CN_DESTDIR}/var/run/user/1000"
 
-	arch-chroot "${CN_DESTDIR}" \
-		/usr/bin/sudo -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" >/dev/null 2>&1
+	arch-chroot -u "${CN_USER_NAME}" "${CN_DESTDIR}" \
+		/usr/bin/set-settings "${CN_DESKTOP}" >/dev/null 2>&1
 
 	rm "${CN_DESTDIR}/usr/bin/set-settings"
 	umount -l "${CN_DESTDIR}/var/run/dbus"
