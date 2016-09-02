@@ -62,7 +62,7 @@ set_gsettings() {
 	  fi
 	fi
 
-	sed -i "s|@_BROWSER@|${_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
+	sed -i "s|@CN_BROWSER@|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
 	cp "${CN_SCHEMA_OVERRIDE}" "${CN_SCHEMA_DIR}"
 	glib-compile-schemas "${CN_SCHEMA_DIR}"
 
@@ -329,14 +329,16 @@ postinstall() {
 		/usr/share/antergos/antergos-menu.png \
 		/usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
 
-	cd "${CN_DESTDIR}/usr/share/icons/Numix/24/places" \
- 		&& mv start-here.svg start-here-numix.svg \
- 		&& cp /usr/share/cnchi/data/images/antergos/antergos-ball-26.png start-here.png \
- 		&& cd -
-	cd "${CN_DESTDIR}/usr/share/icons/Numix/32/places" \
-		&& mv start-here.svg start-here-numix.svg \
- 		&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
- 		&& cd -
+	for _size in "22" "24" "32"
+	do
+		_icon="antergos-ball-26.png"
+		[[ "32" = "${_size}" ]] && _icon="antergos-menu-logo-dark-bg.png"
+
+		cd "${CN_DESTDIR}/usr/share/icons/Numix/${size}/places" \
+ 			&& mv start-here.svg start-here-numix.svg \
+ 			&& cp "/usr/share/cnchi/data/images/antergos/${_icon}" start-here.png \
+ 			&& cd -
+	done
 
 	# Set desktop-specific settings
 	${CN_DESKTOP}_settings

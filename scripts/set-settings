@@ -342,8 +342,6 @@ mate() {
 	gsettings set org.gnome.desktop.interface gtk-theme 'Numix-Frost-Light'
 	gsettings set org.gnome.desktop.interface icon-theme 'Numix-Square'
 	gsettings set com.linuxmint.mintmenu.plugins.places allow-scrollbar false
-	gsettings set com.linuxmint.mintmenu.plugins.places custom-names @as []
-	gsettings set com.linuxmint.mintmenu.plugins.places custom-paths @as []
 	gsettings set com.linuxmint.mintmenu.plugins.places height 180
 	gsettings set com.linuxmint.mintmenu.plugins.places hide-separator false
 	gsettings set com.linuxmint.mintmenu.plugins.places icon 'mate-fs-directory.png'
