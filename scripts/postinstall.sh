@@ -48,7 +48,7 @@ set_xscreensaver() {
 }
 
 set_gsettings() {
-	CN_SCHEMA_OVERRIDE='/usr/share/cnchi/scripts/antergos.gschema.override'
+	CN_SCHEMA_OVERRIDE='/usr/share/cnchi/scripts/90_antergos.gschema.override'
 	CN_SCHEMA_DIR="${CN_DESTDIR}/usr/share/glib-2.0/schemas"
 
 	# Set gsettings input-source
