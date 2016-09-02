@@ -70,9 +70,6 @@ gnome() {
 	# Set icon theme
 	gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
 
-	# Disable Terminal Bell
-	gsettings set org.gnome.desktop.wm.preferences audible-bell false
-
 	# Min/Max Buttons
 	gsettings set org.gnome.desktop.wm.preferences button-layout "appmenu:minimize,maximize,close"
 
@@ -122,10 +119,6 @@ cinnamon() {
 	# Set icon theme
 	gsettings set org.cinnamon.desktop.interface icon-theme "Numix-Square"
 	gsettings set org.gnome.desktop.interface icon-theme "Numix-Square"
-
-	# Disable Terminal Bell
-	gsettings set org.cinnamon.desktop.wm.preferences audible-bell false
-	gsettings set org.gnome.desktop.wm.preferences audible-bell false
 
 	# Configure touchpad
 	gsettings set org.cinnamon.settings-daemon.peripherals.touchpad tap-to-click true

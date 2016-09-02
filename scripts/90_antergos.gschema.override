@@ -89,7 +89,6 @@ gtk-theme='Numix-Frost-Light'
 icon-theme='Numix-Square'
 
 [org.cinnamon.desktop.wm.preferences]
-audible-bell=false
 theme='Numix-Frost-Light'
 
 [org.cinnamon.settings-daemon.peripherals.touchpad]
@@ -142,7 +141,6 @@ lock-enabled=false
 idle-delay=0
 
 [org.gnome.desktop.wm.preferences]
-audible-bell=false
 button-layout='appmenu:minimize,maximize,close'
 theme='Numix-Frost-Light'
 
