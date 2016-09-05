@@ -30,7 +30,7 @@
 """ Main Cnchi Window """
 
 # 3rd-party Libs
-from .base_widgets import (
+from ui.base_widgets import (
     Gdk,
     GLib,
     GObject,
@@ -39,7 +39,7 @@ from .base_widgets import (
 )
 
 # This application
-from .base_widgets import (
+from ui.base_widgets import (
     BaseWidget,
     Singleton
 )

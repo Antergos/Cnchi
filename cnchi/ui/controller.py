@@ -30,26 +30,18 @@
 
 # Standard Lib
 from _base_object import (
+    BaseObject,
+    Singleton
+)
+from _base_object import GLib
+from _base_object import (
     ascii_uppercase,
     choice,
     json,
-    os,
     sys
 )
-
-# 3rd-party Libs
-from _base_object import GLib
-
-# This application
-from _base_object import (
-    BaseObject,
-    bg_thread,
-    Singleton
-)
-
-
-from ui.main_window import MainWindow
-from ui.html.main_container import MainContainer
+from ui.html.container import MainContainer
+from ui.html.main_window import MainWindow
 from ui.html.pages_helper import PagesHelper
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  main_container.py
+#  container.py
 #
 #  Copyright © 2016 Antergos
 #
