@@ -14,8 +14,10 @@ This directory contains the default UI "module" which is driven by HTML/JavaScri
 #### Requirements
 * npm
 * nodejs-grunt-cli
+
 #### Running Cnchi
 Before you can run Cnchi in a local environment you need to run the following commands from within this directory:
+
 ```sh
 $ npm install
 $ grunt

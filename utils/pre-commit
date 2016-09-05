@@ -56,13 +56,22 @@ V_PATCH="${BASE_LIST[2]}"
 echo "Current version : ${BASE_STRING}"
 V_PATCH=$((V_PATCH + 1))
 SUGGESTED_VERSION="${V_MAJOR}.${V_MINOR}.${V_PATCH}"
+LATEST_STABLE_RELEASE=$(git describe --tags $(git rev-list --tags --max-count=1))
 
 echo "New version : ${SUGGESTED_VERSION}"
 sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${INFO_PY}"
 sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" README.md
 
-echo 'Updating CHANGES file...'
 { grep -q '`master`' README.md && HISTORY_FROM=$((V_MINOR - 1)); } || HISTORY_FROM="${V_MINOR}"
+
+STABLE_RELEASE_IN_README=$(grep -E -o -e '0\.'"$HISTORY_FROM"'\.[[:digit:]]+' README.md)
+
+if [[ "${LATEST_STABLE_RELEASE}" != "${STABLE_RELEASE_IN_README}" ]]; then
+	sed -i "s|$STABLE_RELEASE_IN_README|$LATEST_STABLE_RELEASE|g" README.md
+fi
+
+echo 'Updating CHANGES file...'
+
 git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "0.${HISTORY_FROM}.x...HEAD" > CHANGES
 
 echo "Updating latest.json..."
