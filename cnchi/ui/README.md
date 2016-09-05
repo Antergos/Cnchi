@@ -10,4 +10,14 @@ This directory houses Cnchi's UI code. Cnchi is designed to support a pluggable 
 |base_widgets.py|Contains base classes that are subclassed by the UIs.|
 |controller.py|As it's name suggests, it contains Cnchi's UI controller class.|
 
-### 
+### Implementation Details
+All UI classes should be derived from `BaseWidget` which in turn is derived from `BaseObject`. This approach ensure that all of Cnchi's runtime data uncluding user input is easily accessible throughout the codebase.
+
+UI "modules" (for lack of a better term), must provide the following two classes at minimum:
+* MainWindow
+  - show_all()
+* PagesHelper
+  - get_page()
+  - get_page_directory_name(name)
+  - get_page_names()
+  - get_page_object(page_identifier)
