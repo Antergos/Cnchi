@@ -26,23 +26,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" UI Controller Module """
+""" UI Controller """
 
 # Standard Lib
 from _base_object import (
     BaseObject,
-    Singleton
-)
-from _base_object import GLib
-from _base_object import (
-    ascii_uppercase,
-    choice,
-    json,
+    Singleton,
     sys
 )
-from ui.html.container import MainContainer
-from ui.html.main_window import MainWindow
-from ui.html.pages_helper import PagesHelper
+
+# This Application
+from ui.html.controller import HTMLController
 
 
 class Controller(BaseObject, metaclass=Singleton):
@@ -61,80 +55,11 @@ class Controller(BaseObject, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.current_page = None
-
-        main_window = MainWindow()
-        main_container = MainContainer()
-
-        main_window.widget.add(self._web_view)
-        self._initialize_pages()
-
-    @staticmethod
-    def _generate_js_temp_variable_name():
-        var = ''.join(choice(ascii_uppercase) for i in range(6))
-        return '__{}'.format(var)
-
-    def _initialize_pages(self):
-        self._pages_helper = PagesHelper()
-        self.logger.debug(self.settings.cmd_line)
-        start_page = 0 if not self.settings.cmd_line.z_hidden else 3
-
-        self.set_current_page(start_page)
+        # TODO: Implement external config file for all initial settings including which UI to use.
+        HTMLController()
 
     def do_restart(self):
         pass
 
-    def emit_js(self, cmd, *args):
-        """
-        Pass data to a JavaScript handler in the web_view.
-
-        Args:
-            cmd (str): The name of the JavaScript function to call.
-            *args (str): Arguments to pass to the function (optional).
-
-        """
-
-        if cmd not in self._allowed_signals:
-            self.logger.error('Signal: %s is not allowed!', cmd)
-            return
-
-        cmd = cmd.replace('-', '_')
-        msg = json.dumps(dict(cmd=cmd, args=list(args)))
-        var = self._generate_js_temp_variable_name()
-        msg = self._emit_js_tpl.format(var, msg)
-
-        self._web_view.run_javascript(msg, None, None, None)
-
     def exit_app(self):
         sys.exit(0)
-
-    def js_log_message_cb(self, level, msg, *args):
-        # TODO: Modify logging formatter so that it doesnt include this method's name/location.
-        level = level if level else 'debug'
-
-        _logger = getattr(self.logger, level)
-
-        _logger(msg, *args)
-
-    def set_current_page(self, identifier):
-        page = self._pages_helper.get_page(identifier)
-        page_uri = 'cnchi://{0}'.format(page.name)
-        self.current_page = page.name
-
-        if page is None:
-            raise ValueError('page cannot be None!')
-
-        self._web_view.load_uri(page_uri)
-
-    def trigger_js_event(self, event_name, *args):
-        """
-        Trigger a JavaScript event and optionally pass data to handler in the web_view.
-
-        Args:
-            event_name (str): The name of the JavaScript event to trigger.
-            *args (str): Arguments to pass to the event handlers (optional).
-
-        """
-
-        GLib.idle_add(self._main_window.emit, event_name, *args)
-        GLib.idle_add(self.emit_js, 'trigger-event', event_name, *args)

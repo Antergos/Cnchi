@@ -1,3 +1,5 @@
+[2016-09-04 21:37:44 -0500]  more documentation                                                     Dustin Falgout  {7e76481}
+[2016-09-04 21:07:45 -0500]  minor adjustments to the file structure to ensure that each ui type..  Dustin Falgout  {dfc15d3}
 [2016-09-04 16:02:38 -0500]  start moving details about the new structure for the codebase out o..  Dustin Falgout  {4d31ed6}
 [2016-09-01 23:47:15 -0500]  dont disable terminal bell (accessibility concerns)                    Dustin Falgout  {74256d4}
 [2016-09-01 23:44:17 -0500]  :triumph:                                                              Dustin Falgout  {67eef8c}
