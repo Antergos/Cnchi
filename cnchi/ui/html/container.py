@@ -190,7 +190,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         page_name = self._get_page_name_from_uri(view.get_uri())
 
-        self._controller.emit_js('trigger-event', 'page-loaded', page_name)
+        self._html_controller.emit_js('trigger-event', 'page-loaded', page_name)
 
         if not self.cnchi_loaded and 'language' == page_name:
             self.cnchi_loaded = True
@@ -217,7 +217,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
                 return
 
             if 'do-log-message' == name:
-                self._controller.js_log_message_cb(*args)
+                self._html_controller.js_log_message_cb(*args)
             else:
                 self._main_window.widget.emit(name, args)
 

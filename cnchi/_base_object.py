@@ -109,6 +109,7 @@ class BaseObject:
 
     _cnchi_app = SharedData('_cnchi_app')
     _controller = SharedData('_controller')
+    _html_controller = SharedData('_html_controller')
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
     _pages_helper = SharedData('_pages_helper')
@@ -151,7 +152,7 @@ class BaseObject:
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 
     def _check_for_main_components(self, name):
-        for component in ['main_window', 'controller', 'cnchi_app', 'pages_helper']:
+        for component in ['main_window', 'controller', 'cnchi_app', 'pages_helper', 'html_controller']:
             if name != component:
                 continue
 

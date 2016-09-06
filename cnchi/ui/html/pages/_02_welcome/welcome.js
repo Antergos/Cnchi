@@ -36,7 +36,7 @@ class WelcomePage extends CnchiPage {
 		super( id );
 
 		window._page = this;
-		this.signals = JSON.parse('{{ signals }}');
+		this.signals = JSON.parse(window[`${this.constructor.name}_signals`]);
 		this.$update_wrapper = $('.update_check_wrapper');
 		this.$welcome_wrapper = $('.welcome_wrapper');
 		this.$connection_wrapper = $('.no_internet_wrapper');
@@ -198,3 +198,5 @@ class WelcomePage extends CnchiPage {
 		}
 	}
 }
+
+window.WelcomePage = WelcomePage;

@@ -199,10 +199,10 @@
 
 {#
  # Javascript For This Page
- #}
+ #}{#
 {% block after_jquery %}
 	<script src="{{ RESOURCES_DIR }}/js/jquery-migrate-3.0.0.js"></script>
-{% endblock after_jquery %}
+{% endblock after_jquery %}#}
 
 {% block page_script %}
 	{#<script src="{{ RESOURCES_DIR }}/js/list.min.js"></script>#}
@@ -210,12 +210,5 @@
 	{% include 'pages/partials/_timezone_map.html' %}
 	<script>
 		{{ collapsable_items_javascript() }}
-
-		window._page = null;
-
-
-
-		window.LocationPage = LocationPage;
-
 	</script>
 {% endblock page_script %}

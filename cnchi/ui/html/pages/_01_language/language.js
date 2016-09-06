@@ -36,7 +36,7 @@ class LanguagePage extends CnchiPage {
 		super( id );
 
 		window._page = this;
-		this.signals = JSON.parse('{{ signals }}');
+		this.signals = JSON.parse(window[`${this.constructor.name}_signals`]);
 		this.cache_key = 'cnchi::language::selected';
 
 		this.register_allowed_signals();
@@ -77,3 +77,5 @@ class LanguagePage extends CnchiPage {
 		});
 	}
 }
+
+window.LanguagePage = LanguagePage;

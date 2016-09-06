@@ -36,7 +36,7 @@ class LocationPage extends CnchiPage {
 		super( id );
 
 		window._page = this;
-		this.signals = JSON.parse( '{{ signals }}' );
+		this.signals = JSON.parse( window[`${this.constructor.name}_signals`] );
 		this.location = null;
 		this.layout = null;
 		this.variant = null;
@@ -119,3 +119,5 @@ class LocationPage extends CnchiPage {
 		}, 250 )
 	}
 }
+
+window.LocationPage = LocationPage;

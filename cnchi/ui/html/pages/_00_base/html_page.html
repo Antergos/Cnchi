@@ -65,10 +65,14 @@
 
 	{% endblock scripts %}
 
+	{% block page_script %}{% endblock page_script %}
+	
 	<script src="{{ '%s/../_%s_%s/%s.js'|format(RESOURCES_DIR, page_index, page_name, page_name) }}"></script>
 
 	<script>
+		window._page = null;
 		{% set PageClass = '%sPage'|format(page_name|capitalize()) %}
+		window['{{ '%s_signals'|format(PageClass) }}'] = '{{ signals }}';
 		$( window ).on( 'page-loaded', () => new {{ PageClass }}('{{ page_name }}') );
 	</script>
 

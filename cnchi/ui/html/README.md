@@ -14,8 +14,14 @@ This directory contains the default UI "module" which is driven by HTML/JavaScri
 #### Requirements
 * npm
 * nodejs-grunt-cli
+#### Get It
+```sh
+$ git clone git@github.com:antergos/cnchi.git
+$ cd cnchi
+$ git submodule update --init
+```
 
-#### Running Cnchi
+#### Run It
 Before you can run Cnchi in a local environment you need to run the following commands from within this directory:
 
 ```sh

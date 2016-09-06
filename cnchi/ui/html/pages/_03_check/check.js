@@ -36,7 +36,7 @@ class CheckPage extends CnchiPage {
 		super(id);
 
 		window._page = this;
-		this.signals = JSON.parse('{{ signals }}');
+		this.signals = JSON.parse(window[`${this.constructor.name}_signals`]);
 
 		this.register_allowed_signals();
 		this.register_event_handlers();
@@ -78,3 +78,5 @@ class CheckPage extends CnchiPage {
 		}
 	}
 }
+
+window.CheckPage = CheckPage;

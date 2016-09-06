@@ -61,7 +61,7 @@ class HTMLController(BaseObject, metaclass=Singleton):
 
     _emit_js_tpl = 'window.{0} = {1}; window.cnchi.js_bridge_handler("{0}");'
 
-    def __init__(self, name='controller', *args, **kwargs):
+    def __init__(self, name='html_controller', *args, **kwargs):
 
         super().__init__(name=name, *args, **kwargs)
 

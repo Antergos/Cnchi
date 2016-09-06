@@ -16804,7 +16804,8 @@ class CnchiTab extends CnchiObject {
 		localStorage.setItem( this.lock_key, 'true' );
 	}
 
-	prepare( prepare_to ) {}
+	prepare( prepare_to ) {
+	}
 }
 
 window.CnchiTab = CnchiTab;
