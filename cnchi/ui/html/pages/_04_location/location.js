@@ -36,7 +36,6 @@ class LocationPage extends CnchiPage {
 		super( id );
 
 		window._page = this;
-		this.signals = JSON.parse( window[`${this.constructor.name}_signals`] );
 		this.location = null;
 		this.layout = null;
 		this.variant = null;
@@ -50,7 +49,6 @@ class LocationPage extends CnchiPage {
 		this.$kbd_layouts_list = $( '#keyboard_layout ul.collapsible' );
 		this.timezone_map = null;
 
-		this.register_allowed_signals();
 		this.register_event_handlers();
 		this.initialize();
 	}

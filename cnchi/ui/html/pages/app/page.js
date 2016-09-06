@@ -45,7 +45,7 @@ class CnchiPage extends CnchiObject {
 	constructor( id ) {
 		super();
 
-		this.signals = [];
+		this.signals = JSON.parse( window[`${this.constructor.name}_signals`] );
 		this.tabs = [];
 		this.current_tab = null;
 		this.$page = $( '.main_content' );
@@ -58,7 +58,7 @@ class CnchiPage extends CnchiObject {
 
 	_initialize() {
 		return Promise.all(
-			[this._prepare_tabs(), this._register_event_handlers()]
+			[this._prepare_tabs(), this._register_allowed_signals(), this._register_event_handlers()]
 		);
 	}
 
@@ -81,7 +81,7 @@ class CnchiPage extends CnchiObject {
 		let $page_tabs = $( '.page_tab' );
 
 		$page_tabs.each( ( index, element ) => {
-			let tab_name = $( element ).attr( 'id' ),
+			let tab_name = $( element ).attr( 'data-name' ),
 				property_name = `${tab_name}_tab`;
 
 			this[property_name] = new CnchiTab( $( element ), tab_name, this );
@@ -98,6 +98,14 @@ class CnchiPage extends CnchiObject {
 		return ( 'undefined' === typeof tab ) ? new Promise().resolve() : tab.prepare( 'hide' );
 	}
 
+	_prepare_to_show_tab( tab ) {
+		if ( 'undefined' === typeof tab ) {
+			tab = this.current_tab;
+		}
+
+		return tab.prepare( 'show' );
+	}
+
 	/**
 	 * Adds this page's signals to {@link CnchiApp.signals} array.
 	 */
@@ -105,14 +113,6 @@ class CnchiPage extends CnchiObject {
 		for ( let signal of this.signals ) {
 			cnchi.signals.push( signal );
 		}
-	}
-
-	_prepare_to_show_tab( tab ) {
-		if ( 'undefined' === typeof tab ) {
-			tab = this.current_tab;
-		}
-
-		return tab.prepare( 'show' );
 	}
 
 	_register_event_handlers() {
