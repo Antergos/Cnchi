@@ -1,7 +1,7 @@
 /*
  * cnchi_app.js
  *
- * Copyright 2016 Antergos
+ * Copyright © 2016 Antergos
  *
  * This file is part of Cnchi.
  *

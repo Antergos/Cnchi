@@ -1,0 +1,54 @@
+{
+  "name": "cnchi-ui-react",
+  "version": "0.15.210",
+  "description": "A UI module for Cnchi built with ReactJS.",
+  "scripts": {
+    "test": "echo 'Error: no test specified' && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antergos/cnchi.git"
+  },
+  "keywords": [
+    "linux",
+    "installer",
+    "webkit2gtk",
+    "antergos"
+  ],
+  "author": "antergos",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/antergos/cnchi/issues"
+  },
+  "homepage": "https://github.com/antergos/cnchi#readme",
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-react-intl": "^2.2.0",
+    "babel-preset-react": "^6.11.1",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "json-loader": "^0.5.4",
+    "node-sass": "^3.9.3",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.1",
+    "webpack-visualizer-plugin": "^0.1.5"
+  },
+  "dependencies": {
+    "jquery": "^3.1.0",
+    "moment": "^2.14.1",
+    "moment-timezone": "^0.5.5",
+    "node-resolve": "^1.3.3",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-intl": "^2.0.1",
+    "react-materialize": "^0.16.4",
+    "react-redux": "^4.4.5",
+    "redux": "^3.6.0",
+    "unsemantic": "^1.1.3",
+    "waypoints": "^4.0.0"
+  }
+}
