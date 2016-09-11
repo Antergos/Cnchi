@@ -23,6 +23,7 @@
   "homepage": "https://github.com/antergos/cnchi#readme",
   "devDependencies": {
     "babel-core": "^6.14.0",
+    "babel-gettext-extractor": "^1.0.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-react-intl": "^2.2.0",
     "babel-preset-react": "^6.11.1",
@@ -30,6 +31,7 @@
     "file-loader": "^0.9.0",
     "json-loader": "^0.5.4",
     "node-sass": "^3.9.3",
+    "po-catalog-loader": "^1.2.0",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
@@ -50,5 +52,27 @@
     "redux": "^3.6.0",
     "unsemantic": "^1.1.3",
     "waypoints": "^4.0.0"
+  },
+  "babel": {
+    "plugins": [
+      [
+        "gettext-extractor",
+        {
+          "baseDirectory": "./po",
+          "fileName": "en.po",
+          "functionNames": {
+            "t": [
+              "msgid"
+            ],
+            "tN": [
+              "msgid_plural"
+            ]
+          }
+        }
+      ]
+    ],
+    "presets": [
+      "react"
+    ]
   }
 }

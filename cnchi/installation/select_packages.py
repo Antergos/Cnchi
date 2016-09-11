@@ -436,7 +436,7 @@ class SelectPackages(object):
 
         base_names = {
             "libreoffice" : "libreoffice-fresh",
-            "firefox" : "firefox-i18n",
+            "firefox" : "firefox-po",
             "kde" : "kde-l10n"}
 
         lang_code = self.settings.get("language_code").lower()

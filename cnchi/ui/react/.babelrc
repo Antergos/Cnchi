@@ -1,8 +1,0 @@
-{
-	"plugins": [
-		["react-intl", {
-			"messagesDir": "./extracted-messages/",
-			"enforceDescriptions": true
-		}]
-	]
-}

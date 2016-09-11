@@ -179,7 +179,7 @@ class HTMLPage(Page, metaclass=Singleton):
         self._tpl = Environment(loader=PrefixLoader(tpl_map), lstrip_blocks=True, trim_blocks=True)
         self._tpl.globals['RESOURCES_DIR'] = resources_path
         self._tpl.add_extension('jinja2.ext.do')
-        self._tpl.add_extension('jinja2.ext.i18n')
+        self._tpl.add_extension('jinja2.ext.po')
         self._tpl.install_null_translations(newstyle=True)
 
     def _initialize_page_data(self):
