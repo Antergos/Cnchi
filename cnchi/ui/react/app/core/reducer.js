@@ -1,5 +1,5 @@
-/**
- * bootstrap.js
+/*
+ * reducer.js
  *
  * Copyright © 2016 Antergos
  *
@@ -25,36 +25,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This file only contains setup and boilerplate code for all of
- * the app's entry points (pages).
+/**
+ * Combine all reducers in this file and export the combined reducers.
+ * If we were to do this in store.js, reducers wouldn't be hot reloadable.
  */
 
-// 3rd-Party Libs
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import configureStore from './store';
+import { fromJS } from 'immutable';
+import { combineReducers } from 'redux-immutable';
 
-// This Application
+import globalReducer from 'App/reducer';
 
 
-
-// Create redux store
-const initialState = {};
-const store = configureStore( initialState );
-
-
-const render = ( translatedMessages ) => {
-	ReactDOM.render(
-		<Provider store={store}>
-			<LanguageProvider messages={translatedMessages}/>
-		</Provider>,
-		document.getElementById( 'app' )
-	);
-};
-
-
-render( translationMessages );
-
-// Install ServiceWorker and AppCache last that way we don't install it if the app fails.
-install();
+/**
+ * Creates the main reducer along with the asynchronously loaded ones
+ */
+export default function createReducer( asyncReducers ) {
+	return combineReducers( {
+		global: globalReducer,
+		...asyncReducers,
+	} );
+}

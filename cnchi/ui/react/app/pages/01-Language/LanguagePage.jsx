@@ -32,6 +32,7 @@ import Container from '../../components';
 import * as action_types from './actions';
 
 
+
 class LanguagePage extends Component {
 
 	constructor( props ) {

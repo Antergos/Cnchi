@@ -3,7 +3,9 @@
   "version": "0.15.210",
   "description": "A UI module for Cnchi built with ReactJS.",
   "scripts": {
-    "test": "echo 'Error: no test specified' && exit 1"
+    "test": "echo 'Error: no test specified' && exit 1",
+    "start": "node node_modules/reactuate/webpack-dev-server.js",
+    "build": "NODE_ENV=production webpack --config node_modules/reactuate/default-webpack-config.js --progress --colors"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "file-loader": "^0.9.0",
     "json-loader": "^0.5.4",
     "po-catalog-loader": "^1.2.0",
+    "reactuate": "^0.1.21",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",

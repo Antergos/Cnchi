@@ -1,5 +1,5 @@
-/**
- * bootstrap.js
+/*
+ * store.js
  *
  * Copyright © 2016 Antergos
  *
@@ -25,36 +25,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This file only contains setup and boilerplate code for all of
- * the app's entry points (pages).
- */
+import { applyMiddleware, compose, createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 
-// 3rd-Party Libs
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import configureStore from './store';
-
-// This Application
+import createReducer from './reducer';
+import saga from './saga';
 
 
+const defaultState = {};
 
-// Create redux store
-const initialState = {};
-const store = configureStore( initialState );
-
-
-const render = ( translatedMessages ) => {
-	ReactDOM.render(
-		<Provider store={store}>
-			<LanguageProvider messages={translatedMessages}/>
-		</Provider>,
-		document.getElementById( 'app' )
-	);
-};
+const sagaMiddleware = createSagaMiddleware();
+const createStoreWithMiddleware = applyMiddleware( sagaMiddleware )( createStore );
 
 
-render( translationMessages );
+const enhancers = compose( window.devToolsExtension ? window.devToolsExtension() : f => f );
+const store = createStoreWithMiddleware( createReducer, defaultState, enhancers );
 
-// Install ServiceWorker and AppCache last that way we don't install it if the app fails.
-install();
+sagaMiddleware.run( saga );
+
+export default store;

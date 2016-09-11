@@ -3,7 +3,7 @@
 let path = require( 'path' ),
 	fs = require( 'fs' ),
 	webpack = require( 'webpack' ),
-	fs_utils = require( './utils/filesystem.js'),
+	fs_utils = require( './app/utils/filesystem.js'),
 	page_dirs = fs_utils.dirlist( path.join( __dirname, 'app', 'pages' ) );
 	entry = {};
 
@@ -84,4 +84,4 @@ const config = {
 };
 
 
-module.exports = config;
+//module.exports = config;
