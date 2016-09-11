@@ -1,5 +1,5 @@
 /*
- * LanguagePage.jsx
+ * filesystem.js
  *
  * Copyright © 2016 Antergos
  *
@@ -25,25 +25,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
-import Grid from 'unsemantic';
+/*eslint-env node*/
+/*eslint no-var:0*/
 
-import Container from '../../components';
-import * as action_types from './actions';
+let path = require( 'path' ),
+	fs = require( 'fs' );
 
 
-class LanguagePage extends Component {
-
-	constructor( props ) {
-		super( props );
-	}
-
-	render() {
-
-		return (
-			<Container className="content_wrapper">
-				<PageHeading ></PageHeading>
-			</Container>
-		)
-	}
+function dirlist( srcpath ) {
+	return fs.readdirSync( srcpath ).filter( ( file ) => {
+		return fs.statSync( path.join( srcpath, file ) ).isDirectory();
+	} );
 }
+
+module.exports = { dirlist };

@@ -1,5 +1,5 @@
 /*
- * PageContainer.jsx
+ * Container.jsx
  *
  * Copyright © 2016 Antergos
  *
@@ -29,12 +29,12 @@ import React, { Component } from 'react';
 import Grid from 'unsemantic';
 
 
-class PageContainer extends Component {
+class Container extends Component {
 	render() {
-		let gridClass = `grid-100 page_container ${this.props.className}`;
+		let gridClass = `grid-100 ${this.props.className}`;
 
 		return (
-			<Grid id="PageContainer" className={gridClass}>
+			<Grid className={gridClass}>
 				{this.props.children}
 			</Grid>
 		)

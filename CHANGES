@@ -1,3 +1,6 @@
+[2016-09-10 19:24:57 -0500]  dont check permissions inside node-modules dir (its unnecessary and..  Dustin Falgout  {288b1dd}
+[2016-09-10 19:21:23 -0500]  working on integrating translations with cnchi's existing translati..  Dustin Falgout  {6f37a62}
+[2016-09-10 16:06:07 -0500]  dont bother looking at this yet.                                       Dustin Falgout  {45a4e56}
 [2016-09-05 23:20:01 -0500]  trying to get things back in order with the javascript code            Dustin Falgout  {8721bd3}
 [2016-09-05 22:50:14 -0500]  trying to get things back in order with the javascript code            Dustin Falgout  {1fe5708}
 [2016-09-05 00:08:36 -0500]  update pre-commit hook                                                 Dustin Falgout  {d422b7c}

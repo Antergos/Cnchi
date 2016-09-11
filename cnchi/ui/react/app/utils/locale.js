@@ -1,5 +1,5 @@
 /*
- * locale.jsx
+ * locale.js
  *
  * Copyright © 2016 Antergos
  * Copyright © 2016 Sentry (https://sentry.io)
@@ -28,7 +28,6 @@
 
 import Jed from 'jed';
 import React from 'react';
-import { getTranslations } from './translations';
 import { sprintf } from 'sprintf-js';
 import _ from 'underscore';
 

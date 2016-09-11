@@ -3,7 +3,9 @@
 let path = require( 'path' ),
 	fs = require( 'fs' ),
 	webpack = require( 'webpack' ),
-	ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+	fs_utils = require( './utils/filesystem.js'),
+	page_dirs = fs_utils.dirlist( path.join( __dirname, 'app', 'pages' ) );
+	entry = {};
 
 
 let babelQuery = {
@@ -32,18 +34,28 @@ if ( 'True' === process.env.CN_EXTRACT_TRANSLATIONS ) {
 }
 
 
+// Determine entry points (pages) and add them to the entry object.
+if ( page_dirs.length ) {
+	page_dirs.forEach( (page_dir) => {
+		let page = page_dir.split('-').pop();
+		entry[ page_dir ] = path.join( __dirname, 'app', 'pages', page_dir, `${page}Page` );
+	} );
+}
+
+
+// Now create config for webpack
 const config = {
-	entry: './app/bootstrap.jsx',
+	entry: entry,
 	output: {
-		filename: 'bundle.js',
-		path: './dist',
-		publicPath: '/',
+		chunkFilename: "[id].chunk.js",
+		filename: "[name].bundle.js",
+		path: path.join(__dirname, "dist"),
 	},
 	module: {
 		loaders: [
 			{
 				test: /\.jsx?$/,
-				loader: 'babel-loader',
+				loader: 'babel',
 				include: path.join( __dirname, 'app' ),
 				exclude: /(vendor|node_modules|dist)/,
 				query: babelQuery
@@ -67,6 +79,7 @@ const config = {
 			path.join(__dirname, 'node_modules', 'jed', 'jed.js'),
 			path.join(__dirname, 'node_modules', 'marked', 'lib', 'marked.js')
 		],
+		resolve: { extensions: ['', '.js', '.jsx'] }
 	},
 };
 
