@@ -45,3 +45,6 @@ nosetests.xml
 # Documentation
 #*.rst
 #*.doctree
+
+# Nodejs
+node_modules
