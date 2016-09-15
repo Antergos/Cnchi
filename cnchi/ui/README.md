@@ -4,8 +4,9 @@ This directory houses Cnchi's UI code. Cnchi is designed with a pluggable UI. Th
 ### What's Inside
 |File/Dir|Description|
 |:---|:---|
-|**gtk**|Contains code specific to a GTK based UI.|
-|~~**html**~~|~~Contains code specific to the HTML/JavaScript based UI.~~|
+|**gtk**|GTK+ based UI.|
+|~~**html**~~|~~HTML/JavaScript based UI.~~|
+|**react**|ReactJS based UI rendered by WebKitGTK+|
 |**tpl**|All template files go here.|
 |base_widgets.py|Contains base classes that are subclassed by the UI modules.|
 |controller.py|As it's name suggests, it contains Cnchi's UI controller class.|
