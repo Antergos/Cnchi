@@ -28,7 +28,6 @@
 
 """ UI Controller """
 
-# Standard Lib
 from _base_object import (
     BaseObject,
     Singleton,
@@ -36,7 +35,7 @@ from _base_object import (
 )
 
 # This Application
-from ui.html.controller import HTMLController
+from ui.react.app.core.controller import ReactController
 
 
 class Controller(BaseObject, metaclass=Singleton):
@@ -51,12 +50,12 @@ class Controller(BaseObject, metaclass=Singleton):
 
     _emit_js_tpl = 'window.{0} = {1}; window.cnchi.js_bridge_handler("{0}");'
 
-    def __init__(self, name='controller', *args, **kwargs):
+    def __init__(self, name='ui_controller', *args, **kwargs):
 
         super().__init__(name=name, *args, **kwargs)
 
         # TODO: Implement external config file for all initial settings including which UI to use.
-        HTMLController()
+        ReactController()
 
     def do_restart(self):
         pass

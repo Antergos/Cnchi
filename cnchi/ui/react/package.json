@@ -4,8 +4,8 @@
   "description": "A UI module for Cnchi built with ReactJS.",
   "scripts": {
     "test": "echo 'Error: no test specified' && exit 1",
-    "dev": "webpack -d --watch",
-    "build": "webpack -p"
+    "start": "webpack -d --watch",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -48,6 +48,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.1.0-beta",
+    "webpack-combine-loaders": "^2.0.0",
     "webpack-dev-server": "^2.1.0-beta"
   },
   "dependencies": {
