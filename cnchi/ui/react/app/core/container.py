@@ -104,7 +104,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         if '?' in uri:
             uri = uri.split('?')[0]
 
-        return uri.replace('cnchi://', '') if 'cnchi:///' != uri else 'language'
+        return 'language' if 'cnchi:///' == uri else uri.replace('cnchi://', '').split('.')[0]
 
     @staticmethod
     def _get_settings_for_webkit():
@@ -155,14 +155,17 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
     @bg_thread
     def _uri_request_finish_page(self, page, request):
-        page_obj = self._pages_helper.get_page(page)
-        page_obj.prepare()
-        data = page_obj.render_template_as_bytes()
-
-        request.finish(
-            Gio.MemoryInputStream.new_from_data(data), -1,
-            Gio.content_type_guess(None, data)[0]
-        )
+        # page_obj = self._pages_helper.get_page(page)
+        # page_obj.prepare()
+        # data = page_obj.render_template_as_bytes()
+        #
+        # request.finish(
+        #     Gio.MemoryInputStream.new_from_data(data), -1,
+        #     Gio.content_type_guess(None, data)[0]
+        # )
+        tpl_path = os.path.join(self.UI_DIR, 'react/dist/index.html')
+        self._cnchi_controller.current_page = page
+        self._uri_request_finish_resource(tpl_path, request)
 
     @bg_thread
     def _uri_request_finish_resource(self, path, request):
@@ -173,10 +176,10 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             )
 
         elif path.startswith(self.APP_DIR):
-            raise RuntimeError('Requested path: "%s" does not exist!', path)
+            raise RuntimeError('Requested path: "{}" does not exist!'.format(path))
 
         elif os.path.exists(path):
-            raise RuntimeError('Requested path: "%s" is not inside Cnchi directory!', path)
+            raise RuntimeError('Requested path: "{}" is not inside Cnchi directory!'.format(path))
 
     def decide_policy_cb(self, view, decision, decision_type):
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
@@ -190,7 +193,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         page_name = self._get_page_name_from_uri(view.get_uri())
 
-        self._html_controller.emit_js('trigger-event', 'page-loaded', page_name)
+        self._react_controller.emit_js('trigger-event', 'page-loaded', page_name)
 
         if not self.cnchi_loaded and 'language' == page_name:
             self.cnchi_loaded = True
@@ -217,7 +220,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
                 return
 
             if 'do-log-message' == name:
-                self._html_controller.js_log_message_cb(*args)
+                self._react_controller.js_log_message_cb(*args)
             else:
                 self._main_window.widget.emit(name, args)
 
@@ -225,20 +228,23 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             self.logger.exception(err)
 
     def uri_request_cb(self, request):
-        path = request.get_uri()
+        uri = request.get_uri()
 
-        if '?' in path:
-            path, query = path.split('?')
+        if '?' in uri:
+            uri, query = uri.split('?')
 
-        page_name = self._get_page_name_from_uri(path)
+        page_name = self._get_page_name_from_uri(uri)
 
-        if '.' in path:
-            self.logger.debug('Loading app resource: {0}'.format(path))
-            self._uri_request_finish_resource(page_name, request)
+        if uri.count('.') > 1:
+            self.logger.debug('Loading app resource: {0}'.format(uri))
+            cut = len('cnchi://') + len(page_name) + len('.page/')
+            resource = uri[cut:]
+            resource_path = os.path.join(self.UI_DIR, 'react', 'dist', resource)
+            self._uri_request_finish_resource(resource_path, request)
 
-        elif page_name in self._pages_helper.page_names:
+        elif page_name in self._pages_helper.uri_page_names:
             self.logger.debug('Loading app page: {0}'.format(page_name))
             self._uri_request_finish_page(page_name, request)
 
         else:
-            raise Exception('Path is not valid: {0}'.format(path))
+            raise Exception('Path is not valid: {0}'.format(uri))

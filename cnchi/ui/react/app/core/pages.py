@@ -77,6 +77,7 @@ class PagesHelper(BaseObject, metaclass=Singleton):
         self._find_page_directories()
 
         self.page_names = self.get_page_names()
+        self.uri_page_names = [p.replace('Page', '').lower() for p in self.page_names]
 
         self.logger.debug([self.PAGES_DIR, self.page_names])
 
@@ -91,11 +92,6 @@ class PagesHelper(BaseObject, metaclass=Singleton):
             ]
             self._page_dirs.extend(_page_dirs)
 
-    def _get_page_index(self, name):
-        # res = [n[1:2] for n in self._page_dirs if name in n]
-        res = self.page_names.index(name)
-        return '' if not res else str(res + 1)
-
     def _get_page_object_by_index(self, index):
         if index > len(self.page_names):
             raise IndexError
@@ -106,14 +102,14 @@ class PagesHelper(BaseObject, metaclass=Singleton):
 
     def _get_page_object_by_name(self, name):
         if name not in self.all_pages:
-            index = self._get_page_index(name).zfill(2)
+            index = self.get_page_index(name)
             self._load_page(name, index)
 
         return self.all_pages[name]
 
     def _load_page(self, name, index):
         page_class = getattr(ALL_PAGES, name)
-        self.all_pages[name] = page_class(name=name, index=index)
+        self.all_pages[name] = page_class(index=index)
 
     def get_page(self, identifier):
         page = None
@@ -129,6 +125,14 @@ class PagesHelper(BaseObject, metaclass=Singleton):
         res = [d for d in self._page_dirs if name in d]
 
         return '' if not res else res[0]
+
+    def get_page_index(self, name):
+        try:
+            res = self.page_names.index(name)
+        except Exception:
+            res = self.uri_page_names.index(name)
+
+        return res + 1
 
     def get_page_names(self):
         return [

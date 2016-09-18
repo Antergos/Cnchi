@@ -64,7 +64,8 @@ class LanguagePage(ReactPage):
         self.selected_language = None
         self.current_locale = locale.getdefaultlocale()[0]
         self.language_list = os.path.join(
-            self.settings.data,
+            self.TOP_DIR,
+            'data',
             'locale',
             'languagelist.txt.gz'
         )

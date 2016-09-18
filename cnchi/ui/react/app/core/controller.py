@@ -113,11 +113,11 @@ class ReactController(BaseObject, metaclass=Singleton):
 
     def set_current_page(self, identifier):
         page = self._pages_helper.get_page(identifier)
-        page_uri = 'cnchi://{0}'.format(page.name)
-        self.current_page = page.name
 
         if page is None:
             raise ValueError('page cannot be None!')
+
+        page_uri = 'cnchi://{0}.page'.format(page.name)
 
         self._web_view.load_uri(page_uri)
 
