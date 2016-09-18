@@ -31,7 +31,7 @@ import classnames from 'classnames';
 
 class Grid extends Component {
 	render() {
-		_classes = classnames({
+		const _classes = classnames({
 			'grid-container': this.props.isContainer,
 			[`grid-${this.props.size}`]: ! this.props.isContainer && this.props.size,
 			[`suffix-${this.props.size}`]: ! this.props.isContainer && this.props.suffix,

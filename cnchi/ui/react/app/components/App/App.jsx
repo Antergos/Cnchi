@@ -44,7 +44,7 @@ class App extends Component {
 	render() {
 
 		return (
-			<Grid isContainer={true} className="cnchi_app">
+			<Grid isContainer={true} className="grid-parent cnchi_app">
 				<Header />
 			</Grid>
 		)

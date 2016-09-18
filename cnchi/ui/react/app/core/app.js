@@ -200,12 +200,12 @@ class CnchiApp extends CnchiObject {
 	page_loaded_handler( event, page ) {
 		if ( false === cnchi.loaded ) {
 			cnchi.loaded = true;
-			this.render();
+			this._render();
 		}
 	}
 
 	register_event_handlers() {
-		//$(window).on('page-loaded', (event) => this.page_loaded_handler(event));
+		$(window).on('page-loaded', (event) => this.page_loaded_handler(event));
 		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
 		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}

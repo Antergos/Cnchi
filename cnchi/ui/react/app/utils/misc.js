@@ -28,7 +28,7 @@
 import jQuery from 'jquery';
 
 
-export const _cn = {};
+let _cn = {};
 
 
 /**
@@ -69,4 +69,7 @@ _cn.inArray = ( item, array ) => {
 	}
 	return array.findIndex( i => i === item ) > -1;
 };
+
+
+export default _cn;
 
