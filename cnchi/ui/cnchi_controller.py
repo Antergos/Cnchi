@@ -28,14 +28,13 @@
 
 """ UI Controller """
 
+import importlib
+
 from _base_object import (
     BaseObject,
     Singleton,
     sys
 )
-
-# This Application
-from ui.react.app.core.controller import ReactController
 
 
 class CnchiController(BaseObject, metaclass=Singleton):
@@ -53,15 +52,24 @@ class CnchiController(BaseObject, metaclass=Singleton):
 
         super().__init__(name=name, *args, **kwargs)
 
-        # TODO: Implement external config file for all initial settings including which UI to use.
-        self.controller = ReactController()
-
+        self._initialize_controller()
         self._initialize_pages()
 
     def _initialize_pages(self):
         first_page = self.controller.pages[0]
         self._pages = {p: {'locked': True} for p in self.controller.pages}
         self._pages[first_page]['locked'] = False
+
+    def _initialize_controller(self):
+        ui_module_name = self.settings.ui.module
+        ui_module_settings = getattr(self.settings.ui, ui_module_name)
+        controller_path = '.{}.{}'.format(ui_module_name, ui_module_settings.controller_path)
+        controller_name = '{}Controller'.format(ui_module_name.capitalize())
+
+        controller_module = importlib.import_module(controller_path, 'ui')
+        controller = getattr(controller_module, controller_name)
+
+        self.controller = controller()
 
     def do_restart(self):
         pass
