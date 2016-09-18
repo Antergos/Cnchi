@@ -56,9 +56,13 @@ class DataObject:
 
     def __setattr__(self, attr, value):
         if '_lock' == attr:
-            super().__setattr__(attr, value)
+            return super().__setattr__(attr, value)
+
         with self._lock:
-            super().__setattr__(attr, value)
+            if isinstance(value, dict):
+                value = DataObject(from_dict=value)
+
+            return super().__setattr__(attr, value)
 
 
 class SharedData:

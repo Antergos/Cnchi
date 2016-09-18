@@ -57,7 +57,6 @@ from gi.repository import (
 from _data import (
     DataObject,
     NonSharedData,
-    settings,
     SharedData
 )
 
@@ -120,7 +119,7 @@ class BaseObject:
     _allowed_signals = SharedData('_allowed_signals')
     logger = None
     log_wrap = '-'
-    settings = SharedData('settings', from_dict=settings)
+    settings = SharedData('settings', from_dict={})
     widget = NonSharedData('widget')
 
     def __init__(self, name=BO, parent=None, tpl_engine=TE, logger=None, *args, **kwargs):

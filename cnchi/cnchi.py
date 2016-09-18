@@ -57,6 +57,35 @@ class CnchiApp(BaseObject):
         self.cmd_line = cmd_line
         self.settings.cmd_line = cmd_line
 
+    def _enumerate_settings(self, obj, address=''):
+        excluded = ['_lock', '_initialized']
+
+        for attr in dir(obj):
+            if attr in excluded or (attr.startswith('__') and attr.endswith('__')):
+                continue
+
+            value = getattr(obj, attr)
+
+            if '' != address:
+                _address = '{}.{}'.format(address, attr)
+            else:
+                _address = attr
+
+            if 'DataObject' == value.__class__.__name__:
+                self._enumerate_settings(value, _address)
+                continue
+
+            self.logger.debug('%s: %s', _address, value)
+
+    def _initialize_settings(self):
+        loader = ConfigLoader(self.logger)
+        loader.load_config()
+
+        for key, value in loader.config.items():
+            setattr(self.settings, key, value)
+
+        self._enumerate_settings(self.settings)
+
     def _maybe_clear_webkit_data(self):
         _dirs = [self.WK_CACHE_DIR, self.WK_DATA_DIR]
 
@@ -93,6 +122,7 @@ class CnchiApp(BaseObject):
             return
 
         self._maybe_clear_webkit_data()
+        self._initialize_settings()
 
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
