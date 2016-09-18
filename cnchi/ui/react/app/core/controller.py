@@ -80,10 +80,7 @@ class ReactController(BaseObject, metaclass=Singleton):
 
     def _initialize_pages(self):
         self._pages_helper = PagesHelper()
-        self.logger.debug(self.settings.cmd_line)
-        start_page = 0 if not self.settings.cmd_line.z_hidden else 0
-
-        self.set_current_page(start_page)
+        self.pages = self._pages_helper.page_names
 
     def emit_js(self, cmd, *args):
         """

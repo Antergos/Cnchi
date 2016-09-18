@@ -37,7 +37,7 @@ from _base_object import (
 # This application
 from ui.base_widgets import (
     bg_thread,
-    BaseWidget,
+    BaseObject,
     SharedData,
     Singleton,
 )
@@ -45,7 +45,7 @@ from ui.base_widgets import (
 from ..pages import ALL_PAGES
 
 
-class PagesHelper(BaseWidget, metaclass=Singleton):
+class PagesHelper(BaseObject, metaclass=Singleton):
     """
     Manages the UI's pages.
 
@@ -55,10 +55,6 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         Also see `BaseObject.__doc__`
 
     """
-
-    PAGES_DIR = SharedData('PAGES_DIR')
-    all_pages = SharedData('all_pages')
-    page_names = SharedData('page_names')
 
     def __init__(self, name='pages_helper', *args, **kwargs):
         """
@@ -75,13 +71,12 @@ class PagesHelper(BaseWidget, metaclass=Singleton):
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'react/app/pages')
 
-        if self.all_pages is None:
-            self.all_pages = dict()
+        self.all_pages = dict()
+        self._page_dirs = []
 
-            self._find_page_directories()
-            self.logger.debug(self._page_dirs)
+        self._find_page_directories()
 
-            self.page_names = self.get_page_names()
+        self.page_names = self.get_page_names()
 
         self.logger.debug([self.PAGES_DIR, self.page_names])
 

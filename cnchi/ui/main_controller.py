@@ -38,24 +38,30 @@ from _base_object import (
 from ui.react.app.core.controller import ReactController
 
 
-class Controller(BaseObject, metaclass=Singleton):
+class MainController(BaseObject, metaclass=Singleton):
     """
     UI Controller
 
     Class Attributes:
-        _emit_js_tpl (str): Javascript string used to emit signals in web_view.
         See also `BaseObject.__doc__`
 
     """
 
-    _emit_js_tpl = 'window.{0} = {1}; window.cnchi.js_bridge_handler("{0}");'
+    modules = []
 
-    def __init__(self, name='ui_controller', *args, **kwargs):
+    def __init__(self, name='main_controller', *args, **kwargs):
 
         super().__init__(name=name, *args, **kwargs)
 
         # TODO: Implement external config file for all initial settings including which UI to use.
-        ReactController()
+        self.controller = ReactController()
+
+        self._initialize_pages()
+
+    def _initialize_pages(self):
+        first_page = self.controller.pages[0]
+        self._pages = {p: {'locked': True} for p in self.controller.pages}
+        self._pages[first_page]['locked'] = False
 
     def do_restart(self):
         pass

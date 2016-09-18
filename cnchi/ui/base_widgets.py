@@ -87,7 +87,7 @@ class BaseWidget(BaseObject):
         elif 'jinja' == self.tpl_engine:
             raise NotImplementedError
         else:
-            self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
+            self.logger.debug('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None
 
         return template
@@ -114,7 +114,7 @@ class BaseWidget(BaseObject):
                 self.widget = self.ui.get_object(self.name)
 
             elif 'jinja' == self.tpl_engine:
-                pass
+                raise NotImplementedError
 
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
@@ -174,7 +174,7 @@ class Page(BaseWidget):
             template_path = os.path.join(self.PAGES_DIR, '{0}/{1}.html'.format(page_dir, self.name))
             self.logger.debug([self.name, page_dir, template_path])
         else:
-            self.logger.error('Unknown template engine "%s".'.format(self.tpl_engine))
+            self.logger.debug('Unknown template engine "%s".'.format(self.tpl_engine))
             template_path = None
 
         return template_path

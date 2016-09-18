@@ -30,9 +30,11 @@
 """ Configuration module for Cnchi """
 
 import multiprocessing
+import strictyaml as yaml
 
 
 settings = {
+    'GRUB_CMDLINE_LINUX': '',
     'alternate_package_list': '',
     'auto_device': '/dev/sda',
     'bootloader': 'grub2',
@@ -42,8 +44,8 @@ settings = {
     'btrfs': False,
     'cache_pkgs_md5_check_failed': [],
     'cnchi': '/usr/share/cnchi/',
-    'country_name': '',
     'country_code': '',
+    'country_name': '',
     'data': '/usr/share/cnchi/data/',
     'desktop': 'gnome',
     'desktop_ask': True,
@@ -67,21 +69,20 @@ settings = {
     'feature_smb': False,
     'feature_visual': False,
     'fullname': '',
-    'GRUB_CMDLINE_LINUX': '',
     'hostname': 'antergos',
-    'is_vbox': False,
     'is_iso': False,
+    'is_vbox': False,
     'keyboard_layout': '',
     'keyboard_variant': '',
-    'language_name': '',
     'language_code': '',
-    'location': '',
+    'language_name': '',
     'laptop': 'False',
     'locale': '',
+    'location': '',
     'log_file': '/tmp/cnchi.log',
+    'luks_root_device': '',
     'luks_root_password': '',
     'luks_root_volume': '',
-    'luks_root_device': '',
     'network_manager': 'NetworkManager',
     'partition_mode': 'automatic',
     'password': '',
@@ -91,15 +92,15 @@ settings = {
     'ruuid': '',
     'sentry_dsn': '',
     'third_party_software': False,
-    'timezone_human_zone': '',
-    'timezone_country': '',
-    'timezone_zone': '',
-    'timezone_human_country': '',
     'timezone_comment': '',
+    'timezone_country': '',
+    'timezone_done': False,
+    'timezone_human_country': '',
+    'timezone_human_zone': '',
     'timezone_latitude': 0,
     'timezone_longitude': 0,
-    'timezone_done': False,
     'timezone_start': False,
+    'timezone_zone': '',
     'tmp': '/tmp',
     'ui': '/usr/share/cnchi/cnchi/ui/tpl',
     'use_home': False,
@@ -113,8 +114,8 @@ settings = {
     'xz_cache': [],
     'z_hidden': False,
     'zfs': False,
-    'zfs_pool_name': 'antergos',
-    'zfs_pool_id': 0}
+    'zfs_pool_id': 0,
+    'zfs_pool_name': 'antergos'}
 
 
 class Settings(object):

@@ -75,7 +75,7 @@ class BaseObject:
         TOP_DIR      (str): Absolute path to the application's top-most directory.
         APP_DIR      (str): Abs path to the app's source files (derived from TOP_DIR).
         UI_DIR       (str): Abs path to the app's UI source files (derived from APP_DIR).
-        PAGES_DIR    (str): Abs path to the app's HTML UI's pages (derived from UI_DIR).
+        PAGES_DIR    (str): Abs path to the app's UI's pages (derived from UI_DIR).
         TPL_DIR      (str): Abs path to the app's UI templates (derived from UI_DIR).
         BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
         WK_CACHE_DIR (str): Abs path to the app's webkit cache directory.
@@ -101,7 +101,7 @@ class BaseObject:
     TOP_DIR = '/usr/share/cnchi'
     APP_DIR = os.path.join(TOP_DIR, 'cnchi')
     UI_DIR = os.path.join(APP_DIR, 'ui')
-    PAGES_DIR = os.path.join(UI_DIR, 'html/pages')
+    PAGES_DIR = os.path.join(UI_DIR, 'react/app/pages')
     TPL_DIR = os.path.join(UI_DIR, 'tpl')
     BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
     WK_CACHE_DIR = '/var/cache/cnchi'
@@ -152,15 +152,18 @@ class BaseObject:
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 
     def _check_for_main_components(self, name):
-        for component in ['main_window', 'controller', 'cnchi_app', 'pages_helper', 'react_controller']:
-            if name != component:
-                continue
+        components = [
+            'main_window', 'main_controller', 'cnchi_app', 'pages_helper', 'react_controller'
+        ]
 
-            attrib_name = '_{}'.format(component)
-            attrib = getattr(self, attrib_name)
+        if name not in components:
+            return
 
-            if attrib is None:
-                setattr(self, attrib_name, self)
+        attrib_name = '_{}'.format(name)
+        attrib = getattr(self, attrib_name)
+
+        if attrib is None:
+            setattr(self, attrib_name, self)
 
     @staticmethod
     def toggle_bool(value):
