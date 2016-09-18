@@ -29,8 +29,32 @@
 
 """ Configuration module for Cnchi """
 
-import multiprocessing
+import os
 import strictyaml as yaml
+
+
+class ConfigLoader:
+    config_path = '/etc/cnchi.yml'
+    config_path_fallback = '/usr/share/cnchi/dist/etc/cnchi.yml'
+    config = {}
+
+    def __init__(self, logger):
+        self.config_loaded = False
+        self.logger = logger
+
+    def load_config(self):
+        config_paths = [self.config_path, self.config_path_fallback]
+        config_files = [p for p in config_paths if os.path.exists(p)]
+
+        if not any(config_files):
+            self.logger.error('Config file not found (load_config() failed!)')
+            return
+
+        data = open(config_files[0], 'r').read()
+        config = yaml.load(data)
+
+        for key, value in config.items():
+            self.config[key] = value
 
 
 settings = {

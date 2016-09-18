@@ -26,50 +26,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" Main Cnchi (Antergos Installer) module """
+""" Cnchi Installer """
 
-
-import os
-import sys
-
-# Set initial value for "_" to appease PyCharm
-_ = lambda x: x
-
-import argparse
-import logging
-import logging.handlers
-import gettext
-import locale
-import uuid
-import shutil
-
-import misc.extra as misc
-import show_message as show
-import info
-from logging_utils import ContextFilter
-
-try:
-    from bugsnag.handlers import BugsnagHandler
-    import bugsnag
-    BUGSNAG_ERROR = None
-except ImportError as err:
-    BUGSNAG_ERROR = str(err)
-    print("Error importing bugsnag: ", err)
-
-try:
-    from _base_object import BaseObject, Gio, Gtk
-    from ui.controller import Controller
-except ImportError as err:
-    msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
-    logging.exception(msg)
-    sys.exit(1)
+from _initial_imports import *
 
 # Useful vars for gettext (translations)
 APP_NAME = 'cnchi'
 LOCALE_DIR = '/usr/share/locale'
 
 # At least this GTK version is needed
-GTK_VERSION_NEEDED = "3.18.0"
+GTK_VERSION_NEEDED = "3.20.0"
 
 FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
@@ -131,7 +97,7 @@ class CnchiApp(BaseObject):
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
-        Controller()
+        CnchiController()
 
         self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.widget.add_window(self._main_window.widget)

@@ -38,7 +38,7 @@ from _base_object import (
 from ui.react.app.core.controller import ReactController
 
 
-class MainController(BaseObject, metaclass=Singleton):
+class CnchiController(BaseObject, metaclass=Singleton):
     """
     UI Controller
 

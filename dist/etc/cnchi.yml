@@ -25,6 +25,8 @@ ui:
   module: react
 
   react:
+    # Import path for the UI Module's controller, relative to the module's directory.
+    controller_path: app.core.controller
     header_colors:
       accent: f50057
       bottom:

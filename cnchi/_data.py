@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  _settings.py
+#  _data.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -29,11 +29,6 @@
 """ Classes and data descriptor objects for the storage and retrieval of shared data/settings. """
 
 from threading import RLock
-
-try:
-    from config import settings
-except Exception:
-    pass
 
 
 class DataObject:

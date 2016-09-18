@@ -32,6 +32,7 @@ import json
 import locale
 import logging
 import os
+import strictyaml as yaml
 import sys
 from random import choice
 from string import ascii_uppercase
@@ -108,7 +109,7 @@ class BaseObject:
     WK_DATA_DIR = '/var/tmp/cnchi'
 
     _cnchi_app = SharedData('_cnchi_app')
-    _controller = SharedData('_controller')
+    _cnchi_controller = SharedData('_cnchi_controller')
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
     _pages_helper = SharedData('_pages_helper')
@@ -146,14 +147,13 @@ class BaseObject:
         self._check_for_main_components(name)
 
         if self.logger is None:
-            logging.debug('setting logger!')
             BaseObject.logger = logger
 
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 
     def _check_for_main_components(self, name):
         components = [
-            'main_window', 'main_controller', 'cnchi_app', 'pages_helper', 'react_controller'
+            'main_window', 'cnchi_controller', 'cnchi_app', 'pages_helper', 'react_controller'
         ]
 
         if name not in components:
