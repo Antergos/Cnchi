@@ -25,27 +25,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
-
+import { CnchiComponent } from '../';
 import { Header } from '../';
 import { Grid } from '../';
+import Pages from '../../pages'
 
 import '../../assets/css/vendor/materialize.css'
 import '../../assets/css/vendor/unsemantic-grid.css'
 import '../../assets/css/style.css'
 
 
-class App extends Component {
+class App extends CnchiComponent {
 
 	constructor( props ) {
 		super( props );
+
+		this.state = cnchi.app_state;
 	}
 
 	render() {
+		let page_class_name = `${this.state.current_page.capitalise()}Page`,
+			CurrentPage = pages[page_class_name];
 
 		return (
 			<Grid isContainer={true} className="grid-parent cnchi_app">
-				<Header />
+				<Header currentPage={this.state.current_page} />
+				<CurrentPage />
 			</Grid>
 		)
 	}

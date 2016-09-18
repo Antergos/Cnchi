@@ -199,7 +199,9 @@ class CnchiApp extends CnchiObject {
 
 	page_loaded_handler( event, page ) {
 		if ( false === cnchi.loaded ) {
-			cnchi.loaded = true;
+			this.loaded = true;
+			this.current_page = page;
+
 			this._render();
 		}
 	}

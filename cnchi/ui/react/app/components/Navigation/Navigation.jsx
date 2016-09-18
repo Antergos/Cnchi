@@ -25,14 +25,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
 import { Grid } from 'unsemantic';
 import classnames from 'classnames';
 
+import { CnchiComponent } from '../';
 import { t } from '../../utils/locale';
 
 
-class Navigation extends Component {
+class Navigation extends CnchiComponent {
 
 	_get_buttons() {
 		let navLinkPrefix = this.props.isTopLevel ? 'cnchi://' : '#',

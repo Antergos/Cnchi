@@ -25,11 +25,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
 import classnames from 'classnames';
 
+import { CnchiComponent } from '../';
 
-class Grid extends Component {
+
+class Grid extends CnchiComponent {
 	render() {
 		const _classes = classnames({
 			'grid-container': this.props.isContainer,

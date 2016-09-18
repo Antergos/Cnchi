@@ -38,28 +38,33 @@ class CnchiObject {
 
 	constructor() {
 		this.logger = new CnchiLogger( this.constructor.name );
-		this._bind_this();
+		this.bind_this( this );
 	}
 
 	/**
-	 * Binds `this` to the class for all class methods.
+	 * Binds `this` to `context` for all class methods.
 	 *
-	 * @private
+	 * @arg {Object} context The class on which to perform autobinding.
 	 */
-	_bind_this() {
-		let excluded = ['constructor', '_bind_this', 'not_excluded'];
+	static bind_this( context ) {
+		let excluded = ['constructor', 'bind_this', 'not_excluded'];
 
-		function not_excluded( method, context ) {
-			let _excluded = excluded.findIndex( excluded_method => method === excluded_method ) > - 1,
-				is_method = 'function' === typeof context[method];
+		function not_excluded( method, _context ) {
+			let _excluded = false === _cn.inArray( method, excluded ),
+				is_method = 'function' === typeof _context[method];
 
 			return is_method && ! _excluded;
 		}
 
-		for ( let obj = this; obj; obj = Object.getPrototypeOf( obj ) ) {
+		for ( let obj = context; obj; obj = Object.getPrototypeOf( obj ) ) {
+			if ( 'ReactComponent' === obj.constructor.name ) {
+				// Only autobind our own classes
+				break;
+			}
+
 			for ( let method of Object.getOwnPropertyNames( obj ) ) {
-				if ( not_excluded( method, this ) ) {
-					this[method] = this[method].bind( this );
+				if ( not_excluded( method, context ) ) {
+					context[method] = context[method].bind( context );
 				}
 			}
 		}

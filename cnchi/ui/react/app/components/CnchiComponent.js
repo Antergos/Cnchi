@@ -1,5 +1,5 @@
 /*
- * index.js
+ * CnchiComponent.js
  *
  * Copyright © 2016 Antergos
  *
@@ -25,8 +25,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export * from './App/App';
-export * from './CnchiComponent'
-export * from './Grid/Grid';
-export * from './Header/Header';
-export * from './Navigation/Navigation';
+import React, { Component } from 'react';
+
+import { CnchiObject } from '../core';
+
+
+class CnchiComponent extends Component {
+	constructor( props ) {
+		super( props );
+		CnchiObject.bind_this( this );
+	}
+}
+
+
+export { CnchiComponent };
