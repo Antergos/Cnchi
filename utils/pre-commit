@@ -71,7 +71,7 @@ if [[ "${LATEST_STABLE_RELEASE}" != "${STABLE_RELEASE_IN_README}" ]]; then
 fi
 
 echo 'Updating CHANGES file...'
-
+git branch --track "0.${HISTORY_FROM}.x" "origin/0.${HISTORY_FROM}.x"
 git log --pretty=format:"[%ai] %<(69,trunc) %s %><(15) %aN {%h}" --cherry-pick "0.${HISTORY_FROM}.x...HEAD" > CHANGES
 
 echo "Updating latest.json..."
