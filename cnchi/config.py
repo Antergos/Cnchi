@@ -29,6 +29,7 @@
 
 """ Configuration module for Cnchi """
 
+import multiprocessing
 import os
 import strictyaml as yaml
 
