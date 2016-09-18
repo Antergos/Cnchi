@@ -42,8 +42,6 @@ settings = {
     'bootloader_install': True,
     'bootloader_installation_successful': False,
     'btrfs': False,
-    'cache_pkgs_md5_check_failed': [],
-    'cnchi': '/usr/share/cnchi/',
     'country_code': '',
     'country_name': '',
     'data': '/usr/share/cnchi/data/',

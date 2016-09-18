@@ -1,0 +1,33 @@
+# Pages and the options they must collect from the user.
+pages:
+  - Language:
+    - selected_language
+  - Welcome:
+  - Check:
+  - Location:
+    - country_code
+    - country_name
+    - keyboard_layout
+    - keyboard_variant
+    - language_code
+    - language_name
+    - locale
+    - location
+    - timezone
+
+ui:
+  branding:
+    # "Installer" will be appended to the title.
+    app_title: Cnchi
+    # Path for logo image relative to the UI module's directory.
+    logo_image: app/assets/images/overlay.png
+
+  module: react
+
+  react:
+    header_colors:
+      accent: f50057
+      bottom:
+        default: 3b70d0
+        hover: 3f7ae4
+      top: 2e66b9
