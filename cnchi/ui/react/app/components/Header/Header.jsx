@@ -28,6 +28,7 @@
 import { CnchiComponent } from '../';
 import { Navigation } from '../';
 import { Grid } from '../';
+import _cn from '../../utils/misc';
 import { t } from '../../utils/locale';
 
 import logo from '../../assets/images/overlay.png'
@@ -38,6 +39,7 @@ class Header extends CnchiComponent {
 		let excluded = ['language', 'welcome'];
 		return false === _cn.inArray(this.props.currentPage, excluded);
 	}
+
 	render() {
 
 		return (

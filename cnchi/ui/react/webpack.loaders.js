@@ -4,7 +4,7 @@ const combineLoaders = require('webpack-combine-loaders');
 
 
 let babelQuery = {
-	presets: ['react', 'es2015'],
+	presets: ['react', 'latest'],
 	/*plugins: [
 		'transform-runtime',
 		'transform-decorators-legacy',

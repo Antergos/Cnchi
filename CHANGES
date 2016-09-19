@@ -1,3 +1,4 @@
+[2016-09-18 18:01:34 -0500]  add .gitattributes file to exclude vendor files from githubs lingui..  Dustin Falgout  {4982869}
 [2016-09-18 17:49:52 -0500]  create base class for components to facilitate `this` autobinding      Dustin Falgout  {f28dfd7}
 [2016-09-18 16:57:32 -0500]  finally making some progress..feel like im in a minefield of upstre..  Dustin Falgout  {32c114b}
 [2016-09-18 15:07:33 -0500]  starting to work on react ui again                                     Dustin Falgout  {b6861d9}

@@ -69,6 +69,7 @@ class LanguagePage(ReactPage):
             'locale',
             'languagelist.txt.gz'
         )
+        self._initialize_page_state()
         self.set_languages_list()
         self._create_and_connect_signals()
 

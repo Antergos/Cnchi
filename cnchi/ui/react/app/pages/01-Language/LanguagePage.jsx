@@ -1,7 +1,7 @@
 /*
- * Container.jsx
+ * LanguagePage.jsx
  *
- * Copyright © 2016 Antergos
+ * Copyright 2016 Antergos
  *
  * This file is part of Cnchi.
  *
@@ -25,35 +25,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CnchiComponent } from '../';
-import { Header } from '../';
-import { Grid } from '../';
-import { LanguagePage } from '../../pages'
-
-import '../../assets/css/vendor/materialize.css'
-import '../../assets/css/vendor/unsemantic-grid.css'
-import '../../assets/css/style.css'
+import { CnchiComponent } from '../../components';
 
 
-class App extends CnchiComponent {
+class LanguagePage extends CnchiComponent {
 
 	constructor( props ) {
 		super( props );
-
-		this.state = cnchi.app_state;
 	}
 
-	render() {
-		let CurrentPage = `${this.state.current_page.capitalise()}Page`;
-
-		return (
-			<Grid isContainer={true} className="grid-parent cnchi_app">
-				<Header currentPage={this.state.current_page} />
-				<CurrentPage />
-			</Grid>
-		)
+	componentDidMount() {
+		$('html, body').css({'background': '#383A41', 'opacity': 1});
+		$('select').material_select();
 	}
+
 }
 
 
-export { App };
+export { LanguagePage };

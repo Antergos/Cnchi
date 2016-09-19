@@ -26,6 +26,7 @@
  */
 
 import CnchiLogger from './logger'
+import _cn from  '../utils/misc';
 
 
 /**

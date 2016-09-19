@@ -20,7 +20,7 @@ const config = {
 	resolve: { extensions: ['', '.js', '.jsx'] },
 	plugins: [
 		new webpack.NoErrorsPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
+		//new webpack.HotModuleReplacementPlugin(),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
 			jQuery: 'jquery',

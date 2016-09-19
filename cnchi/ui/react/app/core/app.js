@@ -51,6 +51,7 @@ class CnchiApp extends CnchiObject {
 
 		window.cnchi = this;
 		this._render = render;
+		this.app_state = null;
 		this.loaded = false;
 		this.cmds = ['trigger_event'];
 		this.signals = [];
@@ -162,6 +163,13 @@ class CnchiApp extends CnchiObject {
 		cnchi.emit_signal( 'window-dragging-stop', 'window-dragging-stop' );
 	}
 
+	initial_state_ready_cb( event, state ) {
+		this.logger.debug(state);
+		console.log(state);
+		this.app_state = state;
+		this._render();
+	}
+
 	/**
 	 * Handles messages sent from the backend via the Python<->JS Bridge. Messages are
 	 * injected into the global scope as an `Object` referenced by a unique variable. The
@@ -191,23 +199,26 @@ class CnchiApp extends CnchiObject {
 			args = args.pop();
 		}
 
-		this.logger.debug( `Running command: ${cmd} with args: ${args}...`,
-						   this.js_bridge_handler );
+		this.logger.debug(
+			`Running command: ${cmd} with args: ${args}...`, this.js_bridge_handler
+		);
 
 		this[cmd]( args );
 	}
 
 	page_loaded_handler( event, page ) {
+		this.current_page = page;
+
 		if ( false === cnchi.loaded ) {
 			this.loaded = true;
-			this.current_page = page;
-
-			this._render();
 		}
+
+		this.emit_signal('do-get-initial-state');
 	}
 
 	register_event_handlers() {
-		$(window).on('page-loaded', (event) => this.page_loaded_handler(event));
+		$(window).on('page-loaded', (event, args) => this.page_loaded_handler(event, args));
+		$(window).on('get-initial-state-result', (event, args) => this.initial_state_ready_cb(event, args));
 		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
 		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}
