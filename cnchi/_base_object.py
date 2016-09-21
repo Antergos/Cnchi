@@ -112,7 +112,7 @@ class BaseObject:
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
     _pages_helper = SharedData('_pages_helper')
-    _pages_data = SharedData('_pages_data')
+    _pages_state = SharedData('_pages_state')
     _react_controller = SharedData('_react_controller')
     _web_view = SharedData('_web_view')
 

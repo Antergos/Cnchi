@@ -38,10 +38,6 @@ import logo from '../../assets/images/overlay.png'
 
 
 class Header extends CnchiComponent {
-	getShowNavigation() {
-		let excluded = ['language', 'welcome'];
-		return false === _cn.inArray(this.props.currentPage, excluded);
-	}
 
 	render() {
 
@@ -71,9 +67,7 @@ class Header extends CnchiComponent {
 
 				{/* ---->>> HEADER BOTTOM ---->>> */}
 				<Grid size="100" className="header_bottom no-drag">
-					{this.props.showNavigation
-						? <Navigation currentPage={this.props.currentPage} isTopLevel={ true } />
-						: ''}
+					<Navigation currentPage={this.props.currentPage} isTopLevel={ true } />
 					<div className="progress">
 						<div className="determinate" style={ { width: '8%' } }></div>
 					</div>

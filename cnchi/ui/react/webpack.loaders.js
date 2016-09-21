@@ -82,5 +82,19 @@ module.exports = [
 		exclude: /(node_modules|bower_components)/,
 		loader: "url-loader?limit=10000&mimetype=image/png"
 	},
-	{ test: /\.css$/, loader: "style-loader!css-loader" },
+	{
+		test: /vendor\/\.css$/,
+		loader: ExtractTextPlugin.extract({
+			fallbackLoader: 'style-loader',
+			loader: 'css-loader'
+		})
+	},
+	{
+		test: /\.css$/,
+		loader: ExtractTextPlugin.extract({
+			fallbackLoader: 'style-loader',
+			loader: 'css-loader?modules&importLoaders=1'
+		}),
+		exclude: /vendor\/\.css$/,
+	},
 ];

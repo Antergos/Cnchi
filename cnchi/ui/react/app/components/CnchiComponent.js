@@ -36,6 +36,16 @@ class CnchiComponent extends React.Component {
 		super( props );
 		CnchiObject.bind_this( this );
 	}
+
+	conditional_value( condition, value ) {
+		if ( value instanceof String ) {
+			return condition ? value : '';
+		}
+
+		if ( value instanceof Number ) {
+			return condition ? value : 0;
+		}
+	}
 }
 
 

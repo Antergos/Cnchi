@@ -167,7 +167,7 @@ class CnchiApp extends CnchiObject {
 		this.logger.debug(state);
 		console.log(state);
 		this.app_state = state;
-		this.app_state.current_page = this.current_page;
+		this.app_state.currentPage = this.current_page;
 		this._render( state );
 	}
 

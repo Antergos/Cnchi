@@ -1,27 +1,26 @@
-/*
- * style.css
- *
- * Copyright © 2016 Antergos
- *
- * This file is part of Cnchi.
- *
- * Cnchi is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License,
- * or any later version.
- *
- * Cnchi is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * The following additional terms are in effect as per Section 7 of the license:
- *
- * The preservation of all legal notices and author attributions in
- * the material or in the Appropriate Legal Notices displayed
- * by works containing it is required.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+html, .cnchi_app { height: 100%; }
+
+body { opacity: 1; transition: opacity 1s ease-in; color: #ECECED; font-weight: 400; height: 100%; }
+
+html, body { background: #383A41; }
+
+.header { display: none; }
+
+h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 32px; text-align: center; font-weight: 400; margin-top: 0px; }
+
+h3 { font-size: 18px; font-family: 'Open Sans'; }
+
+.heading { text-align: center; }
+
+.heading img { margin-bottom: 20px; max-width: 175px; }
+
+.language_selection { padding-top: 30px; padding-bottom: 30px; font-family: 'Open Sans'; }
+
+.language_selection form { max-width: 100%; }
+
+.valign-wrapper { width: 100%; height: 100%; text-align: center; }
+
+.btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
+
+.btn_wrapper i { font-size: 2.2rem; }
 

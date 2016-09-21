@@ -1,3 +1,6 @@
+[2016-09-21 02:27:44 -0500]  finally back on track..webkit2gtk 2.14+ is required now (prior vers..  Dustin Falgout  {1b519ac}
+[2016-09-18 22:34:14 -0500]  sync with local.                                                       Dustin Falgout  {657129c}
+[2016-09-18 18:03:55 -0500]  Update .gitattributes                                                  Dustin Falgout  {1776ee5}
 [2016-09-18 18:01:34 -0500]  add .gitattributes file to exclude vendor files from githubs lingui..  Dustin Falgout  {4982869}
 [2016-09-18 17:49:52 -0500]  create base class for components to facilitate `this` autobinding      Dustin Falgout  {f28dfd7}
 [2016-09-18 16:57:32 -0500]  finally making some progress..feel like im in a minefield of upstre..  Dustin Falgout  {32c114b}

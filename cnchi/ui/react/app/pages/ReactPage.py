@@ -76,9 +76,9 @@ class ReactPage(Page, metaclass=Singleton):
         self.index = index
         self.logger.debug('page index is %s', index)
 
-        if self._pages_data is None:
-            self.logger.debug('creating data object in _pages_data for %s..', name)
-            self._pages_data = DataObject()
+        if self._pages_state is None:
+            self.logger.debug('creating data object in _pages_state for %s..', name)
+            self._pages_state = DataObject()
 
         if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
@@ -152,12 +152,12 @@ class ReactPage(Page, metaclass=Singleton):
         return [(t, self.name == t) for t in self._top_level_tabs]
 
     def _initialize_page_state(self):
-        page_state = getattr(self._pages_data, self.name)
+        page_state = getattr(self._pages_state, self.name)
 
         if page_state is None:
             from_dict = self._get_default_state()
-            setattr(self._pages_data, self.name, DataObject(from_dict=from_dict))
-            page_state = getattr(self._pages_data, self.name)
+            setattr(self._pages_state, self.name, DataObject(from_dict=from_dict))
+            page_state = getattr(self._pages_state, self.name)
 
         required_settings = self.settings.pages[self.index - 1][self.name.capitalize()]
 
@@ -169,7 +169,7 @@ class ReactPage(Page, metaclass=Singleton):
         self._react_controller.emit_js(name, *args)
 
     def get_initial_state_cb(self, *args):
-        self.emit_js('trigger-event', 'get-initial-state-result', self._pages_data.as_dict())
+        self.emit_js('trigger-event', 'get-initial-state-result', self._pages_state.as_dict())
 
     def get_next_page_index(self):
         return self._pages_helper.page_names.index(self.name) + 1
@@ -195,4 +195,4 @@ class ReactPage(Page, metaclass=Singleton):
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        self._pages_data.has_data = True
+        self._pages_state.has_data = True

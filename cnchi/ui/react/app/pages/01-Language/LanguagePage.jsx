@@ -27,8 +27,15 @@
 
 // 3rd-Party Libs
 import React from 'react'
+import { Input, Button } from 'react-materialize';
 
 import CnchiComponent from '../../components/CnchiComponent';
+import Grid from '../../components/Grid/Grid';
+import { t } from '../../utils/locale';
+
+import '../../assets/css/vendor/magic.css';
+import './style.css';
+import logo from '../../assets/images/overlay.png'
 
 
 class LanguagePage extends CnchiComponent {
@@ -37,8 +44,41 @@ class LanguagePage extends CnchiComponent {
 		super( props );
 	}
 
+	onLanguageSelected( event ) {
+		this.props.updateState( 'selectedLanguage', event.target.value );
+	}
+
 	render() {
-		return(<div/>);
+		return (
+			<Grid size="100" className="content_wrapper">
+				<Grid size="100" className="heading">
+					<img src={logo} alt="Antergos logo"/>
+					<h1>{ t( 'Welcome To Antergos!' ) }</h1>
+					<h3>{ t( 'Please select a language to continue.' ) }</h3>
+				</Grid>
+				<Grid size="30" prefix="35" suffix="35" className="language_selection">
+					<Grid size="100">
+						<form>
+							<Input
+								id="language_select"
+								s={12}
+								type="select"
+								label={ t( 'Installer Language' ) }
+								value={ this.props.selectedLanguage ? this.props.selectedLanguage : 'default' }
+								onChange={ this.onLanguageSelected }>
+								<option key="default" value="default">{ t( 'Choose a language' ) }</option>
+								{ this.props.languages.map( ( language ) => {
+									return <option key={ language } value={ language }>{ language }</option>
+								} )}
+							</Input>
+						</form>
+					</Grid>
+					<Grid size="100" className="button_wrapper">
+						<Button id="continue_btn" waves="light" floating large className="pink accent-2" icon="forward"/>
+					</Grid>
+				</Grid>
+			</Grid>
+		);
 	}
 
 }

@@ -136,7 +136,7 @@ class LocationModule(BaseModule):
 
     def get_areas(self):
         lang_code = self.settings.language_code
-        show_all_locations = self._pages_data.location.show_all_locations
+        show_all_locations = self._pages_state.location.show_all_locations
         all_areas = self.locales_by_country
         self.logger.debug(all_areas)
         areas = [

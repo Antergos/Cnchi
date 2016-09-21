@@ -121,6 +121,7 @@ class ReactController(BaseObject, metaclass=Singleton):
 
         page_uri = 'cnchi://{0}.page'.format(page.name)
 
+        page.prepare()
         self._web_view.load_uri(page_uri)
 
     def trigger_js_event(self, event_name, *args):

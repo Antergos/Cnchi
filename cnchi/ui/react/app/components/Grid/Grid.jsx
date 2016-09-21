@@ -33,13 +33,25 @@ import CnchiComponent from '../CnchiComponent';
 
 
 class Grid extends CnchiComponent {
+
+	constructor( props ) {
+		super( props );
+
+		this.defaultProps = {
+			isContainer: false,
+			size: '100',
+			prefix: '',
+			suffix: ''
+		};
+	}
+
 	render() {
 		const _classes = classnames({
 			'grid-container': this.props.isContainer,
 			[`grid-${this.props.size}`]: ! this.props.isContainer && this.props.size,
 			[`suffix-${this.props.size}`]: ! this.props.isContainer && this.props.suffix,
 			[`prefix-${this.props.size}`]: ! this.props.isContainer && this.props.prefix,
-			[this.props.className]: true,
+			[this.props.className]: this.props.className,
 		});
 		return (
 			<div className={_classes}>

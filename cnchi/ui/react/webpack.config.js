@@ -15,7 +15,7 @@ const config = {
 		filename: "bundle.js",
 		path: path.join( __dirname, "dist" ),
 	},
-	externals: ['cnchi'],
+	externals: ['cnchi', 'Materialize'],
 	module: {
 		loaders: loaders,
 	},
@@ -36,12 +36,13 @@ const config = {
 		new webpack.ProvidePlugin( {
 			$: 'jquery',
 			jQuery: 'jquery',
-			_: 'underscore'
+			_: 'underscore',
 		} ),
 		new HtmlWebpackPlugin( {
 			template: './app/index.html'
 		} ),
 		new ExtractTextPlugin( '[name].css' ),
+		new ExtractTextPlugin( '[name]__[local]___[hash:base64:5]' ),
 	]
 };
 

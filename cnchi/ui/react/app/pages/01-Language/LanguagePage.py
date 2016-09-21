@@ -72,14 +72,17 @@ class LanguagePage(ReactPage):
         self._initialize_page_state()
         self.set_languages_list()
         self._create_and_connect_signals()
-        self.logger.debug(self._pages_data)
+        self.logger.debug(self._pages_state)
 
     def _get_default_state(self):
-        signals = json.dumps(self.signals)
-        tpl_vars = super()._get_default_state()
-        tpl_vars.update({'languages': self.languages, 'signals': signals})
+        state = super()._get_default_state()
+        state.update({
+            'languages': self.languages,
+            'signals': self.signals,
+            'selectedLanguage': self.selected_language
+        })
 
-        return tpl_vars
+        return state
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]
@@ -136,8 +139,10 @@ class LanguagePage(ReactPage):
         current_language = self.langcode_to_lang(display_map)
 
         for lang in sorted_choices:
-            selected = lang == current_language
-            self.languages.append((lang, selected))
+            if lang == current_language:
+                self.selected_language = lang
+
+            self.languages.append(lang)
 
     def prepare(self):
         """ Prepare to become the current (visible) page. """
@@ -145,4 +150,4 @@ class LanguagePage(ReactPage):
 
     def store_values(self):
         super().store_values()
-        self._pages_data.selected_language = self.selected_language
+        self._pages_state.selected_language = self.selected_language

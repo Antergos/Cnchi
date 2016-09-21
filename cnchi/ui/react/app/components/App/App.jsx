@@ -32,10 +32,12 @@ import CnchiComponent from '../CnchiComponent';
 import Header from '../Header/Header';
 import Grid from '../Grid/Grid';
 import all_pages from '../../pages';
+import _cn from '../../utils/misc';
 
-import '../../assets/css/vendor/materialize.css'
-import '../../assets/css/vendor/unsemantic-grid.css'
-import '../../assets/css/style.css'
+import '../../assets/js/materialize.min.js';
+import '../../assets/css/vendor/materialize.css';
+import '../../assets/css/vendor/unsemantic-grid.css';
+import '../../assets/css/style.css';
 
 
 class App extends CnchiComponent {
@@ -46,14 +48,28 @@ class App extends CnchiComponent {
 		this.state = this.props.initialState;
 	}
 
+	_getShowNavigation() {
+		let excluded = ['language', 'welcome'];
+		return false === _cn.inArray(this.state.currentPage, excluded);
+	}
+
+	updateState( key, value ) {
+		let oldState = this.state[this.state.currentPage],
+			newState = Object.assign( {}, oldState, {key: value} );
+
+		this.setState(newState);
+	}
+
 	render() {
-		let page_class_name = `${this.state.current_page.capitalise()}Page`,
+		let page_class_name = `${this.state.currentPage.capitalise()}Page`,
 			CurrentPage = all_pages[page_class_name];
 
 		return (
 			<Grid isContainer={true} className="grid-parent cnchi_app">
-				<Header currentPage={this.state.current_page} />
-				<CurrentPage />
+				{this._getShowNavigation()
+					? <Header currentPage={this.state.currentPage} />
+					: ''}
+				<CurrentPage updateState={this.updateState} {...this.state[this.state.currentPage]} />
 			</Grid>
 		)
 	}
