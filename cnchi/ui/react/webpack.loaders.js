@@ -4,13 +4,8 @@ const combineLoaders = require('webpack-combine-loaders');
 
 
 let babelQuery = {
-	presets: ['react', 'latest'],
-	/*plugins: [
-		'transform-runtime',
-		'transform-decorators-legacy',
-		'transform-class-properties',
-		'transform-es2015-modules-commonjs',
-	],*/
+	compact: false,
+	presets: ['react', ['es2015', {"modules": false}]]
 };
 
 
@@ -52,7 +47,6 @@ module.exports = [
 			domain: 'cnchi'
 		}
 	},
-	{ test: require.resolve('jquery'), loader: 'expose?$!expose?jQuery' },
 	{
 		test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
 		exclude: /(node_modules|bower_components)/,

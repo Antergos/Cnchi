@@ -410,6 +410,8 @@ def setup_gettext():
 def check_for_files():
     """ Check for some necessary files. Cnchi can't run without them """
 
+    return  True
+
     paths = [
         "/usr/share/cnchi",
         "/usr/share/cnchi/cnchi/ui/tpl",

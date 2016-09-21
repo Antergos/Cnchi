@@ -64,6 +64,18 @@ class DataObject:
 
             return super().__setattr__(attr, value)
 
+    def as_dict(self):
+        excluded_attrs = ['as_dict', '_lock', '_initialized']
+
+        def _excluded(item):
+            return item in excluded_attrs or (item.startswith('__') and item.endswith('__'))
+
+        def _get_value(item):
+            value = getattr(self, item)
+            return value if not isinstance(value, DataObject) else value.as_dict()
+
+        return {attr: _get_value(attr) for attr in dir(self) if not _excluded(attr)}
+
 
 class SharedData:
     """

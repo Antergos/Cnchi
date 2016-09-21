@@ -25,10 +25,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CnchiComponent } from '../';
-import { Header } from '../';
-import { Grid } from '../';
-import { LanguagePage } from '../../pages'
+// 3rd-Party Libs
+import React from 'react'
+
+import CnchiComponent from '../CnchiComponent';
+import Header from '../Header/Header';
+import Grid from '../Grid/Grid';
+import all_pages from '../../pages';
 
 import '../../assets/css/vendor/materialize.css'
 import '../../assets/css/vendor/unsemantic-grid.css'
@@ -40,11 +43,12 @@ class App extends CnchiComponent {
 	constructor( props ) {
 		super( props );
 
-		this.state = cnchi.app_state;
+		this.state = this.props.initialState;
 	}
 
 	render() {
-		let CurrentPage = `${this.state.current_page.capitalise()}Page`;
+		let page_class_name = `${this.state.current_page.capitalise()}Page`,
+			CurrentPage = all_pages[page_class_name];
 
 		return (
 			<Grid isContainer={true} className="grid-parent cnchi_app">
@@ -56,4 +60,4 @@ class App extends CnchiComponent {
 }
 
 
-export { App };
+export default App;

@@ -27,6 +27,8 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 # Standard Lib
+import time
+
 from _base_object import (
     json,
     os
@@ -126,6 +128,8 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         data_mgr = self._wv_parts.data_mgr
         self._wv_parts.context = WebKit2.WebContext.new_with_website_data_manager(data_mgr)
         self._wv_parts.security_manager = self._wv_parts.context.get_security_manager()
+        self._wv_parts.security_manager.register_uri_scheme_as_local('cnchi://')
+        self._wv_parts.security_manager.register_uri_scheme_as_cors_enabled('cnchi://')
 
         self._apply_webkit_settings()
 

@@ -25,9 +25,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// 3rd-Party Libs
+import React from 'react'
 import classnames from 'classnames';
 
-import { CnchiComponent } from '../';
+import CnchiComponent from '../CnchiComponent';
 
 
 class Grid extends CnchiComponent {
@@ -48,4 +50,4 @@ class Grid extends CnchiComponent {
 }
 
 
-export { Grid };
+export default Grid;

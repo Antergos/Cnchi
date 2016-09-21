@@ -25,7 +25,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CnchiComponent } from '../../components';
+// 3rd-Party Libs
+import React from 'react'
+
+import CnchiComponent from '../../components/CnchiComponent';
 
 
 class LanguagePage extends CnchiComponent {
@@ -34,12 +37,11 @@ class LanguagePage extends CnchiComponent {
 		super( props );
 	}
 
-	componentDidMount() {
-		$('html, body').css({'background': '#383A41', 'opacity': 1});
-		$('select').material_select();
+	render() {
+		return(<div/>);
 	}
 
 }
 
 
-export { LanguagePage };
+export default LanguagePage;

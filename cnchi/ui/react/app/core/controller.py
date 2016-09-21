@@ -29,6 +29,8 @@
 """ HTML/JavaScript UI Controller """
 
 # Standard Lib
+import time
+
 from _base_object import (
     ascii_uppercase,
     choice,
@@ -92,9 +94,9 @@ class ReactController(BaseObject, metaclass=Singleton):
 
         """
 
-        if cmd not in self._allowed_signals:
-            self.logger.error('Signal: %s is not allowed!', cmd)
-            return
+        # if cmd not in self._allowed_signals:
+        #     self.logger.error('Signal: %s is not allowed!', cmd)
+        #     return
 
         cmd = cmd.replace('-', '_')
         msg = json.dumps(dict(cmd=cmd, args=list(args)))

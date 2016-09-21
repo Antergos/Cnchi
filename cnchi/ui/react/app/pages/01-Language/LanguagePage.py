@@ -72,6 +72,7 @@ class LanguagePage(ReactPage):
         self._initialize_page_state()
         self.set_languages_list()
         self._create_and_connect_signals()
+        self.logger.debug(self._pages_data)
 
     def _get_default_state(self):
         signals = json.dumps(self.signals)

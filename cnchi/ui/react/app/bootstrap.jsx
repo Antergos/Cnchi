@@ -26,21 +26,21 @@
  */
 
 // 3rd-Party Libs
-import React from 'react';
+import React from 'react'
 import ReactDOM from 'react-dom';
 
 
 // This Application
 import CnchiApp from './core/app';
-import { App } from './components/index';
+import App from './components/App/App';
 import { localeSetup } from './utils/locale';
 
 
 
-const render = () => {
+let render = ( initalState ) => {
 	localeSetup();
 	ReactDOM.render(
-		<App />,
+		<App initialState={initalState} />,
 		document.getElementById( 'cnchi_app' )
 	);
 };

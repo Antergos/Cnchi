@@ -25,7 +25,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+// 3rd-Party Libs
+import React from 'react'
 
 import CnchiObject from '../core/object';
 
@@ -38,4 +39,4 @@ class CnchiComponent extends React.Component {
 }
 
 
-export { CnchiComponent };
+export default CnchiComponent;

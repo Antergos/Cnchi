@@ -25,9 +25,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CnchiComponent } from '../';
-import { Navigation } from '../';
-import { Grid } from '../';
+// 3rd-Party Libs
+import React from 'react'
+
+import CnchiComponent from '../CnchiComponent';
+import Navigation from '../Navigation/Navigation';
+import Grid from '../Grid/Grid';
 import _cn from '../../utils/misc';
 import { t } from '../../utils/locale';
 
@@ -82,4 +85,4 @@ class Header extends CnchiComponent {
 }
 
 
-export { Header };
+export default Header;

@@ -39,7 +39,7 @@ class CnchiObject {
 
 	constructor() {
 		this.logger = new CnchiLogger( this.constructor.name );
-		this.bind_this( this );
+		CnchiObject.bind_this( this );
 	}
 
 	/**

@@ -85,10 +85,10 @@ class CnchiApp extends CnchiObject {
 	emit_signal( ...args ) {
 		let msg = '[', _args = [];
 
-		if ( false === _cn.inArray( args[0], this.signals ) ) {
+		/*if ( false === _cn.inArray( args[0], this.signals ) ) {
 			this.logger.error( `cmd: "${args[0]}" is not in the list of allowed signals!` );
 			return;
-		}
+		}*/
 
 		// Convert any non-string args to JSON strings so that we have a single string to send.
 		for ( let _arg of args ) {
@@ -167,7 +167,8 @@ class CnchiApp extends CnchiObject {
 		this.logger.debug(state);
 		console.log(state);
 		this.app_state = state;
-		this._render();
+		this.app_state.current_page = this.current_page;
+		this._render( state );
 	}
 
 	/**
@@ -188,12 +189,12 @@ class CnchiApp extends CnchiObject {
 			return;
 		}
 
-		if ( false === _cn.inArray( cmd, this.cmds ) ) {
+		/*if ( false === _cn.inArray( cmd, this.cmds ) ) {
 			this.logger.error(
 				`cmd: "${cmd}" is not in the list of allowed commands!`, this.js_bridge_handler
 			);
 			return;
-		}
+		}*/
 
 		if ( args.length === 1 ) {
 			args = args.pop();

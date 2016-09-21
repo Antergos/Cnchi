@@ -166,10 +166,10 @@ class ReactPage(Page, metaclass=Singleton):
 
     def emit_js(self, name, *args):
         """ See `Controller.emit_js.__doc__` """
-        self._controller.emit_js(name, *args)
+        self._react_controller.emit_js(name, *args)
 
     def get_initial_state_cb(self, *args):
-        self.emit_js(self._pages_data)
+        self.emit_js('trigger-event', 'get-initial-state-result', self._pages_data.as_dict())
 
     def get_next_page_index(self):
         return self._pages_helper.page_names.index(self.name) + 1

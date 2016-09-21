@@ -25,10 +25,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { Grid } from 'unsemantic';
+// 3rd-Party Libs
+import React from 'react'
 import classnames from 'classnames';
 
-import { CnchiComponent } from '../';
+import CnchiComponent from '../CnchiComponent';
 import { t } from '../../utils/locale';
 
 
@@ -83,4 +84,4 @@ class Navigation extends CnchiComponent {
 }
 
 
-export { Navigation };
+export default Navigation;
