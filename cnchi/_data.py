@@ -44,15 +44,23 @@ class DataObject:
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
         self._lock = RLock()
         self._initialized = False
+        self._all_attrs = set()
 
         if _from_dict and not self._initialized:
             for key, val in from_dict.items():
+                self._all_attrs.add(key)
                 setattr(self, key, val)
 
             self._initialized = True
 
     def __getattr__(self, item):
         setattr(self, item, None)
+        return None
+
+    def __getitem__(self, item):
+        if item not in self._all_attrs:
+            raise KeyError
+        return self.__getattr__(item)
 
     def __setattr__(self, attr, value):
         if '_lock' == attr:
@@ -62,7 +70,11 @@ class DataObject:
             if isinstance(value, dict):
                 value = DataObject(from_dict=value)
 
+            self._all_attrs.add(attr)
             return super().__setattr__(attr, value)
+
+    def __setitem__(self, item, value):
+        return self.__setattr__(item, value)
 
     def as_dict(self):
         excluded_attrs = ['as_dict', '_lock', '_initialized']
