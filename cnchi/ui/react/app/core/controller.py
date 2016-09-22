@@ -84,6 +84,13 @@ class ReactController(BaseObject, metaclass=Singleton):
         self._pages_helper = PagesHelper()
         self.pages = self._pages_helper.page_names
 
+        self._pages = {
+            p: {'locked': True, 'index': lambda i: self.pages[0].index(p)}
+            for p in self.pages
+         }
+
+        self._pages[self.pages[0]]['locked'] = False
+
     def emit_js(self, cmd, *args):
         """
         Pass data to a JavaScript handler in the web_view.
@@ -118,6 +125,10 @@ class ReactController(BaseObject, metaclass=Singleton):
 
         if page is None:
             raise ValueError('page cannot be None!')
+
+        if self._pages[page.name]['locked']:
+            self.logger.error('page is locked!')
+            return
 
         page_uri = 'cnchi://{0}.page'.format(page.name)
 

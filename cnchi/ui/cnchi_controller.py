@@ -54,16 +54,8 @@ class CnchiController(BaseObject, metaclass=Singleton):
         first_page = 0 if not self.settings.cmd_line.z_hidden else 0
 
         self._initialize_controller()
-        self._initialize_pages()
+        self.controller._initialize_pages()
         self.controller.set_current_page(first_page)
-
-    def _initialize_pages(self):
-        first_page = self.controller.pages[0]
-        self._pages = {
-            p: {'locked': True, 'index': lambda i: first_page.index(p)}
-            for p in self.controller.pages
-        }
-        self._pages[first_page]['locked'] = False
 
     def _initialize_controller(self):
         ui_module_name = self.settings.ui.module

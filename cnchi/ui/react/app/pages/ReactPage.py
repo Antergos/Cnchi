@@ -152,24 +152,19 @@ class ReactPage(Page, metaclass=Singleton):
         return [(t, self.name == t) for t in self._top_level_tabs]
 
     def _initialize_page_state(self):
-        page_state = getattr(self._pages_state, self.name)
-
-        if page_state is None:
+        if self._pages_state[self.name] is None:
             from_dict = self._get_default_state()
-            setattr(self._pages_state, self.name, DataObject(from_dict=from_dict))
-            page_state = getattr(self._pages_state, self.name)
+            self._pages_state[self.name] = DataObject(from_dict=from_dict)
 
         required_settings = self.settings.pages[self.index - 1][self.name.capitalize()]
 
         for setting in required_settings:
-            setattr(page_state, setting, '')
-
-    def emit_js(self, name, *args):
-        """ See `Controller.emit_js.__doc__` """
-        self._react_controller.emit_js(name, *args)
+            self._pages_state[self.name][setting] = ''
 
     def get_initial_state_cb(self, *args):
-        self.emit_js('trigger-event', 'get-initial-state-result', self._pages_state.as_dict())
+        self._react_controller.emit_js(
+            'trigger-event', 'get-initial-state-result', self._pages_state.as_dict()
+        )
 
     def get_next_page_index(self):
         return self._pages_helper.page_names.index(self.name) + 1
