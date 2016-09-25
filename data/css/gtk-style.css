@@ -1,5 +1,5 @@
 #main {
-    font-family: 'Lato';
+    font-family: 'Open Sans';
     font-size: 11px;
 }
 
@@ -22,7 +22,7 @@ window {
     color: #2EA3F2;
     font-size: 11px;
     font-weight: 600;
-    font-family: 'Lato';
+    font-family: 'Open Sans';
     text-shadow: 0px 1px 0px #222;
 }
 
@@ -31,7 +31,7 @@ window {
 .subtitle {
     font-size: 13px;
     font-weight: 400;
-    font-family: 'Lato';
+    font-family: 'Open Sans';
     color: #eee;
 }
 
@@ -42,7 +42,7 @@ window {
     background-size: 100% 100%;
     border-bottom: 0px;
     border-color: transparent;
-    font-family: Lato;
+    font-family: 'Open Sans';
     padding: 8px 12px;
 }
 
