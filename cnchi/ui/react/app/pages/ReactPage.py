@@ -76,10 +76,6 @@ class ReactPage(Page, metaclass=Singleton):
         self.index = index
         self.logger.debug('page index is %s', index)
 
-        if self._pages_state is None:
-            self.logger.debug('creating data object in _pages_state for %s..', name)
-            self._pages_state = DataObject()
-
         if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
@@ -155,11 +151,16 @@ class ReactPage(Page, metaclass=Singleton):
         if self._pages_state[self.name] is None:
             from_dict = self._get_default_state()
             self._pages_state[self.name] = DataObject(from_dict=from_dict)
+            self._props.extend(from_dict.keys())
 
         required_settings = self.settings.pages[self.index - 1][self.name.capitalize()]
 
         for setting in required_settings:
             self._pages_state[self.name][setting] = ''
+            self._props.append(setting)
+
+    def _get_prop_names(self):
+        return ['page_name', 'top_level_tabs', 'page_index']
 
     def get_initial_state_cb(self, *args):
         self._react_controller.emit_js(

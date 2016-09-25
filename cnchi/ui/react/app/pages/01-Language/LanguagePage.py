@@ -43,14 +43,14 @@ class LanguagePage(ReactPage):
     The first page shown when the app starts. It facilitates language selection (translations).
 
     Class Attributes:
-        Also see `HTMLPage.__doc__`
+        Also see `ReactPage.__doc__`
 
     """
 
     def __init__(self, name='language', index=0, *args, **kwargs):
         """
         Attributes:
-            Also see `HTMLPage.__doc__`.
+            Also see `ReactPage.__doc__`.
 
         Args:
             name (str): A name for this widget.
@@ -58,6 +58,7 @@ class LanguagePage(ReactPage):
         """
 
         super().__init__(name=name, index=index, *args, **kwargs)
+
 
         self.languages = []
         self.signals.extend(['language-selected'])
@@ -83,6 +84,11 @@ class LanguagePage(ReactPage):
         })
 
         return state
+
+    def _get_prop_names(self):
+        prop_names = super()._get_prop_names()
+        prop_names.extend(['languages', 'selectedLanguage'])
+        return prop_names
 
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]

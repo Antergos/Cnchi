@@ -42,9 +42,9 @@ class DataObject:
 
     def __init__(self, from_dict=None):
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
+        self._all_attrs = set()
         self._lock = RLock()
         self._initialized = False
-        self._all_attrs = set()
 
         if _from_dict and not self._initialized:
             for key, val in from_dict.items():
@@ -60,10 +60,10 @@ class DataObject:
     def __getitem__(self, item):
         if item not in self._all_attrs:
             raise KeyError
-        return self.__getattr__(item)
+        return self.__getattribute__(item)
 
     def __setattr__(self, attr, value):
-        if '_lock' == attr:
+        if attr in ['_lock', '_all_attrs']:
             return super().__setattr__(attr, value)
 
         with self._lock:

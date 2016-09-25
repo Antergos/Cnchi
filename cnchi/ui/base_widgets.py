@@ -165,8 +165,13 @@ class Page(BaseWidget):
 
         super().__init__(name=name, *args, **kwargs)
 
+        self._props = []
+
     def _get_template_path(self):
-        if 'gtkbuilder' == self.tpl_engine:
+        if 'ReactPage' == self.__class__.__name__:
+            return None
+
+        elif 'gtkbuilder' == self.tpl_engine:
             template_path = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
 
         elif 'jinja' == self.tpl_engine:
