@@ -54,26 +54,32 @@ class DataObject:
             self._initialized = True
 
     def __getattr__(self, item):
+        # The attribute doesn't exist yet, let's create it with a null value.
         setattr(self, item, None)
         return None
 
     def __getitem__(self, item):
+        # Handle dict-style access to attributes.
         if item not in self._all_attrs:
             raise KeyError
         return self.__getattribute__(item)
 
     def __setattr__(self, attr, value):
         if attr in ['_lock', '_all_attrs']:
+            # Avoid infinite recursion
             return super().__setattr__(attr, value)
 
         with self._lock:
             if isinstance(value, dict):
+                # Make the value a DataObject instead
                 value = DataObject(from_dict=value)
 
             self._all_attrs.add(attr)
+
             return super().__setattr__(attr, value)
 
     def __setitem__(self, item, value):
+        # Handle setting attribute values using dict-style
         return self.__setattr__(item, value)
 
     def as_dict(self):
@@ -151,9 +157,7 @@ class NonSharedData:
         self._data[instance.name] = value
 
     def _instance_data_check(self, instance):
-        res = instance is not None
-
-        if res and instance.name not in self._data:
+        if instance is not None and instance.name not in self._data:
             self._data[instance.name] = None
 
-        return res
+        return instance is not None

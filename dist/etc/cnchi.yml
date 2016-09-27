@@ -1,5 +1,5 @@
-# Pages and the options they must collect from the user.
-pages:
+# Options that the UI must collect from the user, organized by page.
+install_options:
   - Language:
     - selected_language
   - Welcome:

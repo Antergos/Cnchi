@@ -63,11 +63,14 @@ class BaseWidget(BaseObject):
     accessible via the class's `widget` attribute.
 
     Class Attributes:
+        widget (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
+                                  for this object.
+
         See Also `BaseObject.__doc__`
 
     """
 
-    _page_dirs = []
+    widget = NonSharedData('widget')
 
     def __init__(self, name='base_widget', *args, **kwargs):
         """
@@ -148,7 +151,6 @@ class Page(BaseWidget):
     Base class for pages.
 
     Class Attributes:
-        _page_data (NonSharedData): Data storage for `Page` objects.
         Also see `BaseWidget.__doc__`
 
     """
@@ -168,10 +170,7 @@ class Page(BaseWidget):
         self._props = []
 
     def _get_template_path(self):
-        if 'ReactPage' == self.__class__.__name__:
-            return None
-
-        elif 'gtkbuilder' == self.tpl_engine:
+        if 'gtkbuilder' == self.tpl_engine:
             template_path = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
 
         elif 'jinja' == self.tpl_engine:

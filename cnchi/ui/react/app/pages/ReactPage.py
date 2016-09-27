@@ -41,13 +41,13 @@ from ui.base_widgets import (
 from ui.base_widgets import (
     bg_thread,
     DataObject,
-    Page,
+    BaseObject,
     SharedData,
     Singleton,
 )
 
 
-class ReactPage(Page, metaclass=Singleton):
+class ReactPage(BaseObject, metaclass=Singleton):
     """
     Base class for ReactJS UI pages.
 
@@ -140,31 +140,27 @@ class ReactPage(Page, metaclass=Singleton):
     def _get_default_state(self):
         return {
             'page_name': self.name,
-            'top_level_tabs': self._get_top_level_tabs(),
+            'top_level_tabs': self._top_level_tabs,
             'page_index': self.index
         }
 
-    def _get_top_level_tabs(self):
-        return [(t, self.name == t) for t in self._top_level_tabs]
-
     def _initialize_page_state(self):
-        if self._pages_state[self.name] is None:
-            from_dict = self._get_default_state()
-            self._pages_state[self.name] = DataObject(from_dict=from_dict)
-            self._props.extend(from_dict.keys())
+        if self.state[self.name] is None:
+            self.state[self.name] = DataObject(from_dict=self._get_default_state())
 
-        required_settings = self.settings.pages[self.index - 1][self.name.capitalize()]
+        install_options = self.settings.install_options[self.index - 1][self.name.capitalize()]
 
-        for setting in required_settings:
-            self._pages_state[self.name][setting] = ''
-            self._props.append(setting)
+        for setting in install_options:
+            if setting in self.state[self.name]:
+                continue
+            self.state[self.name][setting] = ''
 
     def _get_prop_names(self):
         return ['page_name', 'top_level_tabs', 'page_index']
 
     def get_initial_state_cb(self, *args):
         self._react_controller.emit_js(
-            'trigger-event', 'get-initial-state-result', self._pages_state.as_dict()
+            'trigger-event', 'get-initial-state-result', self.state.as_dict()
         )
 
     def get_next_page_index(self):
@@ -191,4 +187,4 @@ class ReactPage(Page, metaclass=Singleton):
 
     def store_values(self):
         """ This must be implemented by subclasses """
-        self._pages_state.has_data = True
+        self.state.has_data = True

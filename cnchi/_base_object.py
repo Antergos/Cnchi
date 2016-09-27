@@ -93,8 +93,6 @@ class BaseObject:
         logger           (logging.Handler): The app's log handler.
         settings         (SharedData):      Descriptor that provides access to the app's
                                             Settings object.
-        widget           (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
-                                            for this object.
 
     """
 
@@ -112,7 +110,6 @@ class BaseObject:
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
     _pages_helper = SharedData('_pages_helper')
-    _pages_state = SharedData('_pages_state')
     _react_controller = SharedData('_react_controller')
     _web_view = SharedData('_web_view')
 
@@ -120,7 +117,7 @@ class BaseObject:
     logger = None
     log_wrap = '-'
     settings = SharedData('settings', from_dict={})
-    widget = NonSharedData('widget')
+    state = SharedData('state')
 
     def __init__(self, name=BO, parent=None, tpl_engine=TE, logger=None, *args, **kwargs):
         """
