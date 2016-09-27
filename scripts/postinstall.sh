@@ -334,7 +334,7 @@ postinstall() {
 		_icon="antergos-ball-26.png"
 		[[ "32" = "${_size}" ]] && _icon="antergos-menu-logo-dark-bg.png"
 
-		cd "${CN_DESTDIR}/usr/share/icons/Numix/${size}/places" \
+		cd "${CN_DESTDIR}/usr/share/icons/Numix/${_size}/places" \
  			&& mv start-here.svg start-here-numix.svg \
  			&& cp "/usr/share/cnchi/data/images/antergos/${_icon}" start-here.png \
  			&& cd -
