@@ -1026,6 +1026,7 @@ class Installation(object):
         """ Set vconsole.conf for console keymap """
         match = {
             "ca": "us",
+            "br": "br-abnt2",
             "gb": "uk",
             "latam": "la-latin1",
             "pt": "pt-latin1"
