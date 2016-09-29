@@ -1013,50 +1013,15 @@ class Installation(object):
                         line = "OnlyShowIn=GNOME;LXDE;Unity;XFCE;MATE;Cinnamon\n"
                     user_dirs.write(line)
 
-    def set_keyboard_conf(self):
-        """ Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout """
-        logging.debug("Setting /etc/X11/xorg.conf.d/00-keyboard.conf")
+    def set_keymap(self):
+        """ Set X11 and console keymap """
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
-        xorg_conf_dir = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
-        if not os.path.exists(xorg_conf_dir):
-            os.mkdir(xorg_conf_dir, 0o755)
-        xorg_conf_xkb_path = os.path.join(xorg_conf_dir, "00-keyboard.conf")
-        try:
-            with open(xorg_conf_xkb_path, "w") as xorg_conf_xkb:
-                xorg_conf_xkb.write("# Read and parsed by systemd-localed. "
-                                    "It's probably wise not to edit this file\n")
-                xorg_conf_xkb.write('# manually too freely.\n')
-                xorg_conf_xkb.write('Section "InputClass"\n')
-                xorg_conf_xkb.write('    Identifier "system-keyboard"\n')
-                xorg_conf_xkb.write('    MatchIsKeyboard "on"\n')
-                xorg_conf_xkb.write('    Option "XkbLayout" "{0}"\n'.format(keyboard_layout))
-                if keyboard_variant and len(keyboard_variant) > 0:
-                    xorg_conf_xkb.write('    Option "XkbVariant" "{0}"\n'.format(keyboard_variant))
-                xorg_conf_xkb.write('EndSection\n')
-            logging.debug("00-keyboard.conf written.")
-        except IOError as io_error:
-            # Do not fail if 00-keyboard.conf can't be created.
-            # Something bad must be happening, though.
-            logging.error(io_error)
-
-    def set_vconsole_conf(self):
-        """ Set vconsole.conf for console keymap """
-        match = {
-            "ca": "us",
-            "gb": "uk",
-            "latam": "la-latin1",
-            "pt": "pt-latin1"
-        }
-        keyboard_layout = self.settings.get("keyboard_layout")
-        keyboard_variant = self.settings.get("keyboard_variant")
-        vconsole = match.get(keyboard_layout, keyboard_layout)
-        # Write vconsole.conf
-        vconsole_path = os.path.join(DEST_DIR, "etc/vconsole.conf")
-        with open(vconsole_path, 'w') as vconsole_file:
-            vconsole_file.write("# File modified by Cnchi\n\n")
-            vconsole_file.write("KEYMAP={0}\n".format(vconsole))
-        logging.debug("Set vconsole to %s", vconsole)
+        #localectl set-x11-keymap es cat
+        cmd = ['localectl', 'set-x11-keymap', keyboard_layout]
+        if keyboard_variant:
+            cmd.append(keyboard_variant)
+        chroot_call(cmd)
 
     def get_zfs_version(self):
         """ Get installed zfs version """
@@ -1291,11 +1256,7 @@ class Installation(object):
         self.auto_timesetting()
 
         self.queue_event('info', _("Configuring keymap..."))
-
-        if self.desktop != "base":
-            self.set_keyboard_conf()
-
-        self.set_vconsole_conf()
+        self.set_keymap()
 
         # Install configs for root
         chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
