@@ -186,7 +186,7 @@ visible-name='antergos'
 
 [org.mate.terminal.global]
 profile-list=['b1dcc9dd-5262-4d8d-a863-c897e6d979b9']
-default='b1dcc9dd-5262-4d8d-a863-c897e6d979b9'
+default-profile='b1dcc9dd-5262-4d8d-a863-c897e6d979b9'
 
 [org.mate.applications-browser]
 exec='chromium'
