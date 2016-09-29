@@ -62,9 +62,9 @@ width=200
 
 [com.linuxmint.mintmenu]
 applet-icon-size=25
-applet-icon='file:///usr/share/antergos/antergos-menu-logo-dark-bg.png'
+applet-icon='/usr/share/antergos/antergos-menu-logo-dark-bg.png'
 applet-text='Menu'
-border-width=1
+border-width=0
 custom-border-color='#001155'
 custom-color='#F2F5FF'
 custom-heading-color='#001155'
