@@ -1021,7 +1021,23 @@ class Installation(object):
         cmd = ['localectl', 'set-x11-keymap', keyboard_layout]
         if keyboard_variant:
             cmd.append(keyboard_variant)
-        chroot_call(cmd)
+        # Systemd based tools like localectl do not work inside a chroot
+        # This will set correct keymap to live media, we will copy
+        # the created files to destination
+        call(cmd)
+        # Copy 00-keyboard.conf and vconsole.conf files to destination
+        path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
+        os.makedirs(path, mode=0o755, exist_ok=True)
+        files = [ "/etc/X11/xorg.conf.d/00-keyboard.conf", "/etc/vconsole.conf"]
+        for src in files:
+            try:
+                dst = os.path.join(DEST_DIR, src[1:])
+                shutil.copy(src, dst)
+                logging.debug("%s copied.", src)
+            except FileNotFoundError:
+                logging.error("File %s not found", src)
+            except FileExistsError:
+                logging.warning("File %s already exists.", dst)
 
     def get_zfs_version(self):
         """ Get installed zfs version """
