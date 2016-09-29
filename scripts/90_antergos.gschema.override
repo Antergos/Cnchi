@@ -239,7 +239,8 @@ tooltips-enabled=true
 toplevel-id-list=['bottom']
 
 [org.mate.panel:/org/mate/panel/objects/menu]
-object-type=menu
+object-type=applet
+applet-iid=MintMenuAppletFactory::MintMenuApplet
 toplevel-id=bottom
 position=10
 locked=true
