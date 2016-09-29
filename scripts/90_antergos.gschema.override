@@ -71,7 +71,6 @@ custom-heading-color='#001155'
 hide-applet-icon=false
 hot-key='Super_L'
 offset=0
-opacity=97
 plugins-list=['places', 'system_management', 'newpane', 'applications']
 start-with-favorites=true
 theme-name='default'
