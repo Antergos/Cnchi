@@ -106,7 +106,13 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         if '?' in uri:
             uri = uri.split('?')[0]
 
-        return 'language' if 'cnchi:///' == uri else uri.replace('cnchi://', '').split('.')[0]
+        page = 'language'
+
+        if 'cnchi:///' != uri:
+            # Uri is in this format: cnchi://page_name.page
+            page = uri[8:-5]
+
+        return page
 
     @staticmethod
     def _get_settings_for_webkit():
@@ -199,14 +205,14 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         self._react_controller.emit_js('trigger-event', 'page-loaded', page_name)
 
-        if not self.cnchi_loaded and 'language' == page_name:
+        if not self.cnchi_loaded:
             self.cnchi_loaded = True
             self._main_window.widget.set_opacity(1)
 
         self.logger.debug('load_changed fired! %s', page_name)
 
-    def title_changed_cb(self, view, event):
-        incoming = view.get_title()
+    def title_changed_cb(self, widget, event):
+        incoming = widget.get_title()
         self.logger.debug('title changed!')
 
         # Check for "_BR::" prefix to determine if its a message from our JavaScript UI.
@@ -217,11 +223,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             incoming = json.loads(incoming[5:])
 
             name = incoming.pop(0)
-            args = incoming
-
-            if name not in self._allowed_signals and name != 'do-log-message':
-                self.logger.error('Signal: %s not allowed!', name)
-                return
+            args = incoming if len(incoming) > 1 else incoming[0]
 
             if 'do-log-message' == name:
                 self._react_controller.js_log_message_cb(*args)
@@ -240,13 +242,14 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         page_name = self._get_page_name_from_uri(uri)
 
         if uri.count('.') > 1:
-            self.logger.debug('Loading app resource: {0}'.format(uri))
-            cut = len('cnchi://') + len(page_name) + len('.page/')
-            resource = uri[cut:]
+            # Uri is in this format: cnchi://page_name.page/path/to/resource.ext
+            resource = uri.partition('.page/')[-1]
             resource_path = os.path.join(self.UI_DIR, 'react', 'dist', resource)
+
+            self.logger.debug('Loading app resource: {0}'.format(uri))
             self._uri_request_finish_resource(resource_path, request)
 
-        elif page_name in self._pages_helper.uri_page_names:
+        elif page_name.capitalize() in self.settings.ins:
             self.logger.debug('Loading app page: {0}'.format(page_name))
             self._uri_request_finish_page(page_name, request)
 

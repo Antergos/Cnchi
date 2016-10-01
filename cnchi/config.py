@@ -32,6 +32,7 @@
 import multiprocessing
 import os
 import strictyaml as yaml
+from strictyaml.validators import CommentedMap
 
 
 class ConfigLoader:
@@ -52,7 +53,7 @@ class ConfigLoader:
             return
 
         data = open(config_files[0], 'r').read()
-        config = yaml.load(data)
+        config = yaml.load(data, CommentedMap)
 
         for key, value in config.items():
             self.config[key] = value

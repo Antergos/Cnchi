@@ -42,33 +42,32 @@ from ui.base_widgets import (
     bg_thread,
     DataObject,
     BaseObject,
-    SharedData,
-    Singleton,
+    SharedData
 )
 
 
-class ReactPage(BaseObject, metaclass=Singleton):
+class ReactPage(BaseObject):
     """
-    Base class for ReactJS UI pages.
+    Represents a page in the installation process.
 
     Class Attributes:
-        Also see `Page.__doc__`
+        Also see `BaseObject.__doc__`
 
     """
 
     _top_level_tabs = SharedData('_top_level_tabs')
 
-    def __init__(self, name='ReactPage', index=0, tpl_engine='jinja', *args, **kwargs):
+    def __init__(self, name='ReactPage', index=0, *args, **kwargs):
         """
         Attributes:
-            Also see `Page.__doc__`.
+            Also see `BaseObject.__doc__`.
 
         Args:
             name (str): A name for this widget.
 
         """
 
-        super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
+        super().__init__(name=name, *args, **kwargs)
 
         self.signals = ['go-to-next-page', '--trigger-event', 'get-initial-state']
         self.tabs = []
@@ -149,16 +148,17 @@ class ReactPage(BaseObject, metaclass=Singleton):
             self.state[self.name] = DataObject(from_dict=self._get_default_state())
 
         install_options = self.settings.install_options[self.index - 1][self.name.capitalize()]
+        self.state[self.name]['_props'] = []
 
         for setting in install_options:
+            self.state[self.name]['_props'].append(setting)
+
             if setting in self.state[self.name]:
                 continue
+
             self.state[self.name][setting] = ''
 
-    def _get_prop_names(self):
-        return ['page_name', 'top_level_tabs', 'page_index']
-
-    def get_initial_state_cb(self, *args):
+    def get_state_cb(self, *args):
         self._react_controller.emit_js(
             'trigger-event', 'get-initial-state-result', self.state.as_dict()
         )
@@ -170,11 +170,11 @@ class ReactPage(BaseObject, metaclass=Singleton):
         return self._pages_helper.page_names.index(self.name) - 1
 
     def go_to_next_page(self, obj=None, next_plus=0):
-        if self.name != self._controller.current_page:
+        if self.name != self._react_controller.current_page:
             return
 
         self.store_values()
-        self._controller.set_current_page(self.get_next_page_index() + next_plus)
+        self._react_controller.set_current_page(self.get_next_page_index() + next_plus)
 
         return True
 
@@ -185,6 +185,5 @@ class ReactPage(BaseObject, metaclass=Singleton):
         """ This must be implemented by subclasses """
         pass
 
-    def store_values(self):
-        """ This must be implemented by subclasses """
-        self.state.has_data = True
+    def set_state_cb(self, widget, state, *args):
+

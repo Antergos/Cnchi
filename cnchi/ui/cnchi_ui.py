@@ -37,7 +37,7 @@ from _base_object import (
 )
 
 
-class CnchiController(BaseObject, metaclass=Singleton):
+class CnchiUI(BaseObject, metaclass=Singleton):
     """
     UI Controller
 
@@ -48,14 +48,36 @@ class CnchiController(BaseObject, metaclass=Singleton):
 
     modules = []
 
-    def __init__(self, name='cnchi_controller', *args, **kwargs):
+    def __init__(self, name='cnchi_ui', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)
 
-        first_page = 0 if not self.settings.cmd_line.z_hidden else 0
-
+        self.pages = []
         self._initialize_controller()
-        self.controller._initialize_pages()
-        self.controller.set_current_page(first_page)
+        self._controller.initialize_pages_list()
+        self._create_and_connect_signals()
+
+    def _create_and_connect_signals(self):
+        self._main_window.create_custom_signal('do-page-navigation-request')
+        self._main_window.connect('do-page-navigation-request', self.page_navigation_request_cb)
+
+    def _get_page_by_index(self, index):
+        raise NotImplementedError
+
+    def _get_page_by_name(self, name):
+        page = None
+
+        if name not in self._controller.page_names:
+            self.logger.error('Unknown page requested: %s', name)
+            return page
+
+        matches = [p for p in self.pages if name == p.name]
+
+        if matches:
+            page = matches[0]
+        else:
+            page = self._controller.Page(name=name)
+
+        return page
 
     def _initialize_controller(self):
         ui_module_name = self.settings.ui.module
@@ -66,10 +88,21 @@ class CnchiController(BaseObject, metaclass=Singleton):
         controller_module = importlib.import_module(controller_path, 'ui')
         controller = getattr(controller_module, controller_name)
 
-        self.controller = controller()
+        controller()
 
     def do_restart(self):
         pass
+
+    def page_navigation_request_cb(self, widget, *args):
+        if not args or not args[0]:
+            self.logger.error('No page identifier was included in request!')
+
+        if isinstance(args[0], int):
+            page = self._get_page_by_index(args[0])
+        elif isinstance(args[0], str):
+            page = self._get_page_by_name(args[0])
+        else:
+            self.logger.error('Page identifier must be one of types [int, str]!')
 
     def exit_app(self):
         sys.exit(0)

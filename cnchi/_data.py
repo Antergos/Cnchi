@@ -42,16 +42,20 @@ class DataObject:
 
     def __init__(self, from_dict=None):
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
-        self._all_attrs = set()
+        self._all_attrs = []
+
         self._lock = RLock()
         self._initialized = False
 
         if _from_dict and not self._initialized:
             for key, val in from_dict.items():
-                self._all_attrs.add(key)
+                self._all_attrs.append(key)
                 setattr(self, key, val)
 
             self._initialized = True
+
+    def __contains__(self, item):
+        return item in self._all_attrs
 
     def __getattr__(self, item):
         # The attribute doesn't exist yet, let's create it with a null value.
@@ -64,6 +68,10 @@ class DataObject:
             raise KeyError
         return self.__getattribute__(item)
 
+    def __iter__(self):
+        for item in self._all_attrs:
+            yield item
+
     def __setattr__(self, attr, value):
         if attr in ['_lock', '_all_attrs']:
             # Avoid infinite recursion
@@ -74,7 +82,8 @@ class DataObject:
                 # Make the value a DataObject instead
                 value = DataObject(from_dict=value)
 
-            self._all_attrs.add(attr)
+            if attr not in self._all_attrs:
+                self._all_attrs.append(attr)
 
             return super().__setattr__(attr, value)
 

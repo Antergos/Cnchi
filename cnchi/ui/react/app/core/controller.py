@@ -29,13 +29,13 @@
 """ HTML/JavaScript UI Controller """
 
 # Standard Lib
-import time
-
 from _base_object import (
+    OrderedDict,
     ascii_uppercase,
     choice,
     json,
-    sys
+    sys,
+    time
 )
 
 # 3rd Party Libs
@@ -46,9 +46,10 @@ from _base_object import (
     BaseObject,
     Singleton
 )
+
 from .container import MainContainer
 from .main_window import MainWindow
-from .pages import PagesHelper
+from ..pages.ReactPage import ReactPage
 
 
 class ReactController(BaseObject, metaclass=Singleton):
@@ -63,33 +64,27 @@ class ReactController(BaseObject, metaclass=Singleton):
 
     _emit_js_tpl = 'window.{0} = {1}; window.cnchi.js_bridge_handler("{0}");'
 
-    def __init__(self, name='react_controller', *args, **kwargs):
+    def __init__(self, name='controller', *args, **kwargs):
 
         super().__init__(name=name, *args, **kwargs)
 
         self.current_page = None
+        self.page_names = []
+        self.Page = ReactPage
 
         main_window = MainWindow()
         main_container = MainContainer()
 
         main_window.widget.add(self._web_view)
-        self._initialize_pages()
+        self._initialize_pages_list()
 
     @staticmethod
     def _generate_js_temp_variable_name():
         var = ''.join(choice(ascii_uppercase) for i in range(6))
         return '__{}'.format(var)
 
-    def _initialize_pages(self):
-        self._pages_helper = PagesHelper()
-        self.pages = self._pages_helper.page_names
-
-        self._pages = {
-            p: {'locked': True, 'index': lambda i: self.pages[0].index(p)}
-            for p in self.pages
-         }
-
-        self._pages[self.pages[0]]['locked'] = False
+    def _initialize_pages_list(self):
+        self.page_names = [p for p in self.settings.install_options]
 
     def emit_js(self, cmd, *args):
         """
@@ -120,16 +115,7 @@ class ReactController(BaseObject, metaclass=Singleton):
 
         _logger(msg, *args)
 
-    def set_current_page(self, identifier):
-        page = self._pages_helper.get_page(identifier)
-
-        if page is None:
-            raise ValueError('page cannot be None!')
-
-        if self._pages[page.name]['locked']:
-            self.logger.error('page is locked!')
-            return
-
+    def set_current_page(self, page):
         page_uri = 'cnchi://{0}.page'.format(page.name)
 
         page.prepare()

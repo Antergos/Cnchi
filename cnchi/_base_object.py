@@ -34,6 +34,8 @@ import logging
 import os
 import strictyaml as yaml
 import sys
+import time
+from collections import OrderedDict
 from random import choice
 from string import ascii_uppercase
 
@@ -106,11 +108,11 @@ class BaseObject:
     WK_DATA_DIR = '/var/tmp/cnchi'
 
     _cnchi_app = SharedData('_cnchi_app')
-    _cnchi_controller = SharedData('_cnchi_controller')
+    _cnchi_ui = SharedData('_cnchi_ui')
+    _controller = SharedData('_controller')
     _main_container = SharedData('_main_container')
     _main_window = SharedData('_main_window')
     _pages_helper = SharedData('_pages_helper')
-    _react_controller = SharedData('_react_controller')
     _web_view = SharedData('_web_view')
 
     _allowed_signals = SharedData('_allowed_signals')
@@ -149,7 +151,7 @@ class BaseObject:
 
     def _check_for_main_components(self, name):
         components = [
-            'main_window', 'cnchi_controller', 'cnchi_app', 'pages_helper', 'react_controller'
+            'main_window', 'cnchi_ui', 'cnchi_app', 'pages_helper', 'controller'
         ]
 
         if name not in components:

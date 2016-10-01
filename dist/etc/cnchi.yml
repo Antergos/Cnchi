@@ -1,19 +1,32 @@
-# Options that the UI must collect from the user, organized by page.
+# Options that the UI must collect from the user along with any supporting
+# data needed to present the options to the user, organized by page.
 install_options:
-  - Language:
-    - selected_language
-  - Welcome:
-  - Check:
-  - Location:
-    - country_code
-    - country_name
-    - keyboard_layout
-    - keyboard_variant
-    - language_code
-    - language_name
-    - locale
-    - location
-    - timezone
+  Language:
+    data:
+      - languages
+    options:
+      - selectedLanguage
+  Welcome:
+    data:
+    options:
+      - tryItSelected
+      - installItSelected
+  Check:
+  Location:
+    data:
+      - locations
+      - timezones
+      - layouts
+    options:
+      - countryCode
+      - countryName
+      - keyboardLayout
+      - keyboardVariant
+      - languageCode
+      - languageName
+      - locale
+      - location
+      - timezone
 
 ui:
   branding:
