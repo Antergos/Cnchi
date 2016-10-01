@@ -57,7 +57,7 @@ class ReactPage(BaseObject):
 
     _top_level_tabs = SharedData('_top_level_tabs')
 
-    def __init__(self, name='ReactPage', index=0, *args, **kwargs):
+    def __init__(self, name='ReactPage', index=0, module=None, *args, **kwargs):
         """
         Attributes:
             Also see `BaseObject.__doc__`.
@@ -69,15 +69,19 @@ class ReactPage(BaseObject):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals = ['go-to-next-page', '--trigger-event', 'get-initial-state']
+        self.signals = ['page-navigation-request', '--trigger-event', 'get-state', 'set-state']
         self.tabs = []
-        self.can_go_to_next_page = False
         self.index = index
+        self.module = module
         self.logger.debug('page index is %s', index)
 
         if self._top_level_tabs is None:
             self.logger.debug('Generating main navigation tabs list..')
             self._generate_tabs_list()
+
+        self._prepare_signals_list()
+        self._create_and_connect_signals()
+        self.state = self._get_default_state()
 
     def _create_and_connect_signals(self):
         """
@@ -123,11 +127,17 @@ class ReactPage(BaseObject):
                 self._main_window.create_custom_signal(name)
                 signals.append(name)
 
-            if not _signal.startswith('--'):
-                callback_name = '{}_cb'.format(_signal.replace('-', '_'))
+            if _signal.startswith('--'):
+                continue
+
+            callback_name = '{}_cb'.format(_signal.replace('-', '_'))
+
+            if '-get-' in _signal:
+                callback = getattr(self.module, callback_name)
+            else:
                 callback = getattr(self, callback_name)
 
-                self._main_window.connect(signal_name, callback)
+            self._main_window.connect(signal_name, callback)
 
         self.signals = signals
 
@@ -137,53 +147,32 @@ class ReactPage(BaseObject):
         self._top_level_tabs = [t for t in tabs if t not in excluded]
 
     def _get_default_state(self):
-        return {
+        this_page_state = self.module.get_default_state()
+        default_state = {
             'page_name': self.name,
             'top_level_tabs': self._top_level_tabs,
             'page_index': self.index
         }
 
-    def _initialize_page_state(self):
-        if self.state[self.name] is None:
-            self.state[self.name] = DataObject(from_dict=self._get_default_state())
+        default_state.update(this_page_state)
 
-        install_options = self.settings.install_options[self.index - 1][self.name.capitalize()]
-        self.state[self.name]['_props'] = []
+        return default_state
 
-        for setting in install_options:
-            self.state[self.name]['_props'].append(setting)
+    def _prepare_signals_list(self):
+        install_options = self.settings.install_options[self.name.capitalize()]
+        get_data = ['get-{}'.format(d) for d in install_options.data]
 
-            if setting in self.state[self.name]:
-                continue
-
-            self.state[self.name][setting] = ''
+        self.signals.extend(get_data)
 
     def get_state_cb(self, *args):
-        self._react_controller.emit_js(
-            'trigger-event', 'get-initial-state-result', self.state.as_dict()
+        self._controller.emit_js(
+            'trigger-event', 'get-initial-state-result', self.state
         )
-
-    def get_next_page_index(self):
-        return self._pages_helper.page_names.index(self.name) + 1
-
-    def get_previous_page_index(self):
-        return self._pages_helper.page_names.index(self.name) - 1
-
-    def go_to_next_page(self, obj=None, next_plus=0):
-        if self.name != self._react_controller.current_page:
-            return
-
-        self.store_values()
-        self._react_controller.set_current_page(self.get_next_page_index() + next_plus)
-
-        return True
-
-    def go_to_next_page_cb(self, obj=None, next_plus=0):
-        self.go_to_next_page(obj, next_plus)
 
     def prepare(self):
         """ This must be implemented by subclasses """
         pass
 
     def set_state_cb(self, widget, state, *args):
+        pass
 

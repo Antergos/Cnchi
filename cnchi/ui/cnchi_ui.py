@@ -75,7 +75,8 @@ class CnchiUI(BaseObject, metaclass=Singleton):
         if matches:
             page = matches[0]
         else:
-            page = self._controller.Page(name=name)
+            index = self._controller.page_names.index(name)
+            page = self._controller.Page(name=name, index=index)
 
         return page
 
