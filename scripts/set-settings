@@ -136,74 +136,75 @@ xfce() {
 	touch ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml
 	touch ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml
 
-	# Set background
-	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/image-path -n -t string -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
-	CMD=`grep image-path ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
+	# Set background for workspaces 0 and 1
+	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -n -t string -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
+	CMD=`grep last-image ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
-		CMD=`grep image-path ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
+		CMD=`grep last-image ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
+	done
+	xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace1/last-image -n -t string -s "/usr/share/antergos/wallpapers/antergos-wallpaper.png"
+	CMD=`grep last-image ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
+	while [ "${CMD}" == "" ]; do
+		sleep 3
+		CMD=`grep last-image ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
 	done
 
 	# Set theme
-	CMD=`grep image-path ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
-	while [ "${CMD}" == "" ]; do
-		sleep 3
-		CMD=`grep image-path ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml`
-	done
 	xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "Numix-Frost"
-
 	CMD=`grep ThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep ThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	done
-	xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Numix-Frost-Light"
 
-	# Set icon theme
+	xfconf-query -c xfwm4 -p /general/theme -n -t string -s "Numix-Frost-Light"
 	CMD=`grep theme ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep theme ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	done
+
+	# Set icon theme
 	xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "Numix-Square"
 
-	# Set compositor
 	CMD=`grep IconThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep IconThemeName ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml`
 	done
-	xfconf-query -c xfwm4 -p /general/show_frame_shadow -n -t bool -s "true"
 
-	# Set workspaces count
+	# Set compositor
+	xfconf-query -c xfwm4 -p /general/show_frame_shadow -n -t bool -s "true"
 	CMD=`grep show_frame_shadow ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep show_frame_shadow ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	done
-	xfconf-query -c xfwm4 -p /general/workspace_count -n -t int -s 2
 
-	# Set panels
+	# Set workspaces count
+	xfconf-query -c xfwm4 -p /general/workspace_count -n -t int -s 2
 	CMD=`grep workspace_count ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep workspace_count ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml`
 	done
-	xfconf-query -c xfce4-panel -p /panels/panel-2/autohide -n -t bool -s "true"
 
+	# Set panels
+	xfconf-query -c xfce4-panel -p /panels/panel-2/autohide -n -t bool -s "true"
 	CMD=`grep autohide ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep autohide ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`
 	done
 	xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t int -s 25
-
-	# Set menu logo
 	CMD=`grep size ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`
 	while [ "${CMD}" == "" ]; do
 		sleep 3
 		CMD=`grep size ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml`
 	done
+
+	# Set menu logo
 	xfconf-query -c xfce4-panel -p /plugins/plugin-1/button-icon -n -t string -s "/usr/share/antergos/antergos-menu-logo-dark-bg.png"
 
 	terminal-profile 'gnome'
