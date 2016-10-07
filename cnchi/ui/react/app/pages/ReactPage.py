@@ -86,7 +86,7 @@ class ReactPage(BaseObject):
     def _create_and_connect_signals(self):
         """
         Creates the page's signals and connects them to their callbacks (handlers).
-        Signals should be appended to `self.signals` prior to calling this method.
+        Signals be appended to `self.signals` prior to calling this method.
 
         A corresponding result signal will be created for each signal and added to the
         allowed signals list automatically. Signal names will have 'do-' prepended to them.

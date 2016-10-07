@@ -34,7 +34,7 @@ import sys
 
 import xml.etree.ElementTree as eTree
 
-from ._base_module import BaseModule
+from modules._base_module import BaseModule
 from _base_object import Gtk
 
 

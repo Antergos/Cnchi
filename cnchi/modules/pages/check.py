@@ -33,7 +33,7 @@ from socket import gethostname
 import dbus
 
 import misc.extra as misc
-from ._base_module import BaseModule
+from modules._base_module import BaseModule
 from misc.run_cmd import call
 
 # Constants

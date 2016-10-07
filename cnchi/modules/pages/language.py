@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  info.py
+#  language.py
 #
 #  Copyright © 2013-2016 Antergos
 #
@@ -26,12 +26,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+from .._base_module import BaseModule
 
-""" Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.15.246"
-CNCHI_WEBSITE = "https://www.antergos.com"
-CNCHI_RELEASE_STAGE = "development"
+class LanguageModule(BaseModule):
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)
+    def __init__(self):

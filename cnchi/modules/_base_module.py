@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #  -*- coding: utf-8 -*-
 #
-#  base_module.py
+#  _base_module.py
 #
 #  Copyright © 2016 Antergos
 #
@@ -26,24 +26,39 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-from _base_object import BaseObject
+from _base_object import (
+    BaseObject,
+    bg_thread
+)
 
-TE = 'gtkbuilder'
-BM = 'base_module'
+
+class BaseModuleMeta(type):
+    """
+    Metaclass which ensures all class instance methods
+    are run in a background thread.
+    """
+
+    def __new__(cls, name, bases, namespace, **kwargs):
+        methods = [m for m in namespace if '__' not in m]
+
+        for method in methods:
+            namespace[method] = bg_thread(namespace[method])
+
+        return type.__new__(cls, name, bases, namespace)
 
 
-class BaseModule(BaseObject):
+class BaseModule(BaseObject, metaclass=BaseModuleMeta):
     """
     Base class for all of Cnchi's modules. Modules house logic that is not directly
     related to rendering the UI. Modules' methods are always called from a background thread
     so that they do not block the UI.
 
     Class Attributes:
-        See Also `BaseObject.__doc__`
+        See Also: `BaseObject.__doc__`
 
     """
 
-    def __init__(self, name=BM, *args, **kwargs):
+    def __init__(self, name='base_module', *args, **kwargs):
         """
         Attributes:
             name (str): A name for this object (all objects must have unique name).
@@ -52,4 +67,7 @@ class BaseModule(BaseObject):
         """
 
         super().__init__(name=name, *args, **kwargs)
+
+    def prepare(self):
+        raise NotImplementedError
 
