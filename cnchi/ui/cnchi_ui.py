@@ -70,15 +70,12 @@ class CnchiUI(BaseObject, metaclass=Singleton):
             self.logger.error('Unknown page requested: %s', name)
             return page
 
-        matches = [p for p in self.pages if name == p.name]
+        index = self._controller.page_names.index(name)
 
-        if matches:
-            page = matches[0]
-        else:
-            index = self._controller.page_names.index(name)
-            page = self._controller.Page(name=name, index=index)
+        if index > (len(self.pages) - 1):
+            self._initialize_page(name)
 
-        return page
+        return self.pages[index]
 
     def _initialize_controller(self):
         ui_module_name = self.settings.ui.module
@@ -90,6 +87,14 @@ class CnchiUI(BaseObject, metaclass=Singleton):
         controller = getattr(controller_module, controller_name)
 
         controller()
+
+    def _initialize_page(self, name):
+        index = self._controller.page_names.index(name)
+        module_path = '..modules.pages.{}'.format(name)
+        module = importlib.import_module(module_path, 'ui')
+        page = self._controller.Page(name=name, index=index, module=module())
+
+        self.pages.append(page)
 
     def do_restart(self):
         pass

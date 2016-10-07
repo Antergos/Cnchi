@@ -249,7 +249,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             self.logger.debug('Loading app resource: {0}'.format(uri))
             self._uri_request_finish_resource(resource_path, request)
 
-        elif page_name.capitalize() in self.settings.ins:
+        elif page_name.capitalize() in self.settings.intall_options:
             self.logger.debug('Loading app page: {0}'.format(page_name))
             self._uri_request_finish_page(page_name, request)
 

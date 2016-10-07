@@ -46,13 +46,15 @@ import gi
 # gi.require_versions({'Gtk': '3.0', 'WebKit2': '4.0'})
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
+
 from gi.repository import (
     Gdk,
     Gio,
     GLib,
     GObject,
     Gtk,
-    WebKit2
+    WebKit2,
+    JavaScriptCore
 )
 
 # This application
