@@ -411,6 +411,7 @@
 			<pkgname conflicts='ttf-droid'>ttf-google-fonts</pkgname>
 		</feature>
 		<feature name="games">
+			<pkgname>steam-native-runtime</pkgname>
 			<pkgname>steam</pkgname>
 			<pkgname>playonlinux</pkgname>
 			<pkgname arch="x86_64">lib32-libldap</pkgname>
