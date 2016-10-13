@@ -150,7 +150,7 @@
 			<packages>
 				<pkgname>antergos-gnome-defaults-list</pkgname>
 				<pkgname>baobab</pkgname>  <!-- Disk usage -->
-				<pkgname>bijiben</pkgname> <!-- notes app -->
+				<!-- <pkgname>bijiben</pkgname> -->
 				<pkgname>brasero</pkgname>
 				<pkgname>cdrkit</pkgname>
 				<pkgname>cinnamon</pkgname>
