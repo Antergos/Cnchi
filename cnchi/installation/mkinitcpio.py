@@ -41,58 +41,57 @@ def run(dest_dir, settings, mount_devices, blvm):
     cpu = get_cpu()
 
     # Add lvm and encrypt hooks if necessary
-    hooks = ["base", "udev", "autodetect", "modconf", "block", "keyboard", "keymap"]
+    hooks = ['base', 'udev', 'autodetect', 'modconf', 'block', 'keyboard', 'keymap']
     modules = []
 
     # It is important that the plymouth hook comes before any encrypt hook
 
     plymouth_bin = os.path.join(dest_dir, "usr/bin/plymouth")
     if os.path.exists(plymouth_bin):
-        hooks.append("plymouth")
+        hooks.append('plymouth')
 
     # It is important that the encrypt hook comes before the filesystems hook
     # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
 
-    if settings.get("use_luks"):
+    if settings.get('use_luks'):
         if os.path.exists(plymouth_bin):
-            hooks.append("plymouth-encrypt")
+            hooks.append('plymouth-encrypt')
         else:
-            hooks.append("encrypt")
+            hooks.append('encrypt')
 
-        modules.extend(["dm_mod", "dm_crypt", "ext4"])
+        modules.extend(['dm_mod', 'dm_crypt', 'ext4'])
 
         arch = os.uname()[-1]
         if arch == 'x86_64':
-            modules.extend(["aes_x86_64"])
+            modules.extend(['aes_x86_64'])
         else:
-            modules.extend(["aes_i586"])
+            modules.extend(['aes_i586'])
 
-        modules.extend(["sha256", "sha512"])
+        modules.extend(['sha256', 'sha512'])
 
-    if settings.get("f2fs"):
-        modules.append("f2fs")
+    if blvm or settings.get('use_lvm'):
+        hooks.append('lvm2')
 
-    if blvm or settings.get("use_lvm"):
-        hooks.append("lvm2")
+    if 'swap' in mount_devices:
+        hooks.append('resume')
 
-    if "swap" in mount_devices:
-        hooks.append("resume")
-
-    if settings.get("zfs"):
+    if settings.get('zfs'):
         # the zfs hook must come before the filesystems hook
-        hooks.append("zfs")
+        hooks.append('zfs')
 
-    hooks.append("filesystems")
+    hooks.append('filesystems')
 
-    if settings.get('btrfs'):
-        if cpu is 'genuineintel':
-            modules.append('crc32c-intel')
-        else:
-            modules.append('crc32c')
+    crc32 = ['crc32', 'libcrc32c', 'crc32c_generic', 'crc32c-intel', 'crc32-pclmul']
 
-    if not settings.get('btrfs') and not settings.get("zfs"):
+    if settings.get('f2fs'):
+        modules.append('f2fs')
+
+    if settings.get('btrfs') or settings.get('f2fs'):
+        modules.extend(crc32)
+
+    if not settings.get('btrfs') and not settings.get('zfs'):
         # Use the fsck hook only if not using btrfs or zfs
-        hooks.append("fsck")
+        hooks.append('fsck')
 
     set_hooks_and_modules(dest_dir, hooks, modules)
 
@@ -108,6 +107,7 @@ def run(dest_dir, settings, mount_devices, blvm):
 
 def set_hooks_and_modules(dest_dir, hooks, modules):
     """ Set up mkinitcpio.conf """
+
     logging.debug("Setting hooks and modules in mkinitcpio.conf")
     logging.debug('HOOKS="%s"', ' '.join(hooks))
     logging.debug('MODULES="%s"', ' '.join(modules))
