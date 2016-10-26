@@ -437,7 +437,7 @@ def get_nm_state():
     try:
         bus = dbus.SystemBus()
         manager = bus.get_object(NM, '/org/freedesktop/NetworkManager')
-        state = get_prop(manager, NM, 'state')
+        state = get_prop(manager, NM, 'State')
     except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
         logging.warning(dbus_err)
         state = False
