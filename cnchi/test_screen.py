@@ -44,7 +44,7 @@ def get_screen(screen_name, params):
         import desktop
         screen = desktop.DesktopAsk(params)
     elif screen_name == "Check":
-        from modules import check
+        from modules.pages import check
         screen = check.Check(params)
     elif screen_name == "Timezone":
         import timezone

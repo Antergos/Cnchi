@@ -28,7 +28,9 @@
 
 from _base_object import (
     BaseObject,
-    bg_thread
+    bg_thread,
+    locale,
+    os
 )
 
 

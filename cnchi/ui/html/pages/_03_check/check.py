@@ -32,7 +32,7 @@ from _base_object import (
     os,
     json
 )
-from modules.check import SystemCheckModule
+from modules.pages.check import SystemCheckModule
 from modules.update import UpdateModule
 from .._00_base.html_page import HTMLPage
 

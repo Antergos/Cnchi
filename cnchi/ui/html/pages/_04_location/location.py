@@ -30,8 +30,8 @@
 from _base_object import (
     json
 )
-from modules.location import LocationModule
 from modules.keymap import KeymapModule
+from modules.pages.location import LocationModule
 from .._00_base.html_page import HTMLPage, bg_thread
 
 
