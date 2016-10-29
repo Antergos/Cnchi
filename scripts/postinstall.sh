@@ -248,6 +248,14 @@ mate_settings() {
 	rm default.layout
 	ln -sr antergos.layout default.layout
 	cd -
+
+	# Work-around for bug in mate-panel
+	CN_POST_INSTALL_DIR=/usr/share/cnchi/scripts/postinstall
+	CN_HOTFIX_SCRIPT="${CN_POST_INSTALL_DIR}/first-boot-hotfix.sh"
+	CN_HOTFIX_DESKTOP="${CN_POST_INSTALL_DIR}/first-boot-hotfix.desktop"
+	cp "${CN_HOTFIX_SCRIPT}" "${CN_DESTDIR}/usr/bin"
+	cp "${CN_HOTFIX_DESKTOP}" "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart"
+	chmod +x "${CN_DESTDIR}/usr/bin/first-boot-hotfix.sh"
 }
 
 nox_settings() {

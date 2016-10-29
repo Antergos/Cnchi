@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=First Boot Hotfix
+Exec=/usr/bin/first-boot-hotfix.sh
+Terminal=false
+Type=Application
+StartupNotify=false
+X-GNOME-Autostart-Delay=5
+X-MATE-Autostart-Delay=5
+Categories=System;
