@@ -751,7 +751,7 @@ class Installation(object):
                 DEST_DIR,
                 "usr/lib/systemd/system/{0}.service".format(name))
             if os.path.exists(path):
-                chroot_call(['systemctl', '-f', 'enable', name])
+                chroot_call(['systemctl', '-fq', 'enable', name])
                 logging.debug("Service '%s' has been enabled.", name)
             else:
                 logging.warning("Can't find service %s", name)
@@ -1162,7 +1162,7 @@ class Installation(object):
                                     "0.fr.pool.ntp.org\n")
             except FileNotFoundError as err:
                 logging.warning("Can't find %s file.", timesyncd_path)
-            chroot_call(['timedatectl', 'set-ntp', 'true'])
+            chroot_call(['systemctl', '-fq', 'systemd-timesyncd.service'])
 
         # Set timezone
         zoneinfo_path = os.path.join(
