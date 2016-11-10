@@ -1162,7 +1162,7 @@ class Installation(object):
                                     "0.fr.pool.ntp.org\n")
             except FileNotFoundError as err:
                 logging.warning("Can't find %s file.", timesyncd_path)
-            chroot_call(['systemctl', '-fq', 'systemd-timesyncd.service'])
+            chroot_call(['systemctl', '-fq', 'enable', 'systemd-timesyncd.service'])
 
         # Set timezone
         zoneinfo_path = os.path.join(
