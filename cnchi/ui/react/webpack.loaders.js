@@ -5,7 +5,7 @@ const combineLoaders = require('webpack-combine-loaders');
 
 let babelQuery = {
 	compact: false,
-	presets: ['react', ['es2015', {"modules": false}]]
+	presets: ['react'],
 };
 
 

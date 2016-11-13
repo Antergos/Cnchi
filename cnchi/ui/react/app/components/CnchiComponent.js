@@ -26,7 +26,7 @@
  */
 
 // 3rd-Party Libs
-import React from 'react'
+import React from 'react';
 
 import CnchiObject from '../core/object';
 
