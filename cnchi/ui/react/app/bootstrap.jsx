@@ -37,7 +37,7 @@ import { localeSetup } from './utils/locale';
 
 
 
-let render = ( initalState ) => {
+const render = ( initalState ) => {
 	localeSetup();
 	ReactDOM.render(
 		<App initialState={initalState} />,

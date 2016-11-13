@@ -53,7 +53,6 @@ class CnchiUI(BaseObject, metaclass=Singleton):
 
         self.pages = []
         self._initialize_controller()
-        self._controller.initialize_pages_list()
         self._create_and_connect_signals()
 
     def _create_and_connect_signals(self):

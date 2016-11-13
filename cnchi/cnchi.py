@@ -35,7 +35,7 @@ APP_NAME = 'cnchi'
 LOCALE_DIR = '/usr/share/locale'
 
 # At least this GTK version is needed
-GTK_VERSION_NEEDED = "3.20.0"
+GTK_VERSION_NEEDED = "3.22.0"
 
 FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
@@ -127,7 +127,7 @@ class CnchiApp(BaseObject):
         with open('/tmp/cnchi.pid', "w") as tmp_file:
             tmp_file.write(str(os.getpid()))
 
-        CnchiController()
+        CnchiUI()
 
         self._main_window.widget.set_position(Gtk.WindowPosition.CENTER_ALWAYS)
         self.widget.add_window(self._main_window.widget)

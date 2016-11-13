@@ -30,7 +30,7 @@ import show_message as show
 
 try:
     from _base_object import BaseObject, Gio, Gtk
-    from ui.cnchi_controller import CnchiController
+    from ui.cnchi_ui import CnchiUI
 except ImportError as err:
     msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
     logging.exception(msg)

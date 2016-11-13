@@ -1,6 +1,25 @@
+[2016-10-29 04:10:20 -0500]  implement work-around for mate-panel bug                               Dustin Falgout  {e598174}
+[2016-10-29 03:23:07 -0500]  sync local                                                             Dustin Falgout  {8d0779e}
+[2016-10-28 15:09:39 +0200]  Fix for network detection (issue #661)                                     karasu      {90d63d5}
+[2016-10-17 09:53:58 +0200]  Add crc32c hooks when using f2fs                                           karasu      {e8b290b}
+[2016-10-13 12:02:02 +0200]  Remove bijiben from Cinnamon installation, too.                            karasu      {2dd90fb}
+[2016-10-13 08:28:21 +0200]  bijiben has changed name to notes, but it's not in arch repos yet.         karasu      {25a822b}
+[2016-10-13 08:26:45 +0200]  Add steam-native-runtime package to packages.xml                           karasu      {f35eb6f}
+[2016-10-07 05:03:25 -0500]  working on modules                                                     Dustin Falgout  {ae80c6d}
 [2016-10-07 03:50:21 -0500]  still trying to get the base situated so we can start working on th..  Dustin Falgout  {383db3f}
+[2016-10-02 15:14:24 +0200]  Nothing important. Just make version number go up                          karasu      {2095b9f}
+[2016-10-02 15:11:23 +0200]  Fix XFCE settings (tested in 4.12)                                         karasu      {321fdeb}
 [2016-10-01 17:43:35 -0500]  working on conceptional details of pages vs modules                    Dustin Falgout  {6d1b27b}
 [2016-10-01 16:58:08 -0500]  more work on getting things in order                                   Dustin Falgout  {a17198b}
+[2016-09-29 23:09:44 +0200]  It looks like localectl does not work in a chrooted environment. Ge..      karasu      {e49e60f}
+[2016-09-29 21:43:39 +0200]  Binding /run/dbus is not working.                                          karasu      {5e62af6}
+[2016-09-29 20:58:43 +0200]  Ups. Forgot fs type                                                        karasu      {573c54a}
+[2016-09-29 19:57:41 +0200]  Mount /run/dbus when chrooting                                             karasu      {9ab65c8}
+[2016-09-29 17:45:27 +0200]  Use localectl to set keymap in X11 and console. This should avoid m..      karasu      {8c0c192}
+[2016-09-28 23:45:45 -0500]  switch back to mintmenu as default mate-panel menu                     Dustin Falgout  {8c61a74}
+[2016-09-28 23:42:22 -0500]  remove file:// prefix from mintmenu applet icon                        Dustin Falgout  {b3e452e}
+[2016-09-28 23:19:00 -0500]  Remove deprecated key from mint-menu settings                          Dustin Falgout  {207e1ce}
+[2016-09-28 23:09:44 -0500]  fix typo                                                               Dustin Falgout  {0bf007d}
 [2016-09-27 01:52:34 -0500]  cleaning up a bit to make it easier to follow                          Dustin Falgout  {4efd6d6}
 [2016-09-27 00:57:04 -0500]  Merge branch '0.14.x' of github.com:antergos/cnchi into 0.14.x         Dustin Falgout  {c34845c}
 [2016-09-27 00:56:15 -0500]  *bump*                                                                 Dustin Falgout  {b059fa5}
