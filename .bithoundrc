@@ -1,3 +1,4 @@
 {
-    "packageJsonLocation": "cnchi/ui/react/package.json"
+    "packageJsonLocation": "cnchi/ui/react/package.json",
+    "ignore": ["data/**"]
 }
