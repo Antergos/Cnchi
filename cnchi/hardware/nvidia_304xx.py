@@ -145,7 +145,7 @@ class Nvidia304xx(Hardware):
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
-        pkgs = ["mesa-libgl"]
+        pkgs = ["mesa-libgl", "xf86-video-nouveau"]
         if os.uname()[-1] == "x86_64":
             pkgs.append("lib32-mesa-libgl")
         return pkgs
@@ -153,14 +153,7 @@ class Nvidia304xx(Hardware):
     @staticmethod
     def post_install(dest_dir):
         """ Post install commands """
-        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
-        with open(path, 'w') as nvidia:
-            nvidia.write('Section "Device"\n')
-            nvidia.write('    Identifier "Nvidia Card"\n')
-            nvidia.write('    Driver "nvidia"\n')
-            nvidia.write('    VendorName "NVIDIA Corporation"\n')
-            nvidia.write('    Option "NoLogo" "true"\n')
-            nvidia.write('EndSection\n')
+        pass
 
     @staticmethod
     def is_proprietary():
