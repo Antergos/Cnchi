@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 # -*- coding: utf-8 -*-
 #
 #  postinstall.sh
@@ -94,10 +94,6 @@ gnome_settings() {
 
 	# xscreensaver config
 	set_xscreensaver
-
-	# Ensure that Light Locker starts before gnome-shell
-	# TODO: Need to do this another way
-	sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${CN_DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings() {
@@ -318,6 +314,17 @@ postinstall() {
 		set_xorg
 	fi
 
+	# Fix ugly styles for Qt applications when running under GTK-based desktops and Qt 5.7+
+	if [[ kde != "${CN_DESKTOP}" && lxqt != "${CN_DESKTOP}" ]]; then
+		mkdir -p "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/qt5ct" "${CN_DESTDIR}/etc/skel/qt5ct"
+		cp /usr/share/cnchi/scripts/postinstall/qt5ct.conf "${CN_DESTDIR}/etc/skel/qt5ct"
+		cp /usr/share/cnchi/scripts/postinstall/qt5ct.conf "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/qt5ct"
+	fi
+
+	# Monkey patch session wrapper
+	cp /usr/share/cnchi/scripts/postinstall/Xsession "${CN_DESTDIR}/etc/lightdm/Xsession"
+	chmod +x "${CN_DESTDIR}/etc/lightdm/Xsession"
+
 	# Configure fontconfig
 	FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
 	if [[ -f "${FONTCONFIG_FILE}" ]]; then
@@ -337,16 +344,16 @@ postinstall() {
 		/usr/share/antergos/antergos-menu.png \
 		/usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
 
-	for _size in "22" "24" "32"
-	do
-		_icon="antergos-ball-26.png"
-		[[ "32" = "${_size}" ]] && _icon="antergos-menu-logo-dark-bg.png"
+	#for _size in "22" "24" "32"
+	#do
+	#	_icon="antergos-ball-26.png"
+	#	[[ "32" = "${_size}" ]] && _icon="antergos-menu-logo-dark-bg.png"
 
-		cd "${CN_DESTDIR}/usr/share/icons/Numix/${_size}/places" \
- 			&& mv start-here.svg start-here-numix.svg \
- 			&& cp "/usr/share/cnchi/data/images/antergos/${_icon}" start-here.png \
- 			&& cd -
-	done
+	#	cd "${CN_DESTDIR}/usr/share/icons/Numix/${_size}/places" \
+ 	#		&& mv start-here.svg start-here-numix.svg \
+ 	#		&& cp "/usr/share/cnchi/data/images/antergos/${_icon}" start-here.png \
+ 	#		&& cd -
+	#done
 
 	# Set desktop-specific settings
 	${CN_DESKTOP}_settings
