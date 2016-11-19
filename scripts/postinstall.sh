@@ -81,9 +81,6 @@ gnome_settings() {
 	if [[ -f ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop ]]; then
 		rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
 	fi
-
-	# Ensure that Light Locker starts before gnome-shell
-	sed -i 's|echo "X|/usr/bin/light-locker \&\nsleep 3; echo "X|g' ${CN_DESTDIR}/etc/lightdm/Xsession
 }
 
 cinnamon_settings() {
@@ -350,6 +347,17 @@ postinstall() {
 		set_xorg
 	fi
 
+	# Fix ugly styles for Qt applications when running under GTK-based desktops and Qt 5.7+
+	if [[ kde != "${CN_DESKTOP}" && lxqt != "${CN_DESKTOP}" ]]; then
+		mkdir -p "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/qt5ct" "${CN_DESTDIR}/etc/skel/qt5ct"
+		cp /usr/share/cnchi/scripts/postinstall/qt5ct.conf "${CN_DESTDIR}/etc/skel/qt5ct"
+		cp /usr/share/cnchi/scripts/postinstall/qt5ct.conf "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/qt5ct"
+	fi
+
+	# Monkey patch session wrapper
+	cp /usr/share/cnchi/scripts/postinstall/Xsession "${CN_DESTDIR}/etc/lightdm/Xsession"
+	chmod +x "${CN_DESTDIR}/etc/lightdm/Xsession"
+
 	# Configure fontconfig
 	if [ -f "${FONTCONFIG_FILE}" ]; then
 		FONTCONFIG_FILE="/usr/share/cnchi/scripts/fonts.conf"
@@ -369,14 +377,14 @@ postinstall() {
 		/usr/share/antergos/antergos-menu.png \
 		/usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
 
-	cd "${CN_DESTDIR}/usr/share/icons/Numix/24/places" \
- 		&& mv start-here.svg start-here-numix.svg \
- 		&& cp /usr/share/cnchi/data/images/antergos/antergos-ball-26.png start-here.png \
- 		&& cd -
-	cd "${CN_DESTDIR}/usr/share/icons/Numix/32/places" \
-		&& mv start-here.svg start-here-numix.svg \
- 		&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
- 		&& cd -
+	# cd "${CN_DESTDIR}/usr/share/icons/Numix/24/places" \
+ 	# 	&& mv start-here.svg start-here-numix.svg \
+ 	# 	&& cp /usr/share/cnchi/data/images/antergos/antergos-ball-26.png start-here.png \
+ 	# 	&& cd -
+	# cd "${CN_DESTDIR}/usr/share/icons/Numix/32/places" \
+	# 	&& mv start-here.svg start-here-numix.svg \
+ 	# 	&& cp /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png start-here.png \
+ 	# 	&& cd -
 
 	## Set desktop-specific settings
 	"${CN_DESKTOP}_settings"
