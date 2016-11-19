@@ -62,7 +62,7 @@
 				<pkgname>pavucontrol</pkgname>
 				<pkgname>pulseaudio</pkgname>
 				<pkgname>pulseaudio-alsa</pkgname>
-				<pkgname lib="gtk">qt5-style-plugins</pkgname>
+				<pkgname lib="gtk">qt5-styleplugins</pkgname>
 				<pkgname lib="gtk">qt5ct</pkgname>
 				<pkgname>ttf-bitstream-vera</pkgname>
 				<pkgname>ttf-dejavu</pkgname>
