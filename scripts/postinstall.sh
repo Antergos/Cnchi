@@ -142,9 +142,6 @@ xfce_settings() {
 	echo "Session=xfce" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
 	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
-	# Set gtk style for QT apps
-	echo "QT_STYLE_OVERRIDE=gtk" >> ${CN_DESTDIR}/etc/environment
-
 	# Add lxpolkit to autostart apps
 	cp /etc/xdg/autostart/lxpolkit.desktop ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart
 
@@ -322,7 +319,7 @@ postinstall() {
 	fi
 
 	# Monkey patch session wrapper
-	cp /usr/share/cnchi/scripts/postinstall/Xsession "${CN_DESTDIR}/etc/lightdm/Xsession"
+	cp /usr/share/cnchi/scripts/postinstall/Xsession "${CN_DESTDIR}/etc/lightdm"
 	chmod +x "${CN_DESTDIR}/etc/lightdm/Xsession"
 
 	# Configure fontconfig

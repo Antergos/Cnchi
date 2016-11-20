@@ -59,16 +59,16 @@ if [ -x "$script" -a ! -d "$script" ]; then
     . "$script"
 fi
 
-if [[ " ${@[@]} " =~ " gnome|xfce|openbox " && "$(which light-locker)" ]]; then
+if [[ "${@}" =~ gnome|xfce|openbox && "$(which light-locker)" ]]; then
     # Ensure that Light Locker starts before session manager.
     /usr/bin/light-locker &
-    sleep 3
+    sleep 2
 fi
 
-if ! [[ " ${@[@]} " =~ " plasma|lxqt " ]]; then
+if ! [[ "${@}" =~ plasma|lxqt ]]; then
     # Fix ugly styles for Qt applications when running under GTK-based desktops and Qt 5.7+
     export QT_QPA_PLATFORMTHEME='qt5ct'
-    export QT_STYLE_OVERRIDE=''
+    unset QT_STYLE_OVERRIDE
 fi
 
 echo "X session wrapper complete, running session $*"
