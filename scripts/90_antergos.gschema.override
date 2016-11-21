@@ -144,7 +144,7 @@ button-layout='appmenu:minimize,maximize,close'
 theme='Numix-Frost-Light'
 
 [org.gnome.shell.extensions.user-theme]
-name='Numix-Frost-Light'
+name='Numix-Frost'
 
 [org.gnome.shell]
 enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']
