@@ -405,7 +405,7 @@
 			<pkgname>ufw</pkgname>
 		</feature>
 		<feature name="flash">
-			<pkgname>chromium-pepper-flash</pkgname>
+			<pkgname>pepper-flash</pkgname>
 			<pkgname>flashplugin</pkgname>
 		</feature>
 		<feature name="fonts">
