@@ -247,6 +247,7 @@ mate_settings() {
 	CN_HOTFIX_SCRIPT="${CN_POST_INSTALL_DIR}/first-boot-hotfix.sh"
 	CN_HOTFIX_DESKTOP="${CN_POST_INSTALL_DIR}/first-boot-hotfix.desktop"
 	cp "${CN_HOTFIX_SCRIPT}" "${CN_DESTDIR}/usr/bin"
+	mkdir -p "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart"
 	cp "${CN_HOTFIX_DESKTOP}" "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart"
 	chmod +x "${CN_DESTDIR}/usr/bin/first-boot-hotfix.sh"
 }
