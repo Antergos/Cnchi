@@ -146,6 +146,10 @@ theme='Numix-Frost-Light'
 [org.gnome.shell.extensions.user-theme]
 name='Numix-Frost'
 
+[org.gnome.nautilus.preferences]
+show-create-link=true
+sort-directories-first=true
+
 [org.gnome.shell]
 enabled-extensions=['user-theme@gnome-shell-extensions.gcampax.github.com', 'status-menu-buttons@dev.antergos.com', 'dash-to-dock@micxgx.gmail.com']
 favorite-apps=['nautilus.desktop', 'gnome-terminal.desktop', '@CN_BROWSER@.desktop', 'pidgin.desktop', 'gnome-music.desktop']
