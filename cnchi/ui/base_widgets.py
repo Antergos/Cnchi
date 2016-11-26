@@ -53,18 +53,15 @@ from _base_object import (
     Singleton
 )
 
-VERTICAL = Gtk.Orientation.VERTICAL
-HORIZONTAL = Gtk.Orientation.HORIZONTAL
-
 
 class BaseWidget(BaseObject):
     """
-    Base class for UI classes that have a corresponding `GtkWidget` which is
+    Base class for UI classes that have a corresponding toolkit-specific widget instance which is
     accessible via the class's `widget` attribute.
 
     Class Attributes:
-        widget (NonSharedData):   Descriptor that provides access to the `Gtk.Widget`
-                                  for this object.
+        widget (NonSharedData):   Descriptor that provides access to the toolkit-specific widget
+                                  instance for this object.
 
         See Also `BaseObject.__doc__`
 
@@ -86,9 +83,6 @@ class BaseWidget(BaseObject):
     def _get_template_path(self):
         if 'gtkbuilder' == self.tpl_engine:
             template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
-
-        elif 'jinja' == self.tpl_engine:
-            raise NotImplementedError
         else:
             self.logger.debug('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None
@@ -96,6 +90,9 @@ class BaseWidget(BaseObject):
         return template
 
     def _maybe_load_widget(self):
+        if not self.tpl_engine:
+            return
+
         template_path = self._get_template_path()
 
         if not template_path or not os.path.exists(template_path):
@@ -116,34 +113,9 @@ class BaseWidget(BaseObject):
 
                 self.widget = self.ui.get_object(self.name)
 
-            elif 'jinja' == self.tpl_engine:
-                raise NotImplementedError
-
     def get_ancestor_window(self):
         """ Returns first ancestor that is a Gtk Window """
         return self.widget.get_ancestor(Gtk.Window)
-
-
-class Stack(BaseWidget):
-    """
-    Base class for page stacks (not used for HTML UI).
-
-    Class Attributes:
-        See `BaseWidget.__doc__`
-
-    """
-
-    def __init__(self, name='stack', *args, **kwargs):
-        """
-        Attributes:
-            Also see `BaseWidget.__doc__`.
-
-        Args:
-            name (str): A name for this widget.
-
-        """
-
-        super().__init__(name=name, *args, **kwargs)
 
 
 class Page(BaseWidget):
@@ -168,20 +140,6 @@ class Page(BaseWidget):
         super().__init__(name=name, *args, **kwargs)
 
         self._props = []
-
-    def _get_template_path(self):
-        if 'gtkbuilder' == self.tpl_engine:
-            template_path = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
-
-        elif 'jinja' == self.tpl_engine:
-            page_dir = self._pages_helper.get_page_directory_name(self.name)
-            template_path = os.path.join(self.PAGES_DIR, '{0}/{1}.html'.format(page_dir, self.name))
-            self.logger.debug([self.name, page_dir, template_path])
-        else:
-            self.logger.debug('Unknown template engine "%s".'.format(self.tpl_engine))
-            template_path = None
-
-        return template_path
 
     def prepare(self):
         """ This must be implemented by subclasses """

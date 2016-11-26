@@ -1,12 +1,12 @@
-[2016-11-25 20:45:24 -0600]  trying to make some progress                                           Dustin Falgout  {cfaf847}
+[2016-11-25 20:45:24 -0600]  trying to make some progress                                           Dustin Falgout  {6b62dd1}
 [2016-11-24 19:20:09 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {f5c7b2c}
+[2016-11-24 22:15:48 +0100]  chromium-pepper-flash is pepper-flash now                                  karasu      {ce52183}
 [2016-11-23 19:01:52 -0600]  fix issue with mate first boot hotfix                                  Dustin Falgout  {eee942d}
 [2016-11-22 18:33:13 +0100]  chromium-pepper-flash renamed to pepper-flash                              karasu      {91bfdbe}
 [2016-11-20 18:09:09 -0600]  Update update.info                                                     Dustin Falgout  {becb2d4}
 [2016-11-20 18:08:42 -0600]  Update info.py                                                         Dustin Falgout  {ce419e0}
 [2016-11-20 18:06:47 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {2776a43}
 [2016-11-20 06:09:42 -0600]  fix file name for Xsession script                                      Dustin Falgout  {408d619}
-[2016-11-18 23:05:53 -0600]  fix typo                                                               Dustin Falgout  {a75298d}
 [2016-11-18 20:46:57 -0600]  fix ugly styles for Qt apps when running under GTK-based desktop on..  Dustin Falgout  {75bfffd}
 [2016-11-18 20:46:57 -0600]  fix ugly styles for Qt apps when running under GTK-based desktop on..  Dustin Falgout  {5427904}
 [2016-11-16 12:24:37 +0100]  Do not setup a 20-nvidia.conf file. Do not install xf86-video-nouve..      karasu      {ddc1ff6}
