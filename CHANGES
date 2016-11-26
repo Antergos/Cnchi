@@ -1,3 +1,4 @@
+[2016-11-25 21:13:31 -0600]  update pre-commit hook                                                 Dustin Falgout  {87a422f}
 [2016-11-25 20:46:56 -0600]  remove unneeded code from base_widgets.py                              Dustin Falgout  {6985861}
 [2016-11-25 20:45:24 -0600]  trying to make some progress                                           Dustin Falgout  {6b62dd1}
 [2016-11-24 19:20:09 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {f5c7b2c}
