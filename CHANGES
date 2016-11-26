@@ -1,10 +1,26 @@
+[2016-11-25 20:45:24 -0600]  trying to make some progress                                           Dustin Falgout  {cfaf847}
+[2016-11-24 19:20:09 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {f5c7b2c}
+[2016-11-23 19:01:52 -0600]  fix issue with mate first boot hotfix                                  Dustin Falgout  {eee942d}
+[2016-11-22 18:33:13 +0100]  chromium-pepper-flash renamed to pepper-flash                              karasu      {91bfdbe}
+[2016-11-20 18:09:09 -0600]  Update update.info                                                     Dustin Falgout  {becb2d4}
+[2016-11-20 18:08:42 -0600]  Update info.py                                                         Dustin Falgout  {ce419e0}
+[2016-11-20 18:06:47 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {2776a43}
+[2016-11-20 06:09:42 -0600]  fix file name for Xsession script                                      Dustin Falgout  {408d619}
+[2016-11-18 23:05:53 -0600]  fix typo                                                               Dustin Falgout  {a75298d}
+[2016-11-18 20:46:57 -0600]  fix ugly styles for Qt apps when running under GTK-based desktop on..  Dustin Falgout  {75bfffd}
+[2016-11-18 20:46:57 -0600]  fix ugly styles for Qt apps when running under GTK-based desktop on..  Dustin Falgout  {5427904}
+[2016-11-16 12:24:37 +0100]  Do not setup a 20-nvidia.conf file. Do not install xf86-video-nouve..      karasu      {ddc1ff6}
 [2016-11-12 22:42:07 -0600]  update bithound config                                                 Dustin Falgout  {3b838b8}
 [2016-11-12 22:39:12 -0600]  update bithound config                                                 Dustin Falgout  {7a89e6c}
 [2016-11-12 22:31:54 -0600]  fix typo, rebuild bundle                                               Dustin Falgout  {85e82f5}
 [2016-11-12 21:53:46 -0600]  pycharm :unamused:                                                     Dustin Falgout  {be9f4f4}
 [2016-11-12 21:52:11 -0600]  fix errors that were preventing app to load. added config file for ..  Dustin Falgout  {46f54cf}
 [2016-10-29 03:23:07 -0500]  sync local                                                             Dustin Falgout  {256ca15}
+[2016-11-12 15:25:38 +0100]  defaults already includes rw                                               karasu      {03cbdc5}
 [2016-11-12 15:23:41 +0100]  Merge pull request #652 from stratus-ss/master                             karasu      {e140d72}
+[2016-11-12 15:20:25 +0100]  Add cnchi.conf file                                                        karasu      {1a76e62}
+[2016-11-10 12:06:55 +0100]  fix typo in install.py                                                     karasu      {f07c244}
+[2016-11-06 15:40:11 +0100]  Use `systemctl -fq systemd-timesyncd.service` as timedatectl does n..      karasu      {f58bb0e}
 [2016-10-29 04:10:20 -0500]  implement work-around for mate-panel bug                               Dustin Falgout  {e598174}
 [2016-10-28 15:09:39 +0200]  Fix for network detection (issue #661)                                     karasu      {90d63d5}
 [2016-10-28 10:04:40 +0200]  Updated misc/extra.py to fix #661 (#664)                                    qw3ry      {7e53b33}
