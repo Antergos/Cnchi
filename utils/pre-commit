@@ -9,10 +9,9 @@
 # from git history and update the CHANGES file.
 
 _LOCK='/tmp/.CNCHI_PRE_COMMIT_LOCK'
-INFO_PY='cnchi/info.py'
+_INFO_PY='cnchi/info.py'
 _IS_JETBRAINS=''
-
-echo "$*"
+_REGEX='pycharm|PyCharm|intellij|Intellij|clion|CLion|JetBrains'
 
 echo 'checking for changes to pre-commit hook...'
 if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
@@ -25,29 +24,29 @@ if [[ utils/pre-commit -nt .git/hooks/pre-commit ]]; then
 	exit $?
 fi
 
-for _ide in pycharm intellij clion
-do
-	if [[ "${LD_LIBRARY_PATH}" = *"${_ide}"* ]]; then
-		export _IS_JETBRAINS='True'
-		break
-	fi
-done
+
+if [[ "${LD_LIBRARY_PATH}" ~= ${_REGEX} ]]; then
+	export _IS_JETBRAINS='True'
+	break
+fi
 
 # Work-around issue in Jetbrains IDEs caused by their use of `git commit --only`
 # Basically, the first time the hook runs it will exit with non-zero status
-# causing the commit to be aborted so that the IDE will notice the additional changed
-# files and add them to its call to `git commit --only`. Before doing so the hook
+# causing the commit to be aborted so that user can press the version control module's
+# refresh button forcing the IDE to notice the additional changed
+# files and add them to its call to `git commit --only`. Before doing so, the hook
 # will perform its normal tasks (updating version in files and updating CHANGES file)
 # and it will set a lock file. If the lock file is detected we know that this is not
 # the first attempt and so we unset the lock and immediately exit with zero status.
 [[ 'True' = "${_IS_JETBRAINS}" && -f "${_LOCK}" ]] && { rm "${_LOCK}"; exit 0; }
 
+
 [[ 'True' = "${_IS_JETBRAINS}" ]] && touch "${_LOCK}"
 
 # Exit with failed status if we cannot find info.py
-[[ -e "${INFO_PY}" ]] || { echo 'Could not find a info.py!'; exit 1; }
+[[ -e "${_INFO_PY}" ]] || { echo 'Could not find a info.py!'; exit 1; }
 
-BASE_STRING=$(python3 "${INFO_PY}")
+BASE_STRING=$(python3 "${_INFO_PY}")
 BASE_LIST=($(echo "${BASE_STRING}" | tr '.' ' '))
 V_MAJOR="${BASE_LIST[0]}"
 V_MINOR="${BASE_LIST[1]}"
@@ -59,7 +58,7 @@ SUGGESTED_VERSION="${V_MAJOR}.${V_MINOR}.${V_PATCH}"
 LATEST_STABLE_RELEASE=$(git describe --tags $(git rev-list --tags --max-count=1))
 
 echo "New version : ${SUGGESTED_VERSION}"
-sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${INFO_PY}"
+sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" "${_INFO_PY}"
 sed -i "s|${BASE_STRING}|${SUGGESTED_VERSION}|g" README.md
 
 { grep -q '`master`' README.md && HISTORY_FROM=$((V_MINOR - 1)); } || HISTORY_FROM="${V_MINOR}"
@@ -80,9 +79,9 @@ python3 utils/py/generate_latest_json.py
 echo "Checking file permissions..."
 utils/sh/fix-permissions.sh
 
-git add CHANGES README.md "${INFO_PY}" dist/latest.json && {
+git add CHANGES README.md "${_INFO_PY}" dist/latest.json && {
 	{ [[ 'True' = "${_IS_JETBRAINS}" ]] \
-		&& echo 'JETBRAINS IDE DETECTED: DO COMMIT AGAIN TO FINALIZE IT' \
+		&& echo 'JETBRAINS IDE DETECTED: CLICK REFRESH BUTTON IN VERSION CONTROL MODULE AND THEN DO COMMIT AGAIN TO FINALIZE IT' \
 		&& exit 1; } || exit 0
 }
 
