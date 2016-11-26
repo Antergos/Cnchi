@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# controller.py
+# cnchi_ui.py
 #
 # Copyright © 2013-2016 Antergos
 #

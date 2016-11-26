@@ -26,29 +26,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" HTML/JavaScript UI Controller """
+""" React UI Controller """
 
 # Standard Lib
 from _base_object import (
-    OrderedDict,
     ascii_uppercase,
     choice,
-    json,
-    sys,
-    time
+    json
 )
 
-# 3rd Party Libs
+# 3rd-Party Libs
 from _base_object import GLib
 
-# This application
+# This Application
 from _base_object import (
     BaseObject,
     Singleton
 )
 
+from ui.gtk.main_window import MainWindow
 from .container import MainContainer
-from .main_window import MainWindow
 from ..pages.ReactPage import ReactPage
 
 
