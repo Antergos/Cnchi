@@ -53,6 +53,8 @@ class LanguageModule(BaseModule):
             'languagelist.txt.gz'
         )
 
+        self._prepare_languages_list()
+
     def _langcode_to_lang(self, display_map):
         # Special cases in which we need the complete current_locale string
         if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):

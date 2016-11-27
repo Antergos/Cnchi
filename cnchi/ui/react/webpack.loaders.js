@@ -2,10 +2,15 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const combineLoaders = require('webpack-combine-loaders');
 
+const VendorStyles = new ExtractTextPlugin('[name].css');
+const Styles = new ExtractTextPlugin('[name].css');
 
 let babelQuery = {
 	compact: false,
 	presets: ['react'],
+	plugins: [
+		['transform-object-rest-spread', { useBuiltIns: true }]
+	]
 };
 
 
@@ -28,7 +33,7 @@ if ( 'True' === process.env.CN_EXTRACT_TRANSLATIONS ) {
 	};
 }
 
-module.exports = [
+const Loaders = [
 	{
 		test: /\.jsx?$/,
 		exclude: /(node_modules|bower_components|dist|public)/,
@@ -83,18 +88,9 @@ module.exports = [
 		loader: "url-loader?limit=10000&mimetype=image/png"
 	},
 	{
-		test: /vendor\/\.css$/,
-		loader: ExtractTextPlugin.extract({
-			fallbackLoader: 'style-loader',
-			loader: 'css-loader'
-		})
-	},
-	{
 		test: /\.css$/,
-		loader: ExtractTextPlugin.extract({
-			fallbackLoader: 'style-loader',
-			loader: 'css-loader?modules&importLoaders=1'
-		}),
-		exclude: /vendor\/\.css$/,
+		loader: Styles.extract('css-loader' ),
 	},
 ];
+
+module.exports = [Loaders, Styles, VendorStyles,];

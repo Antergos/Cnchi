@@ -54,7 +54,7 @@ class MainWindow(BaseWidget, metaclass=Singleton):
     def __init__(self, name='main_window', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)
 
-        self._state = {}
+        self._state = {'fullscreen': False}
         self.is_dragging = False
         self._button_press_hook_id = None
 
@@ -116,18 +116,18 @@ class MainWindow(BaseWidget, metaclass=Singleton):
     def toggle_maximize(self):
         if self.widget.is_maximized():
             self.widget.unmaximize()
-            self._react_controller.trigger_js_event('window-unmaximized')
+            self._controller.trigger_js_event('window-unmaximized')
         else:
             self.widget.maximize()
-            self._react_controller.trigger_js_event('window-maximized')
+            self._controller.trigger_js_event('window-maximized')
 
     def toggle_fullscreen(self):
         if self._state.get('fullscreen', False):
             self.widget.unfullscreen()
-            self._react_controller.trigger_js_event('window-unfullscreen')
+            self._controller.trigger_js_event('window-unfullscreen')
         else:
             self.widget.fullscreen()
-            self._react_controller.trigger_js_event('window-fullscreen')
+            self._controller.trigger_js_event('window-fullscreen')
 
     def window_dragging_cb(self, window, event, *args):
         pass

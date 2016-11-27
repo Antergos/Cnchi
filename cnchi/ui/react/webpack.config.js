@@ -2,10 +2,11 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
-const loaders = require( './webpack.loaders' );
+const Loaders = require( './webpack.loaders' );
 const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
 const LiveReloadPlugin = require( 'webpack-livereload-plugin' );
 
+let [loaders, Styles, VendorStyles]  = Loaders;
 
 // Now create config for webpack
 const config = {
@@ -41,8 +42,7 @@ const config = {
 		new HtmlWebpackPlugin( {
 			template: './app/index.html'
 		} ),
-		new ExtractTextPlugin( '[name].css' ),
-		new ExtractTextPlugin( '[name]__[local]___[hash:base64:5]' ),
+		Styles,
 	]
 };
 

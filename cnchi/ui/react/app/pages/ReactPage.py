@@ -161,11 +161,18 @@ class ReactPage(BaseObject):
         self.signals.extend(get_data)
 
     def get_state_cb(self, *args):
+        install_options = self.settings.install_options[self.name.capitalize()]
+        for key in install_options.data:
+            self.state[key] = getattr(self.module, key)
         self._controller.emit_js('trigger-event', 'get-state-result', self.state)
 
     def prepare(self):
         """ This must be implemented by subclasses """
-        pass
+        if self.name in ['Language', 'Welcome'] and not self._main_window._state['fullscreen']:
+            self._main_window.toggle_maximize()
+        elif self._main_window._state['fullscreen']:
+            self._main_window.toggle_maximize()
+
 
     def set_state_cb(self, widget, state, *args):
         pass

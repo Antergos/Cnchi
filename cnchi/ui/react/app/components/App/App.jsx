@@ -49,7 +49,7 @@ class App extends CnchiComponent {
 	}
 
 	_getShowNavigation() {
-		let excluded = ['language', 'welcome'];
+		let excluded = ['Language', 'Welcome'];
 		return false === _cn.inArray(this.state.currentPage, excluded);
 	}
 
@@ -69,7 +69,7 @@ class App extends CnchiComponent {
 				{this._getShowNavigation()
 					? <Header currentPage={this.state.currentPage} />
 					: ''}
-				<CurrentPage updateState={this.updateState} {...this.state[this.state.currentPage]} />
+				<CurrentPage updateState={this.updateState} {...this.state} />
 			</Grid>
 		)
 	}

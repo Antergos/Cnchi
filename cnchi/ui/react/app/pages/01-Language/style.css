@@ -6,15 +6,15 @@ html, body { background: #383A41; }
 
 .header { display: none; }
 
-h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 32px; text-align: center; font-weight: 400; margin-top: 0px; }
+h1, h3 { font-family: Raleway, 'Open Sans', sans-serif; font-size: 32px !important; text-align: center; font-weight: 400 !important; margin-top: 0px; }
 
-h3 { font-size: 18px; font-family: 'Open Sans'; }
+h3 { font-size: 18px !important; font-family: 'Open Sans' !important; }
 
 .heading { text-align: center; }
 
 .heading img { margin-bottom: 20px; max-width: 175px; }
 
-.language_selection { padding-top: 30px; padding-bottom: 30px; font-family: 'Open Sans'; }
+.language_selection { padding-top: 30px; padding-bottom: 30px; font-family: 'Open Sans' !important; }
 
 .language_selection form { max-width: 100%; }
 
@@ -22,5 +22,5 @@ h3 { font-size: 18px; font-family: 'Open Sans'; }
 
 .btn_wrapper { text-align: center; margin: 0 auto; margin-top: 30px; }
 
-.btn_wrapper i { font-size: 2.2rem; }
+.btn_wrapper i { font-size: 2.2rem !important; }
 
