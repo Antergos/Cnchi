@@ -21,7 +21,7 @@ width=480
 allow-scrollbar=false
 height=180
 hide-separator=false
-icon-size=16
+icon-size=22
 icon='mate-fs-directory.png'
 minimized=false
 show-computer=true
@@ -47,7 +47,7 @@ width=250
 allow-scrollbar=false
 height=160
 hide-separator=false
-icon-size=16
+icon-size=22
 icon='preferences-system'
 minimized=false
 show-control-center=true
@@ -180,7 +180,7 @@ priority=90
 active=true
 priority=2
 
-[org.mate.terminal.profile:/org/mate/terminal/profiles/default:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+[org.mate.terminal.profile:/org/mate/terminal/profiles/b1dcc9dd-5262-4d8d-a863-c897e6d979b9/]
 background-color='#262626262626'
 foreground-color='#F8F8F8F8F2F2'
 palette=['#1B1B1D1D1E1E', '#F9F926267272', '#8282B4B41414', '#FDFD97971F1F', '#5656C2C2D6D6', '#8C8C5454FEFE', '#464654545757', '#CCCCCCCCC6C6', '#505053535454', '#FFFF59599595', '#B6B6E3E35454', '#FEFEEDED6C6C', '#8C8CEDEDFFFF', '#9E9E6F6FFEFE', '#89899C9CA1A1', '#F8F8F8F8F2F2']
@@ -209,7 +209,7 @@ picture-opacity=100
 picture-options='zoom'
 primary-color='#58589191bcbc'
 secondary-color='#3c3c8f8f2525'
-show-desktop-icons=false
+show-desktop-icons=true
 
 [org.mate.caja.sidebar-panels.tree]
 show-only-directories=true
