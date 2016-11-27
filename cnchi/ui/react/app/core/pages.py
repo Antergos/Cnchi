@@ -66,7 +66,7 @@ class PagesHelper(BaseObject, metaclass=Singleton):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, tpl_engine=None, *args, **kwargs)
 
         if self.PAGES_DIR is None:
             self.PAGES_DIR = os.path.join(self.UI_DIR, 'react/app/pages')

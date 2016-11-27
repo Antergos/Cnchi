@@ -121,7 +121,7 @@ class CnchiApp(BaseObject):
         if not self._pre_activation_checks():
             return
 
-        self._maybe_clear_webkit_data()
+        # self._maybe_clear_webkit_data()
         self._initialize_settings()
 
         with open('/tmp/cnchi.pid', "w") as tmp_file:

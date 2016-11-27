@@ -82,7 +82,7 @@ class BaseWidget(BaseObject):
 
     def _get_template_path(self):
         if 'gtkbuilder' == self.tpl_engine:
-            template = os.path.join(self.BUILDER_DIR, '{}.ui'.format(self.name))
+            template = os.path.join(self.TPL_DIR, '{}.ui'.format(self.name))
         else:
             self.logger.debug('Unknown template engine "%s".'.format(self.tpl_engine))
             template = None
@@ -127,7 +127,7 @@ class Page(BaseWidget):
 
     """
 
-    def __init__(self, name='page', *args, **kwargs):
+    def __init__(self, name='page', tpl_engine=None, *args, **kwargs):
         """
         Attributes:
             Also see `BaseWidget.__doc__`.
@@ -137,7 +137,7 @@ class Page(BaseWidget):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, tpl_engine=tpl_engine, *args, **kwargs)
 
         self._props = []
 

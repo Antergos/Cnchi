@@ -104,8 +104,7 @@ class BaseObject:
     APP_DIR = os.path.join(TOP_DIR, 'cnchi')
     UI_DIR = os.path.join(APP_DIR, 'ui')
     PAGES_DIR = os.path.join(UI_DIR, 'react/app/pages')
-    TPL_DIR = os.path.join(UI_DIR, 'tpl')
-    BUILDER_DIR = os.path.join(TPL_DIR, 'gtkbuilder')
+    TPL_DIR = os.path.join(UI_DIR, 'gtk/tpl')
     WK_CACHE_DIR = '/var/cache/cnchi'
     WK_DATA_DIR = '/var/tmp/cnchi'
 

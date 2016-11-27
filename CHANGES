@@ -1,3 +1,4 @@
+[2016-11-25 21:31:41 -0600]  update imports                                                         Dustin Falgout  {788c8eb}
 [2016-11-25 21:15:57 -0600]  fix typo                                                               Dustin Falgout  {3beb82c}
 [2016-11-25 21:13:31 -0600]  update pre-commit hook                                                 Dustin Falgout  {87a422f}
 [2016-11-25 20:46:56 -0600]  remove unneeded code from base_widgets.py                              Dustin Falgout  {6985861}

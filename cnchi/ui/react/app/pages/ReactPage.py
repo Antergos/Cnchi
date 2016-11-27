@@ -114,6 +114,9 @@ class ReactPage(BaseObject):
         signals = []
 
         for _signal in self.signals:
+            if _signal in self._allowed_signals:
+                continue
+
             result_signal_name = '{}-result'.format(_signal)
             signal_name = 'do-{}'.format(_signal) if not _signal.startswith('--') else _signal[2:]
 
@@ -142,7 +145,7 @@ class ReactPage(BaseObject):
         self.signals = signals
 
     def _generate_tabs_list(self):
-        tabs = self._pages_helper.get_page_names()
+        tabs = self._controller.page_names
         excluded = ['language', 'welcome']
         self._top_level_tabs = [t for t in tabs if t not in excluded]
 

@@ -50,6 +50,10 @@ from ui.base_widgets import (
     bg_thread
 )
 
+WebContext = WebKit2.WebContext
+WebsiteDataManager = WebKit2.WebsiteDataManager
+WebView = WebKit2.WebView
+
 
 class MainContainer(BaseWidget, metaclass=Singleton):
     """
@@ -70,7 +74,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         """
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, tpl_engine=None, *args, **kwargs)
 
         self.cnchi_loaded = False
 
@@ -120,7 +124,8 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             'enable_developer_extras': True,
             'javascript_can_open_windows_automatically': True,
             'allow_file_access_from_file_urls': True,
-            'enable_write_console_messages_to_stdout': False
+            'enable_write_console_messages_to_stdout': True,
+            'allow_universal_access_from_file_urls': True
         }
 
     def _get_website_data_dirs(self):
@@ -130,16 +135,16 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         }
 
     def _initialize_web_view(self):
-        self._wv_parts.data_mgr = WebKit2.WebsiteDataManager(**self._get_website_data_dirs())
-        data_mgr = self._wv_parts.data_mgr
-        self._wv_parts.context = WebKit2.WebContext.new_with_website_data_manager(data_mgr)
+        self._wv_parts.data_mgr = WebsiteDataManager(**self._get_website_data_dirs())
+        self._wv_parts.context = WebContext.new_with_website_data_manager(self._wv_parts.data_mgr)
+
         self._wv_parts.security_manager = self._wv_parts.context.get_security_manager()
         self._wv_parts.security_manager.register_uri_scheme_as_local('cnchi://')
         self._wv_parts.security_manager.register_uri_scheme_as_cors_enabled('cnchi://')
 
         self._apply_webkit_settings()
 
-        self._web_view = WebKit2.WebView.new_with_context(self._wv_parts.context)
+        self._web_view = WebView.new_with_context(self._wv_parts.context)
 
         self._web_view.set_settings(self._wv_parts.settings)
 

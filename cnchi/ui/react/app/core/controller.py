@@ -63,7 +63,7 @@ class ReactController(BaseObject, metaclass=Singleton):
 
     def __init__(self, name='controller', *args, **kwargs):
 
-        super().__init__(name=name, *args, **kwargs)
+        super().__init__(name=name, tpl_engine=None, *args, **kwargs)
 
         self.current_page = None
         self.page_names = []

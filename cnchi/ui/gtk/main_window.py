@@ -32,10 +32,7 @@
 # 3rd-party Libs
 from ui.base_widgets import (
     Gdk,
-    GLib,
-    GObject,
-    Gtk,
-    WebKit2
+    GObject
 )
 
 # This application
@@ -67,7 +64,6 @@ class MainWindow(BaseWidget, metaclass=Singleton):
 
         self.create_custom_signal('window-dragging-start')
         self.create_custom_signal('window-dragging-stop')
-        self._allowed_signals.extend(['window-dragging-start', 'window-dragging-stop'])
 
         self._apply_window_settings()
         self._connect_signals()
@@ -103,8 +99,13 @@ class MainWindow(BaseWidget, metaclass=Singleton):
         self.widget.connect(signal_name, callback)
 
     def create_custom_signal(self, signal_name):
-        GObject.signal_new(signal_name, self.widget, GObject.SignalFlags.RUN_LAST,
-                           None, (GObject.TYPE_PYOBJECT,))
+        GObject.signal_new(
+            signal_name,
+            self.widget,
+            GObject.SignalFlags.RUN_LAST,
+            None,
+            (GObject.TYPE_PYOBJECT,)
+        )
 
     def delete_event_cb(self, *args):
         self.widget.emit('__close_app', *args)

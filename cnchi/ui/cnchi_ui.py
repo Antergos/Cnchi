@@ -55,9 +55,13 @@ class CnchiUI(BaseObject, metaclass=Singleton):
         self._initialize_controller()
         self._create_and_connect_signals()
 
+        page = self._get_page_by_name('Language')
+        self._controller.set_current_page(page)
+
     def _create_and_connect_signals(self):
         self._main_window.create_custom_signal('do-page-navigation-request')
         self._main_window.connect('do-page-navigation-request', self.page_navigation_request_cb)
+        self._allowed_signals.append('page-navigation-request')
 
     def _get_page_by_index(self, index):
         raise NotImplementedError
@@ -89,8 +93,10 @@ class CnchiUI(BaseObject, metaclass=Singleton):
 
     def _initialize_page(self, name):
         index = self._controller.page_names.index(name)
-        module_path = '..modules.pages.{}'.format(name)
-        module = importlib.import_module(module_path, 'ui')
+        module_path = 'modules.pages.{}'.format(name.lower())
+        python_module = importlib.import_module(module_path)
+        module_name = '{0}Module'.format(name)
+        module = getattr(python_module, module_name)
         page = self._controller.Page(name=name, index=index, module=module())
 
         self.pages.append(page)
@@ -102,10 +108,15 @@ class CnchiUI(BaseObject, metaclass=Singleton):
         if not args or not args[0]:
             self.logger.error('No page identifier was included in request!')
 
+        page = None
+
         if isinstance(args[0], int):
             page = self._get_page_by_index(args[0])
         elif isinstance(args[0], str):
             page = self._get_page_by_name(args[0])
+
+        if page:
+            self._controller.set_current_page(page)
         else:
             self.logger.error('Page identifier must be one of types [int, str]!')
 
