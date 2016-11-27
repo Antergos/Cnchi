@@ -4,7 +4,8 @@ orientation=bottom
 size=32
 
 [Object menu]
-object-type=menu
+object-type=applet
+applet-iid=MintMenuAppletFactory::MintMenuApplet
 toplevel-id=bottom
 position=10
 locked=true
