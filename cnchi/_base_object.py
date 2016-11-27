@@ -93,7 +93,7 @@ class BaseObject:
                                             pages' data (storage for `Page.store_values()`)
         _web_view        (BaseWidget):      The app's ui web view object.
 
-        _allowed_signals (list):            List of signals allowed over the python/js bridge.
+        all_signals      (set):             Names of custom signals.
         logger           (logging.Handler): The app's log handler.
         settings         (SharedData):      Descriptor that provides access to the app's
                                             Settings object.
@@ -116,7 +116,7 @@ class BaseObject:
     _pages_helper = SharedData('_pages_helper')
     _web_view = SharedData('_web_view')
 
-    _allowed_signals = SharedData('_allowed_signals')
+    all_signals = SharedData('all_signals')
     logger = None
     log_wrap = '-'
     settings = SharedData('settings', from_dict={})
@@ -140,8 +140,8 @@ class BaseObject:
 
         self.template = self.ui = None
 
-        if self._allowed_signals is None:
-            self._allowed_signals = []
+        if self.all_signals is None:
+            self.all_signals = set()
 
         self._check_for_main_components(name)
 

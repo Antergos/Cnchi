@@ -5,12 +5,12 @@ install_options:
     data:
       - languages
     options:
-      - selectedLanguage
+      selectedLanguage: en-us
   Welcome:
     data:
     options:
-      - tryItSelected
-      - installItSelected
+      tryItSelected: false
+      installItSelected: false
   Check:
   Location:
     data:
@@ -18,15 +18,15 @@ install_options:
       - timezones
       - layouts
     options:
-      - countryCode
-      - countryName
-      - keyboardLayout
-      - keyboardVariant
-      - languageCode
-      - languageName
-      - locale
-      - location
-      - timezone
+      countryCode: us
+      countryName: United States
+      keyboardLayout: us
+      keyboardVariant: None
+      languageCode: en-us
+      languageName: English (US)
+      locale: en_US.UTF-8
+      location:
+      timezone:
 
 ui:
   branding:

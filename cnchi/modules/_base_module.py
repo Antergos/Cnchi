@@ -41,10 +41,12 @@ class BaseModuleMeta(type):
     """
 
     def __new__(cls, name, bases, namespace, **kwargs):
-        methods = [m for m in namespace if '__' not in m]
+        for key in namespace:
+            if '__' in key:
+                continue
 
-        for method in methods:
-            namespace[method] = bg_thread(namespace[method])
+            if callable(namespace[key]):
+                namespace[key] = bg_thread(namespace[key])
 
         return type.__new__(cls, name, bases, namespace)
 
@@ -52,7 +54,7 @@ class BaseModuleMeta(type):
 class BaseModule(BaseObject, metaclass=BaseModuleMeta):
     """
     Base class for all of Cnchi's modules. Modules house logic that is not directly
-    related to rendering the UI. Modules' methods are always called from a background thread
+    related to rendering the UI. Modules' methods are run in background threads
     so that they do not block the UI.
 
     Class Attributes:
@@ -60,15 +62,16 @@ class BaseModule(BaseObject, metaclass=BaseModuleMeta):
 
     """
 
-    def __init__(self, name='base_module', *args, **kwargs):
+    def __init__(self, name='base_module', page_name='', *args, **kwargs):
         """
         Attributes:
             name (str): A name for this object (all objects must have unique name).
             See Also: `BaseObject.__doc__`
 
         """
-
         super().__init__(name=name, *args, **kwargs)
+
+        self.page_name = page_name
 
     def prepare(self):
         raise NotImplementedError

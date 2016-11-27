@@ -179,7 +179,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
         #     Gio.content_type_guess(None, data)[0]
         # )
         tpl_path = os.path.join(self.UI_DIR, 'react/dist/index.html')
-        self._cnchi_controller.current_page = page
+        self._cnchi_ui.current_page = page
         self._uri_request_finish_resource(tpl_path, request)
 
     @bg_thread
@@ -208,7 +208,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
 
         page_name = self._get_page_name_from_uri(view.get_uri())
 
-        self._react_controller.emit_js('trigger-event', 'page-loaded', page_name)
+        self._controller.emit_js('trigger-event', 'page-loaded', page_name)
 
         if not self.cnchi_loaded:
             self.cnchi_loaded = True
@@ -228,10 +228,11 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             incoming = json.loads(incoming[5:])
 
             name = incoming.pop(0)
-            args = incoming if len(incoming) > 1 else incoming[0]
+            self.logger.debug('incoming is: %s', incoming)
+            args = incoming if not incoming or len(incoming) > 1 else incoming[0]
 
             if 'do-log-message' == name:
-                self._react_controller.js_log_message_cb(*args)
+                self._controller.js_log_message_cb(*args)
             else:
                 self._main_window.widget.emit(name, args)
 
@@ -254,7 +255,7 @@ class MainContainer(BaseWidget, metaclass=Singleton):
             self.logger.debug('Loading app resource: {0}'.format(uri))
             self._uri_request_finish_resource(resource_path, request)
 
-        elif page_name.capitalize() in self.settings.intall_options:
+        elif page_name.capitalize() in self.settings.install_options:
             self.logger.debug('Loading app page: {0}'.format(page_name))
             self._uri_request_finish_page(page_name, request)
 

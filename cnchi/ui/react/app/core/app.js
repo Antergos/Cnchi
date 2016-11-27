@@ -65,7 +65,7 @@ class CnchiApp extends CnchiObject {
 
 	_start_bridge_message_queue_worker() {
 		this.bmq_worker = setInterval( () => {
-			if ( this._bridge_message_queue.length === 0 ) {
+			if ( ! this._bridge_message_queue.length ) {
 				return;
 			}
 
@@ -214,12 +214,12 @@ class CnchiApp extends CnchiObject {
 			this.loaded = true;
 		}
 
-		this.emit_signal('do-get-initial-state');
+		this.emit_signal('do-get-state');
 	}
 
 	register_event_handlers() {
 		$(window).on('page-loaded', (event, args) => this.page_loaded_handler(event, args));
-		$(window).on('get-initial-state-result', (event, args) => this.initial_state_ready_cb(event, args));
+		$(window).on('get-state-result', (event, args) => this.initial_state_ready_cb(event, args));
 		//this.$header.on('mousedown', '*', this.header_mousedown_cb);
 		//this.$header.on('mouseup', '*', this.header_mouseup_cb);
 	}

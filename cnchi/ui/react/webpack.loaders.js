@@ -32,7 +32,7 @@ module.exports = [
 	{
 		test: /\.jsx?$/,
 		exclude: /(node_modules|bower_components|dist|public)/,
-		loader: 'babel',
+		loader: 'babel-loader',
 		query: babelQuery
 	},
 	{
@@ -50,22 +50,22 @@ module.exports = [
 	{
 		test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
 		exclude: /(node_modules|bower_components)/,
-		loader: "file"
+		loader: "file-loader"
 	},
 	{
 		test: /\.(woff|woff2)$/,
 		exclude: /(node_modules|bower_components)/,
-		loader: "url?prefix=font/&limit=5000"
+		loader: "url-loader?prefix=font/&limit=5000"
 	},
 	{
 		test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
 		exclude: /(node_modules|bower_components)/,
-		loader: "url?limit=10000&mimetype=application/octet-stream"
+		loader: "url-loader?limit=10000&mimetype=application/octet-stream"
 	},
 	{
 		test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
 		exclude: /(node_modules|bower_components)/,
-		loader: "url?limit=10000&mimetype=image/svg+xml"
+		loader: "url-loader?limit=10000&mimetype=image/svg+xml"
 	},
 	{
 		test: /\.gif/,

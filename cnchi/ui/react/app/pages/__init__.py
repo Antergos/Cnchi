@@ -25,25 +25,25 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
-
-import os
-import importlib
-
-__all__ = ['ALL_PAGES']
-
-
-class AllPages:
-    pass
-
-ALL_PAGES = AllPages()
-current_dir = os.path.dirname(__file__)
-
-for page_dir in os.listdir(current_dir):
-    if '_' in page_dir or not os.path.isdir(os.path.join(current_dir, page_dir)):
-        continue
-
-    page_name = '{}Page'.format(page_dir.split('-')[-1])
-    import_path = '.react.app.pages.{}.{}'.format(page_dir, page_name)
-    page_module = importlib.import_module(import_path, 'ui')
-
-    setattr(ALL_PAGES, page_name, getattr(page_module, page_name))
+#
+# import os
+# import importlib
+#
+# __all__ = ['ALL_PAGES']
+#
+#
+# class AllPages:
+#     pass
+#
+# ALL_PAGES = AllPages()
+# current_dir = os.path.dirname(__file__)
+#
+# for page_dir in os.listdir(current_dir):
+#     if '_' in page_dir or not os.path.isdir(os.path.join(current_dir, page_dir)):
+#         continue
+#
+#     page_name = '{}Page'.format(page_dir.split('-')[-1])
+#     import_path = '.react.app.pages.{}.{}'.format(page_dir, page_name)
+#     page_module = importlib.import_module(import_path, 'ui')
+#
+#     setattr(ALL_PAGES, page_name, getattr(page_module, page_name))

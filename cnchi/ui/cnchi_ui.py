@@ -51,7 +51,7 @@ class CnchiUI(BaseObject, metaclass=Singleton):
     def __init__(self, name='cnchi_ui', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)
 
-        self.pages = []
+        self._pages = dict()
         self._initialize_controller()
         self._create_and_connect_signals()
 
@@ -61,24 +61,22 @@ class CnchiUI(BaseObject, metaclass=Singleton):
     def _create_and_connect_signals(self):
         self._main_window.create_custom_signal('do-page-navigation-request')
         self._main_window.connect('do-page-navigation-request', self.page_navigation_request_cb)
-        self._allowed_signals.append('page-navigation-request')
+        self.all_signals.add('page-navigation-request')
 
     def _get_page_by_index(self, index):
         raise NotImplementedError
 
     def _get_page_by_name(self, name):
-        page = None
-
         if name not in self._controller.page_names:
             self.logger.error('Unknown page requested: %s', name)
-            return page
+            return
 
-        index = self._controller.page_names.index(name)
-
-        if index > (len(self.pages) - 1):
+        try:
+            return self._pages[name]
+        except KeyError:
             self._initialize_page(name)
 
-        return self.pages[index]
+        return self._pages[name]
 
     def _initialize_controller(self):
         ui_module_name = self.settings.ui.module
@@ -97,9 +95,8 @@ class CnchiUI(BaseObject, metaclass=Singleton):
         python_module = importlib.import_module(module_path)
         module_name = '{0}Module'.format(name)
         module = getattr(python_module, module_name)
-        page = self._controller.Page(name=name, index=index, module=module())
 
-        self.pages.append(page)
+        self._pages[name] = self._controller.Page(name=name, index=index, module=module())
 
     def do_restart(self):
         pass

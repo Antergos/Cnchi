@@ -28,6 +28,7 @@
 
 from .._base_module import (
     BaseModule,
+    bg_thread,
     locale,
     os
 )
@@ -38,12 +39,13 @@ import misc.i18n as i18n
 
 class LanguageModule(BaseModule):
 
-    def __init__(self, name='language_module'):
-        super().__init__(name=name)
+    def __init__(self, name='language_module', page_name='language'):
+        super().__init__(name=name, page_name=page_name)
 
         self.languages = []
         self.languages_ready = False
         self.current_locale = locale.getdefaultlocale()[0]
+        self.selected_language = self.settings.selected_language
         self.language_list = os.path.join(
             self.TOP_DIR,
             'data',
@@ -51,10 +53,46 @@ class LanguageModule(BaseModule):
             'languagelist.txt.gz'
         )
 
-    def get_lang(self):
+    def _langcode_to_lang(self, display_map):
+        # Special cases in which we need the complete current_locale string
+        if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
+            self.current_locale = self.current_locale.split("_")[0]
+
+        for lang, lang_code in display_map.items():
+            if lang_code[1] == self.current_locale:
+                return lang
+
+    def _prepare_languages_list(self):
+        """ Load languages list """
+        sorted_choices = display_map = None
+
+        try:
+            (current_language,
+             sorted_choices,
+             display_map) = i18n.get_languages(self.language_list)
+        except FileNotFoundError as file_error:
+            self.logger.exception(file_error)
+
+        current_language = self._langcode_to_lang(display_map)
+
+        for lang in sorted_choices:
+            if lang == current_language:
+                self.settings.selected_language = lang
+
+            self.languages.append(lang)
+
+    @staticmethod
+    def get_lang():
         return os.environ["LANG"].split(".")[0]
 
-    def get_locale(self):
+    def get_languages_cb(self, *args):
+        if not self.languages:
+            self._prepare_languages_list()
+
+        self._controller.trigger_js_event('get-languages-result', self.languages)
+
+    @staticmethod
+    def get_locale():
         default_locale = locale.getdefaultlocale()
         if len(default_locale) > 1:
             return default_locale[0] + "." + default_locale[1]
@@ -67,15 +105,6 @@ class LanguageModule(BaseModule):
         # TODO: Apply the selected language if its not English!
         self.can_go_to_next_page = True
         self.go_to_next_page()
-
-    def langcode_to_lang(self, display_map):
-        # Special cases in which we need the complete current_locale string
-        if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
-            self.current_locale = self.current_locale.split("_")[0]
-
-        for lang, lang_code in display_map.items():
-            if lang_code[1] == self.current_locale:
-                return lang
 
     def set_language(self, locale_code):
         if not locale_code:
@@ -91,25 +120,6 @@ class LanguageModule(BaseModule):
             #     logging.warning(
             #         "Can't find translation file for the %s language",
             #         locale_code)
-
-    def set_languages_list(self):
-        """ Load languages list """
-        sorted_choices = display_map = None
-
-        try:
-            (current_language,
-             sorted_choices,
-             display_map) = i18n.get_languages(self.language_list)
-        except FileNotFoundError as file_error:
-            self.logger.exception(file_error)
-
-        current_language = self.langcode_to_lang(display_map)
-
-        for lang in sorted_choices:
-            if lang == current_language:
-                self.settings.selected_language = lang
-
-            self.languages.append(lang)
 
     def prepare(self):
         pass

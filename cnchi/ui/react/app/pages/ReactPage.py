@@ -69,7 +69,7 @@ class ReactPage(BaseObject):
 
         super().__init__(name=name, *args, **kwargs)
 
-        self.signals = ['page-navigation-request', '--trigger-event', 'get-state', 'set-state']
+        self.signals = ['--trigger-event', 'get-state', 'set-state']
         self.tabs = []
         self.index = index
         self.module = module
@@ -86,63 +86,55 @@ class ReactPage(BaseObject):
     def _create_and_connect_signals(self):
         """
         Creates the page's signals and connects them to their callbacks (handlers).
-        Signals be appended to `self.signals` prior to calling this method.
+        Signals should be appended to `self.signals` prior to calling this method.
 
         A corresponding result signal will be created for each signal and added to the
-        allowed signals list automatically. Signal names will have 'do-' prepended to them.
+        signals list automatically. Signal names will have 'do-' prepended to them.
         Their corresponding result signal will have '-result' appended to it.
 
         The name of the callback method that will be registered for each signal will be the
         signal name as it appears in `self.signals` at the time of calling this method with
-        hyphens replaced by underscores and should end with '_cb'.
+        hyphens replaced by underscores and it will end with '_cb'.
 
         A callback is not automatically connected for signals that start with two hyphens.
 
         Example:
-            >>> self.signals = ['some-action', 'some-other-action', '--private-action']
+            >>> self.signals = ['some-action', 'some-other-action', '--some-event']
             >>> self._create_and_connect_signals()
             >>> self.signals
                 ['do-some-action', 'some-action-result', 'do-other-action',
-                 'other-action-result', 'private-action']
+                 'other-action-result', 'some-event']
 
-            With the above, these callback methods will have been registered (they must exist):
+            With the above, these callback methods will have been registered (so they must exist):
                 'do-some-action':  `self.some_action_cb`
                 'do-other-action': `self.other_action_cb`
 
         """
+        for signal in self.signals:
+            needs_callback = not signal.startswith('--')
+            signal_name = 'do-{}'.format(signal) if needs_callback else signal[2:]
+            result_signal_name = '{}-result'.format(signal) if needs_callback else signal_name
 
-        signals = []
+            if signal_name not in self.all_signals:
+                self._main_window.create_custom_signal(signal_name)
+                self.all_signals.add(result_signal_name)
 
-        for _signal in self.signals:
-            if _signal in self._allowed_signals:
+            if result_signal_name not in self.all_signals:
+                self._main_window.create_custom_signal(result_signal_name)
+
+            if signal.startswith('--'):
                 continue
 
-            result_signal_name = '{}-result'.format(_signal)
-            signal_name = 'do-{}'.format(_signal) if not _signal.startswith('--') else _signal[2:]
+            callback_name = '{}_cb'.format(signal.replace('-', '_'))
 
-            signals_to_add = [
-                s for s in [signal_name, result_signal_name]
-                if s not in self._allowed_signals
-            ]
-
-            for name in signals_to_add:
-                self._allowed_signals.append(name)
-                self._main_window.create_custom_signal(name)
-                signals.append(name)
-
-            if _signal.startswith('--'):
-                continue
-
-            callback_name = '{}_cb'.format(_signal.replace('-', '_'))
-
-            if '-get-' in _signal:
+            try:
                 callback = getattr(self.module, callback_name)
-            else:
+            except AttributeError:
                 callback = getattr(self, callback_name)
 
             self._main_window.connect(signal_name, callback)
 
-        self.signals = signals
+        self.signals = self.all_signals
 
     def _generate_tabs_list(self):
         tabs = self._controller.page_names
@@ -150,7 +142,8 @@ class ReactPage(BaseObject):
         self._top_level_tabs = [t for t in tabs if t not in excluded]
 
     def _get_default_state(self):
-        this_page_state = self.module.get_default_state()
+        install_options = self.settings.install_options[self.name.capitalize()]
+        this_page_state = install_options.options.as_dict()
         default_state = {
             'page_name': self.name,
             'top_level_tabs': self._top_level_tabs,
@@ -168,9 +161,7 @@ class ReactPage(BaseObject):
         self.signals.extend(get_data)
 
     def get_state_cb(self, *args):
-        self._controller.emit_js(
-            'trigger-event', 'get-initial-state-result', self.state
-        )
+        self._controller.emit_js('trigger-event', 'get-state-result', self.state)
 
     def prepare(self):
         """ This must be implemented by subclasses """

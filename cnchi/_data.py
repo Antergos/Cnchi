@@ -39,11 +39,9 @@ class DataObject:
         from_dict (dict): Initialize object using dict.
 
     """
-
     def __init__(self, from_dict=None):
         _from_dict = from_dict is not None and isinstance(from_dict, dict)
         self._all_attrs = []
-
         self._lock = RLock()
         self._initialized = False
 
@@ -92,7 +90,7 @@ class DataObject:
         return self.__setattr__(item, value)
 
     def as_dict(self):
-        excluded_attrs = ['as_dict', '_lock', '_initialized']
+        excluded_attrs = ['as_dict', '_lock', '_initialized', '_all_attrs']
 
         def _excluded(item):
             return item in excluded_attrs or (item.startswith('__') and item.endswith('__'))
