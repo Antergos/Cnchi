@@ -36,13 +36,6 @@ class Grid extends CnchiComponent {
 
 	constructor( props ) {
 		super( props );
-
-		this.defaultProps = {
-			isContainer: false,
-			size: '100',
-			prefix: '',
-			suffix: ''
-		};
 	}
 
 	render() {
@@ -60,6 +53,14 @@ class Grid extends CnchiComponent {
 		)
 	}
 }
+
+
+Grid.defaultProps = {
+	isContainer: false,
+	size: '100',
+	prefix: '',
+	suffix: ''
+};
 
 
 export default Grid;

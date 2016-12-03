@@ -27,11 +27,11 @@
 
 // 3rd-Party Libs
 import React from 'react'
+import Button from 'react-md/lib/Buttons';
 
 import CnchiComponent from '../CnchiComponent';
 import Navigation from '../Navigation/Navigation';
 import Grid from '../Grid/Grid';
-import _cn from '../../utils/misc';
 import { t } from '../../utils/locale';
 
 import logo from '../../assets/images/overlay.png'
@@ -53,15 +53,9 @@ class Header extends CnchiComponent {
 						<Grid size="75" className="cnchi_title">Cnchi { t( 'Installer' ) }</Grid>
 					</Grid>
 					<Grid size="25" prefix="25" className="window_buttons">
-						<a className="waves-effect waves-light waves-circle btn-flat no-drag">
-							<i className="material-icons">remove</i>
-						</a>
-						<a className="waves-effect waves-light waves-circle btn-flat no-drag">
-							<i className="material-icons">fullscreen</i>
-						</a>
-						<a className="waves-effect waves-light waves-circle btn-flat no-drag">
-							<i className="material-icons">close</i>
-						</a>
+						<Button icon>remove</Button>
+						<Button icon>fullscreen</Button>
+						<Button icon>close</Button>
 					</Grid>
 				</Grid> {/* <<<---- HEADER TOP <<<---- */}
 

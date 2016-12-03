@@ -1,0 +1,15 @@
+@import '~react-md/src/scss/react-md';
+
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Material Icons'),
+		 local('MaterialIcons-Regular'),
+		 url('../assets/css/MaterialIcons-Regular.woff') format('woff');
+}
+
+$md-primary-color: #2e66b9;
+$md-secondary-color: #e91e63;
+
+@include react-md-everything;

@@ -30,22 +30,17 @@
 
 # Standard Lib
 from _base_object import (
+    BaseObject,
+    Singleton
+)
+from _base_object import GLib
+from _base_object import (
     ascii_uppercase,
     choice,
     json
 )
-
-# 3rd-Party Libs
-from _base_object import GLib
-
-# This Application
-from _base_object import (
-    BaseObject,
-    Singleton
-)
-
+from ui.gtk.web_container import WebContainer
 from ui.gtk.main_window import MainWindow
-from .container import MainContainer
 from ..pages.ReactPage import ReactPage
 
 
@@ -70,7 +65,7 @@ class ReactController(BaseObject, metaclass=Singleton):
         self.Page = ReactPage
 
         main_window = MainWindow()
-        main_container = MainContainer()
+        main_container = WebContainer()
 
         main_window.widget.add(self._web_view)
         self._initialize_pages_list()

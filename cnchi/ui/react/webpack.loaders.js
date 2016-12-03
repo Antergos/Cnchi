@@ -88,8 +88,12 @@ const Loaders = [
 		loader: "url-loader?limit=10000&mimetype=image/png"
 	},
 	{
+		test: /\.scss$/,
+		loader: Styles.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!sass-loader' }),
+	},
+	{
 		test: /\.css$/,
-		loader: Styles.extract('css-loader' ),
+		loader: Styles.extract({ fallbackLoader: 'style-loader', loader: 'css-loader' }),
 	},
 ];
 

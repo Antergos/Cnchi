@@ -34,10 +34,11 @@ import Grid from '../Grid/Grid';
 import all_pages from '../../pages';
 import _cn from '../../utils/misc';
 
-import '../../assets/js/materialize.min.js';
-import '../../assets/css/vendor/materialize.css';
+// import '../../assets/js/materialize.min.js';
+// import '../../assets/css/vendor/materialize.css';
 import '../../assets/css/vendor/unsemantic-grid.css';
 import '../../assets/css/style.css';
+import '../../core/global.scss'
 
 
 class App extends CnchiComponent {

@@ -55,9 +55,9 @@ WebsiteDataManager = WebKit2.WebsiteDataManager
 WebView = WebKit2.WebView
 
 
-class MainContainer(BaseWidget, metaclass=Singleton):
+class WebContainer(BaseWidget, metaclass=Singleton):
     """
-    Main entry-point for HTML Pages UI.
+    Gtk web container for the React UI.
 
     Class Attributes:
         Also see `BaseWidget.__doc__`
