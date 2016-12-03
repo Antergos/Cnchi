@@ -27,7 +27,8 @@
 
 // 3rd-Party Libs
 import React from 'react'
-import { Input, Button } from 'react-materialize';
+import Button from 'react-md/lib/Buttons';
+import SelectField from 'react-md/lib/SelectFields';
 
 import CnchiComponent from '../../components/CnchiComponent';
 import Grid from '../../components/Grid/Grid';
@@ -59,22 +60,17 @@ class LanguagePage extends CnchiComponent {
 				<Grid size="30" prefix="35" suffix="35" className="language_selection">
 					<Grid size="100">
 						<form>
-							<Input
+							<SelectField
 								id="language_select"
-								s={12}
-								type="select"
 								label={ t( 'Installer Language' ) }
 								value={ this.props.selectedLanguage ? this.props.selectedLanguage : 'default' }
-								onChange={ this.onLanguageSelected }>
-								<option key="default" value="default">{ t( 'Choose a language' ) }</option>
-								{ this.props.languages.map( ( language ) => {
-									return <option key={ language } value={ language }>{ language }</option>
-								} )}
-							</Input>
+								onChange={ this.onLanguageSelected }
+								menuItems={ this.props.languages }>
+							</SelectField>
 						</form>
 					</Grid>
 					<Grid size="100" className="button_wrapper">
-						<Button id="continue_btn" waves="light" floating large className="pink accent-2" icon="forward"/>
+						<Button floating secondary>forward</Button>
 					</Grid>
 				</Grid>
 			</Grid>

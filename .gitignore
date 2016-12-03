@@ -48,3 +48,4 @@ nosetests.xml
 
 # Nodejs
 node_modules
+/cnchi/ui/react/dist/
