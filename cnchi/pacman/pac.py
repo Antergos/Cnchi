@@ -93,7 +93,7 @@ class Pac(object):
         if conf_path is not None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
             self.initialize_alpm()
-            logging.debug('ALPM REPO DB ORDER IS: %s', self.config.repo_order)
+            logging.debug('ALPM repository database order is: %s', self.config.repo_order)
         else:
             raise pyalpm.error
 
