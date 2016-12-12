@@ -158,6 +158,12 @@ class Installation(object):
         else:
             boot_partition = ""
 
+        # EFI partition
+        if "/boot/efi" in self.mount_devices:
+            efi_partition = self.mount_devices["/boot/efi"]
+        else:
+            efi_partition = ""
+
         # Swap partition
         if "swap" in self.mount_devices:
             swap_partition = self.mount_devices["swap"]
@@ -171,7 +177,7 @@ class Installation(object):
             cmd = ["zfs", "mount", "-a"]
             call(cmd)
         elif root_partition:
-            txt = "Mounting partition {0} into {1} directory".format(root_partition, DEST_DIR)
+            txt = "Mounting root partition {0} into {1} directory".format(root_partition, DEST_DIR)
             logging.debug(txt)
             cmd = ['mount', root_partition, DEST_DIR]
             call(cmd, fatal=True)
@@ -180,9 +186,18 @@ class Installation(object):
         boot_path = os.path.join(DEST_DIR, "boot")
         os.makedirs(boot_path, mode=0o755, exist_ok=True)
         if boot_partition:
-            txt = _("Mounting partition {0} into {1} directory").format(boot_partition, boot_path)
+            txt = _("Mounting boot partition {0} into {1} directory").format(boot_partition, boot_path)
             logging.debug(txt)
             cmd = ['mount', boot_partition, boot_path]
+            call(cmd, fatal=True)
+
+        if self.method == "zfs" and efi_partition:
+            # In automatic zfs mode, it could be that we have a specific EFI
+            # partition (different from /boot partition). This happens if using
+            # EFI and grub2 bootloader
+            txt = _("Mounting EFI partition {0} into {1} directory").format(efi_partition, efi_path)
+            logging.debug(txt)
+            cmd = ['mount', efi_partition, efi_path]
             call(cmd, fatal=True)
 
         # In advanced mode, mount all partitions (root and boot are already mounted)
