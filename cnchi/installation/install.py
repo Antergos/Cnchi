@@ -195,6 +195,7 @@ class Installation(object):
             # In automatic zfs mode, it could be that we have a specific EFI
             # partition (different from /boot partition). This happens if using
             # EFI and grub2 bootloader
+            efi_path = os.path.join(DEST_DIR, "boot", "efi")
             txt = _("Mounting EFI partition {0} into {1} directory").format(efi_partition, efi_path)
             logging.debug(txt)
             cmd = ['mount', efi_partition, efi_path]
