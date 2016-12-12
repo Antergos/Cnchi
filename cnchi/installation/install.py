@@ -196,6 +196,7 @@ class Installation(object):
             # partition (different from /boot partition). This happens if using
             # EFI and grub2 bootloader
             efi_path = os.path.join(DEST_DIR, "boot", "efi")
+            os.makedirs(efi_path, mode=0o755, exist_ok=True)
             txt = _("Mounting EFI partition {0} into {1} directory").format(efi_partition, efi_path)
             logging.debug(txt)
             cmd = ['mount', efi_partition, efi_path]
