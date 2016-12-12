@@ -601,7 +601,7 @@ class InstallationZFS(GtkBaseBox):
                 self.append_change("create", device_path, "Antergos Boot (512MB)")
             else:
                 # UEFI
-                if self.bootloader == "grub":
+                if self.bootloader == "grub2":
                     self.append_change("create", device_path, "UEFI System (200MB)")
                     self.append_change("create", device_path, "Antergos Boot (512MB)")
                 else:
@@ -709,10 +709,11 @@ class InstallationZFS(GtkBaseBox):
 
                 # Create BOOT partition
                 wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
-                fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                 self.devices['boot'] = "{0}{1}".format(device_path, part_num)
                 self.fs_devices[self.devices['boot']] = "ext4"
                 self.mount_devices['/boot'] = self.devices['boot']
+                # mkfs
+                fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                 part_num += 1
             else:
                 # UEFI and GPT
@@ -723,23 +724,27 @@ class InstallationZFS(GtkBaseBox):
                     self.devices['efi'] = "{0}{1}".format(device_path, part_num)
                     self.fs_devices[self.devices['efi']] = "vfat"
                     self.mount_devices['/boot/efi'] = self.devices['efi']
+                    # mkfs
+                    fs.create_fs(self.devices['efi'], self.fs_devices[self.devices['efi']], "EFI")
                     part_num += 1
 
                     # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
-                    fs.create_fs(device_path + str(part_num), "ext4", "ANTERGOS_BOOT")
                     self.devices['boot'] = "{0}{1}".format(device_path, part_num)
                     self.fs_devices[self.devices['boot']] = "ext4"
                     self.mount_devices['/boot'] = self.devices['boot']
+                    # mkfs
+                    fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                     part_num += 1
                 else:
                     # systemd-boot, refind
                     # Create BOOT partition
                     wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
-                    fs.create_fs(device_path + str(part_num), "vfat", "ANTERGOS_BOOT")
                     self.devices['boot'] = "{0}{1}".format(device_path, part_num)
                     self.fs_devices[self.devices['boot']] = "vfat"
                     self.mount_devices['/boot'] = self.devices['boot']
+                    # mkfs
+                    fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                     part_num += 1
 
             # The rest of the disk will be of solaris type
@@ -772,10 +777,11 @@ class InstallationZFS(GtkBaseBox):
             else:
                 fs_boot = "ext4"
 
-            fs.create_fs(device_path + part, fs_boot, "ANTERGOS_BOOT")
             self.devices['boot'] = "{0}{1}".format(device_path, part)
             self.fs_devices[self.devices['boot']] = fs_boot
             self.mount_devices['/boot'] = self.devices['boot']
+            # mkfs
+            fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
 
             # The rest of the disk will be of solaris type
             start = end
