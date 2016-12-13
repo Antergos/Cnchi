@@ -3,49 +3,23 @@
 # C extensions
 *.so
 
-# Packages
-*.egg
-*.egg-info
 build
 eggs
-parts
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
 __pycache__
 
 # Installer logs
 pip-log.txt
 
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
 # Translations
 *.mo
 *.tags
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
 # Backup files (joe et al)
 *~
+
 # PyCharm Config Files
 .idea
-.idea*
-.idea/*.xml
-
-# Documentation
-#*.rst
-#*.doctree
 
 # Nodejs
 node_modules
-/cnchi/ui/react/dist/
+cnchi/ui/react/dist/**
