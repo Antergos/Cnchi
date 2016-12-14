@@ -98,7 +98,6 @@
 			<packages>
 				<pkgname>antergos-gnome-defaults-list</pkgname>
 				<pkgname>baobab</pkgname>  <!-- Disk usage -->
-				<!-- <pkgname>bijiben</pkgname> -->
 				<pkgname>brasero</pkgname>
 				<pkgname>cdrkit</pkgname>
 				<pkgname>evince</pkgname>
@@ -152,7 +151,6 @@
 			<packages>
 				<pkgname>antergos-gnome-defaults-list</pkgname>
 				<pkgname>baobab</pkgname>  <!-- Disk usage -->
-				<!-- <pkgname>bijiben</pkgname> -->
 				<pkgname>brasero</pkgname>
 				<pkgname>cdrkit</pkgname>
 				<pkgname>cinnamon</pkgname>
@@ -233,23 +231,6 @@
 			</packages>
 		</edition>
 
-		<edition name="lxqt" description="LXQT Desktop">
-			<packages>
-				<pkgname>lxqt-about</pkgname>
-				<pkgname>lxqt-config</pkgname>
-				<pkgname>lxqt-notificationd</pkgname>
-				<pkgname>lxqt-openssh-askpass</pkgname>
-				<pkgname>lxqt-panel</pkgname>
-				<pkgname>lxqt-policykit</pkgname>
-				<pkgname>lxqt-powermanagement</pkgname>
-				<pkgname>lxqt-qtplugin</pkgname>
-				<pkgname>lxqt-runner</pkgname>
-				<pkgname>lxqt-session</pkgname>
-				<pkgname>openbox</pkgname>
-				<pkgname>pcmanfm-qt</pkgname>
-			</packages>
-		</edition>
-
 		<edition name="Mate" description="MATE Desktop">
 			<packages>
 				<pkgname>atril</pkgname>
@@ -286,30 +267,12 @@
 			</packages>
 		</edition>
 
-		<edition name="Enlightenment" description="Enlightenment Desktop">
-			<packages>
-				<pkgname>antergos-enlightenment-setup</pkgname>
-				<pkgname>ark</pkgname>
-				<pkgname>emotion_generic_players</pkgname>
-				<pkgname>enlightenment</pkgname>
-				<pkgname nm='true' name='connman'>connman</pkgname>
-				<pkgname>econnman</pkgname>
-				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
-				<pkgname>rage</pkgname> <!-- video player -->
-				<pkgname>terminology</pkgname> <!-- terminal emulator -->
-				<pkgname>ttf-dejavu</pkgname>
-				<pkgname>ttf-bitstream-vera</pkgname>
-				<pkgname>udisks2</pkgname>
-				<pkgname>xdg-user-dirs-gtk</pkgname>
-				<pkgname>vlc</pkgname>
-			</packages>
-		</edition>
-
 		<edition name="openbox" description="Openbox Window Manager">
 			<packages>
 				<pkgname>antergos-openbox-setup</pkgname>
 				<pkgname>arandr</pkgname>
 				<pkgname>conky</pkgname>
+                <pkgname>conky-manager</pkgname>
 				<pkgname>cdrkit</pkgname>
 				<pkgname>file-roller</pkgname>
 				<pkgname>galculator</pkgname>
@@ -321,10 +284,10 @@
 				<pkgname>gvfs-mtp</pkgname>
 				<pkgname>light-locker</pkgname>
 				<pkgname>light-locker-settings</pkgname>
-				<pkgname>lxappearance-obconf</pkgname>
-				<pkgname>lxinput</pkgname>
+				<pkgname>lxappearance-obconf-gtk3</pkgname>
+				<pkgname>lxinput-gtk3</pkgname>
 				<pkgname>lxmenu-data</pkgname>
-				<pkgname>lxtask</pkgname>
+				<pkgname>lxtask-gtk3</pkgname>
 				<pkgname>lxsession</pkgname>
 				<pkgname>lxterminal</pkgname>
 				<pkgname>mousepad</pkgname>
@@ -332,6 +295,7 @@
 				<pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
 				<pkgname>networkmanager-openvpn</pkgname>
 				<pkgname>networkmanager-pptp</pkgname>
+                <pkgname>notify-osd</pkgname>
 				<pkgname>obconf</pkgname>
 				<pkgname>oblogout</pkgname>
 				<pkgname>obmenu</pkgname>
@@ -354,7 +318,6 @@
 				<pkgname>waldorf-ui-theme</pkgname>
 				<pkgname>xdg-user-dirs-gtk</pkgname>
 				<pkgname>xfburn</pkgname>
-				<pkgname>xfce4-notifyd</pkgname>
 				<pkgname>xscreensaver</pkgname>
 			</packages>
 		</edition>
@@ -362,8 +325,150 @@
 		<edition name="KDE" description="KDE Desktop">
 			<packages>
 				<pkgname>antergos-kde-setup</pkgname>
+                <pkgname>ark</pkgname>
+                <pkgname>aspell-en</pkgname>
+                <pkgname>breeze</pkgname>
+                <pkgname>breeze-gtk</pkgname>
+                <pkgname>breeze-kde4</pkgname>
+                <pkgname>cdrdao</pkgname>
+                <pkgname>clementine</pkgname>
+                <pkgname>dolphin</pkgname>
+                <pkgname>dolphin-plugins</pkgname>
+                <pkgname>dvd+rw-tools</pkgname>
+                <pkgname>ffmpegthumbs</pkgname>
+                <pkgname>gwenview</pkgname>
+                <pkgname>k3b</pkgname>
+                <pkgname>kate</pkgname>
+                <pkgname>kcalc</pkgname>
+                <pkgname>kde-gtk-config</pkgname>
+                <pkgname>kdebase-kdepasswd</pkgname>
+                <pkgname>kdebase-kdialog</pkgname>
+                <pkgname>kdebase-kfind</pkgname>
+                <pkgname>kdegraphics-okular</pkgname>
+                <pkgname>kdegraphics-thumbnailers</pkgname>
+                <pkgname>kdenetwork-kopete</pkgname>
+                <pkgname>kde-servicemenus-rootactions</pkgname>
+                <pkgname>kdesudo</pkgname>
+                <pkgname>kdeutils-sweeper</pkgname>
+                <pkgname>kdelibs4support</pkgname>
+                <pkgname>kfaenza-icon-theme</pkgname>
+                <pkgname>kipi-plugins</pkgname>
+                <pkgname>khelpcenter</pkgname>
+                <pkgname>kinfocenter</pkgname>
+                <pkgname>kmenuedit</pkgname>
+                <pkgname>konsole</pkgname>
+                <pkgname>kscreen</pkgname>
+                <pkgname>ksshaskpass</pkgname>
+                <pkgname>ksysguard</pkgname>
+                <pkgname>kwallet-pam</pkgname>
+                <pkgname>kwalletmanager</pkgname>
+                <pkgname>kwayland-integration</pkgname>
+                <pkgname>kwin</pkgname>
+                <pkgname>kwrited</pkgname>
+                <pkgname>milou</pkgname>
+                <pkgname>nm-connection-editor</pkgname>
+                <pkgname>numix-frost-themes</pkgname>
+                <pkgname>numix-icon-theme-square</pkgname>
+                <pkgname>oxygen</pkgname>
+                <pkgname>plasma-desktop</pkgname>
+                <pkgname>plasma-nm</pkgname>
+                <pkgname>plasma-pa</pkgname>
+                <pkgname>plasma-workspace</pkgname>
+                <pkgname>plasma-workspace-wallpapers</pkgname>
+                <pkgname>powerdevil</pkgname>
+                <pkgname>qtcurve-qt5</pkgname>
+                <pkgname>qtcurve-qt4</pkgname>
+                <pkgname>qtcurve-gtk2</pkgname>
+                <pkgname>qtcurve-utils</pkgname>
+                <pkgname>spectacle</pkgname>
+                <pkgname>systemsettings</pkgname>
+                <pkgname>transmission-qt</pkgname>
+                <pkgname>user-manager</pkgname>
+                <pkgname>vlc</pkgname>
+                <pkgname>xdg-user-dirs</pkgname>
+                <pkgname>kdeconnect</pkgname>
+            </packages>
+		</edition>
+
+        <!-- EXPERIMENTAL EDITIONS -->
+
+        <edition name="lxqt" description="LXQT Desktop">
+			<packages>
+				<pkgname>lxqt-about</pkgname>
+				<pkgname>lxqt-config</pkgname>
+				<pkgname>lxqt-notificationd</pkgname>
+				<pkgname>lxqt-openssh-askpass</pkgname>
+				<pkgname>lxqt-panel</pkgname>
+				<pkgname>lxqt-policykit</pkgname>
+				<pkgname>lxqt-powermanagement</pkgname>
+				<pkgname>lxqt-qtplugin</pkgname>
+				<pkgname>lxqt-runner</pkgname>
+				<pkgname>lxqt-session</pkgname>
+				<pkgname>openbox</pkgname>
+				<pkgname>pcmanfm-qt</pkgname>
 			</packages>
 		</edition>
+
+		<edition name="Enlightenment" description="Enlightenment Desktop">
+			<packages>
+				<pkgname>antergos-enlightenment-setup</pkgname>
+				<pkgname>ark</pkgname>
+				<pkgname>emotion_generic_players</pkgname>
+				<pkgname>enlightenment</pkgname>
+				<pkgname nm='true' name='connman'>connman</pkgname>
+				<pkgname>econnman</pkgname>
+				<!--<pkgname>gtk-theme-e17gtk</pkgname>-->
+				<pkgname>rage</pkgname> <!-- video player -->
+				<pkgname>terminology</pkgname> <!-- terminal emulator -->
+				<pkgname>ttf-dejavu</pkgname>
+				<pkgname>ttf-bitstream-vera</pkgname>
+				<pkgname>udisks2</pkgname>
+				<pkgname>xdg-user-dirs-gtk</pkgname>
+				<pkgname>vlc</pkgname>
+			</packages>
+		</edition>
+
+        <edition name="Budgie" description="Solus desktop">
+            <packages>
+                <package>budgie-desktop</package>
+                <package>gnome</package>
+            </packages>
+        </edition>
+
+        <edition name="i3" description="Tiling window manager">
+            <packages>
+                <pkgname>arandr</pkgname>
+                <pkgname>cdrkit</pkgname>
+                <pkgname>dmenu</pkgname>
+                <pkgname>file-roller</pkgname>
+                <pkgname>galculator</pkgname>
+                <pkgname>gpicview</pkgname>
+                <pkgname>gvfs-mtp</pkgname>
+                <pkgname>i3-wm</pkgname>
+                <pkgname>i3lock</pkgname>
+                <pkgname>i3status</pkgname>
+                <pkgname>light-locker</pkgname>
+				<pkgname>light-locker-settings</pkgname>
+                <pkgname>lxappearance-gtk3</pkgname>
+                <pkgname>lxinput-gtk3</pkgname>
+                <pkgname>mpv</pkgname>
+                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+                <pkgname>networkmanager-openvpn</pkgname>
+				<pkgname>networkmanager-pptp</pkgname>
+                <pkgname>nitrogen</pkgname>
+                <pkgname>notify-osd</pkgname>
+                <pkgname>moc</pkgname>
+                <pkgname>pcmanfm</pkgname>
+                <pkgname>polkit-gnome</pkgname>
+                <pkgname>scrot</pkgname>
+                <pkgname>terminator</pkgname>
+				<pkgname>udiskie</pkgname>
+				<pkgname>volumeicon</pkgname>
+				<pkgname>xdg-user-dirs-gtk</pkgname>
+				<pkgname>xfburn</pkgname>
+				<pkgname>xscreensaver</pkgname>
+            </packages>
+        </edition>
 	</editions>
 
 	<!-- User desired features -->
