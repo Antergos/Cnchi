@@ -65,21 +65,6 @@ set_gsettings() {
 	sed -i "s|@CN_BROWSER@|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
 	cp "${CN_SCHEMA_OVERRIDE}" "${CN_SCHEMA_DIR}"
 	glib-compile-schemas "${CN_SCHEMA_DIR}"
-
-#	cp /usr/share/cnchi/scripts/set-settings "${CN_DESTDIR}/usr/bin/set-settings"
-#	chmod +x "${CN_DESTDIR}/usr/bin/set-settings"
-#
-#	mkdir -p "${CN_DESTDIR}/var/run/dbus"
-#	mount --rbind /var/run/dbus "${CN_DESTDIR}/var/run/dbus"
-#
-#	mkdir -p "${CN_DESTDIR}/var/run/user/1000"
-#	chown -R 1000:100 "${CN_DESTDIR}/var/run/user/1000"
-#
-#	arch-chroot "${CN_DESTDIR}" \
-#		/usr/bin/sudo -u "${CN_USER_NAME}" /usr/bin/set-settings "${CN_DESKTOP}" >/dev/null 2>&1
-#
-#	rm "${CN_DESTDIR}/usr/bin/set-settings"
-#	umount -l "${CN_DESTDIR}/var/run/dbus"
 }
 
 gnome_settings() {
@@ -153,7 +138,10 @@ xfce_settings() {
 }
 
 openbox_settings() {
-	# Setup user defaults
+    # Set gsettings
+	set_gsettings
+
+    # Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${CN_USER_NAME}
 
 	# Set skel directory
@@ -257,7 +245,10 @@ nox_settings() {
 }
 
 enlightenment_settings() {
-	# http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
+    # Set gsettings
+	set_gsettings
+
+    # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
 
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${CN_USER_NAME}
