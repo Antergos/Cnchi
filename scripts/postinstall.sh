@@ -138,7 +138,10 @@ xfce_settings() {
 }
 
 openbox_settings() {
-	# Setup user defaults
+    # Set gsettings
+	set_gsettings
+
+    # Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${CN_USER_NAME}
 
 	# Set skel directory
@@ -242,7 +245,10 @@ nox_settings() {
 }
 
 enlightenment_settings() {
-	# http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
+    # Set gsettings
+	set_gsettings
+
+    # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
 
 	# Setup user defaults
 	chroot ${CN_DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${CN_USER_NAME}
