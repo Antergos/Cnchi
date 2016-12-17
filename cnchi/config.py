@@ -45,6 +45,9 @@ class ConfigLoader:
         self.logger = logger
 
     def load_config(self):
+        if self.config_loaded:
+            return
+
         config_paths = [self.config_path, self.config_path_fallback]
         config_files = [p for p in config_paths if os.path.exists(p)]
 

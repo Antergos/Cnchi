@@ -13,6 +13,8 @@ import sys
 import uuid
 
 # 3rd-Party Libs
+from whither.app import App
+
 try:
     from bugsnag.handlers import BugsnagHandler
     import bugsnag
@@ -29,8 +31,8 @@ import misc.extra as misc
 import show_message as show
 
 try:
-    from _base_object import BaseObject, Gio, Gtk
-    from ui.cnchi_ui import CnchiUI
+    from _base_object import BaseObject
+    # from ui.cnchi_ui import CnchiUI
 except ImportError as err:
     msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
     logging.exception(msg)

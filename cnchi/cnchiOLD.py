@@ -34,6 +34,11 @@ from _initial_imports import *
 APP_NAME = 'cnchi'
 LOCALE_DIR = '/usr/share/locale'
 
+# At least this GTK version is needed
+GTK_VERSION_NEEDED = "3.22.0"
+
+FLAGS = Gio.ApplicationFlags.FLAGS_NONE
+
 
 class CnchiApp(BaseObject):
     """ Cnchi Installer """
@@ -41,11 +46,12 @@ class CnchiApp(BaseObject):
     TMP_PID_FILE = '/tmp/cnchi.pid'
 
     def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
+
         super().__init__(name=name, logger=logger, *args, **kwargs)
 
-        self.widget = App('Cnchi')
+        self.widget = Gtk.Application(application_id='com.antergos.cnchi', flags=FLAGS)
 
-        # self.widget.connect('activate', self.activate_cb)
+        self.widget.connect('activate', self.activate_cb)
 
         # Command line options
         self.cmd_line = cmd_line
@@ -235,43 +241,43 @@ def setup_logging(cmd_line):
     return logger
 
 
-# def check_gtk_version():
-#     """ Check GTK version """
-#     # Check desired GTK Version
-#     major_needed = int(GTK_VERSION_NEEDED.split(".")[0])
-#     minor_needed = int(GTK_VERSION_NEEDED.split(".")[1])
-#     micro_needed = int(GTK_VERSION_NEEDED.split(".")[2])
-#
-#     # Check system GTK Version
-#     major = Gtk.get_major_version()
-#     minor = Gtk.get_minor_version()
-#     micro = Gtk.get_micro_version()
-#
-#     # Cnchi will be called from our liveCD that already
-#     # has the latest GTK version. This is here just to
-#     # help testing Cnchi in our environment.
-#     wrong_gtk_version = False
-#     if major_needed > major:
-#         wrong_gtk_version = True
-#     if major_needed == major and minor_needed > minor:
-#         wrong_gtk_version = True
-#     if major_needed == major and minor_needed == minor and micro_needed > micro:
-#         wrong_gtk_version = True
-#
-#     if wrong_gtk_version:
-#         text = "Detected GTK version {0}.{1}.{2} but version >= {3} is needed."
-#         text = text.format(major, minor, micro, GTK_VERSION_NEEDED)
-#         try:
-#             import show_message as show
-#             show.error(None, text)
-#         except ImportError as import_error:
-#             logging.error(import_error)
-#         finally:
-#             return False
-#     else:
-#         logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
-#
-#     return True
+def check_gtk_version():
+    """ Check GTK version """
+    # Check desired GTK Version
+    major_needed = int(GTK_VERSION_NEEDED.split(".")[0])
+    minor_needed = int(GTK_VERSION_NEEDED.split(".")[1])
+    micro_needed = int(GTK_VERSION_NEEDED.split(".")[2])
+
+    # Check system GTK Version
+    major = Gtk.get_major_version()
+    minor = Gtk.get_minor_version()
+    micro = Gtk.get_micro_version()
+
+    # Cnchi will be called from our liveCD that already
+    # has the latest GTK version. This is here just to
+    # help testing Cnchi in our environment.
+    wrong_gtk_version = False
+    if major_needed > major:
+        wrong_gtk_version = True
+    if major_needed == major and minor_needed > minor:
+        wrong_gtk_version = True
+    if major_needed == major and minor_needed == minor and micro_needed > micro:
+        wrong_gtk_version = True
+
+    if wrong_gtk_version:
+        text = "Detected GTK version {0}.{1}.{2} but version >= {3} is needed."
+        text = text.format(major, minor, micro, GTK_VERSION_NEEDED)
+        try:
+            import show_message as show
+            show.error(None, text)
+        except ImportError as import_error:
+            logging.error(import_error)
+        finally:
+            return False
+    else:
+        logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
+
+    return True
 
 
 def check_pyalpm_version():
@@ -448,8 +454,8 @@ def init_cnchi():
         sys.exit(1)
 
     # Check installed GTK version
-    # if not check_gtk_version():
-    #     sys.exit(1)
+    if not check_gtk_version():
+        sys.exit(1)
 
     # Check installed pyalpm and libalpm versions
     #if not check_pyalpm_version():
@@ -469,7 +475,7 @@ def init_cnchi():
 
 if __name__ == '__main__':
     cmd_line, logger = init_cnchi()
-    os.environ['QTWEBENGINE_REMOTE_DEBUGGING'] = '1234'
+    # Create Gtk Application
     app = CnchiApp(cmd_line=cmd_line, logger=logger)
-    exit_status = app.widget.run()
+    exit_status = app.widget.run(None)
     sys.exit(exit_status)
