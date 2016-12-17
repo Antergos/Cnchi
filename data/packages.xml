@@ -341,10 +341,10 @@
                 <pkgname>kate</pkgname>
                 <pkgname>kcalc</pkgname>
                 <pkgname>kde-gtk-config</pkgname>
-                <pkgname>kdebase-kdepasswd</pkgname>
-                <pkgname>kdebase-kdialog</pkgname>
-                <pkgname>kdebase-kfind</pkgname>
-                <pkgname>kdegraphics-okular</pkgname>
+                <!--<pkgname>kdebase-kdepasswd</pkgname>-->
+                <pkgname>kdialog</pkgname>
+                <pkgname>kfind</pkgname>
+                <pkgname>okular</pkgname>
                 <pkgname>kdegraphics-thumbnailers</pkgname>
                 <pkgname>kdenetwork-kopete</pkgname>
                 <pkgname>kde-servicemenus-rootactions</pkgname>
