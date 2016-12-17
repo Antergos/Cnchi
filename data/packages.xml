@@ -297,6 +297,7 @@
 				<pkgname>networkmanager-pptp</pkgname>
                 <pkgname>notify-osd</pkgname>
 				<pkgname>obconf</pkgname>
+                <pkgname>obkey</pkgname>
 				<pkgname>oblogout</pkgname>
 				<pkgname>obmenu</pkgname>
 				<pkgname>openbox</pkgname>
@@ -341,6 +342,7 @@
                 <pkgname>kate</pkgname>
                 <pkgname>kcalc</pkgname>
                 <pkgname>kde-gtk-config</pkgname>
+                <pkgname>kde-servicemenus-rootactions</pkgname>
                 <!--<pkgname>kdebase-kdepasswd</pkgname>-->
                 <pkgname>kdialog</pkgname>
                 <pkgname>kfind</pkgname>
