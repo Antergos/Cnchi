@@ -157,6 +157,11 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
     def bugsnag_before_notify_callback(self, notification=None):
         if notification is not None:
+            excluded = ["No such interface '/org/freedesktop/UPower'"]
+
+            if any(True for pattern in excluded if pattern in str(notification.exception)):
+                return False
+
             if self.after_location_screen and not self.have_install_id:
                 self.get_and_save_install_id()
 
