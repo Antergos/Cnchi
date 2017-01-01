@@ -3,7 +3,7 @@
 #
 #  cnchi.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2017 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -35,6 +35,10 @@ APP_NAME = 'cnchi'
 LOCALE_DIR = '/usr/share/locale'
 
 
+class Test(BridgeObject):
+    pass
+
+
 class CnchiApp(BaseObject):
     """ Cnchi Installer """
 
@@ -43,7 +47,9 @@ class CnchiApp(BaseObject):
     def __init__(self, cmd_line=None, name='cnchi_app', logger=None, *args, **kwargs):
         super().__init__(name=name, logger=logger, *args, **kwargs)
 
-        self.widget = App('Cnchi')
+        bridge_objects = (Test(),)
+
+        self.widget = App('Cnchi', '', bridge_objects)
 
         # self.widget.connect('activate', self.activate_cb)
 

@@ -14,6 +14,7 @@ import uuid
 
 # 3rd-Party Libs
 from whither.app import App
+from whither.bridge import BridgeObject
 
 try:
     from bugsnag.handlers import BugsnagHandler
