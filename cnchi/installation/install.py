@@ -339,8 +339,7 @@ class Installation(object):
         self.error = False
         return True
 
-    @staticmethod
-    def copy_log():
+    def copy_log(self):
         """ Copy Cnchi logs to new installation """
         log_dest_dir = os.path.join(DEST_DIR, "var/log/cnchi")
         os.makedirs(log_dest_dir, mode=0o755, exist_ok=True)
@@ -358,6 +357,10 @@ class Installation(object):
                 logging.warning("Can't copy %s log to %s", src, dst)
             except FileExistsError:
                 pass
+
+        # Store install id for later use by antergos-pkgstats
+        with open(os.path.join(log_dest_dir, 'install_id'), 'w') as install_record:
+            install_record.write(self.settings.get('install_id', '0'))
 
     def download_packages(self):
         """ Downloads necessary packages """

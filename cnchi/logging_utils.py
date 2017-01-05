@@ -82,9 +82,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             self.install_id = 'development'
             self.ip = '0.0.0.0'
             self.have_install_id = True
-            return
+            return 'development'
 
-        info = None
+        info = {'ip': '0.0.0.0', 'id': '0'}
         url = self.get_url_for_id_request()
         headers = {self.key: CNCHI_VERSION}
 
@@ -95,7 +95,6 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             logger = logging.getLogger()
             msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
             logger.error(msg)
-            return
 
         try:
             self.ip = info['ip']
@@ -103,6 +102,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             self.have_install_id = True
         except (TypeError, KeyError):
             self.have_install_id = False
+
+        return self.install_id
 
     @staticmethod
     def get_bugsnag_api():

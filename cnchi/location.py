@@ -114,14 +114,15 @@ class Location(GtkBaseBox):
 
     def prepare(self, direction):
         self.hide_all()
-        self.fill_listbox()
 
+        self.fill_listbox()
         self.select_first_listbox_item()
         self.translate_ui()
+        self.forward_button.set_sensitive(True)
+
         self.show_all()
 
-        self.forward_button.set_sensitive(True)
-        self.get_and_save_install_id()
+        self.settings.set('install_id', self.get_and_save_install_id())
 
     def load_locales(self):
         data_dir = self.settings.get('data')
@@ -278,7 +279,7 @@ class Location(GtkBaseBox):
     @staticmethod
     def get_and_save_install_id():
         context_filter = ContextFilter()
-        context_filter.get_and_save_install_id(is_location_screen=True)
+        return context_filter.get_and_save_install_id(is_location_screen=True)
 
 # When testing, no _() is available
 try:
