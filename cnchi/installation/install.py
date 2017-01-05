@@ -669,23 +669,23 @@ class Installation(object):
             # Add mount options parameters
             if not is_ssd:
                 if "btrfs" in myfmt:
-                    opts = "defaults,relatime,space_cache,autodefrag"
+                    opts = "defaults,rw,relatime,space_cache,autodefrag"
                 elif "f2fs" in myfmt:
-                    opts = "defaults,noatime"
+                    opts = "defaults,rw,noatime"
                 elif "ext3" in myfmt or "ext4" in myfmt:
-                    opts = "defaults,relatime,data=ordered"
+                    opts = "defaults,rw,relatime,data=ordered"
                 else:
-                    opts = "defaults,relatime"
+                    opts = "defaults,rw,relatime"
             else:
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                 if myfmt in ["ext4", "jfs", "xfs"]:
-                    opts = "defaults,noatime,discard"
+                    opts = "defaults,rw,noatime,discard"
                 elif myfmt == "btrfs":
-                    opts = ("defaults,noatime,compress=lzo,ssd,discard,"
+                    opts = ("defaults,rw,noatime,compress=lzo,ssd,discard,"
                             "space_cache,autodefrag")
                 else:
-                    opts = "defaults,noatime"
+                    opts = "defaults,rw,noatime"
 
             if mount_point == "/" and myfmt not in ["btrfs", "f2fs"]:
                 chk = '1'
@@ -1026,6 +1026,7 @@ class Installation(object):
         """ Set vconsole.conf for console keymap """
         match = {
             "ca": "us",
+            "br": "br-abnt2",
             "gb": "uk",
             "latam": "la-latin1",
             "pt": "pt-latin1"
