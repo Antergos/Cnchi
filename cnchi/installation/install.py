@@ -669,23 +669,23 @@ class Installation(object):
             # Add mount options parameters
             if not is_ssd:
                 if "btrfs" in myfmt:
-                    opts = "defaults,rw,relatime,space_cache,autodefrag"
+                    opts = "defaults,relatime,space_cache,autodefrag"
                 elif "f2fs" in myfmt:
-                    opts = "defaults,rw,noatime"
+                    opts = "defaults,noatime"
                 elif "ext3" in myfmt or "ext4" in myfmt:
-                    opts = "defaults,rw,relatime,data=ordered"
+                    opts = "defaults,relatime,data=ordered"
                 else:
-                    opts = "defaults,rw,relatime"
+                    opts = "defaults,relatime"
             else:
                 # As of linux kernel version 3.7, the following
                 # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
                 if myfmt in ["ext4", "jfs", "xfs"]:
-                    opts = "defaults,rw,noatime,discard"
+                    opts = "defaults,noatime,discard"
                 elif myfmt == "btrfs":
-                    opts = ("defaults,rw,noatime,compress=lzo,ssd,discard,"
+                    opts = ("defaults,noatime,compress=lzo,ssd,discard,"
                             "space_cache,autodefrag")
                 else:
-                    opts = "defaults,rw,noatime"
+                    opts = "defaults,noatime"
 
             if mount_point == "/" and myfmt not in ["btrfs", "f2fs"]:
                 chk = '1'
@@ -777,9 +777,9 @@ class Installation(object):
                         antlines += '[antergos]\n'
                         antlines += 'SigLevel = PackageRequired\n'
                         antlines += 'Include = /etc/pacman.d/antergos-mirrorlist\n\n'
-                        
+
                         pacman_file.write(antlines)
-                    
+
                     pacman_file.write(pacline)
         else:
             logging.warning("Can't find pacman configuration file")

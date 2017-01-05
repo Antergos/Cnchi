@@ -1,9 +1,34 @@
+[2017-01-05 01:40:35 -0500]  Addresses Brazilian keyboard mapping issue (#653)                        stratus-ss    {7f593a1a}
+[2017-01-01 11:27:30 -0600]  force database refresh before creating metalinks                       Dustin Falgout  {211ebb53}
+[2017-01-01 11:26:06 -0600]  force database refresh before creating metalinks                       Dustin Falgout  {2703c11d}
+[2017-01-01 11:02:18 -0600]  sync github with local                                                 Dustin Falgout  {0174cd72}
+[2016-12-18 05:49:13 -0600]  :unamused:                                                             Dustin Falgout  {83d3639b}
+[2016-12-18 05:47:35 -0600]  dont send upower battery error to bugsnag                              Dustin Falgout  {7595a027}
+[2016-12-17 19:46:55 +0100]  Added packages to KDE and Openbox lists                                    karasu      {250ed1cb}
+[2016-12-17 14:44:27 +0100]  Some packages have been renamed (kde)                                      karasu      {11223c66}
+[2016-12-17 00:32:09 -0600]  made some adjustments to the file structure                            Dustin Falgout  {fa5905fc}
 [2016-12-17 00:11:05 -0600]  working on moving lower-level gui app code to new library              Dustin Falgout  {3531f012}
+[2016-12-16 18:53:22 +0100]  sort-directories-first is not recognised                                   karasu      {9719c601}
+[2016-12-16 18:09:53 +0100]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {8c15d3c8}
+[2016-12-16 18:08:36 +0100]  Updating info.py                                                           karasu      {280fcd14}
+[2016-12-16 18:06:27 +0100]  Remove old code                                                            karasu      {eb2b5545}
+[2016-12-16 18:04:31 +0100]  Add gsettings call in Openbox                                              karasu      {b5d5af79}
+[2016-12-14 22:40:40 +0100]  Small changes in Openbox                                                   karasu      {d0441d01}
 [2016-12-13 01:34:30 -0600]  some progress                                                          Dustin Falgout  {ac22c435}
 [2016-12-13 01:33:37 -0600]  update .gitignore                                                      Dustin Falgout  {57a83862}
 [2016-12-13 00:25:03 -0600]  update .gitignore                                                      Dustin Falgout  {70a5e342}
+[2016-12-12 19:52:50 +0100]  Forgot to create efi mount dir [zfs]                                       karasu      {a997ebe3}
+[2016-12-12 19:42:22 +0100]  Fix efi_path var [zfs]                                                     karasu      {e22441e6}
+[2016-12-12 19:40:13 +0100]  Fix string (just that I don't like capitalised messages xD)                karasu      {8acacd8a}
+[2016-12-12 19:34:15 +0100]  If a separate EFI partition exists, mount it! [zfs] [efi]                  karasu      {d7e93ded}
+[2016-12-12 18:14:02 +0100]  Fixes ZFS in UEFI systems (issue #564) [needs testing]                     karasu      {feed3b68}
+[2016-12-05 11:51:22 +0100]  Added lsusb.py (will be used in the hardware module)                       karasu      {ce66fc88}
 [2016-12-03 17:18:19 -0600]  use react-md ui lib instead of materializecss                          Dustin Falgout  {cfa44745}
 [2016-12-03 16:44:41 -0600]  use react-md ui lib instead of materializecss                          Dustin Falgout  {eb9f83ea}
+[2016-11-27 20:34:42 -0600]  Update info.py                                                         Dustin Falgout  {41fc0c74}
+[2016-11-27 20:34:20 -0600]  Update update.info                                                     Dustin Falgout  {2b171f7e}
+[2016-11-27 16:51:35 -0600]  Update 90_antergos.gschema.override                                    Dustin Falgout  {6b48d82b}
+[2016-11-27 16:49:40 -0600]  Update antergos.layout                                                 Dustin Falgout  {e775798a}
 [2016-11-27 04:15:33 -0600]  kind of back on track :grimacing:                                      Dustin Falgout  {bfdd1866}
 [2016-11-27 01:37:23 -0600]  almost back on track                                                   Dustin Falgout  {78307464}
 [2016-11-26 20:55:55 -0600]  still trying to find my bearings (again) with this                     Dustin Falgout  {2d7715d3}
