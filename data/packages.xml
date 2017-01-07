@@ -601,14 +601,17 @@
 
     <bootloaders>
         <bootloader name="grub2">
+            <pkgname>efibootmgr</pkgname>
             <pkgname>grub</pkgname>
             <pkgname>os-prober</pkgname>
             <pkgname>grub2-theme-antergos</pkgname>
         </bootloader>
         <bootloader name="systemd-boot">
             <!-- previously called gummiboot, now comes with systemd -->
+            <pkgname>efibootmgr</pkgname>
         </bootloader>
         <bootloader name="refind">
+            <pkgname>efibootmgr</pkgname>
             <pkgname>refind-efi</pkgname>
         </bootloader>
     </bootloaders>
