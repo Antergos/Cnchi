@@ -313,6 +313,15 @@ class Grub2(object):
         bootloader_id = 'antergos_grub' if not os.path.exists(fpath) else \
             'antergos_grub_{0}'.format(random_generator())
 
+        # grub2 in efi needs efibootmgr
+        if not os.path.exists("/usr/bin/efibootmgr"):
+            txt = _("Please install efibootmgr package to install Grub2 for x86_64-efi platform.")
+            logging.warning(txt)
+            txt = _("GRUB(2) will NOT be installed")
+            logging.warning(txt)
+            self.settings.set('bootloader_installation_successful', False)
+            return
+
         txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
         logging.info(txt)
 
