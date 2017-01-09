@@ -486,9 +486,7 @@
             <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>
             <pkgname>pulseaudio-bluetooth</pkgname>
-            <pkgname desktops='mate'>blueman</pkgname>
-            <pkgname desktops='mate'>python2-pybluez</pkgname>
-            <pkgname desktops='cinnamon,openbox'>blueberry</pkgname>
+            <pkgname desktops='cinnamon,mate,openbox'>blueberry</pkgname>
             <pkgname desktops='kde,lxqt'>bluedevil</pkgname>
             <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
         </feature>
