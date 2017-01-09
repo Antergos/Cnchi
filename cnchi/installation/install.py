@@ -360,7 +360,10 @@ class Installation(object):
 
         # Store install id for later use by antergos-pkgstats
         with open(os.path.join(log_dest_dir, 'install_id'), 'w') as install_record:
-            install_record.write(self.settings.get('install_id', '0'))
+            install_id = self.settings.get('install_id')
+            if not install_id:
+                install_id = '0'
+            install_record.write(install_id)
 
     def download_packages(self):
         """ Downloads necessary packages """
