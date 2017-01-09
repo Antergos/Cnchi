@@ -49,10 +49,23 @@
                 <pkgname>gst-plugins-good</pkgname>
                 <pkgname>gst-plugins-ugly</pkgname>
                 <pkgname>gstreamer-vaapi</pkgname>
-                <pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
+                <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
+                <pkgname lang="de">hunspell-de</pkgname> <!-- German hunspell dictionaries -->
+                <pkgname lang="en">hunspell-en</pkgname> <!-- English hunspell dictionaries -->
+                <pkgname lang="es">hunspell-es</pkgname> <!-- Spanish hunspell dictionaries -->
+                <pkgname lang="fr">hunspell-fr</pkgname> <!-- French (modern) hunspell dictionaries -->
+                <pkgname lang="he">hunspell-he</pkgname> <!-- Hebrew hunspell dictionary -->
+                <pkgname lang="it">hunspell-it</pkgname> <!-- Italian dictionary for Hunspell -->
+                <pkgname lang="ro">hunspell-ro</pkgname> <!-- Romanian dictionary for Hunspell -->
+                <pkgname lang="el">hunspell-el</pkgname> <!-- Greek hunspell dictionary -->
+                <pkgname lang="hu">hunspell-hu</pkgname> <!-- Hungarian hunspell dictionary -->
+                <pkgname lang="nl">hunspell-nl</pkgname> <!-- Dutch hunspell dictionaries -->
+                <pkgname lang="pl">hunspell-pl</pkgname> <!-- Polish dictionary for Hunspell -->
                 <pkgname>libdvdcss</pkgname>
                 <pkgname dm='true' name='lightdm'>lightdm</pkgname>
                 <pkgname>lightdm-webkit2-greeter</pkgname>
+                <pkgname>light-locker</pkgname>
+                <pkgname>light-locker-settings</pkgname>
                 <pkgname>mesa</pkgname>
                 <pkgname>mesa-vdpau</pkgname>
                 <pkgname>numix-frost-themes</pkgname>
@@ -87,7 +100,6 @@
                 <pkgname>dialog</pkgname>
                 <pkgname>rsync</pkgname>
                 <pkgname>sharutils</pkgname>
-                <pkgname>unace</pkgname>
                 <pkgname>uudeview</pkgname>
                 <pkgname>xz</pkgname>
                 <pkgname>zip</pkgname>
@@ -131,8 +143,6 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <pkgname>libgnomeui</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
@@ -204,8 +214,6 @@
                 <pkgname>gnome-disk-utility</pkgname>
                 <pkgname>gnome-keyring</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
                 <pkgname>mousepad</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
@@ -227,7 +235,6 @@
                 <pkgname>xfce4-notifyd</pkgname>
                 <pkgname>xfce4-screenshooter</pkgname>
                 <pkgname>xfce4-taskmanager</pkgname>
-                <pkgname>xscreensaver</pkgname>
             </packages>
         </edition>
 
@@ -282,8 +289,6 @@
                 <pkgname>gpicview</pkgname>
                 <pkgname>gsimplecal</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
                 <pkgname>lxappearance-obconf-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
                 <pkgname>lxmenu-data</pkgname>
@@ -319,7 +324,6 @@
                 <pkgname>waldorf-ui-theme</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
                 <pkgname>xfburn</pkgname>
-                <pkgname>xscreensaver</pkgname>
             </packages>
         </edition>
 
@@ -346,10 +350,9 @@
                 <!--<pkgname>kdebase-kdepasswd</pkgname>-->
                 <pkgname>kdialog</pkgname>
                 <pkgname>kfind</pkgname>
-                <pkgname>okular</pkgname>
+                <pkgname>kdeconnect</pkgname>
                 <pkgname>kdegraphics-thumbnailers</pkgname>
                 <pkgname>kdenetwork-kopete</pkgname>
-                <pkgname>kde-servicemenus-rootactions</pkgname>
                 <pkgname>kdesudo</pkgname>
                 <pkgname>kdeutils-sweeper</pkgname>
                 <pkgname>kdelibs4support</pkgname>
@@ -371,6 +374,7 @@
                 <pkgname>nm-connection-editor</pkgname>
                 <pkgname>numix-frost-themes</pkgname>
                 <pkgname>numix-icon-theme-square</pkgname>
+                <pkgname>okular</pkgname>
                 <pkgname>oxygen</pkgname>
                 <pkgname>plasma-desktop</pkgname>
                 <pkgname>plasma-nm</pkgname>
@@ -388,7 +392,6 @@
                 <pkgname>user-manager</pkgname>
                 <pkgname>vlc</pkgname>
                 <pkgname>xdg-user-dirs</pkgname>
-                <pkgname>kdeconnect</pkgname>
             </packages>
         </edition>
 
@@ -449,8 +452,6 @@
                 <pkgname>i3-wm</pkgname>
                 <pkgname>i3lock</pkgname>
                 <pkgname>i3status</pkgname>
-                <pkgname>light-locker</pkgname>
-                <pkgname>light-locker-settings</pkgname>
                 <pkgname>lxappearance-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
                 <pkgname>mpv</pkgname>
@@ -482,13 +483,14 @@
         <pkgname>bzr</pkgname>
         </feature>
         <feature name="bluetooth">
+            <pkgname>bluez</pkgname>
             <pkgname>bluez-utils</pkgname>
             <pkgname>pulseaudio-bluetooth</pkgname>
             <pkgname desktops='mate'>blueman</pkgname>
-            <pkgname desktops='cinnamon'>blueberry</pkgname>
+            <pkgname desktops='mate'>python2-pybluez</pkgname>
+            <pkgname desktops='cinnamon,openbox'>blueberry</pkgname>
             <pkgname desktops='kde,lxqt'>bluedevil</pkgname>
             <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
-            <pkgname desktops='mate'>python2-pybluez</pkgname>
         </feature>
         <feature name="cups">
             <pkgname>cups</pkgname>
@@ -536,7 +538,6 @@
             Fresh is a LibreOffice branch which contains new features and program enhancements
             while still is more stable and only gets bug fixes. -->
             <pkgname>libreoffice-fresh</pkgname>
-            <pkgname>hunspell-en</pkgname>
         </feature>
         <feature name="visual">
             <pkgname>compton</pkgname>

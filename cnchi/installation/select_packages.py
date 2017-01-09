@@ -147,26 +147,40 @@ class SelectPackages(object):
     def add_package(self, pkg):
         """ Adds xml node text to our package list
             returns TRUE if the package is added """
-        lib = desktop_info.LIBS
+        libs = desktop_info.LIBS
+
         arch = pkg.attrib.get('arch')
-        added = False
-        if arch is None or arch == self.my_arch:
-            # If package is a Desktop Manager or a Network Manager,
-            # save the name to activate the correct service later
-            if pkg.attrib.get('dm'):
-                self.settings.set("desktop_manager", pkg.attrib.get('name'))
-            if pkg.attrib.get('nm'):
-                self.settings.set("network_manager", pkg.attrib.get('name'))
-            plib = pkg.attrib.get('lib')
-            if plib is None or (plib is not None and self.desktop in lib[plib]):
-                desktops = pkg.attrib.get('desktops')
-                if desktops is None or (desktops is not None and self.desktop in desktops):
-                    conflicts = pkg.attrib.get('conflicts')
-                    if conflicts:
-                        self.add_conflicts(pkg.attrib.get('conflicts'))
-                    self.packages.append(pkg.text)
-                    added = True
-        return added
+        if arch and arch != self.my_arch:
+            return False
+
+        lang = pkg.attrib.get('lang')
+        locale = self.settings.get("locale").split('.')[0][:2]
+        if lang and lang != locale:
+            return False
+
+        lib = pkg.attrib.get('lib')
+        if lib and not self.desktop in libs[lib]:
+            return False
+
+        desktops = pkg.attrib.get('desktops')
+        if desktops and not self.desktop in desktops:
+            return False
+
+        # If package is a Desktop Manager or a Network Manager,
+        # save the name to activate the correct service later
+        if pkg.attrib.get('dm'):
+            self.settings.set("desktop_manager", pkg.attrib.get('name'))
+        if pkg.attrib.get('nm'):
+            self.settings.set("network_manager", pkg.attrib.get('name'))
+
+        # check conflicts attrib
+        conflicts = pkg.attrib.get('conflicts')
+        if conflicts:
+            self.add_conflicts(pkg.attrib.get('conflicts'))
+
+        # finally, add package
+        self.packages.append(pkg.text)
+        return True
 
     def select_packages(self):
         """ Get package list from the Internet """
@@ -394,6 +408,13 @@ class SelectPackages(object):
                 pkg_text = "libreoffice-fresh-{0}".format(code)
                 logging.debug("Adding libreoffice language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
+                # hunspell
+                code = code[:2]
+                codes = ['de', 'es', 'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
+                if code in codes:
+                    pkg_text = "hunspell-{0}".format(code)
+                    logging.debug("Adding hunspell dictionaries for %s language", pkg_text)
+                    self.packages.append(pkg_text)
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
@@ -410,9 +431,9 @@ class SelectPackages(object):
                 'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
                 'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
 
-            logging.debug("Add firefox language package")
             lang_code = self.settings.get('language_code')
             lang_code = lang_code.replace('_', '-')
             if lang_code in lang_codes:
                 pkg_text = "firefox-i18n-{0}".format(lang_code)
+                logging.debug("Adding firefox language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
