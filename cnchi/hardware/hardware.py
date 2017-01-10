@@ -33,7 +33,7 @@ import logging
 import os
 import subprocess
 
-_HARDWARE_PATH = '/usr/share/cnchi/cnchi/hardware'
+_HARDWARE_MODULES_PATH = '/usr/share/cnchi/cnchi/hardware/modules'
 
 
 class Hardware(object):
@@ -202,21 +202,25 @@ class HardwareInstall(object):
         # All objects that are really used
         self.objects_used = []
 
-        dirs = os.listdir(_HARDWARE_PATH)
+        try:
+            dirs = os.listdir(_HARDWARE_MODULES_PATH)
+        except FileNotFoundError:
+            dirs = os.listdir("modules")
 
         # We scan the folder for py files.
         # This is unsafe, but we don't care if
         # somebody wants Cnchi to run code arbitrarily.
+        if __name__ == "__main__":
+            package_root = "modules."
+        else:
+            package_root = "hardware.modules."
+
         for filename in dirs:
-            non_valid = ["__init__.py", "hardware.py"]
+            non_valid = ["__init__.py"]
             if filename.endswith(".py") and filename not in non_valid:
                 filename = filename[:-len(".py")]
-                name = ""
                 try:
-                    if __name__ == "__main__":
-                        package = filename
-                    else:
-                        package = "hardware." + filename
+                    package = package_root + filename
                     name = filename.capitalize()
                     # This instruction is the same as "from package import name"
                     class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
@@ -230,8 +234,8 @@ class HardwareInstall(object):
                     message = template.format(type(ex).__name__, ex.args)
                     logging.error(message)
 
+        # Detect devices
         try:
-            # Detect devices
             devices = self.get_devices()
         except subprocess.CalledProcessError as err:
             txt = "Unable to scan devices, command {0} failed: {1}"
@@ -244,7 +248,7 @@ class HardwareInstall(object):
             len(self.all_objects),
             len(devices))
 
-        # Find objects that support the devices we've found.
+        # Find modules (objects) that support the devices we've found.
         self.objects_found = {}
         for obj in self.all_objects:
             for device in devices:
