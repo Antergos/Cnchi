@@ -1163,6 +1163,9 @@ class Installation(object):
             services.append(self.settings.get("desktop_manager"))
             # In base we use systemd-networkd (setup already done above)
             services.append(self.settings.get("network_manager"))
+            # If bumblebee (optimus cards) is installed, enable it
+            if os.path.exists(os.path.join(DEST_DIR, "usr/lib/systemd/system/bumblebeed.service")):
+                services.extend(["bumblebee"])
 
         services.extend(["ModemManager", "haveged"])
 

@@ -43,15 +43,12 @@ VENDOR_IDS = ["0x10de", "0x8086"]
 DEVICES = ""
 PRIORITY = 3
 
-import i915
-import nvidia
-
 
 class Bumblebee(Hardware):
     """ Bumblebee (Optimus cards) """
     def __init__(self):
         self.cards_detected = 0
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_IDS[0], DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_IDS, DEVICES, PRIORITY)
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device
@@ -67,6 +64,7 @@ class Bumblebee(Hardware):
             return False
 
         self.cards_detected = self.cards_detected + 1
+
         if self.cards_detected >= 2:
             return True
         else:
@@ -75,30 +73,24 @@ class Bumblebee(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau"]
+        pkgs = ["bumblebee", "mesa", "xf86-video-intel", "nvidia", "nvidia-settings", "bbswitch"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
+            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl", "lib32-mesa-libgl"])
         return pkgs
 
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
-        pkgs = ["mesa-libgl"]
-        if os.uname()[-1] == "x86_64":
-            pkgs.append("lib32-mesa-libgl")
+        pkgs = ["mesa-libgl", "xf86-video-nouveau"]
+        #if os.uname()[-1] == "x86_64":
+        #    pkgs.append("lib32-mesa-libgl")
         return pkgs
 
     @staticmethod
     def post_install(dest_dir):
         """ Post install commands """
-        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/20-nvidia.conf")
-        with open(path, 'w') as nvidia:
-            nvidia.write('Section "Device"\n')
-            nvidia.write('    Identifier "Nvidia Card"\n')
-            nvidia.write('    Driver "nvidia"\n')
-            nvidia.write('    VendorName "NVIDIA Corporation"\n')
-            nvidia.write('    Option "NoLogo" "true"\n')
-            nvidia.write('EndSection\n')
+        # Done in install.py
+        pass
 
     @staticmethod
     def is_proprietary():
