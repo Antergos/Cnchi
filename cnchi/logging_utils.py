@@ -90,11 +90,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
         try:
             r = requests.get(url, headers=headers)
+            r.raise_for_status()
             info = json.loads(r.json())
         except Exception as err:
             logger = logging.getLogger()
             msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
-            logger.error(msg)
+            logger.debug(msg)
 
         try:
             self.ip = info['ip']
