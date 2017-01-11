@@ -44,23 +44,23 @@ from gtkbasebox import GtkBaseBox
 
 class Graphics(object):
     def nvidia(self):
-        from hardware.nvidia import Nvidia
+        from hardware.modules.nvidia import Nvidia
         if Nvidia().detect():
             return True
-        from hardware.nvidia_340xx import Nvidia340xx
+        from hardware.modules.nvidia_340xx import Nvidia340xx
         if Nvidia340xx().detect():
             return True
-        from hardware.nvidia_304xx import Nvidia304xx
+        from hardware.modules.nvidia_304xx import Nvidia304xx
         if Nvidia304xx().detect():
             return True
         return False
 
     def amd(self):
-        from hardware.catalyst import Catalyst
+        from hardware.modules.catalyst import Catalyst
         return Catalyst().detect()
 
     def i915(self):
-        from hardware.i915 import Intel915
+        from hardware.modules.i915 import Intel915
         return Intel915().detect()
 
     def bumblebee(self):
