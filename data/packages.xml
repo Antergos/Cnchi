@@ -149,6 +149,7 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>orca</pkgname>
                 <pkgname>pidgin</pkgname>
+                <pkgname>polari</pkgname>
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
