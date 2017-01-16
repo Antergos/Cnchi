@@ -179,6 +179,7 @@
                 <pkgname>gnome-calculator</pkgname>
                 <pkgname>gnome-common</pkgname>
                 <pkgname>gnome-disk-utility</pkgname>
+                <pkgname>gnome-font-viewer</pkgname>
                 <pkgname>gnome-keyring</pkgname>
                 <pkgname>gnome-music</pkgname>
                 <pkgname>gnome-photos</pkgname>
