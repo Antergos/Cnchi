@@ -159,7 +159,7 @@ class Check(GtkBaseBox):
             result = misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
             if result == None:
                 # Cannot read property, something is wrong.
-                logging.error("Cannot read %s dbus property", UPOWER_PATH)
+                logging.warning("Cannot read %s/%s dbus property", UPOWER_PATH, 'OnBattery')
                 # We will assume we are connected to a power supply
                 result = False
             return result
