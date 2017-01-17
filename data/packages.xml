@@ -437,7 +437,7 @@
 
         <edition name="Budgie" description="Solus desktop">
             <packages>
-                <package>budgie-desktop</package>
+                <pkgname>budgie-desktop</pkgname>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
                 <pkgname>baobab</pkgname>  <!-- Disk usage -->
                 <pkgname>brasero</pkgname>
