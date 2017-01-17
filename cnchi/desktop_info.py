@@ -94,7 +94,7 @@ SESSIONS = {
     'mate': 'mate',
     'openbox': 'openbox',
     'xfce': 'xfce',
-    'budgie': 'budgie',
+    'budgie': 'budgie-desktop',
     'enlightenment': 'enlightenment',
     'i3': 'i3',
     'lxqt': 'lxsession'
