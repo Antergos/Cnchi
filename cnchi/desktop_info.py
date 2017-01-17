@@ -33,7 +33,7 @@
 
 DESKTOPS = ["base", "cinnamon", "gnome", "kde", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt"]
+DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -49,18 +49,20 @@ DIALOG - Size appropriate for dialogs (48px )
 # Descriptive names
 NAMES = {
     'base': "Base",
-    'gnome': "GNOME",
     'cinnamon': "Cinnamon",
-    'xfce': "Xfce",
-    'openbox': "Openbox",
-    'enlightenment': "Enlightenment",
+    'gnome': "GNOME",
     'kde': "KDE",
-    'lxqt': "LXQt",
-    'mate': "MATE"
+    'mate': "MATE",
+    'openbox': "Openbox",
+    'xfce': "Xfce",
+    'budgie': "Budgie",
+    'enlightenment': "Enlightenment",
+    'i3' : "i3",
+    'lxqt': "LXQt"
 }
 
 LIBS = {
-    'gtk': ["cinnamon", "enlightenment", "gnome", "mate", "openbox", "xfce"],
+    'gtk': ["cinnamon", "gnome", "mate", "openbox", "xfce", "budgie", "enlightenment", "i3"],
     'qt': ["kde", "lxqt"]
 }
 
@@ -70,16 +72,18 @@ ALL_FEATURES = ["aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "
 
 # Not all desktops have all features
 EXCLUDED_FEATURES = {
+    'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
+             "graphic_drivers", "office", "smb", "visual"],
     'cinnamon': ["lamp", "visual"],
     'gnome': ["lamp", "visual"],
     'kde': ["lamp", "visual"],
     'mate': ["lamp", "visual"],
-    'enlightenment': ["lamp", "visual"],
-    'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
-             "graphic_drivers", "office", "smb", "visual"],
     'openbox': ["lamp"],
-    'lxqt': ["lamp", "visual"],
-    'xfce': ["lamp", "visual"]
+    'xfce': ["lamp", "visual"],
+    'budgie': ["lamp", "visual"],
+    'enlightenment': ["lamp", "visual"],
+    'i3': ["lamp"],
+    'lxqt': ["lamp", "visual"]
 }
 
 # Session names for lightDM setup
@@ -88,10 +92,12 @@ SESSIONS = {
     'gnome': 'gnome',
     'kde': 'plasma',
     'mate': 'mate',
-    'enlightenment': 'enlightenment',
     'openbox': 'openbox',
-    'lxqt': 'lx-session',
-    'xfce': 'xfce'
+    'xfce': 'xfce',
+    'budgie': 'budgie',
+    'enlightenment': 'enlightenment',
+    'i3': 'i3',
+    'lxqt': 'lxsession'
 }
 
 
@@ -101,19 +107,27 @@ def _(message):
 
 
 DESCRIPTIONS = {
-    'gnome': _("GNOME 3 is an easy and elegant way to use your "
-               "computer. It features the Activities Overview which "
-               "is an easy way to access all your basic tasks."),
+    'base': _("This option will install Antergos as command-line only system, "
+              "without any type of graphical interface. After the installation you can "
+              "customize Antergos by installing packages with the command-line package manager."),
 
     'cinnamon': _("Cinnamon is a Linux desktop which provides advanced, "
                   "innovative features and a traditional desktop user experience. "
                   "Cinnamon aims to make users feel at home by providing them with "
                   "an easy-to-use and comfortable desktop experience."),
 
-    'xfce': _("Xfce is a lightweight desktop environment. It aims to "
-              "be fast and low on system resources, while remaining visually "
-              "appealing and user friendly. It suitable for use on older "
-              "computers and those with lower-end hardware specifications. "),
+    'gnome': _("GNOME 3 is an easy and elegant way to use your "
+               "computer. It features the Activities Overview which "
+               "is an easy way to access all your basic tasks."),
+
+    'kde': _("If you are looking for a familiar working environment, KDE's "
+             "Plasma Desktop offers all the tools required for a modern desktop "
+             "computing experience so you can be productive right from the start."),
+
+    'mate': _("MATE is an intuitive, attractive, and lightweight desktop "
+              "environment which provides a more traditional desktop "
+              "experience. Accelerated compositing is supported, but not "
+              "required to run MATE making it suitable for lower-end hardware."),
 
     'openbox': _("Not actually a desktop environment, Openbox is a highly "
                  "configurable window manager. It is known for its "
@@ -121,26 +135,26 @@ DESCRIPTIONS = {
                  "lightweight graphical option offered by antergos. Please "
                  "Note: Openbox is not recommended for users who are new to Linux."),
 
+    'xfce': _("Xfce is a lightweight desktop environment. It aims to "
+              "be fast and low on system resources, while remaining visually "
+              "appealing and user friendly. It suitable for use on older "
+              "computers and those with lower-end hardware specifications. "),
+
+    'budgie': _("Budgie is the flagship desktop of Solus and is a Solus project. "
+                "It focuses on simplicity and elegance. Written from scratch with "
+                "integration in mind, the Budgie desktop tightly integrates with "
+                "the GNOME stack, but offers an alternative desktop experience."),
+
     'enlightenment': _("Enlightenment is not just a window manager for Linux/X11 "
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    'kde': _("If you are looking for a familiar working environment, KDE's "
-             "Plasma Desktop offers all the tools required for a modern desktop "
-             "computing experience so you can be productive right from the start."),
+    'i3': _("i3 is a tiling window manager primarily targeted at advanced "
+            "users and developers."),
 
     'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
               "Environment. It is lightweight, modular, blazing-fast, and "
-              "user-friendly."),
-
-    'base': _("This option will install Antergos as command-line only system, "
-              "without any type of graphical interface. After the installation you can "
-              "customize Antergos by installing packages with the command-line package manager."),
-
-    'mate': _("MATE is an intuitive, attractive, and lightweight desktop "
-              "environment which provides a more traditional desktop "
-              "experience. Accelerated compositing is supported, but not "
-              "required to run MATE making it suitable for lower-end hardware.")
+              "user-friendly.")
 }
 
 # Delete previous _() dummy declaration

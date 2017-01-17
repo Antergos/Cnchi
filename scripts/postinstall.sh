@@ -156,37 +156,6 @@ openbox_settings() {
 	set_xscreensaver
 }
 
-lxqt_settings() {
-	# Set theme
-	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel
-	echo "[General]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
-	echo "__userfile__=true" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
-	echo "icon_theme=Numix" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
-	echo "theme=ambiance" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
-
-	# Set panel launchers
-	echo "[quicklaunch]" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\1\desktop=/usr/share/applications/razor-config.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\size=3" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\2\desktop=/usr/share/applications/kde4/konsole.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
-	echo "apps\3\desktop=/usr/share/applications/chromium.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
-
-	# Set Wallpaper
-	echo "[razor]" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-	echo "screens\size=1" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-	echo "screens\1\desktops\1\wallpaper_type=pixmap" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-	echo "screens\1\desktops\1\wallpaper=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-	echo "screens\1\desktops\1\keep_aspect_ratio=false" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-	echo "screens\1\desktops\size=1" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
-
-	# Set Razor in .dmrc
-	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	echo "Session=razor" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
-	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
-
-	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
-}
-
 kde_settings() {
 	# Set KDE in .dmrc
 	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -244,6 +213,39 @@ nox_settings() {
 	echo "Done"
 }
 
+# Experimental DE's
+
+lxqt_settings() {
+	# Set theme
+	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel
+	echo "[General]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
+	echo "__userfile__=true" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
+	echo "icon_theme=Numix" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
+	echo "theme=ambiance" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor.conf
+
+	# Set panel launchers
+	echo "[quicklaunch]" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\1\desktop=/usr/share/applications/razor-config.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\size=3" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\2\desktop=/usr/share/applications/kde4/konsole.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
+	echo "apps\3\desktop=/usr/share/applications/chromium.desktop" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/razor-panel/panel.conf
+
+	# Set Wallpaper
+	echo "[razor]" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+	echo "screens\size=1" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\wallpaper_type=pixmap" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\wallpaper=/usr/share/antergos/wallpapers/antergos-wallpaper.png" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\1\keep_aspect_ratio=false" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+	echo "screens\1\desktops\size=1" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/razor/desktop.conf
+
+	# Set Razor in .dmrc
+	echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
+	echo "Session=razor" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
+	chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
+
+	chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
+}
+
 enlightenment_settings() {
     # Set gsettings
 	set_gsettings
@@ -279,6 +281,34 @@ enlightenment_settings() {
 
 	# Add lxpolkit to autostart apps
 	cp /etc/xdg/autostart/lxpolkit.desktop ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart
+
+	# xscreensaver config
+	set_xscreensaver
+}
+
+budgie_settings() {
+	# Set gsettings
+	set_gsettings
+
+	# Set gdm shell logo
+	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
+
+	# Set skel directory
+	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+	# xscreensaver config
+	set_xscreensaver
+}
+
+i3_settings() {
+	# Set gsettings
+	set_gsettings
+
+	# Set gdm shell logo
+	cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
+
+	# Set skel directory
+	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
 	# xscreensaver config
 	set_xscreensaver
