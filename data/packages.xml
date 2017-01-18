@@ -71,6 +71,7 @@
                 <pkgname>numix-frost-themes</pkgname>
                 <pkgname>numix-icon-theme</pkgname>
                 <pkgname>numix-icon-theme-square</pkgname>
+                <pkgname lib="gtk">orca</pkgname>
                 <pkgname>pamac</pkgname>
                 <pkgname>pavucontrol</pkgname>
                 <pkgname>pulseaudio</pkgname>
@@ -147,7 +148,6 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>orca</pkgname>
                 <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>seahorse</pkgname>
@@ -477,7 +477,6 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>orca</pkgname>
                 <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>seahorse</pkgname>
@@ -502,13 +501,13 @@
                 <pkgname>i3status</pkgname>
                 <pkgname>lxappearance-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
+                <pkgname>moc</pkgname>
                 <pkgname>mpv</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>nitrogen</pkgname>
                 <pkgname>notify-osd</pkgname>
-                <pkgname>moc</pkgname>
                 <pkgname>pcmanfm</pkgname>
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>scrot</pkgname>
