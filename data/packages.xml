@@ -52,7 +52,8 @@
 				<pkgname>gstreamer0.10-plugins</pkgname>  <!-- Group -->
 				<pkgname>libdvdcss</pkgname>
 				<pkgname dm='true' name='lightdm'>lightdm</pkgname>
-				<pkgname>lightdm-webkit2-greeter</pkgname>
+				<!--<pkgname>lightdm-webkit2-greeter</pkgname> -->
+				<pkgname>lightdm-gtk-greeter</pkgname>
 				<pkgname>mesa</pkgname>
 				<pkgname>mesa-vdpau</pkgname>
 				<pkgname>numix-frost-themes</pkgname>
