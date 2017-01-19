@@ -14,27 +14,12 @@ cleanup() {
 
 trap cleanup EXIT
 
-
 if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
 	sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
 fi
 
-cnchi_dir=`pwd`
-sudo ln -sf $cnchi_dir /usr/share/cnchi
-
-#clear_fcache='False'
-#for file in ${cnchi_dir}/data/fonts/OpenSans**
-#do
-#	file_name=$(basename ${file})
-#	if ! [[ -f /usr/share/fonts/TTF/${file_name} ]]; then
-#		sudo cp ${file} /usr/share/fonts/TTF
-#		clear_fcache='True'
-#	fi
-#done
-#
-#if [[ "${clear_fcache}" = 'True' ]]; then
-#	fc-cache -s -f -v
-#fi
+CNCHI_DIR=`pwd`
+sudo ln -sf $CNCHI_DIR /usr/share/cnchi
 
 
 _PYTHON="/usr/bin/python"
@@ -46,7 +31,8 @@ if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+#sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
 exit 0
 
