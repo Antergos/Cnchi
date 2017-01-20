@@ -173,9 +173,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-        # Needed by Orca
-        self.forward_button.set_label(_("Next") + " >")
-        self.backwards_button.set_label("< " + _("Back"))
+        ## Needed by Orca
+        #self.forward_button.set_label(_("Next") + " >")
+        #self.backwards_button.set_label("< " + _("Back"))
 
         # Create a queue. Will be used to report pacman messages
         # (pacman/pac.py) to the main thread (installation/process.py)
