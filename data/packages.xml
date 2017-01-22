@@ -98,9 +98,9 @@
 			<packages>
 				<pkgname>antergos-gnome-defaults-list</pkgname>
 				<pkgname>baobab</pkgname>  <!-- Disk usage -->
-				<!-- <pkgname>bijiben</pkgname> -->
 				<pkgname>brasero</pkgname>
 				<pkgname>cdrkit</pkgname>
+				<pkgname>chrome-gnome-shell</pkgname>
 				<pkgname>evince</pkgname>
 				<pkgname>eog</pkgname>
 				<pkgname>file-roller</pkgname>
