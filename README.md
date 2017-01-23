@@ -13,8 +13,8 @@ This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.204|Bug Fixes Only|
-|**Cnchi Next**|**master**|**v0.15.267**|**Active Development**|
+|Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.227|Bug Fixes Only|
+|**Cnchi Next**|**master**|**v0.15.268**|**Active Development**|
 
 
 ## Usage:

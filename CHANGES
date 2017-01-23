@@ -1,7 +1,39 @@
+[2017-01-23 19:28:51 +0100]  Remove gstreamer0.10-plugins from list                                     karasu      {351552b8}
+[2017-01-23 08:08:41 +0100]  cdrkit got renamed to cdrtools                                             karasu      {e69af041}
+[2017-01-23 01:52:57 +0000]  Formatted commit data below... (#696)                                    Phil Wyett    {9cbe31a1}
+[2017-01-22 08:55:57 -0600]  Update packages.xml                                                    Dustin Falgout  {78af3f89}
+[2017-01-20 09:38:59 +0100]  Let's do some tests first...                                               karasu      {18ebcce0}
+[2017-01-19 21:07:06 +0100]  Added labels to back and forward buttons. Ugly, but it's needed by ..      karasu      {33357099}
+[2017-01-19 21:03:01 +0100]  Use pkexec as in the ISO. Seems to work now.                               karasu      {59222667}
+[2017-01-19 04:47:18 -0600]  Update packages.xml                                                    Dustin Falgout  {cb8b5021}
+[2017-01-18 11:20:02 -0600]  change greeter to gtk greeter (temporarily)                            Dustin Falgout  {c699cd99}
+[2017-01-18 17:10:54 +0100]  Add orca to all gtk DEs                                                    karasu      {28838f0a}
+[2017-01-17 19:50:40 +0100]  fix typo                                                                   karasu      {83de8dee}
+[2017-01-17 19:45:04 +0100]  In budgie DE, session is called budgie-desktop                             karasu      {8cbe42b7}
+[2017-01-17 18:50:40 +0100]  Added some more DE's just for fun (NOT PLANNING TO RELEASE ANY TIME..      karasu      {7c0efc51}
+[2017-01-16 20:25:48 +0100]  Add gnome-font-viewer to cinnamon installation                             karasu      {2c3bfb50}
+[2017-01-16 20:24:22 +0100]  Merge pull request #692 from prescott66/patch-9                            karasu      {b0565a6c}
+[2017-01-16 18:54:35 +0100]  Added gnome-font-viewer to Cinnamon flavour                              Dušan Kazik   {03d21ddf}
+[2017-01-16 18:37:45 +0100]  Do not log as an error not having upower (just as a warning)               karasu      {035999bf}
+[2017-01-15 00:39:56 +0100]  Add polari irc client (Gnome)                                              karasu      {0e886a98}
+[2017-01-11 06:26:46 -0600]  fix incorrect import paths in features.py                              Dustin Falgout  {f5704a23}
+[2017-01-11 05:17:39 -0600]  dont fail when unable to obtain install_id                             Dustin Falgout  {3c266387}
+[2017-01-10 22:27:51 +0100]  Fixed some bumblebee bugs. More work is needed.                            karasu      {1f6844e3}
+[2017-01-10 13:37:37 +0100]  Working on bumblebee detection                                             karasu      {8d65a2a0}
+[2017-01-10 09:42:21 +0100]  Moved all hardware modules to their own directory.                         karasu      {f2942370}
+[2017-01-09 23:34:32 +0100]  settings.get does not have a default value (in fact, it returns Non..      karasu      {b448a950}
+[2017-01-09 19:54:09 +0100]  Try to use the same bluetooth program (gtk)                                karasu      {67dda37e}
+[2017-01-09 19:14:56 +0100]  Added lang attribute (needs testing!). Remove xscreensaver, use lig..      karasu      {f274de8c}
+[2017-01-08 15:19:24 -0600]  Update current 'linux-lts' version (#688)                                Phil Wyett    {bc157b74}
+[2017-01-08 21:19:24 +0000]  Update current 'linux-lts' version (#688)                                Phil Wyett    {ce947a1b}
+[2017-01-07 15:22:50 +0100]  Do not block if efibootmgr is not installed when trying to install ..      karasu      {2a4e5731}
+[2017-01-07 15:16:25 +0100]  Add efibootmgr package when installing bootloader                          karasu      {21ca2253}
+[2017-01-05 01:35:07 -0600]  make install_id available on installed system for later use by ante..  Dustin Falgout  {8af1bfe3}
+[2017-01-05 00:47:38 -0600]  Fixes #630                                                             Dustin Falgout  {8da54fd4}
 [2017-01-05 01:40:35 -0500]  Addresses Brazilian keyboard mapping issue (#653)                        stratus-ss    {7f593a1a}
-[2017-01-01 11:27:30 -0600]  force database refresh before creating metalinks                       Dustin Falgout  {211ebb53}
-[2017-01-01 11:26:06 -0600]  force database refresh before creating metalinks                       Dustin Falgout  {2703c11d}
 [2017-01-01 11:02:18 -0600]  sync github with local                                                 Dustin Falgout  {0174cd72}
+[2016-12-28 11:14:09 +0100]  Fixes issue #133                                                           karasu      {46586ba7}
+[2016-12-22 19:59:57 +0100]  Use spaces instead of tabs (this way looks the same in any editor)...      karasu      {24381673}
 [2016-12-18 05:49:13 -0600]  :unamused:                                                             Dustin Falgout  {83d3639b}
 [2016-12-18 05:47:35 -0600]  dont send upower battery error to bugsnag                              Dustin Falgout  {7595a027}
 [2016-12-17 19:46:55 +0100]  Added packages to KDE and Openbox lists                                    karasu      {250ed1cb}
