@@ -50,7 +50,6 @@
                 <pkgname>gst-plugins-good</pkgname>
                 <pkgname>gst-plugins-ugly</pkgname>
                 <pkgname>gstreamer-vaapi</pkgname>
-                <pkgname>gstreamer0.10-plugins</pkgname> <!-- Group -->
                 <pkgname lang="de">hunspell-de</pkgname> <!-- German hunspell dictionaries -->
                 <pkgname lang="en">hunspell-en</pkgname> <!-- English hunspell dictionaries -->
                 <pkgname lang="es">hunspell-es</pkgname> <!-- Spanish hunspell dictionaries -->
