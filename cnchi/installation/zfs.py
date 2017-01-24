@@ -1078,11 +1078,13 @@ class InstallationZFS(GtkBaseBox):
     def clear_dest_dir():
         """ Empties /install """
 
+        boot = "{0}/boot".format(DEST_DIR)
+
         # Check that /install/boot and /install are not mounted
-        call(["umount", "{0}/boot".format(DEST_DIR)], warning=False)
-        call(["umount", "{0}".format(DEST_DIR)], warning=False)
-        call(["zfs", "umount", "{0}/boot".format(DEST_DIR)], warning=False)
-        call(["zfs", "umount", "{0}".format(DEST_DIR)], warning=False)
+        call(["umount", boot], warning=False)
+        call(["umount", DEST_DIR], warning=False)
+
+        call(["zfs", "umount",  "-a"], warning=False)
 
         # Delete /install contents
         for file_name in os.listdir(DEST_DIR):
@@ -1098,6 +1100,9 @@ class InstallationZFS(GtkBaseBox):
     def create_zfs(self, solaris_partition_number):
         """ Setup ZFS system """
 
+        # Make sure the ZFS modules are loaded
+        call(["modprobe", "zfs"])
+
         # Empty DEST_DIR or zfs pool will fail to mount on it
         # (this will delete preexisting installing attempts, too)
         if os.path.exists(DEST_DIR):
@@ -1107,9 +1112,6 @@ class InstallationZFS(GtkBaseBox):
         if not device_paths:
             txt = _("No devices were selected for the ZFS pool")
             raise InstallError(txt)
-
-        # Make sure the ZFS modules are loaded
-        call(["modprobe", "zfs"])
 
         # Using by-id (recommended) does not work atm
         # https://github.com/zfsonlinux/zfs/issues/3708

@@ -1,1 +1,3 @@
+[2017-01-24 09:56:54 +0100]  Enable AUR in pamac if AUR feature is selected                             karasu      {bbd70c8f}
+[2017-01-23 19:32:12 +0100]  Remove gstreamer0.10-plugins                                               karasu      {48361ee1}
 [2017-01-23 19:28:51 +0100]  Remove gstreamer0.10-plugins from list                                     karasu      {351552b8}
