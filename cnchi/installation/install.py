@@ -1377,10 +1377,22 @@ class Installation(object):
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
-        # Create an initial database for mandb
+        # Create an initial database for mandb (this is a lengthy process)
         self.queue_event('info', _("Updating man pages..."))
         chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")
         chroot_call(["pkgfile", "--update"])
+
+        # Enable AUR in pamac if AUR feature selected
+        pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
+        if os.path.exists(pamac_conf) and self.settings.get('feature_aur'):
+            logging.debug("Enabling AUR options in pamac")
+            with open(pamac_conf, 'r') as f:
+                file_data = f.read()
+            file_data = file_data.replace("#EnableAUR", "EnableAUR")
+            file_data = file_data.replace("#SearchInAURByDefault", "SearchInAURByDefault")
+            file_data = file_data.replace("#CheckAURUpdates", "CheckAURUpdates")
+            with open(pamac_conf, 'w') as f:
+                f.write(file_data)
