@@ -142,7 +142,7 @@
                 <pkgname>gnome-weather</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
+                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
@@ -187,7 +187,7 @@
                 <pkgname>gnome-themes-standard</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
+                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>muffin</pkgname>
                 <pkgname>nemo</pkgname>
                 <pkgname>nemo-fileroller</pkgname>
@@ -466,7 +466,7 @@
                 <pkgname>gnome-weather</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
+                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
