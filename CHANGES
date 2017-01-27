@@ -1,3 +1,7 @@
+[2017-01-26 12:06:05 +0100]  remove libgnomeui                                                          karasu      {c8cfab01}
+[2017-01-26 12:04:25 +0100]  libgnomeui has been removed from Arch repositories                         karasu      {a6923dfe}
+[2017-01-24 09:56:54 +0100]  Enable AUR in pamac if AUR feature is selected                             karasu      {bbd70c8f}
+[2017-01-23 19:29:49 +0100]  Remove gstreamer0.10-plugins                                               karasu      {1377f358}
 [2017-01-23 19:28:51 +0100]  Remove gstreamer0.10-plugins from list                                     karasu      {351552b8}
 [2017-01-23 08:08:41 +0100]  cdrkit got renamed to cdrtools                                             karasu      {e69af041}
 [2017-01-23 01:52:57 +0000]  Formatted commit data below... (#696)                                    Phil Wyett    {9cbe31a1}
