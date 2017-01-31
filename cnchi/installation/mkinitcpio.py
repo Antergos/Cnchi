@@ -43,16 +43,15 @@ def run(dest_dir, settings, mount_devices, blvm):
     # Add lvm and encrypt hooks if necessary
     hooks = ['base', 'udev', 'autodetect', 'modconf', 'block', 'keyboard', 'keymap']
     modules = []
+    files = []
 
     # It is important that the plymouth hook comes before any encrypt hook
-
     plymouth_bin = os.path.join(dest_dir, "usr/bin/plymouth")
     if os.path.exists(plymouth_bin):
         hooks.append('plymouth')
 
     # It is important that the encrypt hook comes before the filesystems hook
     # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
-
     if settings.get('use_luks'):
         if os.path.exists(plymouth_bin):
             hooks.append('plymouth-encrypt')
@@ -78,6 +77,9 @@ def run(dest_dir, settings, mount_devices, blvm):
     if settings.get('zfs'):
         # the zfs hook must come before the filesystems hook
         hooks.append('zfs')
+        libgcc_path = '/usr/lib/libgcc_s.so.1'
+        if os.path.exists(libgcc_path):
+            files.append(libgcc_path)
 
     hooks.append('filesystems')
 
@@ -93,7 +95,7 @@ def run(dest_dir, settings, mount_devices, blvm):
         # Use the fsck hook only if not using btrfs or zfs
         hooks.append('fsck')
 
-    set_hooks_and_modules(dest_dir, hooks, modules)
+    set_hooks_modules_and_files(dest_dir, hooks, modules, files)
 
     # Run mkinitcpio on the target system
     # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
@@ -105,12 +107,13 @@ def run(dest_dir, settings, mount_devices, blvm):
         chroot_call(cmd, dest_dir)
 
 
-def set_hooks_and_modules(dest_dir, hooks, modules):
+def set_hooks_modules_and_files(dest_dir, hooks, modules, files):
     """ Set up mkinitcpio.conf """
 
-    logging.debug("Setting hooks and modules in mkinitcpio.conf")
+    logging.debug("Setting hooks, modules and files in mkinitcpio.conf")
     logging.debug('HOOKS="%s"', ' '.join(hooks))
     logging.debug('MODULES="%s"', ' '.join(modules))
+    logging.debug('FILES="%s"', ' '.join(files))
 
     with open("/etc/mkinitcpio.conf") as mkinitcpio_file:
         mklines = mkinitcpio_file.readlines()
@@ -122,6 +125,8 @@ def set_hooks_and_modules(dest_dir, hooks, modules):
                 line = 'HOOKS="{0}"\n'.format(' '.join(hooks))
             elif line.startswith("MODULES"):
                 line = 'MODULES="{0}"\n'.format(' '.join(modules))
+            elif line.startswith("FILES"):
+                line = 'FILES="{0}"\n'.format(' '.join(files))
             mkinitcpio_file.write(line)
 
 
