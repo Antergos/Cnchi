@@ -1,3 +1,5 @@
+[2017-02-04 04:58:32 -0600]  Update packages.xml URL so requests arent routed through Cloudflare..  Dustin Falgout  {6f6a173e}
+[2017-01-27 19:42:01 +0100]  Add xfce4-pulseaudio-plugin to XFCE                                        karasu      {a4772765}
 [2017-01-26 12:06:05 +0100]  remove libgnomeui                                                          karasu      {c8cfab01}
 [2017-01-26 12:04:25 +0100]  libgnomeui has been removed from Arch repositories                         karasu      {a6923dfe}
 [2017-01-24 09:56:54 +0100]  Enable AUR in pamac if AUR feature is selected                             karasu      {bbd70c8f}

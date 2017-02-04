@@ -46,7 +46,7 @@ from misc.extra import InstallError
 import hardware.hardware as hardware
 
 DEST_DIR = "/install"
-PKGLIST_URL = 'http://install.antergos.com/'
+PKGLIST_URL = 'https://raw.githubusercontent.com/Antergos/Cnchi/master/data/packages.xml'
 
 
 def write_file(filecontents, filename):
@@ -201,7 +201,8 @@ class SelectPackages(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
+                # url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
+                url = PKGLIST_URL
                 logging.debug("Getting url %s...", url)
                 req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
                 packages_xml_data = req.content
