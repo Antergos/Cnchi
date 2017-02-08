@@ -1081,11 +1081,7 @@ class Installation(object):
         path = "/install/usr/lib/modules"
         for file_name in os.listdir(path):
             if not file_name.startswith("extramodules"):
-                try:
-                    version = file_name.split('-')[0]
-                    kernel_versions.append(version)
-                except KeyError:
-                    logging.warning("Can't get kernel version from %s", file_name)
+                kernel_versions.append(file_name)
         return kernel_versions
 
     def set_desktop_settings(self):
