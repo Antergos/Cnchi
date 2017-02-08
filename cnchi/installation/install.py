@@ -1076,17 +1076,14 @@ class Installation(object):
         kernel_versions = []
         path = "/install/usr/lib/modules"
         for file_name in os.listdir(path):
-            if "ARCH" in file_name:
+            if not file_name.startswith("extramodules"):
                 try:
-                    version = split('.')
-                    # 5-1-ARCH
-                    version[2] = version[2].split("-")[0]
-                    version = version[0] + '.' + version[1] + '.' + version[2]
+                    version = file_name.split('-')[0]
                     kernel_versions.append(version)
                 except KeyError:
                     logging.warning("Can't get kernel version from %s", file_name)
         return kernel_versions
-        
+
     def set_desktop_settings(self):
         """ Runs postinstall.sh that sets DE settings
             Postinstall script uses arch-chroot, so we don't have to worry
