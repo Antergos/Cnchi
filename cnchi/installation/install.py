@@ -1071,6 +1071,15 @@ class Installation(object):
                 zfs_version = file_name.split("-")[1]
         return zfs_version
 
+    def get_kernel_versions(self):
+        """ Get installed kernel versions """
+        kernel_versions = []
+        path = "/install/usr/lib/modules"
+        for file_name in os.listdir(path):
+            if "ARCH" in file_name:
+                #4.4.5-1-ARCH
+                pass
+
     def set_desktop_settings(self):
         """ Runs postinstall.sh that sets DE settings
             Postinstall script uses arch-chroot, so we don't have to worry
@@ -1333,9 +1342,11 @@ class Installation(object):
         # FIXME: Temporary workaround for spl and zfs packages
         if self.method == "zfs":
             zfs_version = self.get_zfs_version()
-            logging.debug("Installing zfs modules v%s...", zfs_version)
-            chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
-            chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+            kernel_versions = self.get_kernel_versions()
+            for kernel_version in kernel_versions:
+                logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
+                chroot_call(['dkms', 'install', 'spl/{0} -k {1}'.format(zfs_version, kernel_version)])
+                chroot_call(['dkms', 'install', 'zfs/{0} -k {1}'.format(zfs_version, kernel_version)])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
