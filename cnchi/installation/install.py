@@ -1345,6 +1345,7 @@ class Installation(object):
 
         # FIXME: Temporary workaround for spl and zfs packages
         if self.method == "zfs":
+            self.queue_event('info', _("Building zfs modules..."))
             zfs_version = self.get_installed_zfs_version()
             spl_module = 'spl/{}'.format(zfs_version)
             zfs_module = 'zfs/{}'.format(zfs_version)
