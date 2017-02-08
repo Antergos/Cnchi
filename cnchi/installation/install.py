@@ -1403,8 +1403,8 @@ class Installation(object):
                 logging.error(message)
 
         # Create an initial database for mandb
-        self.queue_event('info', _("Updating man pages..."))
-        chroot_call(["mandb", "--quiet"])
+        #self.queue_event('info', _("Updating man pages..."))
+        #chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")
