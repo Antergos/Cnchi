@@ -1,3 +1,4 @@
+[2017-02-08 22:39:53 +0100]  Do not update man pages db... it's not worth it.                           karasu      {e5261de0}
 [2017-02-08 22:37:06 +0100]  Add message when running dkms zfs/spl                                      karasu      {0413f951}
 [2017-02-08 21:48:12 +0100]  Full name is needed                                                        karasu      {1b3012e2}
 [2017-02-08 19:39:59 +0100]  Pulseaudio plugin for Xfce4 panel                                          karasu      {fef90cc4}

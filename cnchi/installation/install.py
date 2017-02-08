@@ -1353,9 +1353,8 @@ class Installation(object):
             if kernel_versions:
                 for kernel_version in kernel_versions:
                     logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
-                    kernel_param = '-k {}'.format(kernel_version)
-                    chroot_call(['dkms', 'install', spl_module, kernel_param])
-                    chroot_call(['dkms', 'install', zfs_module, kernel_param])
+                    chroot_call(['dkms', 'install', spl_module, '-k', kernel_version])
+                    chroot_call(['dkms', 'install', zfs_module, '-k', kernel_version])
             else:
                 # No kernel version found, try to install for current kernel
                 logging.debug("Installing zfs v%s modules for current kernel.", zfs_version)
