@@ -232,6 +232,7 @@
                 <pkgname>xfce4-battery-plugin</pkgname>
                 <pkgname>xfce4-datetime-plugin</pkgname>
                 <pkgname>xfce4-notifyd</pkgname>
+                <pkgname>xfce4-pulseaudio-plugin</pkgname>
                 <pkgname>xfce4-screenshooter</pkgname>
                 <pkgname>xfce4-taskmanager</pkgname>
             </packages>
