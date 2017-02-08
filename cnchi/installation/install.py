@@ -1068,7 +1068,11 @@ class Installation(object):
         path = "/install/usr/src"
         for file_name in os.listdir(path):
             if file_name.startswith("zfs") and not file_name.startswith("zfs-utils"):
-                zfs_version = file_name.split("-")[1]
+                try:
+                    zfs_version = file_name.split("-")[1]
+                    logging.info("Installed zfs module's version: %s", zfs_version)
+                except KeyError:
+                    logging.warning("Can't get zfs version from %s", file_name)
         return zfs_version
 
     def get_installed_kernel_versions(self):
@@ -1346,11 +1350,20 @@ class Installation(object):
         # FIXME: Temporary workaround for spl and zfs packages
         if self.method == "zfs":
             zfs_version = self.get_installed_zfs_version()
+            spl_module = 'spl/{}'.format(zfs_version)
+            zfs_module = 'zfs/{}'.format(zfs_version)
             kernel_versions = self.get_installed_kernel_versions()
-            for kernel_version in kernel_versions:
-                logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
-                chroot_call(['dkms', 'install', 'spl/{0} -k {1}'.format(zfs_version, kernel_version)])
-                chroot_call(['dkms', 'install', 'zfs/{0} -k {1}'.format(zfs_version, kernel_version)])
+            if kernel_versions:
+                for kernel_version in kernel_versions:
+                    logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
+                    kernel_param = '-k {}'.format(kernel_version)
+                    chroot_call(['dkms', 'install', spl_module, kernel_param])
+                    chroot_call(['dkms', 'install', zfs_module, kernel_param])
+            else:
+                # No kernel version found, try to install for current kernel
+                logging.debug("Installing zfs v%s modules for current kernel.", zfs_version)
+                chroot_call(['dkms', 'install', spl_module])
+                chroot_call(['dkms', 'install', zfs_module])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
