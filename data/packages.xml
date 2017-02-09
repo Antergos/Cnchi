@@ -467,7 +467,7 @@
                 <pkgname>gnome-weather</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnomeui</pkgname>
+                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>

@@ -1062,14 +1062,27 @@ class Installation(object):
             except FileExistsError:
                 logging.warning("File %s already exists.", dst)
 
-    def get_zfs_version(self):
+    def get_installed_zfs_version(self):
         """ Get installed zfs version """
         zfs_version = "0.6.5.4"
         path = "/install/usr/src"
         for file_name in os.listdir(path):
             if file_name.startswith("zfs") and not file_name.startswith("zfs-utils"):
-                zfs_version = file_name.split("-")[1]
+                try:
+                    zfs_version = file_name.split("-")[1]
+                    logging.info("Installed zfs module's version: %s", zfs_version)
+                except KeyError:
+                    logging.warning("Can't get zfs version from %s", file_name)
         return zfs_version
+
+    def get_installed_kernel_versions(self):
+        """ Get installed kernel versions """
+        kernel_versions = []
+        path = "/install/usr/lib/modules"
+        for file_name in os.listdir(path):
+            if not file_name.startswith("extramodules"):
+                kernel_versions.append(file_name)
+        return kernel_versions
 
     def set_desktop_settings(self):
         """ Runs postinstall.sh that sets DE settings
@@ -1332,10 +1345,21 @@ class Installation(object):
 
         # FIXME: Temporary workaround for spl and zfs packages
         if self.method == "zfs":
-            zfs_version = self.get_zfs_version()
-            logging.debug("Installing zfs modules v%s...", zfs_version)
-            chroot_call(['dkms', 'install', 'spl/{0}'.format(zfs_version)])
-            chroot_call(['dkms', 'install', 'zfs/{0}'.format(zfs_version)])
+            self.queue_event('info', _("Building zfs modules..."))
+            zfs_version = self.get_installed_zfs_version()
+            spl_module = 'spl/{}'.format(zfs_version)
+            zfs_module = 'zfs/{}'.format(zfs_version)
+            kernel_versions = self.get_installed_kernel_versions()
+            if kernel_versions:
+                for kernel_version in kernel_versions:
+                    logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
+                    chroot_call(['dkms', 'install', spl_module, '-k', kernel_version])
+                    chroot_call(['dkms', 'install', zfs_module, '-k', kernel_version])
+            else:
+                # No kernel version found, try to install for current kernel
+                logging.debug("Installing zfs v%s modules for current kernel.", zfs_version)
+                chroot_call(['dkms', 'install', spl_module])
+                chroot_call(['dkms', 'install', zfs_module])
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1377,9 +1401,9 @@ class Installation(object):
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
-        # Create an initial database for mandb (this is a lengthy process)
-        self.queue_event('info', _("Updating man pages..."))
-        chroot_call(["mandb", "--quiet"])
+        # Create an initial database for mandb
+        #self.queue_event('info', _("Updating man pages..."))
+        #chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")

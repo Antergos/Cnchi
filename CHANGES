@@ -1,0 +1,17 @@
+[2017-02-08 22:39:53 +0100]  Do not update man pages db... it's not worth it.                           karasu      {e5261de0}
+[2017-02-08 22:37:06 +0100]  Add message when running dkms zfs/spl                                      karasu      {0413f951}
+[2017-02-08 21:48:12 +0100]  Full name is needed                                                        karasu      {1b3012e2}
+[2017-02-08 19:39:59 +0100]  Pulseaudio plugin for Xfce4 panel                                          karasu      {fef90cc4}
+[2017-02-08 12:02:08 +0100]  Cleaned up a bit                                                           karasu      {795dc315}
+[2017-02-08 10:54:25 +0100]  Simpler way to check kernel version                                        karasu      {12769d41}
+[2017-02-08 10:01:17 +0100]  get installed kernel version                                               karasu      {420071f9}
+[2017-02-08 08:55:12 +0100]  Trying to force dkms on all kernels (not finished)                         karasu      {d8078a09}
+[2017-02-05 15:15:28 -0600]  disable zfs install option until we can identify and fix the issue ..  Dustin Falgout  {698b8c3b}
+[2017-02-04 04:58:32 -0600]  Update packages.xml URL so requests arent routed through Cloudflare..  Dustin Falgout  {6f6a173e}
+[2017-01-31 08:28:19 +0100]  Add to mkinitcpio undetected zpool dependency                              karasu      {65758b62}
+[2017-01-26 12:09:45 +0100]  libgnomeui removed                                                         karasu      {735db847}
+[2017-01-26 12:06:05 +0100]  remove libgnomeui                                                          karasu      {c8cfab01}
+[2017-01-24 17:41:36 +0100]  Non essential changes                                                      karasu      {76e6cf49}
+[2017-01-24 09:56:54 +0100]  Enable AUR in pamac if AUR feature is selected                             karasu      {bbd70c8f}
+[2017-01-23 19:32:12 +0100]  Remove gstreamer0.10-plugins                                               karasu      {48361ee1}
+[2017-01-23 19:28:51 +0100]  Remove gstreamer0.10-plugins from list                                     karasu      {351552b8}
