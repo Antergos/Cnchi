@@ -1,3 +1,4 @@
+[2017-02-12 17:27:11 -0600]  Apply change from 587638b46f90dd8a8b2452344a73921e340b47e5 to gsche..  Dustin Falgout  {c7f9c995}
 [2017-02-12 17:23:25 -0600]  remove set-settings file since we stopped using it months ago          Dustin Falgout  {ef939a41}
 [2017-02-12 17:18:56 -0600]  Apply change from 587638b46f90dd8a8b2452344a73921e340b47e5 to gsche..  Dustin Falgout  {7c6da85c}
 [2017-02-09 10:30:17 +0100]  Merge branch 'zfs' into 0.14.x                                             karasu      {276877ab}
