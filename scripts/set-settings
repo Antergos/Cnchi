@@ -90,6 +90,8 @@ if [[ ${DESKTOP} == 'cinnamon' ]]; then
 
 	# Set enabled applets
 	gsettings set org.cinnamon enabled-applets "['panel1:left:1:menu@cinnamon.org:0', 'panel1:left:2:panel-launchers@cinnamon.org:1', 'panel1:left:3:window-list@cinnamon.org:2', 'panel1:right:0:removable-drives@cinnamon.org:3', 'panel1:right:1:keyboard@cinnamon.org:4', 'panel1:right:2:bluetooth@cinnamon.org:5', 'panel1:right:4:systray@cinnamon.org:7', 'panel1:right:5:power@cinnamon.org:8', 'panel1:right:6:network@cinnamon.org:6', 'panel1:right:7:sound@cinnamon.org:9', 'panel1:right:8:calendar@cinnamon.org:10', 'panel1:right:9:settings@cinnamon.org:11']"
+	# Accordingly set next-applet-id
+	gsettings set org.cinnamon next-applet-id 12
 
 	# Disable keyboard flags
 	gsettings set org.cinnamon keyboard-applet-use-flags "false"
