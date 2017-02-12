@@ -1,10 +1,29 @@
+[2017-02-12 17:23:25 -0600]  remove set-settings file since we stopped using it months ago          Dustin Falgout  {ef939a41}
+[2017-02-12 17:18:56 -0600]  Apply change from 587638b46f90dd8a8b2452344a73921e340b47e5 to gsche..  Dustin Falgout  {7c6da85c}
+[2017-02-09 10:30:17 +0100]  Merge branch 'zfs' into 0.14.x                                             karasu      {276877ab}
+[2017-02-08 22:43:43 +0100]  Fix kernel param in dkms.                                                  karasu      {6789e1e5}
+[2017-02-08 22:39:53 +0100]  Do not update man pages db... it's not worth it.                           karasu      {e5261de0}
+[2017-02-08 22:37:06 +0100]  Add message when running dkms zfs/spl                                      karasu      {0413f951}
+[2017-02-08 21:48:12 +0100]  Full name is needed                                                        karasu      {1b3012e2}
+[2017-02-08 19:39:59 +0100]  Pulseaudio plugin for Xfce4 panel                                          karasu      {fef90cc4}
+[2017-02-08 12:02:08 +0100]  Cleaned up a bit                                                           karasu      {795dc315}
+[2017-02-08 10:54:25 +0100]  Simpler way to check kernel version                                        karasu      {12769d41}
+[2017-02-08 10:01:17 +0100]  get installed kernel version                                               karasu      {420071f9}
+[2017-02-08 08:55:12 +0100]  Trying to force dkms on all kernels (not finished)                         karasu      {d8078a09}
+[2017-02-05 15:15:28 -0600]  disable zfs install option until we can identify and fix the issue ..  Dustin Falgout  {698b8c3b}
+[2017-02-04 05:06:07 -0600]  Update packages.xml URL so requests arent routed through Cloudflare..  Dustin Falgout  {aaceb8d1}
 [2017-02-04 04:58:32 -0600]  Update packages.xml URL so requests arent routed through Cloudflare..  Dustin Falgout  {6f6a173e}
+[2017-01-31 08:28:19 +0100]  Add to mkinitcpio undetected zpool dependency                              karasu      {65758b62}
 [2017-01-27 19:42:01 +0100]  Add xfce4-pulseaudio-plugin to XFCE                                        karasu      {a4772765}
+[2017-01-26 12:09:45 +0100]  libgnomeui removed                                                         karasu      {735db847}
 [2017-01-26 12:06:05 +0100]  remove libgnomeui                                                          karasu      {c8cfab01}
 [2017-01-26 12:04:25 +0100]  libgnomeui has been removed from Arch repositories                         karasu      {a6923dfe}
+[2017-01-24 17:41:36 +0100]  Non essential changes                                                      karasu      {76e6cf49}
 [2017-01-24 09:56:54 +0100]  Enable AUR in pamac if AUR feature is selected                             karasu      {bbd70c8f}
+[2017-01-23 19:32:12 +0100]  Remove gstreamer0.10-plugins                                               karasu      {48361ee1}
 [2017-01-23 19:29:49 +0100]  Remove gstreamer0.10-plugins                                               karasu      {1377f358}
 [2017-01-23 19:28:51 +0100]  Remove gstreamer0.10-plugins from list                                     karasu      {351552b8}
+[2017-01-23 08:18:03 +0100]  cdrkit got renamed to cdrtoos                                              karasu      {b12f59cb}
 [2017-01-23 08:08:41 +0100]  cdrkit got renamed to cdrtools                                             karasu      {e69af041}
 [2017-01-23 01:52:57 +0000]  Formatted commit data below... (#696)                                    Phil Wyett    {9cbe31a1}
 [2017-01-22 08:55:57 -0600]  Update packages.xml                                                    Dustin Falgout  {78af3f89}
