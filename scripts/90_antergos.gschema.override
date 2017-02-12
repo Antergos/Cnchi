@@ -104,6 +104,7 @@ favorite-apps=['nemo.desktop', '@CN_BROWSER@.desktop', 'pamac.desktop', 'gnome-t
 keyboard-applet-use-flags=false
 overview-corner=false
 panels-enabled=['1:0:bottom']
+next-applet-id=12
 
 [org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
 background-color='#262626262626'
