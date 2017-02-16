@@ -1180,6 +1180,7 @@ class Installation(object):
             if os.path.exists(os.path.join(DEST_DIR, "usr/lib/systemd/system/bumblebeed.service")):
                 services.extend(["bumblebee"])
 
+
         services.extend(["ModemManager", "haveged"])
 
         if self.method == "zfs":
@@ -1408,6 +1409,14 @@ class Installation(object):
         # Initialise pkgfile (pacman .files metadata explorer) database
         logging.debug("Updating pkgfile database")
         chroot_call(["pkgfile", "--update"])
+
+        if self.desktop != "base":
+            # avahi package seems to fail to create its user and group in some cases (¿?)
+            cmd = ["groupadd", "-r", "-g", "84", "avahi"]
+            chroot_call(cmd)
+            cmd = ["useradd", "-r", "-u", "84", "-g", "avahi", "-d", "/", "-s",
+                "/bin/nologin", "-c", "avahi", "avahi"]
+            chroot_call(cmd)
 
         # Enable AUR in pamac if AUR feature selected
         pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
