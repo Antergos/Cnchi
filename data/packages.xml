@@ -143,6 +143,7 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <!-- <pkgname>libgnomeui</pkgname> -->
+                <pkgname>libgnome-keyring</pkgname>
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
