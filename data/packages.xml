@@ -131,6 +131,7 @@
 				<pkgname>gvfs-mtp</pkgname>
 				<pkgname>hicolor-icon-theme</pkgname>
 				<!-- <pkgname>libgnomeui</pkgname> -->
+				<pkgname>libgnome-keyring</pkgname>
 				<pkgname>light-locker</pkgname>
 				<pkgname>light-locker-settings</pkgname>
 				<pkgname>nautilus</pkgname>
