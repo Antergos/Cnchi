@@ -1,3 +1,6 @@
+[2017-02-21 20:28:23 +0100]  Add libgnome-keyring to Cinnamon, too.                                     karasu      {ffe33e39}
+[2017-02-21 20:26:17 +0100]  Install libgnome-keyring                                                   karasu      {ebf0b001}
+[2017-02-21 20:24:40 +0100]  Add libgnome-keyring (should we add this to Cinnamon, too?)                karasu      {373d978c}
 [2017-02-16 10:00:49 +0100]  Create avahi user and group (just in case)                                 karasu      {ca57bdf3}
 [2017-02-12 17:28:15 -0600]  remove set-settings file since we stopped using it months ago          Dustin Falgout  {6a3502f7}
 [2017-02-12 17:27:11 -0600]  Apply change from 587638b46f90dd8a8b2452344a73921e340b47e5 to gsche..  Dustin Falgout  {c7f9c995}
