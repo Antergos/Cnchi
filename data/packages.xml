@@ -189,6 +189,7 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <!-- <pkgname>libgnomeui</pkgname> -->
+                <pkgname>libgnome-keyring</pkgname>
                 <pkgname>muffin</pkgname>
                 <pkgname>nemo</pkgname>
                 <pkgname>nemo-fileroller</pkgname>
