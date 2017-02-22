@@ -62,7 +62,13 @@ set_gsettings() {
 	  fi
 	fi
 
-	sed -i "s|@CN_BROWSER@|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
+    if [ "${CN_BROWSER}" != "" ]; then
+	    sed -i "s|@CN_BROWSER@|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
+    else
+        # No browser installed, remove from favorites
+        sed -i "s|'@CN_BROWSER@.desktop',||g" "${CN_SCHEMA_OVERRIDE}"
+    fi
+
 	cp "${CN_SCHEMA_OVERRIDE}" "${CN_SCHEMA_DIR}"
 	glib-compile-schemas "${CN_SCHEMA_DIR}"
 }
@@ -90,9 +96,13 @@ cinnamon_settings() {
 	cp -f /usr/share/cnchi/scripts/postinstall/menu@cinnamon.org.json ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon/configs/menu@cinnamon.org/
 
 	# Copy panel-launchers@cinnamon.org.json to set launchers
+    PANEL_LAUNCHER="/usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json"
 	if [[ firefox = "${CN_BROWSER}" ]]; then
-		sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json
-	fi
+		sed -i 's|chromium|firefox|g' ${PANEL_LAUNCHER}
+	elif [ "${CN_BROWSER}" == "" ]; then
+        sed -i 's|"chromium.desktop",||g' ${PANEL_LAUNCHER}
+    fi
+
 	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
 	cp -f /usr/share/cnchi/scripts/postinstall/panel-launchers@cinnamon.org.json ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon/configs/panel-launchers@cinnamon.org/
 
@@ -112,9 +122,13 @@ xfce_settings() {
 	# Set settings
 	mkdir -p ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/xfconf/xfce-perchannel-xml
 	cp -R ${CN_DESTDIR}/etc/xdg/xfce4/panel ${CN_DESTDIR}/etc/xdg/xfce4/helpers.rc ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4
+
+    HELPERS_RC="${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc"
 	if [[ ${CN_BROWSER} = "chromium" ]]; then
-		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/xfce4/helpers.rc
-	fi
+		sed -i "s/WebBrowser=firefox/WebBrowser=chromium/" ${HELPERS_RC}
+	elif [ "${CN_BROWSER}" == "" ]; then
+        sed -i "s/WebBrowser=firefox//" ${HELPERS_RC}
+    fi
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -186,11 +200,14 @@ mate_settings() {
 	set_gsettings
 
 	# Set MintMenu Favorites
+    APP_LIST="/usr/share/cnchi/scripts/postinstall/applications.list"
 	if [[ "${CN_BROWSER}" = 'firefox' ]]; then
-		sed -i 's|chromium|firefox|g' /usr/share/cnchi/scripts/postinstall/applications.list
+		sed -i 's|chromium|firefox|g' ${APP_LIST}
+    elif [ "${CN_BROWSER}" == "" ]; then
+        sed -i 's|location:/usr/share/applications/chromium.desktop||g' ${APP_LIST}
 	fi
 
-	cp /usr/share/cnchi/scripts/postinstall/applications.list "${CN_DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list"
+	cp ${APP_LIST} "${CN_DESTDIR}/usr/lib/linuxmint/mintMenu/applications.list"
 
 	# Copy panel layout and make it the default
 	cd "${CN_DESTDIR}/usr/share/mate-panel/layouts"
@@ -318,9 +335,11 @@ postinstall() {
 	# Specific user configurations
 	if [[ -f /usr/share/applications/firefox.desktop ]]; then
 		export CN_BROWSER=firefox
-	else
+	elif [[ -f /usr/share/applications/chromium.desktop ]]; then
 		export CN_BROWSER=chromium
-	fi
+    else
+        export CN_BROWSER=""
+    fi
 
 	# Workaround for LightDM bug https://bugs.launchpad.net/lightdm/+bug/1069218
 	sed -i 's|UserAccounts|UserList|g' "${CN_DESTDIR}/etc/lightdm/users.conf"
@@ -385,10 +404,12 @@ postinstall() {
 
 	for file in "${env_files[@]}"
 	do
-		echo "# >>>>BEGIN ADDED BY CNCHI INSTALLER<<<< #" >> "${file}"
-		echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
+		echo "# >>> BEGIN ADDED BY CNCHI INSTALLER" >> "${file}"
+		if [ "${CN_BROWSER}" != "" ]; then
+			echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
+		fi
 		echo "EDITOR=/usr/bin/nano" >> "${file}"
-		echo "# >>>>>END ADDED BY CNCHI INSTALLER<<<<< #" >> "${file}"
+		echo "# <<< END ADDED BY CNCHI INSTALLER" >> "${file}"
 	done
 
 	# Configure makepkg so that it doesn't compress packages after building.
