@@ -519,11 +519,34 @@
 
     <!-- User desired features -->
     <features>
+        <feature name="6dots">
+            <pkgname>alsa-utils</pkgname>
+            <pkgname>bluez</pkgname>
+            <pkgname>bluez-libs</pkgname>
+            <pkgname>brltty-minimal</pkgname>
+            <pkgname>clonezilla</pkgname>
+            <pkgname>darkhttpd</pkgname>
+            <pkgname>ddrescue</pkgname>
+            <pkgname>dhclient</pkgname>
+            <pkgname>dnsmasq</pkgname>
+            <pkgname>elinks</pkgname>
+            <pkgname>espeak</pkgname>
+            <pkgname>espeakup</pkgname>
+            <pkgname>ethtool</pkgname>
+            <pkgname>gnu-netcat</pkgname>
+            <pkgname>gpm</pkgname>
+            <pkgname>irssi</pkgname>
+            <pkgname>lftp</pkgname>
+            <pkgname>mc</pkgname>
+            <pkgname>orca</pkgname>
+            <pkgname>python2-speechd</pkgname>
+            <pkgname>vim-minimal</pkgname>
+        </feature>
         <feature name="aur">
-        <pkgname>yaourt</pkgname>
-        <pkgname>cmake</pkgname>
-        <pkgname>git</pkgname>
-        <pkgname>bzr</pkgname>
+            <pkgname>yaourt</pkgname>
+            <pkgname>cmake</pkgname>
+            <pkgname>git</pkgname>
+            <pkgname>bzr</pkgname>
         </feature>
         <feature name="bluetooth">
             <pkgname>bluez</pkgname>
