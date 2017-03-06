@@ -42,13 +42,11 @@ VENDOR_ID = "0x10de"
 PRIORITY = 0
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
-# nvidia, nvidia-340xx, nvidia-304xx
-# lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
 
 """
 For GeForce 6000/7000 series cards [NV4x and NV6x] from around 2004-2006, install
-    the nvidia-304xx or nvidia-304xx-lts package along with nvidia-304xx-libgl,
-    available in the official repositories.
+    the nvidia-304xx or nvidia-304xx-lts package, available in the official
+    repositories.
 """
 
 DEVICES = [
@@ -137,17 +135,17 @@ class Nvidia304xx(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia-304xx", "nvidia-304xx-utils", "nvidia-304xx-libgl", "libvdpau"]
+        pkgs = ["nvidia-304xx", "nvidia-304xx-utils", "libvdpau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-304xx-libgl", "lib32-libvdpau"])
+            pkgs.extend(["lib32-libvdpau"])
         return pkgs
 
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
         pkgs = ["mesa-libgl", "xf86-video-nouveau"]
-        if os.uname()[-1] == "x86_64":
-            pkgs.append("lib32-mesa-libgl")
+        #if os.uname()[-1] == "x86_64":
+        #    pkgs.append("lib32-mesa-libgl")
         return pkgs
 
     @staticmethod

@@ -45,13 +45,11 @@ VENDOR_ID = "0x10de"
 PRIORITY = 1
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
-# nvidia, nvidia-340xx, nvidia-304xx
-# lib32-nvidia-libgl, lib32-nvidia-340xx-libgl or lib32-nvidia-304xx-libgl
 
 """
 For GeForce 8000/9000 and 100-300 series cards [NV5x, NV8x, NV9x and NVAx] from
-    around 2006-2010, install the nvidia-340xx or nvidia-340xx-lts package along
-    with nvidia-340xx-libgl, available in the official repositories.
+    around 2006-2010, install the nvidia-340xx or nvidia-340xx-lts, available in
+    the official repositories.
 """
 
 DEVICES = [
@@ -135,17 +133,17 @@ class Nvidia340xx(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia-340xx", "nvidia-340xx-utils", "nvidia-340xx-libgl", "libvdpau"]
+        pkgs = ["nvidia-340xx", "nvidia-340xx-utils", "libvdpau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-340xx-libgl", "lib32-libvdpau"])
+            pkgs.extend(["lib32-libvdpau"])
         return pkgs
 
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
-        pkgs = ["mesa-libgl", "xf86-video-nouveau"]
-        if os.uname()[-1] == "x86_64":
-            pkgs.append("lib32-mesa-libgl")
+        pkgs = ["xf86-video-nouveau"]
+        #if os.uname()[-1] == "x86_64":
+        #    pkgs.append("lib32-mesa-libgl")
         return pkgs
 
     @staticmethod
