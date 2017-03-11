@@ -319,6 +319,7 @@ class AutoPartition(object):
                     "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
                     "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
                     "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
+                    "fat32": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
                     "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle

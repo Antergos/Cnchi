@@ -892,7 +892,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if (os.path.exists('/sys/firmware/efi') and
                         (new_mount == "/boot" or new_mount == "/boot/efi")):
                     logging.debug("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
-                    new_fs = "fat"
+                    new_fs = "fat32"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
@@ -1258,7 +1258,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if (os.path.exists('/sys/firmware/efi') and
                         (mymount == "/boot" or mymount == "/boot/efi")):
                     logging.info("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
-                    myfs = "fat"
+                    myfs = "fat32"
 
                 # Store new stage partition info in self.stage_opts
                 old_parts = []
@@ -1890,7 +1890,7 @@ class InstallationAdvanced(GtkBaseBox):
         for part_path in self.stage_opts:
             (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[part_path]
 
-            if mnt == "/" and fsystem not in ["fat", "ntfs", "swap"]:
+            if mnt == "/" and fsystem not in ["fat32", "ntfs", "swap"]:
                 has_part["/"] = True
                 part_label["/"].show()
                 part_label["/"].set_state(True)

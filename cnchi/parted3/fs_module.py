@@ -145,6 +145,7 @@ def label_fs(fstype, part, label):
              'fat': 'mlabel -i %(part)s ::%(label)s',
              'fat16': 'mlabel -i %(part)s ::%(label)s',
              'fat32': 'mlabel -i %(part)s ::%(label)s',
+             'vfat': 'mlabel -i %(part)s ::%(label)s',
              'ntfs': 'ntfslabel %(part)s %(label)s',
              'jfs': 'jfs_tune -L %(label)s %(part)s',
              'reiserfs': 'reiserfstune -l %(label)s %(part)s',
