@@ -77,9 +77,7 @@ def get_info(part):
     if part and not misc.is_partition_extended(part):
         # -c /dev/null means no cache
         cmd = ['blkid', '-c', '/dev/null', part]
-        call(cmd)
         try:
-
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning("Error running %s: %s", err.cmd, err.output)

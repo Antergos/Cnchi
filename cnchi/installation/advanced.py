@@ -550,14 +550,14 @@ class InstallationAdvanced(GtkBaseBox):
                         # of assumming btrfs
                         fs_type = 'unknown'
 
+                    label = fs.get_label(partition_path)
+
                     if uid in self.stage_opts:
                         (is_new,
                          label,
                          mount_point,
                          fs_type,
                          fmt_active) = self.stage_opts[uid]
-
-                    label = fs.get_label(partition_path)
 
                     if mount_point:
                         self.diskdic['mounts'].append(mount_point)
