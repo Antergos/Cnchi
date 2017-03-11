@@ -889,10 +889,25 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_fs == 'swap':
                     new_mount = 'swap'
 
-                if (os.path.exists('/sys/firmware/efi') and
-                        (new_mount == "/boot" or new_mount == "/boot/efi")):
-                    logging.debug("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
-                    new_fs = "fat32"
+                if os.path.exists('/sys/firmware/efi'):
+                    if new_mount == "/boot" and new_fs != "fat32":
+                        # search for /boot/efi
+                        boot_efi_exists = False
+                        for tmp_uid in stage_opts:
+                            opt = stage_opts[tmp_uid]
+                            if opt[2] == '/boot/efi':
+                                boot_efi_exists = True
+                        # if no /boot/efi is defined, /boot must be fat32
+                        if not boot_efi_exists:
+                            show.warning(
+                                self.get_main_window(),
+                                _('As no /boot/efi is defined (yet), /boot needs to be fat32.'))
+                            new_fs = "fat32"
+                    elif new_mount == "/boot/efi" and new_fs != "fat32":
+                        show.warning(
+                            self.get_main_window(),
+                            _('/boot/efi needs to be fat32.'))
+                        new_fs = "fat32"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.tmp_luks_options
@@ -900,12 +915,8 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
                     # (for process.py to know)
-                    self.settings.set(
-                        'use_luks_in_root',
-                        self.tmp_luks_options[0])
-                    self.settings.set(
-                        'luks_root_volume',
-                        self.tmp_luks_options[1])
+                    self.settings.set('use_luks_in_root', self.tmp_luks_options[0])
+                    self.settings.set('luks_root_volume', self.tmp_luks_options[1])
 
         self.edit_partition_dialog.hide()
 
