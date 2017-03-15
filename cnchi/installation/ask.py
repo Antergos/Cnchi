@@ -78,9 +78,6 @@ def check_alongside_disk_layout():
 
 
 def load_zfs():
-    # ZFS installs are not bootable currently. Disabling until we find time to fix it.
-    return False
-
     cmd = ["modprobe", "zfs"]
     try:
         with misc.raised_privileges() as __:
