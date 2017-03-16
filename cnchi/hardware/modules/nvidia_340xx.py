@@ -142,8 +142,6 @@ class Nvidia340xx(Hardware):
     def get_conflicts():
         """ Get conflicting packages """
         pkgs = ["xf86-video-nouveau"]
-        #if os.uname()[-1] == "x86_64":
-        #    pkgs.append("lib32-mesa-libgl")
         return pkgs
 
     @staticmethod

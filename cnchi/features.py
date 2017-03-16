@@ -170,7 +170,6 @@ class Features(GtkBaseBox):
         self.listbox_rows = {}
 
         # Only add graphic-driver feature if an AMD or Nvidia is detected
-        # FIXME: Conflict between lib32-nvidia-libgl and lib32-mesa-libgl
         if "graphic_drivers" in self.features:
             allow = False
             if self.detect.amd():

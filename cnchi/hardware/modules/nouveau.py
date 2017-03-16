@@ -56,7 +56,7 @@ class Nouveau(Hardware):
         """ Get all required packages """
         pkgs = ["xf86-video-nouveau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-mesa", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-mesa"])
         return pkgs
 
     @staticmethod

@@ -101,17 +101,15 @@ class Nvidia(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia", "nvidia-utils", "nvidia-libgl", "libvdpau"]
+        pkgs = ["nvidia", "nvidia-utils", "libvdpau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-libgl", "lib32-libvdpau"])
+            pkgs.extend(["lib32-libvdpau"])
         return pkgs
 
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
-        pkgs = ["mesa-libgl", "xf86-video-nouveau"]
-        if os.uname()[-1] == "x86_64":
-            pkgs.append("lib32-mesa-libgl")
+        pkgs = ["xf86-video-nouveau"]
         return pkgs
 
     @staticmethod

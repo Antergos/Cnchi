@@ -52,7 +52,7 @@ class Intel915(Hardware):
         """ Get all required packages """
         pkgs = ["xf86-video-intel", "libva-intel-driver", "libtxc_dxtn"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-mesa", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-mesa"])
         return pkgs
 
     @staticmethod

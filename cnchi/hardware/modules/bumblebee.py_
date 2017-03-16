@@ -75,15 +75,13 @@ class Bumblebee(Hardware):
         """ Get all required packages """
         pkgs = ["bumblebee", "mesa", "xf86-video-intel", "nvidia", "nvidia-settings", "bbswitch"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl", "lib32-mesa-libgl"])
+            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl"])
         return pkgs
 
     @staticmethod
     def get_conflicts():
         """ Get conflicting packages """
-        pkgs = ["mesa-libgl", "xf86-video-nouveau"]
-        #if os.uname()[-1] == "x86_64":
-        #    pkgs.append("lib32-mesa-libgl")
+        pkgs = ["xf86-video-nouveau"]
         return pkgs
 
     @staticmethod
