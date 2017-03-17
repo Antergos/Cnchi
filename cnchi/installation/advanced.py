@@ -893,8 +893,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if new_mount == "/boot" and new_fs != "fat32":
                         # search for /boot/efi
                         boot_efi_exists = False
-                        for tmp_uid in stage_opts:
-                            opt = stage_opts[tmp_uid]
+                        for tmp_uid in self.stage_opts:
+                            opt = self.stage_opts[tmp_uid]
                             if opt[2] == '/boot/efi':
                                 boot_efi_exists = True
                         # if no /boot/efi is defined, /boot must be fat32
