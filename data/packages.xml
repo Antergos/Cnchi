@@ -609,6 +609,7 @@
             <pkgname>paranoid</pkgname>
         </feature>
         <feature name="smb">
+            <pkgname>cifs-utils</pkgname>
             <pkgname lib='gtk'>gvfs-smb</pkgname>
             <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
             <pkgname>python-pysmbc</pkgname>
