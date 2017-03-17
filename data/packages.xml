@@ -130,7 +130,6 @@
 				<pkgname>gnome-weather</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
 				<pkgname>hicolor-icon-theme</pkgname>
-				<!-- <pkgname>libgnomeui</pkgname> -->
 				<pkgname>libgnome-keyring</pkgname>
 				<pkgname>light-locker</pkgname>
 				<pkgname>light-locker-settings</pkgname>
@@ -152,7 +151,6 @@
 			<packages>
 				<pkgname>antergos-gnome-defaults-list</pkgname>
 				<pkgname>baobab</pkgname>  <!-- Disk usage -->
-				<!-- <pkgname>bijiben</pkgname> -->
 				<pkgname>brasero</pkgname>
 				<pkgname>cdrtools</pkgname>
 				<pkgname>cinnamon</pkgname>
@@ -180,7 +178,6 @@
 				<pkgname>gnome-themes-standard</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
 				<pkgname>hicolor-icon-theme</pkgname>
-				<!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>libgnome-keyring</pkgname>
 				<pkgname>muffin</pkgname>
 				<pkgname>nemo</pkgname>
@@ -262,7 +259,6 @@
 				<pkgname>cdrtools</pkgname>
 				<pkgname>engrampa</pkgname>
 				<pkgname>eom</pkgname>
-				<pkgname>galculator-gtk2</pkgname>
 				<pkgname>gksu</pkgname>
 				<pkgname>gnome-keyring</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
