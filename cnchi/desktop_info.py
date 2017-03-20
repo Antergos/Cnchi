@@ -67,8 +67,7 @@ LIBS = {
 }
 
 ALL_FEATURES = ["aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "flash",
-                "fonts", "games", "graphic_drivers", "lamp", "lts", "office",
-                "visual", "smb"]
+    "games", "graphic_drivers", "lamp", "lts", "office", "visual", "smb"]
 
 # Not all desktops have all features
 EXCLUDED_FEATURES = {

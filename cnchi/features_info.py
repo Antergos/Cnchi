@@ -40,7 +40,6 @@ ICON_NAMES = {
     'firefox': 'firefox',
     'firewall': 'network-server',
     'flash': 'flash',
-    'fonts': 'preferences-desktop-font',
     'games': 'applications-games',
     'graphic_drivers': 'gnome-system',
     'lamp': 'applications-internet',
@@ -62,7 +61,6 @@ TITLES = {
     'firefox': _("Firefox Web Browser"),
     'firewall': _("Uncomplicated Firewall"),
     'flash': _("Flash plugins"),
-    'fonts': _("Extra Truetype Fonts"),
     'games': _("Steam + PlayonLinux"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
@@ -77,7 +75,6 @@ DESCRIPTIONS = {
     'chromium': _("Open-source web browser from Google."),
     'firefox': _("A popular open-source graphical web browser from Mozilla."),
     'flash': _("Freeware software normally used for multimedia."),
-    'fonts': _("TrueType fonts from the Google Fonts project."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
@@ -116,14 +113,6 @@ TOOLTIPS = {
     'flash': _("Adobe Flash Player is freeware software for using content created\n"
                "on the Adobe Flash platform, including viewing multimedia, executing\n"
                "rich internet applications and streaming video and audio."),
-    'fonts': _("Fonts: adobe-source-code-pro, adobe-source-sans-pro, jsmath, lohit\n"
-               "oldstand, openarch, otf-bitter, otf-goudy, andika, anonymous-pro\n"
-               "cantarell, cardo, chromeos-fonts, comfortaa, droid, google-fonts\n"
-               "google-webfonts, inconsolata, kimberly_geswein_print, lekton\n"
-               "medievalsharp, nova, oldstandard, opensans, oxygen, pt-mono\n"
-               "pt-sans, roboto, sil-fonts, sortsmillgoudy, source-code-pro\n"
-               "source-sans-pro, ubuntu-font-family, vollkorn, fira-mono\n"
-               "fira-sans and lato."),
     'games': _("Steam is one of the most popular gaming clients that supports\n"
                "linux in technology and gaming, while PlayOnLinux\n"
                "is a very easy manager to setting up games to play\n"

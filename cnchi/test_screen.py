@@ -92,6 +92,9 @@ def get_screen(screen_name, params):
     elif screen_name == "zfs":
         import zfs
         screen = zfs.InstallationZFS(params)
+    elif screen_name == "Mirrors":
+        import mirrors
+        screen = mirrors.Mirrors(params)
     return screen
 
 
@@ -137,6 +140,7 @@ def run(screen_name):
         'main_progressbar': Gtk.ProgressBar.new(),
         'header': Gtk.HeaderBar.new(),
         'callback_queue': None,
+        'disable_rank_mirrors': False,
         'alternate_package_list': "",
         'process_list': []}
 
