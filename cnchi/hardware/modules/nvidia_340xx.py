@@ -133,9 +133,9 @@ class Nvidia340xx(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia-340xx", "nvidia-340xx-utils", "libvdpau"]
+        pkgs = ["nvidia-340xx", "nvidia-340xx-utils"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-libvdpau"])
+            pkgs.extend(["lib32-nvidia-340xx-utils"])
         return pkgs
 
     @staticmethod
