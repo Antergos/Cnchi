@@ -1202,11 +1202,16 @@ class Installation(object):
             chroot_call(['systemctl', '-fq', 'enable', 'systemd-timesyncd.service'])
 
         # Set timezone
-        zoneinfo_path = os.path.join(
-            "/usr/share/zoneinfo",
-            self.settings.get("timezone_zone"))
-        chroot_call(['ln', '-s', zoneinfo_path, "/etc/localtime"])
-        logging.debug("Timezone set to %s", zoneinfo_path)
+        zone = self.settings.get("timezone_zone")
+        if zone:
+            localtime_path = "/etc/localtime"
+            if os.path.exists(localtime_path):
+                os.remove(localtime_path)
+            zoneinfo_path = os.path.join("/usr/share/zoneinfo", zone)
+            chroot_call(['ln', '-s', zoneinfo_path, localtime_path])
+            logging.debug("Timezone set to %s", zoneinfo_path)
+        else:
+            logging.warning("Can't read selected timezone! Will leave it to UTC.")
 
         # Wait FOREVER until the user sets his params
         # FIXME: We can wait here forever!
