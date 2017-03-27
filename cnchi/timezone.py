@@ -241,35 +241,26 @@ class Timezone(GtkBaseBox):
 
         if loc:
             self.settings.set("timezone_zone", loc.zone)
-            logging.debug("Timezone zone: %s", loc.zone)
-
             self.settings.set("timezone_human_zone", loc.human_zone)
-            logging.debug("Timezone (human) zone: %s", loc.human_zone)
-
             self.settings.set("timezone_country", loc.country)
-            logging.debug("Timezone country: %s", loc.country)
-
             self.settings.set("timezone_human_country", loc.human_country)
-            logging.debug("Timezone (human) country: %s", loc.human_country)
 
             if loc.comment:
                 self.settings.set("timezone_comment", loc.comment)
-                logging.debug("Timezone comment: %s", loc.comment)
             else:
                 self.settings.set("timezone_comment", "")
 
             if loc.latitude:
                 self.settings.set("timezone_latitude", loc.latitude)
-                logging.debug("Timezone latitude: %s", loc.latitude)
             else:
                 self.settings.set("timezone_latitude", "")
 
             if loc.longitude:
                 self.settings.set("timezone_longitude", loc.longitude)
-                logging.debug("Timezone longitude: %s", loc.longitude)
             else:
                 self.settings.set("timezone_longitude", "")
 
+            # Logs timezone info
             self.log_location(loc)
 
         # This way process.py will know that all info has been entered
