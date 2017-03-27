@@ -240,23 +240,33 @@ class Timezone(GtkBaseBox):
         loc = self.tzdb.get_loc(self.timezone)
 
         if loc:
-            self.settings.set("timezone_human_zone", loc.human_zone)
-            self.settings.set("timezone_country", loc.country)
             self.settings.set("timezone_zone", loc.zone)
+            self.logging("Timezone zone: %s", loc.zone)
+
+            self.settings.set("timezone_human_zone", loc.human_zone)
+            self.logging("Timezone (human) zone: %s", loc.human_zone)
+
+            self.settings.set("timezone_country", loc.country)
+            self.logging("Timezone country: %s", loc.country)
+
             self.settings.set("timezone_human_country", loc.human_country)
+            self.logging("Timezone (human) country: %s", loc_human_country)
 
             if loc.comment:
                 self.settings.set("timezone_comment", loc.comment)
+                self.logging("Timezone comment: %s", loc.comment)
             else:
                 self.settings.set("timezone_comment", "")
 
             if loc.latitude:
                 self.settings.set("timezone_latitude", loc.latitude)
+                self.logging("Timezone latitude: %s", loc.latitude)
             else:
                 self.settings.set("timezone_latitude", "")
 
             if loc.longitude:
                 self.settings.set("timezone_longitude", loc.longitude)
+                self.logging("Timezone longitude: %s", loc.longitude)
             else:
                 self.settings.set("timezone_longitude", "")
 
@@ -266,7 +276,7 @@ class Timezone(GtkBaseBox):
         self.settings.set("timezone_done", True)
 
         if self.settings.get('use_timesyncd'):
-            logging.debug("Cnchi will setup network time")
+            logging.debug("Cnchi will setup network time using systemd-timesyncd")
         else:
             logging.debug("Cnchi won't setup network time")
 

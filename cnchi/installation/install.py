@@ -1206,7 +1206,7 @@ class Installation(object):
             "/usr/share/zoneinfo",
             self.settings.get("timezone_zone"))
         chroot_call(['ln', '-s', zoneinfo_path, "/etc/localtime"])
-        logging.debug("Timezone set.")
+        logging.debug("Timezone set to %s", zoneinfo_path)
 
         # Wait FOREVER until the user sets his params
         # FIXME: We can wait here forever!

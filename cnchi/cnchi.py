@@ -323,7 +323,8 @@ def check_iso_version():
         # Delete user's chromium cache (just in case)
         cache_dir = "/home/antergos/.cache/chromium"
         if os.path.exists(cache_dir):
-            shutil.rmtree(cache_dir)
+            shutil.rmtree(path=cache_dir, ignore_errors=True)
+            logging.debug("User's chromium cache deleted")
     else:
         logging.debug("Not running from ISO")
     return True
