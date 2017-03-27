@@ -250,7 +250,7 @@ class Timezone(GtkBaseBox):
             logging.debug("Timezone country: %s", loc.country)
 
             self.settings.set("timezone_human_country", loc.human_country)
-            logging.debug("Timezone (human) country: %s", loc_human_country)
+            logging.debug("Timezone (human) country: %s", loc.human_country)
 
             if loc.comment:
                 self.settings.set("timezone_comment", loc.comment)
