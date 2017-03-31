@@ -33,6 +33,7 @@ import shutil
 import sys
 import time
 import re
+import tempfile
 
 import desktop_info
 import encfs
@@ -844,9 +845,34 @@ class Installation(object):
         else:
             logging.error("Can't find locale.gen file")
 
+
+    def enable_aur_in_pamac(self):
+        pamac_conf = "/etc/pamac.conf"
+        if os.path.exists(pamac_conf):
+            fd, name = tempfile.mkstemp()
+            fout = open(name, 'w')
+            with open(pamac_conf) as fin:
+                for line in fin:
+                    if line.startswith("#"):
+                        if "EnableAUR" in line:
+                            line = "EnableAUR\n"
+                        elif "SearchInAURByDefault" in line:
+                            line = "SearchInAURByDefault\n"
+                        elif "CheckAURUpdates" in line:
+                            line = "CheckAURUpdates\n"
+                    fout.write(line)
+            fout.close()
+            shutil.move(name, pamac_conf)
+            logging.debug("Enabled AUR in %s file", pamac_conf)
+        else:
+            logging.warning("Cannot find %s file", pamac_conf)
+
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
         services = []
+
+        if self.settings.get("feature_aur"):
+            self.enable_aur_in_pamac()
 
         if self.settings.get("feature_bluetooth"):
             services.append('bluetooth')
