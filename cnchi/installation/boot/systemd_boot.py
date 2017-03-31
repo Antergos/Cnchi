@@ -102,12 +102,14 @@ class SystemdBoot(object):
         conf['default'] = []
         conf['default'].append("title\tAntergos\n")
         conf['default'].append("linux\t/vmlinuz-linux\n")
+        conf['default'].append("initrd\t/intel-ucode.img\n")
         conf['default'].append("initrd\t/initramfs-linux.img\n")
         conf['default'].append("options\t{0}\n\n".format(options))
 
         conf['fallback'] = []
         conf['fallback'].append("title\tAntergos (fallback)\n")
         conf['fallback'].append("linux\t/vmlinuz-linux\n")
+        conf['fallback'].append("initrd\t/intel-ucode.img\n")
         conf['fallback'].append("initrd\t/initramfs-linux-fallback.img\n")
         conf['fallback'].append("options\t{0}\n\n".format(options))
 
@@ -115,12 +117,14 @@ class SystemdBoot(object):
             conf['lts'] = []
             conf['lts'].append("title\tAntergos LTS\n")
             conf['lts'].append("linux\t/vmlinuz-linux-lts\n")
+            conf['lts'].append("initrd\t/intel-ucode.img\n")
             conf['lts'].append("initrd\t/initramfs-linux-lts.img\n")
             conf['lts'].append("options\t{0}\n\n".format(options))
 
             conf['lts_fallback'] = []
             conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
             conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
+            conf['lts_fallback'].append("initrd\t/intel-ucode.img\n")
             conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
             conf['lts_fallback'].append("options\t{0}\n\n".format(options))
 
