@@ -45,7 +45,6 @@ ICON_NAMES = {
     'lamp': 'applications-internet',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
-    'smb': 'gnome-mime-x-directory-smb-share',
     'visual': 'video-display'}
 
 
@@ -66,7 +65,6 @@ TITLES = {
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
     'lts': _("Kernel (LTS version)"),
     'office': _("LibreOffice"),
-    'smb': _("Windows sharing SMB"),
     'visual': _("Visual Effects")}
 
 DESCRIPTIONS = {
@@ -82,8 +80,7 @@ DESCRIPTIONS = {
     'office': _("Open source office suite. Supports editing MS Office files."),
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
-    'lts': _("Long term support (LTS) Linux kernel and modules."),
-    'smb': _("Provides client access to shared files and printers.")}
+    'lts': _("Long term support (LTS) Linux kernel and modules.")}
 
 TOOLTIPS = {
     'aur': _("Use yaourt to install AUR packages.\n"
@@ -134,8 +131,6 @@ TOOLTIPS = {
                 "and Linux, that gives you six feature-rich applications\n"
                 "for all your document production and data processing\n"
                 "needs: Writer, Calc, Impress, Draw, Math and Base."),
-    'smb': _("Most usage of SMB involves computers running Microsoft Windows.\n"
-             "Use this option to be able to browse SMB shares from your computer."),
     'visual': _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"

@@ -140,7 +140,9 @@
                 <pkgname>gnome-themes-standard</pkgname>
                 <pkgname>gnome-tweak-tool</pkgname>
                 <pkgname>gnome-weather</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>libgnome-keyring</pkgname>
@@ -150,6 +152,7 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -186,7 +189,9 @@
                 <pkgname>gnome-system-monitor</pkgname>
                 <pkgname>gnome-terminal</pkgname>
                 <pkgname>gnome-themes-standard</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>libgnome-keyring</pkgname>
@@ -199,6 +204,7 @@
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pidgin</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -214,6 +220,7 @@
                 <pkgname>gnome-calculator</pkgname>
                 <pkgname>gnome-disk-utility</pkgname>
                 <pkgname>gnome-keyring</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>mousepad</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
@@ -221,6 +228,7 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>parole</pkgname>
                 <pkgname>pidgin</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
                 <pkgname>ristretto</pkgname>
@@ -251,7 +259,9 @@
                 <pkgname>galculator-gtk2</pkgname>
                 <pkgname>gksu</pkgname>
                 <pkgname>gnome-keyring</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>mate</pkgname> <!-- Group -->
                 <pkgname>mate-applets</pkgname>
                 <pkgname>mate-media</pkgname>
@@ -268,6 +278,7 @@
                 <pkgname>pidgin</pkgname>
                 <pkgname>pluma</pkgname>
                 <pkgname>pragha</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -288,7 +299,9 @@
                 <pkgname>gnome-mplayer</pkgname>
                 <pkgname>gpicview</pkgname>
                 <pkgname>gsimplecal</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>lxappearance-obconf-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
                 <pkgname>lxmenu-data</pkgname>
@@ -315,6 +328,7 @@
                 <pkgname>plank-theme-numix</pkgname>
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>python2-xdg</pkgname>
                 <pkgname>scrot</pkgname>
                 <pkgname>tint2</pkgname>
@@ -352,6 +366,7 @@
                 <pkgname>kfind</pkgname>
                 <pkgname>kdeconnect</pkgname>
                 <pkgname>kdegraphics-thumbnailers</pkgname>
+                <pkgname>kdenetwork-filesharing</pkgname>
                 <pkgname>kdenetwork-kopete</pkgname>
                 <pkgname>kdesudo</pkgname>
                 <pkgname>kdeutils-sweeper</pkgname>
@@ -467,7 +482,9 @@
                 <pkgname>gnome-themes-standard</pkgname>
                 <pkgname>gnome-tweak-tool</pkgname>
                 <pkgname>gnome-weather</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
                 <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>nautilus</pkgname>
@@ -476,6 +493,7 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -491,7 +509,9 @@
                 <pkgname>file-roller</pkgname>
                 <pkgname>galculator</pkgname>
                 <pkgname>gpicview</pkgname>
+                <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
                 <pkgname>i3-wm</pkgname>
                 <pkgname>i3lock</pkgname>
                 <pkgname>i3status</pkgname>
@@ -506,6 +526,7 @@
                 <pkgname>notify-osd</pkgname>
                 <pkgname>pcmanfm</pkgname>
                 <pkgname>polkit-gnome</pkgname>
+                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>scrot</pkgname>
                 <pkgname>terminator</pkgname>
                 <pkgname>udiskie</pkgname>
@@ -604,12 +625,6 @@
             <pkgname>compton</pkgname>
             <pkgname>paranoid</pkgname>
         </feature>
-        <feature name="smb">
-            <pkgname>cifs-utils</pkgname>
-            <pkgname lib='gtk'>gvfs-smb</pkgname>
-            <pkgname lib='qt'>kdenetwork-filesharing</pkgname>
-            <pkgname>python-pysmbc</pkgname>
-        </feature>
         <feature name="lamp">
             <pkgname>apache</pkgname>
             <pkgname>php</pkgname>
@@ -635,6 +650,7 @@
 
     <filesystems>
         <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
+        <pkgname>cifs-utils</pkgname>       <!-- for smb shares -->
         <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
         <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
         <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
@@ -649,11 +665,11 @@
     </filesystems>
 
     <zfs>
-        <pkgname>zfs</pkgname>
-        <pkgname>zfs-utils</pkgname>
+        <pkgname>grub-zfs</pkgname>
         <pkgname>spl</pkgname>
         <pkgname>spl-utils</pkgname>
-        <pkgname>grub-zfs</pkgname>
+        <pkgname>zfs</pkgname>
+        <pkgname>zfs-utils</pkgname>
     </zfs>
 
     <locale_fonts>
