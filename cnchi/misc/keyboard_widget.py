@@ -437,10 +437,13 @@ class KeyboardWidget(Gtk.DrawingArea):
             cmd.extend(["-variant", self.variant])
 
         cmd.append("-compact")
+        output = []
 
         try:
             with raised_privileges() as privileged:
-                cfile = call(cmd).split('\n')
+                output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+                if output:
+                    output = output.decode().split('\n')
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",
@@ -451,7 +454,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         # Clear current codes
         del self.codes[:]
 
-        for line in cfile:
+        for line in output:
             if line[:7] != "keycode":
                 continue
 
