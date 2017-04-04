@@ -54,9 +54,18 @@ class Nouveau(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["xf86-video-nouveau"]
+        pkgs = ["xf86-video-nouveau", "mesa"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-mesa"])
+        return pkgs
+
+    @staticmethod
+    def get_conflicts():
+        """ Get conflicting packages """
+        pkgs = ["nvidia", "nvidia-lts" "nvidia-utils", "nvidia-libgl",
+            "nvidia-340xx", "nvidia-340xx-lts", "nvidia-340xx-utils",
+            "nvidia-304xx", "nvidia-304xx-lts", "nvidia-304xx-utils",
+            "bumblebee", "virtualgl", "nvidia-settings", "bbswitch"]
         return pkgs
 
     @staticmethod

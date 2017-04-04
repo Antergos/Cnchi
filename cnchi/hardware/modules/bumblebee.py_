@@ -73,9 +73,10 @@ class Bumblebee(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["bumblebee", "mesa", "xf86-video-intel", "nvidia", "nvidia-settings", "bbswitch"]
+        pkgs = ["bumblebee", "mesa", "xf86-video-intel", "nvidia", "virtualgl",
+            "nvidia-settings", "bbswitch"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl"])
+            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl", "lib32-mesa"])
         return pkgs
 
     @staticmethod

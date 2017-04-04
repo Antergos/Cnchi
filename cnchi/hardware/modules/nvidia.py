@@ -101,9 +101,9 @@ class Nvidia(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia", "nvidia-utils"]
+        pkgs = ["nvidia", "libvdpau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-utils"])
+            pkgs.extend(["lib32-nvidia-utils", "lib32-libvdpau"])
         return pkgs
 
     @staticmethod
