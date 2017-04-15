@@ -144,13 +144,11 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>libgnome-keyring</pkgname>
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
@@ -193,7 +191,6 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>libgnome-keyring</pkgname>
                 <pkgname>muffin</pkgname>
                 <pkgname>nemo</pkgname>
@@ -203,7 +200,6 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -227,7 +223,6 @@
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>parole</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
@@ -256,7 +251,6 @@
                 <pkgname>caja-open-terminal</pkgname>
                 <pkgname>engrampa</pkgname>
                 <pkgname>eom</pkgname>
-                <pkgname>galculator-gtk2</pkgname>
                 <pkgname>gksu</pkgname>
                 <pkgname>gnome-keyring</pkgname>
                 <pkgname>gvfs-google</pkgname>
@@ -275,7 +269,6 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>pluma</pkgname>
                 <pkgname>pragha</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
@@ -321,7 +314,6 @@
                 <pkgname>openbox</pkgname>
                 <pkgname>openbox-menu</pkgname>
                 <pkgname>parcellite</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>pcmanfm</pkgname>
                 <pkgname>plank</pkgname>
                 <pkgname>plank-theme-numix</pkgname>
@@ -485,12 +477,10 @@
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
                 <pkgname>hicolor-icon-theme</pkgname>
-                <!-- <pkgname>libgnomeui</pkgname> -->
                 <pkgname>nautilus</pkgname>
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>pidgin</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
