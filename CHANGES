@@ -1,3 +1,30 @@
+[2017-04-15 05:49:35 +0200]  plank-config has been removed                                              karasu      {8728b260}
+[2017-04-04 12:24:06 +0200]  Playing with nvidia driver installation. Improve bubmlebee option (..      karasu      {05ba2d38}
+[2017-04-02 19:24:10 +0200]  Do not dump all keycodes                                                   karasu      {ecf310cc}
+[2017-04-02 00:36:52 +0200]  Remove smb client feature by always installing cifs-utils and gvfs-..      karasu      {b30507f3}
+[2017-03-31 16:30:03 +0200]  Enable AUR in pamac when AUR is selected as a feature. Issue #654          karasu      {a879509a}
+[2017-03-31 15:50:31 +0200]  Added GeForce GTX 1080 to the list of supported cards in nvidia pro..      karasu      {a311daae}
+[2017-03-31 15:45:51 +0200]  Add intel microcode when booting with systemd-boot. Fixes #704             karasu      {6a55692e}
+[2017-03-27 21:36:15 +0200]  This should fix setting timezone. /etc/localtime already existed.          karasu      {e4da9b7d}
+[2017-03-27 21:06:32 +0200]  Definitely, sleep more.                                                    karasu      {e0f19d66}
+[2017-03-27 21:04:23 +0200]  Or maybe I need to sleep more. Another typo.                               karasu      {6ec3b9ab}
+[2017-03-27 21:03:16 +0200]  I need to wake up                                                          karasu      {afe77463}
+[2017-03-27 20:58:00 +0200]  log timezone settings                                                      karasu      {5c068bca}
+[2017-03-23 21:18:49 +0100]  Do not install more than needed when using nvidia proprietary drive..      karasu      {dc0c22e5}
+[2017-03-20 19:58:45 +0100]  Remove google fonts feature                                                karasu      {c86a538c}
+[2017-03-17 22:23:56 +0100]  Fixes https://github.com/Antergos/Cnchi/issues/720                         karasu      {72b80485}
+[2017-03-17 22:01:11 +0100]  Fixed typo. Fixes https://github.com/Antergos/Cnchi/issues/719             karasu      {3652f7ed}
+[2017-03-17 08:12:46 -0500]  Update packages.xml                                                    Dustin Falgout  {f6ac8771}
+[2017-03-16 18:09:45 +0100]  Fixes nvidia/nouveau/intel installation (due package name changes u..      karasu      {4449ddcd}
+[2017-03-15 18:36:03 +0100]  Enable zfs again (needs more testing, though)                              karasu      {470d195e}
+[2017-03-11 19:24:49 +0100]  Enforce /boot fat32 only if no /boot/efi is still created                  karasu      {d5700e3a}
+[2017-03-11 15:25:47 +0100]  Fix label showing in advanced dialog                                       karasu      {c6536b77}
+[2017-03-11 13:54:09 +0100]  Show fat32 partitions as fat32 and not just fat                            karasu      {61687efd}
+[2017-03-06 22:55:56 +0100]  Some libgl packages have been removed                                      karasu      {f29392d8}
+[2017-02-24 21:53:17 +0100]  Packages needed for a11y (not used yet)                                    karasu      {00fc454d}
+[2017-02-24 21:47:38 +0100]  Add gsettings for 6dots (not used yet)                                     karasu      {306d1662}
+[2017-02-22 17:34:20 +0100]  Do not set chromium or firefox as BROWSER if neither of them are in..      karasu      {61b47394}
+[2017-02-21 20:29:11 +0100]  Add libgnome-keyring to Cinnamon, too.                                     karasu      {88835d1b}
 [2017-02-21 20:28:23 +0100]  Add libgnome-keyring to Cinnamon, too.                                     karasu      {ffe33e39}
 [2017-02-21 20:26:17 +0100]  Install libgnome-keyring                                                   karasu      {ebf0b001}
 [2017-02-21 20:24:40 +0100]  Add libgnome-keyring (should we add this to Cinnamon, too?)                karasu      {373d978c}
