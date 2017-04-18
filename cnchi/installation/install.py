@@ -1207,7 +1207,10 @@ class Installation(object):
         services.extend(["ModemManager", "haveged"])
 
         if self.method == "zfs":
-            services.extend(["zfs",  "zfs-mount"])
+            # Beginning with ZOL version 0.6.5.8 the ZFS service unit files have
+            # been changed so that you need to explicitly enable any ZFS services
+            # you want to run.
+            services.extend(["zfs.target", "zfs-import-cache", "zfs-mount"])
 
         self.enable_services(services)
 
