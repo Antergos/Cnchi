@@ -92,15 +92,15 @@ def get_info(part):
 
 @misc.raise_privileges
 def get_type(part):
-    """ Get filesystem type using blkid """
+    """ Get partition filesystem type """
     ret = ''
     if part and not misc.is_partition_extended(part):
+        #cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
+        cmd = ['lsblk', part, '-n', '-o', 'FSTYPE', '-l']
         try:
-            cmd = ['blkid', '-o', 'value', '-s', 'TYPE', part]
             ret = subprocess.check_output(cmd).decode().strip()
         except subprocess.CalledProcessError as err:
             logging.warning("Error running %s: %s", err.cmd, err.output)
-
     return ret
 
 
