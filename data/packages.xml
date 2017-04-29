@@ -517,7 +517,7 @@
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>scrot</pkgname>
-                <pkgname>terminator</pkgname>
+                <pkgname>termite</pkgname>
                 <pkgname>udiskie</pkgname>
                 <pkgname>volumeicon</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
