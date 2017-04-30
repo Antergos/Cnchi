@@ -45,73 +45,88 @@ ALPM_EVENT_RESOLVEDEPS_DONE = 6
 ALPM_EVENT_INTERCONFLICTS_START = 7
 # Inter-conflicts were checked for target package.
 ALPM_EVENT_INTERCONFLICTS_DONE = 8
-# Package will be installed/upgraded/downgraded/re-installed/removed
-ALPM_EVENT_PACKAGE_OPERATION_START = 9
-# Package was installed/upgraded/downgraded/re-installed/removed
-ALPM_EVENT_PACKAGE_OPERATION_DONE = 10
+# Processing the package transaction is starting.
+ALPM_EVENT_TRANSACTION_START = 9
+# Processing the package transaction is finished.
+ALPM_EVENT_TRANSACTION_DONE = 10
+# Package will be installed/upgraded/downgraded/re-installed/removed; See
+# alpm_event_package_operation_t for arguments.
+ALPM_EVENT_PACKAGE_OPERATION_START = 11
+# Package was installed/upgraded/downgraded/re-installed/removed; See
+# alpm_event_package_operation_t for arguments.
+ALPM_EVENT_PACKAGE_OPERATION_DONE = 12
 # Target package's integrity will be checked.
-ALPM_EVENT_INTEGRITY_START = 11
+ALPM_EVENT_INTEGRITY_START = 13
 # Target package's integrity was checked.
-ALPM_EVENT_INTEGRITY_DONE = 12
+ALPM_EVENT_INTEGRITY_DONE = 14
 # Target package will be loaded.
-ALPM_EVENT_LOAD_START = 13
+ALPM_EVENT_LOAD_START = 15
 # Target package is finished loading.
-ALPM_EVENT_LOAD_DONE = 14
+ALPM_EVENT_LOAD_DONE = 16
 # Target delta's integrity will be checked.
-ALPM_EVENT_DELTA_INTEGRITY_START = 15
+ALPM_EVENT_DELTA_INTEGRITY_START = 17
 # Target delta's integrity was checked.
-ALPM_EVENT_DELTA_INTEGRITY_DONE = 16
+ALPM_EVENT_DELTA_INTEGRITY_DONE = 18
 # Deltas will be applied to packages.
-ALPM_EVENT_DELTA_PATCHES_START = 17
+ALPM_EVENT_DELTA_PATCHES_START = 19
 # Deltas were applied to packages.
-ALPM_EVENT_DELTA_PATCHES_DONE = 18
-# Delta patch will be applied to target package.
-# The filename of the package and the filename of the patch is passed to the callback.
-ALPM_EVENT_DELTA_PATCH_START = 19
+ALPM_EVENT_DELTA_PATCHES_DONE = 20
+# Delta patch will be applied to target package; See
+# alpm_event_delta_patch_t for arguments..
+ALPM_EVENT_DELTA_PATCH_START = 21
 # Delta patch was applied to target package.
-ALPM_EVENT_DELTA_PATCH_DONE = 20
+ALPM_EVENT_DELTA_PATCH_DONE = 22
 # Delta patch failed to apply to target package.
-ALPM_EVENT_DELTA_PATCH_FAILED = 21
-# Scriptlet has printed information.
-# A line of text is passed to the callback.
-ALPM_EVENT_SCRIPTLET_INFO = 22
+ALPM_EVENT_DELTA_PATCH_FAILED = 23
+# Scriptlet has printed information; See alpm_event_scriptlet_info_t for
+# arguments.
+ALPM_EVENT_SCRIPTLET_INFO = 24
 # Files will be downloaded from a repository.
-# The repository's tree name is passed to the callback.
-ALPM_EVENT_RETRIEVE_START = 23
-# Files will be downloaded from a repository.
-# The repository's tree name is passed to the callback.
-ALPM_EVENT_RETRIEVE_DONE = 24
+ALPM_EVENT_RETRIEVE_START = 25
+# Files were downloaded from a repository.
+ALPM_EVENT_RETRIEVE_DONE = 26
 # Not all files were successfully downloaded from a repository.
-ALPM_EVENT_RETRIEVE_FAILED = 25
-# A file will be downloaded from a repository
-ALPM_EVENT_PKGDOWNLOAD_START = 26
-# A file was downloaded from a repository
-ALPM_EVENT_PKGDOWNLOAD_DONE = 27
-# A file failed to be downloaded from a repository
-ALPM_EVENT_PKGDOWNLOAD_FAILED = 28
-# Disk space usage will be computed for a package
-ALPM_EVENT_DISKSPACE_START = 29
-# Disk space usage was computed for a package
-ALPM_EVENT_DISKSPACE_DONE = 30
-# An optdepend for another package is being removed
-# The requiring package and its dependency are passed to the callback
-ALPM_EVENT_OPTDEP_REMOVAL = 31
-# A configured repository database is missing
-ALPM_EVENT_DATABASE_MISSING = 32
+ALPM_EVENT_RETRIEVE_FAILED = 27
+# A file will be downloaded from a repository; See alpm_event_pkgdownload_t
+# for arguments
+ALPM_EVENT_PKGDOWNLOAD_START = 28
+# A file was downloaded from a repository; See alpm_event_pkgdownload_t
+# for arguments
+ALPM_EVENT_PKGDOWNLOAD_DONE = 29
+# A file failed to be downloaded from a repository; See
+# alpm_event_pkgdownload_t for arguments
+ALPM_EVENT_PKGDOWNLOAD_FAILED = 30
+# Disk space usage will be computed for a package.
+ALPM_EVENT_DISKSPACE_START = 31
+# Disk space usage was computed for a package.
+ALPM_EVENT_DISKSPACE_DONE = 32
+# An optdepend for another package is being removed; See
+# alpm_event_optdep_removal_t for arguments.
+ALPM_EVENT_OPTDEP_REMOVAL = 33
+# A configured repository database is missing; See
+# alpm_event_database_missing_t for arguments.
+ALPM_EVENT_DATABASE_MISSING = 34
 # Checking keys used to create signatures are in keyring.
-ALPM_EVENT_KEYRING_START = 33
+ALPM_EVENT_KEYRING_START = 35
 # Keyring checking is finished.
-ALPM_EVENT_KEYRING_DONE = 34
+ALPM_EVENT_KEYRING_DONE = 36
 # Downloading missing keys into keyring.
-ALPM_EVENT_KEY_DOWNLOAD_START = 35
+ALPM_EVENT_KEY_DOWNLOAD_START = 37
 # Key downloading is finished.
-ALPM_EVENT_KEY_DOWNLOAD_DONE = 36
-# A .pacnew file was created
-ALPM_EVENT_PACNEW_CREATED = 37
-# A .pacsave file was created
-ALPM_EVENT_PACSAVE_CREATED = 38
-# A .pacorig file was created
-ALPM_EVENT_PACORIG_CREATED = 39
+ALPM_EVENT_KEY_DOWNLOAD_DONE = 38
+# A .pacnew file was created; See alpm_event_pacnew_created_t for arguments.
+ALPM_EVENT_PACNEW_CREATED = 39
+# A .pacsave file was created; See alpm_event_pacsave_created_t for
+# arguments
+ALPM_EVENT_PACSAVE_CREATED = 40
+# Processing hooks will be started.
+ALPM_EVENT_HOOK_START = 41
+# Processing hooks is finished.
+ALPM_EVENT_HOOK_DONE = 42
+# A hook is starting
+ALPM_EVENT_HOOK_RUN_START = 43
+# A hook has finnished runnning
+ALPM_EVENT_HOOK_RUN_DONE = 44
 
 # Package (to be) installed. (No oldpkg)
 ALPM_PACKAGE_INSTALL = 1,
