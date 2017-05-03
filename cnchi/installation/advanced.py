@@ -103,7 +103,7 @@ class InstallationAdvanced(GtkBaseBox):
         # (they will finally be stored in luks_options if user selects ok
         # in create/edit partition dialog)
         # stores tuple (use_luks, vol_name, password)
-        self.tmp_luks_options = (False, "", "")
+        self.luks_dialog_options = (False, "", "")
 
         self.first_time_in_fill_partition_list = True
 
@@ -846,10 +846,10 @@ class InstallationAdvanced(GtkBaseBox):
         uid = self.gen_partition_uid(path=row[COL_PARTITION_PATH])
 
         # Get LUKS info for the encryption properties dialog
-        if uid in self.luks_options.keys():
-            self.tmp_luks_options = self.luks_options[uid]
+        if uid in self.luks_options:
+            self.luks_dialog_options = self.luks_options[uid]
         else:
-            self.tmp_luks_options = (False, "", "")
+            self.luks_dialog_options = (False, "", "")
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
@@ -910,13 +910,13 @@ class InstallationAdvanced(GtkBaseBox):
                         new_fs = "fat32"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
-                self.luks_options[uid] = self.tmp_luks_options
+                self.luks_options[uid] = self.luks_dialog_options
 
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
                     # (for process.py to know)
-                    self.settings.set('use_luks_in_root', self.tmp_luks_options[0])
-                    self.settings.set('luks_root_volume', self.tmp_luks_options[1])
+                    self.settings.set('use_luks_in_root', self.luks_dialog_options[0])
+                    self.settings.set('luks_root_volume', self.luks_dialog_options[1])
 
         self.edit_partition_dialog.hide()
 
@@ -1194,8 +1194,8 @@ class InstallationAdvanced(GtkBaseBox):
         mount_combo = self.ui.get_object('create_partition_mount_combo_entry')
         mount_combo.set_text("")
 
-        # Empty tmp luks options (for encryption properties dialog)
-        self.tmp_luks_options = (False, "", "")
+        # Empty luks dialog options (for encryption properties dialog)
+        self.luks_dialog_options = (False, "", "")
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
@@ -1281,16 +1281,12 @@ class InstallationAdvanced(GtkBaseBox):
                     if e not in old_parts:
                         uid = self.gen_partition_uid(partition=partitions[e])
                         self.stage_opts[uid] = (True, mylabel, mymount, myfs, formatme)
-                        self.luks_options[uid] = self.tmp_luks_options
+                        self.luks_options[uid] = self.luks_dialog_options
                         if mymount == "/":
                             # Set if we'll be using LUKS in the root partition
                             # (for process.py to know)
-                            self.settings.set(
-                                'use_luks_in_root',
-                                self.tmp_luks_options[0])
-                            self.settings.set(
-                                'luks_root_volume',
-                                self.tmp_luks_options[1])
+                            self.settings.set('use_luks_in_root', self.luks_dialog_options[0])
+                            self.settings.set('luks_root_volume', self.luks_dialog_options[1])
 
                 # Update partition list treeview
                 self.update_view()
@@ -1311,7 +1307,7 @@ class InstallationAdvanced(GtkBaseBox):
         entry_password = self.ui.get_object('luks_password_entry')
         entry_password_confirm = self.ui.get_object('luks_password_confirm_entry')
 
-        (use_luks, vol_name, password) = self.tmp_luks_options
+        (use_luks, vol_name, password) = self.luks_dialog_options
 
         entry_vol_name.set_text(vol_name)
         entry_password.set_text(password)
@@ -1333,16 +1329,15 @@ class InstallationAdvanced(GtkBaseBox):
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
             password = entry_password.get_text()
-            password_confirm = entry_password_confirm.get_text()
-            if password == password_confirm:
-                # Save new choices
-                use_luks = switch_use_luks.get_active()
-                vol_name = entry_vol_name.get_text()
-                self.tmp_luks_options = (use_luks, vol_name, password)
-            else:
-                show.warning(
-                    self.get_main_window(),
-                    _("LUKS passwords do not match!"))
+            vol_name = entry_vol_name.get_text()
+            if password and vol_name:
+                password_confirm = entry_password_confirm.get_text()
+                if password == password_confirm:
+                    # Save new choices
+                    use_luks = switch_use_luks.get_active()
+                    self.luks_dialog_options = (use_luks, vol_name, password)
+                else:
+                    show.warning(self.get_main_window(), _("LUKS passwords do not match!"))
 
         self.luks_dialog.hide()
 
@@ -1424,6 +1419,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Empty stage partitions' options
         self.stage_opts = {}
         self.luks_options = {}
+        self.luks_dialog_options = (False, "", "")
 
         # Empty to be deleted partitions list
         self.to_be_deleted = []
@@ -2258,7 +2254,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
-                    if use_luks and len(vol_name) > 0 and len(password) > 0:
+                    if use_luks and vol_name and password:
                         txt = "Encrypting {0}, assigning volume name {1} and formatting it..."
                         txt = txt.format(partition_path, vol_name)
                         logging.info(txt)
@@ -2287,12 +2283,8 @@ class InstallationAdvanced(GtkBaseBox):
                         if partition_path in self.orig_label_dic:
                             lbl = self.orig_label_dic[partition_path]
                         if mnt == "/":
-                            self.settings.set(
-                                "luks_root_password",
-                                password)
-                            self.settings.set(
-                                "luks_root_device",
-                                partition_path)
+                            self.settings.set("luks_root_password", password)
+                            self.settings.set("luks_root_device", partition_path)
 
                 # Only format if they want formatting
                 if fmt:
