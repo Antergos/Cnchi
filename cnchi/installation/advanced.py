@@ -137,6 +137,10 @@ class InstallationAdvanced(GtkBaseBox):
         # Store here ALL partitions from ALL devices
         self.all_partitions = []
 
+        # Show warning message when opening luks options dialog for
+        # the first time
+        self.luks_dialog_warning_message_shown = False
+
         # Init GUI elements
 
         # Create and edit partition dialogs
@@ -1322,22 +1326,32 @@ class InstallationAdvanced(GtkBaseBox):
         self.luks_dialog.set_transient_for(self.get_main_window())
 
         # Show warning message
-        show.warning(
-            self.get_main_window(),
-            _("Using LUKS encryption will DELETE all partition contents!"))
+        if not self.luks_dialog_warning_message_shown:
+            show.warning(
+                self.get_main_window(),
+                _("Using LUKS encryption will DELETE all partition contents!"))
+            self.luks_dialog_warning_message_shown = True
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
-            password = entry_password.get_text()
+            use_luks = switch_use_luks.get_active()
             vol_name = entry_vol_name.get_text()
-            if password and vol_name:
-                password_confirm = entry_password_confirm.get_text()
-                if password == password_confirm:
-                    # Save new choices
-                    use_luks = switch_use_luks.get_active()
-                    self.luks_dialog_options = (use_luks, vol_name, password)
+            password = entry_password.get_text()
+            if use_luks:
+                if vol_name and password:
+                    if password == entry_password_confirm.get_text():
+                        # Save new choices
+                        self.luks_dialog_options = (use_luks, vol_name, password)
+                    else:
+                        msg = _("LUKS passwords do not match! Encryption NOT enabled.")
+                        show.warning(self.get_main_window(), msg)
+                        self.luks_dialog_options = (False, "", "")
                 else:
-                    show.warning(self.get_main_window(), _("LUKS passwords do not match!"))
+                    msg = _("Volume name and password are mandatory! Encryption NOT enabled.")
+                    show.warning(self.get_main_window(), msg)
+                    self.luks_dialog_options = (False, "", "")
+            else:
+                self.luks_dialog_options = (False, "", "")
 
         self.luks_dialog.hide()
 
