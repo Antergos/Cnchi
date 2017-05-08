@@ -88,7 +88,6 @@
                 <pkgname>xorg-apps</pkgname>
                 <pkgname>xorg-fonts</pkgname>
                 <pkgname>xorg-server</pkgname>
-                <pkgname>xorg-server-utils</pkgname>
                 <pkgname>xorg-xinit</pkgname>
                 <pkgname>xorg-xkill</pkgname>
             </packages>
