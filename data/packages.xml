@@ -128,6 +128,7 @@
 				<pkgname>gnome-tweak-tool</pkgname>
 				<pkgname>gnome-weather</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
+				<pkgname>gvfs-gphoto2</pkgname>
 				<pkgname>hicolor-icon-theme</pkgname>
 				<pkgname>libgnome-keyring</pkgname>
 				<pkgname>light-locker</pkgname>
@@ -176,8 +177,9 @@
 				<pkgname>gnome-terminal</pkgname>
 				<pkgname>gnome-themes-standard</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
+				<pkgname>gvfs-gphoto2</pkgname>
 				<pkgname>hicolor-icon-theme</pkgname>
-                <pkgname>libgnome-keyring</pkgname>
+				<pkgname>libgnome-keyring</pkgname>
 				<pkgname>muffin</pkgname>
 				<pkgname>nemo</pkgname>
 				<pkgname>nemo-fileroller</pkgname>
@@ -204,6 +206,7 @@
 				<pkgname>gnome-disk-utility</pkgname>
 				<pkgname>gnome-keyring</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
+				<pkgname>gvfs-gphoto2</pkgname>
 				<pkgname>light-locker</pkgname>
 				<pkgname>light-locker-settings</pkgname>
 				<pkgname>mousepad</pkgname>
@@ -261,6 +264,7 @@
 				<pkgname>gksu</pkgname>
 				<pkgname>gnome-keyring</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
+				<pkgname>gvfs-gphoto2</pkgname>
 				<pkgname>mate</pkgname> <!-- Group -->
 				<pkgname>mate-applets</pkgname>
 				<pkgname>mate-media</pkgname>
@@ -317,6 +321,7 @@
 				<pkgname>gpicview</pkgname>
 				<pkgname>gsimplecal</pkgname>
 				<pkgname>gvfs-mtp</pkgname>
+				<pkgname>gvfs-gphoto2</pkgname>
 				<pkgname>light-locker</pkgname>
 				<pkgname>light-locker-settings</pkgname>
 				<pkgname>lxappearance-obconf</pkgname>
