@@ -279,6 +279,9 @@ mate_settings() {
 
 	# Copy panel layout
 	cp /usr/share/cnchi/scripts/antergos.layout ${CN_DESTDIR}/usr/share/mate-panel/layouts/antergos.layout
+	
+	# Make Desktop An Active Desktop
+	dconf write /org/mate/desktop/background/show-desktop-icons true
 }
 
 nox_settings() {
