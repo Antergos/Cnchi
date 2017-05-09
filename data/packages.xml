@@ -359,6 +359,7 @@
 		<edition name="KDE" description="KDE Desktop">
 			<packages>
 				<pkgname>antergos-kde-setup</pkgname>
+				<pkgname>kdeconnect</pkgname>
 			</packages>
 		</edition>
 	</editions>
