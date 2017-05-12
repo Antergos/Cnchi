@@ -1,3 +1,12 @@
+[2017-05-12 20:22:39 +0200]  Use antergos-gsettings package                                             karasu      {658e8338}
+[2017-05-03 22:58:51 +0200]  Better control in luks options dialog in advanced                          karasu      {b711fcc5}
+[2017-05-03 22:43:00 +0200]  Check luks options in advanced                                             karasu      {a5e8410b}
+[2017-04-30 11:25:42 +0200]  Updated alpm events from alpm.h                                            karasu      {fd6a1796}
+[2017-04-29 13:32:55 +0200]  Use termite in i3 (this setup is not finished)                             karasu      {9e0e60ed}
+[2017-04-18 12:28:47 +0200]  Use lsblk instead of blkid (I really don't know where is the proble..      karasu      {78331d85}
+[2017-04-18 11:52:59 +0200]  Fix zfs enabling services                                                  karasu      {d2a8b6e0}
+[2017-04-15 05:55:06 +0200]  Remove pidgin                                                              karasu      {247beb6e}
+[2017-04-15 05:50:59 +0200]  Update packages.xml, plank-config has been removed                         karasu      {1b16cca0}
 [2017-04-15 05:49:35 +0200]  plank-config has been removed                                              karasu      {8728b260}
 [2017-04-04 12:24:06 +0200]  Playing with nvidia driver installation. Improve bubmlebee option (..      karasu      {05ba2d38}
 [2017-04-02 19:24:10 +0200]  Do not dump all keycodes                                                   karasu      {ecf310cc}
