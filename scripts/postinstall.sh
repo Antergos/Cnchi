@@ -48,29 +48,31 @@ set_xscreensaver() {
 }
 
 set_gsettings() {
-	CN_SCHEMA_OVERRIDE='/usr/share/cnchi/scripts/90_antergos.gschema.override'
-	CN_SCHEMA_DIR="${CN_DESTDIR}/usr/share/glib-2.0/schemas"
-
-	# Set gsettings input-source
-	if [[ "${CN_KEYBOARD_LAYOUT}" != '' ]]; then
-	  if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
-		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" /usr/share/cnchi/scripts/set-settings
-		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}'/" "${CN_SCHEMA_OVERRIDE}"
-	  else
-		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" /usr/share/cnchi/scripts/set-settings
-		  sed -i "s/'us'/'${CN_KEYBOARD_LAYOUT}'/" "${CN_SCHEMA_OVERRIDE}"
-	  fi
-	fi
-
-    if [ "${CN_BROWSER}" != "" ]; then
-	    sed -i "s|@CN_BROWSER@|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
-    else
-        # No browser installed, remove from favorites
-        sed -i "s|'@CN_BROWSER@.desktop',||g" "${CN_SCHEMA_OVERRIDE}"
+    # Set gsettings input-source
+    CN_KEYBOARD=""
+    CN_INPUT_SCHEMA="${CN_DESTDIR}/usr/share/glib-2.0/schemas/90_antergos.input-sources.gschema.override"
+    if [[ "${CN_KEYBOARD_LAYOUT}" != '' ]]; then
+        if [[ "${CN_KEYBOARD_VARIANT}" != '' ]]; then
+            CN_KEYBOARD=${CN_KEYBOARD_LAYOUT}+${CN_KEYBOARD_VARIANT}
+        else
+            CN_KEYBOARD=${CN_KEYBOARD_LAYOUT}
+        fi
+        echo "[org.cinnamon.desktop.input-sources]" > ${CN_INPUT_SCHEMA}
+        echo "sources=[('xkb','${CN_KEYBOARD}')]" >> ${CN_INPUT_SCHEMA}
+        echo " " >> ${CN_INPUT_SCHEMA}
+        echo "[org.gnome.desktop.input-sources]" >> ${CN_INPUT_SCHEMA}
+        echo "sources=[('xkb','${CN_KEYBOARD}')]" >> ${CN_INPUT_SCHEMA}
     fi
 
-	cp "${CN_SCHEMA_OVERRIDE}" "${CN_SCHEMA_DIR}"
-	glib-compile-schemas "${CN_SCHEMA_DIR}"
+    for CN_SCHEMA_OVERRIDE in ${CN_DESTDIR}/usr/share/glib-2.0/schemas/90_antergos*; do
+        if [ "${CN_BROWSER}" != "" ]; then
+    	    sed -i "s|chromium|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"
+        else
+            sed -i "s|'chromium.desktop',||g" "${CN_SCHEMA_OVERRIDE}"
+        fi
+    done
+
+	glib-compile-schemas "${CN_DESTDIR}/usr/share/glib-2.0/schemas"
 }
 
 gnome_settings() {
