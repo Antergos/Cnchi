@@ -1233,11 +1233,9 @@ class Installation(object):
         # Set timezone
         zone = self.settings.get("timezone_zone")
         if zone:
-            localtime_path = "/etc/localtime"
-            if os.path.exists(localtime_path):
-                os.remove(localtime_path)
             zoneinfo_path = os.path.join("/usr/share/zoneinfo", zone)
-            chroot_call(['ln', '-s', zoneinfo_path, localtime_path])
+            localtime_path = "/etc/localtime"
+            chroot_call(['ln', '-sf', zoneinfo_path, localtime_path])
             logging.debug("Timezone set to %s", zoneinfo_path)
         else:
             logging.warning("Can't read selected timezone! Will leave it to UTC.")
