@@ -756,7 +756,7 @@ msgstr "Etichetta"
 
 #: cnchi/installation/advanced.py:412 cnchi/installation/advanced.py:1979
 msgid "Format"
-msgstr "Formato"
+msgstr "Formatta"
 
 #: cnchi/installation/advanced.py:419
 msgid "Size"
@@ -948,7 +948,7 @@ msgstr "Opzioni di cifratura..."
 
 #: cnchi/installation/advanced.py:1477
 msgid "Format:"
-msgstr "Formato:"
+msgstr "Formatta:"
 
 #: cnchi/installation/advanced.py:1486
 msgid "Partition Table Type:"
