@@ -881,6 +881,17 @@ class Installation(object):
             services.append('org.cups.cupsd')
             services.append('avahi-daemon')
 
+        # openssh comes with two kinds of systemd service files:
+        # sshd.service, which will keep the SSH daemon permanently active and
+        # fork for each incoming connection. It is especially suitable for systems
+        # with a large amount of SSH traffic.
+        # sshd.socket + sshd@.service, which spawn on-demand instances of the SSH
+        # daemon per connection. Using it implies that systemd listens on the SSH
+        # socket and will only start the daemon process for an incoming connection.
+        # It is the recommended way to run sshd in almost all cases.
+        if self.settings.get("feature_sshd"):
+            services.append('sshd.socket');
+
         if self.settings.get("feature_firewall"):
             logging.debug("Configuring firewall...")
             # Set firewall rules

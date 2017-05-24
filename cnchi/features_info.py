@@ -45,6 +45,7 @@ ICON_NAMES = {
     'lamp': 'applications-internet',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
+    'sshd': 'network-connect',
     'visual': 'video-display'}
 
 
@@ -65,6 +66,7 @@ TITLES = {
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
     'lts': _("Kernel (LTS version)"),
     'office': _("LibreOffice"),
+    'sshd': _("SSH Service"),
     'visual': _("Visual Effects")}
 
 DESCRIPTIONS = {
@@ -80,6 +82,7 @@ DESCRIPTIONS = {
     'office': _("Open source office suite. Supports editing MS Office files."),
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
+    'sshd': _("Enables Secure SHell service."),
     'lts': _("Long term support (LTS) Linux kernel and modules.")}
 
 TOOLTIPS = {
@@ -131,6 +134,9 @@ TOOLTIPS = {
                 "and Linux, that gives you six feature-rich applications\n"
                 "for all your document production and data processing\n"
                 "needs: Writer, Calc, Impress, Draw, Math and Base."),
+    'sshd':_("Secure Shell (SSH) is a network protocol that allows data to be\n"
+             "exchanged over a secure channel between two computers.\n"
+             "SSH is typically used to log into a remote machine and execute commands.\n"),
     'visual': _("Compton is a lightweight, standalone composite manager,\n"
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
