@@ -610,6 +610,9 @@
             while still is more stable and only gets bug fixes. -->
             <pkgname>libreoffice-fresh</pkgname>
         </feature>
+        <feature name="sshd">
+            <pkgname>openssh</pkgname>
+        </feature>
         <feature name="visual">
             <pkgname>compton</pkgname>
             <pkgname>paranoid</pkgname>

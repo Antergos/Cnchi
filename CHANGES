@@ -1,3 +1,7 @@
+[2017-05-24 17:57:08 +0200]  Added sshd feature                                                         karasu      {cdb19434}
+[2017-05-20 00:08:30 -0500]  changed "KDE" to "KDE Plasma" (#755)                                   Michael Tunnell {4087c2c7}
+[2017-05-16 13:44:03 +0200]  Create link with force just in case destination already exists. Fix..      karasu      {9f5cb72c}
+[2017-05-12 20:25:01 +0200]  Update packages.xml (antergos-gsettings)                                   karasu      {746796e4}
 [2017-05-12 20:22:39 +0200]  Use antergos-gsettings package                                             karasu      {658e8338}
 [2017-05-03 22:58:51 +0200]  Better control in luks options dialog in advanced                          karasu      {b711fcc5}
 [2017-05-03 22:43:00 +0200]  Check luks options in advanced                                             karasu      {a5e8410b}
