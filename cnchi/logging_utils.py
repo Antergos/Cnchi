@@ -3,7 +3,7 @@
 #
 # logging_utils.py
 #
-# Copyright © 2015-2016 Antergos
+# Copyright © 2015-2017 Antergos
 #
 # This file is part of Cnchi.
 #

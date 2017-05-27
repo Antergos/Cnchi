@@ -4,7 +4,7 @@
 #  metalink.py
 #
 #  Code from pm2ml Copyright (C) 2012-2013 Xyne
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2017 Antergos
 #
 #  This file is part of Cnchi.
 #

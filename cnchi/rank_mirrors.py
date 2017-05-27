@@ -3,7 +3,7 @@
 #
 # rank_mirrors.py
 #
-# Copyright © 2013-2016 Antergos
+# Copyright © 2013-2017 Antergos
 # Copyright © 2012, 2013 Xyne
 #
 # This file is part of Cnchi.

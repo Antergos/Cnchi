@@ -4,7 +4,7 @@
 # gtkwidgets.py
 #
 # Copyright (c) 2012 Canonical Ltd.
-# Copyright © 2013-2016 Antergos
+# Copyright © 2013-2017 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

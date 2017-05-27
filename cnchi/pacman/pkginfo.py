@@ -4,7 +4,7 @@
 #   pycman.pkginfo - A Python implementation of Pacman
 #
 #   Copyright © 2011 Rémy Oudompheng <remy@archlinux.org>
-#   Copyright © 2013-2016 Antergos
+#   Copyright © 2013-2017 Antergos
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by

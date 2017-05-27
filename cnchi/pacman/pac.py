@@ -5,7 +5,7 @@
 #
 #  This code is based on previous work by Rémy Oudompheng <remy@archlinux.org>
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2017 Antergos
 #
 #  This file is part of Cnchi.
 #

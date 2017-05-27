@@ -3,7 +3,7 @@
 #
 # keyboard_widget.py
 #
-# Copyright © 2013-2016 Antergos (this GTK version)
+# Copyright © 2013-2017 Antergos (this GTK version)
 # Copyright © 2013 Manjaro (QT version)
 #
 # This file is part of Cnchi.

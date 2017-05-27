@@ -3,7 +3,7 @@
 # pacman_conf.py
 #
 # Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
-# Copyright © 2013-2016 Antergos
+# Copyright © 2013-2017 Antergos
 #
 # This file is part of Cnchi.
 #

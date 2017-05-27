@@ -4,7 +4,7 @@
 # camera.py
 #
 # Based on code by Christian Schaller
-# Copyright © 2013-2016 Antergos
+# Copyright © 2013-2017 Antergos
 # This file is part of Cnchi.
 #
 # Cnchi is free software; you can redistribute it and/or modify

@@ -3,7 +3,7 @@
 #
 #  fingerprint.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2017 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -58,7 +58,7 @@ DEVICES = [
     ('0x08ff', '0x2550'),
     ('0x08ff', '0x2580'),
     ('0x08ff', '0x5501'),
-    ('0x147e', '0x2016')]
+    ('0x147e', '0x2017')]
 
 
 class FingerPrint(Hardware):
