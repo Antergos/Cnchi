@@ -138,6 +138,23 @@ class InstallationAsk(GtkBaseBox):
 
         self.enable_automatic_options(True)
 
+        btn_label = _("I need help with an Antergos / Windows(tm) dual boot setup!")
+        self.alongside_wiki_btn = Gtk.Button.new_with_label(btn_label)
+        self.alongside_wiki_btn.connect('clicked', self.on_alongside_wiki_button_clicked)
+        ask_box = self.ui.get_object("ask")
+        ask_box.pack_start(self.alongside_wiki_btn, True, False, 0)
+
+
+    def on_alongside_wiki_button_clicked(self, widget, data=None):
+        try:
+            from webview import BrowserWindow
+            self.browser = BrowserWindow("Antergos Wiki - Dual Boot")
+            url = "https://antergos.com/wiki/install/how-to-dual-boot-antergos-windows-uefi-expanded-by-linuxhat/"
+            self.browser.load_url(url)
+        except Exception as err:
+            logging.warning("Could not show Antergos wiki: ", err)
+
+
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
         Alongside only works when Windows is installed on sda  """
