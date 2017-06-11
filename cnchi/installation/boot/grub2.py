@@ -173,6 +173,9 @@ class Grub2(object):
                 # No luks password, so user wants to use a keyfile
                 cmd_linux += " cryptkey=/dev/disk/by-uuid/{0}:ext2:/.keyfile-root".format(
                     self.uuids["/boot"])
+                
+            #grub-install will fail unless this option is set
+            self.set_grub_option("GRUB_ENABLE_CRYPTODISK", y)
 
         # Remove leading/ending spaces
         cmd_linux_default = cmd_linux_default.strip()
