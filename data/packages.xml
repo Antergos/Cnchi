@@ -525,6 +525,48 @@
                 <pkgname>xscreensaver</pkgname>
             </packages>
         </edition>
+
+        <edition name="Deepin" description="Deepin Desktop">
+           <packages>
+               <pkgname>deepin-account-faces</pkgname>
+               <pkgname>adwaita-icon-theme</pkgname>
+               <pkgname>deepin-api</pkgname>
+               <pkgname>deepin-artwork-themes</pkgname>
+               <pkgname>deepin-calendar</pkgname>
+               <pkgname>deepin-control-center</pkgname>
+               <pkgname>deepin-daemon</pkgname>
+               <pkgname>deepin-desktop</pkgname>
+               <pkgname>deepin-desktop-base</pkgname>
+               <pkgname>deepin-desktop-schemas</pkgname>
+               <pkgname>deepin-dock</pkgname>
+               <pkgname>deepin-file-manager</pkgname>
+               <pkgname>deepin-gtk-theme</pkgname>
+               <pkgname>deepin-image-viewer</pkgname>
+               <pkgname>deepin-launcher</pkgname>
+               <pkgname>deepin-menu</pkgname>
+               <pkgname>deepin-notifications</pkgname>
+               <pkgname>deepin-qtintegration</pkgname>
+               <pkgname>deepin-session-ui</pkgname>
+               <pkgname>deepin-shortcut-viewer</pkgname>
+               <pkgname>deepin-social-sharing</pkgname>
+               <pkgname>deepin-sound-theme</pkgname>
+               <pkgname>deepin-wallpapers</pkgname>
+               <pkgname>deepin-wm-switcher</pkgname>
+               <pkgname>deepin-screenshot</pkgname>
+               <pkgname>deepin-screen-recorder</pkgname>
+               <pkgname>deepin-terminal</pkgname>
+               <pkgname>deepin-voice-recorder</pkgname>
+               <pkgname>deepin-music</pkgname>
+               <pkgname>deepin-cogl</pkgname>
+               <pkgname>deepin-dbus-factory</pkgname>
+               <pkgname>deepin-movie</pkgname>
+               <pkgname>deepin-mutter</pkgname>
+               <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+               <pkgname>python2-deepin-ui</pkgname>
+               <pkgname>python2-deepin-utils</pkgname>
+               <pkgname>startdde</pkgname>
+           </packages>
+       </edition>
     </editions>
 
     <!-- User desired features -->

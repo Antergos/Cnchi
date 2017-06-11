@@ -1,3 +1,8 @@
+[2017-06-11 19:24:04 +0200]  Modified packages.xml                                                      karasu      {0fb671fe}
+[2017-06-04 18:14:10 +0200]  Added deepin packages (experimental, won't show to users)                  karasu      {f050b094}
+[2017-05-27 18:15:22 +0200]  Added option in ask screen to show Antergos wiki article about dual..      karasu      {2dc27d48}
+[2017-05-27 14:10:41 +0200]  Update copyright notice (2017)                                             karasu      {a7ad748a}
+[2017-05-24 17:58:20 +0200]  Update packages.xml with the new sshd feature                              karasu      {fde8f8c1}
 [2017-05-24 17:57:08 +0200]  Added sshd feature                                                         karasu      {cdb19434}
 [2017-05-20 00:08:30 -0500]  changed "KDE" to "KDE Plasma" (#755)                                   Michael Tunnell {4087c2c7}
 [2017-05-16 13:44:03 +0200]  Create link with force just in case destination already exists. Fix..      karasu      {9f5cb72c}
