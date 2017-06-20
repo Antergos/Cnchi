@@ -783,7 +783,7 @@ class Installation(object):
     @staticmethod
     def change_user_password(user, new_password):
         """ Changes the user's password """
-        shadow_password = crypt.crypt(new_password, "$6${0}$".format(user))
+        shadow_password = crypt.crypt(new_password, crypt.mksalt())
         chroot_call(['usermod', '-p', shadow_password, user])
 
     @staticmethod
