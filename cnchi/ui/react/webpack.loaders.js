@@ -7,10 +7,10 @@ const Styles = new ExtractTextPlugin('[name].css');
 
 let babelQuery = {
 	compact: false,
-	presets: ['react'],
-	plugins: [
-		['transform-object-rest-spread', { useBuiltIns: true }]
-	]
+	presets: ['env', {
+		chrome: 53,
+		modules: false,
+	}],
 };
 
 
