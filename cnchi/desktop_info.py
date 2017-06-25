@@ -33,7 +33,7 @@
 
 DESKTOPS = ["base", "cinnamon", "gnome", "kde", "mate", "openbox", "xfce"]
 
-DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
+DESKTOPS_DEV = DESKTOPS + ["budgie", "deepin", "enlightenment", "i3", "lxqt"]
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
@@ -50,6 +50,7 @@ DIALOG - Size appropriate for dialogs (48px )
 NAMES = {
     'base': "Base",
     'cinnamon': "Cinnamon",
+    'deepin': "Deepin",
     'gnome': "GNOME",
     'kde': "KDE",
     'mate': "MATE",
@@ -62,7 +63,7 @@ NAMES = {
 }
 
 LIBS = {
-    'gtk': ["cinnamon", "gnome", "mate", "openbox", "xfce", "budgie", "enlightenment", "i3"],
+    'gtk': ["cinnamon", "deepin", "gnome", "mate", "openbox", "xfce", "budgie", "enlightenment", "i3"],
     'qt': ["kde", "lxqt"]
 }
 
@@ -74,6 +75,7 @@ EXCLUDED_FEATURES = {
     'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
              "graphic_drivers", "office", "visual"],
     'cinnamon': ["lamp", "visual"],
+    'deepin': ["lamp", "visual"],
     'gnome': ["lamp", "visual"],
     'kde': ["lamp", "visual"],
     'mate': ["lamp", "visual"],
@@ -88,6 +90,7 @@ EXCLUDED_FEATURES = {
 # Session names for lightDM setup
 SESSIONS = {
     'cinnamon': 'cinnamon',
+    'deepin': 'startdde',
     'gnome': 'gnome',
     'kde': 'plasma',
     'mate': 'mate',
@@ -114,6 +117,10 @@ DESCRIPTIONS = {
                   "innovative features and a traditional desktop user experience. "
                   "Cinnamon aims to make users feel at home by providing them with "
                   "an easy-to-use and comfortable desktop experience."),
+    'deepin': _("Deepin desktop is a lightweight, elegant desktop environment. "
+                "It was originally created for Linux Deepin distribution. Now, "
+                "DDE will support most Linux operating systems such as Arch Linux, "
+                "Ubuntu, Fedora, openSUSE etc."),
 
     'gnome': _("GNOME 3 is an easy and elegant way to use your "
                "computer. It features the Activities Overview which "
