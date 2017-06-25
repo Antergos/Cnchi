@@ -205,8 +205,8 @@ def get_partition_size(diskob, part):
     """ Get disk object's partition size """
     dev = diskob.device
     sec_size = dev.sectorSize
-    mbs = (sec_size * part.length) / MBS
-    return mbs
+    mibs = (sec_size * part.length) / MIBS
+    return mibs
 
 # length : geometry length
 
@@ -261,8 +261,7 @@ def create_partition(diskob, part_type, geom):
         return npartition
 
 
-def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
-                 beginning=True):
+def geom_builder(diskob, first_sector, last_sector, size_in_mibs, beginning=True):
     """ Helper function to calculate geometry.
     OK, two new specs.  First, you must specify the first sector
     and the last sector of the free space.  This way we can prevent out of
@@ -276,19 +275,19 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
 
     dev = diskob.device
     sec_size = dev.sectorSize
-    mb = MBS / sec_size
-    length = int(size_in_mbytes * MBS / sec_size)
+    mibs = MIBS / sec_size
+    length = int(size_in_mibs * MIBS / sec_size)
     if length > (last_sector - first_sector + 1):
         length = last_sector - first_sector + 1
     if beginning:
         start_sector = first_sector
         end_sector = start_sector + length - 1
-        if last_sector - end_sector < mb:
+        if last_sector - end_sector < mibs:
             end_sector = last_sector
     else:
         end_sector = last_sector
         start_sector = end_sector - length + 1
-        if start_sector - first_sector < mb:
+        if start_sector - first_sector < mibs:
             start_sector = first_sector
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)
     return ngeom
@@ -329,8 +328,8 @@ def get_largest_size(diskob, part):
     the MAX to which user may enter. """
     dev = diskob.device
     sec_size = dev.sectorSize
-    mbs = (sec_size * part.length) / MBS
-    return mbs
+    mibs = (sec_size * part.length) / MIBS
+    return mibs
 
 # The return value is tuple.  First arg is 0 for success, 1 for fail
 # Second arg is either None if successful
@@ -392,7 +391,7 @@ def order_partitions(partdic):
 
 
 @misc.raise_privileges
-def split_partition(device_path, partition_path, new_size_in_mb):
+def split_partition(device_path, partition_path, new_size_in_mibs):
     """ Shrinks partition and splits it in two.
         ALERT: The file system must be resized before trying this! """
 
@@ -418,20 +417,20 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     start_sector = part.geometry.start
     old_end_sector = part.gemotry.end
     old_length = part.geometry.length
-    old_size_in_mb = old_length * sec_size / MBS
+    old_size_in_mibs = old_length * sec_size / MIBS
 
     # Create new partition (the one for the otherOS)
-    new_length = int(new_size_in_mb * MBS / sec_size)
+    new_length = int(new_size_in_mb * MIBS / sec_size)
     new_end_sector = start_sector + new_length
-    my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
+    my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mibs)
     logging.debug("create_partition %s", my_geometry)
     create_partition(disk, 0, my_geometry)
 
     # Create new partition (for Antergos)
-    new_size_in_mb = old_size_in_mb - new_size_in_mb
+    new_size_in_mibs = old_size_in_mibs - new_size_in_mibs
     start_sector = new_end_sector + 1
     end_sector = old_end_sector
-    my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mb)
+    my_geometry = geom_builder(disk, start_sector, end_sector, new_size_in_mibs)
     logging.debug("create_partition %s", my_geometry)
     create_partition(disk, 0, my_geometry)
 
