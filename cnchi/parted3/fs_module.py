@@ -200,7 +200,7 @@ def create_fs(part, fstype, label='', other_opts=''):
               'fat16': 'mkfs.vfat -F 16',
               'fat32': 'mkfs.vfat -F 32',
               'vfat': 'mkfs.vfat -F 32',
-              'ntfs': 'mkfs.ntfs',
+              'ntfs': 'mkfs.ntfs -f',
               'jfs': 'mkfs.jfs -q',
               'reiserfs': 'mkfs.reiserfs -q',
               'xfs': 'mkfs.xfs -f',
