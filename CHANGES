@@ -1,10 +1,28 @@
+[2017-06-20 09:03:34 -0500]  Fix weak salt provided to crypt.crypt() method which creates user a..  Dustin Falgout  {b59b0687}
+[2017-06-20 08:56:39 -0500]  Fix weak salt provided to crypt.crypt() method which creates user a..  Dustin Falgout  {73fbe5ae}
 [2017-06-20 08:48:39 -0500]  Update deps (not important)                                            Dustin Falgout  {6fc1cfcc}
 [2017-06-11 19:25:03 +0200]  Added deepin desktop (experimental)                                        karasu      {83227d33}
+[2017-06-11 19:24:04 +0200]  Modified packages.xml                                                      karasu      {0fb671fe}
+[2017-06-04 18:14:10 +0200]  Added deepin packages (experimental, won't show to users)                  karasu      {f050b094}
+[2017-05-27 18:15:22 +0200]  Added option in ask screen to show Antergos wiki article about dual..      karasu      {2dc27d48}
+[2017-05-27 14:10:41 +0200]  Update copyright notice (2017)                                             karasu      {a7ad748a}
 [2017-05-24 17:58:20 +0200]  Update packages.xml with the new sshd feature                              karasu      {fde8f8c1}
+[2017-05-24 17:57:08 +0200]  Added sshd feature                                                         karasu      {cdb19434}
 [2017-05-20 00:08:30 -0500]  changed "KDE" to "KDE Plasma" (#755)                                   Michael Tunnell {4087c2c7}
+[2017-05-16 13:44:03 +0200]  Create link with force just in case destination already exists. Fix..      karasu      {9f5cb72c}
 [2017-05-12 20:25:01 +0200]  Update packages.xml (antergos-gsettings)                                   karasu      {746796e4}
-[2017-05-08 07:38:13 +0200]  Remove xorg-server-utils. Fixes #745                                       karasu      {f6f4ef5e}
+[2017-05-12 20:22:39 +0200]  Use antergos-gsettings package                                             karasu      {658e8338}
+[2017-05-03 22:58:51 +0200]  Better control in luks options dialog in advanced                          karasu      {b711fcc5}
+[2017-05-03 22:43:00 +0200]  Check luks options in advanced                                             karasu      {a5e8410b}
+[2017-04-30 11:25:42 +0200]  Updated alpm events from alpm.h                                            karasu      {fd6a1796}
+[2017-04-29 13:32:55 +0200]  Use termite in i3 (this setup is not finished)                             karasu      {9e0e60ed}
+[2017-04-18 12:28:47 +0200]  Use lsblk instead of blkid (I really don't know where is the proble..      karasu      {78331d85}
+[2017-04-18 11:52:59 +0200]  Fix zfs enabling services                                                  karasu      {d2a8b6e0}
+[2017-04-15 05:55:06 +0200]  Remove pidgin                                                              karasu      {247beb6e}
 [2017-04-15 05:50:59 +0200]  Update packages.xml, plank-config has been removed                         karasu      {1b16cca0}
+[2017-04-15 05:49:35 +0200]  plank-config has been removed                                              karasu      {8728b260}
+[2017-04-04 12:24:06 +0200]  Playing with nvidia driver installation. Improve bubmlebee option (..      karasu      {05ba2d38}
+[2017-04-02 19:24:10 +0200]  Do not dump all keycodes                                                   karasu      {ecf310cc}
 [2017-04-02 00:36:52 +0200]  Remove smb client feature by always installing cifs-utils and gvfs-..      karasu      {b30507f3}
 [2017-03-31 16:30:03 +0200]  Enable AUR in pamac when AUR is selected as a feature. Issue #654          karasu      {a879509a}
 [2017-03-31 15:50:31 +0200]  Added GeForce GTX 1080 to the list of supported cards in nvidia pro..      karasu      {a311daae}
