@@ -329,12 +329,10 @@ class InstallationAdvanced(GtkBaseBox):
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
                 if (not dev.path.startswith("/dev/sr") and
                         not dev.path.startswith("/dev/mapper")):
-                    # Hard drives measure themselves assuming
-                    # kilo=1000, mega=1mil, etc
-                    size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-                    line = '{0} [{1} GB] ({2})'.format(
+                    size_in_gibibytes = int((dev.length * dev.sectorSize) / 1073741824)
+                    line = '{0} [{1} GiB] ({2})'.format(
                         dev.model,
-                        size_in_gigabytes,
+                        size_in_gibibytes,
                         dev.path)
                     self.bootloader_device_entry.append_text(line)
                     self.bootloader_devices[line] = dev.path
@@ -481,18 +479,23 @@ class InstallationAdvanced(GtkBaseBox):
         size = length * sector_size
         size_txt = "{0}b".format(size)
 
-        if size >= 1000000000000:
-            size /= 1000000000000
-            size_txt = "{0:.0f}T".format(size)
-        elif size >= 1000000000:
-            size /= 1000000000
-            size_txt = "{0:.0f}G".format(size)
-        elif size >= 1000000:
-            size /= 1000000
-            size_txt = "{0:.0f}M".format(size)
-        elif size >= 1000:
-            size /= 1000
-            size_txt = "{0:.0f}K".format(size)
+        KIBS = 1024
+        MIBS = 1048576
+        GIBS = 1073741824
+        TIBS = 1099511627776
+
+        if size >= TIBS:
+            size /= TIBS
+            size_txt = "{0:.0f}TiB".format(size)
+        elif size >= GIBS:
+            size /= GIBS
+            size_txt = "{0:.0f}GiB".format(size)
+        elif size >= MIBS:
+            size /= MIBS
+            size_txt = "{0:.0f}MiB".format(size)
+        elif size >= KIBS:
+            size /= KIBS
+            size_txt = "{0:.0f}KiB".format(size)
 
         return size_txt
 
@@ -1166,25 +1169,24 @@ class InstallationAdvanced(GtkBaseBox):
         radio["end"].set_active(False)
 
         # Prepare size spin
-
         dev = disk.device
         partitions = pm.get_partitions(disk)
         partition = partitions[partition_path]
 
-        # +1 as not to leave unusably small space behind
-        max_size_mb = int((partition.geometry.length * dev.sectorSize) / 1000000) + 1
+        MIBS = 1048576
+        max_size_mibs = int((partition.geometry.length * dev.sectorSize) / MIBS)
 
         size_spin = self.ui.get_object('create_partition_size_spinbutton')
         size_spin.set_digits(0)
         adjustment = Gtk.Adjustment(
-            value=max_size_mb,
+            value=max_size_mibs,
             lower=1,
-            upper=max_size_mb,
+            upper=max_size_mibs,
             step_increment=1,
             page_increment=10,
             page_size=0)
         size_spin.set_adjustment(adjustment)
-        size_spin.set_value(max_size_mb)
+        size_spin.set_value(max_size_mibs)
 
         # label
         label_entry = self.ui.get_object('create_partition_label_entry')
@@ -1783,8 +1785,6 @@ class InstallationAdvanced(GtkBaseBox):
             logging.error(txt)
             show.error(self.get_main_window(), _(txt))
             return
-
-        # max_size_mb = int((p.geometry.length * dev.sectorSize) / 1000000) + 1
 
         mylabel = ""
         mymount = ""

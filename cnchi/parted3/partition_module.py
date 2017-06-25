@@ -72,6 +72,8 @@ PED_PARTITION_APPLE_TV_RECOVERY = 13
 PED_PARTITION_DIAG = 14
 PED_PARTITION_LEGACY_BOOT = 15
 
+MIBS = 1048576
+KIBS = 1024
 
 @misc.raise_privileges
 def get_devices():
@@ -158,7 +160,7 @@ def get_partitions(diskob):
         # psize = plength * dev.sectorSize
         # just calculating it in more sane formats
         # should probably add in something like
-        # if psizemb < 1000 then display as MB, else as GB
+        # if psizemb < 1024 then display as MB, else as GB
         # I can't think of a case of less than 1mb partition
         # psizemb = psize / (limiter * limiter)
         # psizegb = psizemb / limiter
@@ -203,7 +205,7 @@ def get_partition_size(diskob, part):
     """ Get disk object's partition size """
     dev = diskob.device
     sec_size = dev.sectorSize
-    mbs = (sec_size * part.length) / 1000000
+    mbs = (sec_size * part.length) / MBS
     return mbs
 
 # length : geometry length
@@ -214,13 +216,13 @@ def get_size_txt(length, sector_size):
     size = length * sector_size
     size_txt = "%dk" % size
 
-    if size >= 1000000:
-        size /= 1000000
-        size_txt = "%dM" % size
+    if size >= MIBS:
+        size /= MIBS
+        size_txt = "%dMiB" % size
 
-    if size >= 1000:
-        size /= 1000
-        size_txt = "%dG" % size
+    if size >= KIBS:
+        size /= KIBS
+        size_txt = "%dGiB" % size
 
     return size_txt
 
@@ -270,13 +272,12 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
     area of disk between 5 and smallest allowed partition, we should let him.
 
     'beginning' defaults to True.  This starts partition at beginning of
-    free space.  Specify to False to instead start at end
-    let's use kb = 1000b, mb = 10000000b, etc etc """
+    free space.  Specify to False to instead start at end """
 
     dev = diskob.device
     sec_size = dev.sectorSize
-    mb = 1000000 / sec_size
-    length = int(size_in_mbytes * 1000000 / sec_size)
+    mb = MBS / sec_size
+    length = int(size_in_mbytes * MBS / sec_size)
     if length > (last_sector - first_sector + 1):
         length = last_sector - first_sector + 1
     if beginning:
@@ -328,7 +329,7 @@ def get_largest_size(diskob, part):
     the MAX to which user may enter. """
     dev = diskob.device
     sec_size = dev.sectorSize
-    mbs = (sec_size * part.length) / 1000000
+    mbs = (sec_size * part.length) / MBS
     return mbs
 
 # The return value is tuple.  First arg is 0 for success, 1 for fail
@@ -414,14 +415,13 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     logging.debug("Sec size: %d", sec_size)
 
     # Get old info
-    units = 1000000
     start_sector = part.geometry.start
     old_end_sector = part.gemotry.end
     old_length = part.geometry.length
-    old_size_in_mb = old_length * sec_size / units
+    old_size_in_mb = old_length * sec_size / MBS
 
     # Create new partition (the one for the otherOS)
-    new_length = int(new_size_in_mb * units / sec_size)
+    new_length = int(new_size_in_mb * MBS / sec_size)
     new_end_sector = start_sector + new_length
     my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
     logging.debug("create_partition %s", my_geometry)
@@ -468,7 +468,7 @@ def example():
     # sector of free space, size in mb, and optionally, whether
     # to start at beginning or end using beginning=True or False
     # defaults to True
-    my_geometry = geom_builder(disk_dic['/dev/sdb'], 123456, 567890, 1000)
+    my_geometry = geom_builder(disk_dic['/dev/sdb'], 123456, 567890, 1024)
 
     # The above is optional, i'll try to explain why.  In part_dic,
     # I return free regions as partitions of type 'free space'.  So, if a user

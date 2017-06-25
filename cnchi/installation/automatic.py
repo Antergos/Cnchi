@@ -144,10 +144,9 @@ class InstallationAutomatic(GtkBaseBox):
             # avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
-                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-                line = '{0} [{1} GB] ({2})'
-                line = line.format(dev.model, size_in_gigabytes, dev.path)
+                size_in_gibibytes = int((dev.length * dev.sectorSize) / 1073741824)
+                line = '{0} [{1} GiB] ({2})'
+                line = line.format(dev.model, size_in_gibibytes, dev.path)
                 self.device_store.append_text(line)
                 self.devices[line] = dev.path
                 self.bootloader_device_entry.append_text(line)

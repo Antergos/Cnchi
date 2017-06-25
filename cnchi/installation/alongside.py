@@ -144,7 +144,7 @@ class InstallationAlongside(GtkBaseBox):
         logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
-        max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
+        max_size = part_size - (MIN_ROOT_SIZE * 1024.0)
         if max_size < 0:
             # Full Antergos does not fit but maybe base fits... ask user.
             txt = _("Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
@@ -371,7 +371,7 @@ class InstallationAlongside(GtkBaseBox):
                 swap_part_size = max_swap
 
             # Create swap partition
-            units = 1000000
+            units = 1048576
             sec_size = disk.device.sectorSize
             new_length = int(swap_part_size * units / sec_size)
             new_end_sector = res.start + new_length

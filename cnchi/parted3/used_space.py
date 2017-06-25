@@ -194,11 +194,11 @@ def get_used_btrfs(part, show_error=True):
         vsize, usize, umult, vmult = (1, 1, 1, 1)
         result = result.decode()
         result = result.split('\n')
-        szmap = {"K": 1000,
-                 "M": 1000000,
-                 "G": 1000000000,
-                 "T": 1000000000000,
-                 "P": 1000000000000000}
+        szmap = {"KiB": 1024,
+                 "MiB": 1048576,
+                 "GiB": 1073741824,
+                 "TiB": 1099511627776,
+                 "PiB": 1125899906842624}
         for params in result:
             if part in params:
                 vsize = params.split()[3]

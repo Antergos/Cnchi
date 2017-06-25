@@ -88,8 +88,9 @@ class Check(GtkBaseBox):
         self.updated.set_property("label", txt)
 
         self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
-        txt = _("has at least {0}GB available storage space. (*)")
-        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
+        txt = _("has at least {0}GiB available storage space. (*)")
+        txt = txt.format(MIN_ROOT_SIZE / 1073741824)
+
         self.prepare_enough_space.set_property("label", txt)
 
         txt = _("This highly depends on which desktop environment you choose, "

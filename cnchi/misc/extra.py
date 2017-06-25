@@ -299,24 +299,24 @@ def cdrom_mount_info():
 
 def format_size(size):
     """ Format a partition size. """
-    if size < 1000:
+    if size < 1024:
         unit = 'B'
         factor = 1
-    elif size < 1000 * 1000:
-        unit = 'kB'
-        factor = 1000
-    elif size < 1000 * 1000 * 1000:
-        unit = 'MB'
-        factor = 1000 * 1000
-    elif size < 1000 * 1000 * 1000 * 1000:
-        unit = 'GB'
-        factor = 1000 * 1000 * 1000
-    elif size < 1000 * 1000 * 1000 * 1000 * 1000:
-        unit = 'TB'
-        factor = 1000 * 1000 * 1000 * 1000
+    elif size < 1024 * 1024:
+        unit = 'KiB'
+        factor = 1024
+    elif size < 1024 * 1024 * 1024:
+        unit = 'MiB'
+        factor = 1024 * 1024
+    elif size < 1024 * 1024 * 1024 * 1024:
+        unit = 'GiB'
+        factor = 1024 * 1024 * 1024
+    elif size < 1024 * 1024 * 1024 * 1024 * 1024:
+        unit = 'TiB'
+        factor = 1024 * 1024 * 1024 * 1024
     else:
-        unit = 'PB'
-        factor = 1000 * 1000 * 1000 * 1000 * 1000
+        unit = 'PiB'
+        factor = 1024 * 1024 * 1024 * 1024 * 1024
     return '%.1f %s' % (float(size) / factor, unit)
 
 

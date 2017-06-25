@@ -251,8 +251,8 @@ class InstallationZFS(GtkBaseBox):
             # Skip cdrom, raid, lvm volumes or encryptfs
             if (not dev.path.startswith("/dev/sr") and
                     not dev.path.startswith("/dev/mapper")):
-                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
-                # Use check | Disk (sda) | Size(GB) | Name (device name)
+                size_in_gibibytes = int((dev.length * dev.sectorSize) / 1073741824)
+                # Use check | Disk (sda) | Size(GiB) | Name (device name)
                 if dev.path.startswith("/dev/"):
                     path = dev.path[len("/dev/"):]
                 else:
@@ -263,7 +263,7 @@ class InstallationZFS(GtkBaseBox):
                     True,
                     True,
                     path,
-                    size_in_gigabytes,
+                    size_in_gibibytes,
                     dev.model,
                     disk_id]
                 self.device_list_store.append(None, row)
