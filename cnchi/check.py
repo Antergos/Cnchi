@@ -51,7 +51,7 @@ NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
 UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
-MIN_ROOT_SIZE = 8000000000
+MIN_ROOT_SIZE = 8589934592
 
 
 class Check(GtkBaseBox):

@@ -1,2 +1,3 @@
+[2017-06-30 23:57:06 +0200]  Use 512MB in EFI (automatic install) and other small modifications         karasu      {0b226a73}
 [2017-06-25 12:32:13 +0200]  Some more changes                                                          karasu      {64b1527e}
 [2017-06-25 12:24:28 +0200]  Use MiBs instead of MBs everywhere.                                        karasu      {ae76a40b}
