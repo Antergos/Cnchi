@@ -317,9 +317,9 @@ class AutoPartition(object):
                     "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
                     "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(fs_options, label_name, btrfs_devices),
                     "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
-                    "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
-                    "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
-                    "fat32": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
+                    "ntfs-3g": "mkfs.ntfs {0} -f -L {1} {2}".format(fs_options, label_name, device),
+                    "vfat": "mkfs.vfat {0} -F 32 -n {1} {2}".format(fs_options, label_name, device),
+                    "fat32": "mkfs.vfat {0} -F 32 -n {1} {2}".format(fs_options, label_name, device),
                     "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
@@ -512,17 +512,17 @@ class AutoPartition(object):
         return fs_devices
 
     def get_part_sizes(self, disk_size, start_part_sizes=1):
-        part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
+        part_sizes = {'disk': disk_size, 'boot': 512, 'efi': 0}
 
         if self.gpt and self.bootloader == "grub2":
-            part_sizes['efi'] = 200
+            part_sizes['efi'] = 512
 
         cmd = ["grep", "MemTotal", "/proc/meminfo"]
         mem_total = call(cmd)
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
 
-        # Suggested sizes from Anaconda installer
+        # Suggested swap sizes from Anaconda installer
         if mem < 2048:
             part_sizes['swap'] = 2 * mem
         elif 2048 <= mem < 8192:
@@ -826,23 +826,19 @@ class AutoPartition(object):
         self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
         self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
 
-        if self.gpt and self.bootloader in ["refind", "systemd-boot"]:
-            # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
-        else:
-            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
+        # NOTE: This will be formated in ext4 (bios or gpt+grub2) or fat32 (gpt+systemd-boot or refind bootloaders)
+        self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
 
-        # Note: Make sure the "boot" partition is defined before the "efi" one!
+        # NOTE: Make sure the "boot" partition is defined before the "efi" one!
         if self.gpt and self.bootloader == "grub2":
             # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
+            self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'])
 
         if self.home:
             self.mkfs(devices['home'], fs_devices[devices['home']], mount_points['home'], labels['home'])
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
-
         if self.luks and self.luks_password == "":
             # Copy root keyfile to boot partition and home keyfile to root partition
             # user will choose what to do with it
