@@ -579,7 +579,7 @@
                   <object class="GtkLabel" id="create_partition_add_units">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">MB</property>
+                    <property name="label" translatable="yes">MiB</property>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
