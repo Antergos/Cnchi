@@ -1,3 +1,6 @@
+[2017-07-04 14:49:30 +0200]  deepin package got renamed                                                 karasu      {8b28a1e0}
+[2017-07-04 10:16:49 +0200]  Remove unused deepin packages (experimental)                               karasu      {b1e4528e}
+[2017-07-04 10:15:54 +0200]  unused packages                                                            karasu      {bb9d5977}
 [2017-07-01 00:09:39 +0200]  Fix label                                                                  karasu      {c85c498d}
 [2017-07-01 00:05:22 +0200]  Set MIN_ROOT_SIZE in check.py (this wasn't needed)                         karasu      {f4f05434}
 [2017-06-30 23:57:06 +0200]  Use 512MB in EFI (automatic install) and other small modifications         karasu      {0b226a73}
