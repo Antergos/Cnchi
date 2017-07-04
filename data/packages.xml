@@ -562,8 +562,6 @@
                <pkgname>deepin-movie</pkgname>
                <pkgname>deepin-mutter</pkgname>
                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-               <pkgname>python2-deepin-ui</pkgname>
-               <pkgname>python2-deepin-utils</pkgname>
                <pkgname>startdde</pkgname>
            </packages>
        </edition>

@@ -1,3 +1,4 @@
+[2017-07-01 00:09:39 +0200]  Fix label                                                                  karasu      {c85c498d}
 [2017-07-01 00:05:22 +0200]  Set MIN_ROOT_SIZE in check.py (this wasn't needed)                         karasu      {f4f05434}
 [2017-06-30 23:57:06 +0200]  Use 512MB in EFI (automatic install) and other small modifications         karasu      {0b226a73}
 [2017-06-25 12:32:13 +0200]  Some more changes                                                          karasu      {64b1527e}
