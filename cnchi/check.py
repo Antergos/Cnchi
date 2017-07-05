@@ -178,15 +178,14 @@ class Check(GtkBaseBox):
         """ Checks if latptop is connected to a power supply """
         # UPower doesn't seem to have an interface for this.
         path = '/sys/class/power_supply'
-        if not os.path.exists(path):
-            return False
-        for folder in os.listdir(path):
-            type_path = os.path.join(path, folder, 'type')
-            if os.path.exists(type_path):
-                with open(type_path) as power_file:
-                    if power_file.read().startswith('Battery'):
-                        self.settings.set('laptop', 'True')
-                        return True
+        if os.path.exists(path):
+            for folder in os.listdir(path):
+                type_path = os.path.join(path, folder, 'type')
+                if os.path.exists(type_path):
+                    with open(type_path) as power_file:
+                        if power_file.read().startswith('Battery'):
+                            self.settings.set('laptop', 'True')
+                            return True
         return False
 
     @staticmethod
@@ -205,10 +204,7 @@ class Check(GtkBaseBox):
                     if size > max_size:
                         max_size = size
 
-        if max_size >= MIN_ROOT_SIZE:
-            return True
-
-        return False
+        return max_size >= MIN_ROOT_SIZE
 
     def is_updated(self):
         """ Checks that cnchi version is, at least, latest stable """
