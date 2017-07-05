@@ -111,7 +111,7 @@ class Check(GtkBaseBox):
 
         self.packaging_issues = self.ui.get_object("packaging_issues")
         txt = _("There are no temporary packaging issues that would interfere with installation.")
-        self.prepare_network_connection.set_property("label", txt)
+        self.packaging_issues.set_property("label", txt)
 
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
