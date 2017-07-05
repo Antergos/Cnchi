@@ -70,6 +70,7 @@ class Check(GtkBaseBox):
         self.timeout_id = None
         self.prepare_best_results = None
         self.updated = None
+        self.packaging_issues = None
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -108,6 +109,10 @@ class Check(GtkBaseBox):
         txt = _("is connected to the Internet")
         self.prepare_network_connection.set_property("label", txt)
 
+        self.packaging_issues = self.ui.get_object("packaging_issues")
+        txt = _("There are no temporary packaging issues that would interfere with installation.")
+        self.prepare_network_connection.set_property("label", txt)
+
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
@@ -134,6 +139,9 @@ class Check(GtkBaseBox):
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
 
+        packaging_issues = os.path.exists('/tmp/.packaging_issue')
+        self.packaging_issues.set_state(not packaging_issues)
+
         if has_internet:
             updated = self.is_updated()
         else:
@@ -144,7 +152,7 @@ class Check(GtkBaseBox):
         if self.checks_are_optional:
             return True
 
-        if has_internet and space:
+        if has_internet and space and not packaging_issues:
             return True
 
         return False

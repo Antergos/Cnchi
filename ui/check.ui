@@ -75,6 +75,17 @@
             <property name="position">3</property>
           </packing>
         </child>
+        <child>
+          <object class="StateBox" id="packaging_issues">
+            <property name="visible">True</property>
+            <property name="label">There are no packaging issues that would interfere with installation.</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="expand">False</property>
