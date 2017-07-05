@@ -1,3 +1,9 @@
+[2017-07-05 17:14:24 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {a01f475a}
+[2017-07-05 17:13:49 +0200]  Small changes in check.py                                                  karasu      {b2f5bca9}
+[2017-07-05 05:09:09 -0500]  fix typo                                                               Dustin Falgout  {7e0d77e6}
+[2017-07-05 04:43:00 -0500]  Add check for install blocking packaging issues so we can prevent u..  Dustin Falgout  {73626bb0}
+[2017-07-04 14:49:30 +0200]  deepin package got renamed                                                 karasu      {8b28a1e0}
+[2017-07-04 14:48:43 +0200]  deepin package got renamed                                                 karasu      {79680d0e}
 [2017-07-04 10:17:47 +0200]  Remove unused deepin packages (experimental)                               karasu      {20d41f4d}
 [2017-07-04 10:16:49 +0200]  Remove unused deepin packages (experimental)                               karasu      {b1e4528e}
 [2017-06-25 11:26:52 +0200]  Use -f (fast) when formating NTFS. Fixes #769                              karasu      {71849d4e}
