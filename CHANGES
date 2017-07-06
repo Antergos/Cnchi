@@ -1,3 +1,6 @@
+[2017-07-06 16:20:58 +0200]  Install tlp by default. Fixes #759                                         karasu      {375129cc}
+[2017-07-05 17:19:28 +0200]  Update packages.xml (deepin)                                               karasu      {1e1bfdff}
+[2017-07-05 17:18:25 +0200]  update deepin packages list                                                karasu      {ea5e50c9}
 [2017-07-05 17:14:24 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {a01f475a}
 [2017-07-05 17:13:49 +0200]  Small changes in check.py                                                  karasu      {b2f5bca9}
 [2017-07-05 05:09:09 -0500]  fix typo                                                               Dustin Falgout  {7e0d77e6}
