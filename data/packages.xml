@@ -26,6 +26,7 @@
                 <pkgname>openssh</pkgname>
                 <pkgname>pkgfile</pkgname>
                 <pkgname>sudo</pkgname>
+                <pkgname>tlp</pkgname>
                 <pkgname>tar</pkgname>
                 <pkgname>unzip</pkgname>
                 <pkgname>unrar</pkgname>
