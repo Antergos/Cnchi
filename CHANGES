@@ -1,3 +1,11 @@
+[2017-07-06 23:26:38 +0200]  Removed package                                                            karasu      {97b8e7c4}
+[2017-07-06 16:20:58 +0200]  Install tlp by default. Fixes #759                                         karasu      {375129cc}
+[2017-07-05 17:19:28 +0200]  Update packages.xml (deepin)                                               karasu      {1e1bfdff}
+[2017-07-05 17:14:24 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {a01f475a}
+[2017-07-05 17:13:49 +0200]  Small changes in check.py                                                  karasu      {b2f5bca9}
+[2017-07-05 05:09:09 -0500]  fix typo                                                               Dustin Falgout  {7e0d77e6}
+[2017-07-05 04:43:00 -0500]  Add check for install blocking packaging issues so we can prevent u..  Dustin Falgout  {73626bb0}
+[2017-07-04 14:51:57 +0200]  deepin package got renamed                                                 karasu      {c05b3658}
 [2017-07-04 14:49:30 +0200]  deepin package got renamed                                                 karasu      {8b28a1e0}
 [2017-07-04 10:16:49 +0200]  Remove unused deepin packages (experimental)                               karasu      {b1e4528e}
 [2017-07-04 10:15:54 +0200]  unused packages                                                            karasu      {bb9d5977}
