@@ -16,7 +16,6 @@
                 <pkgname>dosfstools</pkgname>
                 <pkgname>haveged</pkgname>
                 <pkgname>gzip</pkgname>
-                <pkgname>intel-ucode</pkgname>
                 <pkgname>ipw2100-fw</pkgname>
                 <pkgname>ipw2200-fw</pkgname>
                 <pkgname>modemmanager</pkgname>
@@ -26,7 +25,6 @@
                 <pkgname>openssh</pkgname>
                 <pkgname>pkgfile</pkgname>
                 <pkgname>sudo</pkgname>
-                <pkgname>tlp</pkgname>
                 <pkgname>tar</pkgname>
                 <pkgname>unzip</pkgname>
                 <pkgname>unrar</pkgname>
@@ -537,12 +535,11 @@
                <pkgname>deepin-calendar</pkgname>
                <pkgname>deepin-control-center</pkgname>
                <pkgname>deepin-daemon</pkgname>
-               <!--<pkgname>deepin-desktop</pkgname>-->
+               <pkgname>deepin-desktop</pkgname>
                <pkgname>deepin-desktop-base</pkgname>
                <pkgname>deepin-desktop-schemas</pkgname>
                <pkgname>deepin-dock</pkgname>
                <pkgname>deepin-file-manager</pkgname>
-               <pkgname>deepin-grub2-themes</pkgname>
                <pkgname>deepin-gtk-theme</pkgname>
                <pkgname>deepin-image-viewer</pkgname>
                <pkgname>deepin-launcher</pkgname>
@@ -551,20 +548,21 @@
                <pkgname>deepin-qt5integration</pkgname>
                <pkgname>deepin-session-ui</pkgname>
                <pkgname>deepin-shortcut-viewer</pkgname>
+               <pkgname>deepin-social-sharing</pkgname>
                <pkgname>deepin-sound-theme</pkgname>
                <pkgname>deepin-wallpapers</pkgname>
                <pkgname>deepin-wm-switcher</pkgname>
                <pkgname>deepin-screenshot</pkgname>
                <pkgname>deepin-screen-recorder</pkgname>
-               <pkgname>deepin-system-monitor</pkgname>
                <pkgname>deepin-terminal</pkgname>
                <pkgname>deepin-voice-recorder</pkgname>
                <pkgname>deepin-music</pkgname>
                <pkgname>deepin-cogl</pkgname>
-               <!--<pkgname>deepin-dbus-factory</pkgname>-->
+               <pkgname>deepin-dbus-factory</pkgname>
                <pkgname>deepin-movie</pkgname>
                <pkgname>deepin-mutter</pkgname>
-               <pkgname>gnome-software</pkgname>
+               <pkgname>gedit</pkgname>
+               <pkgname>gnome-disk-utility</pkgname>
                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                <pkgname>startdde</pkgname>
            </packages>
