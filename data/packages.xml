@@ -565,6 +565,8 @@
                <pkgname>deepin-movie</pkgname>
                <pkgname>deepin-mutter</pkgname>
                <pkgname>gnome-software</pkgname>
+               <pkgname>gedit</pkgname>
+               <pkgname>gnome-disk-utility</pkgname>
                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                <pkgname>startdde</pkgname>
            </packages>
