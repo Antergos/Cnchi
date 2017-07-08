@@ -1,3 +1,5 @@
+[2017-07-08 11:29:10 +0200]  Update packages.xml                                                        karasu      {c6ce7a80}
+[2017-07-08 11:26:48 +0200]  Updated deepin packages (again)                                            karasu      {bfd69d08}
 [2017-07-06 23:26:38 +0200]  Removed package                                                            karasu      {97b8e7c4}
 [2017-07-06 16:20:58 +0200]  Install tlp by default. Fixes #759                                         karasu      {375129cc}
 [2017-07-05 17:19:28 +0200]  Update packages.xml (deepin)                                               karasu      {1e1bfdff}
