@@ -532,12 +532,12 @@
            <packages>
                <pkgname>deepin-account-faces</pkgname>
                <pkgname>adwaita-icon-theme</pkgname>
+               <pkgname>brasero</pkgname>
                <pkgname>deepin-api</pkgname>
                <pkgname>deepin-artwork-themes</pkgname>
                <pkgname>deepin-calendar</pkgname>
                <pkgname>deepin-control-center</pkgname>
                <pkgname>deepin-daemon</pkgname>
-               <!--<pkgname>deepin-desktop</pkgname>-->
                <pkgname>deepin-desktop-base</pkgname>
                <pkgname>deepin-desktop-schemas</pkgname>
                <pkgname>deepin-dock</pkgname>
@@ -561,14 +561,19 @@
                <pkgname>deepin-voice-recorder</pkgname>
                <pkgname>deepin-music</pkgname>
                <pkgname>deepin-cogl</pkgname>
-               <!--<pkgname>deepin-dbus-factory</pkgname>-->
                <pkgname>deepin-movie</pkgname>
                <pkgname>deepin-mutter</pkgname>
-               <pkgname>gnome-software</pkgname>
                <pkgname>gedit</pkgname>
+               <pkgname>gnome-calculator</pkgname>
                <pkgname>gnome-disk-utility</pkgname>
+               <pkgname>gnome-software</pkgname>
+               <pkgname>gnome-system-monitor</pkgname>
                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+               <pkgname>noto-fonts</pkgname>
+               <pkgname>noto-fonts-cjk</pkgname>
+               <pkgname>noto-fonts-emoji</pkgname>
                <pkgname>startdde</pkgname>
+               <pkgname>unicode-character-database</pkgname>
            </packages>
        </edition>
     </editions>
