@@ -857,18 +857,25 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Dialog windows should be set transient for the main application
         # window they were spawned from.
-        self.edit_partition_dialog.set_transient_for(self.get_main_window())
+        main_window = self.get_main_window()
+        self.edit_partition_dialog.set_transient_for(main_window)
 
         # Show edit partition dialog
         response = self.edit_partition_dialog.run()
 
         if response == Gtk.ResponseType.OK:
             new_mount = mount_combo_entry.get_text().strip()
+            new_fs = combo.get_active_text()
+            new_format = format_check.get_active()
 
             if new_mount in self.diskdic['mounts'] and new_mount != row[COL_MOUNT_POINT]:
-                show.warning(self.get_main_window(), _("Can't use same mount point twice."))
+                show.warning(main_window, _("Can't use same mount point twice."))
             elif new_mount == "/" and not format_check.get_active():
-                show.warning(self.get_main_window(), _('Root partition must be formatted.'))
+                show.warning(main_window, _('Root partition must be formatted.'))
+            elif new_mount == "/" and (new_fs == "fat32" or new_fs == "ntfs"):
+                show.warning(main_window, _('Root partition cannot be NTFS or FAT32'))
+            elif new_mount == "/home" and (new_fs == "fat32" or new_fs == "ntfs"):
+                show.warning(main_window, _('/home partition cannot be NTFS or FAT32'))
             else:
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
@@ -881,9 +888,6 @@ class InstallationAdvanced(GtkBaseBox):
                     if not pattern.fullmatch(new_label):
                         logging.debug("'%s' is not a valid label.", new_label)
                         new_label = ""
-
-                new_fs = combo.get_active_text()
-                new_format = format_check.get_active()
 
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
@@ -904,13 +908,11 @@ class InstallationAdvanced(GtkBaseBox):
                         # if no /boot/efi is defined, /boot must be fat32
                         if not boot_efi_exists:
                             show.warning(
-                                self.get_main_window(),
+                                main_window,
                                 _('As no /boot/efi is defined (yet), /boot needs to be fat32.'))
                             new_fs = "fat32"
                     elif new_mount == "/boot/efi" and new_fs != "fat32":
-                        show.warning(
-                            self.get_main_window(),
-                            _('/boot/efi needs to be fat32.'))
+                        show.warning(main_window, _('/boot/efi needs to be fat32.'))
                         new_fs = "fat32"
 
                 self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
