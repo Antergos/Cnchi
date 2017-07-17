@@ -68,8 +68,14 @@ def atk_set_image_description(widget, description):
         information onscreen. """
     atk_widget = widget.get_accessible()
     if atk_widget is not None:
-        atk_widget.set_image_description(description)
+        atk_widget.set_object_description(description)
 
+def atk_set_object_description(widget, description):
+    """ Sets the textual description for a widget """
+    atk_widget = widget.get_accessible()
+    if atk_widget is not None:
+        atk_widget.set_image_description(description)
+        #atk_object_set_name
 
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
@@ -161,12 +167,16 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
+        # a11y
+        self.progressbar.set_can_focus(False)
 
         self.forward_button = self.header_ui.get_object("forward_button")
         self.backwards_button = self.header_ui.get_object("backwards_button")
 
-        atk_set_image_description(self.forward_button, _("Next step"))
-        atk_set_image_description(self.backwards_button, _("Previous step"))
+        # atk_set_image_description(self.forward_button, _("Next step"))
+        # atk_set_image_description(self.backwards_button, _("Previous step"))
+        # atk_set_object_description(self.forward_button, _("Next step"))
+        # atk_set_object_description(self.backwards_button, _("Previous step"))
 
         self.forward_button.set_name('fwd_btn')
         self.forward_button.set_always_show_image(True)
@@ -174,9 +184,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_name('bk_btn')
         self.backwards_button.set_always_show_image(True)
 
-        ## Needed by Orca
-        #self.forward_button.set_label(_("Next") + " >")
-        #self.backwards_button.set_label("< " + _("Back"))
+        # a11y
+        self.forward_button.set_label(_("Next") + " >")
+        self.backwards_button.set_label("< " + _("Back"))
 
         # Create a queue. Will be used to report pacman messages
         # (pacman/pac.py) to the main thread (installation/process.py)
@@ -208,6 +218,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['checks_are_optional'] = cmd_line.no_check
         self.params['disable_tryit'] = cmd_line.disable_tryit
         self.params['disable_rank_mirrors'] = cmd_line.disable_rank_mirrors
+        self.params['a11y'] = cmd_line.a11y
 
         # Just load the first two screens (the other ones will be loaded later)
         # We do this so the user has not to wait for all the screens to be

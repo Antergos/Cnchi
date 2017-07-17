@@ -73,6 +73,8 @@ class Language(GtkBaseBox):
         self.rank_mirrors_launched = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
 
+        self.main_window = params['main_window']
+
     def get_lang(self):
         return os.environ["LANG"].split(".")[0]
 
@@ -115,6 +117,9 @@ class Language(GtkBaseBox):
         label.set_hexpand(False)
         label.set_line_wrap(True)
         label.set_max_width_chars(50)
+
+        # a11y
+        label.set_can_focus(False)
 
         txt = _("Choose your language")
         self.header.set_subtitle(txt)
@@ -204,6 +209,10 @@ class Language(GtkBaseBox):
         # Enable forward button
         self.forward_button.set_sensitive(True)
         self.show_all()
+
+        # a11y
+        self.listbox.set_can_default(True)
+        self.main_window.set_default(self.listbox)
 
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
         if (not self.disable_rank_mirrors and

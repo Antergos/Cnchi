@@ -82,6 +82,8 @@ class Features(GtkBaseBox):
 
         self.listbox_rows = {}
 
+        self.a11y = params['a11y']
+
         # Set up list box
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -277,6 +279,10 @@ class Features(GtkBaseBox):
 
         if 'chromium' in self.features:
             row = self.listbox_rows['chromium']
+            row[Features.COL_SWITCH].set_active(True)
+
+        if 'a11y' in self.features and self.a11y:
+            row = self.listbox_rows['a11y']
             row[Features.COL_SWITCH].set_active(True)
 
     def show_disclaimer_messages(self):

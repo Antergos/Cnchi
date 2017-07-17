@@ -339,6 +339,10 @@ def parse_options():
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument(
+        "-a", "--a11y",
+        help=_("Set accessibility feature on by default"),
+        action="store_true")
+    parser.add_argument(
         "-c", "--cache",
         help=_("Use pre-downloaded xz packages when possible"),
         nargs='?')

@@ -580,7 +580,7 @@
 
     <!-- User desired features -->
     <features>
-        <feature name="6dots">
+        <feature name="a11y">
             <pkgname>alsa-utils</pkgname>
             <pkgname>bluez</pkgname>
             <pkgname>bluez-libs</pkgname>

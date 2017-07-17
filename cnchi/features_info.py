@@ -33,6 +33,7 @@
 # in desktop_info file instead of here.
 
 ICON_NAMES = {
+    'a11y': 'a11y',
     'aur': 'system-software-install',
     'bluetooth': 'bluetooth',
     'cups': 'printer',
@@ -54,6 +55,7 @@ def _(message):
     return message
 
 TITLES = {
+    'a11y': _("Adds accessibility packages"),
     'aur': _("Arch User Repository (AUR) Support"),
     'bluetooth': _("Bluetooth Support"),
     'cups': _("Printing Support"),
@@ -70,6 +72,7 @@ TITLES = {
     'visual': _("Visual Effects")}
 
 DESCRIPTIONS = {
+    'a11y': _("Useful packages for individuals who are blind or visually impaired."),
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
     'chromium': _("Open-source web browser from Google."),
@@ -86,6 +89,7 @@ DESCRIPTIONS = {
     'lts': _("Long term support (LTS) Linux kernel and modules.")}
 
 TOOLTIPS = {
+    'a11y': _("Useful packages for individuals who are blind or visually impaired."),
     'aur': _("Use yaourt to install AUR packages.\n"
              "The AUR was created to organize and share new packages\n"
              "from the community and to help expedite popular packages'\n"
