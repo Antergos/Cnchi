@@ -1,3 +1,8 @@
+[2017-07-18 19:20:49 +0200]  Use deepin-system-monitor as it seems to work now                          karasu      {07016aa4}
+[2017-07-17 15:51:22 +0200]  Merge a11y branch. Labels got uglier but they need text to be read ..      karasu      {c45d055f}
+[2017-07-17 14:04:24 +0200]  Add a11y icon                                                              karasu      {54586aaf}
+[2017-07-10 18:36:59 +0200]  Do not allow using Fat32 or NTFS for / and /home                           karasu      {5911b319}
+[2017-07-09 17:00:23 +0200]  update packages.xml (deepin)                                               karasu      {9e9ce0e3}
 [2017-07-09 16:59:13 +0200]  Update packages.xml (deepin)                                               karasu      {36e8afa1}
 [2017-07-08 11:29:30 +0200]  Update packages.xml (deepin)                                               karasu      {573c63e3}
 [2017-07-08 11:29:10 +0200]  Update packages.xml                                                        karasu      {c6ce7a80}
