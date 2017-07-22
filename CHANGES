@@ -1,3 +1,5 @@
+[2017-07-22 18:37:32 +0200]  Update icons (deepin)                                                      karasu      {de254356}
+[2017-07-22 18:26:17 +0200]  Update packages.xml (deepin)                                               karasu      {f0d3243f}
 [2017-07-22 18:24:22 +0200]  Fix deepin session name in lightdm                                         karasu      {32e6e31e}
 [2017-07-18 19:21:49 +0200]  Update packages.xml (deepin and a11y)                                      karasu      {8e1de2d9}
 [2017-07-18 19:20:49 +0200]  Use deepin-system-monitor as it seems to work now                          karasu      {07016aa4}
