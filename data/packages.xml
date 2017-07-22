@@ -19,7 +19,7 @@
                 <pkgname>intel-ucode</pkgname>
                 <pkgname>ipw2100-fw</pkgname>
                 <pkgname>ipw2200-fw</pkgname>
-                <pkgname>mlocale</pkgname>
+                <pkgname>mlocate</pkgname>
                 <pkgname>modemmanager</pkgname>
                 <pkgname>net-tools</pkgname>
                 <pkgname>networkmanager</pkgname>
