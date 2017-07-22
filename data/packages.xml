@@ -19,6 +19,7 @@
                 <pkgname>intel-ucode</pkgname>
                 <pkgname>ipw2100-fw</pkgname>
                 <pkgname>ipw2200-fw</pkgname>
+                <pkgname>mlocale</pkgname>
                 <pkgname>modemmanager</pkgname>
                 <pkgname>net-tools</pkgname>
                 <pkgname>networkmanager</pkgname>
@@ -46,6 +47,7 @@
                 <pkgname>antergos-wallpapers</pkgname>
                 <pkgname>antergos-welcome</pkgname>
                 <pkgname>cdrtools</pkgname>
+                <pkgname lib="gtk">dconf-editor</pkgname>
                 <pkgname>ffmpegthumbnailer</pkgname>
                 <pkgname>gst-libav</pkgname>
                 <pkgname>gst-plugins-bad</pkgname>
@@ -530,6 +532,7 @@
 
         <edition name="Deepin" description="Deepin Desktop">
            <packages>
+               <pkgname>antergos-wallpapers-deepin</pkgname>
                <pkgname>adwaita-icon-theme</pkgname>
                <pkgname>brasero</pkgname>
                <pkgname>deepin-account-faces</pkgname>

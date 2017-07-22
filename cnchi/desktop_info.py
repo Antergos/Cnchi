@@ -87,10 +87,10 @@ EXCLUDED_FEATURES = {
     'lxqt': ["lamp", "visual"]
 }
 
-# Session names for lightDM setup
+# Session names for lightDM setup (/usr/share/xsessions)
 SESSIONS = {
     'cinnamon': 'cinnamon',
-    'deepin': 'startdde',
+    'deepin': 'deepin',
     'gnome': 'gnome',
     'kde': 'plasma',
     'mate': 'mate',
