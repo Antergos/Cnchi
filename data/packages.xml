@@ -27,6 +27,7 @@
                 <pkgname>openssh</pkgname>
                 <pkgname>pkgfile</pkgname>
                 <pkgname>sudo</pkgname>
+                <pkgname>terminus-font</pkgname>
                 <pkgname>tlp</pkgname>
                 <pkgname>tar</pkgname>
                 <pkgname>unzip</pkgname>
