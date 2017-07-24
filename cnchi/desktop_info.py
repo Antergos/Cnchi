@@ -41,9 +41,9 @@ DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 MENU - Size appropriate for menus (16px).
 SMALL_TOOLBAR - Size appropriate for small toolbars (16px).
 LARGE_TOOLBAR - Size appropriate for large toolbars (24px)
-BUTTON - Size appropriate for buttons (16px )
-DND - Size appropriate for drag and drop (32px )
-DIALOG - Size appropriate for dialogs (48px )
+BUTTON - Size appropriate for buttons (16px)
+DND - Size appropriate for drag and drop (32px)
+DIALOG - Size appropriate for dialogs (48px)
 '''
 
 # Descriptive names
