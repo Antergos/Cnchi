@@ -221,6 +221,7 @@
                 <pkgname>gnome-calculator</pkgname>
                 <pkgname>gnome-disk-utility</pkgname>
                 <pkgname>gnome-keyring</pkgname>
+		<pkgname>gtk-engine-murrine</pkgname>
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>mousepad</pkgname>
