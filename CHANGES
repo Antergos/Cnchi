@@ -1,3 +1,7 @@
+[2017-07-25 23:54:29 +0200]  Add gtk-engine-murrine in xfce                                             karasu      {8ceb3633}
+[2017-07-25 00:55:03 +0200]  Add Deepin to the list of available DE's                                   karasu      {d023b46e}
+[2017-07-24 21:10:04 +0200]  Add rounded corners to deepin screenshot                                   karasu      {b4945b07}
+[2017-07-24 20:23:37 +0200]  Add terminus font (tty)                                                    karasu      {a3dda6d6}
 [2017-07-24 20:19:53 +0200]  Add terminus font to base                                                  karasu      {eb471e47}
 [2017-07-22 20:20:49 +0200]  Fix typo in package name                                                   karasu      {7685fc51}
 [2017-07-22 20:20:04 +0200]  Fix typo in package name                                                   karasu      {10cfbc87}
