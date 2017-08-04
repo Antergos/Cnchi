@@ -187,8 +187,8 @@ class MainWindow(Gtk.ApplicationWindow):
         # a11y
         self.settings.set('a11y', cmd_line.a11y)
         if cmd_line.a11y:
-            self.forward_button.set_label(_("Next") + " >")
-            self.backwards_button.set_label("< " + _("Back"))
+            self.forward_button.set_label(_("Next"))
+            self.backwards_button.set_label(_("Back"))
 
         # Create a queue. Will be used to report pacman messages
         # (pacman/pac.py) to the main thread (installation/process.py)
