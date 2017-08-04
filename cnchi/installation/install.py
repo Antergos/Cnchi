@@ -1458,6 +1458,12 @@ class Installation(object):
                 "/bin/nologin", "-c", "avahi", "avahi"]
             chroot_call(cmd)
 
+        # Install sonar (a11y) gsettings if present in the ISO (and a11y is on)
+        src = "/usr/share/glib-2.0/schemas/92_antergos_sonar.gschema.override"
+        if self.settings.get('a11y') and os.path.exists(src):
+            dst = os.path.join(DEST_DIR, 'usr/share/glib-2.0/schemas')
+            shutil.copy2(src, dst)
+
         # Enable AUR in pamac if AUR feature selected
         pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
         if os.path.exists(pamac_conf) and self.settings.get('feature_aur'):

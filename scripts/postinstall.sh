@@ -64,6 +64,7 @@ set_gsettings() {
         echo "sources=[('xkb','${CN_KEYBOARD}')]" >> ${CN_INPUT_SCHEMA}
     fi
 
+    # Set default Internet browser
     for CN_SCHEMA_OVERRIDE in ${CN_DESTDIR}/usr/share/glib-2.0/schemas/90_antergos*; do
         if [ "${CN_BROWSER}" != "" ]; then
     	    sed -i "s|chromium|${CN_BROWSER}|g" "${CN_SCHEMA_OVERRIDE}"

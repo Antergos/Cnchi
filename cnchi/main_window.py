@@ -185,6 +185,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_always_show_image(True)
 
         # a11y
+        self.settings.set('a11y', cmd_line.a11y)
         if cmd_line.a11y:
             self.forward_button.set_label(_("Next") + " >")
             self.backwards_button.set_label("< " + _("Back"))
