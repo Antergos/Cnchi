@@ -57,7 +57,9 @@ class Location(GtkBaseBox):
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
         self.label_choose_country = self.ui.get_object("label_choose_country")
+        self.label_choose_country.set_name("location-label-choose-country")
         self.label_help = self.ui.get_object("label_help")
+        self.label_help.set_name("location-label-help")
 
         self.locales = {}
         self.load_locales()
@@ -67,6 +69,7 @@ class Location(GtkBaseBox):
         self.show_all_locations = False
 
         button = self.ui.get_object("show_all_locations_checkbutton")
+        button.set_name("location-checkbutton-show-all-locations")
         button.connect(
             "toggled",
             self.on_show_all_locations_checkbox_toggled,
@@ -86,7 +89,7 @@ class Location(GtkBaseBox):
                 "language you selected.")
 
         self.label_help.set_text(txt)
-        self.label_help.set_name("label_help")
+        self.label_help.set_name("location-label-help")
 
         txt = _("Country, territory or area:")
         txt = "<span weight='bold'>{0}</span>".format(txt)

@@ -218,7 +218,20 @@ GtkTreeView row:selected {
 }
 
 #ask #intro_label {
-    font-size: 15px;
+    font-size: 16px;
+}
+
+#location-label-choose-country  {
+    font-size: 14px;
+}
+
+#location-label-help  {
+    font-size: 14px;
+    font-style: italic;
+}
+
+#location-checkbutton-show-all-locations {
+    font-size: 14px;
 }
 
 #slides scrolledwindow {
