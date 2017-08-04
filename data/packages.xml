@@ -606,7 +606,7 @@
             <pkgname>mc</pkgname>
             <pkgname>orca</pkgname>
             <pkgname>python2-speechd</pkgname>
-            <pkgname>vim-minimal</pkgname>
+            <pkgname>vim</pkgname>
         </feature>
         <feature name="aur">
             <pkgname>yaourt</pkgname>

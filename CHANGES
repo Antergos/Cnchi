@@ -1,3 +1,11 @@
+[2017-08-04 21:31:20 +0200]  vim-minimal does not exist                                                 karasu      {4af1a540}
+[2017-08-04 20:58:58 +0200]  location screen text was too small                                         karasu      {1bf40067}
+[2017-08-04 20:41:34 +0200]  Only Gnome and Mate (for now) available to a11y                            karasu      {bd8f2e87}
+[2017-08-04 19:38:06 +0200]  If we're running from sonar iso force a11y parameter to true               karasu      {6db9688f}
+[2017-08-04 13:16:56 +0200]  Do not use < > for a11y                                                    karasu      {e080d9dc}
+[2017-08-04 13:15:19 +0200]  Install sonar gsettings if present in the ISO (and -a option is used)      karasu      {169f0cbf}
+[2017-08-04 13:00:34 +0200]  Show labels if -a is used (a11y)                                           karasu      {6feac9dd}
+[2017-07-25 23:55:16 +0200]  Add gtk-engine-murrine to xfce                                             karasu      {47b6b078}
 [2017-07-25 23:54:29 +0200]  Add gtk-engine-murrine in xfce                                             karasu      {8ceb3633}
 [2017-07-25 00:55:03 +0200]  Add Deepin to the list of available DE's                                   karasu      {d023b46e}
 [2017-07-24 21:10:04 +0200]  Add rounded corners to deepin screenshot                                   karasu      {b4945b07}
