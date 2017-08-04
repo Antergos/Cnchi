@@ -124,11 +124,16 @@ class MainWindow(Gtk.ApplicationWindow):
         # For things we are not ready for users to test
         self.settings.set('z_hidden', cmd_line.z_hidden)
 
+        # a11y
+        self.settings.set('a11y', cmd_line.a11y)
+
         # Set enabled desktops
         if self.settings.get('z_hidden'):
-            self.settings.set("desktops", desktop_info.DESKTOPS_DEV)
+            self.settings.set('desktops', desktop_info.DESKTOPS_DEV)
+        elif self.settings.get('a11y'):
+            self.settings.set('desktops', desktop_info.DESKTOPS_A11Y)
         else:
-            self.settings.set("desktops", desktop_info.DESKTOPS)
+            self.settings.set('desktops', desktop_info.DESKTOPS)
 
         if cmd_line.environment:
             my_desktop = cmd_line.environment.lower()
@@ -185,7 +190,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.backwards_button.set_always_show_image(True)
 
         # a11y
-        self.settings.set('a11y', cmd_line.a11y)
         if cmd_line.a11y:
             self.forward_button.set_label(_("Next"))
             self.backwards_button.set_label(_("Back"))

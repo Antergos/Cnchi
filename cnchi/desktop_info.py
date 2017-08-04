@@ -35,6 +35,8 @@ DESKTOPS = ["base", "cinnamon", "deepin", "gnome", "kde", "mate", "openbox", "xf
 
 DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
 
+DESKTOPS_A11Y = ["gnome", "mate"]
+
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
 
 '''
