@@ -46,7 +46,7 @@
                 <pkgname>accountsservice</pkgname>
                 <pkgname lib="gtk">antergos-gsettings</pkgname>
                 <pkgname>antergos-wallpapers</pkgname>
-                <pkgname>antergos-welcome</pkgname>
+                <!--<pkgname>antergos-welcome</pkgname>-->
                 <pkgname>cdrtools</pkgname>
                 <pkgname lib="gtk">dconf-editor</pkgname>
                 <pkgname>ffmpegthumbnailer</pkgname>
@@ -77,8 +77,6 @@
                 <pkgname>numix-frost-themes</pkgname>
                 <pkgname>numix-icon-theme</pkgname>
                 <pkgname>numix-icon-theme-square</pkgname>
-                <pkgname lib="gtk">orca</pkgname>
-                <pkgname>pamac</pkgname>
                 <pkgname>pavucontrol</pkgname>
                 <pkgname>pulseaudio</pkgname>
                 <pkgname>pulseaudio-alsa</pkgname>
@@ -154,6 +152,7 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
@@ -205,6 +204,7 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>pamac</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -228,6 +228,7 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>pamac</pkgname>
                 <pkgname>parole</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>polkit-gnome</pkgname>
@@ -275,6 +276,7 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>pamac</pkgname>
                 <pkgname>pluma</pkgname>
                 <pkgname>pragha</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
@@ -301,6 +303,7 @@
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
+                <pkgname>kalu</pkgname>
                 <pkgname>lxappearance-obconf-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
                 <pkgname>lxmenu-data</pkgname>
@@ -386,6 +389,7 @@
                 <pkgname>nm-connection-editor</pkgname>
                 <pkgname>numix-frost-themes</pkgname>
                 <pkgname>numix-icon-theme-square</pkgname>
+                <pkgname>octopi</pkgname>
                 <pkgname>okular</pkgname>
                 <pkgname>oxygen</pkgname>
                 <pkgname>plasma-desktop</pkgname>
@@ -411,6 +415,7 @@
 
         <edition name="lxqt" description="LXQT Desktop">
             <packages>
+                <pkgname>kalu</pkgname>
                 <pkgname>lxqt-about</pkgname>
                 <pkgname>lxqt-config</pkgname>
                 <pkgname>lxqt-notificationd</pkgname>
@@ -435,6 +440,7 @@
                 <pkgname nm='true' name='connman'>connman</pkgname>
                 <pkgname>econnman</pkgname>
                 <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
+                <pkgname>kalu</pkgname>
                 <pkgname>rage</pkgname> <!-- video player -->
                 <pkgname>terminology</pkgname> <!-- terminal emulator -->
                 <pkgname>ttf-dejavu</pkgname>
@@ -487,6 +493,7 @@
                 <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>seahorse</pkgname>
@@ -510,6 +517,7 @@
                 <pkgname>i3-wm</pkgname>
                 <pkgname>i3lock</pkgname>
                 <pkgname>i3status</pkgname>
+                <pkgname>kalu</pkgname>
                 <pkgname>lxappearance-gtk3</pkgname>
                 <pkgname>lxinput-gtk3</pkgname>
                 <pkgname>moc</pkgname>
@@ -577,6 +585,7 @@
                <pkgname>noto-fonts</pkgname>
                <pkgname>noto-fonts-cjk</pkgname>
                <pkgname>noto-fonts-emoji</pkgname>
+               <pkgname>pamac</pkgname>
                <pkgname>startdde</pkgname>
                <pkgname>unicode-character-database</pkgname>
            </packages>

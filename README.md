@@ -14,7 +14,7 @@ This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
 |Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|vvvvvvv0.14.293|Bug Fixes Only|
-|**Cnchi Next**|**master**|**v0.15.295**|**Active Development**|
+|**Cnchi Next**|**master**|**v0.15.296**|**Active Development**|
 
 
 ## Usage:
