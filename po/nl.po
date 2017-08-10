@@ -2535,7 +2535,7 @@ msgstr "Regio:"
 
 #: cnchi/timezone.py:90
 msgid "Use Network Time Protocol (NTP) for clock synchronization"
-msgstr ""
+msgstr "Network Time Protocol (NTP) gebruiken voor tijdsynchronisatie"
 
 #: cnchi/timezone.py:93
 msgid "Select Your Timezone"
@@ -2555,7 +2555,7 @@ msgstr ""
 
 #: cnchi/timezone.py:288
 msgid "A working network connection has been detected."
-msgstr ""
+msgstr "Een werkende netwerkverbinding is gedetecteerd."
 
 #: cnchi/timezone.py:297
 msgid "We have connection. Let's get our timezone"
@@ -2563,7 +2563,7 @@ msgstr "We hebben verbinding. Laten we onze tijdzone verkrijgen"
 
 #: cnchi/timezone.py:316
 msgid "Timezone (latitude %s, longitude %s) detected."
-msgstr ""
+msgstr "Tijdzone (latitude %s, longitude %s) gedetecteerd."
 
 #: cnchi/updater.py:67
 msgid ""
@@ -2580,19 +2580,19 @@ msgstr "Nieuwe versie gevonden. Installer aan het updaten..."
 
 #: cnchi/updater.py:136
 msgid "No new version found. Updating anyways..."
-msgstr ""
+msgstr "Geen nieuwe versie gevonden. Toch aan het updaten..."
 
 #: cnchi/updater.py:140
 msgid "Downloading new version of Cnchi..."
-msgstr ""
+msgstr "Nieuwe Cnchi versie aan het downloaden..."
 
 #: cnchi/updater.py:144
 msgid "Can't download new Cnchi version."
-msgstr ""
+msgstr "Kan nieuwe Cnchi versie niet downloaden."
 
 #: cnchi/updater.py:148
 msgid "Uncompressing new version..."
-msgstr ""
+msgstr "Nieuwe versie uitpakken..."
 
 #: cnchi/updater.py:192
 msgid "Wrong md5 (%s). Bad download or wrong file, Cnchi won't update itself"
@@ -2600,11 +2600,11 @@ msgstr ""
 
 #: cnchi/updater.py:198
 msgid "File %s is not in md5 signatures list"
-msgstr ""
+msgstr "Bestand %s is niet in de lijst met md5 handtekeningen"
 
 #: cnchi/updater.py:212
 msgid "Copying %s to %s..."
-msgstr ""
+msgstr "%s naar %s aan het kopiëren..."
 
 #: cnchi/updater.py:218
 msgid "Can't copy %s to %s"
@@ -2680,7 +2680,7 @@ msgstr "laat wachtwoord zien"
 
 #: cnchi/user_info.py:157
 msgid "Create Your User Account"
-msgstr "Creëer uw gebruiker's account"
+msgstr "Creëer uw gebruikersaccount"
 
 #: cnchi/user_info.py:206
 msgid "Are you sure you want to encrypt your home directory?"
@@ -2712,7 +2712,7 @@ msgstr ""
 
 #: cnchi/welcome.py:82
 msgid "Try It"
-msgstr "Proberen"
+msgstr "Uitproberen"
 
 #: cnchi/welcome.py:88
 msgid "Install It"
@@ -2728,15 +2728,15 @@ msgstr "Laden, a.u.b. wachten..."
 
 #: cnchi/wireless.py:62
 msgid "Connecting this computer to a wi-fi network"
-msgstr ""
+msgstr "Deze computer met een WiFi-netwerk aan het verbinden"
 
 #: cnchi/wireless.py:65
 msgid "I don't want to connect to a wi-fi network right now"
-msgstr ""
+msgstr "Ik wil nu niet met een WiFi-netwerk verbinden"
 
 #: cnchi/wireless.py:68
 msgid "Connect to this network"
-msgstr "Verbindt met dit netwerk"
+msgstr "Verbind met dit netwerk"
 
 #: cnchi/wireless.py:71
 msgid "Display password"
