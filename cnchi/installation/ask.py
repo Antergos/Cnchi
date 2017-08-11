@@ -215,6 +215,16 @@ class InstallationAsk(GtkBaseBox):
 
     def prepare(self, direction):
         """ Prepares screen """
+        # Read options and set widgets accordingly
+        widgets_settings = {
+            ('use_luks', 'encrypt_checkbutton'), ('use_lvm', 'lvm_checkbutton'),
+            ('use_zfs', 'zfs_checkbutton'), ('use_home', 'home_checkbutton')}
+
+        for (setting, widget) in widgets_settings:
+            w = self.ui.get_object(widget)
+            s = self.settings.get(setting)
+            w.set_active(s)
+
         self.translate_ui()
         self.show_all()
 
@@ -412,29 +422,12 @@ class InstallationAsk(GtkBaseBox):
         check = self.ui.get_object("home_checkbutton")
         use_home = check.get_active()
 
-        if self.next_page == "installation_automatic":
-            self.settings.set('use_lvm', use_lvm)
-            self.settings.set('use_luks', use_luks)
-            self.settings.set('use_luks_in_root', True)
-            self.settings.set('luks_root_volume', "cryptAntergos")
-            self.settings.set('use_zfs', False)
-            self.settings.set('use_home', use_home)
-        elif self.next_page == "installation_zfs":
-            self.settings.set('use_lvm', False)
-            self.settings.set('use_luks', use_luks)
-            self.settings.set('use_luks_in_root', False)
-            self.settings.set('luks_root_volume', "")
-            self.settings.set('use_zfs', True)
-            self.settings.set('zfs', True)
-            self.settings.set('use_home', use_home)
-        else:
-            # Set defaults. We don't know these yet.
-            self.settings.set('use_lvm', False)
-            self.settings.set('use_luks', False)
-            self.settings.set('use_luks_in_root', False)
-            self.settings.set('luks_root_volume', "")
-            self.settings.set('use_zfs', False)
-            self.settings.set('use_home', False)
+        self.settings.set('use_lvm', use_lvm)
+        self.settings.set('use_luks', use_luks)
+        self.settings.set('use_luks_in_root', True)
+        self.settings.set('luks_root_volume', 'cryptAntergos')
+        self.settings.set('use_zfs', use_zfs)
+        self.settings.set('use_home', use_home)
 
         if not self.settings.get('use_zfs'):
             if self.settings.get('use_luks'):
@@ -460,6 +453,9 @@ class InstallationAsk(GtkBaseBox):
             self.settings.set('partition_mode', 'automatic')
         elif self.next_page == "installation_zfs":
             self.settings.set('partition_mode', 'zfs')
+
+        # Get sure other modules will know if zfs is activated or not
+        self.settings.set("zfs", use_zfs)
 
         # Check if there are still processes running...
         self.wait()
@@ -540,6 +536,7 @@ class InstallationAsk(GtkBaseBox):
                 self.next_page = "installation_zfs"
             else:
                 self.next_page = "installation_automatic"
+            # Enable all options
             self.enable_automatic_options(True)
 
     def on_automatic_lvm_checkbutton_toggled(self, widget):
