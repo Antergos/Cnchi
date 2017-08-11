@@ -743,7 +743,7 @@ msgstr "Label"
 
 #: cnchi/installation/advanced.py:412 cnchi/installation/advanced.py:1979
 msgid "Format"
-msgstr "Formaat"
+msgstr "Formateren"
 
 #: cnchi/installation/advanced.py:419
 msgid "Size"
