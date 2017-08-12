@@ -34,6 +34,8 @@ import os
 import shutil
 import subprocess
 import re
+import threading
+import time
 
 try:
     import parted3.fs_module as fs
@@ -245,12 +247,29 @@ class Grub2(object):
         else:
             logging.warning("Can't find script %s", script_path)
 
+    def grub_ripper(self):
+        while True:
+            time.sleep(10)
+            try:
+                ret = subprocess.check_output(['pidof', 'grub-mount']).decode().strip()
+                if ret:
+                    subprocess.check_output(['kill', '-9', ret.split()[0]])
+                else:
+                    break
+            except subprocess.CalledProcessError as err:
+                logging.warning("Error running %s: %s", err.cmd, err.output)
+                break
+
+            
     def run_mkconfig(self):
         """ Create grub.cfg file using grub-mkconfig """
         logging.debug("Generating grub.cfg...")
 
         # Make sure that /dev and others are mounted (binded).
         special_dirs.mount(self.dest_dir)
+
+        # Hack to kill grub-mount hanging
+        threading.Thread(target=self.grub_ripper).start()
 
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
