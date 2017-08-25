@@ -1475,3 +1475,17 @@ class Installation(object):
             file_data = file_data.replace("#CheckAURUpdates", "CheckAURUpdates")
             with open(pamac_conf, 'w') as f:
                 f.write(file_data)
+
+        # Enable colors and syntax highlighting in nano editor
+        nanorc_path = os.path.join(DEST_DIR, 'etc/nanorc')
+        if os.path.exists(nanorc_path):
+            logging.debug("Enabling colors and syntax highlighting in nano editor")
+            with open(nanorc_path, 'a') as nanorc:
+                nanorc.write('\n')
+                nanorc.write('# Added by Cnchi (Antergos Installer)\n')
+                nanorc.write('set titlecolor brightwhite,blue\n')
+                nanorc.write('set statuscolor brightwhite,green\n')
+                nanorc.write('set numbercolor cyan\n')
+                nanorc.write('set keycolor cyan\n')
+                nanorc.write('set functioncolor green\n')
+                nanorc.write('include "/usr/share/nano/*.nanorc"\n')
