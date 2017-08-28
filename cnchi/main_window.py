@@ -47,7 +47,7 @@ import user_info
 import slides
 import summary
 import info
-#import mirrors
+import mirrors
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -327,9 +327,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.pages["check"] = check.Check(self.params)
         self.pages["location"] = location.Location(self.params)
-        self.pages["timezone"] = timezone.Timezone(self.params)
 
-        #self.pages["mirrors"] = mirrors.Mirrors(self.params)
+        self.pages["mirrors"] = mirrors.Mirrors(self.params)
+
+        self.pages["timezone"] = timezone.Timezone(self.params)
 
         if self.settings.get('desktop_ask'):
             self.pages["keymap"] = keymap.Keymap(self.params)

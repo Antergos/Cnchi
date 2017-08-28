@@ -34,7 +34,7 @@
     <object class="GtkBox" id="rank_box">
       <property name="hexpand">True</property>
       <property name="orientation">horizontal</property>
-      <property name="margin_top">5</property>
+      <property name="margin_top">10</property>
       <child>
         <object class="GtkRadioButton" id="rank_radiobutton">
           <property name="label" translatable="yes"></property>
@@ -66,7 +66,7 @@
     <object class="GtkBox" id="leave_box">
       <property name="hexpand">True</property>
       <property name="orientation">horizontal</property>
-      <property name="margin_top">5</property>
+      <property name="margin_top">10</property>
       <child>
         <object class="GtkRadioButton" id="leave_radiobutton">
           <property name="label" translatable="yes"></property>
@@ -90,7 +90,7 @@
     <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
-      <property name="position">11</property>
+      <property name="position">2</property>
     </packing>
   </child>
   <!-- end of leave mirror list as it is -->
@@ -123,31 +123,68 @@
     <packing>
       <property name="expand">False</property>
       <property name="fill">True</property>
-      <property name="position">13</property>
+      <property name="position">3</property>
     </packing>
   </child>
   <!-- mirror list listbox -->
   <child>
-    <object class="GtkScrolledWindow" id="scrolledwindow">
-      <property name="visible">True</property>
-      <property name="can_focus">True</property>
-      <property name="hexpand">True</property>
-      <property name="vexpand">True</property>
-      <property name="hscrollbar_policy">never</property>
-      <property name="shadow_type">in</property>
+      <object class="GtkBox" id="listboxes_box">
+        <property name="hexpand">True</property>
+        <property name="orientation">horizontal</property>
+        <property name="margin_top">10</property>
+        <child>
+            <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
+            <property name="shadow_type">in</property>
+            <property name="margin_right">5</property>
+                <child>
+                    <object class="GtkListBox" id="arch_mirrors_listbox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+            </packing>
+      </child>
+
       <child>
-        <object class="GtkListBox" id="mirrors_listbox">
+        <object class="GtkScrolledWindow" id="scrolledwindow2">
           <property name="visible">True</property>
           <property name="can_focus">True</property>
+          <property name="hexpand">True</property>
+          <property name="vexpand">True</property>
+          <property name="hscrollbar_policy">never</property>
+          <property name="shadow_type">in</property>
+          <property name="margin_left">5</property>
+          <child>
+            <object class="GtkListBox" id="antergos_mirrors_listbox">
+              <property name="visible">True</property>
+              <property name="can_focus">True</property>
+            </object>
+          </child>
         </object>
+        <packing>
+          <property name="expand">True</property>
+          <property name="fill">True</property>
+          <property name="position">1</property>
+        </packing>
       </child>
     </object>
     <packing>
       <property name="expand">True</property>
       <property name="fill">True</property>
-      <property name="position">0</property>
+      <property name="position">4</property>
     </packing>
-  </child>
-  <!-- end of let user manage mirror list -->
+</child>
+
+
 </object>
 </interface>
