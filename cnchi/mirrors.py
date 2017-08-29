@@ -52,7 +52,7 @@ from rank_mirrors import AutoRankmirrorsProcess
 MAX_MIRRORS = 6
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
-    def __init__(self, url, switch_cb, switch_active):
+    def __init__(self, url, switch_cb, switch_active, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
         #self.data = data
         #self.add(Gtk.Label(data))
@@ -63,10 +63,6 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
 
         handle = Gtk.EventBox.new()
         handle.add(Gtk.Image.new_from_icon_name("open-menu-symbolic", 1))
-        handle.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK,
-            [Gtk.TargetEntry.new("GTK_LIST_BOX_ROW", Gtk.TargetFlags.SAME_WIDGET, 1)],
-            Gdk.DragAction.MOVE)
         box.pack_start(handle, False, False, 0)
 
         # Add mirror url label
@@ -91,7 +87,114 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         box.pack_end(self.switch, False, False, 0)
 
         self.add(box)
-        #self.set_selectable(True)
+
+        self.set_selectable(True)
+
+        # Drag and drop
+        entries = [Gtk.TargetEntry.new("GTK_LIST_BOX_ROW", Gtk.TargetFlags.SAME_APP, 1)]
+        handle.drag_source_set(
+            Gdk.ModifierType.BUTTON1_MASK,
+            entries,
+            Gdk.DragAction.MOVE)
+        handle.connect("drag-begin", drag_cbs['drag-begin'])
+        handle.connect("drag-data-get", drag_cbs['drag-data-get'])
+        #handle.connect("drag-data-delete", self.on_drag_data_delete)
+        #handle.connect("drag-end", self.on_drag_end)
+
+        self.drag_dest_set(
+            Gtk.DestDefaults.ALL,
+            entries,
+            Gdk.DragAction.MOVE)
+        self.connect("drag-data-received",drag_cbs['drag-data-received']);
+        #self.connect("drag-motion", self.on_drag_motion);
+        #self.connect("drag-crop", self.on_drag_crop);
+
+class MirrorListBox(Gtk.ListBox):
+    def __init__(self, mirror_file_path):
+        super(Gtk.ListBox, self).__init__()
+        self.mirror_path = mirror_file_path
+
+        #mirror_files = [
+        #    "/etc/pacman.d/mirrorlist",
+        #    "/etc/pacman.d/antergos-mirrorlist"]
+
+        for listboxrow in self.get_children():
+            self.destroy()
+
+        lines = []
+
+        # Load mirror file contents
+        with open(mirror_file_path) as mfile:
+            lines = mfile.readlines()
+
+        # Discard lines that are not server lines
+        tmp_lines = lines
+        lines = []
+        for line in tmp_lines:
+            line = line.strip()
+            if line.startswith("Server") or line.startswith("#Server"):
+                lines.append(line)
+        tmp_lines = []
+
+        # Use MAX_MIRRORS at max
+        if len(lines) > MAX_MIRRORS:
+            lines = lines[0:MAX_MIRRORS]
+
+        drag_cbs = {
+            'drag-begin': self.on_drag_begin,
+            'drag-data-get': self.on_drag_data_get,
+            'drag-data-received': self.on_drag_data_received
+        }
+
+        # Read mirror info and create listboxrows
+        for line in lines:
+            if line.startswith("#Server"):
+                active = False
+                line = line[1:]
+            else:
+                active = True
+
+            logging.debug(">>> %s", line)
+
+            try:
+                box = Gtk.Box(spacing=20)
+                url = line.split("=")[1].strip()
+                box.set_name(url)
+                row = MirrorListBoxRow(url, self.on_switch_activated, active, drag_cbs)
+                self.add(row)
+            except KeyError:
+                # Not a Mirror line, skip
+                pass
+        self.show_all()
+
+
+    def on_switch_activated(self, switch, gparam):
+        print(switch, gparam)
+        '''
+        for feature in self.features:
+            row = self.listbox_rows[feature]
+            if row[Features.COL_SWITCH] == switch:
+                is_active = switch.get_active()
+                self.settings.set("feature_" + feature, is_active)
+        '''
+
+
+    def on_drag_begin(self, widget, drag_context):
+        """ User starts a drag """
+        logging.debug(widget)
+        logging.debug(drag_context)
+
+    def on_drag_data_get(self, widget, drag_context, data, info, time):
+        """ When drag data is requested by the destination """
+        logging.debug(data)
+        logging.debug(info)
+        #selected_path = self.get_selected_items()[0]
+        #selected_iter = self.get_model().get_iter(selected_path)
+
+    def on_drag_data_received(self, widget, drag_context, x, y, data, info, time):
+        """ When drag data is received by the destination """
+        logging.debug(data)
+
 
 class Mirrors(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="timezone"):
@@ -103,15 +206,16 @@ class Mirrors(GtkBaseBox):
 
         self.listbox_rows = {}
 
-        # Set up list box
-        self.listboxes = []
-        self.listboxes.append(self.ui.get_object("arch_mirrors_listbox"))
-        self.listboxes.append(self.ui.get_object("antergos_mirrors_listbox"))
-        for listbox in self.listboxes:
-            listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-            #listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-            #listbox.set_sort_func(self.listbox_sort_by_name, None)
-            listbox.set_sensitive(False)
+        # Set up lists
+        #self.listboxes = []
+        #self.listboxes.append(self.ui.get_object("arch_mirrors_listbox"))
+        #self.listboxes.append(self.ui.get_object("antergos_mirrors_listbox"))
+        #for listbox in self.listboxes:
+        #    #listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        #    listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        #    #listbox.connect("row-selected", self.on_listbox_row_selected)
+        #    #listbox.set_sort_func(self.listbox_sort_by_name, None)
+        #    listbox.set_sensitive(False)
 
         # TODO: By default, select automatic mirror list ranking
 
@@ -189,63 +293,6 @@ class Mirrors(GtkBaseBox):
         intro_label.set_max_width_chars(80)
 
 
-    def fill_mirror_list(self):
-        mirror_files = [
-            "/etc/pacman.d/mirrorlist",
-            "/etc/pacman.d/antergos-mirrorlist"]
-
-        for listbox in self.listboxes:
-            for listboxrow in listbox.get_children():
-                listboxrow.destroy()
-
-            lines = []
-
-            with open(mirror_files[0]) as mfile:
-                lines = mfile.readlines()
-            mirror_files = mirror_files[1:]
-
-            # Discard lines that are not server lines
-            tmp_lines = lines
-            lines = []
-            for line in tmp_lines:
-                line = line.strip()
-                if line.startswith("Server") or line.startswith("#Server"):
-                    lines.append(line)
-            tmp_lines = []
-
-            if len(lines) > MAX_MIRRORS:
-                lines = lines[0:MAX_MIRRORS]
-
-            for line in lines:
-                if line.startswith("#Server"):
-                    active = False
-                    line = line[1:]
-                else:
-                    active = True
-
-                logging.debug(">>> %s", line)
-
-                try:
-                    box = Gtk.Box(spacing=20)
-                    url = line.split("=")[1].strip()
-                    box.set_name(url)
-                    row = MirrorListBoxRow(url, self.on_switch_activated, active)
-                    listbox.add(row)
-                except KeyError:
-                    # Not a Mirror line, skip
-                    pass
-            listbox.show_all()
-
-
-    def on_switch_activated(self, switch, gparam):
-        print(switch, gparam)
-        '''
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            if row[Features.COL_SWITCH] == switch:
-                is_active = switch.get_active()
-                self.settings.set("feature_" + feature, is_active)
-        '''
     '''
     def fill_listbox(self):
         for listbox_row in self.listbox.get_children():
