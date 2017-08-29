@@ -58,6 +58,8 @@ from rank_mirrors import AutoRankmirrorsProcess
 # 6 mirrors for Arch repos and 6 for Antergos repos
 MAX_MIRRORS = 6
 
+DND_ID_LISTBOX_ROW = 6791
+
 class MirrorListBoxRow(Gtk.ListBoxRow):
     def __init__(self, url, active, switch_cb, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
@@ -98,7 +100,10 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         self.set_selectable(True)
 
         # Drag and drop
-        entries = [Gtk.TargetEntry.new("GTK_LIST_BOX_ROW", Gtk.TargetFlags.SAME_APP, 8080)]
+        entries = [Gtk.TargetEntry.new(
+            "GTK_LIST_BOX_ROW",
+            Gtk.TargetFlags.SAME_APP,
+            DND_ID_LISTBOX_ROW)]
 
         # Source
         self.handle.drag_source_set(
@@ -194,11 +199,8 @@ class MirrorListBox(Gtk.ListBox):
             else:
                 logging.debug("Mirror %s disabled!", row.data)
 
-
     def on_drag_begin(self, widget, drag_context):
         """ User starts a drag """
-        #logging.debug(widget)
-        #logging.debug(drag_context)
         row = widget.get_ancestor(Gtk.ListBoxRow)
         alloc = row.get_allocation()
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, alloc.width, alloc.height)
@@ -211,22 +213,31 @@ class MirrorListBox(Gtk.ListBox):
         (x, y) = widget.translate_coordinates (row, 0, 0)
 
         surface.set_device_offset(-x, -y)
-        #drag_context.set_icon_surface(surface)
         Gtk.drag_set_icon_surface(drag_context, surface)
 
-
-    def on_drag_data_get(self, widget, drag_context, data, info, time):
+    def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
         """ When drag data is requested by the destination """
-        row = widget.get_ancestor(Gtk.ListBoxRow)
-        logging.debug(data)
-        logging.debug(info)
-        #selected_path = self.get_selected_items()[0]
-        #selected_iter = self.get_model().get_iter(selected_path)
+        if info == DND_ID_LISTBOX_ROW:
+            #row = widget.get_ancestor(Gtk.ListBoxRow)
+            # Stores new data into the GtkSelectionData object 'selection_data'.
 
-    def on_drag_data_received(self, widget, drag_context, x, y, data, info, time):
+            logging.debug(info)
+            atom_type = Gdk.Atom.intern_static_string("GTK_LIST_BOX_ROW")
+            # How to pass a widget ¿?
+            #selection_data.set(atom_type, 32, str(widget).encode('utf-8'))
+
+
+    def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
         """ When drag data is received by the destination """
-        row = widget.get_ancestor(Gtk.ListBoxRow)
-        logging.debug(data)
+        if info == DND_ID_LISTBOX_ROW:
+            #row = widget.get_ancestor(Gtk.ListBoxRow)
+            data = selection_data.get_data()
+            logging.debug(data)
+
+    def save_changes(self):
+        pass
+        #for listboxrow in self.get_children():
+        #    self.destroy()
 
 
 class Mirrors(GtkBaseBox):
@@ -234,10 +245,7 @@ class Mirrors(GtkBaseBox):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
         data_dir = self.settings.get("data")
-
         self.disable_rank_mirrors = params["disable_rank_mirrors"]
-
-        self.listbox_rows = {}
 
         # Set up lists
         self.listboxes = []
@@ -252,7 +260,8 @@ class Mirrors(GtkBaseBox):
         sw = self.ui.get_object("scrolledwindow2")
         sw.add(mirror_listbox)
 
-        # TODO: By default, select automatic mirror list ranking
+        self.use_rankmirrors = True
+        self.use_listboxes = False
 
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
@@ -264,12 +273,18 @@ class Mirrors(GtkBaseBox):
             listbox.set_sensitive(status)
 
     def on_rank_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = True
+        self.use_listboxes = False
         self.set_listboxes_sensitive(False)
 
     def on_leave_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = False
+        self.use_listboxes = False
         self.set_listboxes_sensitive(False)
 
     def on_user_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = False
+        self.use_listboxes = True
         self.set_listboxes_sensitive(True)
 
 
@@ -325,60 +340,17 @@ class Mirrors(GtkBaseBox):
 
         intro_label.set_max_width_chars(80)
 
-
-    '''
-    def fill_listbox(self):
-        for listbox_row in self.listbox.get_children():
-            listbox_row.destroy()
-
-        self.listbox_rows = {}
-
-        # Only add graphic-driver feature if an AMD or Nvidia is detected
-        if "graphic_drivers" in self.features:
-            allow = False
-            if self.detect.amd():
-                allow = True
-            if self.detect.nvidia() and not self.detect.bumblebee():
-                allow = True
-            if not allow:
-                logging.debug("Removing proprietary graphic drivers feature.")
-                self.features.remove("graphic_drivers")
-
-        for feature in self.features:
-            box = Gtk.Box(spacing=20)
-            box.set_name(feature + "-row")
-
-            self.listbox_rows[feature] = []
-
-            self.add_feature_icon(feature, box)
-            self.add_feature_label(feature, box)
-            self.add_feature_switch(feature, box)
-            # Add row to our gtklist
-            self.listbox.add(box)
-
-        self.listbox.show_all()
-    '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def store_values(self):
         """ Store selected values """
+        if self.use_rankmirrors:
+            self.start_rank_mirrors()
+        if self.use_listboxes:
+            for listbox in self.listboxes:
+                listbox.save_changes()
         return True
 
     def get_next_page(self):
         return self.next_page
-
 
 
 if __name__ == '__main__':
