@@ -42,6 +42,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+try:
+    gi.require_foreign("cairo")
+except ImportError:
+    print("No pycairo integration")
+
+import cairo
+
 from gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
@@ -52,7 +59,7 @@ from rank_mirrors import AutoRankmirrorsProcess
 MAX_MIRRORS = 6
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
-    def __init__(self, url, switch_cb, switch_active, drag_cbs):
+    def __init__(self, url, active, switch_cb, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
         #self.data = data
         #self.add(Gtk.Label(data))
@@ -61,9 +68,9 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
 
         box = Gtk.Box(spacing=20)
 
-        handle = Gtk.EventBox.new()
-        handle.add(Gtk.Image.new_from_icon_name("open-menu-symbolic", 1))
-        box.pack_start(handle, False, False, 0)
+        self.handle = Gtk.EventBox.new()
+        self.handle.add(Gtk.Image.new_from_icon_name("open-menu-symbolic", 1))
+        box.pack_start(self.handle, False, False, 0)
 
         # Add mirror url label
         self.label = Gtk.Label.new()
@@ -83,7 +90,7 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         self.switch.set_property('margin_bottom', 2)
         self.switch.set_property('margin_end', 10)
         self.switch.connect("notify::active", switch_cb)
-        self.switch.set_active(switch_active)
+        self.switch.set_active(active)
         box.pack_end(self.switch, False, False, 0)
 
         self.add(box)
@@ -91,16 +98,19 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         self.set_selectable(True)
 
         # Drag and drop
-        entries = [Gtk.TargetEntry.new("GTK_LIST_BOX_ROW", Gtk.TargetFlags.SAME_APP, 1)]
-        handle.drag_source_set(
+        entries = [Gtk.TargetEntry.new("GTK_LIST_BOX_ROW", Gtk.TargetFlags.SAME_APP, 8080)]
+
+        # Source
+        self.handle.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK,
             entries,
             Gdk.DragAction.MOVE)
-        handle.connect("drag-begin", drag_cbs['drag-begin'])
-        handle.connect("drag-data-get", drag_cbs['drag-data-get'])
-        #handle.connect("drag-data-delete", self.on_drag_data_delete)
-        #handle.connect("drag-end", self.on_drag_end)
+        self.handle.connect("drag-begin", drag_cbs['drag-begin'])
+        self.handle.connect("drag-data-get", drag_cbs['drag-data-get'])
+        #self.handle.connect("drag-data-delete", self.on_drag_data_delete)
+        #self.handle.connect("drag-end", self.on_drag_end)
 
+        # Destination
         self.drag_dest_set(
             Gtk.DestDefaults.ALL,
             entries,
@@ -109,14 +119,22 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         #self.connect("drag-motion", self.on_drag_motion);
         #self.connect("drag-crop", self.on_drag_crop);
 
+    def is_active(self):
+        return self.switch.get_active()
+
+
 class MirrorListBox(Gtk.ListBox):
     def __init__(self, mirror_file_path):
         super(Gtk.ListBox, self).__init__()
         self.mirror_path = mirror_file_path
 
-        #mirror_files = [
-        #    "/etc/pacman.d/mirrorlist",
-        #    "/etc/pacman.d/antergos-mirrorlist"]
+        self.set_selection_mode(Gtk.SelectionMode.NONE)
+        # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        # self.connect("row-selected", self.on_listbox_row_selected)
+        # self.sort_func(self.listbox_sort_by_name, None)
+
+        # Disabled by default
+        self.set_sensitive(False)
 
         for listboxrow in self.get_children():
             self.destroy()
@@ -160,7 +178,7 @@ class MirrorListBox(Gtk.ListBox):
                 box = Gtk.Box(spacing=20)
                 url = line.split("=")[1].strip()
                 box.set_name(url)
-                row = MirrorListBoxRow(url, self.on_switch_activated, active, drag_cbs)
+                row = MirrorListBoxRow(url, active, self.on_switch_activated, drag_cbs)
                 self.add(row)
             except KeyError:
                 # Not a Mirror line, skip
@@ -169,23 +187,37 @@ class MirrorListBox(Gtk.ListBox):
 
 
     def on_switch_activated(self, switch, gparam):
-        print(switch, gparam)
-        '''
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            if row[Features.COL_SWITCH] == switch:
-                is_active = switch.get_active()
-                self.settings.set("feature_" + feature, is_active)
-        '''
+        row = switch.get_ancestor(Gtk.ListBoxRow)
+        if row:
+            if switch.get_active():
+                logging.debug("Mirror %s enabled!", row.data)
+            else:
+                logging.debug("Mirror %s disabled!", row.data)
 
 
     def on_drag_begin(self, widget, drag_context):
         """ User starts a drag """
-        logging.debug(widget)
-        logging.debug(drag_context)
+        #logging.debug(widget)
+        #logging.debug(drag_context)
+        row = widget.get_ancestor(Gtk.ListBoxRow)
+        alloc = row.get_allocation()
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, alloc.width, alloc.height)
+        ctx = cairo.Context(surface)
+
+        row.get_style_context().add_class("drag-icon")
+        row.draw(ctx)
+        row.get_style_context().remove_class("drag-icon")
+
+        (x, y) = widget.translate_coordinates (row, 0, 0)
+
+        surface.set_device_offset(-x, -y)
+        #drag_context.set_icon_surface(surface)
+        Gtk.drag_set_icon_surface(drag_context, surface)
+
 
     def on_drag_data_get(self, widget, drag_context, data, info, time):
         """ When drag data is requested by the destination """
+        row = widget.get_ancestor(Gtk.ListBoxRow)
         logging.debug(data)
         logging.debug(info)
         #selected_path = self.get_selected_items()[0]
@@ -193,6 +225,7 @@ class MirrorListBox(Gtk.ListBox):
 
     def on_drag_data_received(self, widget, drag_context, x, y, data, info, time):
         """ When drag data is received by the destination """
+        row = widget.get_ancestor(Gtk.ListBoxRow)
         logging.debug(data)
 
 
@@ -207,15 +240,17 @@ class Mirrors(GtkBaseBox):
         self.listbox_rows = {}
 
         # Set up lists
-        #self.listboxes = []
-        #self.listboxes.append(self.ui.get_object("arch_mirrors_listbox"))
-        #self.listboxes.append(self.ui.get_object("antergos_mirrors_listbox"))
-        #for listbox in self.listboxes:
-        #    #listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        #    listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        #    #listbox.connect("row-selected", self.on_listbox_row_selected)
-        #    #listbox.set_sort_func(self.listbox_sort_by_name, None)
-        #    listbox.set_sensitive(False)
+        self.listboxes = []
+
+        mirror_listbox = MirrorListBox("/etc/pacman.d/mirrorlist")
+        self.listboxes.append(mirror_listbox)
+        sw = self.ui.get_object("scrolledwindow1")
+        sw.add(mirror_listbox)
+
+        mirror_listbox = MirrorListBox("/etc/pacman.d/antergos-mirrorlist")
+        self.listboxes.append(mirror_listbox)
+        sw = self.ui.get_object("scrolledwindow2")
+        sw.add(mirror_listbox)
 
         # TODO: By default, select automatic mirror list ranking
 
@@ -224,19 +259,18 @@ class Mirrors(GtkBaseBox):
         self.disable_rank_mirrors = params['disable_rank_mirrors']
 
 
+    def set_listboxes_sensitive(self, status):
+        for listbox in self.listboxes:
+            listbox.set_sensitive(status)
 
     def on_rank_radiobutton_toggled(self, widget):
-        #if widget.get_active():
-        for listbox in self.listboxes:
-            listbox.set_sensitive(False)
+        self.set_listboxes_sensitive(False)
 
     def on_leave_radiobutton_toggled(self, widget):
-        for listbox in self.listboxes:
-            listbox.set_sensitive(False)
+        self.set_listboxes_sensitive(False)
 
     def on_user_radiobutton_toggled(self, widget):
-        for listbox in self.listboxes:
-            listbox.set_sensitive(True)
+        self.set_listboxes_sensitive(True)
 
 
     def start_rank_mirrors(self):
@@ -255,7 +289,6 @@ class Mirrors(GtkBaseBox):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
-        self.fill_mirror_list()
         self.forward_button.set_sensitive(True)
 
     def translate_ui(self):

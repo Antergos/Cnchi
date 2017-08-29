@@ -141,12 +141,12 @@
             <property name="hscrollbar_policy">never</property>
             <property name="shadow_type">in</property>
             <property name="margin_right">5</property>
-                <child>
+                <!--<child>
                     <object class="GtkListBox" id="arch_mirrors_listbox">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                     </object>
-                </child>
+                </child>-->
             </object>
             <packing>
                 <property name="expand">True</property>
@@ -164,12 +164,12 @@
           <property name="hscrollbar_policy">never</property>
           <property name="shadow_type">in</property>
           <property name="margin_left">5</property>
-          <child>
+          <!--<child>
             <object class="GtkListBox" id="antergos_mirrors_listbox">
               <property name="visible">True</property>
               <property name="can_focus">True</property>
             </object>
-          </child>
+          </child>-->
         </object>
         <packing>
           <property name="expand">True</property>
