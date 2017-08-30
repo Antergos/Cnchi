@@ -32,7 +32,8 @@ if [ -f /usr/bin/python3 ]; then
 fi
 
 #sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
 exit 0
 

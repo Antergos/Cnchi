@@ -3,7 +3,6 @@
     font-size: 11px;
 }
 
-
 #location {
     font-size: 11px;
 }
@@ -26,9 +25,7 @@ window {
     text-shadow: 0px 1px 0px #222;
 }
 
-.label.subtitle,
-#header .subtitle,
-.subtitle {
+.label.subtitle, #header .subtitle, .subtitle {
     font-size: 13px;
     font-weight: 400;
     font-family: 'Open Sans';
@@ -140,8 +137,7 @@ headerbar separator {
     color: rgba(255, 255, 255, 0.08);
 }
 
-toolbar separator, separator,
-headerbar separator {
+toolbar separator, separator, headerbar separator {
     margin-left: 10px;
 }
 
@@ -240,4 +236,12 @@ GtkTreeView row:selected {
 
 StateBox {
     border-radius: 2px;
+}
+
+#location-listbox, .row .label {
+    font-size: 14px;
+}
+
+#location-listbox, .row .label:hover {
+    font-size: 14px;
 }

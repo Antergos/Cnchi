@@ -52,7 +52,8 @@ class Location(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="timezone"):
         super().__init__(self, params, "location", prev_page, next_page)
 
-        self.listbox = self.ui.get_object("listbox")
+        self.listbox = self.ui.get_object("location-listbox")
+        self.listbox.set_name("location-listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 

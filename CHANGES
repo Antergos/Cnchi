@@ -1,3 +1,4 @@
+[2017-08-30 11:41:22 +0200]  Fix typo and add a debug warning                                           karasu      {1e4b10d9}
 [2017-08-30 04:07:45 +0200]  Fixed two unused variables (antbs)                                         karasu      {d05a241d}
 [2017-08-30 03:48:32 +0200]  Forgot to remove the option from the run script                            karasu      {9ccb1687}
 [2017-08-30 03:43:56 +0200]  Disable rank mirrors option (now we have a full screen to do it)           karasu      {322e9bbc}
