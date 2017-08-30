@@ -183,11 +183,7 @@ class MirrorListBox(Gtk.ListBox):
         for (url, active) in self.mirrors:
             box = Gtk.Box(spacing=20)
             box.set_name(url)
-            row = MirrorListBoxRow(
-                url,
-                active,
-                self.on_switch_activated,
-                drag_cbs)
+            row = MirrorListBoxRow(url, active, self.on_switch_activated, drag_cbs)
             self.add(row)
 
     def set_mirror_active(self, url, active):
@@ -222,7 +218,7 @@ class MirrorListBox(Gtk.ListBox):
         row.draw(ctx)
         row.get_style_context().remove_class("drag-icon")
 
-        (x, y) = widget.translate_coordinates (row, 0, 0)
+        (x, y) = widget.translate_coordinates(row, 0, 0)
 
         surface.set_device_offset(-x, -y)
         Gtk.drag_set_icon_surface(drag_context, surface)
@@ -248,7 +244,6 @@ class MirrorListBox(Gtk.ListBox):
                 self.show_all()
         except (KeyError, ValueError) as err:
             logging.warning(err)
-
 
     def save_changes(self):
         """ Save mirrors in mirrors list file """
@@ -307,6 +302,7 @@ class Mirrors(GtkBaseBox):
         self.check_active_mirrors()
 
     def check_active_mirrors(self):
+        """ Checks if at least there is one mirror active for each list """
         ok = True
         for listbox in self.listboxes:
             if len(listbox.get_active_mirrors()) == 0:
