@@ -1,3 +1,4 @@
+[2017-08-30 16:57:37 +0200]  Add a source comment                                                       karasu      {d9dee641}
 [2017-08-30 16:54:34 +0200]  Fix bug in forward button when changing options in mirrors screen          karasu      {e163e1a5}
 [2017-08-30 16:51:11 +0200]  hide/show mirrors listboxes                                                karasu      {b8ae0f25}
 [2017-08-30 15:48:44 +0200]  Better radiobuttons placement in mirrors screen                            karasu      {d87e2356}

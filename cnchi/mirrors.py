@@ -223,6 +223,9 @@ class MirrorListBox(Gtk.ListBox):
         surface.set_device_offset(-x, -y)
         Gtk.drag_set_icon_surface(drag_context, surface)
 
+        hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND1)
+        self.get_window().set_cursor(hand_cursor)
+
     def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
         """ When drag data is requested by the destination """
         row = widget.get_ancestor(Gtk.ListBoxRow)
@@ -230,6 +233,7 @@ class MirrorListBox(Gtk.ListBox):
         row_index = row.get_index()
         data = "{0}|{1}".format(listbox_str, row_index)
         selection_data.set_text(data, len(data))
+        self.get_window().set_cursor(None)
 
     def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
         """ When drag data is received by the destination """
