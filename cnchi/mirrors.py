@@ -245,7 +245,6 @@ class MirrorListBox(Gtk.ListBox):
         try:
             listbox_str = data.split('|')[0]
             if listbox_str == str(self):
-                row_index = widget.get_index()
                 old_index = int(data.split('|')[1])
                 new_index = widget.get_index()
                 self.mirrors.insert(new_index, self.mirrors.pop(old_index))
@@ -279,8 +278,6 @@ class MirrorListBox(Gtk.ListBox):
 class Mirrors(GtkBaseBox):
     def __init__(self, params, prev_page="features", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
-
-        data_dir = self.settings.get("data")
 
         # Set up lists
         self.listboxes = []
