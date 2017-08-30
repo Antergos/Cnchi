@@ -30,13 +30,8 @@
 """ Let advanced users manage mirrorlist files """
 
 import os
-import sys
-import queue
-import time
 import logging
-import subprocess
-
-import bootinfo
+import shutil
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -126,7 +121,7 @@ class MirrorListBox(Gtk.ListBox):
 
     def __init__(self, mirrors_file_path):
         super(Gtk.ListBox, self).__init__()
-
+        self.mirrors_file_path = mirrors_file_path
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
         # self.connect("row-selected", self.on_listbox_row_selected)
@@ -138,15 +133,15 @@ class MirrorListBox(Gtk.ListBox):
         # List. Each element is a tuple (url, active)
         self.mirrors = []
 
-        self.load_mirrors(mirrors_file_path)
+        self.load_mirrors()
         self.fillme()
 
-    def load_mirrors(self, mirrors_file_path):
+    def load_mirrors(self):
         """ Load mirrors from text file """
         lines = []
 
         # Load mirror file contents
-        with open(mirrors_file_path) as mfile:
+        with open(self.mirrors_file_path) as mfile:
             lines = mfile.readlines()
 
         # Discard lines that are not server lines
@@ -260,9 +255,25 @@ class MirrorListBox(Gtk.ListBox):
 
 
     def save_changes(self):
-        pass
-        #for listboxrow in self.get_children():
-        #    self.destroy()
+        """ Save mirrors in mirrors list file """
+        # Save a backup if possible
+        src = self.mirrors_file_path
+        dst = src + ".cnchi-backup"
+
+        try:
+            shutil.copy2(src, dst)
+        except (FileNotFoundError, FileExistsError, OSError) as err:
+            logging.warning(err)
+
+        # ok, now save our changes
+        with open(src, 'w') as mfile:
+            line = "# Mirrorlist file modified by Cnchi\n\n"
+            mfile.write(line)
+            for (url, active) in self.mirrors:
+                line = "Server = {}\n".format(url)
+                if not active:
+                    line = "#" + line
+                mfile.write(line)
 
 
 class Mirrors(GtkBaseBox):
