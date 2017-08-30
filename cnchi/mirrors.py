@@ -106,7 +106,7 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         # Destination
         self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect("drag-data-received", drag_cbs['drag-data-received']);
+        self.connect("drag-data-received", drag_cbs['drag-data-received'])
         #self.connect("drag-motion", self.on_drag_motion);
         #self.connect("drag-crop", self.on_drag_crop);
 
@@ -250,7 +250,7 @@ class MirrorListBox(Gtk.ListBox):
                 self.mirrors.insert(new_index, self.mirrors.pop(old_index))
                 self.fillme()
         except (KeyError, ValueError) as err:
-            pass
+            logging.warning(err)
 
 
     def save_changes(self):
