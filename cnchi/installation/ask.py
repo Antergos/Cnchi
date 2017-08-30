@@ -92,7 +92,7 @@ def load_zfs():
 
 
 class InstallationAsk(GtkBaseBox):
-    def __init__(self, params, prev_page="features", next_page=None):
+    def __init__(self, params, prev_page="mirrors", next_page=None):
         super().__init__(self, params, "ask", prev_page, next_page)
 
         data_dir = self.settings.get("data")
@@ -102,8 +102,6 @@ class InstallationAsk(GtkBaseBox):
             "images",
             "partitioner",
             "small")
-
-        self.disable_rank_mirrors = params["disable_rank_mirrors"]
 
         image = self.ui.get_object("automatic_image")
         path = os.path.join(partitioner_dir, "automatic.png")
@@ -471,7 +469,7 @@ class InstallationAsk(GtkBaseBox):
                 must_wait = True
                 break
 
-        if not must_wait or self.disable_rank_mirrors:
+        if not must_wait:
             return
 
         txt1 = _("Ranking mirrors")

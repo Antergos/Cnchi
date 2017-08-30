@@ -277,11 +277,10 @@ class MirrorListBox(Gtk.ListBox):
 
 
 class Mirrors(GtkBaseBox):
-    def __init__(self, params, prev_page="location", next_page="timezone"):
+    def __init__(self, params, prev_page="features", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
         data_dir = self.settings.get("data")
-        self.disable_rank_mirrors = params["disable_rank_mirrors"]
 
         # Set up lists
         self.listboxes = []
@@ -303,7 +302,6 @@ class Mirrors(GtkBaseBox):
 
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
-        self.disable_rank_mirrors = params['disable_rank_mirrors']
 
     def on_switch_activated(self, widget):
         """ A mirror has been activated/deactivated. We must check if
@@ -335,15 +333,16 @@ class Mirrors(GtkBaseBox):
 
     def start_rank_mirrors(self):
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        if (not self.disable_rank_mirrors and not self.rank_mirrors_launched):
+        # As user can come and go from/to this screen, we must get sure he/she
+        # has not already run the AutoRankmirrorsProcess before
+        if not self.rank_mirrors_launched:
+            logging.debug("Cnchi is ranking your mirrors lists...")
             proc = AutoRankmirrorsProcess(self.settings)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()
             self.process_list.append(proc)
             self.rank_mirrors_launched = True
-        else:
-            logging.debug("Not running rank mirrors. This is discouraged.")
 
     def prepare(self, direction):
         """ Prepares screen """
