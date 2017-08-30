@@ -40,7 +40,7 @@ import bootinfo
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 
 try:
     gi.require_foreign("cairo")
@@ -100,27 +100,18 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         self.set_selectable(True)
 
         # Drag and drop
-        entries = [Gtk.TargetEntry.new(
-            "GTK_LIST_BOX_ROW",
-            Gtk.TargetFlags.SAME_APP,
-            DND_ID_LISTBOX_ROW)]
-
         # Source
-        self.handle.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK,
-            entries,
-            Gdk.DragAction.MOVE)
+        self.handle.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [], Gdk.DragAction.MOVE)
+        self.handle.drag_source_add_text_targets()
         self.handle.connect("drag-begin", drag_cbs['drag-begin'])
         self.handle.connect("drag-data-get", drag_cbs['drag-data-get'])
         #self.handle.connect("drag-data-delete", self.on_drag_data_delete)
         #self.handle.connect("drag-end", self.on_drag_end)
 
         # Destination
-        self.drag_dest_set(
-            Gtk.DestDefaults.ALL,
-            entries,
-            Gdk.DragAction.MOVE)
-        self.connect("drag-data-received",drag_cbs['drag-data-received']);
+        self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect("drag-data-received", drag_cbs['drag-data-received']);
         #self.connect("drag-motion", self.on_drag_motion);
         #self.connect("drag-crop", self.on_drag_crop);
 
@@ -129,9 +120,12 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
 
 
 class MirrorListBox(Gtk.ListBox):
-    def __init__(self, mirror_file_path):
+    __gsignals__ = {
+        'switch-activated': (GObject.SIGNAL_RUN_FIRST, None, ())
+    }
+
+    def __init__(self, mirrors_file_path):
         super(Gtk.ListBox, self).__init__()
-        self.mirror_path = mirror_file_path
 
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
@@ -141,13 +135,18 @@ class MirrorListBox(Gtk.ListBox):
         # Disabled by default
         self.set_sensitive(False)
 
-        for listboxrow in self.get_children():
-            self.destroy()
+        # List. Each element is a tuple (url, active)
+        self.mirrors = []
 
+        self.load_mirrors(mirrors_file_path)
+        self.fillme()
+
+    def load_mirrors(self, mirrors_file_path):
+        """ Load mirrors from text file """
         lines = []
 
         # Load mirror file contents
-        with open(mirror_file_path) as mfile:
+        with open(mirrors_file_path) as mfile:
             lines = mfile.readlines()
 
         # Discard lines that are not server lines
@@ -163,13 +162,7 @@ class MirrorListBox(Gtk.ListBox):
         if len(lines) > MAX_MIRRORS:
             lines = lines[0:MAX_MIRRORS]
 
-        drag_cbs = {
-            'drag-begin': self.on_drag_begin,
-            'drag-data-get': self.on_drag_data_get,
-            'drag-data-received': self.on_drag_data_received
-        }
-
-        # Read mirror info and create listboxrows
+        # Read mirror info and create mirrors list
         for line in lines:
             if line.startswith("#Server"):
                 active = False
@@ -177,27 +170,55 @@ class MirrorListBox(Gtk.ListBox):
             else:
                 active = True
 
-            logging.debug(">>> %s", line)
-
             try:
-                box = Gtk.Box(spacing=20)
                 url = line.split("=")[1].strip()
-                box.set_name(url)
-                row = MirrorListBoxRow(url, active, self.on_switch_activated, drag_cbs)
-                self.add(row)
+                logging.debug(url)
+                self.mirrors.append((url, active))
             except KeyError:
-                # Not a Mirror line, skip
                 pass
+
+    def fillme(self):
+        """ Fill listbox with mirrors info """
+        for listboxrow in self.get_children():
+            listboxrow.destroy()
+
+        drag_cbs = {
+            'drag-begin': self.on_drag_begin,
+            'drag-data-get': self.on_drag_data_get,
+            'drag-data-received': self.on_drag_data_received
+        }
+
+        for (url, active) in self.mirrors:
+            box = Gtk.Box(spacing=20)
+            box.set_name(url)
+            row = MirrorListBoxRow(
+                url,
+                active,
+                self.on_switch_activated,
+                drag_cbs)
+            self.add(row)
         self.show_all()
 
+    def set_mirror_active(self, url, active):
+        """ Changes the active status in our mirrors list """
+        for index, item in enumerate(self.mirrors):
+            (murl, mact) = item
+            if url == murl:
+                self.mirrors[index] = (url, active)
+
+    def get_active_mirrors(self):
+        """ Returns a list with all active mirrors """
+        active_mirrors = []
+        for (url, active) in self.mirrors:
+            if active:
+                active_mirrors.append(url)
+        return active_mirrors
 
     def on_switch_activated(self, switch, gparam):
         row = switch.get_ancestor(Gtk.ListBoxRow)
         if row:
-            if switch.get_active():
-                logging.debug("Mirror %s enabled!", row.data)
-            else:
-                logging.debug("Mirror %s disabled!", row.data)
+            self.set_mirror_active(row.data, switch.get_active())
+            self.emit("switch-activated")
 
     def on_drag_begin(self, widget, drag_context):
         """ User starts a drag """
@@ -217,22 +238,26 @@ class MirrorListBox(Gtk.ListBox):
 
     def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
         """ When drag data is requested by the destination """
-        if info == DND_ID_LISTBOX_ROW:
-            #row = widget.get_ancestor(Gtk.ListBoxRow)
-            # Stores new data into the GtkSelectionData object 'selection_data'.
-
-            logging.debug(info)
-            atom_type = Gdk.Atom.intern_static_string("GTK_LIST_BOX_ROW")
-            # How to pass a widget ¿?
-            #selection_data.set(atom_type, 32, str(widget).encode('utf-8'))
-
+        row = widget.get_ancestor(Gtk.ListBoxRow)
+        listbox_str = str(self)
+        row_index = row.get_index()
+        data = "{0}|{1}".format(listbox_str, row_index)
+        selection_data.set_text(data, len(data))
 
     def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
         """ When drag data is received by the destination """
-        if info == DND_ID_LISTBOX_ROW:
-            #row = widget.get_ancestor(Gtk.ListBoxRow)
-            data = selection_data.get_data()
-            logging.debug(data)
+        data = selection_data.get_text()
+        try:
+            listbox_str = data.split('|')[0]
+            if listbox_str == str(self):
+                row_index = widget.get_index()
+                old_index = int(data.split('|')[1])
+                new_index = widget.get_index()
+                self.mirrors.insert(new_index, self.mirrors.pop(old_index))
+                self.fillme()
+        except (KeyError, ValueError) as err:
+            pass
+
 
     def save_changes(self):
         pass
@@ -251,11 +276,13 @@ class Mirrors(GtkBaseBox):
         self.listboxes = []
 
         mirror_listbox = MirrorListBox("/etc/pacman.d/mirrorlist")
+        mirror_listbox.connect("switch-activated", self.on_switch_activated)
         self.listboxes.append(mirror_listbox)
         sw = self.ui.get_object("scrolledwindow1")
         sw.add(mirror_listbox)
 
         mirror_listbox = MirrorListBox("/etc/pacman.d/antergos-mirrorlist")
+        mirror_listbox.connect("switch-activated", self.on_switch_activated)
         self.listboxes.append(mirror_listbox)
         sw = self.ui.get_object("scrolledwindow2")
         sw.add(mirror_listbox)
@@ -267,6 +294,14 @@ class Mirrors(GtkBaseBox):
         self.rank_mirrors_launched = False
         self.disable_rank_mirrors = params['disable_rank_mirrors']
 
+    def on_switch_activated(self, widget):
+        """ A mirror has been activated/deactivated. We must check if
+        at least there is one mirror active for each list """
+        ok = True
+        for listbox in self.listboxes:
+            if len(listbox.get_active_mirrors()) == 0:
+                ok = False
+        self.forward_button.set_sensitive(ok)
 
     def set_listboxes_sensitive(self, status):
         for listbox in self.listboxes:
@@ -286,7 +321,6 @@ class Mirrors(GtkBaseBox):
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.set_listboxes_sensitive(True)
-
 
     def start_rank_mirrors(self):
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
@@ -313,7 +347,7 @@ class Mirrors(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        bold_style = '<span weight="bold">{0}</span>'
+        #bold_style = '<span weight="bold">{0}</span>'
 
         radio = self.ui.get_object("rank_radiobutton")
         txt = _("Let Cnchi sort the mirrors lists (recommended)")
