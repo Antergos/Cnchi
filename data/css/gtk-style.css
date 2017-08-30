@@ -239,9 +239,9 @@ StateBox {
 }
 
 #location-listbox, .row .label {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 #location-listbox, .row .label:hover {
-    font-size: 14px;
+    font-size: 12px;
 }

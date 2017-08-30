@@ -127,9 +127,6 @@ class MirrorListBox(Gtk.ListBox):
         # self.connect("row-selected", self.on_listbox_row_selected)
         # self.sort_func(self.listbox_sort_by_name, None)
 
-        # Disabled by default
-        self.set_sensitive(False)
-
         # List. Each element is a tuple (url, active)
         self.mirrors = []
 
@@ -192,7 +189,6 @@ class MirrorListBox(Gtk.ListBox):
                 self.on_switch_activated,
                 drag_cbs)
             self.add(row)
-        self.show_all()
 
     def set_mirror_active(self, url, active):
         """ Changes the active status in our mirrors list """
@@ -249,6 +245,7 @@ class MirrorListBox(Gtk.ListBox):
                 new_index = widget.get_index()
                 self.mirrors.insert(new_index, self.mirrors.pop(old_index))
                 self.fillme()
+                self.show_all()
         except (KeyError, ValueError) as err:
             logging.warning(err)
 
@@ -281,18 +278,22 @@ class Mirrors(GtkBaseBox):
 
         # Set up lists
         self.listboxes = []
+        self.scrolledwindows = []
 
-        mirror_listbox = MirrorListBox("/etc/pacman.d/mirrorlist")
-        mirror_listbox.connect("switch-activated", self.on_switch_activated)
-        self.listboxes.append(mirror_listbox)
-        sw = self.ui.get_object("scrolledwindow1")
-        sw.add(mirror_listbox)
+        self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
+        self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
 
-        mirror_listbox = MirrorListBox("/etc/pacman.d/antergos-mirrorlist")
-        mirror_listbox.connect("switch-activated", self.on_switch_activated)
-        self.listboxes.append(mirror_listbox)
-        sw = self.ui.get_object("scrolledwindow2")
-        sw.add(mirror_listbox)
+        mirror_files = ["/etc/pacman.d/mirrorlist", "/etc/pacman.d/antergos-mirrorlist"]
+
+        for mirror_file in mirror_files:
+            mirror_listbox = MirrorListBox(mirror_file)
+            mirror_listbox.connect("switch-activated", self.on_switch_activated)
+            self.listboxes.append(mirror_listbox)
+
+        for index, sw in enumerate(self.scrolledwindows):
+            sw.add(self.listboxes[index])
+
+        self.listboxes_box = self.ui.get_object("listboxes_box")
 
         self.use_rankmirrors = True
         self.use_listboxes = False
@@ -309,24 +310,20 @@ class Mirrors(GtkBaseBox):
                 ok = False
         self.forward_button.set_sensitive(ok)
 
-    def set_listboxes_sensitive(self, status):
-        for listbox in self.listboxes:
-            listbox.set_sensitive(status)
-
     def on_rank_radiobutton_toggled(self, widget):
         self.use_rankmirrors = True
         self.use_listboxes = False
-        self.set_listboxes_sensitive(False)
+        self.listboxes_box.hide()
 
     def on_leave_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = False
-        self.set_listboxes_sensitive(False)
+        self.listboxes_box.hide()
 
     def on_user_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = True
-        self.set_listboxes_sensitive(True)
+        self.show_all()
 
     def start_rank_mirrors(self):
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
@@ -345,6 +342,7 @@ class Mirrors(GtkBaseBox):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
+        self.listboxes_box.hide()
         self.forward_button.set_sensitive(True)
 
     def translate_ui(self):
