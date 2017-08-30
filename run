@@ -25,7 +25,7 @@ sudo ln -sf $CNCHI_DIR /usr/share/cnchi
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
+_CNCHI_OPTIONS="-d -v -s bugsnag"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
