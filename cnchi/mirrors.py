@@ -304,6 +304,9 @@ class Mirrors(GtkBaseBox):
     def on_switch_activated(self, widget):
         """ A mirror has been activated/deactivated. We must check if
         at least there is one mirror active for each list """
+        self.check_active_mirrors()
+
+    def check_active_mirrors(self):
         ok = True
         for listbox in self.listboxes:
             if len(listbox.get_active_mirrors()) == 0:
@@ -313,17 +316,20 @@ class Mirrors(GtkBaseBox):
     def on_rank_radiobutton_toggled(self, widget):
         self.use_rankmirrors = True
         self.use_listboxes = False
+        self.forward_button.set_sensitive(True)
         self.listboxes_box.hide()
 
     def on_leave_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = False
+        self.forward_button.set_sensitive(True)
         self.listboxes_box.hide()
 
     def on_user_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.show_all()
+        self.check_active_mirrors()
 
     def start_rank_mirrors(self):
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
