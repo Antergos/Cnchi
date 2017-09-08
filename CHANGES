@@ -1,3 +1,8 @@
+[2017-09-08 17:53:37 +0200]  Changes in deepin package list                                             karasu      {04973aa7}
+[2017-08-26 16:40:29 +0200]  Add a timeout when using systemd-boot (so users can choose which OS..      karasu      {41be3209}
+[2017-08-25 11:12:19 +0200]  Enable colors in nano                                                      karasu      {099e7210}
+[2017-08-23 13:52:18 +0200]  Changed deepin package list                                                karasu      {22a11ee3}
+[2017-08-23 13:51:22 +0200]  Update deeping packages list                                               karasu      {ad44b58c}
 [2017-08-12 00:59:24 -0400]  add thread to kill grub-mount if taking too long                        Skinner, Alex  {e791454a}
 [2017-08-11 20:43:59 +0200]  ZFS selection fix bug. Needs testing. #782                                 karasu      {7529c5e6}
 [2017-08-06 20:09:29 +0200]  nah, use pamac in plasma, too. (but use kalu in Openbox!)                  karasu      {a53f1294}
