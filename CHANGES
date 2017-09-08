@@ -1,3 +1,6 @@
+[2017-09-08 17:57:32 +0200]  Add reflector to all installations                                         karasu      {5feaeb3b}
+[2017-09-08 17:53:37 +0200]  Changes in deepin package list                                             karasu      {04973aa7}
+[2017-08-31 01:54:20 +0200]  Change mouse cursor when dragging a mirror                                 karasu      {7b2ced69}
 [2017-08-30 16:57:37 +0200]  Add a source comment                                                       karasu      {d9dee641}
 [2017-08-30 16:54:34 +0200]  Fix bug in forward button when changing options in mirrors screen          karasu      {e163e1a5}
 [2017-08-30 16:51:11 +0200]  hide/show mirrors listboxes                                                karasu      {b8ae0f25}
