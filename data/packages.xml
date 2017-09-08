@@ -26,6 +26,7 @@
                 <pkgname>ntfs-3g</pkgname>
                 <pkgname>openssh</pkgname>
                 <pkgname>pkgfile</pkgname>
+                <pkgname>reflector</pkgname>
                 <pkgname>sudo</pkgname>
                 <pkgname>terminus-font</pkgname>
                 <pkgname>tlp</pkgname>
