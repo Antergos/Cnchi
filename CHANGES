@@ -1,3 +1,5 @@
+[2017-09-09 17:37:29 +0200]  Fix typo in packages.xml                                                   karasu      {3d1baf63}
+[2017-09-08 17:57:57 +0200]  Add reflector to all installations                                         karasu      {fe1b0892}
 [2017-09-08 17:57:32 +0200]  Add reflector to all installations                                         karasu      {5feaeb3b}
 [2017-09-08 17:53:37 +0200]  Changes in deepin package list                                             karasu      {04973aa7}
 [2017-08-31 01:54:20 +0200]  Change mouse cursor when dragging a mirror                                 karasu      {7b2ced69}

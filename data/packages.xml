@@ -586,7 +586,7 @@
                <pkgname>gtk-theme-paper</pkgname>
                <pkgname>gtk-theme-adapta</pkgname>
                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-               <pkgname>network-manager-openvpn</pkgname>
+               <pkgname>networkmanager-openvpn</pkgname>
                <pkgname>noto-fonts</pkgname>
                <pkgname>noto-fonts-cjk</pkgname>
                <pkgname>noto-fonts-emoji</pkgname>
