@@ -1,3 +1,6 @@
+[2017-09-09 22:12:16 +0200]  Simplify deepin package list                                               karasu      {07ade988}
+[2017-09-09 17:37:29 +0200]  Fix typo in packages.xml                                                   karasu      {3d1baf63}
+[2017-09-09 17:36:31 +0200]  Fix typo in packages.xml Fixes issue #794                                  karasu      {493d0e63}
 [2017-09-08 17:57:32 +0200]  Add reflector to all installations                                         karasu      {5feaeb3b}
 [2017-09-08 17:56:53 +0200]  Add reflector to all installs                                              karasu      {2cb8e110}
 [2017-09-08 17:54:24 +0200]  Changes in deepin packages list                                            karasu      {52b7597a}

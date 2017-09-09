@@ -546,37 +546,11 @@
                <pkgname>antergos-wallpapers-deepin</pkgname>
                <pkgname>adwaita-icon-theme</pkgname>
                <pkgname>brasero</pkgname>
-               <pkgname>deepin-account-faces</pkgname>
-               <pkgname>deepin-api</pkgname>
-               <pkgname>deepin-artwork-themes</pkgname>
-               <pkgname>deepin-calendar</pkgname>
+               <pkgname>deepin</pkgname>
+               <pkgname>deepin-extra</pkgname>
                <pkgname>deepin-cogl</pkgname>
-               <pkgname>deepin-control-center</pkgname>
-               <pkgname>deepin-daemon</pkgname>
-               <pkgname>deepin-desktop-base</pkgname>
-               <pkgname>deepin-desktop-schemas</pkgname>
-               <pkgname>deepin-dock</pkgname>
-               <pkgname>deepin-file-manager</pkgname>
-               <pkgname>deepin-grub2-themes</pkgname>
-               <pkgname>deepin-gtk-theme</pkgname>
-               <pkgname>deepin-image-viewer</pkgname>
-               <pkgname>deepin-launcher</pkgname>
-               <pkgname>deepin-menu</pkgname>
-               <pkgname>deepin-movie</pkgname>
-               <pkgname>deepin-music</pkgname>
                <pkgname>deepin-mutter</pkgname>
-               <pkgname>deepin-notifications</pkgname>
-               <pkgname>deepin-qt5integration</pkgname>
-               <pkgname>deepin-screenshot</pkgname>
-               <pkgname>deepin-screen-recorder</pkgname>
-               <pkgname>deepin-session-ui</pkgname>
-               <pkgname>deepin-shortcut-viewer</pkgname>
-               <pkgname>deepin-sound-theme</pkgname>
-               <pkgname>deepin-system-monitor</pkgname>
-               <pkgname>deepin-terminal</pkgname>
-               <pkgname>deepin-voice-recorder</pkgname>
-               <pkgname>deepin-wallpapers</pkgname>
-               <pkgname>deepin-wm-switcher</pkgname>
+               <pkgname>deepin-polkit-agent</pkgname>
                <pkgname>dtkwm</pkgname>
                <pkgname>gedit</pkgname>
                <pkgname>gnome-calculator</pkgname>
@@ -591,7 +565,6 @@
                <pkgname>noto-fonts-cjk</pkgname>
                <pkgname>noto-fonts-emoji</pkgname>
                <pkgname>pamac</pkgname>
-               <pkgname>startdde</pkgname>
                <pkgname>unicode-character-database</pkgname>
            </packages>
        </edition>
