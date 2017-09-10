@@ -606,6 +606,11 @@
             <pkgname desktops='kde,lxqt'>bluedevil</pkgname>
             <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
         </feature>
+	<feature name="nautilus">
+            <pkgname desktops='deepin'>nautilus</pkgname>
+	<feature name="nemo">
+            <pkgname desktops='deepin'>nemo</pkgname>
+        </feature>
         <feature name="cups">
             <pkgname>cups</pkgname>
             <pkgname>cups-pk-helper</pkgname>
@@ -626,6 +631,12 @@
         </feature>
         <feature name="firefox">
             <pkgname>firefox</pkgname>
+        </feature>
+	<feature name="vivaldi">
+            <pkgname>vivaldi</pkgname>
+        </feature>
+	<feature name="opera">
+            <pkgname>opera</pkgname>
         </feature>
         <feature name="firewall">
             <pkgname>gufw</pkgname>
