@@ -159,7 +159,8 @@ openbox_settings() {
 	set_gsettings
 
     # Setup user defaults
-	chroot ${CN_DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${CN_USER_NAME}
+	#chroot ${CN_DESTDIR} /usr/share/antergos-openbox-setup/install.sh ${CN_USER_NAME}
+    chroot ${CN_DESTDIR} /usr/bin/antergos-desktop openbox ${CN_USER_NAME}
 
 	# Set skel directory
 	cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
@@ -183,7 +184,11 @@ kde_settings() {
 	rm -R ${CN_DESTDIR}/usr/share/kstyle/themes/qtcurve.themerc
 
 	# Setup user defaults
-	chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
+    if [ -f "${CN_DESTDIR}/usr/share/antergos-kde-setup/install.sh" ]; then
+       chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
+    else
+       chroot ${CN_DESTDIR} /usr/bin/antergos-desktop plasma ${CN_USER_NAME}
+    fi
 
 	# Setup root defaults
 	cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
@@ -273,7 +278,8 @@ enlightenment_settings() {
     # http://git.enlightenment.org/core/enlightenment.git/plain/data/tools/enlightenment_remote
 
 	# Setup user defaults
-	chroot ${CN_DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${CN_USER_NAME}
+	#chroot ${CN_DESTDIR} /usr/share/antergos-enlightenment-setup/install.sh ${CN_USER_NAME}
+    chroot ${CN_DESTDIR} /usr/bin/antergos-desktop enlightenment ${CN_USER_NAME}
 
 	# Set Keyboard layout
 	E_CFG="/home/${CN_USER_NAME}/.e/e/config/standard/e.cfg"

@@ -644,6 +644,21 @@
             <pkgname>playonlinux</pkgname>
             <pkgname arch="x86_64">lib32-libldap</pkgname>
         </feature>
+        <feature name="lamp">
+            <pkgname>apache</pkgname>
+            <pkgname>php</pkgname>
+            <pkgname>php-apache</pkgname>
+            <pkgname>mariadb</pkgname>
+            <pkgname>phpmyadmin</pkgname>
+            <pkgname>php-mcrypt</pkgname>
+        </feature>
+        <feature name="lemp">
+            <pkgname>nginx</pkgname>
+            <pkgname>php-fpm</pkgname>
+            <pkgname>mariadb</pkgname>
+            <pkgname>phpmyadmin</pkgname>
+            <pkgname>php-mcrypt</pkgname>
+        </feature>
         <feature name="lts">
             <pkgname>linux-lts</pkgname>
         </feature>
@@ -660,20 +675,11 @@
             <pkgname>compton</pkgname>
             <pkgname>paranoid</pkgname>
         </feature>
-        <feature name="lamp">
-            <pkgname>apache</pkgname>
-            <pkgname>php</pkgname>
-            <pkgname>php-apache</pkgname>
-            <pkgname>mariadb</pkgname>
-            <pkgname>phpmyadmin</pkgname>
-            <pkgname>php-mcrypt</pkgname>
+        <feature name="vivaldi">
+            <pkgname>vivaldi</pkgname>
         </feature>
-        <feature name="lemp">
-            <pkgname>nginx</pkgname>
-            <pkgname>php-fpm</pkgname>
-            <pkgname>mariadb</pkgname>
-            <pkgname>phpmyadmin</pkgname>
-            <pkgname>php-mcrypt</pkgname>
+        <feature name="opera">
+            <pkgname>opera</pkgname>
         </feature>
     </features>
 
