@@ -140,7 +140,6 @@ def run(screen_name):
         'main_progressbar': Gtk.ProgressBar.new(),
         'header': Gtk.HeaderBar.new(),
         'callback_queue': None,
-        'disable_rank_mirrors': False,
         'alternate_package_list': "",
         'process_list': []}
 

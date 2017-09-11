@@ -25,14 +25,15 @@ sudo ln -sf $CNCHI_DIR /usr/share/cnchi
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v --disable-rank-mirrors -s bugsnag"
+_CNCHI_OPTIONS="-d -v -s bugsnag"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
 #sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
 exit 0
 

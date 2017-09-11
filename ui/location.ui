@@ -52,7 +52,7 @@
             <property name="shadow_type">in</property>
             <property name="hexpand">true</property>
             <child>
-              <object class="GtkListBox" id="listbox">
+              <object class="GtkListBox" id="location-listbox">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
               </object>

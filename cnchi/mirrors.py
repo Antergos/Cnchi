@@ -30,45 +30,325 @@
 """ Let advanced users manage mirrorlist files """
 
 import os
-import sys
-import queue
-import time
 import logging
-import subprocess
-
-import bootinfo
+import shutil
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk, GObject
+
+try:
+    gi.require_foreign("cairo")
+except ImportError:
+    print("No pycairo integration")
+
+import cairo
 
 from gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 
+from rank_mirrors import AutoRankmirrorsProcess
+
+# 6 mirrors for Arch repos and 6 for Antergos repos
+MAX_MIRRORS = 6
+
+DND_ID_LISTBOX_ROW = 6791
+
+class MirrorListBoxRow(Gtk.ListBoxRow):
+    def __init__(self, url, active, switch_cb, drag_cbs):
+        super(Gtk.ListBoxRow, self).__init__()
+        #self.data = data
+        #self.add(Gtk.Label(data))
+
+        self.data = url
+
+        box = Gtk.Box(spacing=20)
+
+        self.handle = Gtk.EventBox.new()
+        self.handle.add(Gtk.Image.new_from_icon_name("open-menu-symbolic", 1))
+        box.pack_start(self.handle, False, False, 0)
+
+        # Add mirror url label
+        self.label = Gtk.Label.new()
+        self.label.set_halign(Gtk.Align.START)
+        self.label.set_justify(Gtk.Justification.LEFT)
+        self.label.set_name(url)
+        # Only show site address
+        url_parts = url.split('/')
+        text_url = url_parts[0] + "//" + url_parts[2]
+        self.label.set_text(text_url)
+        box.pack_start(self.label, False, True, 0)
+
+        # Add mirror switch
+        self.switch = Gtk.Switch.new()
+        self.switch.set_name("switch_" + url)
+        self.switch.set_property('margin_top', 2)
+        self.switch.set_property('margin_bottom', 2)
+        self.switch.set_property('margin_end', 10)
+        self.switch.connect("notify::active", switch_cb)
+        self.switch.set_active(active)
+        box.pack_end(self.switch, False, False, 0)
+
+        self.add(box)
+
+        self.set_selectable(True)
+
+        # Drag and drop
+        # Source
+        self.handle.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [], Gdk.DragAction.MOVE)
+        self.handle.drag_source_add_text_targets()
+        self.handle.connect("drag-begin", drag_cbs['drag-begin'])
+        self.handle.connect("drag-data-get", drag_cbs['drag-data-get'])
+        #self.handle.connect("drag-data-delete", self.on_drag_data_delete)
+        #self.handle.connect("drag-end", self.on_drag_end)
+
+        # Destination
+        self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect("drag-data-received", drag_cbs['drag-data-received'])
+        #self.connect("drag-motion", self.on_drag_motion);
+        #self.connect("drag-crop", self.on_drag_crop);
+
+    def is_active(self):
+        return self.switch.get_active()
+
+
+class MirrorListBox(Gtk.ListBox):
+    __gsignals__ = {
+        'switch-activated': (GObject.SIGNAL_RUN_FIRST, None, ())
+    }
+
+    def __init__(self, mirrors_file_path):
+        super(Gtk.ListBox, self).__init__()
+        self.mirrors_file_path = mirrors_file_path
+        self.set_selection_mode(Gtk.SelectionMode.NONE)
+        # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
+        # self.connect("row-selected", self.on_listbox_row_selected)
+        # self.sort_func(self.listbox_sort_by_name, None)
+
+        # List. Each element is a tuple (url, active)
+        self.mirrors = []
+
+        self.load_mirrors()
+        self.fillme()
+
+    def load_mirrors(self):
+        """ Load mirrors from text file """
+        lines = []
+
+        # Load mirror file contents
+        with open(self.mirrors_file_path) as mfile:
+            lines = mfile.readlines()
+
+        # Discard lines that are not server lines
+        tmp_lines = lines
+        lines = []
+        for line in tmp_lines:
+            line = line.strip()
+            if line.startswith("Server") or line.startswith("#Server"):
+                lines.append(line)
+        tmp_lines = []
+
+        # Use MAX_MIRRORS at max
+        if len(lines) > MAX_MIRRORS:
+            lines = lines[0:MAX_MIRRORS]
+
+        # Read mirror info and create mirrors list
+        for line in lines:
+            if line.startswith("#Server"):
+                active = False
+                line = line[1:]
+            else:
+                active = True
+
+            try:
+                url = line.split("=")[1].strip()
+                logging.debug(url)
+                self.mirrors.append((url, active))
+            except KeyError:
+                pass
+
+    def fillme(self):
+        """ Fill listbox with mirrors info """
+        for listboxrow in self.get_children():
+            listboxrow.destroy()
+
+        drag_cbs = {
+            'drag-begin': self.on_drag_begin,
+            'drag-data-get': self.on_drag_data_get,
+            'drag-data-received': self.on_drag_data_received
+        }
+
+        for (url, active) in self.mirrors:
+            box = Gtk.Box(spacing=20)
+            box.set_name(url)
+            row = MirrorListBoxRow(url, active, self.on_switch_activated, drag_cbs)
+            self.add(row)
+
+    def set_mirror_active(self, url, active):
+        """ Changes the active status in our mirrors list """
+        for index, item in enumerate(self.mirrors):
+            (murl, mact) = item
+            if url == murl:
+                self.mirrors[index] = (url, active)
+
+    def get_active_mirrors(self):
+        """ Returns a list with all active mirrors """
+        active_mirrors = []
+        for (url, active) in self.mirrors:
+            if active:
+                active_mirrors.append(url)
+        return active_mirrors
+
+    def on_switch_activated(self, switch, gparam):
+        row = switch.get_ancestor(Gtk.ListBoxRow)
+        if row:
+            self.set_mirror_active(row.data, switch.get_active())
+            self.emit("switch-activated")
+
+    def on_drag_begin(self, widget, drag_context):
+        """ User starts a drag """
+        row = widget.get_ancestor(Gtk.ListBoxRow)
+        alloc = row.get_allocation()
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, alloc.width, alloc.height)
+        ctx = cairo.Context(surface)
+
+        row.get_style_context().add_class("drag-icon")
+        row.draw(ctx)
+        row.get_style_context().remove_class("drag-icon")
+
+        (x, y) = widget.translate_coordinates(row, 0, 0)
+
+        surface.set_device_offset(-x, -y)
+        Gtk.drag_set_icon_surface(drag_context, surface)
+
+        hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND1)
+        self.get_window().set_cursor(hand_cursor)
+
+    def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
+        """ When drag data is requested by the destination """
+        row = widget.get_ancestor(Gtk.ListBoxRow)
+        listbox_str = str(self)
+        row_index = row.get_index()
+        data = "{0}|{1}".format(listbox_str, row_index)
+        selection_data.set_text(data, len(data))
+        self.get_window().set_cursor(None)
+
+    def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
+        """ When drag data is received by the destination """
+        data = selection_data.get_text()
+        try:
+            listbox_str = data.split('|')[0]
+            if listbox_str == str(self):
+                old_index = int(data.split('|')[1])
+                new_index = widget.get_index()
+                self.mirrors.insert(new_index, self.mirrors.pop(old_index))
+                self.fillme()
+                self.show_all()
+        except (KeyError, ValueError) as err:
+            logging.warning(err)
+
+    def save_changes(self):
+        """ Save mirrors in mirrors list file """
+        # Save a backup if possible
+        src = self.mirrors_file_path
+        dst = src + ".cnchi-backup"
+
+        try:
+            shutil.copy2(src, dst)
+        except (FileNotFoundError, FileExistsError, OSError) as err:
+            logging.warning(err)
+
+        # ok, now save our changes
+        with open(src, 'w') as mfile:
+            line = "# Mirrorlist file modified by Cnchi\n\n"
+            mfile.write(line)
+            for (url, active) in self.mirrors:
+                line = "Server = {}\n".format(url)
+                if not active:
+                    line = "#" + line
+                mfile.write(line)
+
 
 class Mirrors(GtkBaseBox):
-    def __init__(self, params, prev_page="features", next_page=None):
+    def __init__(self, params, prev_page="features", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
-        data_dir = self.settings.get("data")
+        # Set up lists
+        self.listboxes = []
+        self.scrolledwindows = []
 
-        self.disable_rank_mirrors = params["disable_rank_mirrors"]
+        self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
+        self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
 
-        self.listbox_rows = {}
+        mirror_files = ["/etc/pacman.d/mirrorlist", "/etc/pacman.d/antergos-mirrorlist"]
 
-        # Set up list box
-        self.listbox = self.ui.get_object("listbox")
-        self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self.listbox.set_sort_func(self.listbox_sort_by_name, None)
+        for mirror_file in mirror_files:
+            mirror_listbox = MirrorListBox(mirror_file)
+            mirror_listbox.connect("switch-activated", self.on_switch_activated)
+            self.listboxes.append(mirror_listbox)
 
-        # TODO: By default, select automatic mirror list ranking
+        for index, sw in enumerate(self.scrolledwindows):
+            sw.add(self.listboxes[index])
+
+        self.listboxes_box = self.ui.get_object("listboxes_box")
+
+        self.use_rankmirrors = True
+        self.use_listboxes = False
+
+        # Boolean variable to check if rank_mirrors has already been run
+        self.rank_mirrors_launched = False
+
+    def on_switch_activated(self, widget):
+        """ A mirror has been activated/deactivated. We must check if
+        at least there is one mirror active for each list """
+        self.check_active_mirrors()
+
+    def check_active_mirrors(self):
+        """ Checks if at least there is one mirror active for each list """
+        ok = True
+        for listbox in self.listboxes:
+            if len(listbox.get_active_mirrors()) == 0:
+                ok = False
+        self.forward_button.set_sensitive(ok)
+
+    def on_rank_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = True
+        self.use_listboxes = False
+        self.forward_button.set_sensitive(True)
+        self.listboxes_box.hide()
+
+    def on_leave_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = False
+        self.use_listboxes = False
+        self.forward_button.set_sensitive(True)
+        self.listboxes_box.hide()
+
+    def on_user_radiobutton_toggled(self, widget):
+        self.use_rankmirrors = False
+        self.use_listboxes = True
+        self.show_all()
+        self.check_active_mirrors()
+
+    def start_rank_mirrors(self):
+        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
+        # As user can come and go from/to this screen, we must get sure he/she
+        # has not already run the AutoRankmirrorsProcess before
+        if not self.rank_mirrors_launched:
+            logging.debug("Cnchi is ranking your mirrors lists...")
+            proc = AutoRankmirrorsProcess(self.settings)
+            proc.daemon = True
+            proc.name = "rankmirrors"
+            proc.start()
+            self.process_list.append(proc)
+            self.rank_mirrors_launched = True
 
     def prepare(self, direction):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
-
+        self.listboxes_box.hide()
         self.forward_button.set_sensitive(True)
 
     def translate_ui(self):
@@ -78,20 +358,20 @@ class Mirrors(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        bold_style = '<span weight="bold">{0}</span>'
+        #bold_style = '<span weight="bold">{0}</span>'
 
         radio = self.ui.get_object("rank_radiobutton")
-        txt = _("Let Cnchi sort my mirror list (recommended)")
+        txt = _("Let Cnchi sort the mirrors lists (recommended)")
         radio.set_label(txt)
         radio.set_name('rank_radio_btn')
 
         radio = self.ui.get_object("leave_radiobutton")
-        txt = _("Do not touch the mirrors list")
+        txt = _("Leave the mirrors lists as they are (by default)")
         radio.set_label(txt)
         radio.set_name('leave_radio_btn')
 
         radio = self.ui.get_object("user_radiobutton")
-        txt = _("Let me manage my mirror list (advanced)")
+        txt = _("Let me manage the mirrors lists (advanced)")
         radio.set_label(txt)
         radio.set_name('user_radio_btn')
 
@@ -102,179 +382,20 @@ class Mirrors(GtkBaseBox):
         intro_label.set_name("intro_label")
         intro_label.set_hexpand(False)
         intro_label.set_line_wrap(True)
-        intro_label.set_max_width_chars(max_width_chars)
 
-    def add_mirror(self, mirror_url, box):
-        """ Adds mirror url to listbox row box """
-
-        # Add mirror switch
-        object_name = "switch_" + mirror_url
-        switch = Gtk.Switch.new()
-        switch.set_name(object_name)
-        switch.set_property('margin_top', 10)
-        switch.set_property('margin_bottom', 10)
-        switch.set_property('margin_end', 10)
-        switch.connect("notify::active", self.on_switch_activated)
-        self.listbox_rows[mirror_url].append(switch)
-        box.pack_end(switch, False, False, 0)
-
-        # Add mirror url label
-        object_name = mirror_url
-        label_url = Gtk.Label.new()
-        label_url.set_halign(Gtk.Align.START)
-        label_url.set_justify(Gtk.Justification.LEFT)
-        label_url.set_name(mirror_url)
-        self.listbox_rows[mirror_url].append(label_url)
-        box.pack_start(label_url, False, True, 0)
-
-
-    def on_switch_activated(self, switch, gparam):
-        pass
-        '''
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            if row[Features.COL_SWITCH] == switch:
-                is_active = switch.get_active()
-                self.settings.set("feature_" + feature, is_active)
-        '''
-    '''
-    def fill_listbox(self):
-        for listbox_row in self.listbox.get_children():
-            listbox_row.destroy()
-
-        self.listbox_rows = {}
-
-        # Only add graphic-driver feature if an AMD or Nvidia is detected
-        if "graphic_drivers" in self.features:
-            allow = False
-            if self.detect.amd():
-                allow = True
-            if self.detect.nvidia() and not self.detect.bumblebee():
-                allow = True
-            if not allow:
-                logging.debug("Removing proprietary graphic drivers feature.")
-                self.features.remove("graphic_drivers")
-
-        for feature in self.features:
-            box = Gtk.Box(spacing=20)
-            box.set_name(feature + "-row")
-
-            self.listbox_rows[feature] = []
-
-            self.add_feature_icon(feature, box)
-            self.add_feature_label(feature, box)
-            self.add_feature_switch(feature, box)
-            # Add row to our gtklist
-            self.listbox.add(box)
-
-        self.listbox.show_all()
-    '''
-
-
-
-
-
-
-
-
-
-
-
-
-
+        intro_label.set_max_width_chars(80)
 
     def store_values(self):
         """ Store selected values """
-        check = self.ui.get_object("encrypt_checkbutton")
-        use_luks = check.get_active()
-
-        check = self.ui.get_object("lvm_checkbutton")
-        use_lvm = check.get_active()
-
-        check = self.ui.get_object("zfs_checkbutton")
-        use_zfs = check.get_active()
-
-        check = self.ui.get_object("home_checkbutton")
-        use_home = check.get_active()
-
-        if self.next_page == "installation_automatic":
-            self.settings.set('use_lvm', use_lvm)
-            self.settings.set('use_luks', use_luks)
-            self.settings.set('use_luks_in_root', True)
-            self.settings.set('luks_root_volume', "cryptAntergos")
-            self.settings.set('use_zfs', False)
-            self.settings.set('use_home', use_home)
-        elif self.next_page == "installation_zfs":
-            self.settings.set('use_lvm', False)
-            self.settings.set('use_luks', use_luks)
-            self.settings.set('use_luks_in_root', False)
-            self.settings.set('luks_root_volume', "")
-            self.settings.set('use_zfs', True)
-            self.settings.set('zfs', True)
-            self.settings.set('use_home', use_home)
-        else:
-            # Set defaults. We don't know these yet.
-            self.settings.set('use_lvm', False)
-            self.settings.set('use_luks', False)
-            self.settings.set('use_luks_in_root', False)
-            self.settings.set('luks_root_volume', "")
-            self.settings.set('use_zfs', False)
-            self.settings.set('use_home', False)
-
-        if not self.settings.get('use_zfs'):
-            if self.settings.get('use_luks'):
-                logging.info("Antergos installation will be encrypted using LUKS")
-            if self.settings.get('use_lvm'):
-                logging.info("Antergos will be installed using LVM volumes")
-                if self.settings.get('use_home'):
-                    logging.info("Antergos will be installed using a separate /home volume.")
-            elif self.settings.get('use_home'):
-                logging.info("Antergos will be installed using a separate /home partition.")
-        else:
-            logging.info("Antergos will be installed using ZFS")
-            if self.settings.get('use_luks'):
-                logging.info("Antergos ZFS installation will be encrypted")
-            if self.settings.get('use_home'):
-                logging.info("Antergos will be installed using a separate /home volume.")
-
-        if self.next_page == "installation_alongside":
-            self.settings.set('partition_mode', 'alongside')
-        elif self.next_page == "installation_advanced":
-            self.settings.set('partition_mode', 'advanced')
-        elif self.next_page == "installation_automatic":
-            self.settings.set('partition_mode', 'automatic')
-        elif self.next_page == "installation_zfs":
-            self.settings.set('partition_mode', 'zfs')
-
-        # Check if there are still processes running...
-        self.wait()
-
+        if self.use_rankmirrors:
+            self.start_rank_mirrors()
+        if self.use_listboxes:
+            for listbox in self.listboxes:
+                listbox.save_changes()
         return True
 
     def get_next_page(self):
         return self.next_page
-
-    def on_automatic_radiobutton_toggled(self, widget):
-        """ Automatic selected, enable all options """
-        if widget.get_active():
-            check = self.ui.get_object("zfs_checkbutton")
-            if check.get_active():
-                self.next_page = "installation_zfs"
-            else:
-                self.next_page = "installation_automatic"
-            self.enable_automatic_options(True)
-
-    def on_alongside_radiobutton_toggled(self, widget):
-        """ Alongside selected, disable all automatic options """
-        if widget.get_active():
-            self.next_page = "installation_alongside"
-            self.enable_automatic_options(False)
-
-    def on_advanced_radiobutton_toggled(self, widget):
-        """ Advanced selected, disable all automatic options """
-        if widget.get_active():
-            self.next_page = "installation_advanced"
-            self.enable_automatic_options(False)
 
 
 if __name__ == '__main__':

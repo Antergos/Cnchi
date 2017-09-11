@@ -38,8 +38,6 @@ from gtkbasebox import GtkBaseBox
 
 import misc.i18n as i18n
 
-from rank_mirrors import AutoRankmirrorsProcess
-
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
@@ -68,10 +66,6 @@ class Language(GtkBaseBox):
 
         label = self.ui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
-
-        # Boolean variable to check if rank_mirrors has already been run
-        self.rank_mirrors_launched = False
-        self.disable_rank_mirrors = params['disable_rank_mirrors']
 
         self.main_window = params['main_window']
 
@@ -213,18 +207,6 @@ class Language(GtkBaseBox):
         # a11y
         self.listbox.set_can_default(True)
         self.main_window.set_default(self.listbox)
-
-        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        if (not self.disable_rank_mirrors and
-                not self.rank_mirrors_launched):
-            proc = AutoRankmirrorsProcess(self.settings)
-            proc.daemon = True
-            proc.name = "rankmirrors"
-            proc.start()
-            self.process_list.append(proc)
-            self.rank_mirrors_launched = True
-        else:
-            logging.debug("Not running rank mirrors. This is discouraged.")
 
 # When testing, no _() is available
 try:

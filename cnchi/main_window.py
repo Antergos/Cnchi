@@ -47,7 +47,7 @@ import user_info
 import slides
 import summary
 import info
-#import mirrors
+import mirrors
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -223,7 +223,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.params['checks_are_optional'] = cmd_line.no_check
         self.params['disable_tryit'] = cmd_line.disable_tryit
-        self.params['disable_rank_mirrors'] = cmd_line.disable_rank_mirrors
         self.params['a11y'] = cmd_line.a11y
 
         # Just load the first two screens (the other ones will be loaded later)
@@ -327,9 +326,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.pages["check"] = check.Check(self.params)
         self.pages["location"] = location.Location(self.params)
-        self.pages["timezone"] = timezone.Timezone(self.params)
 
-        #self.pages["mirrors"] = mirrors.Mirrors(self.params)
+        self.pages["mirrors"] = mirrors.Mirrors(self.params)
+
+        self.pages["timezone"] = timezone.Timezone(self.params)
 
         if self.settings.get('desktop_ask'):
             self.pages["keymap"] = keymap.Keymap(self.params)
