@@ -1,10 +1,34 @@
+[2017-09-12 23:27:28 +0200]  Do not install qt5ct in deepin                                             karasu      {1b4c811f}
+[2017-09-11 11:46:35 +0200]  Merge branch 'mirrors' into 0.14.x                                         karasu      {4108cdf7}
+[2017-09-11 11:41:43 +0200]  Fix postinstall script to use new antergos-desktop package                 karasu      {7685d339}
+[2017-09-10 11:09:12 +0200]  Added deepin desktop background                                            karasu      {7464f455}
+[2017-09-09 22:12:40 +0200]  Simplify deepin package list                                               karasu      {7623f4c7}
 [2017-09-09 22:12:16 +0200]  Simplify deepin package list                                               karasu      {07ade988}
+[2017-09-09 22:11:46 +0200]  Simplify deepin package list                                               karasu      {418d298c}
+[2017-09-09 17:37:56 +0200]  Fix typo in packages.xml                                                   karasu      {089a4e92}
 [2017-09-09 17:37:29 +0200]  Fix typo in packages.xml                                                   karasu      {3d1baf63}
 [2017-09-09 17:36:31 +0200]  Fix typo in packages.xml Fixes issue #794                                  karasu      {493d0e63}
+[2017-09-08 17:57:57 +0200]  Add reflector to all installations                                         karasu      {fe1b0892}
 [2017-09-08 17:57:32 +0200]  Add reflector to all installations                                         karasu      {5feaeb3b}
 [2017-09-08 17:56:53 +0200]  Add reflector to all installs                                              karasu      {2cb8e110}
 [2017-09-08 17:54:24 +0200]  Changes in deepin packages list                                            karasu      {52b7597a}
 [2017-09-08 17:53:37 +0200]  Changes in deepin package list                                             karasu      {04973aa7}
+[2017-08-31 01:54:20 +0200]  Change mouse cursor when dragging a mirror                                 karasu      {7b2ced69}
+[2017-08-30 16:57:37 +0200]  Add a source comment                                                       karasu      {d9dee641}
+[2017-08-30 16:54:34 +0200]  Fix bug in forward button when changing options in mirrors screen          karasu      {e163e1a5}
+[2017-08-30 16:51:11 +0200]  hide/show mirrors listboxes                                                karasu      {b8ae0f25}
+[2017-08-30 15:48:44 +0200]  Better radiobuttons placement in mirrors screen                            karasu      {d87e2356}
+[2017-08-30 12:37:43 +0200]  Fix location listbox labels size (was too small)                           karasu      {1298d5f2}
+[2017-08-30 11:41:22 +0200]  Fix typo and add a debug warning                                           karasu      {1e4b10d9}
+[2017-08-30 04:07:45 +0200]  Fixed two unused variables (antbs)                                         karasu      {d05a241d}
+[2017-08-30 03:48:32 +0200]  Forgot to remove the option from the run script                            karasu      {9ccb1687}
+[2017-08-30 03:43:56 +0200]  Disable rank mirrors option (now we have a full screen to do it)           karasu      {322e9bbc}
+[2017-08-30 03:24:28 +0200]  Changes are saved.                                                         karasu      {9b1c6b65}
+[2017-08-30 03:05:33 +0200]  It's alive! (dnd works)                                                    karasu      {f49ec9ce}
+[2017-08-29 23:43:39 +0200]  Need to know how to pass a widget (or a reference) when doing dnd          karasu      {1cf8ad87}
+[2017-08-29 19:31:51 +0200]  Going somewhere with drag and drop (or so it seems)                        karasu      {1959880c}
+[2017-08-29 10:26:04 +0200]  In the middle of something                                                 karasu      {5f34184c}
+[2017-08-28 03:20:27 +0200]  Adding new mirrors screen (wip)                                            karasu      {f88628ed}
 [2017-08-26 16:40:29 +0200]  Add a timeout when using systemd-boot (so users can choose which OS..      karasu      {41be3209}
 [2017-08-25 11:12:19 +0200]  Enable colors in nano                                                      karasu      {099e7210}
 [2017-08-23 13:52:18 +0200]  Changed deepin package list                                                karasu      {22a11ee3}
