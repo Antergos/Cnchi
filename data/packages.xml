@@ -82,7 +82,6 @@
                 <pkgname>pulseaudio</pkgname>
                 <pkgname>pulseaudio-alsa</pkgname>
                 <pkgname lib="gtk">qt5-styleplugins</pkgname>
-                <pkgname lib="gtk">qt5ct</pkgname>
                 <pkgname>ttf-bitstream-vera</pkgname>
                 <pkgname>ttf-dejavu</pkgname>
                 <pkgname>ttf-liberation</pkgname>
@@ -156,6 +155,7 @@
                 <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <pkgname>qt5ct</pkgname>
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -207,6 +207,7 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <pkgname>qt5ct</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -234,6 +235,7 @@
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
+                <pkgname>qt5ct</pkgname>
                 <pkgname>ristretto</pkgname>
                 <pkgname>thunar-archive-plugin</pkgname>
                 <pkgname>thunar-volman</pkgname>
@@ -331,6 +333,7 @@
                 <pkgname>pragha</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
                 <pkgname>python2-xdg</pkgname>
+                <pkgname>qt5ct</pkgname>
                 <pkgname>scrot</pkgname>
                 <pkgname>tint2</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -362,7 +365,6 @@
                 <pkgname>kcalc</pkgname>
                 <pkgname>kde-gtk-config</pkgname>
                 <pkgname>kde-servicemenus-rootactions</pkgname>
-                <!--<pkgname>kdebase-kdepasswd</pkgname>-->
                 <pkgname>kdialog</pkgname>
                 <pkgname>kfind</pkgname>
                 <pkgname>kdeconnect</pkgname>
@@ -442,6 +444,7 @@
                 <pkgname>econnman</pkgname>
                 <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
                 <pkgname>kalu</pkgname>
+                <pkgname>qt5ct</pkgname>
                 <pkgname>rage</pkgname> <!-- video player -->
                 <pkgname>terminology</pkgname> <!-- terminal emulator -->
                 <pkgname>ttf-dejavu</pkgname>
@@ -497,6 +500,7 @@
                 <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
                 <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <pkgname>qt5ct</pkgname>
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
