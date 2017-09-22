@@ -1,3 +1,5 @@
+[2017-09-23 00:27:50 +0200]  Add antergos-welcome package                                               karasu      {255ad99c}
+[2017-09-12 23:28:17 +0200]  Do not install qt5ct in deepin                                             karasu      {4af2d550}
 [2017-09-12 23:27:28 +0200]  Do not install qt5ct in deepin                                             karasu      {1b4c811f}
 [2017-09-11 11:46:35 +0200]  Merge branch 'mirrors' into 0.14.x                                         karasu      {4108cdf7}
 [2017-09-11 11:41:43 +0200]  Fix postinstall script to use new antergos-desktop package                 karasu      {7685d339}
