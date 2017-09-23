@@ -1324,7 +1324,7 @@ class Installation(object):
             'useradd',
             '-m',
             '-s', '/bin/bash',
-            '-g', 'users',
+            '-U',
             '-G', default_groups,
             username]
         chroot_call(cmd)
@@ -1334,7 +1334,7 @@ class Installation(object):
 
         chroot_call(['chfn', '-f', fullname, username])
         home_dir = os.path.join("/home", username)
-        cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
+        cmd = ['chown', '-R', '{0}:{0}'.format(username), home_dir]
         chroot_call(cmd)
 
         # Set hostname
