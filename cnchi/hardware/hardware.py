@@ -38,6 +38,7 @@ _HARDWARE_MODULES_PATH = '/usr/share/cnchi/cnchi/hardware/modules'
 
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
+
     def __init__(self, class_name=None, class_id=None, vendor_id=None,
                  devices=None, priority=-1, enabled=True):
         self.class_name = class_name
@@ -96,7 +97,8 @@ class Hardware(object):
             lines = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
             lines = lines.decode().split("\n")
         except subprocess.CalledProcessError as err:
-            logging.warning("Cannot detect hardware components : %s", err.output.decode())
+            logging.warning(
+                "Cannot detect hardware components : %s", err.output.decode())
             return False
 
         for line in lines:
@@ -167,7 +169,8 @@ class Hardware(object):
                 self.class_name]
             try:
                 subprocess.check_output(cmd, timeout=300)
-                logging.debug("Script '%s' completed successfully.", script_path)
+                logging.debug(
+                    "Script '%s' completed successfully.", script_path)
             except subprocess.CalledProcessError as err:
                 # Even though Post-install script call has failed we
                 # will try to continue with the installation.
@@ -223,11 +226,14 @@ class HardwareInstall(object):
                     package = package_root + filename
                     name = filename.capitalize()
                     # This instruction is the same as "from package import name"
-                    class_name = getattr(__import__(package, fromlist=[name]), "CLASS_NAME")
-                    obj = getattr(__import__(package, fromlist=[class_name]), class_name)()
+                    class_name = getattr(__import__(
+                        package, fromlist=[name]), "CLASS_NAME")
+                    obj = getattr(__import__(package, fromlist=[
+                                  class_name]), class_name)()
                     self.all_objects.append(obj)
                 except ImportError as err:
-                    logging.error("Error importing %s from %s : %s", name, package, err)
+                    logging.error(
+                        "Error importing %s from %s : %s", name, package, err)
                 except Exception as ex:
                     logging.error("Unexpected error importing %s", package)
                     template = "An exception of type {0} occured. Arguments:\n{1!r}"
@@ -379,6 +385,7 @@ class HardwareInstall(object):
         for obj in self.objects_used:
             obj.post_install(dest_dir)
 
+
 def test():
     """ Test module function """
     def _(text):
@@ -393,6 +400,7 @@ def test():
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)
+
 
 if __name__ == "__main__":
     test()
