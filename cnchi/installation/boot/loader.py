@@ -35,8 +35,10 @@ from misc.run_cmd import call
 import parted3.fs_module as fs
 import logging
 
+
 class Bootloader(object):
     """ Class to perform boot loader installation """
+
     def __init__(self, dest_dir, settings, mount_devices):
         self.dest_dir = dest_dir
         self.settings = settings
@@ -47,7 +49,8 @@ class Bootloader(object):
         if "/" in self.mount_devices:
             self.uuids["/"] = fs.get_uuid(self.mount_devices["/"])
         else:
-            logging.error("Cannot install bootloader, root device has not been specified!")
+            logging.error(
+                "Cannot install bootloader, root device has not been specified!")
 
         if "swap" in self.mount_devices:
             self.uuids["swap"] = fs.get_uuid(self.mount_devices["swap"])
@@ -58,7 +61,8 @@ class Bootloader(object):
             # No dedicated /boot partition
             self.uuids["/boot"] = self.uuids["/"]
         else:
-            logging.error("Cannot install bootloader, root device has not been specified!")
+            logging.error(
+                "Cannot install bootloader, root device has not been specified!")
 
     def install(self):
         """ Installs the bootloader """

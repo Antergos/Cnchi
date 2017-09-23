@@ -39,11 +39,11 @@ from misc.run_cmd import chroot_call
 
 class SystemdBoot(object):
     """ Class to perform boot loader installation """
+
     def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
         self.uuids = uuids
-
 
     def install(self):
         """ Install Systemd-boot bootloader to the EFI System Partition """
@@ -126,7 +126,8 @@ class SystemdBoot(object):
             conf['lts_fallback'].append("title\tAntergos LTS (fallback)\n")
             conf['lts_fallback'].append("linux\t/vmlinuz-linux-lts\n")
             conf['lts_fallback'].append("initrd\t/intel-ucode.img\n")
-            conf['lts_fallback'].append("initrd\t/initramfs-linux-lts-fallback.img\n")
+            conf['lts_fallback'].append(
+                "initrd\t/initramfs-linux-lts-fallback.img\n")
             conf['lts_fallback'].append("options\t{0}\n\n".format(options))
 
         # Write boot entries
@@ -149,7 +150,8 @@ class SystemdBoot(object):
                 for line in conf['lts']:
                     entry_file.write(line)
 
-            entry_path = os.path.join(entries_dir, "antergos-lts-fallback.conf")
+            entry_path = os.path.join(
+                entries_dir, "antergos-lts-fallback.conf")
             with open(entry_path, 'w') as entry_file:
                 for line in conf['lts_fallback']:
                     entry_file.write(line)

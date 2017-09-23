@@ -38,6 +38,7 @@ from misc.run_cmd import chroot_call
 
 class REFInd(object):
     """ Class to perform boot loader installation """
+
     def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings

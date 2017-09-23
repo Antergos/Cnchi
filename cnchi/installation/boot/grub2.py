@@ -56,6 +56,7 @@ except NameError as err:
 
 class Grub2(object):
     """ Class to perform boot loader installation """
+
     def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
@@ -102,7 +103,8 @@ class Grub2(object):
             cmdline_linux,
             cmdline_linux_default)
 
-        pattern = re.compile("menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
+        pattern = re.compile(
+            "menuentry 'Antergos Linux'[\s\S]*initramfs-linux.img\n}")
 
         cfg = os.path.join(self.dest_dir, "boot/grub/grub.cfg")
         with open(cfg) as grub_file:
@@ -111,7 +113,8 @@ class Grub2(object):
         if not self.settings.get('use_luks') and ruuid_str not in parse:
             entry = pattern.search(parse)
             if entry:
-                logging.debug("Wrong uuid in grub.cfg, Cnchi will try to fix it.")
+                logging.debug(
+                    "Wrong uuid in grub.cfg, Cnchi will try to fix it.")
                 new_entry = re.sub(
                     "linux\t/vmlinuz.*quiet\n",
                     boot_command,
@@ -181,7 +184,8 @@ class Grub2(object):
         cmd_linux = cmd_linux.strip()
 
         # Modify /etc/default/grub
-        self.set_grub_option("GRUB_THEME", "/boot/grub/themes/Antergos-Default/theme.txt")
+        self.set_grub_option(
+            "GRUB_THEME", "/boot/grub/themes/Antergos-Default/theme.txt")
         self.set_grub_option("GRUB_DISTRIBUTOR", "Antergos")
         self.set_grub_option("GRUB_CMDLINE_LINUX_DEFAULT", cmd_linux_default)
         self.set_grub_option("GRUB_CMDLINE_LINUX", cmd_linux)
@@ -197,7 +201,8 @@ class Grub2(object):
     def set_grub_option(self, option, cmd):
         """ Changes a grub setup option in /etc/default/grub """
         try:
-            default_grub_path = os.path.join(self.dest_dir, "etc/default", "grub")
+            default_grub_path = os.path.join(
+                self.dest_dir, "etc/default", "grub")
             default_grub_lines = []
 
             with open(default_grub_path, 'r', newline='\n') as grub_file:
@@ -251,7 +256,8 @@ class Grub2(object):
         while True:
             time.sleep(10)
             try:
-                ret = subprocess.check_output(['pidof', 'grub-mount']).decode().strip()
+                ret = subprocess.check_output(
+                    ['pidof', 'grub-mount']).decode().strip()
                 if ret:
                     subprocess.check_output(['kill', '-9', ret.split()[0]])
                 else:
@@ -260,7 +266,6 @@ class Grub2(object):
                 logging.warning("Error running %s: %s", err.cmd, err.output)
                 break
 
-            
     def run_mkconfig(self):
         """ Create grub.cfg file using grub-mkconfig """
         logging.debug("Generating grub.cfg...")
@@ -287,7 +292,8 @@ class Grub2(object):
     def install_bios(self):
         """ Install Grub2 bootloader in a BIOS system """
         grub_location = self.settings.get('bootloader_device')
-        txt = _("Installing GRUB(2) BIOS boot loader in {0}").format(grub_location)
+        txt = _("Installing GRUB(2) BIOS boot loader in {0}").format(
+            grub_location)
         logging.info(txt)
 
         # /dev and others need to be mounted (binded).
@@ -334,7 +340,8 @@ class Grub2(object):
 
         # grub2 in efi needs efibootmgr
         if not os.path.exists("/usr/bin/efibootmgr"):
-            txt = _("Please install efibootmgr package to install Grub2 for x86_64-efi platform.")
+            txt = _(
+                "Please install efibootmgr package to install Grub2 for x86_64-efi platform.")
             logging.warning(txt)
             txt = _("GRUB(2) will NOT be installed")
             logging.warning(txt)
@@ -412,7 +419,8 @@ class Grub2(object):
             logging.info("GRUB(2) UEFI install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         else:
-            logging.warning("GRUB(2) UEFI install may not have completed successfully.")
+            logging.warning(
+                "GRUB(2) UEFI install may not have completed successfully.")
             self.settings.set('bootloader_installation_successful', False)
 
     def apply_osprober_patch(self):
@@ -447,6 +455,7 @@ class Grub2(object):
         except FileExistsError:
             # Ignore if already exists
             pass
+
 
 if __name__ == '__main__':
     os.makedirs("/install/etc/default", mode=0o755, exist_ok=True)
