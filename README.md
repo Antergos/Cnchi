@@ -12,8 +12,8 @@ This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|**Cnchi Stable**|**0.14.x**|**v0.14.194**|**Bug Fixes Only**|
-|Cnchi Next|master|v0.15.219| Active Development|
+|**Cnchi Stable**|**0.14.x**|**v0.14.344**|**Bug Fixes Only**|
+|Cnchi Next|master|v0.15.219|Development|
 
 
 ## Usage:
@@ -26,6 +26,7 @@ sudo -E cnchi.py
 
 |Command|Description|
 ----------------- | -------------- |
+|```-a``` or ```--a11y```|*Set accessibility feature on by default*|
 |```-c``` or ```--cache```|*Use pre-downloaded xz packages when possible*|
 |```-d``` or ```--debug```|*Sets Cnchi log level to 'debug'*|
 |```-e``` or ```--environment```|*Sets the Desktop Environment that will be installed, see [desktop_info.py](cnchi/desktop_info.py) for options*|
@@ -36,7 +37,6 @@ sudo -E cnchi.py
 |```-s``` or ```--log-server```|*Choose to which log server send Cnchi logs.  Expects a hostname or an IP address*|
 |```-u``` or ```--update```|*Upgrade/downgrade Cnchi to the web version*|
 |```--disable-update```|*Do not search for new Cnchi versions online*|
-|```--disable-rank-mirrors```|*Does not attempt to rank Arch and Antergos mirrors during installation*|
 |```-v``` or ```--verbose```|*Show logging messages to stdout*|
 |```-V``` or ```--version```|*Show Cnchi version and quit*|
 |```-z``` or ```--z_hidden```|*Show options in development (for developers only, do not use this!)*|
