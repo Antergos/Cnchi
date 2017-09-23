@@ -118,7 +118,8 @@ class DownloadPackages(object):
         """ Creates a downloads list (metalinks) from the package list """
 
         self.queue_event('percent', '0')
-        self.queue_event('info', _('Creating the list of packages to download...'))
+        self.queue_event(
+            'info', _('Creating the list of packages to download...'))
         processed_packages = 0
         total_packages = len(self.package_names)
 
@@ -139,7 +140,8 @@ class DownloadPackages(object):
 
         try:
             for package_name in self.package_names:
-                metalink = ml.create(pacman, package_name, self.pacman_conf_file)
+                metalink = ml.create(pacman, package_name,
+                                     self.pacman_conf_file)
                 if metalink is None:
                     txt = "Error creating metalink for package %s. Installation will stop"
                     logging.error(txt, package_name)
@@ -236,6 +238,7 @@ def test():
         settings=None,
         callback_queue=None)
     download_packages.start()
+
 
 if __name__ == '__main__':
     test()

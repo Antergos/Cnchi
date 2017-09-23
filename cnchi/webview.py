@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# welcome.py
+# webview.py
 #
 # Copyright © 2013-2017 Antergos
 #
@@ -34,6 +34,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
 from gi.repository import Gtk, GLib, WebKit2
+
 
 class BrowserWindow(Gtk.Window):
     def __init__(self, title, width=800, height=600):

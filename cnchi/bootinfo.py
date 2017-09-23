@@ -133,7 +133,8 @@ def _check_winxp(system_path):
 @misc.raise_privileges
 def _hexdump8081(partition):
     """ Runs hexdump on partition to try to identify the boot sector """
-    cmd = ["hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
+    cmd = ["hexdump", "-v", "-n", "2", "-s",
+           "0x80", "-e", '2/1 "%02x"', partition]
     hexdump = call(cmd)
     return hexdump
 

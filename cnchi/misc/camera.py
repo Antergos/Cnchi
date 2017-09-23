@@ -98,7 +98,7 @@ class CameraBox(GtkClutter.Embed):
 
         self.camera = Cheese.Camera.new(
             video_texture=self.video_texture,
-            camera_device_node=None,
+            name=None,
             x_resolution=640,
             y_resolution=480)
 

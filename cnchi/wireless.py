@@ -64,7 +64,8 @@ class Wireless(GtkBaseBox):
         lbl.set_markup(_("Connecting this computer to a wi-fi network"))
 
         btn = self.ui.get_object('no_wireless')
-        btn.set_label(_("I don't want to connect to a wi-fi network right now"))
+        btn.set_label(
+            _("I don't want to connect to a wi-fi network right now"))
 
         btn = self.ui.get_object('use_wireless')
         btn.set_label(_("Connect to this network"))
@@ -155,6 +156,7 @@ class Wireless(GtkBaseBox):
 
     def store_values():
         return True
+
 
 # When testing, no _() is available
 try:

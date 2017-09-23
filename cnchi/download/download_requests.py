@@ -53,6 +53,7 @@ def get_md5(file_name):
 class CopyToCache(threading.Thread):
     ''' Class thread to copy a xz file to the user's
         provided cache directory '''
+
     def __init__(self, origin, xz_cache_dirs):
         threading.Thread.__init__(self)
         self.origin = origin
@@ -87,7 +88,6 @@ class Download(object):
         self.last_event = {}
 
         self.copy_to_cache_threads = []
-
 
     def is_hash_ok(self, path, element=None, md5hash=None):
         """ Checks file md5 hash """
