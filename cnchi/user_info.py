@@ -55,9 +55,12 @@ class UserInfo(GtkBaseBox):
         self.image_is_ok['password'] = self.ui.get_object('password_ok')
 
         self.error_label = dict()
-        self.error_label['hostname'] = self.ui.get_object('hostname_error_label')
-        self.error_label['username'] = self.ui.get_object('username_error_label')
-        self.error_label['password'] = self.ui.get_object('password_error_label')
+        self.error_label['hostname'] = self.ui.get_object(
+            'hostname_error_label')
+        self.error_label['username'] = self.ui.get_object(
+            'username_error_label')
+        self.error_label['password'] = self.ui.get_object(
+            'password_error_label')
 
         self.password_strength = self.ui.get_object('password_strength')
 
@@ -66,7 +69,8 @@ class UserInfo(GtkBaseBox):
         self.entry['hostname'] = self.ui.get_object('hostname')
         self.entry['username'] = self.ui.get_object('username')
         self.entry['password'] = self.ui.get_object('password')
-        self.entry['verified_password'] = self.ui.get_object('verified_password')
+        self.entry['verified_password'] = self.ui.get_object(
+            'verified_password')
 
         self.login = dict()
         self.login['auto'] = self.ui.get_object('login_auto')
@@ -203,7 +207,8 @@ class UserInfo(GtkBaseBox):
 
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
-            message = _("Are you sure you want to encrypt your home directory?")
+            message = _(
+                "Are you sure you want to encrypt your home directory?")
             res = show.question(self.get_main_window(), message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)

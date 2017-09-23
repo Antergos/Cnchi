@@ -219,7 +219,8 @@ def setup_logging():
                     bugsnag_handler.setLevel(logging.WARNING)
                     bugsnag_handler.setFormatter(formatter)
                     bugsnag_handler.addFilter(context_filter.filter)
-                    bugsnag.before_notify(context_filter.bugsnag_before_notify_callback)
+                    bugsnag.before_notify(
+                        context_filter.bugsnag_before_notify_callback)
                     logger.addHandler(bugsnag_handler)
                     logging.info(
                         "Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
@@ -238,12 +239,14 @@ def setup_logging():
             logger.addHandler(socket_handler)
 
             # Also add uuid filter to requests logs
-            logger_requests = logging.getLogger("requests.packages.urllib3.connectionpool")
+            logger_requests = logging.getLogger(
+                "requests.packages.urllib3.connectionpool")
             logger_requests.addFilter(context_filter.filter)
 
             uid = str(uuid.uuid1()).split("-")
             myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-            logging.info("Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
+            logging.info(
+                "Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
 
 
 def check_gtk_version():
@@ -371,7 +374,8 @@ def parse_options():
         action="store_true")
     parser.add_argument(
         "-p", "--packagelist",
-        help=_("Install the packages referenced by a local xml instead of the default ones"),
+        help=_(
+            "Install the packages referenced by a local xml instead of the default ones"),
         nargs='?')
     parser.add_argument(
         "-s", "--log-server",
@@ -495,9 +499,9 @@ def init_cnchi():
     global cmd_line
     cmd_line = parse_options()
 
-
     if cmd_line.version:
-        print(_("Cnchi (Antergos Installer) version {0}").format(info.CNCHI_VERSION))
+        print(_("Cnchi (Antergos Installer) version {0}").format(
+            info.CNCHI_VERSION))
         sys.exit(0)
 
     if cmd_line.force:

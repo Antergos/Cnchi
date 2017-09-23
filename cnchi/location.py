@@ -172,7 +172,8 @@ class Location(GtkBaseBox):
             language_name = self.locales[locale_name]
             for country_code in countries:
                 if country_code in language_name:
-                    self.locales[locale_name] = self.locales[locale_name] + ", " + countries[country_code]
+                    self.locales[locale_name] = self.locales[locale_name] + \
+                        ", " + countries[country_code]
 
     def get_areas(self):
         areas = []
@@ -237,7 +238,8 @@ class Location(GtkBaseBox):
                     locale.setlocale(var, mylocale)
                 logging.debug("Locale changed to : %s", mylocale)
             except locale.Error as err:
-                logging.warning("Cannot change to locale '%s': %s", mylocale, err)
+                logging.warning(
+                    "Cannot change to locale '%s': %s", mylocale, err)
                 if mylocale.endswith(".UTF-8"):
                     # Try without the .UTF-8 trailing
                     mylocale = mylocale[:-len(".UTF-8")]
@@ -284,6 +286,7 @@ class Location(GtkBaseBox):
     def get_and_save_install_id():
         context_filter = ContextFilter()
         return context_filter.get_and_save_install_id(is_location_screen=True)
+
 
 # When testing, no _() is available
 try:

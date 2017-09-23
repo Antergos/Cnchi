@@ -48,6 +48,7 @@ NM_STATE_CONNECTED_GLOBAL = 70
 
 class Timezone(GtkBaseBox):
     """ Timezone screen """
+
     def __init__(self, params, prev_page="location", next_page="keymap"):
         super().__init__(self, params, "timezone", prev_page, next_page)
 
@@ -191,7 +192,8 @@ class Timezone(GtkBaseBox):
 
         if self.autodetected_coords is None:
             try:
-                self.autodetected_coords = self.auto_timezone_coords.get(False, timeout=20)
+                self.autodetected_coords = self.auto_timezone_coords.get(
+                    False, timeout=20)
             except queue.Empty:
                 logging.warning("Can't autodetect timezone coordinates")
 
@@ -200,12 +202,14 @@ class Timezone(GtkBaseBox):
             try:
                 latitude = float(coords[0])
                 longitude = float(coords[1])
-                timezone = self.tzmap.get_timezone_at_coords(latitude, longitude)
+                timezone = self.tzmap.get_timezone_at_coords(
+                    latitude, longitude)
                 self.set_timezone(timezone)
                 self.forward_button.set_sensitive(True)
             except ValueError as value_error:
                 self.autodetected_coords = None
-                logging.warning("Can't autodetect timezone coordinates: %s", value_error)
+                logging.warning(
+                    "Can't autodetect timezone coordinates: %s", value_error)
 
         self.show_all()
 
@@ -267,7 +271,8 @@ class Timezone(GtkBaseBox):
         self.settings.set("timezone_done", True)
 
         if self.settings.get('use_timesyncd'):
-            logging.debug("Cnchi will setup network time using systemd-timesyncd")
+            logging.debug(
+                "Cnchi will setup network time using systemd-timesyncd")
         else:
             logging.debug("Cnchi won't setup network time")
 
@@ -280,6 +285,7 @@ class Timezone(GtkBaseBox):
 
 class AutoTimezoneProcess(multiprocessing.Process):
     """ Thread that asks our server for user's location """
+
     def __init__(self, coords_queue, settings):
         super(AutoTimezoneProcess, self).__init__()
         self.coords_queue = coords_queue

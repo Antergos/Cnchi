@@ -65,8 +65,10 @@ def setup_conf_files(dest_dir):
             "# If this is specified program will attempt to drop permissions "
             "before running encfs.\n")
         pam_encfs.write("drop_permissions\n\n")
-        pam_encfs.write("# This specifies which options to pass to encfs for every user.\n")
-        pam_encfs.write("# You can find encfs options by running encfs without any arguments\n")
+        pam_encfs.write(
+            "# This specifies which options to pass to encfs for every user.\n")
+        pam_encfs.write(
+            "# You can find encfs options by running encfs without any arguments\n")
         pam_encfs.write("encfs_default --idle=1\n\n")
         pam_encfs.write("# Same for fuse\n")
         pam_encfs.write("# you can find fuse options with encfs -H\n")
@@ -137,7 +139,8 @@ def setup(username, dest_dir, password):
         cmd = ["/bin/echo", "-e", "p\n{0}\n".format(password)]
         passw = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         cmd = ['encfs', '-S', encrypted_dir, mount_dir, "--public"]
-        encfs = subprocess.Popen(cmd, stdin=passw.stdout, stdout=subprocess.PIPE)
+        encfs = subprocess.Popen(
+            cmd, stdin=passw.stdout, stdout=subprocess.PIPE)
         encfs.communicate()
         if encfs.poll() != 0:
             logging.error("Can't run encfs. Bad password?")

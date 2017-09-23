@@ -94,7 +94,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             info = json.loads(r.json())
         except Exception as err:
             logger = logging.getLogger()
-            msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
+            msg = "Unable to get an Id for this installation. Error: {0}".format(
+                err.args)
             logger.debug(msg)
 
         try:
@@ -147,11 +148,14 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 if pattern in log_lines[i]:
                     try:
                         if 10 < i < (len(log_lines) - 10):
-                            keep_lines.extend([log_lines[l] for l in range(i - 10, i + 10)])
+                            keep_lines.extend([log_lines[l]
+                                               for l in range(i - 10, i + 10)])
                         elif i < 10:
-                            keep_lines.extend([log_lines[l] for l in range(0, i)])
+                            keep_lines.extend([log_lines[l]
+                                               for l in range(0, i)])
                         elif i > (len(log_lines) - 10):
-                            keep_lines.extend([log_lines[l] for l in range(i, len(log_lines))])
+                            keep_lines.extend([log_lines[l]
+                                               for l in range(i, len(log_lines))])
                     except Exception:
                         pass
 
@@ -171,7 +175,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                                  "name": self.install_id,
                                  "install_id": self.install_id}
 
-            logs = ['/tmp/{0}.log'.format(n) for n in ['cnchi', 'pacman', 'postinstall']]
+            logs = ['/tmp/{0}.log'.format(n)
+                    for n in ['cnchi', 'pacman', 'postinstall']]
             missing = [f for f in logs if not os.path.exists(f)]
             if missing:
                 for log in missing:
@@ -180,7 +185,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             with open(logs[0], 'r') as cnchi:
                 with open(logs[1], 'r') as pacman:
                     with open(logs[2], 'r') as postinstall:
-                        log_dict = {'pacman': pacman, 'postinstall': postinstall}
+                        log_dict = {'pacman': pacman,
+                                    'postinstall': postinstall}
                         parse = {
                             log: [line.strip() for line in log_dict[log]]
                             for log in log_dict

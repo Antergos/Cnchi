@@ -31,7 +31,8 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "deepin", "gnome", "kde", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "cinnamon", "deepin",
+            "gnome", "kde", "mate", "openbox", "xfce"]
 
 DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
 
@@ -60,7 +61,7 @@ NAMES = {
     'xfce': "Xfce",
     'budgie': "Budgie",
     'enlightenment': "Enlightenment",
-    'i3' : "i3",
+    'i3': "i3",
     'lxqt': "LXQt"
 }
 
@@ -70,7 +71,7 @@ LIBS = {
 }
 
 ALL_FEATURES = ["a11y", "aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "flash",
-    "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual"]
+                "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual"]
 
 # Not all desktops have all features
 EXCLUDED_FEATURES = {

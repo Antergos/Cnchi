@@ -339,7 +339,8 @@ class Features(GtkBaseBox):
                 message_type=Gtk.MessageType.INFO,
                 buttons=Gtk.ButtonsType.YES_NO)
             info.set_markup("LAMP / LEMP")
-            msg = _("Do you want to install the Nginx server instead of the Apache server?")
+            msg = _(
+                "Do you want to install the Nginx server instead of the Apache server?")
             info.format_secondary_markup(msg)
             response = info.run()
             info.destroy()
@@ -393,6 +394,7 @@ class Features(GtkBaseBox):
             is_active = self.settings.get("feature_" + feature)
             if row[Features.COL_SWITCH] is not None and is_active is not None:
                 row[Features.COL_SWITCH].set_active(is_active)
+
 
 # When testing, no _() is available
 try:

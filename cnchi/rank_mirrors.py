@@ -92,13 +92,15 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     '--quiet',
                     'antergos-mirrorlist']
                 with open(os.devnull, 'w') as fnull:
-                    subprocess.call(cmd, stdout=fnull, stderr=subprocess.STDOUT)
+                    subprocess.call(cmd, stdout=fnull,
+                                    stderr=subprocess.STDOUT)
                 # Use the new downloaded mirrorlist (.pacnew) files (if any)
                 pacnew_path = self.antergos_mirrorlist + ".pacnew"
                 if os.path.exists(pacnew_path):
                     shutil.copy(pacnew_path, self.antergos_mirrorlist)
             except subprocess.CalledProcessError as why:
-                logging.debug('Cannot update antergos-mirrorlist package: %s', why)
+                logging.debug(
+                    'Cannot update antergos-mirrorlist package: %s', why)
             except OSError as why:
                 logging.debug('Error copying new mirrorlist files: %s', why)
         self.sync()
@@ -318,9 +320,11 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         logging.debug("Filtering and sorting Arch mirrors...")
         self.filter_and_sort_arch_mirrorlist()
 
-        logging.debug("Running rankmirrors command to sort Antergos mirrors...")
+        logging.debug(
+            "Running rankmirrors command to sort Antergos mirrors...")
         self.run_rankmirrors()
-        self.arch_mirrorlist_ranked = [x for x in self.arch_mirrorlist_ranked if x]
+        self.arch_mirrorlist_ranked = [
+            x for x in self.arch_mirrorlist_ranked if x]
         self.settings.set('rankmirrors_result', self.arch_mirrorlist_ranked)
 
         logging.debug("Auto mirror selection has been run successfully.")

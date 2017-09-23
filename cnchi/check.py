@@ -105,12 +105,14 @@ class Check(GtkBaseBox):
         txt = _("is plugged in to a power source")
         self.prepare_power_source.set_property("label", txt)
 
-        self.prepare_network_connection = self.ui.get_object("prepare_network_connection")
+        self.prepare_network_connection = self.ui.get_object(
+            "prepare_network_connection")
         txt = _("is connected to the Internet")
         self.prepare_network_connection.set_property("label", txt)
 
         self.packaging_issues = self.ui.get_object("packaging_issues")
-        txt = _("There are no temporary packaging issues that would interfere with installation.")
+        txt = _(
+            "There are no temporary packaging issues that would interfere with installation.")
         self.packaging_issues.set_property("label", txt)
 
         self.prepare_best_results = self.ui.get_object("prepare_best_results")
@@ -167,7 +169,8 @@ class Check(GtkBaseBox):
             result = misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
             if result == None:
                 # Cannot read property, something is wrong.
-                logging.warning("Cannot read %s/%s dbus property", UPOWER_PATH, 'OnBattery')
+                logging.warning("Cannot read %s/%s dbus property",
+                                UPOWER_PATH, 'OnBattery')
                 # We will assume we are connected to a power supply
                 result = False
             return result
@@ -210,7 +213,8 @@ class Check(GtkBaseBox):
         """ Checks that cnchi version is, at least, latest stable """
         if self.updater is None:
             # Only call updater once
-            self.updater = updater.Updater(local_cnchi_version=info.CNCHI_VERSION)
+            self.updater = updater.Updater(
+                local_cnchi_version=info.CNCHI_VERSION)
         return not self.updater.is_remote_version_newer()
 
     def on_timer(self):
@@ -241,6 +245,7 @@ class Check(GtkBaseBox):
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)
+
 
 # When testing, no _() is available
 try:

@@ -60,7 +60,8 @@ class Slides(GtkBaseBox):
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
 
-        self.downloads_progress_bar = self.ui.get_object("downloads_progress_bar")
+        self.downloads_progress_bar = self.ui.get_object(
+            "downloads_progress_bar")
         self.downloads_progress_bar.set_show_text(True)
         self.downloads_progress_bar.set_name('a_progressbar')
 
@@ -109,8 +110,10 @@ class Slides(GtkBaseBox):
             # Add a webkit view and load our html file to show the slides
             try:
                 self._apply_webkit_settings()
-                self.web_view = WebKit2.WebView.new_with_settings(self.web_view_settings)
-                self.web_view.connect('context-menu', lambda _a, _b, _c, _d: True)
+                self.web_view = WebKit2.WebView.new_with_settings(
+                    self.web_view_settings)
+                self.web_view.connect(
+                    'context-menu', lambda _a, _b, _c, _d: True)
                 self.web_view.set_hexpand(True)
                 self.web_view.load_uri(SLIDES_URI)
             except IOError as io_error:
@@ -259,8 +262,10 @@ class Slides(GtkBaseBox):
                 self.empty_queue()
 
                 # Add install id to error message (we can lookup logs on bugsnag by the install id)
-                tpl = _('Please reference the following number when reporting this error: ')
-                error_message = '{0}\n{1}{2}'.format(event[1], tpl, log_util.install_id)
+                tpl = _(
+                    'Please reference the following number when reporting this error: ')
+                error_message = '{0}\n{1}{2}'.format(
+                    event[1], tpl, log_util.install_id)
 
                 # Show the error
                 show.fatal_error(self.get_main_window(), error_message)

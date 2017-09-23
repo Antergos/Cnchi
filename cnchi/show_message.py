@@ -123,6 +123,7 @@ def question(parent, my_message):
     msg_dialog.destroy()
     return response
 
+
 try:
     _("")
 except NameError as err:

@@ -70,7 +70,8 @@ class DesktopAsk(GtkBaseBox):
     def translate_ui(self, desktop, set_header=True):
         """ Translates all ui elements """
         label = self.ui.get_object("desktop_info")
-        txt = "<span weight='bold'>{0}</span>\n".format(desktop_info.NAMES[desktop])
+        txt = "<span weight='bold'>{0}</span>\n".format(
+            desktop_info.NAMES[desktop])
         description = desktop_info.DESCRIPTIONS[desktop]
         txt = txt + _(description)
         label.set_markup(txt)
@@ -86,19 +87,23 @@ class DesktopAsk(GtkBaseBox):
 
         # and this sets the icon
         filename = "desktop-environment-" + desktop.lower() + ".svg"
-        icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
+        icon_path = os.path.join(
+            desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
         icon_exists = os.path.exists(icon_path)
 
         if self.icon_desktop_image is None:
             if icon_exists:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                    icon_path, 48, 48)
                 self.icon_desktop_image = Gtk.Image.new_from_pixbuf(pixbuf)
             else:
                 filename = desktop.lower() + ".png"
-                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_path = os.path.join(
+                    desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
                 icon_exists = os.path.exists(icon_path)
                 if icon_exists:
-                    self.icon_desktop_image = Gtk.Image.new_from_file(icon_path)
+                    self.icon_desktop_image = Gtk.Image.new_from_file(
+                        icon_path)
                 else:
                     self.icon_desktop_image = Gtk.Image.new_from_icon_name(
                         "image-missing",
@@ -108,16 +113,19 @@ class DesktopAsk(GtkBaseBox):
             overlay.add_overlay(self.icon_desktop_image)
         else:
             if icon_exists:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 48, 48)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                    icon_path, 48, 48)
                 self.icon_desktop_image.set_from_pixbuf(pixbuf)
             else:
                 filename = desktop.lower() + ".png"
-                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
+                icon_path = os.path.join(
+                    desktop_info.DESKTOP_ICONS_PATH, "48x48", filename)
                 icon_exists = os.path.exists(icon_path)
                 if icon_exists:
                     self.icon_desktop_image.set_from_file(icon_path)
                 else:
-                    self.icon_desktop_image.set_from_icon_name("image-missing", Gtk.IconSize.DIALOG)
+                    self.icon_desktop_image.set_from_icon_name(
+                        "image-missing", Gtk.IconSize.DIALOG)
 
         if set_header:
             # set header text
@@ -136,13 +144,16 @@ class DesktopAsk(GtkBaseBox):
                 box = Gtk.HBox()
 
                 filename = "desktop-environment-" + desktop.lower() + ".svg"
-                icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
+                icon_path = os.path.join(
+                    desktop_info.DESKTOP_ICONS_PATH, "scalable", filename)
                 if os.path.exists(icon_path):
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(icon_path, 24, 24)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                        icon_path, 24, 24)
                     image = Gtk.Image.new_from_pixbuf(pixbuf)
                 else:
                     filename = desktop.lower() + ".png"
-                    icon_path = os.path.join(desktop_info.DESKTOP_ICONS_PATH, "24x24", filename)
+                    icon_path = os.path.join(
+                        desktop_info.DESKTOP_ICONS_PATH, "24x24", filename)
                     if os.path.exists(icon_path):
                         image = Gtk.Image.new_from_file(icon_path)
                     else:
@@ -225,6 +236,7 @@ class DesktopAsk(GtkBaseBox):
         """ Scrolls treeview to show the desired cell """
         treeview.scroll_to_cell(path)
         return False
+
 
 # When testing, no _() is available
 try:

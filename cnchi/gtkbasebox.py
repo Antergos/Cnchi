@@ -35,6 +35,7 @@ from gi.repository import Gtk, Gdk
 import os
 import logging
 
+
 class GtkBaseBox(Gtk.Box):
     """ Base class for our screens """
 

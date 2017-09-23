@@ -70,12 +70,14 @@ def atk_set_image_description(widget, description):
     if atk_widget is not None:
         atk_widget.set_object_description(description)
 
+
 def atk_set_object_description(widget, description):
     """ Sets the textual description for a widget """
     atk_widget = widget.get_accessible()
     if atk_widget is not None:
         atk_widget.set_image_description(description)
-        #atk_object_set_name
+        # atk_object_set_name
+
 
 class MainWindow(Gtk.ApplicationWindow):
     """ Cnchi main window """
@@ -343,16 +345,21 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.params,
                 prev_page='keymap')
 
-        self.pages["installation_ask"] = installation_ask.InstallationAsk(self.params)
-        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(self.params)
+        self.pages["installation_ask"] = installation_ask.InstallationAsk(
+            self.params)
+        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(
+            self.params)
 
         if self.settings.get("enable_alongside"):
-            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(self.params)
+            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(
+                self.params)
         else:
             self.pages["installation_alongside"] = None
 
-        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(self.params)
-        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(self.params)
+        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(
+            self.params)
+        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(
+            self.params)
         self.pages["summary"] = summary.Summary(self.params)
         self.pages["user_info"] = user_info.UserInfo(self.params)
         self.pages["slides"] = slides.Slides(self.params)
@@ -371,8 +378,10 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
-        self.set_size_request(self._main_window_width, self._main_window_height)
-        self.set_default_size(self._main_window_width, self._main_window_height)
+        self.set_size_request(self._main_window_width,
+                              self._main_window_height)
+        self.set_default_size(self._main_window_width,
+                              self._main_window_height)
 
         geom = Gdk.Geometry()
         geom.min_width = self._main_window_width

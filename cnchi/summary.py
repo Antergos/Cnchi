@@ -67,7 +67,8 @@ class Summary(GtkBaseBox):
 
         scrolled_window = self.ui.get_object("scrolled_window")
         if scrolled_window:
-            scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+            scrolled_window.set_policy(
+                Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         self.num_features = 0
         self.process = None
@@ -192,7 +193,8 @@ class Summary(GtkBaseBox):
             return False
 
         install_screen = self.get_install_screen()
-        self.process = Process(install_screen, self.settings, self.callback_queue)
+        self.process = Process(
+            install_screen, self.settings, self.callback_queue)
         self.process.start()
         return True
 

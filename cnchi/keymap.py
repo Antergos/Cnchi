@@ -45,6 +45,7 @@ from gtkbasebox import GtkBaseBox
 
 class Keymap(GtkBaseBox):
     """ Keymap screen """
+
     def __init__(self, params, prev_page="timezone", next_page="desktop"):
         super().__init__(self, params, "keymap", prev_page, next_page)
 
@@ -243,22 +244,26 @@ class Keymap(GtkBaseBox):
         self.keyboard_variant = {'code': None, 'description': None}
 
         # Read selected value from treeview
-        (layout_description, variant_description) = self.get_selected_in_treeview(self.keymap_treeview)
+        (layout_description, variant_description) = self.get_selected_in_treeview(
+            self.keymap_treeview)
 
         if not layout_description:
             return
 
-        layout_name = self.kbd_names.get_layout_name_by_description(layout_description)
+        layout_name = self.kbd_names.get_layout_name_by_description(
+            layout_description)
 
         if not layout_name:
-            logging.warning("Unknown layout description: %s", layout_description)
+            logging.warning("Unknown layout description: %s",
+                            layout_description)
             return
 
         self.keyboard_layout['code'] = layout_name
         self.keyboard_layout['description'] = layout_description
 
         if variant_description:
-            variant_name = self.kbd_names.get_variant_name_by_description(variant_description)
+            variant_name = self.kbd_names.get_variant_name_by_description(
+                variant_description)
             if variant_name:
                 self.keyboard_variant['code'] = variant_name
                 self.keyboard_variant['description'] = variant_description
@@ -278,7 +283,8 @@ class Keymap(GtkBaseBox):
         """ Uses selected keymap """
         if self.keyboard_layout['code']:
             self.settings.set("keyboard_layout", self.keyboard_layout['code'])
-            self.settings.set("keyboard_variant", self.keyboard_variant['code'])
+            self.settings.set("keyboard_variant",
+                              self.keyboard_variant['code'])
 
             # setxkbmap sets the keyboard layout for the current X session only
             cmd = ['setxkbmap', '-layout', self.keyboard_layout['code']]
@@ -307,6 +313,7 @@ class Keymap(GtkBaseBox):
         self.keyboard_widget.set_layout(self.keyboard_layout['code'])
         self.keyboard_widget.set_variant(self.keyboard_variant['code'])
         self.keyboard_widget.show_all()
+
 
 # When testing, no _() is available
 try:

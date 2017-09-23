@@ -55,11 +55,12 @@ MAX_MIRRORS = 6
 
 DND_ID_LISTBOX_ROW = 6791
 
+
 class MirrorListBoxRow(Gtk.ListBoxRow):
     def __init__(self, url, active, switch_cb, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
         #self.data = data
-        #self.add(Gtk.Label(data))
+        # self.add(Gtk.Label(data))
 
         self.data = url
 
@@ -96,7 +97,8 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
 
         # Drag and drop
         # Source
-        self.handle.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [], Gdk.DragAction.MOVE)
+        self.handle.drag_source_set(
+            Gdk.ModifierType.BUTTON1_MASK, [], Gdk.DragAction.MOVE)
         self.handle.drag_source_add_text_targets()
         self.handle.connect("drag-begin", drag_cbs['drag-begin'])
         self.handle.connect("drag-data-get", drag_cbs['drag-data-get'])
@@ -183,7 +185,8 @@ class MirrorListBox(Gtk.ListBox):
         for (url, active) in self.mirrors:
             box = Gtk.Box(spacing=20)
             box.set_name(url)
-            row = MirrorListBoxRow(url, active, self.on_switch_activated, drag_cbs)
+            row = MirrorListBoxRow(
+                url, active, self.on_switch_activated, drag_cbs)
             self.add(row)
 
     def set_mirror_active(self, url, active):
@@ -211,7 +214,8 @@ class MirrorListBox(Gtk.ListBox):
         """ User starts a drag """
         row = widget.get_ancestor(Gtk.ListBoxRow)
         alloc = row.get_allocation()
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, alloc.width, alloc.height)
+        surface = cairo.ImageSurface(
+            cairo.FORMAT_ARGB32, alloc.width, alloc.height)
         ctx = cairo.Context(surface)
 
         row.get_style_context().add_class("drag-icon")
@@ -282,11 +286,13 @@ class Mirrors(GtkBaseBox):
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
 
-        mirror_files = ["/etc/pacman.d/mirrorlist", "/etc/pacman.d/antergos-mirrorlist"]
+        mirror_files = ["/etc/pacman.d/mirrorlist",
+                        "/etc/pacman.d/antergos-mirrorlist"]
 
         for mirror_file in mirror_files:
             mirror_listbox = MirrorListBox(mirror_file)
-            mirror_listbox.connect("switch-activated", self.on_switch_activated)
+            mirror_listbox.connect(
+                "switch-activated", self.on_switch_activated)
             self.listboxes.append(mirror_listbox)
 
         for index, sw in enumerate(self.scrolledwindows):

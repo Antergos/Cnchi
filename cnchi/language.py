@@ -208,6 +208,7 @@ class Language(GtkBaseBox):
         self.listbox.set_can_default(True)
         self.main_window.set_default(self.listbox)
 
+
 # When testing, no _() is available
 try:
     _("")
