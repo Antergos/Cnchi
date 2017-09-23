@@ -45,6 +45,7 @@ NAMES = [
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
+
 def get_uuid(part):
     """ Get partition UUID """
     info = get_info(part)
@@ -270,7 +271,8 @@ def is_ssd(disk_path):
     filename = os.path.join("/sys/block", disk_name, "queue/rotational")
     if not os.path.exists(filename):
         # Should not happen unless sysfs changes, but better safe than sorry
-        txt = "Cannot verify if {0} is a Solid State Drive or not".format(disk_path)
+        txt = "Cannot verify if {0} is a Solid State Drive or not".format(
+            disk_path)
         logging.warning(txt)
         return False
     with open(filename) as my_file:
@@ -310,7 +312,8 @@ def resize_ntfs(part, new_size_in_mb):
     logging.debug(txt)
 
     try:
-        cmd = ["ntfsresize", "-v", "-P", "--size", "{0}M".format(new_size_in_mb), part]
+        cmd = ["ntfsresize", "-v", "-P", "--size",
+               "{0}M".format(new_size_in_mb), part]
         result = subprocess.check_output(cmd)
         logging.debug(result)
     except subprocess.CalledProcessError as err:

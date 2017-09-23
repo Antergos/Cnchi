@@ -107,8 +107,10 @@ def get_devices():
         # Skip cd drive, special devices like LUKS and LVM and
         # RPMB (Replay Protected Memory Block)
         disk_obj = None
-        rpmb = (dev.path.startswith("/dev/mmcblk") and dev.path.endswith("rpmb"))
-        exclude = (dev.path.startswith("/dev/sr") or dev.path.startswith("/dev/mapper"))
+        rpmb = (dev.path.startswith("/dev/mmcblk")
+                and dev.path.endswith("rpmb"))
+        exclude = (dev.path.startswith("/dev/sr")
+                   or dev.path.startswith("/dev/mapper"))
         if not rpmb and not exclude:
             try:
                 disk_obj = parted.Disk(dev)
@@ -245,7 +247,7 @@ def create_partition(diskob, part_type, geom):
         nend = nalign.alignDown(geom, nend)
     if part_type == 1:
         nstart = nstart + nalign.grainSize
-    mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend-1)
+    mingeom = parted.Geometry(device=diskob.device, start=nstart, end=nend - 1)
     maxgeom = parted.Geometry(device=diskob.device, start=nstart, end=nend)
     if diskob.maxPartitionLength < maxgeom.length:
         txt = _('Partition is too large!')
@@ -253,7 +255,8 @@ def create_partition(diskob, part_type, geom):
         show.error(None, txt)
         return None
     else:
-        npartition = parted.Partition(disk=diskob, type=part_type, geometry=maxgeom)
+        npartition = parted.Partition(
+            disk=diskob, type=part_type, geometry=maxgeom)
         nconstraint = parted.Constraint(minGeom=mingeom, maxGeom=maxgeom)
         diskob.addPartition(partition=npartition, constraint=nconstraint)
         return npartition
@@ -315,7 +318,8 @@ def get_used_space_from_path(path):
         used_space = lines[1].split()[2]
     except subprocess.CalledProcessError as process_error:
         used_space = 0
-        txt = _("Can't detect used space from {0}: {1}").format(path, process_error)
+        txt = _("Can't detect used space from {0}: {1}").format(
+            path, process_error)
         logging.error(txt)
         debug_txt = "{0}\n{1}".format(txt, process_error)
         show.error(None, debug_txt)
@@ -423,7 +427,8 @@ def split_partition(device_path, partition_path, new_size_in_mb):
     # Create new partition (the one for the otherOS)
     new_length = int(new_size_in_mb * units / sec_size)
     new_end_sector = start_sector + new_length
-    my_geometry = geom_builder(disk, start_sector, new_end_sector, new_size_in_mb)
+    my_geometry = geom_builder(
+        disk, start_sector, new_end_sector, new_size_in_mb)
     logging.debug("create_partition %s", my_geometry)
     create_partition(disk, 0, my_geometry)
 

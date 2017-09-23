@@ -113,7 +113,8 @@ def get_used_fat(part):
                 cluster = int(line.split()[3].split('/')[1])
                 ucl = int(line.split()[3].split('/')[0])
         try:
-            used = (sbyte + (bytes_per_cluster * ucl)) / (bytes_per_cluster * cluster)
+            used = (sbyte + (bytes_per_cluster * ucl)) / \
+                (bytes_per_cluster * cluster)
         except ZeroDivisionError as zero_error:
             logging.error("Error in get_used_fat: %s", zero_error)
 
@@ -184,7 +185,8 @@ def get_used_btrfs(part, show_error=True):
     except subprocess.CalledProcessError as err:
         result = None
         if show_error:
-            message = "Can't detect used space of BTRFS partition {0}: {1}".format(part, err.output)
+            message = "Can't detect used space of BTRFS partition {0}: {1}".format(
+                part, err.output)
             logging.error(message)
             template = "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(err).__name__, err.args)
