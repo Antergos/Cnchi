@@ -37,6 +37,7 @@ import warnings
 
 class InvalidSyntax(Warning):
     """ Class to show warning when a pacman.conf parse error is issued """
+
     def __init__(self, filename, problem, arg):
         super().__init__()
         self.filename = filename
@@ -46,6 +47,7 @@ class InvalidSyntax(Warning):
     def __str__(self):
         error = "unable to parse {0}, {1}: {2}"
         return error.format(self.filename, self.problem, self.arg)
+
 
 # Options that may occur several times in a section.
 # Their values should be accumulated in a list.
@@ -137,16 +139,19 @@ def pacman_conf_enumerator(path):
             elif key in SINGLE_OPTIONS:
                 yield (current_section, key, value)
             else:
-                warnings.warn(InvalidSyntax(file_obj.name, 'unrecognized option', key))
+                warnings.warn(InvalidSyntax(
+                    file_obj.name, 'unrecognized option', key))
         else:
             if key in BOOLEAN_OPTIONS:
                 yield (current_section, key, True)
             else:
-                warnings.warn(InvalidSyntax(file_obj.name, 'unrecognized option', key))
+                warnings.warn(InvalidSyntax(
+                    file_obj.name, 'unrecognized option', key))
 
 
 class PacmanConfig(collections.OrderedDict):
     """ Class to store all pacman.conf options """
+
     def __init__(self, conf=None, options=None):
         super(PacmanConfig, self).__init__()
         self['options'] = collections.OrderedDict()

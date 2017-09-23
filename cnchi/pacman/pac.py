@@ -60,6 +60,7 @@ except ImportError as err:
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
 
+
 class Pac(object):
     """ Communicates with libalpm using pyalpm """
 
@@ -93,7 +94,8 @@ class Pac(object):
         if conf_path is not None and os.path.exists(conf_path):
             self.config = config.PacmanConfig(conf_path)
             self.initialize_alpm()
-            logging.debug('ALPM repository database order is: %s', self.config.repo_order)
+            logging.debug('ALPM repository database order is: %s',
+                          self.config.repo_order)
         else:
             raise pyalpm.error
 
@@ -116,7 +118,8 @@ class Pac(object):
 
         self.handle = pyalpm.Handle(root_dir, db_path)
 
-        logging.debug("ALPM initialised with root dir %s and db path %s", root_dir, db_path)
+        logging.debug(
+            "ALPM initialised with root dir %s and db path %s", root_dir, db_path)
 
         if self.handle is None:
             raise pyalpm.error
@@ -179,8 +182,10 @@ class Pac(object):
                 dbonly=options.get('dbonly', False),
                 force=options.get('force', False),
                 needed=options.get('needed', False),
-                alldeps=(options.get('mode', None) == pyalpm.PKG_REASON_DEPEND),
-                allexplicit=(options.get('mode', None) == pyalpm.PKG_REASON_EXPLICIT),
+                alldeps=(options.get('mode', None) ==
+                         pyalpm.PKG_REASON_DEPEND),
+                allexplicit=(options.get('mode', None) ==
+                             pyalpm.PKG_REASON_EXPLICIT),
                 cascade=options.get('cascade', False),
                 nosave=options.get('nosave', False),
                 recurse=(options.get('recursive', 0) > 0),
@@ -214,7 +219,8 @@ class Pac(object):
             return False
 
         for pkg in targets:
-            logging.debug("Adding package '%s' to remove transaction", pkg.name)
+            logging.debug(
+                "Adding package '%s' to remove transaction", pkg.name)
             transaction.remove_pkg(pkg)
 
         return self.finalize_transaction(transaction)
@@ -261,7 +267,8 @@ class Pac(object):
         repos = OrderedDict()
         repo_order = []
         one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
-        db_match = [db for db in self.handle.get_syncdbs() if 'antergos' == db.name]
+        db_match = [db for db in self.handle.get_syncdbs()
+                    if 'antergos' == db.name]
         antdb = OrderedDict()
         antdb['antergos'] = db_match[0]
         one_repo_groups = [antdb['antergos'].read_grp(one_repo_group)
@@ -304,7 +311,8 @@ class Pac(object):
                     # No, it wasn't neither a package nor a group. As we don't
                     # know if this error is fatal or not, we'll register it and
                     # we'll allow to continue.
-                    logging.error("Can't find a package or group called '%s'", name)
+                    logging.error(
+                        "Can't find a package or group called '%s'", name)
 
         # Discard duplicates
         targets = list(set(targets))
@@ -406,7 +414,8 @@ class Pac(object):
                         level=2,
                         style='sync')
         else:
-            repos = OrderedDict((database.name, database) for database in self.handle.get_syncdbs())
+            repos = OrderedDict((database.name, database)
+                                for database in self.handle.get_syncdbs())
             for pkg_name in pkg_names:
                 result_ok, pkg = self.find_sync_package(pkg_name, repos)
                 if result_ok:
@@ -421,7 +430,8 @@ class Pac(object):
 
     def get_package_info(self, pkg_name):
         """ Get information about packages like pacman -Si """
-        repos = OrderedDict((database.name, database) for database in self.handle.get_syncdbs())
+        repos = OrderedDict((database.name, database)
+                            for database in self.handle.get_syncdbs())
         result_ok, pkg = self.find_sync_package(pkg_name, repos)
         if result_ok:
             info = pkginfo.get_pkginfo(pkg, level=2, style='sync')
@@ -639,7 +649,8 @@ class Pac(object):
         if not self.logger.hasHandlers():
             # File logger
             try:
-                file_handler = logging.FileHandler('/tmp/cnchi-alpm.log', mode='w')
+                file_handler = logging.FileHandler(
+                    '/tmp/cnchi-alpm.log', mode='w')
                 file_handler.setLevel(logging.DEBUG)
                 file_handler.setFormatter(formatter)
                 self.logger.addHandler(file_handler)
@@ -677,8 +688,6 @@ def test():
     pacman_options = {"downloadonly": True}
     # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()
-
-
 
 
 if __name__ == "__main__":

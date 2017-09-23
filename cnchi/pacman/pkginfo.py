@@ -44,7 +44,8 @@ ATTR_INDENT = 17 * ' '
 
 def get_term_size():
     if sys.stdout.isatty():
-        height, width = struct.unpack("HH", fcntl.ioctl(1, termios.TIOCGWINSZ, 4 * b"\x00"))
+        height, width = struct.unpack(
+            "HH", fcntl.ioctl(1, termios.TIOCGWINSZ, 4 * b"\x00"))
         return width
     else:
         return 80
@@ -58,7 +59,8 @@ def format_attr(attrname, value, attrformat=None):
             valuestring = '  '.join(str(v) for v in value)
     else:
         if attrformat == "time":
-            valuestring = time.strftime("%a %d %b %Y %X %Z", time.localtime(value))
+            valuestring = time.strftime(
+                "%a %d %b %Y %X %Z", time.localtime(value))
         else:
             valuestring = str(value)
 
@@ -146,7 +148,8 @@ def display_pkginfo(pkg, level=1, style='local'):
         if len(pkg.backup) == 0:
             print('(none)')
         else:
-            print('\n'.join(["%s %s" % (md5, filename) for (filename, md5) in pkg.backup]))
+            print('\n'.join(["%s %s" % (md5, filename)
+                             for (filename, md5) in pkg.backup]))
     print('')
 
 
@@ -216,6 +219,7 @@ def get_pkginfo(pkg, level=1, style='local'):
         if len(pkg.backup) == 0:
             info['backup files'] = None
         else:
-            info['backup files'] = [(md5, filename) for (filename, md5) in pkg.backup]
+            info['backup files'] = [(md5, filename)
+                                    for (filename, md5) in pkg.backup]
 
     return info
