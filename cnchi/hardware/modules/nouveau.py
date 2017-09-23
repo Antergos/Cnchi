@@ -48,8 +48,10 @@ PRIORITY = 3
 
 class Nouveau(Hardware):
     """ Nvidia open graphics driver """
+
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
+                          VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():
@@ -63,9 +65,9 @@ class Nouveau(Hardware):
     def get_conflicts():
         """ Get conflicting packages """
         pkgs = ["nvidia", "nvidia-lts" "nvidia-utils", "nvidia-libgl",
-            "nvidia-340xx", "nvidia-340xx-lts", "nvidia-340xx-utils",
-            "nvidia-304xx", "nvidia-304xx-lts", "nvidia-304xx-utils",
-            "bumblebee", "virtualgl", "nvidia-settings", "bbswitch"]
+                "nvidia-340xx", "nvidia-340xx-lts", "nvidia-340xx-utils",
+                "nvidia-304xx", "nvidia-304xx-lts", "nvidia-304xx-utils",
+                "bumblebee", "virtualgl", "nvidia-settings", "bbswitch"]
         return pkgs
 
     @staticmethod

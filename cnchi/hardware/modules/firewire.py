@@ -42,6 +42,7 @@ DEVICES = ['0x0832']
 
 class Firewire(Hardware):
     """ Firewire support """
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 

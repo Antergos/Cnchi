@@ -42,6 +42,7 @@ DEVICES = ["0x0405", "0x0710"]
 
 class Vmware(Hardware):
     """ Vmware tools and drivers """
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 

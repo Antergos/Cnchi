@@ -110,7 +110,8 @@ def create(alpm, package_name, pacman_conf_file):
         options.append(package_name)
 
     try:
-        download_queue, not_found, missing_deps = build_download_queue(alpm, args=options)
+        download_queue, not_found, missing_deps = build_download_queue(
+            alpm, args=options)
     except Exception as ex:
         template = "Unable to create download queue for package {0}. An exception of type {1} occured. Arguments:\n{2!r}"
         message = template.format(package_name, type(ex).__name__, ex.args)
@@ -156,9 +157,11 @@ def download_queue_to_metalink(download_queue):
 
 class Metalink(object):
     """ Metalink class """
+
     def __init__(self):
         self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
-        self.doc.documentElement.setAttribute('xmlns', "urn:ietf:params:xml:ns:metalink")
+        self.doc.documentElement.setAttribute(
+            'xmlns', "urn:ietf:params:xml:ns:metalink")
         self.files = self.doc.documentElement
 
     # def __del__(self):
@@ -337,7 +340,8 @@ def build_download_queue(alpm, args=None):
     one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
     antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
     antdb = antdb[0]
-    one_repo_groups = [antdb.read_grp(one_repo_group) for one_repo_group in one_repo_groups]
+    one_repo_groups = [antdb.read_grp(one_repo_group)
+                       for one_repo_group in one_repo_groups]
     one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
                      for pkg in one_repo_group[1] if one_repo_group}
 
@@ -468,6 +472,7 @@ def needs_sig(siglevel, insistence, prefix):
                 return True
     return False
 
+
 def test():
     import gettext
 
@@ -510,6 +515,7 @@ def test():
         template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
         message = template.format(type(ex).__name__, ex.args)
         logging.error(message)
+
 
 ''' Test case '''
 if __name__ == '__main__':

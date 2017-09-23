@@ -46,9 +46,11 @@ PRIORITY = 3
 
 class Bumblebee(Hardware):
     """ Bumblebee (Optimus cards) """
+
     def __init__(self):
         self.cards_detected = 0
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_IDS, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
+                          VENDOR_IDS, DEVICES, PRIORITY)
 
     def check_device(self, class_id, vendor_id, product_id):
         """ Checks if the driver supports this device
@@ -74,9 +76,10 @@ class Bumblebee(Hardware):
     def get_packages():
         """ Get all required packages """
         pkgs = ["bumblebee", "mesa", "xf86-video-intel", "nvidia", "virtualgl",
-            "nvidia-settings", "bbswitch"]
+                "nvidia-settings", "bbswitch"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-utils", "lib32-virtualgl", "lib32-mesa"])
+            pkgs.extend(
+                ["lib32-nvidia-utils", "lib32-virtualgl", "lib32-mesa"])
         return pkgs
 
     @staticmethod

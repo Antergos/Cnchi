@@ -44,6 +44,7 @@ DEVICES = []
 
 class Via(Hardware):
     """ VIA graphics driver """
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 

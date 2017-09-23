@@ -52,8 +52,10 @@ PRIORITY = 1
 
 class BroadcomB43(Hardware):
     """ Broadcom b43 """
+
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
+                          VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():

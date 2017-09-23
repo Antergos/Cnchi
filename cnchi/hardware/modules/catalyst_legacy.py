@@ -99,17 +99,22 @@ DEVICES = [
     "0x9446", "0x6828", "0x6808", "0x684c", "0x6809", "0x6780", "0x6784",
     "0x6788", "0x678a", "0x68f2", "0x95cd", "0x95ce", "0x95cf"]
 
+
 class CatalystLegacy(Hardware):
     """ AMD ATI Catalyst legacy graphics driver """
+
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY, ENABLED)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
+                          VENDOR_ID, DEVICES, PRIORITY, ENABLED)
 
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["catalyst-hook", "catalyst-libgl", "catalyst-utils", "acpid", "qt4"]
+        pkgs = ["catalyst-hook", "catalyst-libgl",
+                "catalyst-utils", "acpid", "qt4"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-catalyst-libgl", "lib32-catalyst-utils", "lib32-opencl-catalyst"])
+            pkgs.extend(["lib32-catalyst-libgl",
+                         "lib32-catalyst-utils", "lib32-opencl-catalyst"])
         return pkgs
 
     @staticmethod

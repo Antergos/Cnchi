@@ -44,6 +44,7 @@ DEVICES = ['0xbeef']
 
 class Virtualbox(Hardware):
     """ Virtualbox modules """
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
@@ -58,9 +59,11 @@ class Virtualbox(Hardware):
         """ Post install commands """
         path = os.path.join(dest_dir, "etc/modules-load.d")
         os.makedirs(path, mode=0o755, exist_ok=True)
-        path = os.path.join(dest_dir, "etc/modules-load.d/virtualbox-guest.conf")
+        path = os.path.join(
+            dest_dir, "etc/modules-load.d/virtualbox-guest.conf")
         with open(path, 'w') as modules:
-            modules.write('# Virtualbox modules added by Cnchi - Antergos Installer\n')
+            modules.write(
+                '# Virtualbox modules added by Cnchi - Antergos Installer\n')
             modules.write("vboxguest\n")
             modules.write("vboxsf\n")
             modules.write("vboxvideo\n")

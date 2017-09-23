@@ -49,6 +49,7 @@ DEVICES = ['0x0001']
 
 class ETouchScreen(Hardware):
     """ eGalax Touch Screen driver """
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
 
@@ -65,17 +66,21 @@ class ETouchScreen(Hardware):
         except subprocess.CalledProcessError as err:
             pass
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
-        path = os.path.join(dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")
+        path = os.path.join(
+            dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")
         with open(path, 'w') as conf_file:
             conf_file.write("blacklist usbtouchscreen\n")
 
         # TODO: This should be computer specific
-        path = os.path.join(dest_dir, "etc/X11/xorg.conf.d/99-calibration.conf")
+        path = os.path.join(
+            dest_dir, "etc/X11/xorg.conf.d/99-calibration.conf")
         with open(path, 'w') as conf_file:
             conf_file.write('Section "InputClass"\n')
             conf_file.write('\tIdentifier      "calibration"\n')
-            conf_file.write('\tMatchProduct    "eGalax Inc. USB TouchController"\n')
-            conf_file.write('\tOption          "Calibration"   "3996 122 208 3996"\n')
+            conf_file.write(
+                '\tMatchProduct    "eGalax Inc. USB TouchController"\n')
+            conf_file.write(
+                '\tOption          "Calibration"   "3996 122 208 3996"\n')
             conf_file.write('\tOption          "InvertY" "1"\n')
             conf_file.write('\tOption          "SwapAxes" "0"\n')
             conf_file.write('EndSection\n')
