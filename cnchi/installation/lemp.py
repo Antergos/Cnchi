@@ -93,7 +93,8 @@ def nginx_setup():
 
             if sections["http"] and sections["server"] and "#location ~ \.php$ {" in line:
                 nginx_conf.write("        location ~ \.php$ {\n")
-                nginx_conf.write("            fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;\n")
+                nginx_conf.write(
+                    "            fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;\n")
                 nginx_conf.write("            fastcgi_index  index.php;\n")
                 nginx_conf.write("            root   /usr/share/nginx/html;\n")
                 nginx_conf.write("            include        fastcgi.conf;\n")

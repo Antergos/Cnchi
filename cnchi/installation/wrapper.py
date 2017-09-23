@@ -97,7 +97,8 @@ def sgdisk_new(device, part_num, label, size, hex_code):
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
         txt = txt.format(device, err.cmd, err.output.decode())
         logging.error(txt)
-        txt = _("Cannot create a new partition on device {0}. Command {1} has failed: {2}")
+        txt = _(
+            "Cannot create a new partition on device {0}. Command {1} has failed: {2}")
         txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
 
@@ -140,7 +141,8 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
         txt = txt.format(device, err.cmd, err.output.decode())
         logging.error(txt)
-        txt = _("Cannot create a new partition on device {0}. Command {1} has failed: {2}")
+        txt = _(
+            "Cannot create a new partition on device {0}. Command {1} has failed: {2}")
         txt = txt.format(device, err.cmd, err.output.decode())
         raise InstallError(txt)
 

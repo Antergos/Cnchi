@@ -49,8 +49,10 @@ import parted3.fs_module as fs
 
 DEST_DIR = "/install"
 
+
 class InstallationAutomatic(GtkBaseBox):
     """ Automatic Installation Screen """
+
     def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "automatic", prev_page, next_page)
 
@@ -70,7 +72,8 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.bootloader = "grub2"
         self.bootloader_entry = self.ui.get_object('bootloader_entry')
-        self.bootloader_device_entry = self.ui.get_object('bootloader_device_entry')
+        self.bootloader_device_entry = self.ui.get_object(
+            'bootloader_device_entry')
         self.bootloader_devices = {}
         self.bootloader_device = {}
 
@@ -101,7 +104,8 @@ class InstallationAutomatic(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('label_luks_password_warning')
-        txt = _("LUKS Password. We do not recommend using special characters or accents!")
+        txt = _(
+            "LUKS Password. We do not recommend using special characters or accents!")
         label.set_markup(txt)
 
         btn = self.ui.get_object('checkbutton_show_password')
@@ -145,7 +149,8 @@ class InstallationAutomatic(GtkBaseBox):
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
                 # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                size_in_gigabytes = int(
+                    (dev.length * dev.sectorSize) / 1000000000)
                 line = '{0} [{1} GB] ({2})'
                 line = line.format(dev.model, size_in_gigabytes, dev.path)
                 self.device_store.append_text(line)
@@ -287,7 +292,8 @@ class InstallationAutomatic(GtkBaseBox):
         for device in sorted(fs_devices.keys()):
             try:
                 txt = _("Device {0} will be created ({1} filesystem) as {2}")
-                txt = txt.format(device, fs_devices[device], mount_points[device])
+                txt = txt.format(
+                    device, fs_devices[device], mount_points[device])
             except KeyError:
                 txt = _("Device {0} will be created ({1} filesystem)")
                 txt = txt.format(device, fs_devices[device])
@@ -335,7 +341,8 @@ class InstallationAutomatic(GtkBaseBox):
             self.settings.set('bootloader_device', self.bootloader_device)
 
             self.settings.set('bootloader', self.bootloader)
-            msg = _("Antergos will install the bootloader '{0}' in device '{1}'")
+            msg = _(
+                "Antergos will install the bootloader '{0}' in device '{1}'")
             msg = msg.format(self.bootloader, self.bootloader_device)
             logging.info(msg)
 
@@ -358,6 +365,7 @@ class InstallationAutomatic(GtkBaseBox):
             ssd)
 
         self.installation.start()
+
 
 # When testing, no _() is available
 try:

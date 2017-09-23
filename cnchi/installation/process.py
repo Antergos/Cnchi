@@ -57,7 +57,6 @@ class Process(multiprocessing.Process):
         self.pkg = None
         self.down = None
 
-
     def create_metalinks_list(self):
         """ Create metalinks list """
         self.pkg = pack.SelectPackages(self.settings, self.callback_queue)
@@ -92,7 +91,8 @@ class Process(multiprocessing.Process):
             # not formatted anything yet.
             self.create_metalinks_list()
 
-            self.queue_event('info', _("Getting your disk(s) ready for Antergos..."))
+            self.queue_event(
+                'info', _("Getting your disk(s) ready for Antergos..."))
             with misc.raised_privileges() as __:
                 self.install_screen.run_format()
 
@@ -104,14 +104,16 @@ class Process(multiprocessing.Process):
 
             self.queue_event('info', _("Installation will start now!"))
             with misc.raised_privileges() as __:
-                self.install_screen.run_install(self.pkg.packages, self.down.metalinks)
+                self.install_screen.run_install(
+                    self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
             txt = "Error running command {0}: {1}".format(
                 process_error.cmd,
                 process_error.output)
             logging.error(txt)
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            trace = traceback.format_exception(
+                exc_type, exc_value, exc_traceback)
             for line in trace:
                 logging.error(line.rstrip())
             txt = _("Error running command {0}: {1}").format(
@@ -127,7 +129,8 @@ class Process(multiprocessing.Process):
                 IOError) as install_error:
             logging.error(install_error)
             exc_type, exc_value, exc_traceback = sys.exc_info()
-            trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+            trace = traceback.format_exception(
+                exc_type, exc_value, exc_traceback)
             for line in trace:
                 logging.error(line.rstrip())
             self.queue_fatal_event(install_error)

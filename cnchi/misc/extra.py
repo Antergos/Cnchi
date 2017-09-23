@@ -81,6 +81,7 @@ def is_swap(device):
 
 # PRIVILEGES STARTS HERE -------------------------------------------------------
 
+
 def set_groups_for_uid(uid):
     """ Set groups for user id uid """
     if uid == os.geteuid() or uid == os.getuid():
@@ -438,6 +439,7 @@ def has_connection():
 
     return False
 
+
 def add_connection_watch(func):
     """ Add connection watch to Networkmanager """
     def connection_cb(state):
@@ -573,6 +575,7 @@ def set_cursor(cursor_type):
             gtk_refresh()
     except Exception as ex:
         logging.debug(ex)
+
 
 def partition_exists(partition):
     """ Check if a partition already exists """

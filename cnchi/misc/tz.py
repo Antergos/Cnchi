@@ -45,6 +45,7 @@ def _seconds_since_epoch(my_datetime):
 
 class SystemTzInfo(datetime.tzinfo):
     """ Class that represents current timezone info """
+
     def __init__(self, tz=None):
         self.tz = tz
 
@@ -146,6 +147,7 @@ class SystemTzInfo(datetime.tzinfo):
 
 class Iso3166(object):
     """ Read Iso 3166 xml file """
+
     def __init__(self):
         self.names = {}
         document = xml.dom.minidom.parse(ISO_3166_FILE)
@@ -280,6 +282,7 @@ class Location(object):
 
 class _Database(object):
     """ Store all ISO 3166 information """
+
     def __init__(self):
         self.locations = []
         iso3166 = Iso3166()

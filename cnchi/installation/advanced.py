@@ -202,7 +202,6 @@ class InstallationAdvanced(GtkBaseBox):
             btn.set_always_show_image(True)
             btn.set_image(image)
 
-
     def initialize_widgets(self):
         # Initialize our create/edit partition dialogs filesystems combos.
         names = ['create_partition_use_combo', 'edit_partition_use_combo']
@@ -331,7 +330,8 @@ class InstallationAdvanced(GtkBaseBox):
                         not dev.path.startswith("/dev/mapper")):
                     # Hard drives measure themselves assuming
                     # kilo=1000, mega=1mil, etc
-                    size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                    size_in_gigabytes = int(
+                        (dev.length * dev.sectorSize) / 1000000000)
                     line = '{0} [{1} GB] ({2})'.format(
                         dev.model,
                         size_in_gigabytes,
@@ -438,7 +438,8 @@ class InstallationAdvanced(GtkBaseBox):
         col = Gtk.TreeViewColumn(_("Type"), render_text, text=COL_FS)
         self.partition_list.append_column(col)
 
-        col = Gtk.TreeViewColumn(_("Mount point"), render_text, text=COL_MOUNT_POINT)
+        col = Gtk.TreeViewColumn(
+            _("Mount point"), render_text, text=COL_MOUNT_POINT)
         self.partition_list.append_column(col)
 
         col = Gtk.TreeViewColumn(_("Label"), render_text, text=COL_LABEL)
@@ -676,7 +677,8 @@ class InstallationAdvanced(GtkBaseBox):
 
                     uid = self.gen_partition_uid(partition=partition)
                     if uid in self.stage_opts:
-                        (is_new, label, mount_point, fs_type, fmt_active) = self.stage_opts[uid]
+                        (is_new, label, mount_point, fs_type,
+                         fmt_active) = self.stage_opts[uid]
                         fmt_enable = not is_new
                         if mount_point == "/":
                             fmt_enable = False
@@ -687,13 +689,16 @@ class InstallationAdvanced(GtkBaseBox):
                                 if mount_point:
                                     used = pm.get_used_space(partition)
                                 else:
-                                    used = used_space.get_used_space(partition_path, fs_type)
+                                    used = used_space.get_used_space(
+                                        partition_path, fs_type)
                                     used = used * partition.geometry.length
                                     used = self.get_size(used, dev.sectorSize)
-                                self.used_dic[(disk_path, partition.geometry.start)] = used
+                                self.used_dic[(
+                                    disk_path, partition.geometry.start)] = used
                             else:
                                 if (disk_path, partition.geometry.start) in self.used_dic:
-                                    used = self.used_dic[(disk_path, partition.geometry.start)]
+                                    used = self.used_dic[(
+                                        disk_path, partition.geometry.start)]
                                 else:
                                     used = '0b'
                             label = fs.get_label(partition_path)
@@ -767,9 +772,12 @@ class InstallationAdvanced(GtkBaseBox):
     def on_luks_password_changed(self, widget):
         """ User has introduced new information. Check it here. """
         luks_password_entry = self.ui.get_object('luks_password_entry')
-        luks_password_confirm_entry = self.ui.get_object('luks_password_confirm_entry')
-        luks_password_confirm_image = self.ui.get_object('luks_password_confirm_image')
-        luks_password_status_label = self.ui.get_object('luks_password_status_label')
+        luks_password_confirm_entry = self.ui.get_object(
+            'luks_password_confirm_entry')
+        luks_password_confirm_image = self.ui.get_object(
+            'luks_password_confirm_image')
+        luks_password_status_label = self.ui.get_object(
+            'luks_password_status_label')
         luks_password_strength = self.ui.get_object('luks_password_strength')
 
         if (widget == luks_password_entry or
@@ -796,7 +804,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Can't edit a partition that uses a LVM filesystem type
         if "lvm2" in row[COL_FS].lower():
-            logging.warning("Can't edit a partition with a LVM filesystem type")
+            logging.warning(
+                "Can't edit a partition with a LVM filesystem type")
             return
 
         # Fill partition dialog with correct data
@@ -821,7 +830,8 @@ class InstallationAdvanced(GtkBaseBox):
                     combo_iter = combo_model.iter_next(combo_iter)
 
         # Set the mount point in dialog combobox
-        mount_combo_entry = self.ui.get_object('edit_partition_mount_combo_entry')
+        mount_combo_entry = self.ui.get_object(
+            'edit_partition_mount_combo_entry')
         mount_combo_entry.set_text(row[COL_MOUNT_POINT])
 
         # Set label entry
@@ -869,13 +879,17 @@ class InstallationAdvanced(GtkBaseBox):
             new_format = format_check.get_active()
 
             if new_mount in self.diskdic['mounts'] and new_mount != row[COL_MOUNT_POINT]:
-                show.warning(main_window, _("Can't use same mount point twice."))
+                show.warning(main_window, _(
+                    "Can't use same mount point twice."))
             elif new_mount == "/" and not format_check.get_active():
-                show.warning(main_window, _('Root partition must be formatted.'))
+                show.warning(main_window, _(
+                    'Root partition must be formatted.'))
             elif new_mount == "/" and (new_fs == "fat32" or new_fs == "ntfs"):
-                show.warning(main_window, _('Root partition cannot be NTFS or FAT32'))
+                show.warning(main_window, _(
+                    'Root partition cannot be NTFS or FAT32'))
             elif new_mount == "/home" and (new_fs == "fat32" or new_fs == "ntfs"):
-                show.warning(main_window, _('/home partition cannot be NTFS or FAT32'))
+                show.warning(main_window, _(
+                    '/home partition cannot be NTFS or FAT32'))
             else:
                 if row[COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(row[COL_MOUNT_POINT])
@@ -912,17 +926,21 @@ class InstallationAdvanced(GtkBaseBox):
                                 _('As no /boot/efi is defined (yet), /boot needs to be fat32.'))
                             new_fs = "fat32"
                     elif new_mount == "/boot/efi" and new_fs != "fat32":
-                        show.warning(main_window, _('/boot/efi needs to be fat32.'))
+                        show.warning(main_window, _(
+                            '/boot/efi needs to be fat32.'))
                         new_fs = "fat32"
 
-                self.stage_opts[uid] = (is_new, new_label, new_mount, new_fs, new_format)
+                self.stage_opts[uid] = (
+                    is_new, new_label, new_mount, new_fs, new_format)
                 self.luks_options[uid] = self.luks_dialog_options
 
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
                     # (for process.py to know)
-                    self.settings.set('use_luks_in_root', self.luks_dialog_options[0])
-                    self.settings.set('luks_root_volume', self.luks_dialog_options[1])
+                    self.settings.set('use_luks_in_root',
+                                      self.luks_dialog_options[0])
+                    self.settings.set('luks_root_volume',
+                                      self.luks_dialog_options[1])
 
         self.edit_partition_dialog.hide()
 
@@ -1151,17 +1169,20 @@ class InstallationAdvanced(GtkBaseBox):
             # Get how many primary partitions are already created on disk
             primary_count = disk.primaryPartitionCount
             if primary_count == disk.maxPrimaryPartitionCount:
-                msg = _("Sorry, you already have {0} primary partitions created.")
+                msg = _(
+                    "Sorry, you already have {0} primary partitions created.")
                 msg = msg.format(primary_count)
                 show.warning(self.get_main_window(), msg)
                 return
             elif primary_count >= (disk.maxPrimaryPartitionCount - 1) and extended:
-                msg = _("Sorry, you already have {0} primary and 1 extended partitions created.")
+                msg = _(
+                    "Sorry, you already have {0} primary and 1 extended partitions created.")
                 msg = msg.format(primary_count)
                 show.warning(self.get_main_window(), msg)
                 return
 
-        radio["begin"] = self.ui.get_object('create_partition_create_place_beginning')
+        radio["begin"] = self.ui.get_object(
+            'create_partition_create_place_beginning')
         radio["end"] = self.ui.get_object('create_partition_create_place_end')
 
         radio["begin"].set_active(True)
@@ -1174,7 +1195,8 @@ class InstallationAdvanced(GtkBaseBox):
         partition = partitions[partition_path]
 
         # +1 as not to leave unusably small space behind
-        max_size_mb = int((partition.geometry.length * dev.sectorSize) / 1000000) + 1
+        max_size_mb = int((partition.geometry.length *
+                           dev.sectorSize) / 1000000) + 1
 
         size_spin = self.ui.get_object('create_partition_size_spinbutton')
         size_spin.set_digits(0)
@@ -1270,11 +1292,13 @@ class InstallationAdvanced(GtkBaseBox):
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
                         logging.debug("Creating a logical partition")
-                        pm.create_partition(disk, pm.PARTITION_LOGICAL, geometry)
+                        pm.create_partition(
+                            disk, pm.PARTITION_LOGICAL, geometry)
 
                 if (os.path.exists('/sys/firmware/efi') and
                         (mymount == "/boot" or mymount == "/boot/efi")):
-                    logging.info("/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
+                    logging.info(
+                        "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
                     myfs = "fat32"
 
                 # Store new stage partition info in self.stage_opts
@@ -1286,13 +1310,16 @@ class InstallationAdvanced(GtkBaseBox):
                 for e in partitions:
                     if e not in old_parts:
                         uid = self.gen_partition_uid(partition=partitions[e])
-                        self.stage_opts[uid] = (True, mylabel, mymount, myfs, formatme)
+                        self.stage_opts[uid] = (
+                            True, mylabel, mymount, myfs, formatme)
                         self.luks_options[uid] = self.luks_dialog_options
                         if mymount == "/":
                             # Set if we'll be using LUKS in the root partition
                             # (for process.py to know)
-                            self.settings.set('use_luks_in_root', self.luks_dialog_options[0])
-                            self.settings.set('luks_root_volume', self.luks_dialog_options[1])
+                            self.settings.set(
+                                'use_luks_in_root', self.luks_dialog_options[0])
+                            self.settings.set(
+                                'luks_root_volume', self.luks_dialog_options[1])
 
                 # Update partition list treeview
                 self.update_view()
@@ -1311,7 +1338,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         entry_vol_name = self.ui.get_object('luks_vol_name_entry')
         entry_password = self.ui.get_object('luks_password_entry')
-        entry_password_confirm = self.ui.get_object('luks_password_confirm_entry')
+        entry_password_confirm = self.ui.get_object(
+            'luks_password_confirm_entry')
 
         (use_luks, vol_name, password) = self.luks_dialog_options
 
@@ -1343,13 +1371,16 @@ class InstallationAdvanced(GtkBaseBox):
                 if vol_name and password:
                     if password == entry_password_confirm.get_text():
                         # Save new choices
-                        self.luks_dialog_options = (use_luks, vol_name, password)
+                        self.luks_dialog_options = (
+                            use_luks, vol_name, password)
                     else:
-                        msg = _("LUKS passwords do not match! Encryption NOT enabled.")
+                        msg = _(
+                            "LUKS passwords do not match! Encryption NOT enabled.")
                         show.warning(self.get_main_window(), msg)
                         self.luks_dialog_options = (False, "", "")
                 else:
-                    msg = _("Volume name and password are mandatory! Encryption NOT enabled.")
+                    msg = _(
+                        "Volume name and password are mandatory! Encryption NOT enabled.")
                     show.warning(self.get_main_window(), msg)
                     self.luks_dialog_options = (False, "", "")
             else:
@@ -1816,7 +1847,8 @@ class InstallationAdvanced(GtkBaseBox):
         if res:
             txt = "Couldn't create BIOS GPT Boot partition: {0}".format(myerr)
             logging.error(txt)
-            txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(myerr)
+            txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(
+                myerr)
             show.error(self.get_main_window(), txt)
 
         # Store stage partition info in self.stage_opts
@@ -1829,7 +1861,8 @@ class InstallationAdvanced(GtkBaseBox):
         for e in partitions:
             if e not in old_parts:
                 uid = self.gen_partition_uid(partition=partitions[e])
-                self.stage_opts[uid] = (True, mylabel, mymount, myfmt, formatme)
+                self.stage_opts[uid] = (
+                    True, mylabel, mymount, myfmt, formatme)
 
         # Update partition list treeview
         self.update_view()
@@ -1884,11 +1917,12 @@ class InstallationAdvanced(GtkBaseBox):
             "/": "root_part",
             "/boot": "boot_part",
             "/boot/efi": "boot_efi_part",
-            "swap" :"swap_part"}
+            "swap": "swap_part"}
 
         part_label = {}
         for check_part in check_parts:
-            part_label[check_part] = self.ui.get_object(label_names[check_part])
+            part_label[check_part] = self.ui.get_object(
+                label_names[check_part])
             part_label[check_part].set_state(False)
             part_label[check_part].hide()
 
@@ -1982,11 +2016,13 @@ class InstallationAdvanced(GtkBaseBox):
         swap_partition = self.get_swap_partition(partition_path)
         msg = ""
         if swap_partition == partition_path:
-            msg = _("{0} is already mounted as swap, to continue it will be unmounted.")
+            msg = _(
+                "{0} is already mounted as swap, to continue it will be unmounted.")
             msg = msg.format(partition_path)
             mounted = True
         elif mount_point:
-            msg = _("{0} is already mounted in {1}, to continue it will be unmounted.")
+            msg = _(
+                "{0} is already mounted in {1}, to continue it will be unmounted.")
             msg = msg.format(partition_path, mount_point)
             mounted = True
 
@@ -2118,7 +2154,8 @@ class InstallationAdvanced(GtkBaseBox):
                             createme = False
 
                         if uid in self.luks_options:
-                            (use_luks, vol_name, password) = self.luks_options[uid]
+                            (use_luks, vol_name,
+                             password) = self.luks_options[uid]
                             if use_luks:
                                 encrypt = True
 
@@ -2138,7 +2175,6 @@ class InstallationAdvanced(GtkBaseBox):
                         logging.debug(str(act))
 
         return changelist
-
 
     @staticmethod
     def set_cursor(cursor_type):
@@ -2237,7 +2273,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if (not pm.get_flag(partition, pm.PED_PARTITION_BOOT) and
                             self.bootloader_device):
                         pm.set_flag(pm.PED_PARTITION_BOOT, partition)
-                        logging.debug("Set BOOT flag to partition %s", partition_path)
+                        logging.debug(
+                            "Set BOOT flag to partition %s", partition_path)
 
                     self.finalize_changes(partition.disk)
 
@@ -2264,9 +2301,12 @@ class InstallationAdvanced(GtkBaseBox):
                             for part_path in pvs[vgname]:
                                 if (not pm.get_flag(partitions[part_path], pm.PED_PARTITION_BOOT) and
                                         self.bootloader_device):
-                                    pm.set_flag(pm.PED_PARTITION_BOOT, partitions[part_path])
-                                    logging.debug("Set BOOT flag to partition %s", partition_path)
-                                self.finalize_changes(partitions[part_path].disk)
+                                    pm.set_flag(pm.PED_PARTITION_BOOT,
+                                                partitions[part_path])
+                                    logging.debug(
+                                        "Set BOOT flag to partition %s", partition_path)
+                                self.finalize_changes(
+                                    partitions[part_path].disk)
 
                 if uid in self.luks_options:
                     (use_luks, vol_name, password) = self.luks_options[uid]
@@ -2300,7 +2340,8 @@ class InstallationAdvanced(GtkBaseBox):
                             lbl = self.orig_label_dic[partition_path]
                         if mnt == "/":
                             self.settings.set("luks_root_password", password)
-                            self.settings.set("luks_root_device", partition_path)
+                            self.settings.set(
+                                "luks_root_device", partition_path)
 
                 # Only format if they want formatting
                 if fmt:
@@ -2340,9 +2381,11 @@ class InstallationAdvanced(GtkBaseBox):
             pm.finalize_changes(disk)
             logging.info("Saved changes to disk")
         except IOError as io_error:
-            msg = "Cannot commit your changes to disk: {0}".format(str(io_error))
+            msg = "Cannot commit your changes to disk: {0}".format(
+                str(io_error))
             logging.error(msg)
-            msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
+            msg = _("Cannot commit your changes to disk: {0}").format(
+                str(io_error))
             show.error(self.get_main_window(), msg)
 
     def run_install(self, packages, metalinks):
@@ -2373,7 +2416,8 @@ class InstallationAdvanced(GtkBaseBox):
                     if use_luks and len(vol_name) > 0:
                         self.mount_devices[mount_point] = "/dev/mapper/" + vol_name
             for partition_path in partition_list:
-                uid = self.gen_partition_uid(partition=partitions[partition_path])
+                uid = self.gen_partition_uid(
+                    partition=partitions[partition_path])
                 if uid in self.stage_opts:
                     (is_new,
                      label,
@@ -2404,6 +2448,7 @@ class InstallationAdvanced(GtkBaseBox):
             self.ssd,
             self.blvm)
         self.installation.start()
+
 
 # When testing, no _() is available
 try:

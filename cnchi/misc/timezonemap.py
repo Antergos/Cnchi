@@ -110,7 +110,8 @@ class TimezoneMap(Gtk.Widget):
     """ Widget that allows to select user's timezone """
     __gtype_name__ = 'TimezoneMap'
 
-    __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
+    __gsignals__ = {
+        'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
     def __init__(self):
         Gtk.Widget.__init__(self)
@@ -597,6 +598,7 @@ def test():
     import signal    # enable Ctrl-C since there is no menu to quit
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     Gtk.main()
+
 
 if __name__ == '__main__':
     test()

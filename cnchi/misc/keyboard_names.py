@@ -34,6 +34,7 @@ except ImportError as err:
 
 class Model(GObject.GObject):
     """ Represents a keyboard model """
+
     def __init__(self, name, description, vendor):
         GObject.GObject.__init__(self)
         self.name = name
@@ -47,6 +48,7 @@ class Model(GObject.GObject):
 
 class Variant(GObject.GObject):
     """ Keymap variant layout """
+
     def __init__(self, name, short_description, description, language_list):
         GObject.GObject.__init__(self)
         self.name = name
@@ -61,6 +63,7 @@ class Variant(GObject.GObject):
 
 class Layout(GObject.GObject):
     """ Keymap layout """
+
     def __init__(self, name, short_description, description, language_list):
         GObject.GObject.__init__(self)
         self.name = name
@@ -85,6 +88,7 @@ class Layout(GObject.GObject):
 
 class KeyboardNames(object):
     """ Read all keyboard info (models, layouts and variants) """
+
     def __init__(self, filename):
         self.models = None
         self.layouts = None
@@ -250,6 +254,7 @@ def test():
         print(name, layouts[name])
         for variant_name in layouts[name].variants:
             print(layouts[name], "-", layouts[name].variants[variant_name])
+
 
 if __name__ == '__main__':
     test()

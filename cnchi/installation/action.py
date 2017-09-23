@@ -27,6 +27,7 @@
 
 class Action(object):
     """ Store actions on devices for the user to confirm """
+
     def __init__(self, action_type, path_or_info, relabel=False,
                  fs_format=False, mount_point="", encrypt=False):
         """ Init fields """

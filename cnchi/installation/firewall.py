@@ -70,7 +70,8 @@ def run(params, dest_dir="/install"):
         cmd_line = ufw.frontend.parse_command(cmd)
         ui = ufw.frontend.UFWFrontend(cmd_line.dryrun)
         if app_action and 'type' in cmd_line.data and cmd_line.data['type'] == 'app':
-            res = ui.do_application_action(cmd_line.action, cmd_line.data['name'])
+            res = ui.do_application_action(
+                cmd_line.action, cmd_line.data['name'])
         else:
             bailout = False
             if cmd_line.action == "enable" and not cmd_line.force and \

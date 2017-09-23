@@ -41,7 +41,8 @@ def run(dest_dir, settings, mount_devices, blvm):
     cpu = get_cpu()
 
     # Add lvm and encrypt hooks if necessary
-    hooks = ['base', 'udev', 'autodetect', 'modconf', 'block', 'keyboard', 'keymap']
+    hooks = ['base', 'udev', 'autodetect',
+             'modconf', 'block', 'keyboard', 'keymap']
     modules = []
     files = []
 
@@ -83,7 +84,8 @@ def run(dest_dir, settings, mount_devices, blvm):
 
     hooks.append('filesystems')
 
-    crc32 = ['crc32', 'libcrc32c', 'crc32c_generic', 'crc32c-intel', 'crc32-pclmul']
+    crc32 = ['crc32', 'libcrc32c', 'crc32c_generic',
+             'crc32c-intel', 'crc32-pclmul']
 
     if settings.get('f2fs'):
         modules.append('f2fs')
@@ -103,7 +105,8 @@ def run(dest_dir, settings, mount_devices, blvm):
     cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux'.format(locale)]
     chroot_call(cmd, dest_dir)
     if settings.get('feature_lts'):
-        cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux-lts'.format(locale)]
+        cmd = ['sh', '-c',
+               'LANG={0} /usr/bin/mkinitcpio -p linux-lts'.format(locale)]
         chroot_call(cmd, dest_dir)
 
 

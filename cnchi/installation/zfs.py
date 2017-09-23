@@ -74,6 +74,7 @@ def is_int(num):
 
 class InstallationZFS(GtkBaseBox):
     """ ZFS installation screen class """
+
     def __init__(
             self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "zfs", prev_page, next_page)
@@ -251,7 +252,8 @@ class InstallationZFS(GtkBaseBox):
             # Skip cdrom, raid, lvm volumes or encryptfs
             if (not dev.path.startswith("/dev/sr") and
                     not dev.path.startswith("/dev/mapper")):
-                size_in_gigabytes = int((dev.length * dev.sectorSize) / 1000000000)
+                size_in_gigabytes = int(
+                    (dev.length * dev.sectorSize) / 1000000000)
                 # Use check | Disk (sda) | Size(GB) | Name (device name)
                 if dev.path.startswith("/dev/"):
                     path = dev.path[len("/dev/"):]
@@ -598,14 +600,18 @@ class InstallationZFS(GtkBaseBox):
             self.append_change("delete", device_path)
             if not self.uefi:
                 self.append_change("create", device_path, "BIOS boot (2MB)")
-                self.append_change("create", device_path, "Antergos Boot (512MB)")
+                self.append_change("create", device_path,
+                                   "Antergos Boot (512MB)")
             else:
                 # UEFI
                 if self.bootloader == "grub2":
-                    self.append_change("create", device_path, "UEFI System (200MB)")
-                    self.append_change("create", device_path, "Antergos Boot (512MB)")
+                    self.append_change("create", device_path,
+                                       "UEFI System (200MB)")
+                    self.append_change("create", device_path,
+                                       "Antergos Boot (512MB)")
                 else:
-                    self.append_change("create", device_path, "Antergos Boot (512MB)")
+                    self.append_change("create", device_path,
+                                       "Antergos Boot (512MB)")
         else:
             # MBR
             self.append_change("delete", device_path)
@@ -616,7 +622,8 @@ class InstallationZFS(GtkBaseBox):
         self.append_change("create", device_path, "Antergos ZFS vol (swap)")
 
         if self.settings.get("use_home"):
-            self.append_change("create", device_path, "Antergos ZFS vol (/home)")
+            self.append_change("create", device_path,
+                               "Antergos ZFS vol (/home)")
 
         # Now init all other devices that will form part of the pool
         for device_path in device_paths[1:]:
@@ -643,7 +650,8 @@ class InstallationZFS(GtkBaseBox):
         # Clear the end "offset" sectors of the disk, too.
         try:
             seek = int(call(["blockdev", "--getsz", device_path])) - offset
-            wrapper.dd("/dev/zero", device_path, bs=512, count=offset, seek=seek)
+            wrapper.dd("/dev/zero", device_path,
+                       bs=512, count=offset, seek=seek)
         except ValueError as ex:
             logging.warning(ex)
 
@@ -704,51 +712,64 @@ class InstallationZFS(GtkBaseBox):
                 # GPT GUID: 21686148-6449-6E6F-744E-656564454649
                 # This partition is not required if the system is UEFI based,
                 # as there is no such embedding of the second-stage code in that case
-                wrapper.sgdisk_new(device_path, part_num, "BIOS_BOOT", 2, "EF02")
+                wrapper.sgdisk_new(device_path, part_num,
+                                   "BIOS_BOOT", 2, "EF02")
                 part_num += 1
 
                 # Create BOOT partition
-                wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
+                wrapper.sgdisk_new(device_path, part_num,
+                                   "ANTERGOS_BOOT", 512, "8300")
                 self.devices['boot'] = "{0}{1}".format(device_path, part_num)
                 self.fs_devices[self.devices['boot']] = "ext4"
                 self.mount_devices['/boot'] = self.devices['boot']
                 # mkfs
-                fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+                fs.create_fs(
+                    self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                 part_num += 1
             else:
                 # UEFI and GPT
                 if self.bootloader == "grub2":
                     # Create EFI System Partition (ESP)
                     # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                    wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
-                    self.devices['efi'] = "{0}{1}".format(device_path, part_num)
+                    wrapper.sgdisk_new(device_path, part_num,
+                                       "UEFI_SYSTEM", 200, "EF00")
+                    self.devices['efi'] = "{0}{1}".format(
+                        device_path, part_num)
                     self.fs_devices[self.devices['efi']] = "vfat"
                     self.mount_devices['/boot/efi'] = self.devices['efi']
                     # mkfs
-                    fs.create_fs(self.devices['efi'], self.fs_devices[self.devices['efi']], "EFI")
+                    fs.create_fs(
+                        self.devices['efi'], self.fs_devices[self.devices['efi']], "EFI")
                     part_num += 1
 
                     # Create BOOT partition
-                    wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
-                    self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+                    wrapper.sgdisk_new(device_path, part_num,
+                                       "ANTERGOS_BOOT", 512, "8300")
+                    self.devices['boot'] = "{0}{1}".format(
+                        device_path, part_num)
                     self.fs_devices[self.devices['boot']] = "ext4"
                     self.mount_devices['/boot'] = self.devices['boot']
                     # mkfs
-                    fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+                    fs.create_fs(
+                        self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                     part_num += 1
                 else:
                     # systemd-boot, refind
                     # Create BOOT partition
-                    wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
-                    self.devices['boot'] = "{0}{1}".format(device_path, part_num)
+                    wrapper.sgdisk_new(device_path, part_num,
+                                       "ANTERGOS_BOOT", 512, "EF00")
+                    self.devices['boot'] = "{0}{1}".format(
+                        device_path, part_num)
                     self.fs_devices[self.devices['boot']] = "vfat"
                     self.mount_devices['/boot'] = self.devices['boot']
                     # mkfs
-                    fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+                    fs.create_fs(
+                        self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
                     part_num += 1
 
             # The rest of the disk will be of solaris type
-            wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_ZFS", 0, "BF00")
+            wrapper.sgdisk_new(device_path, part_num,
+                               "ANTERGOS_ZFS", 0, "BF00")
             solaris_partition_number = part_num
             self.devices['root'] = "{0}{1}".format(device_path, part_num)
             # self.fs_devices[self.devices['root']] = "zfs"
@@ -781,7 +802,8 @@ class InstallationZFS(GtkBaseBox):
             self.fs_devices[self.devices['boot']] = fs_boot
             self.mount_devices['/boot'] = self.devices['boot']
             # mkfs
-            fs.create_fs(self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+            fs.create_fs(
+                self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
 
             # The rest of the disk will be of solaris type
             start = end
@@ -900,14 +922,16 @@ class InstallationZFS(GtkBaseBox):
             # If size is given, mountpoint cannot be set (zfs)
             # Round up
             swap_size = math.ceil(swap_size)
-            logging.debug("Creating a zfs vol %s/%s of size %dGB", pool_name, vol_name, swap_size)
+            logging.debug("Creating a zfs vol %s/%s of size %dGB",
+                          pool_name, vol_name, swap_size)
             cmd.extend(["-V", "{0}G".format(swap_size)])
         else:
             logging.debug("Creating a zfs vol %s/%s", pool_name, vol_name)
             if vol_name == "swap":
                 cmd.extend(["-o", "mountpoint=none"])
             else:
-                cmd.extend(["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
+                cmd.extend(
+                    ["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
 
         cmd.append("{0}/{1}".format(pool_name, vol_name))
         call(cmd, fatal=True)
@@ -992,7 +1016,7 @@ class InstallationZFS(GtkBaseBox):
         if pool_type not in self.pool_types.values():
             raise InstallError("Unknown pool type: {0}".format(pool_type))
 
-        #for device_path in device_paths:
+        # for device_path in device_paths:
         #    cmd = ["zpool", "labelclear", device_path]
         #    call(cmd)
 
@@ -1012,7 +1036,7 @@ class InstallationZFS(GtkBaseBox):
             if len(device_paths) > 2 and len(device_paths) % 2 == 0:
                 # Try to mirror pair of devices
                 # (mirrors of two devices each)
-                for i,k in zip(device_paths[0::2], device_paths[1::2]):
+                for i, k in zip(device_paths[0::2], device_paths[1::2]):
                     cmd.append(pool_type)
                     cmd.extend([i, k])
             else:
@@ -1237,6 +1261,7 @@ class InstallationZFS(GtkBaseBox):
             self.fs_devices)
 
         self.installation.start()
+
 
 try:
     _("")

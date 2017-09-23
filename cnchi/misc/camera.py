@@ -65,7 +65,6 @@ def cheese_init():
 #   y_align=Clutter.BoxAlignment.CENTER)
 
 
-
 class CameraBox(GtkClutter.Embed):
     """ Camera Gtk class """
     __gtype_name__ = 'VideoBox'
@@ -166,6 +165,7 @@ def test():
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     Gtk.main()
+
 
 if __name__ == "__main__":
     test()

@@ -193,7 +193,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     """ Setups a luks device """
 
     if (luks_pass is None or luks_pass == "") and luks_key is None:
-        txt = "Can't setup LUKS in device {0}. A password or a key file are needed".format(luks_device)
+        txt = "Can't setup LUKS in device {0}. A password or a key file are needed".format(
+            luks_device)
         logging.error(txt)
         return
 
@@ -301,7 +302,7 @@ class AutoPartition(object):
         logging.debug("Will format device %s as %s", device, fs_type)
         if fs_type == "swap":
             err_msg = "Can't activate swap in {0}".format(device)
-            swap_devices = call(["swapon","-s"], msg=err_msg)
+            swap_devices = call(["swapon", "-s"], msg=err_msg)
             if device in swap_devices:
                 call(["swapoff", device], msg=err_msg)
             cmd = ["mkswap", "-L", label_name, device]
@@ -507,7 +508,8 @@ class AutoPartition(object):
                     fs_devices[devices['luks_home']] = "ext4"
 
         for device in fs_devices:
-            logging.debug("Device %s will have a %s filesystem", device, fs_devices[device])
+            logging.debug("Device %s will have a %s filesystem",
+                          device, fs_devices[device])
 
         return fs_devices
 
@@ -539,7 +541,8 @@ class AutoPartition(object):
 
         part_sizes['swap'] = math.ceil(part_sizes['swap'])
 
-        other_than_root_size = start_part_sizes + part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap']
+        other_than_root_size = start_part_sizes + \
+            part_sizes['efi'] + part_sizes['boot'] + part_sizes['swap']
         part_sizes['root'] = disk_size - other_than_root_size
 
         if self.home:
@@ -556,7 +559,8 @@ class AutoPartition(object):
                 # this could happen if new_root_part_size == MIN_ROOT_SIZE but
                 # our harddisk is smaller (detected using vbox)
                 # Should we fail here or install without a separated /home partition?
-                logging.warning("There's not enough free space to have a separate /home partition")
+                logging.warning(
+                    "There's not enough free space to have a separate /home partition")
                 self.home = False
                 part_sizes['home'] = 0
             else:
@@ -565,7 +569,8 @@ class AutoPartition(object):
         else:
             part_sizes['home'] = 0
 
-        part_sizes['lvm_pv'] = part_sizes['swap'] + part_sizes['root'] + part_sizes['home']
+        part_sizes['lvm_pv'] = part_sizes['swap'] + \
+            part_sizes['root'] + part_sizes['home']
 
         for part in part_sizes:
             part_sizes[part] = int(part_sizes[part])
@@ -575,11 +580,13 @@ class AutoPartition(object):
     def log_part_sizes(self, part_sizes):
         logging.debug("Total disk size: %dMiB", part_sizes['disk'])
         if self.gpt and self.bootloader == "grub2":
-            logging.debug("EFI System Partition (ESP) size: %dMiB", part_sizes['efi'])
+            logging.debug(
+                "EFI System Partition (ESP) size: %dMiB", part_sizes['efi'])
         logging.debug("Boot partition size: %dMiB", part_sizes['boot'])
 
         if self.lvm:
-            logging.debug("LVM physical volume size: %dMiB", part_sizes['lvm_pv'])
+            logging.debug("LVM physical volume size: %dMiB",
+                          part_sizes['lvm_pv'])
 
         logging.debug("Swap partition size: %dMiB", part_sizes['swap'])
         logging.debug("Root partition size: %dMiB", part_sizes['root'])
@@ -661,27 +668,34 @@ class AutoPartition(object):
             if self.bootloader == "grub2":
                 # Create EFI System Partition (ESP)
                 # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                wrapper.sgdisk_new(device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+                wrapper.sgdisk_new(
+                    device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
                 part_num += 1
 
             # Create Boot partition
             if self.bootloader in ["systemd-boot", "refind"]:
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
             else:
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
             part_num += 1
 
             if self.lvm:
                 # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num += 1
             else:
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
                 part_num += 1
                 if self.home:
-                    wrapper.sgdisk_new(device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
+                    wrapper.sgdisk_new(
+                        device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
                     part_num += 1
-                wrapper.sgdisk_new(device, part_num, "ANTERGOS_SWAP", 0, "8200")
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_SWAP", 0, "8200")
 
             output = call(["sgdisk", "--print", device])
             logging.debug(output)
@@ -734,7 +748,8 @@ class AutoPartition(object):
                 # Now create a logical swap partition
                 start += 1
                 end = "-1s"
-                wrapper.parted_mkpart(device, "logical", start, end, "linux-swap")
+                wrapper.parted_mkpart(
+                    device, "logical", start, end, "linux-swap")
 
         printk(True)
 
@@ -755,9 +770,11 @@ class AutoPartition(object):
         logging.debug("Swap: %s", devices['swap'])
 
         if self.luks:
-            setup_luks(devices['luks_root'], "cryptAntergos", self.luks_password, key_files[0])
+            setup_luks(devices['luks_root'], "cryptAntergos",
+                       self.luks_password, key_files[0])
             if self.home and not self.lvm:
-                setup_luks(devices['luks_home'], "cryptAntergosHome", self.luks_password, key_files[1])
+                setup_luks(devices['luks_home'], "cryptAntergosHome",
+                           self.luks_password, key_files[1])
 
         if self.lvm:
             logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])
@@ -779,29 +796,35 @@ class AutoPartition(object):
             # Get column number 12: Size of volume group in kilobytes
             vg_size = int(vg_info.split(":")[11]) / 1024
             if part_sizes['lvm_pv'] > vg_size:
-                logging.debug("Real AntergosVG volume group size: %d MiB", vg_size)
+                logging.debug(
+                    "Real AntergosVG volume group size: %d MiB", vg_size)
                 logging.debug("Reajusting logical volume sizes")
                 diff_size = part_sizes['lvm_pv'] - vg_size
-                part_sizes = self.get_part_sizes(disk_size - diff_size, start_part_sizes)
+                part_sizes = self.get_part_sizes(
+                    disk_size - diff_size, start_part_sizes)
                 self.log_part_sizes(part_sizes)
 
             # Create LVM volumes
             err_msg = "Error creating LVM logical volume"
 
             size = str(int(part_sizes['root']))
-            cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
+            cmd = ["lvcreate", "--name", "AntergosRoot",
+                   "--size", size, "AntergosVG"]
             call(cmd, msg=err_msg, fatal=True)
 
             if not self.home:
                 # Use the remainig space for our swap volume
-                cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
+                cmd = ["lvcreate", "--name", "AntergosSwap",
+                       "--extents", "100%FREE", "AntergosVG"]
                 call(cmd, msg=err_msg, fatal=True)
             else:
                 size = str(int(part_sizes['swap']))
-                cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
+                cmd = ["lvcreate", "--name", "AntergosSwap",
+                       "--size", size, "AntergosVG"]
                 call(cmd, msg=err_msg, fatal=True)
                 # Use the remaining space for our home volume
-                cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
+                cmd = ["lvcreate", "--name", "AntergosHome",
+                       "--extents", "100%FREE", "AntergosVG"]
                 call(cmd, msg=err_msg, fatal=True)
 
         # We have all partitions and volumes created. Let's create its filesystems with mkfs.
@@ -823,22 +846,28 @@ class AutoPartition(object):
         fs_devices = self.get_fs_devices()
 
         # Note: Make sure the "root" partition is defined first!
-        self.mkfs(devices['root'], fs_devices[devices['root']], mount_points['root'], labels['root'])
-        self.mkfs(devices['swap'], fs_devices[devices['swap']], mount_points['swap'], labels['swap'])
+        self.mkfs(devices['root'], fs_devices[devices['root']],
+                  mount_points['root'], labels['root'])
+        self.mkfs(devices['swap'], fs_devices[devices['swap']],
+                  mount_points['swap'], labels['swap'])
 
         if self.gpt and self.bootloader in ["refind", "systemd-boot"]:
             # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'], "-F 32")
+            self.mkfs(devices['boot'], fs_devices[devices['boot']],
+                      mount_points['boot'], labels['boot'], "-F 32")
         else:
-            self.mkfs(devices['boot'], fs_devices[devices['boot']], mount_points['boot'], labels['boot'])
+            self.mkfs(devices['boot'], fs_devices[devices['boot']],
+                      mount_points['boot'], labels['boot'])
 
         # Note: Make sure the "boot" partition is defined before the "efi" one!
         if self.gpt and self.bootloader == "grub2":
             # Format EFI System Partition (ESP) with vfat (fat32)
-            self.mkfs(devices['efi'], fs_devices[devices['efi']], mount_points['efi'], labels['efi'], "-F 32")
+            self.mkfs(devices['efi'], fs_devices[devices['efi']],
+                      mount_points['efi'], labels['efi'], "-F 32")
 
         if self.home:
-            self.mkfs(devices['home'], fs_devices[devices['home']], mount_points['home'], labels['home'])
+            self.mkfs(devices['home'], fs_devices[devices['home']],
+                      mount_points['home'], labels['home'])
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
@@ -868,7 +897,8 @@ if __name__ == '__main__':
 
     _ = gettext.gettext
 
-    logging.basicConfig(filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
+    logging.basicConfig(
+        filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
 
     auto = AutoPartition(
         dest_dir="/install",

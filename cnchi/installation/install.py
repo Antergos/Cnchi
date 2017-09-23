@@ -178,7 +178,8 @@ class Installation(object):
             cmd = ["zfs", "mount", "-a"]
             call(cmd)
         elif root_partition:
-            txt = "Mounting root partition {0} into {1} directory".format(root_partition, DEST_DIR)
+            txt = "Mounting root partition {0} into {1} directory".format(
+                root_partition, DEST_DIR)
             logging.debug(txt)
             cmd = ['mount', root_partition, DEST_DIR]
             call(cmd, fatal=True)
@@ -187,7 +188,8 @@ class Installation(object):
         boot_path = os.path.join(DEST_DIR, "boot")
         os.makedirs(boot_path, mode=0o755, exist_ok=True)
         if boot_partition:
-            txt = _("Mounting boot partition {0} into {1} directory").format(boot_partition, boot_path)
+            txt = _("Mounting boot partition {0} into {1} directory").format(
+                boot_partition, boot_path)
             logging.debug(txt)
             cmd = ['mount', boot_partition, boot_path]
             call(cmd, fatal=True)
@@ -198,7 +200,8 @@ class Installation(object):
             # EFI and grub2 bootloader
             efi_path = os.path.join(DEST_DIR, "boot", "efi")
             os.makedirs(efi_path, mode=0o755, exist_ok=True)
-            txt = _("Mounting EFI partition {0} into {1} directory").format(efi_partition, efi_path)
+            txt = _("Mounting EFI partition {0} into {1} directory").format(
+                efi_partition, efi_path)
             logging.debug(txt)
             cmd = ['mount', efi_partition, efi_path]
             call(cmd, fatal=True)
@@ -224,7 +227,8 @@ class Installation(object):
                         cmd = ['mount', mount_part, mount_dir]
                         call(cmd)
                     except OSError:
-                        logging.warning("Could not create %s directory", mount_dir)
+                        logging.warning(
+                            "Could not create %s directory", mount_dir)
                 elif mount_part == swap_partition:
                     logging.debug("Activating swap in %s", mount_part)
                     cmd = ['swapon', swap_partition]
@@ -345,13 +349,15 @@ class Installation(object):
         log_dest_dir = os.path.join(DEST_DIR, "var/log/cnchi")
         os.makedirs(log_dest_dir, mode=0o755, exist_ok=True)
 
-        datetime = "{0}-{1}".format(time.strftime("%Y%m%d"), time.strftime("%H%M%S"))
+        datetime = "{0}-{1}".format(time.strftime("%Y%m%d"),
+                                    time.strftime("%H%M%S"))
 
         file_names = ["cnchi", "postinstall", "pacman"]
 
         for name in file_names:
             src = os.path.join("/tmp", "{0}.log".format(name))
-            dst = os.path.join(log_dest_dir, "{0}-{1}.log".format(name, datetime))
+            dst = os.path.join(
+                log_dest_dir, "{0}-{1}.log".format(name, datetime))
             try:
                 shutil.copy(src, dst)
             except FileNotFoundError:
@@ -386,11 +392,13 @@ class Installation(object):
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """
         myarch = os.uname()[-1]
-        msg = _("Creating a temporary pacman.conf for {0} architecture").format(myarch)
+        msg = _("Creating a temporary pacman.conf for {0} architecture").format(
+            myarch)
         logging.debug(msg)
 
         # Template functionality. Needs Mako (see http://www.makotemplates.org/)
-        template_file_name = os.path.join(self.settings.get('data'), 'pacman.tmpl')
+        template_file_name = os.path.join(
+            self.settings.get('data'), 'pacman.tmpl')
         file_template = Template(filename=template_file_name)
         file_rendered = file_template.render(
             destDir=DEST_DIR,
@@ -450,7 +458,8 @@ class Installation(object):
         call(cmd)
 
         # Load the signature keys
-        cmd = ["pacman-key", "--populate", "--gpgdir", dest_path, "archlinux", "antergos"]
+        cmd = ["pacman-key", "--populate", "--gpgdir",
+               dest_path, "archlinux", "antergos"]
         call(cmd)
 
         # path = os.path.join(DEST_DIR, "root/.gnupg/dirmngr_ldapservers.conf")
@@ -475,7 +484,8 @@ class Installation(object):
         logging.debug("Installing packages...")
 
         try:
-            result = self.pacman.install(pkgs=self.packages, conflicts=None, options=None)
+            result = self.pacman.install(
+                pkgs=self.packages, conflicts=None, options=None)
         except pac.pyalpm.error:
             pass
 
@@ -533,7 +543,8 @@ class Installation(object):
     def copy_network_config():
         """ Copies Network Manager configuration """
         source_nm = "/etc/NetworkManager/system-connections/"
-        target_nm = os.path.join(DEST_DIR, "etc/NetworkManager/system-connections")
+        target_nm = os.path.join(
+            DEST_DIR, "etc/NetworkManager/system-connections")
 
         # Sanity checks.  We don't want to do anything if a network
         # configuration already exists on the target
@@ -552,7 +563,8 @@ class Installation(object):
                 try:
                     shutil.copy(source_network, target_network)
                 except FileNotFoundError:
-                    logging.warning("Can't copy network configuration files, file %s not found", source_network)
+                    logging.warning(
+                        "Can't copy network configuration files, file %s not found", source_network)
                 except FileExistsError:
                     pass
 
@@ -627,13 +639,15 @@ class Installation(object):
 
                 os.chmod(crypttab_path, 0o666)
                 with open(crypttab_path, 'a') as crypttab_file:
-                    line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(uuid, home_keyfile)
+                    line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(
+                        uuid, home_keyfile)
                     crypttab_file.write(line)
                     logging.debug("Added %s to crypttab", line)
                 os.chmod(crypttab_path, 0o600)
 
                 # Add line to fstab
-                txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(mount_point, myfmt)
+                txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(
+                    mount_point, myfmt)
                 all_lines.append(txt)
                 logging.debug("Added %s to fstab", txt)
                 continue
@@ -845,7 +859,6 @@ class Installation(object):
         else:
             logging.error("Can't find locale.gen file")
 
-
     def enable_aur_in_pamac(self):
         pamac_conf = "/etc/pamac.conf"
         if os.path.exists(pamac_conf):
@@ -890,7 +903,7 @@ class Installation(object):
         # socket and will only start the daemon process for an incoming connection.
         # It is the recommended way to run sshd in almost all cases.
         if self.settings.get("feature_sshd"):
-            services.append('sshd.socket');
+            services.append('sshd.socket')
 
         if self.settings.get("feature_firewall"):
             logging.debug("Configuring firewall...")
@@ -1074,7 +1087,7 @@ class Installation(object):
         """ Set X11 and console keymap """
         keyboard_layout = self.settings.get("keyboard_layout")
         keyboard_variant = self.settings.get("keyboard_variant")
-        #localectl set-x11-keymap es cat
+        # localectl set-x11-keymap es cat
         cmd = ['localectl', 'set-x11-keymap', keyboard_layout]
         if keyboard_variant:
             cmd.append(keyboard_variant)
@@ -1085,7 +1098,7 @@ class Installation(object):
         # Copy 00-keyboard.conf and vconsole.conf files to destination
         path = os.path.join(DEST_DIR, "etc/X11/xorg.conf.d")
         os.makedirs(path, mode=0o755, exist_ok=True)
-        files = [ "/etc/X11/xorg.conf.d/00-keyboard.conf", "/etc/vconsole.conf"]
+        files = ["/etc/X11/xorg.conf.d/00-keyboard.conf", "/etc/vconsole.conf"]
         for src in files:
             try:
                 dst = os.path.join(DEST_DIR, src[1:])
@@ -1104,7 +1117,8 @@ class Installation(object):
             if file_name.startswith("zfs") and not file_name.startswith("zfs-utils"):
                 try:
                     zfs_version = file_name.split("-")[1]
-                    logging.info("Installed zfs module's version: %s", zfs_version)
+                    logging.info(
+                        "Installed zfs module's version: %s", zfs_version)
                 except KeyError:
                     logging.warning("Can't get zfs version from %s", file_name)
         return zfs_version
@@ -1214,7 +1228,6 @@ class Installation(object):
             if os.path.exists(os.path.join(DEST_DIR, "usr/lib/systemd/system/bumblebeed.service")):
                 services.extend(["bumblebee"])
 
-
         services.extend(["ModemManager", "haveged"])
 
         if self.method == "zfs":
@@ -1239,7 +1252,8 @@ class Installation(object):
                                     "0.fr.pool.ntp.org\n")
             except FileNotFoundError as err:
                 logging.warning("Can't find %s file.", timesyncd_path)
-            chroot_call(['systemctl', '-fq', 'enable', 'systemd-timesyncd.service'])
+            chroot_call(['systemctl', '-fq', 'enable',
+                         'systemd-timesyncd.service'])
 
         # Set timezone
         zone = self.settings.get("timezone_zone")
@@ -1249,7 +1263,8 @@ class Installation(object):
             chroot_call(['ln', '-sf', zoneinfo_path, localtime_path])
             logging.debug("Timezone set to %s", zoneinfo_path)
         else:
-            logging.warning("Can't read selected timezone! Will leave it to UTC.")
+            logging.warning(
+                "Can't read selected timezone! Will leave it to UTC.")
 
         # Wait FOREVER until the user sets his params
         # FIXME: We can wait here forever!
@@ -1366,11 +1381,11 @@ class Installation(object):
             shutil.copy2(src, dst)
 
         # Configure ALSA
-        #self.alsa_mixer_setup()
+        # self.alsa_mixer_setup()
         #logging.debug("Updated Alsa mixer settings")
 
         # Set pulse
-        #if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
+        # if os.path.exists(os.path.join(DEST_DIR, "usr/bin/pulseaudio-ctl")):
         #    chroot_run(['pulseaudio-ctl', 'normal'])
 
         # Set fluidsynth audio system (in our case, pulseaudio)
@@ -1393,12 +1408,16 @@ class Installation(object):
             kernel_versions = self.get_installed_kernel_versions()
             if kernel_versions:
                 for kernel_version in kernel_versions:
-                    logging.debug("Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
-                    chroot_call(['dkms', 'install', spl_module, '-k', kernel_version])
-                    chroot_call(['dkms', 'install', zfs_module, '-k', kernel_version])
+                    logging.debug(
+                        "Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
+                    chroot_call(
+                        ['dkms', 'install', spl_module, '-k', kernel_version])
+                    chroot_call(
+                        ['dkms', 'install', zfs_module, '-k', kernel_version])
             else:
                 # No kernel version found, try to install for current kernel
-                logging.debug("Installing zfs v%s modules for current kernel.", zfs_version)
+                logging.debug(
+                    "Installing zfs v%s modules for current kernel.", zfs_version)
                 chroot_call(['dkms', 'install', spl_module])
                 chroot_call(['dkms', 'install', zfs_module])
 
@@ -1455,7 +1474,7 @@ class Installation(object):
             cmd = ["groupadd", "-r", "-g", "84", "avahi"]
             chroot_call(cmd)
             cmd = ["useradd", "-r", "-u", "84", "-g", "avahi", "-d", "/", "-s",
-                "/bin/nologin", "-c", "avahi", "avahi"]
+                   "/bin/nologin", "-c", "avahi", "avahi"]
             chroot_call(cmd)
 
         # Install sonar (a11y) gsettings if present in the ISO (and a11y is on)
@@ -1471,15 +1490,18 @@ class Installation(object):
             with open(pamac_conf, 'r') as f:
                 file_data = f.read()
             file_data = file_data.replace("#EnableAUR", "EnableAUR")
-            file_data = file_data.replace("#SearchInAURByDefault", "SearchInAURByDefault")
-            file_data = file_data.replace("#CheckAURUpdates", "CheckAURUpdates")
+            file_data = file_data.replace(
+                "#SearchInAURByDefault", "SearchInAURByDefault")
+            file_data = file_data.replace(
+                "#CheckAURUpdates", "CheckAURUpdates")
             with open(pamac_conf, 'w') as f:
                 f.write(file_data)
 
         # Enable colors and syntax highlighting in nano editor
         nanorc_path = os.path.join(DEST_DIR, 'etc/nanorc')
         if os.path.exists(nanorc_path):
-            logging.debug("Enabling colors and syntax highlighting in nano editor")
+            logging.debug(
+                "Enabling colors and syntax highlighting in nano editor")
             with open(nanorc_path, 'a') as nanorc:
                 nanorc.write('\n')
                 nanorc.write('# Added by Cnchi (Antergos Installer)\n')

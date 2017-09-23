@@ -103,10 +103,12 @@ def apache_setup():
             logging.warning(file_error)
 
     # Create localhost.conf in /etc/httpd/conf/sites-available/
-    localhost_path = os.path.join(DEST_DIR, "etc/httpd/conf/sites-available/localhost.conf")
+    localhost_path = os.path.join(
+        DEST_DIR, "etc/httpd/conf/sites-available/localhost.conf")
     with open(localhost_path, 'a') as localhost_conf:
         localhost_conf.write('\n# phpmyadmin alias and directory setup\n')
-        localhost_conf.write('Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"\n')
+        localhost_conf.write(
+            'Alias /phpmyadmin "/usr/share/webapps/phpMyAdmin"\n')
         localhost_conf.write('<Directory "/usr/share/webapps/phpMyAdmin">\n')
         localhost_conf.write('    DirectoryIndex index.html index.php\n')
         localhost_conf.write('    AllowOverride All\n')
@@ -135,12 +137,15 @@ def php_setup():
     # Add mpm_prefork_module and php5_module
     php_path = os.path.join(DEST_DIR, 'etc/httpd/conf/mods-enabled/php.conf')
     with open(php_path, 'w') as php_conf:
-        php_conf.write("LoadModule mpm_prefork_module /etc/httpd/modules/mod_mpm_prefork.so\n")
-        php_conf.write("LoadModule php7_module /etc/httpd/modules/libphp7.so\n")
+        php_conf.write(
+            "LoadModule mpm_prefork_module /etc/httpd/modules/mod_mpm_prefork.so\n")
+        php_conf.write(
+            "LoadModule php7_module /etc/httpd/modules/libphp7.so\n")
         php_conf.write("Include conf/extra/php7_module.conf\n")
 
     # PHP extensions that will be activated
-    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli", "openssl", "iconv", "imap", "zip", "bz2"]
+    so_extensions = ["mysql", "mcrypt", "mssql", "mysqli",
+                     "openssl", "iconv", "imap", "zip", "bz2"]
 
     php_ini_path = os.path.join(DEST_DIR, 'etc/php/php.ini')
     with open(php_ini_path, 'r') as php_ini:

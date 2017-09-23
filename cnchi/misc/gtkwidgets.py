@@ -117,6 +117,7 @@ class StylizedFrame(Gtk.Bin):
             c.translate(left, top)
             self.get_child().draw(c)
 
+
 GObject.type_register(StylizedFrame)
 
 
@@ -132,6 +133,7 @@ class DiskBox(Gtk.Box):
     def clear(self):
         """ Remove all partitions """
         self.forall(lambda x: self.remove(x))
+
 
 GObject.type_register(DiskBox)
 
@@ -257,6 +259,7 @@ class PartitionBox(StylizedFrame):
         g.add_color_stop_rgba(0.40, 1, 1, 1, 0.00)
         c.set_source(g)
         c.fill_preserve()
+
 
 GObject.type_register(PartitionBox)
 
@@ -422,6 +425,7 @@ class ResizeWidget(Gtk.Frame):
         else:
             return size
 
+
 GObject.type_register(ResizeWidget)
 
 
@@ -452,7 +456,8 @@ class StateBox(StylizedFrame):
         hbox = Gtk.Box()
         hbox.set_spacing(10)
         self.image = Gtk.Image()
-        self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
+        self.image.set_from_icon_name(
+            Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         self.image.set_margin_start(7)
         self.label = Gtk.Label(label=text)
         self.label.set_margin_end(15)
@@ -472,9 +477,11 @@ class StateBox(StylizedFrame):
         """ Set state. Show if it's ok or not """
         self.status = state
         if state:
-            self.image.set_from_icon_name(Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
+            self.image.set_from_icon_name(
+                Gtk.STOCK_YES, Gtk.IconSize.LARGE_TOOLBAR)
         else:
-            self.image.set_from_icon_name(Gtk.STOCK_NO, Gtk.IconSize.LARGE_TOOLBAR)
+            self.image.set_from_icon_name(
+                Gtk.STOCK_NO, Gtk.IconSize.LARGE_TOOLBAR)
 
     def get_state(self):
         """ Get widget state """
@@ -488,11 +495,13 @@ class StateBox(StylizedFrame):
         """ Hides widget """
         super().hide()
 
+
 GObject.type_register(StateBox)
 
 
 class Builder(Gtk.Builder):
     """ GtkBuilder should have .get_object_ids() method """
+
     def __init__(self):
         self._widget_ids = set()
         super().__init__()

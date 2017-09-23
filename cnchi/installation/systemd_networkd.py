@@ -42,7 +42,6 @@ from misc.run_cmd import chroot_call
 DEST_DIR = "/install"
 
 
-
 def setup(ssid=None, passphrase=None):
     """ Configure system-networkd for base installs """
 
@@ -77,7 +76,8 @@ def setup(ssid=None, passphrase=None):
                     links.append(link)
                     links_wireless.append(link)
     except subprocess.CalledProcessError as process_error:
-        logging.warning("systemd-networkd configuration failed: %s", process_error)
+        logging.warning(
+            "systemd-networkd configuration failed: %s", process_error)
         return
 
     logging.debug(
@@ -90,7 +90,8 @@ def setup(ssid=None, passphrase=None):
         fname = "etc/systemd/network/{0}.network".format(link)
         wired_path = os.path.join(DEST_DIR, fname)
         with open(wired_path, 'w') as wired_file:
-            wired_file.write("# {0} adapter using DHCP (written by Cnchi)\n".format(link))
+            wired_file.write(
+                "# {0} adapter using DHCP (written by Cnchi)\n".format(link))
             wired_file.write("[Match]\n")
             wired_file.write("Name={0}\n\n".format(link))
             wired_file.write("[Network]\n")
@@ -111,7 +112,8 @@ def setup(ssid=None, passphrase=None):
                 DEST_DIR,
                 "etc/wpa_supplicant/wpa_supplicant-{0}.conf".format(link))
             try:
-                conf = subprocess.check_output(["wpa_passphrase", ssid, passphrase])
+                conf = subprocess.check_output(
+                    ["wpa_passphrase", ssid, passphrase])
                 with open(conf_path, "w") as conf_file:
                     conf_file.write(conf)
             except subprocess.CalledProcessError as process_error:

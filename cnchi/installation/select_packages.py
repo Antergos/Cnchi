@@ -66,7 +66,8 @@ class SelectPackages(object):
 
         self.callback_queue = callback_queue
         self.settings = settings
-        self.alternate_package_list = self.settings.get('alternate_package_list')
+        self.alternate_package_list = self.settings.get(
+            'alternate_package_list')
         self.desktop = self.settings.get('desktop')
         self.zfs = self.settings.get('zfs')
 
@@ -337,7 +338,8 @@ class SelectPackages(object):
                 logging.warning(txt, boot_loader)
 
         # Check for user desired features and add them to our installation
-        logging.debug("Check for user desired features and add them to our installation")
+        logging.debug(
+            "Check for user desired features and add them to our installation")
         self.add_features_packages(xml_root)
         logging.debug("All features needed packages have been added")
 
@@ -407,14 +409,17 @@ class SelectPackages(object):
             if code:
                 code = code.replace('_', '-')
                 pkg_text = "libreoffice-fresh-{0}".format(code)
-                logging.debug("Adding libreoffice language package (%s)", pkg_text)
+                logging.debug(
+                    "Adding libreoffice language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
                 # hunspell
                 code = code[:2]
-                codes = ['de', 'es', 'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
+                codes = ['de', 'es', 'fr', 'he', 'it',
+                         'ro', 'el', 'hu', 'nl', 'pl']
                 if code in codes:
                     pkg_text = "hunspell-{0}".format(code)
-                    logging.debug("Adding hunspell dictionaries for %s language", pkg_text)
+                    logging.debug(
+                        "Adding hunspell dictionaries for %s language", pkg_text)
                     self.packages.append(pkg_text)
 
         # Add firefox language package

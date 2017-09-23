@@ -10,6 +10,7 @@
 
 """  Validation module """
 
+
 def check_grub_device(device):
     """Check that the user entered a valid boot device.
         @return True if the device is valid, False if it is not."""
@@ -26,6 +27,7 @@ def check_grub_device(device):
         return True
     else:
         return False
+
 
 NAME_LENGTH = 1
 NAME_BADCHAR = 2
@@ -118,7 +120,8 @@ def password_strength(password):
     if symbol > 3:
         symbol = 3
 
-    strength = (((length * 0.1) - 0.2) + (digit * 0.1) + (symbol * 0.15) + (upper * 0.1))
+    strength = (((length * 0.1) - 0.2) + (digit * 0.1) +
+                (symbol * 0.15) + (upper * 0.1))
     if strength > 1:
         strength = 1
     elif strength < 0:

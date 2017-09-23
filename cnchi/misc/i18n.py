@@ -19,6 +19,7 @@
 
 """ Internationalisation helper functions (read languagelist.data) """
 
+
 def utf8(my_string, errors="strict"):
     """ Decode a string as UTF-8 if it isn't already Unicode. """
     if isinstance(my_string, str):

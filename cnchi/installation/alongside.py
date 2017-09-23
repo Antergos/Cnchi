@@ -99,13 +99,16 @@ def get_partition_size_info(partition_path, human=False):
 
 class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
+
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
         self.label = self.ui.get_object('label_info')
 
-        self.choose_partition_label = self.ui.get_object('choose_partition_label')
-        self.choose_partition_combo = self.ui.get_object('choose_partition_combo')
+        self.choose_partition_label = self.ui.get_object(
+            'choose_partition_label')
+        self.choose_partition_combo = self.ui.get_object(
+            'choose_partition_combo')
 
         self.oses = bootinfo.get_os_dict()
         # print(self.oses)
@@ -140,15 +143,18 @@ class InstallationAlongside(GtkBaseBox):
             logging.error("There are no primary partitions available")
             return
 
-        txt = "Will shrink device {0} and create new device {1}".format(device_to_shrink, new_device)
+        txt = "Will shrink device {0} and create new device {1}".format(
+            device_to_shrink, new_device)
         logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
         max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
         if max_size < 0:
             # Full Antergos does not fit but maybe base fits... ask user.
-            txt = _("Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
-            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(new_device, device_to_shrink) + "\n\n"
+            txt = _(
+                "Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
+            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(
+                new_device, device_to_shrink) + "\n\n"
             txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
             txt += _("Install at your own risk!")
             show.warning(self.get_main_window(), txt)
@@ -161,11 +167,13 @@ class InstallationAlongside(GtkBaseBox):
             self.resize_widget.set_property('min_size', int(min_size))
             self.resize_widget.set_property('max_size', int(max_size))
         else:
-            self.resize_widget = gtkwidgets.ResizeWidget(part_size, min_size, max_size)
+            self.resize_widget = gtkwidgets.ResizeWidget(
+                part_size, min_size, max_size)
             main_box = self.ui.get_object('alongside')
             main_box.pack_start(self.resize_widget, True, False, 5)
 
-        self.resize_widget.set_part_title('existing', self.oses[device_to_shrink], device_to_shrink)
+        self.resize_widget.set_part_title(
+            'existing', self.oses[device_to_shrink], device_to_shrink)
         icon_file = self.get_distributor_icon_file(self.oses[device_to_shrink])
         self.resize_widget.set_part_icon('existing', icon_file=icon_file)
 
@@ -183,7 +191,8 @@ class InstallationAlongside(GtkBaseBox):
         # No numix icon for Antergos, use our own.
         if "antergos" in os_name:
             icons_path = os.path.join(self.settings.get('data'), "icons/48x48")
-            icon_file = os.path.join(icons_path, "distributor-logo-antergos.png")
+            icon_file = os.path.join(
+                icons_path, "distributor-logo-antergos.png")
             return icon_file
 
         icon_names = [
@@ -251,7 +260,8 @@ class InstallationAlongside(GtkBaseBox):
             self.select_first_combobox_item(self.choose_partition_combo)
             self.show_all()
             if not new_device_found:
-                txt = _("Can't find any spare partition number.\nAlongside installation can't continue.")
+                txt = _(
+                    "Can't find any spare partition number.\nAlongside installation can't continue.")
                 self.choose_partition_label.hide()
                 self.choose_partition_combo.hide()
                 self.label.set_markup(txt)
@@ -274,7 +284,8 @@ class InstallationAlongside(GtkBaseBox):
         """ Alongside method shrinks selected partition
         and creates root and swap partition in the available space """
 
-        (existing_os, existing_device) = self.resize_widget.get_part_title_and_subtitle('existing')
+        (existing_os, existing_device) = self.resize_widget.get_part_title_and_subtitle(
+            'existing')
         (new_os, new_device) = self.resize_widget.get_part_title_and_subtitle('new')
 
         print("existing", existing_os, existing_device)
@@ -426,6 +437,7 @@ class InstallationAlongside(GtkBaseBox):
             fs_devices)
         self.process.start()
         '''
+
 
 if __name__ == '__main__':
     from test_screen import _, run

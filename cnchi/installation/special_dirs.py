@@ -81,7 +81,8 @@ def mount(dest_dir):
     for (mount_type, mount_point, mount_fs_type, mount_options) in mounts:
         mount_point = dest_dir + mount_point
         os.makedirs(mount_point, mode=0o755, exist_ok=True)
-        cmd = ["mount", mount_type, mount_point, "-t", mount_fs_type, "-o", mount_options]
+        cmd = ["mount", mount_type, mount_point,
+               "-t", mount_fs_type, "-o", mount_options]
         try:
             logging.debug("Mounting %s in %s", mount_type, mount_point)
             subprocess.check_call(cmd)
@@ -115,7 +116,8 @@ def umount(dest_dir):
         try:
             subprocess.check_call(["umount", mount_point])
         except subprocess.CalledProcessError:
-            logging.debug("Can't unmount %s. Trying -l to force it.", mount_point)
+            logging.debug(
+                "Can't unmount %s. Trying -l to force it.", mount_point)
             try:
                 subprocess.check_call(["umount", "-l", mount_point])
             except subprocess.CalledProcessError as process_error:
