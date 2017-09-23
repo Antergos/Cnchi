@@ -8,8 +8,10 @@
                 <pkgname>antergos-keyring</pkgname>
                 <pkgname>antergos-mirrorlist</pkgname>
                 <pkgname>b43-fwcutter</pkgname>
-                <pkgname>base</pkgname> <!-- Group -->
-                <pkgname>base-devel</pkgname> <!-- Group -->
+                <!-- Group -->
+                <pkgname>base</pkgname>
+                <!-- Group -->
+                <pkgname>base-devel</pkgname>
                 <pkgname>bash-completion</pkgname>
                 <pkgname>crda</pkgname>
                 <pkgname>bind-tools</pkgname>
@@ -57,17 +59,28 @@
                 <pkgname>gst-plugins-good</pkgname>
                 <pkgname>gst-plugins-ugly</pkgname>
                 <pkgname>gstreamer-vaapi</pkgname>
-                <pkgname lang="de">hunspell-de</pkgname> <!-- German hunspell dictionaries -->
-                <pkgname lang="en">hunspell-en</pkgname> <!-- English hunspell dictionaries -->
-                <pkgname lang="es">hunspell-es</pkgname> <!-- Spanish hunspell dictionaries -->
-                <pkgname lang="fr">hunspell-fr</pkgname> <!-- French (modern) hunspell dictionaries -->
-                <pkgname lang="he">hunspell-he</pkgname> <!-- Hebrew hunspell dictionary -->
-                <pkgname lang="it">hunspell-it</pkgname> <!-- Italian dictionary for Hunspell -->
-                <pkgname lang="ro">hunspell-ro</pkgname> <!-- Romanian dictionary for Hunspell -->
-                <pkgname lang="el">hunspell-el</pkgname> <!-- Greek hunspell dictionary -->
-                <pkgname lang="hu">hunspell-hu</pkgname> <!-- Hungarian hunspell dictionary -->
-                <pkgname lang="nl">hunspell-nl</pkgname> <!-- Dutch hunspell dictionaries -->
-                <pkgname lang="pl">hunspell-pl</pkgname> <!-- Polish dictionary for Hunspell -->
+                <!-- German hunspell dictionaries -->
+                <pkgname lang="de">hunspell-de</pkgname>
+                <!-- English hunspell dictionaries -->
+                <pkgname lang="en">hunspell-en</pkgname>
+                <!-- Spanish hunspell dictionaries -->
+                <pkgname lang="es">hunspell-es</pkgname>
+                <!-- French (modern) hunspell dictionaries -->
+                <pkgname lang="fr">hunspell-fr</pkgname>
+                <!-- Hebrew hunspell dictionary -->
+                <pkgname lang="he">hunspell-he</pkgname>
+                <!-- Italian dictionary for Hunspell -->
+                <pkgname lang="it">hunspell-it</pkgname>
+                <!-- Romanian dictionary for Hunspell -->
+                <pkgname lang="ro">hunspell-ro</pkgname>
+                <!-- Greek hunspell dictionary -->
+                <pkgname lang="el">hunspell-el</pkgname>
+                <!-- Hungarian hunspell dictionary -->
+                <pkgname lang="hu">hunspell-hu</pkgname>
+                <!-- Dutch hunspell dictionaries -->
+                <pkgname lang="nl">hunspell-nl</pkgname>
+                <!-- Polish dictionary for Hunspell -->
+                <pkgname lang="pl">hunspell-pl</pkgname>
                 <pkgname>libdvdcss</pkgname>
                 <pkgname dm='true' name='lightdm'>lightdm</pkgname>
                 <pkgname>lightdm-webkit2-greeter</pkgname>
@@ -113,7 +126,8 @@
         <edition name="Gnome" description="Gnome Desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>baobab</pkgname>  <!-- Disk usage -->
+                <!-- Disk usage -->
+                <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>evince</pkgname>
                 <pkgname>eog</pkgname>
@@ -154,7 +168,8 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>qt5ct</pkgname>
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
@@ -167,7 +182,8 @@
         <edition name="Cinnamon" description="Cinnamon desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>baobab</pkgname>  <!-- Disk usage -->
+                <!-- Disk usage -->
+                <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>cinnamon</pkgname>
                 <pkgname>cinnamon-control-center</pkgname>
@@ -206,7 +222,8 @@
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>qt5ct</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
@@ -223,7 +240,7 @@
                 <pkgname>gnome-calculator</pkgname>
                 <pkgname>gnome-disk-utility</pkgname>
                 <pkgname>gnome-keyring</pkgname>
-		<pkgname>gtk-engine-murrine</pkgname>
+                <pkgname>gtk-engine-murrine</pkgname>
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>mousepad</pkgname>
@@ -232,7 +249,8 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
                 <pkgname>parole</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
                 <pkgname>qt5ct</pkgname>
@@ -266,7 +284,8 @@
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
-                <pkgname>mate</pkgname> <!-- Group -->
+                <!-- Group -->
+                <pkgname>mate</pkgname>
                 <pkgname>mate-applets</pkgname>
                 <pkgname>mate-media</pkgname>
                 <pkgname>mate-mint-menu</pkgname>
@@ -282,7 +301,8 @@
                 <pkgname>pamac</pkgname>
                 <pkgname>pluma</pkgname>
                 <pkgname>pragha</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>totem</pkgname>
                 <pkgname>transmission-gtk</pkgname>
                 <pkgname>xdg-user-dirs-gtk</pkgname>
@@ -331,7 +351,8 @@
                 <pkgname>plank-theme-numix</pkgname>
                 <pkgname>polkit-gnome</pkgname>
                 <pkgname>pragha</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>python2-xdg</pkgname>
                 <pkgname>qt5ct</pkgname>
                 <pkgname>scrot</pkgname>
@@ -445,8 +466,10 @@
                 <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
                 <pkgname>kalu</pkgname>
                 <pkgname>qt5ct</pkgname>
-                <pkgname>rage</pkgname> <!-- video player -->
-                <pkgname>terminology</pkgname> <!-- terminal emulator -->
+                <!-- video player -->
+                <pkgname>rage</pkgname>
+                <!-- terminal emulator -->
+                <pkgname>terminology</pkgname>
                 <pkgname>ttf-dejavu</pkgname>
                 <pkgname>ttf-bitstream-vera</pkgname>
                 <pkgname>udisks2</pkgname>
@@ -459,7 +482,8 @@
             <packages>
                 <pkgname>budgie-desktop</pkgname>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>baobab</pkgname>  <!-- Disk usage -->
+                <!-- Disk usage -->
+                <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>evince</pkgname>
                 <pkgname>eog</pkgname>
@@ -499,7 +523,8 @@
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
                 <pkgname>polari</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>qt5ct</pkgname>
                 <pkgname>seahorse</pkgname>
                 <pkgname>totem</pkgname>
@@ -534,7 +559,8 @@
                 <pkgname>notify-osd</pkgname>
                 <pkgname>pcmanfm</pkgname>
                 <pkgname>polkit-gnome</pkgname>
-                <pkgname>python-pysmbc</pkgname>  <!-- needed by python smb clients -->
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
                 <pkgname>scrot</pkgname>
                 <pkgname>termite</pkgname>
                 <pkgname>udiskie</pkgname>
@@ -546,32 +572,32 @@
         </edition>
 
         <edition name="Deepin" description="Deepin Desktop">
-           <packages>
-               <pkgname>antergos-wallpapers-deepin</pkgname>
-               <pkgname>adwaita-icon-theme</pkgname>
-               <pkgname>brasero</pkgname>
-               <pkgname>deepin</pkgname>
-               <pkgname>deepin-extra</pkgname>
-               <pkgname>deepin-cogl</pkgname>
-               <pkgname>deepin-mutter</pkgname>
-               <pkgname>deepin-polkit-agent</pkgname>
-               <pkgname>dtkwm</pkgname>
-               <pkgname>gedit</pkgname>
-               <pkgname>gnome-calculator</pkgname>
-               <pkgname>gnome-disk-utility</pkgname>
-               <pkgname>gnome-font-viewer</pkgname>
-               <pkgname>gnome-software</pkgname>
-               <pkgname>gtk-theme-paper</pkgname>
-               <pkgname>gtk-theme-adapta</pkgname>
-               <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-               <pkgname>networkmanager-openvpn</pkgname>
-               <pkgname>noto-fonts</pkgname>
-               <pkgname>noto-fonts-cjk</pkgname>
-               <pkgname>noto-fonts-emoji</pkgname>
-               <pkgname>pamac</pkgname>
-               <pkgname>unicode-character-database</pkgname>
-           </packages>
-       </edition>
+            <packages>
+                <pkgname>antergos-wallpapers-deepin</pkgname>
+                <pkgname>adwaita-icon-theme</pkgname>
+                <pkgname>brasero</pkgname>
+                <pkgname>deepin</pkgname>
+                <pkgname>deepin-extra</pkgname>
+                <pkgname>deepin-cogl</pkgname>
+                <pkgname>deepin-mutter</pkgname>
+                <pkgname>deepin-polkit-agent</pkgname>
+                <pkgname>dtkwm</pkgname>
+                <pkgname>gedit</pkgname>
+                <pkgname>gnome-calculator</pkgname>
+                <pkgname>gnome-disk-utility</pkgname>
+                <pkgname>gnome-font-viewer</pkgname>
+                <pkgname>gnome-software</pkgname>
+                <pkgname>gtk-theme-paper</pkgname>
+                <pkgname>gtk-theme-adapta</pkgname>
+                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+                <pkgname>networkmanager-openvpn</pkgname>
+                <pkgname>noto-fonts</pkgname>
+                <pkgname>noto-fonts-cjk</pkgname>
+                <pkgname>noto-fonts-emoji</pkgname>
+                <pkgname>pamac</pkgname>
+                <pkgname>unicode-character-database</pkgname>
+            </packages>
+        </edition>
     </editions>
 
     <!-- User desired features -->
@@ -694,19 +720,32 @@
     </net>
 
     <filesystems>
-        <pkgname>btrfs-progs</pkgname>      <!-- for btrfs partitions -->
-        <pkgname>cifs-utils</pkgname>       <!-- for smb shares -->
-        <pkgname>dmraid</pkgname>           <!-- Device mapper RAID interface -->
-        <pkgname>dosfstools</pkgname>       <!-- for FAT16 and FAT32 partitions -->
-        <pkgname>exfat-utils</pkgname>      <!-- for exFAT partitions -->
-        <pkgname>e2fsprogs</pkgname>        <!-- Ext2/3/4 filesystem utilities -->
-        <pkgname>f2fs-tools</pkgname>       <!-- for Flash-Friendly File System -->
-        <pkgname>jfsutils</pkgname>         <!-- for jfs partitions -->
-        <pkgname>nfs-utils</pkgname>        <!-- for Network File Systems (NFS)-->
-        <pkgname>nilfs-utils</pkgname>      <!-- for nilfs2 support -->
-        <pkgname>ntfs-3g</pkgname>          <!-- for NTFS support -->
-        <pkgname>reiserfsprogs</pkgname>    <!-- for reiser partitions -->
-        <pkgname>xfsprogs</pkgname>         <!-- for xfs partitions -->
+        <!-- for btrfs partitions -->
+        <pkgname>btrfs-progs</pkgname>
+        <!-- for smb shares -->
+        <pkgname>cifs-utils</pkgname>
+        <!-- Device mapper RAID interface -->
+        <pkgname>dmraid</pkgname>
+        <!-- for FAT16 and FAT32 partitions -->
+        <pkgname>dosfstools</pkgname>
+        <!-- for exFAT partitions -->
+        <pkgname>exfat-utils</pkgname>
+        <!-- Ext2/3/4 filesystem utilities -->
+        <pkgname>e2fsprogs</pkgname>
+        <!-- for Flash-Friendly File System -->
+        <pkgname>f2fs-tools</pkgname>
+        <!-- for jfs partitions -->
+        <pkgname>jfsutils</pkgname>
+        <!-- for Network File Systems (NFS)-->
+        <pkgname>nfs-utils</pkgname>
+        <!-- for nilfs2 support -->
+        <pkgname>nilfs-utils</pkgname>
+        <!-- for NTFS support -->
+        <pkgname>ntfs-3g</pkgname>
+        <!-- for reiser partitions -->
+        <pkgname>reiserfsprogs</pkgname>
+        <!-- for xfs partitions -->
+        <pkgname>xfsprogs</pkgname>
     </filesystems>
 
     <zfs>
