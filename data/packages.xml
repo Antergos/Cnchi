@@ -31,7 +31,6 @@
                 <pkgname>reflector</pkgname>
                 <pkgname>sudo</pkgname>
                 <pkgname>terminus-font</pkgname>
-                <pkgname>tlp</pkgname>
                 <pkgname>tar</pkgname>
                 <pkgname>unzip</pkgname>
                 <pkgname>unrar</pkgname>
@@ -126,6 +125,7 @@
         <edition name="Gnome" description="Gnome Desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
+                <pkgname>antergos-gnome-setup</pkgname>
                 <!-- Disk usage -->
                 <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
@@ -182,6 +182,7 @@
         <edition name="Cinnamon" description="Cinnamon desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
+                <pkgname>antergos-cinnamon-setup</pkgname>
                 <!-- Disk usage -->
                 <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
@@ -234,6 +235,7 @@
 
         <edition name="XFCE" description="XFCE Desktop">
             <packages>
+                <pkgname>antergos-xfce-setup</pkgname>
                 <pkgname>evince</pkgname>
                 <pkgname>file-roller</pkgname>
                 <pkgname>gamin</pkgname>
@@ -273,6 +275,7 @@
 
         <edition name="Mate" description="MATE Desktop">
             <packages>
+                <pkgname>antergos-mate-setup</pkgname>
                 <pkgname>atril</pkgname>
                 <pkgname>caja</pkgname>
                 <pkgname>caja-gksu</pkgname>
@@ -536,6 +539,7 @@
 
         <edition name="i3" description="Tiling window manager">
             <packages>
+                <pkgname>antergos-openbox-setup</pkgname>
                 <pkgname>arandr</pkgname>
                 <pkgname>dmenu</pkgname>
                 <pkgname>file-roller</pkgname>
@@ -573,6 +577,7 @@
 
         <edition name="Deepin" description="Deepin Desktop">
             <packages>
+                <pkgname>antergos-gnome-setup</pkgname>
                 <pkgname>antergos-wallpapers-deepin</pkgname>
                 <pkgname>adwaita-icon-theme</pkgname>
                 <pkgname>brasero</pkgname>
@@ -630,6 +635,9 @@
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
             <pkgname>bzr</pkgname>
+        </feature>
+        <feature name="battery">
+            <pkgname>tlp</pkgname>
         </feature>
         <feature name="bluetooth">
             <pkgname>bluez</pkgname>
