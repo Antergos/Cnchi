@@ -74,7 +74,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - encfs, pam_encfs
  - iso-codes
  - clutter, clutter-gtk, clutter-gst
- - cheese
+ - gsteamer1.0
 
 ## Unit tests
  - python-mock
