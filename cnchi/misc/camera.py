@@ -118,14 +118,11 @@ class CameraBox(GtkClutter.Embed):
         if self.camera_found:
             self.camera.play()
 
-            def added(signal, data):
+            def added(signal, camera_device):
                 """ New camera connected """
-                uuid = data.get_uuid()
-                node = data.get_device_node()
-                logging.debug("Camera uuid is %s", str(uuid))
-                logging.debug("Camera node is %s", str(node))
-                self.camera.set_device_by_device_node(node)
+                self.camera.set_device(camera_device)
                 self.camera.switch_camera_device()
+
 
             device_monitor = Cheese.CameraDeviceMonitor.new()
             device_monitor.connect("added", added)
