@@ -425,7 +425,7 @@
                 <pkgname>plasma-workspace</pkgname>
                 <pkgname>plasma-workspace-wallpapers</pkgname>
                 <pkgname>powerdevil</pkgname>
-                <pkgname>qtcurve-qt5</pkgname>
+                <pkgname>qtcurve-kde</pkgname>
                 <pkgname>qtcurve-qt4</pkgname>
                 <pkgname>qtcurve-gtk2</pkgname>
                 <pkgname>qtcurve-utils</pkgname>
