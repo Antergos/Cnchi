@@ -1,3 +1,8 @@
+[2017-10-03 09:48:14 +0200]  [packages.xml] Remove antergos-welcome installation                        karasu      {3b38be68}
+[2017-09-28 23:29:24 +0200]  Update README                                                              karasu      {b14a67b5}
+[2017-09-28 23:28:44 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {37fff90e}
+[2017-09-28 23:27:55 +0200]  Added camera-gst (camera.py does not work atm)                             karasu      {c6239a8f}
+[2017-09-26 19:01:46 +0200]  Update packages.xml                                                        karasu      {9136f2ed}
 [2017-09-26 19:01:07 +0200]  Updatep packages.xml                                                       karasu      {845e05ef}
 [2017-09-25 20:41:24 +0200]  Add antergos-welcome to packages.xml                                       karasu      {aa956037}
 [2017-09-23 18:53:08 +0200]  Now bash beautification                                                    karasu      {390ef2da}
