@@ -1,3 +1,4 @@
+[2017-10-03 09:49:35 +0200]  [packages.xml] Removed antergos-welcome (issue #4)                         karasu      {4848469f}
 [2017-10-03 09:48:14 +0200]  [packages.xml] Remove antergos-welcome installation                        karasu      {3b38be68}
 [2017-09-28 23:29:24 +0200]  Update README                                                              karasu      {b14a67b5}
 [2017-09-28 23:28:44 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {37fff90e}

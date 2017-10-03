@@ -46,7 +46,7 @@
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
                 <pkgname>accountsservice</pkgname>
-                <pkgname lib="gtk">antergos-gsettings</pkgname>
+                <!--<pkgname lib="gtk">antergos-gsettings</pkgname>-->
                 <pkgname>antergos-wallpapers</pkgname>
                 <!--<pkgname>antergos-welcome</pkgname>-->
                 <pkgname>cdrtools</pkgname>
