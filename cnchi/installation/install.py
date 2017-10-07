@@ -805,7 +805,13 @@ class Installation(object):
         """ Set hardware clock """
         cmd = ["hwclock", "--systohc", "--utc"]
         call(cmd)
-        shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
+        try:
+            shutil.copy2("/etc/adjtime", os.path.join(DEST_DIR, "etc/"))
+        except FileNotFoundError:
+            logging.warning("File /etc/adjtime not found!")
+        except FileExistsError:
+            pass
+
 
     @staticmethod
     def update_pacman_conf():
