@@ -7,6 +7,7 @@
                 <pkgname>alsa-utils</pkgname>
                 <pkgname>antergos-keyring</pkgname>
                 <pkgname>antergos-mirrorlist</pkgname>
+                <pkgname>antergos-midnight-timers</pkgname>
                 <pkgname>b43-fwcutter</pkgname>
                 <!-- Group -->
                 <pkgname>base</pkgname>

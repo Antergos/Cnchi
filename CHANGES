@@ -1,3 +1,6 @@
+[2017-10-07 12:37:09 +0200]  Do not fail if /etc/adjtime is not found                                   karasu      {01612514}
+[2017-10-03 13:50:13 +0200]  [packages.xml] remove antergos-gsettings                                   karasu      {c4e09a8a}
+[2017-10-03 13:49:35 +0200]  [packages.xml] remove antergos-gsettings                                   karasu      {28194d6f}
 [2017-10-03 09:49:35 +0200]  [packages.xml] Removed antergos-welcome (issue #4)                         karasu      {4848469f}
 [2017-10-03 09:48:14 +0200]  [packages.xml] Remove antergos-welcome installation                        karasu      {3b38be68}
 [2017-09-28 23:29:24 +0200]  Update README                                                              karasu      {b14a67b5}
