@@ -1,4 +1,13 @@
+[2017-10-15 19:21:27 +0200]  Add vivaldi as a feature (along with firefox and chromium) as we ar..      karasu      {91f33f56}
+[2017-10-15 13:55:49 +0200]  Fix deepin.png                                                             karasu      {fb5ffe5e}
+[2017-10-15 12:40:13 +0200]  Update de.po translations                                                  karasu      {37d28022}
+[2017-10-15 12:38:58 +0200]  Merge pull request #802 from killajoe/patch-2                          Gustau Castells {f560be2b}
+[2017-10-15 12:38:04 +0200]  Update nl.po                                                               karasu      {c4bdb345}
+[2017-10-15 12:37:08 +0200]  Merge pull request #785 from IsaakGroepT/patch-1                       Gustau Castells {cf376661}
+[2017-10-10 16:36:37 +0200]  [packages.xml] add antergos-midnight-timers package                        karasu      {9d1f2b86}
+[2017-10-10 16:35:41 +0200]  [packages.xml] add antergos-midnight-timers package                        karasu      {9122eb1e}
 [2017-10-07 12:37:09 +0200]  Do not fail if /etc/adjtime is not found                                   karasu      {01612514}
+[2017-10-06 13:30:41 +0200]  Update de.po                                                           Johannes Kamprad {a21f1879}
 [2017-10-03 13:50:13 +0200]  [packages.xml] remove antergos-gsettings                                   karasu      {c4e09a8a}
 [2017-10-03 13:49:35 +0200]  [packages.xml] remove antergos-gsettings                                   karasu      {28194d6f}
 [2017-10-03 09:49:35 +0200]  [packages.xml] Removed antergos-welcome (issue #4)                         karasu      {4848469f}
@@ -66,6 +75,8 @@
 [2017-08-23 13:51:22 +0200]  Update deeping packages list                                               karasu      {ad44b58c}
 [2017-08-12 00:59:24 -0400]  add thread to kill grub-mount if taking too long                        Skinner, Alex  {e791454a}
 [2017-08-11 20:43:59 +0200]  ZFS selection fix bug. Needs testing. #782                                 karasu      {7529c5e6}
+[2017-08-11 16:39:32 +0200]  Correction                                                                  Atlas      {81657b44}
+[2017-08-11 00:11:49 +0200]  Updates to NL                                                               Atlas      {2b7dab39}
 [2017-08-06 20:09:29 +0200]  nah, use pamac in plasma, too. (but use kalu in Openbox!)                  karasu      {a53f1294}
 [2017-08-06 20:08:28 +0200]  nah, use pamac in plasma, too (but kalu in openbox!)                       karasu      {8b86b94a}
 [2017-08-06 19:59:06 +0200]  Use kalu in openbox. Use octopi in plasma. Remove orca and antergos..      karasu      {4c9f8c04}
