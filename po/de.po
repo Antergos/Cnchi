@@ -143,16 +143,14 @@ msgstr "Wählen Sie, welche Bibliothek zum herunterladen von Paketen genutzen we
 
 #: cnchi/cnchi.py:243
 msgid "Makes checks optional in check screen"
-msgstr ""
+msgstr "Macht Prüfungen im Überprüfungensbildschirm optional"
 
 #: cnchi/cnchi.py:247
-msgid ""
-"Install the packages referenced by a local xml instead of the default ones"
+msgid "Install the packages referenced by a local xml instead of the default ones"
 msgstr "Installiere Pakete referenzierend auf eine lokale xml Datei, anstatt der Standardauswahl"
 
 #: cnchi/cnchi.py:251
-msgid ""
-"Choose to which log server send Cnchi logs. Expects a hostname or an IP "
+msgid "Choose to which log server send Cnchi logs. Expects a hostname or an IP "
 "address"
 msgstr "Wählen Sie, an welchen Protokoll Server die Cnchi Protokolle gesendet werden sollen. Benötigt einen Hostnamen oder eine IP-Adresse."
 
@@ -193,82 +191,71 @@ msgid "Cnchi will install Antergos with the '%s' desktop"
 msgstr "Cnchi wird Antergos mit dem '%s' Desktop installieren"
 
 #: cnchi/desktop_environments.py:98
-msgid ""
-"Gnome 3 is an easy and elegant way to use your computer. It features the "
+msgid "Gnome 3 is an easy and elegant way to use your computer. It features the "
 "Activities Overview which is an easy way to access all your basic tasks. "
 "GNOME 3 is the default desktop in Antergos."
 msgstr "Gnome 3 ist ein einfacher und eleganter Weg, Ihren Computer zu verwenden. Es besitzt eine Übersicht über Ihre Aktivitäten, die Ihnen eine unkomplizierte Möglichkeit bietet Ihre alltäglichen Aufgaben zu bewältigen. GNOME 3 ist die standardmäßige Desktopumgebung in Antergos."
 
 #: cnchi/desktop_environments.py:103
-msgid ""
-"Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
+msgid "Cinnamon is a fork of GNOME 3 developed by (and for) Linux Mint. It provides"
 " users a more traditional desktop interface along with the newest "
 "compositing techniques of GNOME 3. Cinnamon is for users of all experience "
 "levels. "
 msgstr "Cinnamon ist eine Abspaltung von GNOME 3, entwickelt von (und für) Linux Mint. Es bietet den Nutzern eine traditionelle Desktopoberfläche mit der neusten Bilddarstellungstechnologie von GNOME 3. Cinnamon ist für Nutzer aller Erfahrungsstufen."
 
 #: cnchi/desktop_environments.py:108
-msgid ""
-"Xfce is a lightweight desktop environment. It aims to be fast and low on "
+msgid "Xfce is a lightweight desktop environment. It aims to be fast and low on "
 "system resources, while remaining visually appealing and user friendly. It "
 "is a great option for use on older computers or those with low hardware "
 "specifications. "
 msgstr "Xfce ist eine schlanke Desktopumgebung. Sie zielt darauf ab schnell und sparsam mit den Systemresourcen umzugehen, während sie optisch sehr ansprechend und benutzerfreundlich ist. Sie ist eine gute Wahl für ältere Computer oder für Geräte mit geringer Hardwareausstattung."
 
 #: cnchi/desktop_environments.py:113
-msgid ""
-"LXDE is an extremely fast-performing and energy-saving desktop environment. "
+msgid "LXDE is an extremely fast-performing and energy-saving desktop environment. "
 "It uses less CPU and RAM than other environments. LXDE is especially "
 "designed for cloud computers with low hardware specifications such as "
 "netbooks, mobile devices, and older computers."
 msgstr "LXDE ist eine sehr schnelle und energiesparende Desktop Umgebung. Sie verbraucht weniger CPU und RAM, als andere Umgebungen. LXDE ist speziell für Cloud Computer mit minimalen Hardwareanforderungen, wie Netbooks, Mobilgeräte und ältere Computer,  entworfen worden."
 
 #: cnchi/desktop_environments.py:118
-msgid ""
-"Openbox is a highly configurable, next generation window manager with "
+msgid "Openbox is a highly configurable, next generation window manager with "
 "extensive standards support. It's default theme is well known for its "
 "minimalistic appearance and flexibility. Your desktop becomes cleaner, "
 "faster. Perfect for low hardware specifications, too."
 msgstr "Openbox ist ein stark konfigurierbarer Fenstermanager der nächsten Generation mit umfangreicher Unterstützung für Standards. Er ist bekannt für sein von Haus aus minimalistisches Aussehen und seine Flexibilität. Ihr Desktop wird aufgeräumter und schneller. Perfekt geeignet auch für ältere, langsamere Hardware."
 
 #: cnchi/desktop_environments.py:123
-msgid ""
-"Enlightenment is not just a window manager for Linux/X11 and others, but "
+msgid "Enlightenment is not just a window manager for Linux/X11 and others, but "
 "also a whole suite of libraries to help you create beautiful user interfaces"
 " with much less work"
 msgstr "Enlightenment ist nicht nur ein Fenstermanager für Linux/X11 und Andere, sondern auch eine komplette Sammlung von Bibliotheken, die Ihnen hilft, eine Benutzeroberfläche mit sehr geringem Aufwand selbst zu erstellen."
 
 #: cnchi/desktop_environments.py:127
-msgid ""
-"If you are looking for a familiar working environment, KDE's Plasma Desktop "
+msgid "If you are looking for a familiar working environment, KDE's Plasma Desktop "
 "offers all the tools required for a modern desktop computing experience so "
 "you can be productive right from the start."
 msgstr "Wenn Sie auf der Suche nach einer Windows-ähnlichen Arbeitsumgebung sind, dann bietet der KDE Plasma Desktop alle Werkzeuge, die Sie in einer modernen Desktopumgebung benötigen, um von Beginn an produktiv arbeiten zu können."
 
 #: cnchi/desktop_environments.py:131
-msgid ""
-"Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
+msgid "Plasma 5.0 introduces a new major version of KDE's workspace offering. It "
 "provides a visually updated core desktop experience that is easy to use and "
 "familiar to the user. "
 msgstr "Mit Plasma 5.0 wird eine neue Hauptversion der KDE-Oberfläche eingeführt. Es bietet ein grafisch generalüberholtes Desktoperlebnis - leicht zu benutzen und sich vertraut anfühlend."
 
 #: cnchi/desktop_environments.py:135
-msgid ""
-"LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
+msgid "LXQt is an advanced, easy-to-use, and fast desktop environment based on Qt "
 "technologies. It has been tailored for users who value simplicity, speed, "
 "and an intuitive interface."
 msgstr "LXQt ist eine fortschrittliche, einfach zu benutzende Desktopumgebung, die auf der Technologie des Qt-Toolkits aufbaut. Sie wurde für Benutzer optimiert, die Einfachheit, Geschwindigkeit und ein intuitives Interface schätzen."
 
 #: cnchi/desktop_environments.py:139
-msgid ""
-"This option will install Antergos as command-line only system, without any "
+msgid "This option will install Antergos as command-line only system, without any "
 "type of graphical interface. After the installation you can customize "
 "Antergos by installing packages with the command-line package manager."
 msgstr "Diese Option wird Antergos als Kommandozeilen-System installieren, ohne jede Art von grafischer Oberfläche. Nach der Installation können Sie Antergos nach Ihren Wünschen anpassen, indem Sie über den Kommandozeilen Paketmanager Pakete installieren."
 
 #: cnchi/desktop_environments.py:143
-msgid ""
-"An intuitive, attractive and lightweight desktop environment, fork of GNOME "
+msgid "An intuitive, attractive and lightweight desktop environment, fork of GNOME "
 "2. MATE is one of the best options for use on older computers or those with "
 "low hardware specifications due to its lightweight yet very customizable set"
 " of features."
@@ -301,7 +288,7 @@ msgstr "Benutze %s Bibliothek zum herunterladen der Pakete."
 
 #: cnchi/download/download.py:113
 msgid "Unknown '%s' library, Cnchi will use the 'requests' one as default"
-msgstr ""
+msgstr "Unbekannte '%s' Bibliothek, Cnchi verwendet 'requests' eins als Standard"
 
 #: cnchi/download/download.py:126 cnchi/installation/process.py:714
 msgid "Can't install necessary packages. Cnchi can't continue."
@@ -360,7 +347,7 @@ msgstr "Cnchi wird herunterladen."
 
 #: cnchi/download/download_requests.py:132
 msgid "%s found in suplied pkg cache. Copying..."
-msgstr ""
+msgstr "%s wurde im bereitgestellten pkg-Cache gefunden. kopiere es..."
 
 #: cnchi/download/download_requests.py:139
 msgid "Error copying %s to %s."
@@ -368,7 +355,7 @@ msgstr "Fehler beim kopieren von %s nach %s."
 
 #: cnchi/download/download_requests.py:152
 msgid "Package %s v%s has an empty url for this mirror"
-msgstr ""
+msgstr "Paket %s v%s hat eine leere URL für diesen Spiegel"
 
 #: cnchi/download/download_requests.py:164
 #: cnchi/download/download_requests.py:222
@@ -410,11 +397,11 @@ msgstr "URL-Fehler : {0}"
 
 #: cnchi/download/download_urllib.py:144
 msgid "%s found in iso pkg cache. Copying..."
-msgstr ""
+msgstr "%s im iso pkg-Cache gefunden. kopiere es..."
 
 #: cnchi/download/download_urllib.py:150
 msgid "Error copying %s to %s. Cnchi will try to download it"
-msgstr ""
+msgstr "Fehler beim Kopieren von %s nach %s. Cnchi wird versuchen, es herunterzuladen"
 
 #: cnchi/download/metalink.py:110
 msgid "Unable to create download queue for package {0}"
@@ -457,8 +444,7 @@ msgid "The AUR is a community-driven repository for Arch users."
 msgstr "AUR ist ein von der Community betriebenes Repositorium für Arch-Nutzer."
 
 #: cnchi/features.py:217
-msgid ""
-"Use yaourt to install AUR packages.\n"
+msgid "Use yaourt to install AUR packages.\n"
 "The AUR was created to organize and share new packages\n"
 "from the community and to help expedite popular packages'\n"
 "inclusion into the [community] repository."
@@ -473,8 +459,7 @@ msgid "Enables your system to make wireless connections via Bluetooth."
 msgstr "Wird Ihr System dazu befähigen, Funkverbindungen über Bluetooth aufzubauen."
 
 #: cnchi/features.py:226
-msgid ""
-"Bluetooth is a standard for the short-range wireless\n"
+msgid "Bluetooth is a standard for the short-range wireless\n"
 "interconnection of cellular phones, computers, and\n"
 "other electronic devices. In Linux, the canonical\n"
 "implementation of the Bluetooth protocol stack is BlueZ"
@@ -489,8 +474,7 @@ msgid "Installation of extra TrueType fonts"
 msgstr "Installation von zusätzlichen TrueType-Schriftarten"
 
 #: cnchi/features.py:235
-msgid ""
-"TrueType is an outline font standard developed by\n"
+msgid "TrueType is an outline font standard developed by\n"
 "Apple and Microsoft in the late 1980s as a competitor\n"
 "to Adobe's Type 1 fonts used in PostScript. It has\n"
 "become the most common format for fonts on both the\n"
@@ -511,11 +495,10 @@ msgstr ""
 
 #: cnchi/features.py:251
 msgid "Apache (or Nginx) + Mariadb + PHP installation and setup"
-msgstr ""
+msgstr "Apache (oder Nginx) + Mariadb + PHP"
 
 #: cnchi/features.py:252
-msgid ""
-"This option installs a web server (you can choose\n"
+msgid "This option installs a web server (you can choose\n"
 "Apache or Nginx) plus a database server (Mariadb)\n"
 "and PHP"
 msgstr "Diese Auswahl installiert einen Webserver (Sie können wählen\nzwischen Apache oder Nginx) und einen Datenbankserver (Mariadb) \nsowie PHP"
@@ -529,8 +512,7 @@ msgid "Installation of printer drivers and management tools."
 msgstr "Installation von Druckertreibern und Verwaltungswerkzeugen"
 
 #: cnchi/features.py:260
-msgid ""
-"CUPS is the standards-based, open source printing\n"
+msgid "CUPS is the standards-based, open source printing\n"
 "system developed by Apple Inc. for OS\\302\\256 X and other\n"
 "UNIX\\302\\256-like operating systems."
 msgstr "CUPS ist ein quelloffener Druckstandard,\nwelcher von Apple Inc. für OS\\302\\256 X und andere\nUNIX\\302\\256-ähnliche Betriebssysteme entwickelt wurde."
@@ -544,8 +526,7 @@ msgid "Open source office suite. Supports editing MS Office files."
 msgstr "Quelloffenes Bürosoftwarepaket. Unterstützt das Bearbeiten von MS Office-Dateien."
 
 #: cnchi/features.py:268
-msgid ""
-"LibreOffice is the free power-packed Open Source\n"
+msgid "LibreOffice is the free power-packed Open Source\n"
 "personal productivity suite for Windows, Macintosh\n"
 "and Linux, that gives you six feature-rich applications\n"
 "for all your document production and data processing\n"
@@ -561,8 +542,7 @@ msgid "Enable transparency, shadows, and other desktop effects."
 msgstr "Aktivieren Sie Transparenz, Schatten und andere Desktopeffekte."
 
 #: cnchi/features.py:278
-msgid ""
-"Compton is a lightweight, standalone composite manager,\n"
+msgid "Compton is a lightweight, standalone composite manager,\n"
 "suitable for use with window managers that do not natively\n"
 "provide compositing functionality. Compton itself is a fork\n"
 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
@@ -578,8 +558,7 @@ msgid "Control the incoming and outgoing network traffic."
 msgstr "Kontrollieren Sie den ein- und ausgehenden Netzwerkverkehr."
 
 #: cnchi/features.py:288
-msgid ""
-"Ufw stands for Uncomplicated Firewall, and is a program for\n"
+msgid "Ufw stands for Uncomplicated Firewall, and is a program for\n"
 "managing a netfilter firewall. It provides a command line\n"
 "interface and aims to be uncomplicated and easy to use."
 msgstr "Ufw steht für Unkomplizierte Firewall und ist ein Programm zum\nVerwalten einer Netzfilter Firefwall. Sie stellt eine Kommandozeileneingabe\nbereit, und hat das Ziel in der Handhabung unkompliziert und einfach zu sein."
@@ -593,8 +572,7 @@ msgid "Long term support (LTS) Linux kernel and modules."
 msgstr "Langzeit-Support (LTS) Linux Kern und Module"
 
 #: cnchi/features.py:296
-msgid ""
-"The linux-lts package is an alternative Arch kernel package\n"
+msgid "The linux-lts package is an alternative Arch kernel package\n"
 "based upon Linux kernel 3.14 and is available in the core repository.\n"
 "This particular kernel version enjoys long-term support from upstream,\n"
 "including security fixes and some feature backports. Additionally, this\n"
@@ -612,8 +590,7 @@ msgid "A popular open-source graphical web browser from Mozilla"
 msgstr "Ein beliebter Open-Source Webbrowser von Mozilla"
 
 #: cnchi/features.py:308
-msgid ""
-"Mozilla Firefox (known simply as Firefox) is a free and\n"
+msgid "Mozilla Firefox (known simply as Firefox) is a free and\n"
 "open-source web browser developed for Windows, OS X, and Linux,\n"
 "with a mobile version for Android, by the Mozilla Foundation and\n"
 "its subsidiary, the Mozilla Corporation. Firefox uses the Gecko\n"
@@ -630,8 +607,7 @@ msgid "SMB provides shared access to files and printers"
 msgstr "SMB erlaubt es Dateien und Drucker freizugeben"
 
 #: cnchi/features.py:319
-msgid ""
-"In computer networking, Server Message Block (SMB)\n"
+msgid "In computer networking, Server Message Block (SMB)\n"
 "operates as an application-layer network protocol mainly used\n"
 "for providing shared access to files, printers, serial ports,\n"
 "and miscellaneous communications between nodes on a network.\n"
@@ -651,8 +627,7 @@ msgid "Arch User Repository - Disclaimer"
 msgstr "Arch User Repository - Haftungsausschluss"
 
 #: cnchi/features.py:402
-msgid ""
-"The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
+msgid "The Arch User Repository is a collection of user-submitted PKGBUILDs\n"
 "that supplement software available from the official repositories.\n"
 "\n"
 "The AUR is community driven and NOT supported by Arch or Antergos.\n"
@@ -802,7 +777,7 @@ msgstr "'%s' ist keine gültige Bezeichnung"
 
 #: cnchi/installation/advanced.py:813 cnchi/installation/advanced.py:1151
 msgid "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it."
-msgstr ""
+msgstr "/boot oder /boot/efi benötigt eine fat32 Formatierung bei UEFI Systemen. Wird erzwungen."
 
 #: cnchi/installation/advanced.py:899
 msgid "You will delete the partition %s from disk %s"
@@ -930,7 +905,7 @@ msgstr "Erweiterte"
 
 #: cnchi/installation/advanced.py:1440
 msgid "Beginning of this space"
-msgstr "Beginn dieses Speichers"
+msgstr "Anfang dieses Speichers"
 
 #: cnchi/installation/advanced.py:1444
 msgid "End of this space"
@@ -985,8 +960,7 @@ msgid "Creating a new %s partition table for disk %s"
 msgstr "Erstellen einer neuen %s Partitionstabelle für die Festplatte %s"
 
 #: cnchi/installation/advanced.py:1585
-msgid ""
-"GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
+msgid "GRUB requires a BIOS Boot Partition in BIOS systems to embed its core.img file due to lack of post-MBR embed gap in GPT disks.\n"
 "\n"
 "Cnchi will create this BIOS Boot Partition for you."
 msgstr "GRUB benötigt auf BIOS-Systemen eine BIOS-Bootpartition, um seine Datei core.img einzubetten, da GPT-Platten keine Lücke hinter dem MBR aufweisen.\n\nCnchi wird diese BIOS-Bootpartition für Sie anlegen."
@@ -1004,15 +978,13 @@ msgid "Install now!"
 msgstr "Jetzt Installieren!"
 
 #: cnchi/installation/advanced.py:1865
-msgid ""
-"{0} is mounted as swap.\n"
+msgid "{0} is mounted as swap.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} ist als Auslagerungsdateisystem eingehängt\nUm fortfahren zu können, muss es ausgehängt werden.\nKlicken Sie auf Ja, um es auszuhängen, oder auf Nein, um zurückzugehen\n"
 
 #: cnchi/installation/advanced.py:1869
-msgid ""
-"{0} is mounted in '{1}'.\n"
+msgid "{0} is mounted in '{1}'.\n"
 "To continue it has to be unmounted.\n"
 "Click Yes to unmount, or No to return\n"
 msgstr "{0} ist eingehängt in ‚{1}‘.\nUm fortfahren zu können, muss es zuerst ausgehängt werden.\nKlicken Sie auf Ja, um es auszuhängen, oder auf Nein, um zurückzugehen\n"
@@ -1030,8 +1002,7 @@ msgid "%s shows as mounted (busy) but it has no mount point"
 msgstr "%s scheint eingehängt zu sein (beschäftigt), besitzt jedoch keinen Einhängepunkt"
 
 #: cnchi/installation/advanced.py:1947
-msgid ""
-"Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
+msgid "Added %s to changelist: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
 msgstr "%s der Änderungsliste hinzugefügt: createme[%s] relabel[%s] fmt[%s] mnt[%s] encrypt[%s]"
 
 #: cnchi/installation/advanced.py:1971
@@ -1111,14 +1082,12 @@ msgid "Cnchi recommends at least 6.5GB free to install Antergos."
 msgstr "Cnchi empfiehlt mindestens 6,5GB freien Speicherplatz um Antergos zu installieren."
 
 #: cnchi/installation/alongside.py:149
-msgid ""
-"New partition {0} resulting of shrinking {1} will not have enough free space"
+msgid "New partition {0} resulting of shrinking {1} will not have enough free space"
 " for a full installation."
 msgstr "Die neue Partition {0} als Ergebnis der Verkleinerung von {1} wird nicht genügend freien Speicherplatz für eine volle Installation bieten."
 
 #: cnchi/installation/alongside.py:150
-msgid ""
-"You can still install Antergos, but be carefull on which DE you choose as it"
+msgid "You can still install Antergos, but be carefull on which DE you choose as it"
 " might not fit in."
 msgstr "Sie können Antergos dennoch installieren; wählen Sie jedoch Ihre Desktopumgebung mit Bedacht, da diese vielleicht zu groß sein könnte."
 
@@ -1139,8 +1108,7 @@ msgid "Antergos Alongside Installation"
 msgstr "Antergos Zweitinstallation"
 
 #: cnchi/installation/alongside.py:252
-msgid ""
-"Can't find any spare partition number.\n"
+msgid "Can't find any spare partition number.\n"
 "Alongside installation can't continue."
 msgstr "Kann keine freie Partitionsnummer finden.\nInstallation neben bestehendem System kann nicht fortgesetzt werden."
 
@@ -1201,8 +1169,7 @@ msgid "Use LVM with this installation."
 msgstr "Benutze LVM bei dieser Installation."
 
 #: cnchi/installation/ask.py:266
-msgid ""
-"This will setup LVM and allow you to easily manage partitions and create "
+msgid "This will setup LVM and allow you to easily manage partitions and create "
 "snapshots."
 msgstr "Dies wird LVM einrichten und Ihnen die einfache Möglichkeit bieten Ihre Partitionen zu organisieren und Snapshots zu erzeugen."
 
@@ -1386,8 +1353,7 @@ msgid "Home partition size: %dMiB"
 msgstr "Home-Partitionsgröße: %dMiB"
 
 #: cnchi/installation/auto_partition.py:634
-msgid ""
-"Setup cannot detect size of your device, please use advanced installation "
+msgid "Setup cannot detect size of your device, please use advanced installation "
 "routine for partitioning and mounting devices."
 msgstr "Das Installationsprogramm kann die Größe Ihres Laufwerks nicht erkennen. Bitte benutzen Sie die erweiterte Installationsroutine zur Partitionierung und zum Einhängen ihrer Laufwerke."
 
@@ -1458,8 +1424,7 @@ msgid "Automatic install on %s"
 msgstr "Automatische Installation auf %s"
 
 #: cnchi/installation/automatic.py:248
-msgid ""
-"Do you really want to proceed and delete all your content on your hard "
+msgid "Do you really want to proceed and delete all your content on your hard "
 "drive?"
 msgstr "Wollen Sie wirklich fortfahren und den gesamten Inhalt auf Ihrer Festplatte löschen?"
 
@@ -1484,8 +1449,7 @@ msgid "Cnchi will install the Grub2 (bios) loader"
 msgstr ""
 
 #: cnchi/installation/bootloader.py:95
-msgid ""
-"'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope"
+msgid "'ruuid' variable is not set. I can't check root UUID in grub.cfg, let's hope"
 " it's ok"
 msgstr "Die ‚ruuid‘-Variable ist nicht gesetzt. Kann die Root-UUID in der grub.cfg nicht überprüfen - hoffentlich ist sie in Ordnung"
 
@@ -1568,8 +1532,7 @@ msgid "Generating grub.cfg"
 msgstr "Erstelle grub.cfg"
 
 #: cnchi/installation/bootloader.py:381
-msgid ""
-"grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
+msgid "grub-mkconfig appears to be hung. Killing grub-mount and os-prober so we can"
 " continue."
 msgstr "grub-mkconfig scheint nicht zu reagieren. Beende grub-mount und os-prober, um fortfahren zu können."
 
@@ -1791,15 +1754,15 @@ msgstr "Empfange Paketliste..."
 
 #: cnchi/installation/process.py:510
 msgid "Getting url {0}..."
-msgstr ""
+msgstr "Lade url {0}... "
 
 #: cnchi/installation/process.py:517
 msgid "Can't retrieve remote package list, using the local file instead."
-msgstr ""
+msgstr "Die entfernte Paketliste kann nicht abgerufen werden, benutze die lokale Datei."
 
 #: cnchi/installation/process.py:520
 msgid "Loading {0}"
-msgstr ""
+msgstr "Lade {0}"
 
 #: cnchi/installation/process.py:545
 msgid "Adding '%s' desktop packages"
@@ -1815,11 +1778,11 @@ msgstr "Das Hardwaremodul hat diese Treiber erkannt: %s"
 
 #: cnchi/installation/process.py:585
 msgid "Hardware module added these packages: %s"
-msgstr ""
+msgstr "Das Hardware-Modul hat diese Pakete hinzugefügt: %s"
 
 #: cnchi/installation/process.py:591
 msgid "Running hardware drivers pre-install jobs..."
-msgstr ""
+msgstr "Hardware-Treiber vor Installationsarbeiten laufen..."
 
 #: cnchi/installation/process.py:594 cnchi/installation/process.py:1309
 msgid "Unknown error in hardware module. Output: %s"
@@ -1867,7 +1830,7 @@ msgstr "Kann Konfigurationsdateien für das Netzwerk nicht kopieren"
 
 #: cnchi/installation/process.py:775
 msgid "Can't get {0} partition UUID. It won't be added to fstab"
-msgstr ""
+msgstr "Die UUID der Partition {0} kann nicht abgerufen werden. Sie wird nicht zur fstab hinzugefügt"
 
 #: cnchi/installation/process.py:794 cnchi/installation/process.py:820
 #: cnchi/installation/process.py:835 cnchi/installation/process.py:900
@@ -1884,7 +1847,7 @@ msgstr "fstab geschrieben."
 
 #: cnchi/installation/process.py:917
 msgid "Could not copy udev rule for SSDs"
-msgstr "Konnte nicht udev Regeln für SSDs kopieren"
+msgstr "Konnte udev Regeln für SSDs nicht kopieren"
 
 #: cnchi/installation/process.py:930
 msgid "Service '%s' has been enabled."
@@ -1924,19 +1887,19 @@ msgstr "Konfiguriere Firewall..."
 
 #: cnchi/installation/process.py:1063
 msgid "Configuring LAMP..."
-msgstr ""
+msgstr "Konfiguriere LAMP"
 
 #: cnchi/installation/process.py:1067
 msgid "Can't import LAMP module"
-msgstr ""
+msgstr "Konnte LAMP Modul nicht importieren"
 
 #: cnchi/installation/process.py:1072
 msgid "Configuring LEMP..."
-msgstr ""
+msgstr "Konfiguriere LEMP..."
 
 #: cnchi/installation/process.py:1076
 msgid "Can't import LEMP module"
-msgstr ""
+msgstr "Konnte LEMP Modul nicht importieren"
 
 #: cnchi/installation/process.py:1084
 msgid "Configuring LightDM desktop manager..."
@@ -1956,7 +1919,7 @@ msgstr "Ihr neues System wird eingerichtet"
 
 #: cnchi/installation/process.py:1211
 msgid "fstab file generated."
-msgstr "fstab Datei erstellt."
+msgstr "fstab Datei wurde erstellt."
 
 #: cnchi/installation/process.py:1216
 msgid "SSD udev rule copied successfully"
@@ -1964,7 +1927,7 @@ msgstr "SSD-udev-Regel erfolgreich kopiert"
 
 #: cnchi/installation/process.py:1237
 msgid "Network configuration done."
-msgstr ""
+msgstr "Netzwerkkonfiguration abgeschlossen"
 
 #: cnchi/installation/process.py:1243
 msgid "Mirror list copied."
@@ -1988,7 +1951,7 @@ msgstr "Sudo Konfiguration für Benutzer %s erstellt."
 
 #: cnchi/installation/process.py:1306
 msgid "Running hardware drivers post-install jobs..."
-msgstr ""
+msgstr "Hardware-Treiber Vorinstallationsarbeiten laufen"
 
 #: cnchi/installation/process.py:1328
 msgid "User %s added."
@@ -2012,7 +1975,7 @@ msgstr "Stelle Hardware-Uhr ein ..."
 
 #: cnchi/installation/process.py:1366
 msgid "Configuring keymap..."
-msgstr ""
+msgstr "Konfiguriere keymap..."
 
 #: cnchi/installation/process.py:1373
 msgid "Set /etc/X11/xorg.conf.d/00-keyboard.conf for the xkblayout"
@@ -2064,7 +2027,7 @@ msgstr "Installiere Bootlader..."
 
 #: cnchi/installation/process.py:1481
 msgid "While installing boot loader Cnchi encountered this error: %s"
-msgstr ""
+msgstr "Beim Installieren des Bootloaders, hat Cnchi ist diesen Fehler festgestellt: %s"
 
 #: cnchi/installation/process.py:1487
 msgid "Copying install log to /var/log."
@@ -2072,19 +2035,18 @@ msgstr "Kopiere Installationsbericht nach /var/log."
 
 #: cnchi/installation/systemd_networkd.py:79
 msgid "systemd-networkd configuration failed."
-msgstr ""
+msgstr "systemd-networkd Konfiguration Fehlgeschlagen."
 
 #: cnchi/installation/systemd_networkd.py:82
 msgid "Found [%s] links and [%s] are wireless"
-msgstr ""
+msgstr "Es wurden [%s] Links gefunden und [%s] davon sind drahtlos"
 
 #: cnchi/keymap.py:76
 msgid "Select Your Keyboard Layout"
 msgstr "Wählen Sie Ihre Tastaturbelegung aus"
 
 #: cnchi/keymap.py:81
-msgid ""
-"Choose your keyboard layout and variant (if applies).\n"
+msgid "Choose your keyboard layout and variant (if applies).\n"
 "For instance, the default Slovak variant is qwertz, but you\n"
 "can manually specify qwerty, etc.\n"
 "\n"
@@ -2094,11 +2056,11 @@ msgstr "Wählen Sie Ihr Tastaturlayout und Variante (falls zutreffend).\nZum  Be
 
 #: cnchi/keymap.py:123
 msgid "Can't match a keymap for country code '%s'"
-msgstr ""
+msgstr "Es konnte keine Übereinstimmung der Tastenzuordnung für den Ländercode '%s' gefunden werden."
 
 #: cnchi/keymap.py:164 cnchi/keymap.py:178
 msgid "Can't find value '%s' in treeview"
-msgstr ""
+msgstr "Wert '%s' konnte in treeview nicht gefunden werden"
 
 #: cnchi/keymap.py:230
 msgid "Unknown layout description %s"
@@ -2106,23 +2068,22 @@ msgstr "Unbekannte Layoutbeschreibung %s"
 
 #: cnchi/keymap.py:242
 msgid "Unknown variant description %s"
-msgstr ""
+msgstr "Unbekannte Variantenbeschreibung %s"
 
 #: cnchi/keymap.py:268
 msgid "Set keyboard to layout name '{0}' ({1}) and variant name '{2}' ({3})"
-msgstr ""
+msgstr "Die Tastatur wurde mit dem Layoutnamen '{0}' ({1}) und dem Variantennamen '{2}' ({3}) gesetzt"
 
 #: cnchi/keymap.py:274
 msgid "Set keyboard to layout name '{0}' ({1})"
-msgstr ""
+msgstr "Lege Tastatur auf den Layoutnamen '{0}' ({1}) fest."
 
 #: cnchi/language.py:78
 msgid "Notice: The Cnchi Installer is beta software."
 msgstr "Anmerkung: Das Cnchi Installationsprogramm ist Beta Software."
 
 #: cnchi/language.py:80
-msgid ""
-"Cnchi is pre-release beta software that is under active development. It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible!\n"
+msgid "Cnchi is pre-release beta software that is under active development. It does not yet properly handle RAID, btrfs subvolumes, or other advanced setups. Please proceed with caution as data loss is possible!\n"
 "\n"
 "If you find any bugs, please report them at {0}"
 msgstr ""
@@ -2136,8 +2097,7 @@ msgid "Can't find translation file for the %s language"
 msgstr "Die Übersetzungsdatei für die Sprache %s konnte nicht gefunden werden"
 
 #: cnchi/location.py:71
-msgid ""
-"The location you select will be used to help determine the system locale. It"
+msgid "The location you select will be used to help determine the system locale. It"
 " should normally be the country in which you reside. Here is a shortlist of "
 "locations based on the language you selected."
 msgstr ""
@@ -2166,11 +2126,10 @@ msgstr "Es konnte nicht zur Sprache '%s' gewechselt werden"
 
 #: cnchi/location.py:233
 msgid "Can't get country code from %s location"
-msgstr ""
+msgstr "Konnte Ländercode für %s nicht finden."
 
 #: cnchi/main_window.py:73
-msgid ""
-"This installer must be run with administrative privileges, and cannot "
+msgid "This installer must be run with administrative privileges, and cannot "
 "continue without them."
 msgstr "Dieser Installationsprogramm muss mit administrativen Rechten ausgeführt werden und kann ohne Diese nicht weiter fortgesetzt werden."
 
@@ -2179,8 +2138,7 @@ msgid "File '%s' already exists."
 msgstr "Datei '%s' bereits vorhanden."
 
 #: cnchi/main_window.py:82
-msgid ""
-"You cannot run two instances of this installer.\n"
+msgid "You cannot run two instances of this installer.\n"
 "\n"
 "If you are sure that the installer is not already running\n"
 "you can run this installer using the --force option\n"
@@ -2255,7 +2213,7 @@ msgstr "Passwörter stimmen nicht überein"
 
 #: cnchi/pacman/pac.py:110
 msgid "alpm init with root dir '{0}' and db path '{1}'"
-msgstr ""
+msgstr "alpm init im Wurzelverzeichnis '{0}' und db Verzeichnis '{1}'"
 
 #: cnchi/pacman/pac.py:153
 msgid "Prepare alpm transaction..."
@@ -2387,11 +2345,11 @@ msgstr "Installiert als Abhängigkeit für ein anderes Paket"
 
 #: cnchi/parted3/fs_module.py:43
 msgid "Can't get partition %s UUID"
-msgstr ""
+msgstr "Partition %s UUID kann nicht abgerufen werden"
 
 #: cnchi/parted3/fs_module.py:51
 msgid "Can't get partition %s label (or it does not have any)"
-msgstr ""
+msgstr "Partition %s Label kann nicht abgerufen werden (oder es hat keine)"
 
 #: cnchi/parted3/fs_module.py:119
 msgid "Can't label a {0} partition"
@@ -2418,8 +2376,7 @@ msgid "Can't remove physical volume {0}"
 msgstr "Kann physisches Volumen {0} nicht entfernen"
 
 #: cnchi/parted3/partition_module.py:111
-msgid ""
-"Exception: {0}.\n"
+msgid "Exception: {0}.\n"
 "For more information take a look at /tmp/cnchi.log"
 msgstr "Fehler: {0}.\nFür weitere Informationen gucken Sie in /tmp/cnchi.log nach"
 
@@ -2465,43 +2422,43 @@ msgstr "Ermitteln des genutzten Speicherplatzes auf der XFS Partition %s nicht m
 
 #: cnchi/rank_mirrors.py:63
 msgid "Can't synchronize cached writes to persistent storage: %s"
-msgstr ""
+msgstr "Zwischengespeicherte Schreibvorgänge können nicht mit dem persistenten Speicher synchronisiert werden: %s"
 
 #: cnchi/rank_mirrors.py:82
 msgid "Update of antergos-mirrorlist package failed with error: %s"
-msgstr ""
+msgstr "Update von antergos-mirrorlist-Paket schlug fehl: %s"
 
 #: cnchi/rank_mirrors.py:84
 msgid "Error copying new mirrorlist files: %s"
-msgstr ""
+msgstr "Fehler beim Kopieren der neuen Spiegelliste"
 
 #: cnchi/rank_mirrors.py:101
 msgid "Error running reflector on Arch mirrorlist: %s"
-msgstr ""
+msgstr "Fehler bei der Ausführung von reflector mit der Arch Spiegelliste: %s"
 
 #: cnchi/rank_mirrors.py:149
 msgid "Error running rankmirrors on Antergos mirrorlist: %s"
-msgstr ""
+msgstr "Fehler bei der Ausführung von rankmirrors mit der Antergas Spiegelliste: %s"
 
 #: cnchi/rank_mirrors.py:190
 msgid "Updating both mirrorlists (Arch and Antergos)..."
-msgstr ""
+msgstr "Erneuere beide Spiegellisten (Arch und Antergos)"
 
 #: cnchi/rank_mirrors.py:193
 msgid "Running reflector command to sort Arch mirrors..."
-msgstr ""
+msgstr "Benutze reflector um die Arch Spiegelerver zu sortieren..."
 
 #: cnchi/rank_mirrors.py:196
 msgid "Running rankmirrors command to sort Antergos mirrors..."
-msgstr ""
+msgstr "Benutze rankmirrors um die Antergos Spiegelserver zu sortieren"
 
 #: cnchi/rank_mirrors.py:199
 msgid "Checking Arch mirrorlist against mirror status data..."
-msgstr ""
+msgstr "Teste Arch Spiegelliste nocheinmal mit Spiegelserver Status Daten"
 
 #: cnchi/rank_mirrors.py:202
 msgid "Auto mirror selection has been run successfully."
-msgstr ""
+msgstr "Die Automatische Spiegelserver Auswahl wurde erfolgreich abgeschlossen"
 
 #: cnchi/show_message.py:55
 msgid "Antergos Installer - Error"
@@ -2528,8 +2485,7 @@ msgid "Installing Antergos..."
 msgstr "Antergos wird installiert..."
 
 #: cnchi/slides.py:190
-msgid ""
-"IMPORTANT: There may have been a problem with the bootloader\n"
+msgid "IMPORTANT: There may have been a problem with the bootloader\n"
 "installation which could prevent your system from booting properly. Before\n"
 "rebooting, you may want to verify whether or not the bootloader is installed and\n"
 "configured. The Arch Linux Wiki contains troubleshooting information:\n"
@@ -2539,8 +2495,7 @@ msgid ""
 msgstr "ACHTUNG: Möglicherweise sind Probleme bei der Installation des Bootloaders\naufgetreten, welche das Starten des Systems unmöglich machen können.\nBevor Sie neustarten sollten Sie überprüfen, ob der Bootloader installiert\nund konfiguriert wurde. Das Wiki von Arch Linux bietet dazu weiterführende\nInformationen auf Englisch:\n⇥https://wiki.archlinux.org/index.php/GRUB\n\nWollen Sie die Wikiseite anzeigen lassen?"
 
 #: cnchi/slides.py:202
-msgid ""
-"Installation Complete!\n"
+msgid "Installation Complete!\n"
 "Do you want to restart your system now?"
 msgstr "Installation vollständig!\nWollen Sie Ihr System jetzt neu starten?"
 
@@ -2582,11 +2537,10 @@ msgstr "Verbindung hergestellt. Ermitteln der korrekten Zeitzone"
 
 #: cnchi/timezone.py:316
 msgid "Timezone (latitude %s, longitude %s) detected."
-msgstr ""
+msgstr "Zeitzone (Breitengrad %s, Längengrad %s) erkannt."
 
 #: cnchi/updater.py:67
-msgid ""
-"Could not find 'update.info' file. Cnchi will not be able to update itself."
+msgid "Could not find 'update.info' file. Cnchi will not be able to update itself."
 msgstr "Konnte 'update.info' Datei nicht finden. Cnchi wird es nicht möglich sein sich selbst zu aktualisieren."
 
 #: cnchi/updater.py:93
@@ -2723,7 +2677,7 @@ msgstr "Zu viele Zeichen"
 
 #: cnchi/welcome.py:72
 msgid "Use Antergos without making any changes to your system."
-msgstr ""
+msgstr "Benutze Antergos, ohne irgendwelche Änderungen am System vorzunehmen."
 
 #: cnchi/welcome.py:78
 msgid "Create a permanent place for Antergos on your system."
