@@ -71,12 +71,12 @@ LIBS = {
 }
 
 ALL_FEATURES = ["a11y", "aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "flash",
-                "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual"]
+                "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual", "vivaldi"]
 
 # Not all desktops have all features
 EXCLUDED_FEATURES = {
     'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
-             "graphic_drivers", "office", "visual"],
+             "graphic_drivers", "office", "visual", "vivaldi"],
     'cinnamon': ["lamp", "visual"],
     'deepin': ["lamp", "visual"],
     'gnome': ["lamp", "visual"],

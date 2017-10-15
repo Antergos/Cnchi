@@ -39,6 +39,7 @@ ICON_NAMES = {
     'cups': 'printer',
     'chromium': 'chromium',
     'firefox': 'firefox',
+    'vivaldi': 'vivaldi',
     'firewall': 'network-server',
     'flash': 'flash',
     'games': 'applications-games',
@@ -62,6 +63,7 @@ TITLES = {
     'cups': _("Printing Support"),
     'chromium': _("Chromium Web Browser"),
     'firefox': _("Firefox Web Browser"),
+    'vivaldi': _("Vivaldi Web Browser"),
     'firewall': _("Uncomplicated Firewall"),
     'flash': _("Flash plugins"),
     'games': _("Steam + PlayonLinux"),
@@ -78,6 +80,7 @@ DESCRIPTIONS = {
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
     'chromium': _("Open-source web browser from Google."),
     'firefox': _("A popular open-source graphical web browser from Mozilla."),
+    'vivaldi': _("Vivaldi is a free, fast web browser designed for power-users."),
     'flash': _("Freeware software normally used for multimedia."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
@@ -112,6 +115,12 @@ TOOLTIPS = {
                  "layout engine to render web pages, which implements current and\n"
                  "anticipated web standards.  Enable this option to install Firefox\n"
                  "instead of Chromium"),
+    'vivaldi': _("Vivaldi is a freeware, cross-platform web browser developed by\n"
+                 "Vivaldi Technologies. It was officially launched on April 12, 2016.\n"
+                 "The browser is aimed at staunch technologists, heavy Internet users,\n"
+                 "and previous Opera web browser users disgruntled by Opera's transition\n"
+                 "from the Presto layout engine to the Blink layout engine, which\n"
+                 "removed many popular features.")
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),

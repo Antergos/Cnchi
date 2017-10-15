@@ -669,6 +669,9 @@
         <feature name="firefox">
             <pkgname>firefox</pkgname>
         </feature>
+        <feature name="vivaldi">
+            <pkgname>vivaldi</pkgname>
+        </feature>
         <feature name="firewall">
             <pkgname>gufw</pkgname>
             <pkgname>ufw</pkgname>
