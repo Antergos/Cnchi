@@ -28,6 +28,8 @@
 
 """ User info screen """
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 import misc.validation as validation
@@ -38,9 +40,9 @@ from gtkbasebox import GtkBaseBox
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
-# import misc.camera as camera
-# camera.cheese_init()
+from webcam_widget import WebcamWidget
 
+def _(x): return x
 
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
@@ -80,21 +82,20 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        # self.camera_window = self.ui.get_object('cheese_box')
-        # self.camera = camera.CameraBox()
+        self.login_vbox = self.ui.get_object('login_vbox')
+        #self.login_vbox.pack_end(self.webcam, False, False, 0)
 
-        self.camera_window = None
-        self.camera = None
+        overlay = Gtk.Overlay()
+        #self.add(overlay)
+        self.login_vbox.add(overlay)
+        overlay.show()
 
-        if self.camera and self.camera.found():
-            self.camera_window.add(self.camera)
-            self.camera.show()
-        else:
-            pass
-            # We don't have a camera.
-            # Move all fields to the right (to center them).
-            # user_info_grid = self.ui.get_object('user_info_grid')
-            # user_info_grid.set_property('margin_start', 140)
+        self.webcam = WebcamWidget()
+        overlay.add_overlay(self.webcam)
+        self.webcam.set_halign (Gtk.Align.START)
+        self.webcam.set_valign (Gtk.Align.START)
+
+
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -223,6 +224,7 @@ class UserInfo(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
+        self.webcam.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":
