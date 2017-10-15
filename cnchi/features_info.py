@@ -120,7 +120,7 @@ TOOLTIPS = {
                  "The browser is aimed at staunch technologists, heavy Internet users,\n"
                  "and previous Opera web browser users disgruntled by Opera's transition\n"
                  "from the Presto layout engine to the Blink layout engine, which\n"
-                 "removed many popular features.")
+                 "removed many popular features."),
     'firewall': _("Ufw stands for Uncomplicated Firewall, and is a program for\n"
                   "managing a netfilter firewall. It provides a command line\n"
                   "interface and aims to be uncomplicated and easy to use."),
