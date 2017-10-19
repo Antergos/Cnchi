@@ -46,6 +46,8 @@ from gtkbasebox import GtkBaseBox
 
 import show_message as show
 
+from misc.gtkwidgets import StateBox
+
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
