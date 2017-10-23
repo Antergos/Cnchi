@@ -92,10 +92,13 @@ class DownloadPackages(object):
             txt = _("Can't create download package list.")
             raise misc.InstallError(txt)
 
+        proxies = self.settings.get("proxies")
+
         download = download_requests.Download(
             self.pacman_cache_dir,
             self.xz_cache_dirs,
-            self.callback_queue)
+            self.callback_queue,
+            proxies)
 
         if not download.start(self.metalinks):
             # When we can't download (even one package), we stop right here

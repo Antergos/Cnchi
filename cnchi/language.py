@@ -208,6 +208,9 @@ class Language(GtkBaseBox):
         self.listbox.set_can_default(True)
         self.main_window.set_default(self.listbox)
 
+    def on_setup_proxy(self, widget, data=None):
+        """ Ask for proxy settings """
+        
 
 # When testing, no _() is available
 try:

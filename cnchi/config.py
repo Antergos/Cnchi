@@ -94,6 +94,7 @@ class Settings(object):
             'network_manager': 'NetworkManager',
             'partition_mode': 'automatic',
             'password': '',
+            'proxies': None,
             'rankmirrors_done': False,
             'rankmirrors_result': '',
             'require_password': True,

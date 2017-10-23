@@ -75,11 +75,12 @@ class Download(object):
         This class tries to previously download all necessary packages for
         Antergos installation using requests """
 
-    def __init__(self, pacman_cache_dir, xz_cache_dirs, callback_queue):
+    def __init__(self, pacman_cache_dir, xz_cache_dirs, callback_queue, proxies=None):
         """ Initialize Download class. Gets default configuration """
         self.pacman_cache_dir = pacman_cache_dir
         self.xz_cache_dirs = xz_cache_dirs
         self.callback_queue = callback_queue
+        self.proxies = proxies
 
         # Check that pacman cache directory exists
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
@@ -265,7 +266,18 @@ class Download(object):
         try:
             # By default, get waits five minutes before
             # issuing a timeout, which is too much.
-            req = requests.get(url, stream=True, timeout=30)
+            if self.proxies:
+                req = requests.get(
+                    url,
+                    stream=True,
+                    timeout=30,
+                    proxies=self.proxies)
+            else:
+                req = requests.get(
+                    url,
+                    stream=True,
+                    timeout=30)
+
             if req.status_code == requests.codes.ok:
                 # Get total file length
                 try:

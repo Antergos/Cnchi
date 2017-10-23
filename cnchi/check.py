@@ -55,15 +55,6 @@ UPOWER = 'org.freedesktop.UPower'
 UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 8000000000
 
-'''
- export http_proxy=http://10.203.0.1:5187/
- export https_proxy=$http_proxy
- export ftp_proxy=$http_proxy
- export rsync_proxy=$http_proxy
- export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
- '''
-
-
 class Check(GtkBaseBox):
     """ Check class """
 
