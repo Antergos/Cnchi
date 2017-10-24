@@ -27,7 +27,10 @@
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
 import gettext
 import locale
 import os
@@ -37,6 +40,8 @@ import sys
 from gtkbasebox import GtkBaseBox
 
 import misc.i18n as i18n
+
+from proxy import ProxyDialog
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
@@ -210,7 +215,15 @@ class Language(GtkBaseBox):
 
     def on_setup_proxy(self, widget, data=None):
         """ Ask for proxy settings """
-        
+
+        dlg = ProxyDialog(
+            self.get_main_window(),
+            self.settings.get("proxies"),
+            self.ui_dir)
+        response = dlg.run()
+
+        print(response)
+
 
 # When testing, no _() is available
 try:
