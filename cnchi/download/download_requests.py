@@ -82,6 +82,9 @@ class Download(object):
         self.callback_queue = callback_queue
         self.proxies = proxies
 
+        if self.proxies:
+            logging.debug("Will use these proxy settings: %s", self.proxies)
+
         # Check that pacman cache directory exists
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
 

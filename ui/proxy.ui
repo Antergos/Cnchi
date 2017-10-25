@@ -1,201 +1,209 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.20.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
-          <object class="GtkGrid" id="ProxyDialogGrid">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel" id="http_proxy_label">
+    <requires lib="gtk+" version="3.20"/>
+    <object class="GtkGrid" id="ProxyDialogGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="margin-left">10</property>
+        <property name="margin-right">10</property>
+        <child>
+            <object class="GtkLabel" id="http_proxy_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Servidor intermediari d'HTTP:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="https_proxy_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="https_proxy_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Servidor intermediari de SSL:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="ftp_proxy_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="ftp_proxy_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Servidor intermediari de FTP:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="socks_proxy_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="socks_proxy_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Ordinador central SOCKS:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="http_proxy_port_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="http_proxy_port_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin-left">10</property>
                 <property name="label" translatable="yes">Port:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="https_proxy_port_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="https_proxy_port_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin-left">10</property>
                 <property name="label" translatable="yes">Port:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="ftp_proxy_port_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="ftp_proxy_port_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin-left">10</property>
                 <property name="label" translatable="yes">Port:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="http_proxy_entry">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkEntry" id="http_proxy_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkEntry" id="https_proxy_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkEntry" id="ftp_proxy_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkEntry" id="socks_proxy_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="use_same_proxy_switch">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkSwitch" id="use_same_proxy_switch">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="halign">end</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="http_proxy_port">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkSpinButton" id="http_proxy_port">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="use_same_proxy_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="use_same_proxy_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Utilitza aquest servidor intermediari per a tots els protocols</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">1</property>
                 <property name="width">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="https_proxy_port">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkSpinButton" id="https_proxy_port">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="ftp_proxy_port">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkSpinButton" id="ftp_proxy_port">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="socks_proxy_port_label">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkLabel" id="socks_proxy_port_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin-left">10</property>
                 <property name="label" translatable="yes">Port:</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSpinButton" id="socks_proxy_port">
+            </packing>
+        </child>
+        <child>
+            <object class="GtkSpinButton" id="socks_proxy_port">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </object>
-              <packing>
+            </object>
+            <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">4</property>
-              </packing>
-            </child>
-          </object>
+            </packing>
+        </child>
+    </object>
 </interface>

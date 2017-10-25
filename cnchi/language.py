@@ -218,11 +218,22 @@ class Language(GtkBaseBox):
 
         dlg = ProxyDialog(
             self.get_main_window(),
-            self.settings.get("proxies"),
+            self.settings.get('proxies'),
+            self.settings.get('use_same_proxy_for_all_protocols'),
             self.ui_dir)
         response = dlg.run()
 
-        print(response)
+        # print("RESPONSE: ", response)
+        if response == Gtk.ResponseType.APPLY:
+            self.settings.set(
+                'use_same_proxy_for_all_protocols',
+                dlg.get_use_same_proxy_for_all_protocols())
+            proxies = dlg.get_proxies()
+            if proxies:
+                self.settings.set('proxies', proxies)
+                logging.debug("Will use these proxy settings: %s", proxies)
+
+        dlg.destroy()
 
 
 # When testing, no _() is available
