@@ -1,2 +1,4 @@
+[2017-10-24 09:30:31 +0200]  Working on proxy dialog                                                    karasu      {0c507b68}
+[2017-10-23 20:38:00 +0200]  All proxy dialog logic needs to be added, yet                              karasu      {391e15fc}
 [2017-10-20 00:22:17 +0200]  [proxy] add commented lines                                                karasu      {7413ea82}
 [2017-10-20 00:21:08 +0200]  Add statebox input so check.py can be tested                               karasu      {90475f54}

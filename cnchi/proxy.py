@@ -33,6 +33,7 @@ from gi.repository import Gtk
 import os
 import logging
 
+def _(x): return x
 
 class ProxyDialog(Gtk.Dialog):
     """ Asks user for proxy settings """
@@ -43,6 +44,7 @@ class ProxyDialog(Gtk.Dialog):
         self.set_transient_for(transient_for)
         self.proxies = proxies
         self.ui_dir = ui_dir
+
         self.ui = Gtk.Builder()
         self.ui_file = os.path.join(self.ui_dir, "proxy.ui")
         self.ui.add_from_file(self.ui_file)
@@ -50,8 +52,12 @@ class ProxyDialog(Gtk.Dialog):
         # Connect UI signals
         self.ui.connect_signals(self)
 
-        dialog_box = self.ui.get_object("ProxyDialogBox")
-        self.add(dialog_box)
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+
+        dialog_grid = self.ui.get_object("ProxyDialogGrid")
+        content_area = self.get_content_area()
+        content_area.add(dialog_grid)
 
     def get_proxies(self):
         return self.proxies
