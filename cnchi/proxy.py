@@ -178,9 +178,3 @@ class ProxyDialog(Gtk.Dialog):
             switch.set_active(False)
 
         return proxies
-
-    def on_apply_clicked(self, widget, data):
-        print("apply", widget)
-
-    def on_cancel_clicked(self, widget, data):
-        print("cancel", widget)
