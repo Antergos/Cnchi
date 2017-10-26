@@ -83,18 +83,14 @@ class UserInfo(GtkBaseBox):
         self.encrypt_home = False
 
         self.login_vbox = self.ui.get_object('login_vbox')
-        #self.login_vbox.pack_end(self.webcam, False, False, 0)
 
-        overlay = Gtk.Overlay()
-        #self.add(overlay)
-        self.login_vbox.add(overlay)
-        overlay.show()
-
-        self.webcam = WebcamWidget()
-        overlay.add_overlay(self.webcam)
-        self.webcam.set_halign (Gtk.Align.START)
-        self.webcam.set_valign (Gtk.Align.START)
-
+        ##overlay = Gtk.Overlay()
+        ##self.login_vbox.add(overlay)
+        ##overlay.show()
+        ##self.webcam = WebcamWidget()
+        ##overlay.add_overlay(self.webcam)
+        ##self.webcam.set_halign (Gtk.Align.START)
+        ##self.webcam.set_valign (Gtk.Align.START)
 
 
     def translate_ui(self):
@@ -224,7 +220,7 @@ class UserInfo(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
-        self.webcam.show_all()
+        ##self.webcam.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":
