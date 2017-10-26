@@ -1,3 +1,4 @@
+[2017-10-26 16:56:09 +0200]  Fix deprecation warning                                                    karasu      {f70e93a7}
 [2017-10-25 20:48:46 +0200]  Removed old code                                                           karasu      {883b230a}
 [2017-10-25 20:47:44 +0200]  Proxy dialog added and running. Needs testing with the requests lib..      karasu      {8651bcbc}
 [2017-10-25 09:48:01 +0200]  Proxy dialog is shown                                                      karasu      {beee873a}
