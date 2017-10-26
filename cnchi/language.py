@@ -221,9 +221,9 @@ class Language(GtkBaseBox):
             self.settings.get('proxies'),
             self.settings.get('use_same_proxy_for_all_protocols'),
             self.ui_dir)
+
         response = dlg.run()
 
-        # print("RESPONSE: ", response)
         if response == Gtk.ResponseType.APPLY:
             self.settings.set(
                 'use_same_proxy_for_all_protocols',

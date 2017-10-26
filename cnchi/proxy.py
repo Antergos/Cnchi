@@ -93,26 +93,24 @@ class ProxyDialog(Gtk.Dialog):
             "https_proxy_port", "ftp_proxy_port",
             "socks_proxy_port"]
         for name in spin_names:
-            adjustment = Gtk.Adjustment(3128, 0, 65536, 1, 10, 10)
+            adjustment = Gtk.Adjustment(
+                value=3128, lower=0, upper=65536, step_increment=1,
+                page_increment=10, page_size=10)
             spin = self.ui.get_object(name)
             spin.set_adjustment(adjustment)
             spin.set_text("")
 
     def translate_ui(self):
-        self.set_title(_("Cnchi's Internet Connection Proxy Setup"))
+        self.set_title(_("Cnchi - Internet Connection Proxy Setup"))
 
         label = self.ui.get_object("http_proxy_label")
         label.set_text(_("HTTP proxy server:"))
-
         label = self.ui.get_object("https_proxy_label")
         label.set_text(_("HTTPS proxy server:"))
-
         label = self.ui.get_object("ftp_proxy_label")
         label.set_text(_("FTP proxy server:"))
-
         label = self.ui.get_object("socks_proxy_label")
         label.set_text(_("SOCKS host server:"))
-
         label = self.ui.get_object("use_same_proxy_label")
         label.set_text(_("Use this proxy server for all protocols"))
 
