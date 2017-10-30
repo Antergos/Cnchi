@@ -37,6 +37,10 @@ import misc.extra as misc
 from pages.gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 
 class Welcome(GtkBaseBox):
     """ Welcome screen class """
@@ -69,12 +73,14 @@ class Welcome(GtkBaseBox):
         self.filenames = {
             'tryit': {
                 'path': os.path.join(welcome_dir, "try-it.svg"),
-                'width': 165,
-                'height': 189},
+                'width': 211,
+                'height': 185},
             'graph': {
                 'path': os.path.join(welcome_dir, "install-it.svg"),
-                'width': 243,
-                'height': 174}}
+                'width': 211,
+                'height': 185}}
+
+        #self.set_property("halign", Gtk.Align.CENTER)
 
         # a11y
         self.labels['tryit'].set_mnemonic_widget(self.buttons['tryit'])
