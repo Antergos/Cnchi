@@ -19,7 +19,8 @@ if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
 fi
 
 CNCHI_DIR=`pwd`
-sudo ln -sf $CNCHI_DIR /usr/share/cnchi
+echo $CNCHI_DIR
+sudo ln -sf ${CNCHI_DIR} /usr/share/cnchi
 
 
 _PYTHON="/usr/bin/python"
@@ -31,8 +32,8 @@ if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+#sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
-#pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
 exit 0

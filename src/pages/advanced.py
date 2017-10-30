@@ -52,7 +52,7 @@ from installation import action
 
 import show_message as show
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 
 COL_PATH = 0

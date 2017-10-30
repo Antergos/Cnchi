@@ -34,7 +34,7 @@ import logging
 import sys
 import queue
 import misc.extra as misc
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
 
 

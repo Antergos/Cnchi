@@ -40,7 +40,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GLib
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 
 class Keymap(GtkBaseBox):

@@ -35,13 +35,14 @@ import shutil
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/download"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/hardware"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/installation"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/misc"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/pacman"))
-sys.path.append(os.path.join(CNCHI_PATH, "cnchi/parted3"))
+sys.path.append(os.path.join(CNCHI_PATH, "src"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/download"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/hardware"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/installation"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/misc"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pacman"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
 
 import logging
 import logging.handlers

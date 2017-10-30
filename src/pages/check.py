@@ -42,7 +42,7 @@ import updater
 
 import misc.extra as misc
 from misc.run_cmd import call, popen
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 import show_message as show
 

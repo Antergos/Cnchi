@@ -40,7 +40,7 @@ import tempfile
 import show_message as show
 import bootinfo
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets

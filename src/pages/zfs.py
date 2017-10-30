@@ -45,7 +45,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1

@@ -26,7 +26,7 @@ import dbus
 import misc.extra as misc
 import misc.nm as nm
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 
 class Wireless(GtkBaseBox):

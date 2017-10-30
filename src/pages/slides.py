@@ -43,7 +43,7 @@ from gi.repository import Gtk, GLib, WebKit2
 import show_message as show
 import misc.extra as misc
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 from logging_utils import ContextFilter
 

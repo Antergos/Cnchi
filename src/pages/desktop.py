@@ -36,7 +36,7 @@ import os
 import logging
 
 import desktop_info
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 

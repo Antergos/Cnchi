@@ -38,7 +38,7 @@ from gi.repository import Gtk
 
 import desktop_info
 import features_info
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 from installation.process import Process
 
 from misc.extra import InstallError

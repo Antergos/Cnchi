@@ -34,20 +34,20 @@ import sys
 import multiprocessing
 import logging
 import config
-import welcome
-import language
-import location
-import check
-import desktop
+import pages.welcome
+import pages.language
+import pages.location
+import pages.check
+import pages.desktop
 import desktop_info
-import features
-import keymap
-import timezone
-import user_info
-import slides
-import summary
+import pages.features
+import pages.keymap
+import pages.timezone
+import pages.user_info
+import pages.slides
+import pages.summary
 import info
-import mirrors
+import pages.mirrors
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -56,11 +56,11 @@ from gi.repository import Gtk, Gdk, Atk
 import show_message as show
 import misc.extra as misc
 
-from installation import ask as installation_ask
-from installation import automatic as installation_automatic
-from installation import alongside as installation_alongside
-from installation import advanced as installation_advanced
-from installation import zfs as installation_zfs
+import pages.ask
+import pages.automatic
+import pages.alongside
+import pages.advanced
+import pages.zfs
 
 
 def atk_set_image_description(widget, description):
@@ -231,11 +231,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # We do this so the user has not to wait for all the screens to be
         # loaded
         self.pages = dict()
-        self.pages["welcome"] = welcome.Welcome(self.params)
+        self.pages["welcome"] = pages.welcome.Welcome(self.params)
 
         if os.path.exists('/home/antergos/.config/openbox'):
             # In minimal iso, load language screen now
-            self.pages["language"] = language.Language(self.params)
+            self.pages["language"] = pages.language.Language(self.params)
 
             # Fix bugy Gtk window size when using Openbox
             self._main_window_width = 750
@@ -324,45 +324,45 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
         if not os.path.exists('/home/antergos/.config/openbox'):
-            self.pages["language"] = language.Language(self.params)
+            self.pages["language"] = pages.language.Language(self.params)
 
-        self.pages["check"] = check.Check(self.params)
-        self.pages["location"] = location.Location(self.params)
+        self.pages["check"] = pages.check.Check(self.params)
+        self.pages["location"] = pages.location.Location(self.params)
 
-        self.pages["mirrors"] = mirrors.Mirrors(self.params)
+        self.pages["mirrors"] = pages.mirrors.Mirrors(self.params)
 
-        self.pages["timezone"] = timezone.Timezone(self.params)
+        self.pages["timezone"] = pages.timezone.Timezone(self.params)
 
         if self.settings.get('desktop_ask'):
-            self.pages["keymap"] = keymap.Keymap(self.params)
-            self.pages["desktop"] = desktop.DesktopAsk(self.params)
-            self.pages["features"] = features.Features(self.params)
+            self.pages["keymap"] = pages.keymap.Keymap(self.params)
+            self.pages["desktop"] = pages.desktop.DesktopAsk(self.params)
+            self.pages["features"] = pages.features.Features(self.params)
         else:
-            self.pages["keymap"] = keymap.Keymap(
+            self.pages["keymap"] = pages.keymap.Keymap(
                 self.params,
                 next_page='features')
-            self.pages["features"] = features.Features(
+            self.pages["features"] = pages.features.Features(
                 self.params,
                 prev_page='keymap')
 
-        self.pages["installation_ask"] = installation_ask.InstallationAsk(
+        self.pages["installation_ask"] = pages.ask.InstallationAsk(
             self.params)
-        self.pages["installation_automatic"] = installation_automatic.InstallationAutomatic(
+        self.pages["installation_automatic"] = pages.automatic.InstallationAutomatic(
             self.params)
 
         if self.settings.get("enable_alongside"):
-            self.pages["installation_alongside"] = installation_alongside.InstallationAlongside(
+            self.pages["installation_alongside"] = pages.alongside.InstallationAlongside(
                 self.params)
         else:
             self.pages["installation_alongside"] = None
 
-        self.pages["installation_advanced"] = installation_advanced.InstallationAdvanced(
+        self.pages["installation_advanced"] = pages.advanced.InstallationAdvanced(
             self.params)
-        self.pages["installation_zfs"] = installation_zfs.InstallationZFS(
+        self.pages["installation_zfs"] = pages.zfs.InstallationZFS(
             self.params)
-        self.pages["summary"] = summary.Summary(self.params)
-        self.pages["user_info"] = user_info.UserInfo(self.params)
-        self.pages["slides"] = slides.Slides(self.params)
+        self.pages["summary"] = pages.summary.Summary(self.params)
+        self.pages["user_info"] = pages.user_info.UserInfo(self.params)
+        self.pages["slides"] = pages.slides.Slides(self.params)
 
         diff = 2
         if os.path.exists('/home/antergos/.config/openbox'):

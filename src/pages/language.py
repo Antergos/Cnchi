@@ -37,7 +37,7 @@ import os
 import logging
 import sys
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 import misc.i18n as i18n
 

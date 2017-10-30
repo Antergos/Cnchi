@@ -39,7 +39,7 @@ import features_info
 
 import misc.extra as misc
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 
 class Graphics(object):

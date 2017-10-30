@@ -35,7 +35,7 @@ from gi.repository import Gtk
 import misc.validation as validation
 import show_message as show
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"

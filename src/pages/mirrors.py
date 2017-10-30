@@ -44,7 +44,7 @@ except ImportError:
 
 import cairo
 
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 

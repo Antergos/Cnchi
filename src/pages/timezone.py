@@ -40,7 +40,8 @@ import hashlib
 import misc.tz as tz
 import misc.extra as misc
 import misc.timezonemap as timezonemap
-from gtkbasebox import GtkBaseBox
+from pages.gtkbasebox import GtkBaseBox
+
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
