@@ -12,15 +12,17 @@ cleanup() {
     sudo killall python3 > /dev/null 2>&1
 }
 
-trap cleanup EXIT
+#trap cleanup EXIT
 
-if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
-    sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
-fi
+#if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
+#    sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
+#fi
 
 CNCHI_DIR=`pwd`
 echo $CNCHI_DIR
-sudo ln -sf ${CNCHI_DIR} /usr/share/cnchi
+if ! [[ -f /usr/share/cnchi ]]; then
+    sudo ln -sf ${CNCHI_DIR} /usr/share/cnchi
+fi
 
 
 _PYTHON="/usr/bin/python"

@@ -33,6 +33,7 @@ import os
 import logging
 import sys
 import queue
+
 import misc.extra as misc
 from pages.gtkbasebox import GtkBaseBox
 from gi.repository import GdkPixbuf
@@ -40,6 +41,9 @@ from gi.repository import GdkPixbuf
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
+if __debug__:
+    def _(x): return x
 
 
 class Welcome(GtkBaseBox):
@@ -166,8 +170,3 @@ class Welcome(GtkBaseBox):
             self.buttons['tryit'].set_sensitive(False)
         if direction == "backwards":
             self.show_loading_message(do_show=False)
-
-
-if __name__ == '__main__':
-    from test_screen import _, run
-    run('Welcome')
