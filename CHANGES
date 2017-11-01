@@ -1,3 +1,28 @@
+[2017-11-01 14:45:38 +0100]  Use css when testing                                                       karasu      {bb2c4cd8}
+[2017-11-01 14:35:55 +0100]  Fixed mirror page                                                          karasu      {eb15a19c}
+[2017-11-01 14:13:02 +0100]  Removed cnchi link                                                         karasu      {49b06540}
+[2017-11-01 13:55:53 +0100]  Fixed welcome                                                              karasu      {ae070cba}
+[2017-11-01 13:43:46 +0100]  Set expand in welcome page                                                 karasu      {82fcef13}
+[2017-11-01 13:11:25 +0100]  Going back to HALIGN GTK_ALIGN_FILL. Welcome needs fixing                  karasu      {bb983001}
+[2017-11-01 11:23:55 +0100]  Modified desktop screen so the text does not change its position           karasu      {c4559023}
+[2017-11-01 10:30:03 +0100]  Fixed welcome and keymap pages                                             karasu      {11a2e283}
+[2017-10-31 17:44:13 +0100]  Fix test_page                                                              karasu      {579738db}
+[2017-10-30 23:31:37 +0100]  testing needs an update, too                                               karasu      {cca36133}
+[2017-10-30 23:30:13 +0100]  Working on welcome screen                                                  karasu      {c37590dc}
+[2017-10-30 20:38:01 +0100]  Reorganised files (again)                                                  karasu      {32a6e6d5}
+[2017-10-26 17:20:03 +0200]  Disable new camera code in user_info.py until it's finished                karasu      {57f6df0b}
+[2017-10-26 17:11:29 +0200]  Version                                                                    karasu      {bc9ac348}
+[2017-10-26 16:56:09 +0200]  Fix deprecation warning                                                    karasu      {f70e93a7}
+[2017-10-25 20:48:46 +0200]  Removed old code                                                           karasu      {883b230a}
+[2017-10-25 20:47:44 +0200]  Proxy dialog added and running. Needs testing with the requests lib..      karasu      {8651bcbc}
+[2017-10-25 09:48:01 +0200]  Proxy dialog is shown                                                      karasu      {beee873a}
+[2017-10-24 09:30:31 +0200]  Working on proxy dialog                                                    karasu      {0c507b68}
+[2017-10-23 20:38:00 +0200]  All proxy dialog logic needs to be added, yet                              karasu      {391e15fc}
+[2017-10-20 00:22:17 +0200]  [proxy] add commented lines                                                karasu      {7413ea82}
+[2017-10-20 00:21:08 +0200]  Add statebox input so check.py can be tested                               karasu      {90475f54}
+[2017-10-15 21:28:11 +0200]  [wip] Use new webcam_widget in user info screen.                           karasu      {22c50026}
+[2017-10-15 19:23:52 +0200]  Fix typo                                                                   karasu      {41c4ad43}
+[2017-10-15 19:22:26 +0200]  [packages.xml] add vivaldi as a feature                                    karasu      {202443c5}
 [2017-10-15 19:21:27 +0200]  Add vivaldi as a feature (along with firefox and chromium) as we ar..      karasu      {91f33f56}
 [2017-10-15 13:55:49 +0200]  Fix deepin.png                                                             karasu      {fb5ffe5e}
 [2017-10-15 12:40:13 +0200]  Update de.po translations                                                  karasu      {37d28022}
