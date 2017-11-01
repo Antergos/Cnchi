@@ -47,7 +47,6 @@
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
                 <pkgname>accountsservice</pkgname>
-                <!--<pkgname lib="gtk">antergos-gsettings</pkgname>-->
                 <pkgname>antergos-wallpapers</pkgname>
                 <!--<pkgname>antergos-welcome</pkgname>-->
                 <pkgname>cdrtools</pkgname>
@@ -126,8 +125,6 @@
         <edition name="Gnome" description="Gnome Desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>antergos-gnome-setup</pkgname>
-                <!-- Disk usage -->
                 <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>evince</pkgname>
@@ -183,8 +180,6 @@
         <edition name="Cinnamon" description="Cinnamon desktop">
             <packages>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <pkgname>antergos-cinnamon-setup</pkgname>
-                <!-- Disk usage -->
                 <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>cinnamon</pkgname>
@@ -236,7 +231,6 @@
 
         <edition name="XFCE" description="XFCE Desktop">
             <packages>
-                <pkgname>antergos-xfce-setup</pkgname>
                 <pkgname>evince</pkgname>
                 <pkgname>file-roller</pkgname>
                 <pkgname>gamin</pkgname>
@@ -276,7 +270,6 @@
 
         <edition name="Mate" description="MATE Desktop">
             <packages>
-                <pkgname>antergos-mate-setup</pkgname>
                 <pkgname>atril</pkgname>
                 <pkgname>caja</pkgname>
                 <pkgname>caja-gksu</pkgname>
@@ -288,7 +281,6 @@
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
-                <!-- Group -->
                 <pkgname>mate</pkgname>
                 <pkgname>mate-applets</pkgname>
                 <pkgname>mate-media</pkgname>
@@ -316,7 +308,6 @@
 
         <edition name="openbox" description="Openbox Window Manager">
             <packages>
-                <pkgname>antergos-openbox-setup</pkgname>
                 <pkgname>arandr</pkgname>
                 <pkgname>conky</pkgname>
                 <pkgname>conky-manager</pkgname>
@@ -372,7 +363,6 @@
 
         <edition name="KDE" description="KDE Desktop">
             <packages>
-                <pkgname>antergos-kde-setup</pkgname>
                 <pkgname>ark</pkgname>
                 <pkgname>aspell-en</pkgname>
                 <pkgname>breeze</pkgname>
@@ -461,7 +451,6 @@
 
         <edition name="Enlightenment" description="Enlightenment Desktop">
             <packages>
-                <pkgname>antergos-enlightenment-setup</pkgname>
                 <pkgname>ark</pkgname>
                 <pkgname>emotion_generic_players</pkgname>
                 <pkgname>enlightenment</pkgname>
@@ -486,7 +475,6 @@
             <packages>
                 <pkgname>budgie-desktop</pkgname>
                 <pkgname>antergos-gnome-defaults-list</pkgname>
-                <!-- Disk usage -->
                 <pkgname>baobab</pkgname>
                 <pkgname>brasero</pkgname>
                 <pkgname>evince</pkgname>
@@ -540,7 +528,6 @@
 
         <edition name="i3" description="Tiling window manager">
             <packages>
-                <pkgname>antergos-openbox-setup</pkgname>
                 <pkgname>arandr</pkgname>
                 <pkgname>dmenu</pkgname>
                 <pkgname>file-roller</pkgname>
@@ -578,7 +565,6 @@
 
         <edition name="Deepin" description="Deepin Desktop">
             <packages>
-                <pkgname>antergos-gnome-setup</pkgname>
                 <pkgname>antergos-wallpapers-deepin</pkgname>
                 <pkgname>adwaita-icon-theme</pkgname>
                 <pkgname>brasero</pkgname>

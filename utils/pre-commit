@@ -9,7 +9,7 @@
 # from git history and update the CHANGES file.
 
 _LOCK='/tmp/.CNCHI_PRE_COMMIT_LOCK'
-INFO_PY='cnchi/info.py'
+INFO_PY='src/info.py'
 _IS_JETBRAINS=''
 
 echo 'checking for changes to pre-commit hook...'
