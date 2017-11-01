@@ -363,6 +363,7 @@
 
         <edition name="KDE" description="KDE Desktop">
             <packages>
+                <pkgname>antergos-kde-meta</pkgname>
                 <pkgname>ark</pkgname>
                 <pkgname>aspell-en</pkgname>
                 <pkgname>breeze</pkgname>
