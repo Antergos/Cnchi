@@ -48,6 +48,7 @@
             <packages>
                 <pkgname>accountsservice</pkgname>
                 <pkgname>antergos-wallpapers</pkgname>
+                <pkgname>antergos-desktop-settings</pkgname>
                 <!--<pkgname>antergos-welcome</pkgname>-->
                 <pkgname>cdrtools</pkgname>
                 <pkgname lib="gtk">dconf-editor</pkgname>
@@ -337,6 +338,7 @@
                 <pkgname>obconf</pkgname>
                 <pkgname>obkey</pkgname>
                 <pkgname>oblogout</pkgname>
+                <pkgname>oblogout-numix-theme</pkgname>
                 <pkgname>obmenu</pkgname>
                 <pkgname>openbox</pkgname>
                 <pkgname>openbox-menu</pkgname>

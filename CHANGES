@@ -1,3 +1,4 @@
+[2017-11-01 19:16:31 +0100]  [packages.xml] add antergos-kde-meta to plasma list                        karasu      {098533fd}
 [2017-11-01 19:14:51 +0100]  [packages.xml] add antergos-kde-meta to plasma setup                       karasu      {1dce51e0}
 [2017-11-01 19:06:52 +0100]  [packages.xml] remove antergos-*-setup packages                            karasu      {83c932c5}
 [2017-11-01 19:04:40 +0100]  [pacakges.xml] remove old antergos-*-setup packages                        karasu      {0a86ddf7}
