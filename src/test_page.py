@@ -31,9 +31,10 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 import sys
+import os
 
 
 def get_page(page_name, params):
@@ -116,6 +117,23 @@ def run(page_name):
         "%Y-%m-%d %H:%M:%S")
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
+
+    # Use our css file
+    style_provider = Gtk.CssProvider()
+
+    style_css = "/usr/share/cnchi/data/css/gtk-style.css"
+    if os.path.exists(style_css):
+        with open(style_css, 'rb') as css:
+            css_data = css.read()
+
+        style_provider.load_from_data(css_data)
+
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(), style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_USER
+        )
+    else:
+        logging.warning("Cannot load CSS data")
 
     import config
 
