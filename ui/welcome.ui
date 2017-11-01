@@ -13,6 +13,7 @@
       <object class="GtkBox" id="box_center">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="spacing">100</property>
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkBox" id="box_tryit">
@@ -39,6 +40,7 @@
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
                 <property name="max_width_chars">28</property>
+                <property name="margin-bottom">20</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -92,6 +94,7 @@
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
                 <property name="max_width_chars">29</property>
+                <property name="margin-bottom">20</property>
               </object>
               <packing>
                 <property name="expand">False</property>

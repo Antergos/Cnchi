@@ -84,8 +84,6 @@ class Welcome(GtkBaseBox):
                 'width': 211,
                 'height': 185}}
 
-        #self.set_property("halign", Gtk.Align.CENTER)
-
         # a11y
         self.labels['tryit'].set_mnemonic_widget(self.buttons['tryit'])
         self.labels['installit'].set_mnemonic_widget(self.buttons['graph'])
@@ -101,7 +99,7 @@ class Welcome(GtkBaseBox):
     def translate_ui(self):
         """ Translates all ui elements """
         if not self.disable_tryit:
-            txt = _("Use Antergos without making any changes to your system.") + "\n"
+            txt = _("Use Antergos without making any changes to your system.")
         else:
             txt = ""
         self.labels['tryit'].set_markup(txt)

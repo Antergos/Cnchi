@@ -150,7 +150,9 @@ class MainWindow(Gtk.ApplicationWindow):
         path = os.path.join(self.ui_dir, "cnchi.ui")
         self.ui.add_from_file(path)
 
-        self.add(self.ui.get_object("main"))
+        main = self.ui.get_object("main")
+        main.set_property("halign", Gtk.Align.CENTER)
+        self.add(main)
 
         self.header_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "header.ui")
@@ -170,7 +172,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
-        # self.main_box.set_property('width_request', 800)
+        self.main_box.set_property("halign", Gtk.Align.CENTER)
+
+        ##self.main_box.set_property('width_request', 800)
 
         self.progressbar = self.ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
