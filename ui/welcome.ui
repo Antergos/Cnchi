@@ -5,13 +5,12 @@
   <object class="GtkBox" id="welcome">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">fill</property>
-    <property name="expand">true</property>
     <property name="valign">center</property>
+    <property name="margin_left">70</property>
+    <property name="margin_right">70</property>
     <property name="orientation">vertical</property>
-    <property name="margin-left">70</property>
-    <property name="margin-right">70</property>
     <property name="spacing">15</property>
+    <property name="expand">true</property>
     <child>
       <object class="GtkBox" id="box_center">
         <property name="visible">True</property>
@@ -40,10 +39,10 @@
               <object class="GtkLabel" id="tryit_welcome_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">20</property>
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
                 <property name="max_width_chars">28</property>
-                <property name="margin-bottom">20</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -94,10 +93,10 @@
               <object class="GtkLabel" id="installit_welcome_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">20</property>
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
                 <property name="max_width_chars">29</property>
-                <property name="margin-bottom">20</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -130,6 +129,7 @@
       <packing>
         <property name="expand">True</property>
         <property name="fill">True</property>
+        <property name="padding">40</property>
         <property name="position">0</property>
       </packing>
     </child>
