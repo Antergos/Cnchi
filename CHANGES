@@ -1,3 +1,6 @@
+[2017-11-01 19:14:51 +0100]  [packages.xml] add antergos-kde-meta to plasma setup                       karasu      {1dce51e0}
+[2017-11-01 19:06:52 +0100]  [packages.xml] remove antergos-*-setup packages                            karasu      {83c932c5}
+[2017-11-01 19:04:40 +0100]  [pacakges.xml] remove old antergos-*-setup packages                        karasu      {0a86ddf7}
 [2017-11-01 14:45:38 +0100]  Use css when testing                                                       karasu      {bb2c4cd8}
 [2017-11-01 14:35:55 +0100]  Fixed mirror page                                                          karasu      {eb15a19c}
 [2017-11-01 14:13:02 +0100]  Removed cnchi link                                                         karasu      {49b06540}
