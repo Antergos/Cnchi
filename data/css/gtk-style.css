@@ -217,6 +217,10 @@ GtkTreeView row:selected {
     font-size: 16px;
 }
 
+#mirrors #intro_label {
+    font-size: 16px;
+}
+
 #location-label-choose-country  {
     font-size: 14px;
 }

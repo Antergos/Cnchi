@@ -326,19 +326,22 @@ class Mirrors(GtkBaseBox):
         self.use_rankmirrors = True
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
-        self.listboxes_box.hide()
+        # self.listboxes_box.hide()
+        self.listboxes_box.set_sensitive(False)
 
     def on_leave_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
-        self.listboxes_box.hide()
+        # self.listboxes_box.hide()
+        self.listboxes_box.set_sensitive(False)
 
     def on_user_radiobutton_toggled(self, widget):
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.show_all()
         self.check_active_mirrors()
+        self.listboxes_box.set_sensitive(True)
 
     def start_rank_mirrors(self):
         # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
@@ -357,7 +360,8 @@ class Mirrors(GtkBaseBox):
         """ Prepares screen """
         self.translate_ui()
         self.show_all()
-        self.listboxes_box.hide()
+        # self.listboxes_box.hide()
+        self.listboxes_box.set_sensitive(False)
         self.forward_button.set_sensitive(True)
 
     def translate_ui(self):
@@ -386,7 +390,6 @@ class Mirrors(GtkBaseBox):
 
         intro_txt = _("How would you like to proceed?")
         intro_label = self.ui.get_object("introduction")
-        # intro_txt = bold_style.format(intro_txt)
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
         intro_label.set_hexpand(False)

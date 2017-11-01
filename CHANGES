@@ -1,9 +1,0 @@
-[2017-11-01 13:55:53 +0100]  Fixed welcome                                                              karasu      {ae070cba}
-[2017-11-01 13:43:46 +0100]  Set expand in welcome page                                                 karasu      {82fcef13}
-[2017-11-01 13:11:25 +0100]  Going back to HALIGN GTK_ALIGN_FILL. Welcome needs fixing                  karasu      {bb983001}
-[2017-11-01 11:23:55 +0100]  Modified desktop screen so the text does not change its position           karasu      {c4559023}
-[2017-11-01 10:30:03 +0100]  Fixed welcome and keymap pages                                             karasu      {11a2e283}
-[2017-10-31 17:44:13 +0100]  Fix test_page                                                              karasu      {579738db}
-[2017-10-30 23:31:37 +0100]  testing needs an update, too                                               karasu      {cca36133}
-[2017-10-30 23:30:13 +0100]  Working on welcome screen                                                  karasu      {c37590dc}
-[2017-10-30 20:38:01 +0100]  Reorganised files (again)                                                  karasu      {32a6e6d5}
