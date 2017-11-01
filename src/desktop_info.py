@@ -112,58 +112,60 @@ def _(message):
 
 
 DESCRIPTIONS = {
-    'base': _("This option will install Antergos as command-line only system, "
-              "without any type of graphical interface. After the installation you can "
-              "customize Antergos by installing packages with the command-line package manager."),
+    'base':     _("This option will install Antergos as command-line only system, "
+                  "without any type of graphical interface. After the installation "
+                  "you can customize Antergos by installing packages with the "
+                  "command-line package manager."),
 
     'cinnamon': _("Cinnamon is a Linux desktop which provides advanced, "
                   "innovative features and a traditional desktop user experience. "
                   "Cinnamon aims to make users feel at home by providing them with "
                   "an easy-to-use and comfortable desktop experience."),
-    'deepin': _("Deepin desktop is a lightweight, elegant desktop environment. "
-                "It was originally created for Linux Deepin distribution. Now, "
-                "DDE will support most Linux operating systems such as Arch Linux, "
-                "Ubuntu, Fedora, openSUSE etc."),
 
-    'gnome': _("GNOME 3 is an easy and elegant way to use your "
-               "computer. It features the Activities Overview which "
-               "is an easy way to access all your basic tasks."),
+    'deepin':   _("Deepin desktop is a lightweight, elegant desktop environment. "
+                  "It was originally created for Linux Deepin distribution. Now, "
+                  "DDE will support most Linux operating systems such as Arch Linux, "
+                  "Ubuntu, Fedora, openSUSE etc."),
 
-    'kde': _("If you are looking for a familiar working environment, KDE's "
-             "Plasma Desktop offers all the tools required for a modern desktop "
-             "computing experience so you can be productive right from the start."),
+    'gnome':    _("GNOME 3 is an easy and elegant way to use your computer. "
+                  "It features the Activities Overview which is an easy way to "
+                  "access all your basic tasks."),
 
-    'mate': _("MATE is an intuitive, attractive, and lightweight desktop "
-              "environment which provides a more traditional desktop "
-              "experience. Accelerated compositing is supported, but not "
-              "required to run MATE making it suitable for lower-end hardware."),
+    'kde':      _("If you are looking for a familiar working environment, KDE's "
+                  "Plasma Desktop offers all the tools required for a modern desktop "
+                  "computing experience so you can be productive right from the start."),
 
-    'openbox': _("Not actually a desktop environment, Openbox is a highly "
-                 "configurable window manager. It is known for its "
-                 "minimalistic appearance and its flexibility. It is the most "
-                 "lightweight graphical option offered by antergos. Please "
-                 "Note: Openbox is not recommended for users who are new to Linux."),
+    'mate':     _("MATE is an intuitive, attractive, and lightweight desktop "
+                  "environment which provides a more traditional desktop "
+                  "experience. Accelerated compositing is supported, but not "
+                  "required to run MATE making it suitable for lower-end hardware."),
 
-    'xfce': _("Xfce is a lightweight desktop environment. It aims to "
-              "be fast and low on system resources, while remaining visually "
-              "appealing and user friendly. It suitable for use on older "
-              "computers and those with lower-end hardware specifications. "),
+    'openbox':  _("Not actually a desktop environment, Openbox is a highly "
+                  "configurable window manager. It is known for its "
+                  "minimalistic appearance and its flexibility. It is the most "
+                  "lightweight graphical option offered by antergos. Please "
+                  "Note: Openbox is not recommended for users who are new to Linux."),
 
-    'budgie': _("Budgie is the flagship desktop of Solus and is a Solus project. "
-                "It focuses on simplicity and elegance. Written from scratch with "
-                "integration in mind, the Budgie desktop tightly integrates with "
-                "the GNOME stack, but offers an alternative desktop experience."),
+    'xfce':     _("Xfce is a lightweight desktop environment. It aims to "
+                  "be fast and low on system resources, while remaining visually "
+                  "appealing and user friendly. It suitable for use on older "
+                  "computers and those with lower-end hardware specifications. "),
+
+    'budgie':   _("Budgie is the flagship desktop of Solus and is a Solus project. "
+                  "It focuses on simplicity and elegance. Written from scratch with "
+                  "integration in mind, the Budgie desktop tightly integrates with "
+                  "the GNOME stack, but offers an alternative desktop experience."),
 
     'enlightenment': _("Enlightenment is not just a window manager for Linux/X11 "
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    'i3': _("i3 is a tiling window manager primarily targeted at advanced "
-            "users and developers."),
+    'i3':       _("i3 is a tiling window manager primarily targeted at advanced "
+                  "users and developers."),
 
-    'lxqt': _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
-              "Environment. It is lightweight, modular, blazing-fast, and "
-              "user-friendly.")
+    'lxqt':     _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
+                  "Environment. It is lightweight, modular, blazing-fast, and "
+                  "user-friendly.")
 }
 
 # Delete previous _() dummy declaration
