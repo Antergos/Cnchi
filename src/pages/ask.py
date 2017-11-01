@@ -46,6 +46,9 @@ from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 
+if __debug__:
+    def _(x): return x
+
 
 def check_alongside_disk_layout():
     """ Alongside can only work if user has followed the recommended

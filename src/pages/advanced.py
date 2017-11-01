@@ -54,6 +54,7 @@ import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
+from misc.gtkwidgets import StateBox
 
 COL_PATH = 0
 COL_FS = 1

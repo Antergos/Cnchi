@@ -128,6 +128,7 @@ def run(page_name):
     settings.set('language_code', 'ca')
 
     params = {
+        'a11y': False,
         'title': "Cnchi",
         'main_window': window,
         'ui_dir': "/usr/share/cnchi/ui",
@@ -144,6 +145,7 @@ def run(page_name):
     page = get_page(page_name, params)
 
     if page is not None:
+        # page.set_property("halign", Gtk.Align.CENTER)
         window.add(page)
         window.show_all()
         page.prepare('forward')

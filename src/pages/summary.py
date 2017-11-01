@@ -45,6 +45,11 @@ from misc.extra import InstallError
 
 import show_message as show
 
+from misc.gtkwidgets import StateBox
+
+if __debug__:
+    def _(x): return x
+
 # Constants
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70

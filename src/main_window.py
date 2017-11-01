@@ -151,7 +151,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.ui.add_from_file(path)
 
         main = self.ui.get_object("main")
-        main.set_property("halign", Gtk.Align.CENTER)
+        # main.set_property("halign", Gtk.Align.CENTER)
         self.add(main)
 
         self.header_ui = Gtk.Builder()
@@ -172,7 +172,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.logo.set_name("logo")
 
         self.main_box = self.ui.get_object("main_box")
-        self.main_box.set_property("halign", Gtk.Align.CENTER)
+        # self.main_box.set_property("halign", Gtk.Align.CENTER)
 
         ##self.main_box.set_property('width_request', 800)
 

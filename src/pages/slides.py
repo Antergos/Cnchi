@@ -47,6 +47,9 @@ from pages.gtkbasebox import GtkBaseBox
 
 from logging_utils import ContextFilter
 
+if __debug__:
+    def _(x): return x
+
 # There is a bug (I guess its a bug) where webkit2 renders local html files as plain text.
 SLIDES_URI = 'https://antergos.com/cnchi-installer-slideshow'
 

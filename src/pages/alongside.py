@@ -45,6 +45,9 @@ from pages.gtkbasebox import GtkBaseBox
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
 
+if __debug__:
+    def _(x): return x
+
 
 # Leave at least 6.5GB for Antergos when shrinking
 MIN_ROOT_SIZE = 6500

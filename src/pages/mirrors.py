@@ -55,6 +55,9 @@ MAX_MIRRORS = 6
 
 DND_ID_LISTBOX_ROW = 6791
 
+if __debug__:
+    def _(x): return x
+
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
     def __init__(self, url, active, switch_cb, drag_cbs):

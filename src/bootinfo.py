@@ -41,6 +41,9 @@ try:
 except ImportError:
     import extra as misc
 
+if __debug__:
+    def _(x): return x
+
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
 SYSTEM_DIRS = ["system32", "System32"]
