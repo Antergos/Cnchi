@@ -84,7 +84,10 @@ gnome_settings() {
     cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+    #cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     # xscreensaver config
     set_xscreensaver
@@ -115,7 +118,10 @@ cinnamon_settings() {
     chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon ${CN_DESTDIR}/etc/skel
+    #cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/home/${CN_USER_NAME}/.cinnamon ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     # Populate our wallpapers in Cinnamon Settings
     chroot ${CN_DESTDIR} "ln -s /usr/share/antergos/wallpapers/ /home/${CN_USER_NAME}/.cinnamon/backgrounds/antergos" ${CN_USER_NAME}
@@ -134,8 +140,10 @@ xfce_settings() {
     fi
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
-    chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}
+    #cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     set_gsettings
 
@@ -148,10 +156,7 @@ xfce_settings() {
     cp /etc/xdg/autostart/lxpolkit.desktop ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart
 
     # xscreensaver config
-    cp /usr/share/cnchi/scripts/postinstall/xscreensaver ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver
-    cp ${CN_DESTDIR}/home/${CN_USER_NAME}/.xscreensaver ${CN_DESTDIR}/etc/skel
-
-    rm ${CN_DESTDIR}/etc/xdg/autostart/xscreensaver.desktop
+    set_xscreensaver
 }
 
 openbox_settings() {
@@ -163,7 +168,10 @@ openbox_settings() {
     chroot ${CN_DESTDIR} /usr/bin/antergos-desktop openbox ${CN_USER_NAME}
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+    # cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     # Set openbox in .dmrc
     echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -172,9 +180,16 @@ openbox_settings() {
 
     # xscreensaver config
     set_xscreensaver
+
+    # Set Numix theme in oblogout
+    if [[ -f /etc/oblogout.conf ]]; then
+        sed -i 's|buttontheme = oxygen|buttontheme = Numix|g' "${CN_DESTDIR}/etc/oblogout.conf"
+    fi
 }
 
 kde_settings() {
+    set_gsettings
+
     # Set KDE in .dmrc
     echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
     echo "Session=kde-plasma" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -186,12 +201,13 @@ kde_settings() {
     # Setup user defaults
     if [ -f "${CN_DESTDIR}/usr/share/antergos-kde-setup/install.sh" ]; then
         chroot ${CN_DESTDIR} /usr/share/antergos-kde-setup/install.sh ${CN_USER_NAME}
-    else
+    elif [ -f "${CN_DESTDIR}/usr/share/antergos-desktop" ]; then
         chroot ${CN_DESTDIR} /usr/bin/antergos-desktop plasma ${CN_USER_NAME}
     fi
 
     # Setup root defaults
     cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
+
     cp ${CN_DESTDIR}/etc/skel/.gtkrc-2.0-kde4 ${CN_DESTDIR}/root
     chroot ${CN_DESTDIR} "ln -s /root/.gtkrc-2.0-kde4 /root/.gtkrc-2.0"
 
@@ -232,6 +248,9 @@ mate_settings() {
     mkdir -p "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart"
     cp "${CN_HOTFIX_DESKTOP}" "${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart"
     chmod +x "${CN_DESTDIR}/usr/bin/first-boot-hotfix.sh"
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 }
 
 nox_settings() {
@@ -268,7 +287,8 @@ lxqt_settings() {
     echo "Session=razor" >> ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
     chroot ${CN_DESTDIR} chown ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.dmrc
 
-    chroot ${CN_DESTDIR} chown -R ${CN_USER_NAME}:users /home/${CN_USER_NAME}/.config
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 }
 
 enlightenment_settings() {
@@ -296,7 +316,7 @@ enlightenment_settings() {
     set_gsettings
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+    # cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
 
     # Set enlightenment in .dmrc
     echo "[Desktop]" > ${CN_DESTDIR}/home/${CN_USER_NAME}/.dmrc
@@ -310,6 +330,9 @@ enlightenment_settings() {
 
     # xscreensaver config
     set_xscreensaver
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 }
 
 budgie_settings() {
@@ -320,7 +343,10 @@ budgie_settings() {
     cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+    # cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     # xscreensaver config
     set_xscreensaver
@@ -334,7 +360,10 @@ i3_settings() {
     cp /usr/share/antergos/logo.png ${CN_DESTDIR}/usr/share/antergos/
 
     # Set skel directory
-    cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+    # cp -R ${CN_DESTDIR}/home/${CN_USER_NAME}/.config ${CN_DESTDIR}/etc/skel
+
+    # Setup root defaults
+    cp -R ${CN_DESTDIR}/etc/skel/.config ${CN_DESTDIR}/root
 
     # xscreensaver config
     set_xscreensaver
@@ -390,17 +419,6 @@ postinstall() {
     cp -t ${CN_DESTDIR}/usr/share/antergos \
     /usr/share/antergos/antergos-menu.png \
     /usr/share/cnchi/data/images/antergos/antergos-menu-logo-dark-bg.png
-
-    #for _size in "22" "24" "32"
-    #do
-    #	_icon="antergos-ball-26.png"
-    #	[[ "32" = "${_size}" ]] && _icon="antergos-menu-logo-dark-bg.png"
-
-    #	cd "${CN_DESTDIR}/usr/share/icons/Numix/${_size}/places" \
-    #		&& mv start-here.svg start-here-numix.svg \
-    #		&& cp "/usr/share/cnchi/data/images/antergos/${_icon}" start-here.png \
-    #		&& cd -
-    #done
 
     # Set desktop-specific settings
     ${CN_DESKTOP}_settings
