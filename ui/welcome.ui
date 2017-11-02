@@ -42,7 +42,7 @@
                 <property name="margin_bottom">20</property>
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
-                <property name="max_width_chars">28</property>
+                <!--<property name="max_width_chars">28</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -96,7 +96,7 @@
                 <property name="margin_bottom">20</property>
                 <property name="justify">center</property>
                 <property name="wrap">True</property>
-                <property name="max_width_chars">29</property>
+                <!--<property name="max_width_chars">29</property>-->
               </object>
               <packing>
                 <property name="expand">False</property>
