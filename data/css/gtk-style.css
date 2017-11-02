@@ -9,6 +9,8 @@
 
 window {
     border-color: transparent;
+    font-family: 'Open Sans';
+    font-size: 12px;
 }
 
 #logo {
