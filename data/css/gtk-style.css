@@ -251,3 +251,7 @@ StateBox {
 #location-listbox, .row .label:hover {
     font-size: 12px;
 }
+
+.dialog-vbox {
+    font-size: 11px;
+}
