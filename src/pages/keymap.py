@@ -34,7 +34,7 @@ import subprocess
 
 import misc.extra as misc
 import misc.keyboard_names as keyboard_names
-import misc.keyboard_widget as keyboard_widget
+import widgets.keyboard_widget as keyboard_widget
 
 import gi
 gi.require_version('Gtk', '3.0')

@@ -37,12 +37,13 @@ import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
+from widgets.webcam_widget import WebcamWidget
+
 ICON_OK = "emblem-default"
 ICON_WARNING = "dialog-warning"
 
-from webcam_widget import WebcamWidget
-
-def _(x): return x
+if __debug__:
+    def _(x): return x
 
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
