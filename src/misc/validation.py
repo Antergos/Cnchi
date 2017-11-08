@@ -10,6 +10,9 @@
 
 """  Validation module """
 
+if __debug__:
+    def _(x): return x
+
 
 def check_grub_device(device):
     """Check that the user entered a valid boot device.

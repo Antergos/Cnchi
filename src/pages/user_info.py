@@ -45,6 +45,7 @@ ICON_WARNING = "dialog-warning"
 if __debug__:
     def _(x): return x
 
+
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
 
@@ -83,10 +84,7 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        self.login_vbox = self.ui.get_object('login_vbox')
-
-        ##overlay = Gtk.Overlay()
-        ##self.login_vbox.add(overlay)
+        ##overlay = self.ui.get_object('user_info_overlay')
         ##overlay.show()
         ##self.webcam = WebcamWidget()
         ##overlay.add_overlay(self.webcam)
@@ -221,7 +219,7 @@ class UserInfo(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
-        ##self.webcam.show_all()
+        ## self.webcam.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":

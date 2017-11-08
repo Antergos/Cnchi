@@ -33,6 +33,7 @@ class WebcamWidget(Gtk.DrawingArea):
         self.bus.connect('sync-message::element', self.on_sync_message)
 
         # Create GStreamer elements
+        # gconfvideosrc
         self.src = Gst.ElementFactory.make('autovideosrc', None)
         self.sink = Gst.ElementFactory.make('autovideosink', None)
 
