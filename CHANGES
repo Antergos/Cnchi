@@ -1,3 +1,13 @@
+[2017-11-08 18:57:16 +0100]  [packages.xml] add linux-lts-headers when installing linux-lts             karasu      {89cd6928}
+[2017-11-08 08:24:50 +0100]  [packages.xml] Updated to use new antergos-*-meta packages. Still w..      karasu      {e3c35108}
+[2017-11-05 19:58:20 +0100]  Moved widget files to their own folder                                     karasu      {6d76b387}
+[2017-11-04 20:18:27 +0100]  updated postinstall.sh script                                              karasu      {d431635d}
+[2017-11-02 15:30:26 +0100]  Fix proxy font dialog size                                                 karasu      {e7b4cb68}
+[2017-11-02 15:20:06 +0100]  Fix welcome (again)                                                        karasu      {5acb8c65}
+[2017-11-02 15:00:56 +0100]  Fix window font size (was too big)                                         karasu      {48e6d722}
+[2017-11-02 13:48:33 +0100]  postinstall script updated                                                 karasu      {353b2608}
+[2017-11-01 19:26:54 +0100]  [packages.xml] add oblogout-numix-theme and antergos-desktop-settings      karasu      {8c9db1bf}
+[2017-11-01 19:24:43 +0100]  [packages.xml] add oblogout-numix-theme and antergos-desktop-settings      karasu      {1fa2beb2}
 [2017-11-01 19:16:31 +0100]  [packages.xml] add antergos-kde-meta to plasma list                        karasu      {098533fd}
 [2017-11-01 19:14:51 +0100]  [packages.xml] add antergos-kde-meta to plasma setup                       karasu      {1dce51e0}
 [2017-11-01 19:06:52 +0100]  [packages.xml] remove antergos-*-setup packages                            karasu      {83c932c5}
