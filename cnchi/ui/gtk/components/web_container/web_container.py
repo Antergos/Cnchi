@@ -29,13 +29,13 @@
 # Standard Lib
 import time
 
-from _base_object import (
+from _cnchi_object import (
     json,
     os
 )
 
 # 3rd-party Libs
-from _base_object import (
+from _cnchi_object import (
     Gdk,
     Gio,
     Gtk,
@@ -44,7 +44,7 @@ from _base_object import (
 
 # This Application
 from ui.base_widgets import (
-    BaseWidget,
+    CnchiWidget,
     DataObject,
     Singleton,
     bg_thread
@@ -55,19 +55,19 @@ WebsiteDataManager = WebKit2.WebsiteDataManager
 WebView = WebKit2.WebView
 
 
-class WebContainer(BaseWidget, metaclass=Singleton):
+class WebContainer(CnchiWidget, metaclass=Singleton):
     """
     Gtk web container for the React UI.
 
     Class Attributes:
-        Also see `BaseWidget.__doc__`
+        Also see `CnchiWidget.__doc__`
 
     """
 
     def __init__(self, name='main_container', *args, **kwargs):
         """
         Attributes:
-            Also see `BaseWidget.__doc__`.
+            Also see `CnchiWidget.__doc__`.
 
         Args:
             name (str): A name for this widget.

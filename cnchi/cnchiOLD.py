@@ -40,7 +40,7 @@ GTK_VERSION_NEEDED = "3.22.0"
 FLAGS = Gio.ApplicationFlags.FLAGS_NONE
 
 
-class CnchiApp(BaseObject):
+class CnchiApp(CnchiObject):
     """ Cnchi Installer """
 
     TMP_PID_FILE = '/tmp/cnchi.pid'

@@ -13,8 +13,7 @@ import sys
 import uuid
 
 # 3rd-Party Libs
-from whither.app import App
-from whither.bridge import BridgeObject
+
 
 try:
     from bugsnag.handlers import BugsnagHandler
@@ -31,10 +30,9 @@ import info
 import misc.extra as misc
 import show_message as show
 
+
 try:
-    from _base_object import BaseObject
-    # from ui.cnchi_ui import CnchiUI
+    from _cnchi_object import CnchiObject
 except ImportError as err:
-    msg = 'Cannot create Cnchi UI Controller: {0}'.format(err.msg)
-    logging.exception(msg)
+    logging.exception(err.msg)
     sys.exit(1)

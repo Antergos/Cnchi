@@ -34,16 +34,16 @@ import sys
 
 import xml.etree.ElementTree as eTree
 
-from modules._base_module import BaseModule
-from _base_object import Gtk
+from modules._base_module import CnchiModule
+from _cnchi_object import Gtk
 
 
-class LocationModule(BaseModule):
+class LocationModule(CnchiModule):
     """
     Utility module for the location page.
 
     Class Attributes:
-        See Also `BaseModule.__doc__`
+        See Also `CnchiModule.__doc__`
 
     """
 
@@ -51,7 +51,7 @@ class LocationModule(BaseModule):
         """
         Attributes:
             name (str): A name for this object (all objects must have unique name).
-            See Also: `BaseModule.__doc__`
+            See Also: `CnchiModule.__doc__`
 
         """
 

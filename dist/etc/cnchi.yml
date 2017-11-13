@@ -5,12 +5,12 @@ install_options:
     data:
       - languages
     options:
-      selectedLanguage: en-us
+      selected_language: en-us
   Welcome:
     data:
     options:
-      tryItSelected: false
-      installItSelected: false
+      try_it_selected: false
+      install_it_selected: false
   Check:
   Location:
     data:
@@ -18,27 +18,28 @@ install_options:
       - timezones
       - layouts
     options:
-      countryCode: us
-      countryName: United States
-      keyboardLayout: us
-      keyboardVariant: None
-      languageCode: en-us
-      languageName: English (US)
+      country_code: us
+      country_name: United States
+      keyboard_layout: us
+      keyboard_variant: None
+      language_code: en-us
+      language_name: English (US)
       locale: en_US.UTF-8
       location:
       timezone:
 
 ui:
+  module: react
   branding:
     # "Installer" will be appended to the title.
     app_title: Cnchi
     # Path for logo image relative to the UI module's directory.
     logo_image: app/assets/images/overlay.png
-
-  module: react
-
+  gtk:
+    # Import path for the UI Module's controller, relative to the UI module's directory.
+    controller_path: controller
   react:
-    # Import path for the UI Module's controller, relative to the module's directory.
+    # Import path for the UI Module's controller, relative to the UI module's directory.
     controller_path: app.core.controller
     header_colors:
       accent: f50057

@@ -30,25 +30,24 @@
 """ Main Cnchi Window """
 
 # 3rd-party Libs
-from ui.base_widgets import (
+from ui import (
     Gdk,
     GObject
 )
 
 # This application
 from ui.base_widgets import (
-    BaseWidget,
+    CnchiWidget,
     Singleton
 )
 
 
-class MainWindow(BaseWidget, metaclass=Singleton):
+class MainWindow(CnchiWidget, metaclass=Singleton):
     """
     Cnchi Main Window
 
     Class Attributes:
-        Also see `BaseWidget.__doc__`
-
+        Also see `CnchiWidget.__doc__`
     """
 
     def __init__(self, name='main_window', *args, **kwargs):

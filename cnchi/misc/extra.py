@@ -79,6 +79,35 @@ def does_callback(func, *args, **kwargs):
     return _decorated_function
 
 
+def toggle_bool(value):
+    """
+    Given a `bool`, returns the opposite `bool` value.
+    Given a `str` value representing a bool, returns the opposite bool value as a `str`.
+
+    Args:
+        value (str|bool): Value to toggle.
+
+    Examples:
+        >>> toggle_bool('False')
+        'True'
+        >>> toggle_bool(True)
+        False
+
+    Raises:
+        ValueError: If value is not of type(bool|str) or if str value not in ['True', 'False'].
+
+    """
+
+    if isinstance(value, str) and value in ['True', 'False']:
+        return 'True' if 'False' == value else 'False'
+    elif isinstance(value, bool):
+        return False if value else True
+    else:
+        raise ValueError(
+            'value must be of type(bool|str["True", "False"]). {0} given.'.format(type(value))
+        )
+
+
 def copytree(src_dir, dst_dir, symlinks=False, ignore=None):
     """ Copy an entire tree with files and folders """
     for item in os.listdir(src_dir):

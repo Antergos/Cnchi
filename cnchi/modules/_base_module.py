@@ -26,8 +26,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-from _base_object import (
-    BaseObject,
+from _cnchi_object import (
+    CnchiObject,
     bg_thread,
     locale,
     os
@@ -51,14 +51,14 @@ class BaseModuleMeta(type):
         return type.__new__(cls, name, bases, namespace)
 
 
-class BaseModule(BaseObject, metaclass=BaseModuleMeta):
+class CnchiModule(CnchiObject, metaclass=BaseModuleMeta):
     """
     Base class for all of Cnchi's modules. Modules house logic that is not directly
     related to rendering the UI. Modules' methods are run in background threads
     so that they do not block the UI.
 
     Class Attributes:
-        See Also: `BaseObject.__doc__`
+        See Also: `CnchiObject.__doc__`
 
     """
 
@@ -66,7 +66,7 @@ class BaseModule(BaseObject, metaclass=BaseModuleMeta):
         """
         Attributes:
             name (str): A name for this object (all objects must have unique name).
-            See Also: `BaseObject.__doc__`
+            See Also: `CnchiObject.__doc__`
 
         """
         super().__init__(name=name, *args, **kwargs)

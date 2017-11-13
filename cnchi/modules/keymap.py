@@ -32,10 +32,10 @@ import subprocess
 import misc.keyboard_names as keyboard_names
 from misc.run_cmd import call
 
-from ._base_module import BaseModule
+from ._base_module import CnchiModule
 
 
-class KeymapModule(BaseModule):
+class KeymapModule(CnchiModule):
     """
     Utility class for handling keymap selection and application.
 

@@ -107,7 +107,7 @@ COLOR_CODES = [
 
 
 class TimezoneMap(Gtk.Widget):
-    """ BaseWidget that allows to select user's timezone """
+    """ CnchiWidget that allows to select user's timezone """
     __gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = {'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}

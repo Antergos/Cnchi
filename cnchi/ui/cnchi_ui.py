@@ -30,19 +30,19 @@
 
 import importlib
 
-from _base_object import (
-    BaseObject,
+from _cnchi_object import (
+    CnchiObject,
     Singleton,
     sys
 )
 
 
-class CnchiUI(BaseObject, metaclass=Singleton):
+class CnchiUI(CnchiObject, metaclass=Singleton):
     """
     UI Controller
 
     Class Attributes:
-        See also `BaseObject.__doc__`
+        See also `CnchiObject.__doc__`
 
     """
 

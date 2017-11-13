@@ -40,22 +40,6 @@ from random import choice
 from string import ascii_uppercase
 
 # 3rd-party Libs
-import gi
-
-# Once 3.22 is released we will be able to do this:
-# gi.require_versions({'Gtk': '3.0', 'WebKit2': '4.0'})
-gi.require_version('Gtk', '3.0')
-gi.require_version('WebKit2', '4.0')
-
-from gi.repository import (
-    Gdk,
-    Gio,
-    GLib,
-    GObject,
-    Gtk,
-    WebKit2,
-    JavaScriptCore
-)
 
 # This application
 from _data import (
@@ -67,46 +51,33 @@ from _data import (
 from misc.extra import bg_thread
 
 
-TE = 'gtkbuilder'
-BO = 'base_object'
-
-
-class BaseObject:
+class CnchiObject:
     """
     Base class for all of Cnchi's classes.
 
     Class Attributes:
-        TOP_DIR      (str): Absolute path to the application's top-most directory.
-        APP_DIR      (str): Abs path to the app's source files (derived from TOP_DIR).
-        UI_DIR       (str): Abs path to the app's UI source files (derived from APP_DIR).
-        PAGES_DIR    (str): Abs path to the app's UI's pages (derived from UI_DIR).
-        TPL_DIR      (str): Abs path to the app's UI templates (derived from UI_DIR).
-        BUILDER_DIR  (str): Abs path to the app's GtkBuilder templates (derived from TPL_DIR).
-        WK_CACHE_DIR (str): Abs path to the app's webkit cache directory.
-        WK_DATA_DIR  (str): Abs path to the app's webkit data directory.
+        TOP_DIR     (str): Absolute path to the application's top-most directory.
+        APP_DIR     (str): Abs path to the app's source files (derived from TOP_DIR).
+        UI_DIR      (str): Abs path to the app's UI directory (derived from APP_DIR).
+        PAGES_DIR   (str): Abs path to the app UI's pages (derived from UI_DIR).
 
-        _cnchi_app       (BaseObject):      The application object.
-        _controller      (BaseObject):      The app's ui controller object.
-        _main_container  (BaseObject):      The app's main ui container object.
-        _main_window     (BaseWidget):      The app's main window object.
-        _pages_data      (SharedData):      Descriptor that provides access to the app's ui
+        _cnchi_app       (CnchiObject):     The application instance.
+        _controller      (CnchiObject):     The app's ui controller instance.
+        _main_container  (CnchiObject):     The app's main ui container instance.
+        _main_window     (CnchiWidget):     The app's main window instance.
+        _pages_data      (SharedData):      Descriptor that provides access to the app ui
                                             pages' data (storage for `Page.store_values()`)
-        _web_view        (BaseWidget):      The app's ui web view object.
+        _web_view        (CnchiWidget):     The app ui's web view object.
 
         all_signals      (set):             Names of custom signals.
         logger           (logging.Handler): The app's log handler.
-        settings         (SharedData):      Descriptor that provides access to the app's
-                                            Settings object.
-
+        settings         (SharedData):      Descriptor that provides access to the app's settings.
     """
 
     TOP_DIR = '/usr/share/cnchi'
     APP_DIR = os.path.join(TOP_DIR, 'cnchi')
     UI_DIR = os.path.join(APP_DIR, 'ui')
     PAGES_DIR = os.path.join(UI_DIR, 'react/app/pages')
-    TPL_DIR = os.path.join(UI_DIR, 'gtk/tpl')
-    WK_CACHE_DIR = '/var/cache/cnchi'
-    WK_DATA_DIR = '/var/tmp/cnchi'
 
     _cnchi_app = SharedData('_cnchi_app')
     _cnchi_ui = SharedData('_cnchi_ui')
@@ -122,7 +93,7 @@ class BaseObject:
     settings = SharedData('settings', from_dict={})
     state = SharedData('state')
 
-    def __init__(self, name=BO, parent=None, tpl_engine=TE, logger=None, *args, **kwargs):
+    def __init__(self, name='cnchi_base', parent=None, logger=None, *args, **kwargs):
         """
         Attributes:
             name       (str):         A name for this object (all objects must have unique name).
@@ -130,68 +101,41 @@ class BaseObject:
             ui         (Gtk.Builder): This objects's GTK Builder instance (if applicable).
             template   (str):         Abs path to this object's template file.
             tpl_engine (str):         Name of this object's primary template engine.
-            widget     (Gtk.Widget):  This object's GTK Widget.
-
+            widget     (Gtk.Widget):  This object's UI Toolkit Widget (GTK or Qt).
         """
 
         super().__init__()
 
-        self.name, self.parent, self.tpl_engine = (name, parent, tpl_engine)
+        self.name, self.parent = name, parent
 
         self.template = self.ui = None
 
         if self.all_signals is None:
             self.all_signals = set()
 
-        self._check_for_main_components(name)
+        self._maybe_register_main_component(name)
 
         if self.logger is None:
-            BaseObject.logger = logger
+            CnchiObject.logger = logger
 
         self.logger.debug("Loading '%s' %s", name, self.__class__.__name__)
 
-    def _check_for_main_components(self, name):
+    def _maybe_register_main_component(self, name):
         components = [
-            'main_window', 'cnchi_ui', 'cnchi_app', 'pages_helper', 'controller'
+            'main_window',
+            'cnchi_ui',
+            'cnchi_app',
+            'pages_helper',
+            'controller',
         ]
 
         if name not in components:
             return
 
-        attrib_name = '_{}'.format(name)
-        attrib = getattr(self, attrib_name)
+        attrib = getattr(self, f'_{name}')
 
         if attrib is None:
-            setattr(self, attrib_name, self)
-
-    @staticmethod
-    def toggle_bool(value):
-        """
-        Given a `bool`, returns the opposite `bool` value.
-        Given a `str` value representing a bool, returns the opposite bool value as a `str`.
-
-        Args:
-            value (str|bool): Value to toggle.
-
-        Examples:
-            >>> bool_string_helper('False')
-            'True'
-            >>> bool_string_helper(True)
-            False
-
-        Raises:
-            ValueError: If value is not of type(bool|str) or if str value not in ['True', 'False'].
-
-        """
-
-        if isinstance(value, str) and value in ['True', 'False']:
-            return 'True' if 'False' == value else 'False'
-        elif isinstance(value, bool):
-            return False if value else True
-        else:
-            raise ValueError(
-                'value must be of type(bool|str["True", "False"]). {0} given.'.format(type(value))
-            )
+            setattr(self, f'_{name}', self)
 
 
 class Singleton(type):

@@ -28,13 +28,13 @@
 
 
 # Standard Lib
-from _base_object import (
+from _cnchi_object import (
     json,
     os
 )
 
 # 3rd-party Libs
-from _base_object import (
+from _cnchi_object import (
     Gdk,
     Gio,
     GLib,
@@ -44,8 +44,8 @@ from _base_object import (
 )
 
 # This application
-from _base_object import (
-    BaseObject,
+from _cnchi_object import (
+    CnchiObject,
     bg_thread,
     DataObject,
     NonSharedData,
@@ -54,7 +54,7 @@ from _base_object import (
 )
 
 
-class BaseWidget(BaseObject):
+class CnchiWidget(CnchiObject):
     """
     Base class for UI classes that have a corresponding toolkit-specific widget instance which is
     accessible via the class's `widget` attribute.
@@ -63,7 +63,7 @@ class BaseWidget(BaseObject):
         widget (NonSharedData):   Descriptor that provides access to the toolkit-specific widget
                                   instance for this object.
 
-        See Also `BaseObject.__doc__`
+        See Also `CnchiObject.__doc__`
 
     """
 
@@ -72,7 +72,7 @@ class BaseWidget(BaseObject):
     def __init__(self, name='base_widget', *args, **kwargs):
         """
         Attributes:
-            See Also `BaseObject.__doc__`
+            See Also `CnchiObject.__doc__`
 
         """
 
@@ -118,19 +118,19 @@ class BaseWidget(BaseObject):
         return self.widget.get_ancestor(Gtk.Window)
 
 
-class Page(BaseWidget):
+class Page(CnchiWidget):
     """
     Base class for pages.
 
     Class Attributes:
-        Also see `BaseWidget.__doc__`
+        Also see `CnchiWidget.__doc__`
 
     """
 
     def __init__(self, name='page', tpl_engine=None, *args, **kwargs):
         """
         Attributes:
-            Also see `BaseWidget.__doc__`.
+            Also see `CnchiWidget.__doc__`.
 
         Args:
             name (str): A name for this widget.

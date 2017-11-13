@@ -33,7 +33,7 @@ from socket import gethostname
 import dbus
 
 import misc.extra as misc
-from modules._base_module import BaseModule
+from modules._base_module import CnchiModule
 from misc.run_cmd import call
 
 # Constants
@@ -44,7 +44,7 @@ UPOWER_PATH = '/org/freedesktop/UPower'
 MIN_ROOT_SIZE = 8000000000
 
 
-class SystemCheckModule(BaseModule):
+class SystemCheckModule(CnchiModule):
     """
     Utility class for performing various system and environment checks.
 

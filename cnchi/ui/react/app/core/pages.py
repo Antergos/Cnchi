@@ -27,7 +27,7 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 # Standard Lib
-from _base_object import (
+from _cnchi_object import (
     os
 )
 
@@ -37,7 +37,7 @@ from _base_object import (
 # This application
 from ui.base_widgets import (
     bg_thread,
-    BaseObject,
+    CnchiObject,
     SharedData,
     Singleton,
 )
@@ -45,21 +45,21 @@ from ui.base_widgets import (
 from ..pages import ALL_PAGES
 
 
-class PagesHelper(BaseObject, metaclass=Singleton):
+class PagesHelper(CnchiObject, metaclass=Singleton):
     """
     Manages the UI's pages.
 
     Class Attributes:
         all_pages  (dict): Dict of initialized page objects for the UI.
         page_names (list): List of all page names that are available.
-        Also see `BaseObject.__doc__`
+        Also see `CnchiObject.__doc__`
 
     """
 
     def __init__(self, name='pages_helper', *args, **kwargs):
         """
         Attributes:
-            Also see `BaseWidget.__doc__`.
+            Also see `CnchiWidget.__doc__`.
 
         Args:
             name (str): A name for this widget.

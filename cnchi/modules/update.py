@@ -28,12 +28,12 @@
 
 """ Update Module """
 
-from ._base_module import BaseModule
-from _base_object import GLib
+from ._base_module import CnchiModule
+from _cnchi_object import GLib
 from installation.pacman.pac import Pac
 
 
-class UpdateModule(BaseModule):
+class UpdateModule(CnchiModule):
 
     def __init__(self, name='_update', *args, **kwargs):
         super().__init__(name=name, *args, **kwargs)

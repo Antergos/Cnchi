@@ -1,3 +1,4 @@
+[2017-11-09 14:39:16 +0100]  [packages.xml] Use new meta packages                                       karasu      {5f029d3d}
 [2017-11-08 18:57:16 +0100]  [packages.xml] add linux-lts-headers when installing linux-lts             karasu      {89cd6928}
 [2017-11-08 08:24:50 +0100]  [packages.xml] Updated to use new antergos-*-meta packages. Still w..      karasu      {e3c35108}
 [2017-11-05 19:58:20 +0100]  Moved widget files to their own folder                                     karasu      {6d76b387}

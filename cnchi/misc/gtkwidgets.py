@@ -153,7 +153,7 @@ GObject.type_register(DiskBox)
 
 
 class PartitionBox(StylizedFrame):
-    """ BaseWidget to contain partition info """
+    """ CnchiWidget to contain partition info """
     __gtype_name__ = 'PartitionBox'
     __gproperties__ = {
         'title': (
@@ -278,7 +278,7 @@ GObject.type_register(PartitionBox)
 
 
 class ResizeWidget(Gtk.Frame):
-    """ BaseWidget used to resize partitions """
+    """ CnchiWidget used to resize partitions """
     __gtype_name__ = 'ResizeWidget'
     __gproperties__ = {
         'part-size': (
@@ -442,7 +442,7 @@ GObject.type_register(ResizeWidget)
 
 
 class StateBox(StylizedFrame):
-    """ BaseWidget used to show any kind of information """
+    """ CnchiWidget used to show any kind of information """
     __gtype_name__ = 'StateBox'
     __gproperties__ = {
         'label': (

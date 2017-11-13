@@ -27,7 +27,7 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 from .._base_module import (
-    BaseModule,
+    CnchiModule,
     bg_thread,
     locale,
     os
@@ -37,7 +37,7 @@ from .._base_module import (
 import misc.i18n as i18n
 
 
-class LanguageModule(BaseModule):
+class LanguageModule(CnchiModule):
 
     def __init__(self, name='language_module', page_name='language'):
         super().__init__(name=name, page_name=page_name)

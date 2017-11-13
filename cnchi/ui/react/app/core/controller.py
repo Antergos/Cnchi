@@ -29,28 +29,28 @@
 """ React UI Controller """
 
 # Standard Lib
-from _base_object import (
-    BaseObject,
+from _cnchi_object import (
+    CnchiObject,
     Singleton
 )
-from _base_object import GLib
-from _base_object import (
+from _cnchi_object import GLib
+from _cnchi_object import (
     ascii_uppercase,
     choice,
     json
 )
-from ui.gtk.web_container import WebContainer
-from ui.gtk.main_window import MainWindow
+from ui.gtk.components.web_container.web_container import WebContainer
+from ui.gtk.components.main_window.main_window import MainWindow
 from ..pages.ReactPage import ReactPage
 
 
-class ReactController(BaseObject, metaclass=Singleton):
+class ReactController(CnchiObject, metaclass=Singleton):
     """
     React Controller
 
     Class Attributes:
         _emit_js_tpl (str): Javascript string used to emit signals in web_view.
-        See also `BaseObject.__doc__`
+        See also `CnchiObject.__doc__`
 
     """
 

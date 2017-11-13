@@ -27,7 +27,7 @@
 #  along with AntBS; If not, see <http://www.gnu.org/licenses/>.
 
 # Standard Lib
-from _base_object import (
+from _cnchi_object import (
     os
 )
 
@@ -41,17 +41,17 @@ from ui.base_widgets import (
 from ui.base_widgets import (
     bg_thread,
     DataObject,
-    BaseObject,
+    CnchiObject,
     SharedData
 )
 
 
-class ReactPage(BaseObject):
+class ReactPage(CnchiObject):
     """
     Represents a page in the installation process.
 
     Class Attributes:
-        Also see `BaseObject.__doc__`
+        Also see `CnchiObject.__doc__`
 
     """
 
@@ -60,7 +60,7 @@ class ReactPage(BaseObject):
     def __init__(self, name='ReactPage', index=0, module=None, *args, **kwargs):
         """
         Attributes:
-            Also see `BaseObject.__doc__`.
+            Also see `CnchiObject.__doc__`.
 
         Args:
             name (str): A name for this widget.
