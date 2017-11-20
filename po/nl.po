@@ -1,5 +1,5 @@
 # Cnchi
-# Copyright (C) 2013-2015 Antergos
+# Copyright (C) 2013-2017 Antergos
 # 
 # Translators:
 # BertRobbus <bert_robberechts@yahoo.com>, 2014
@@ -7,6 +7,7 @@
 # Michael Tiebesl <inactive+MichaelTiebesl@transifex.com>, 2014
 # Randy Hofstede <randy.hofstede@outlook.com>, 2014
 # Ronald Trip <ronald.trip@gmail.com>, 2015
+# Isaak Malik <isaakm@protonmail.ch>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
@@ -48,11 +49,11 @@ msgstr "heeft ten minste {0} GB beschikbare opslagruimte. (*)"
 msgid ""
 "This highly depends on which desktop environment you choose, so you might "
 "need more space."
-msgstr "Dit hangt grotendeels af welk bureaublad omgeving u kiest, dus u kunt meer ruimte nodig hebben."
+msgstr "Dit hangt grotendeels af welke bureaubladomgeving u kiest, dus u kunt meer ruimte nodig hebben."
 
 #: cnchi/check.py:84
 msgid "is plugged in to a power source"
-msgstr "is aangesloten op stroomnet"
+msgstr "is aangesloten op het stroomnet"
 
 #: cnchi/check.py:88
 msgid "is connected to the Internet"
@@ -68,7 +69,7 @@ msgstr "We hebben internetverbinding."
 
 #: cnchi/check.py:176
 msgid "We're connected to a power source."
-msgstr "We zijn aangesloten op stroomnet."
+msgstr "We zijn aangesloten op het stroomnet."
 
 #: cnchi/check.py:177
 msgid "We have enough disk space."
@@ -82,15 +83,15 @@ msgstr "We hebben genoeg schijfruimte."
 #: cnchi/location.py:247 cnchi/slides.py:246 cnchi/user_info.py:327
 #: cnchi/welcome.py:151 cnchi/wireless.py:159 cnchi/cnchi.py:74
 msgid "Can't create Cnchi main window: {0}"
-msgstr "Kan Cnchi hoofdvenster niet maken: {0}"
+msgstr "Kan Cnchi hoofdvenster niet aanmaken: {0}"
 
 #: cnchi/cnchi.py:153
 msgid "Sending Cnchi logs to {0} with id '{1}'"
-msgstr ""
+msgstr "Cnchi logs zenden naar {0} met id '{1}'"
 
 #: cnchi/cnchi.py:198
 msgid "Using pyalpm v{0} as interface to libalpm v{1}"
-msgstr "Met behulp van pyalpm v{0} als interface voor libalpm v{1}"
+msgstr "Gebruik pyalpm v{0} als interface voor libalpm v{1}"
 
 #: cnchi/cnchi.py:213
 msgid "Cnchi v{0} - Antergos Installer"
@@ -102,29 +103,30 @@ msgstr "Gebruik vooraf gedownloade xz pakketten indien mogelijk"
 
 #: cnchi/cnchi.py:222
 msgid "Sets Cnchi log level to 'debug'"
-msgstr "Stelt Cnchi log level naar 'debug'"
+msgstr "Verandert Cnchi log level naar 'debug'"
 
 #: cnchi/cnchi.py:226
 msgid "Sets the Desktop Environment that will be installed"
-msgstr ""
+msgstr "Activeert de Desktop Environment die zal worden geïnstalleerd"
 
 #: cnchi/cnchi.py:230
 msgid "Runs cnchi even if it detects that another instance is running"
-msgstr "voert cnchi uit zelfs als een andere cnchi instantie is gedetecteerd"
+msgstr "Voert cnchi uit zelfs als een andere cnchi instantie is gedetecteerd"
 
 #: cnchi/cnchi.py:234
 msgid "Disables first screen's 'try it' option"
-msgstr "Schakelt de optie \"uitproberen\" op het eerste scherm uit"
+msgstr "Schakelt de optie 'uitproberen' op het eerste scherm uit"
 
 #: cnchi/cnchi.py:238
 msgid ""
 "Choose which library to use when downloading packages. Possible options are "
 "'requests' (default), 'urllib' and 'aria2'"
-msgstr ""
+msgstr "Kies welke bibliotheek er moet gebruikt worden bij het downloaden van pakketten. Mogelijke opties zijn "
+"'requests' (default), 'urllib' en 'aria2'"
 
 #: cnchi/cnchi.py:243
 msgid "Makes checks optional in check screen"
-msgstr ""
+msgstr "MAakt controles optioneel in het controlescherm"
 
 #: cnchi/cnchi.py:247
 msgid ""
@@ -159,7 +161,7 @@ msgstr "Toon opties in ontwikkeling (alleen voor ontwikkelaars, gebruik dit niet
 
 #: cnchi/cnchi.py:311
 msgid "Program updated! Restarting..."
-msgstr "Programma bijgewerkt! Aan het herstarten..."
+msgstr "Programma bijgewerkt! Herstarten..."
 
 #: cnchi/cnchi.py:351
 msgid "Cnchi files not found. Please, install Cnchi using pacman"
@@ -167,7 +169,7 @@ msgstr "Cnchi bestanden niet gevonden. Installeer a.u.b. Cnchi met behulp van pa
 
 #: cnchi/desktop.py:114
 msgid "Choose Your Desktop"
-msgstr "Kies uw bureaublad"
+msgstr "Kies uw Bureaubladomgeving"
 
 #: cnchi/desktop.py:203
 msgid "Cnchi will install Antergos with the '%s' desktop"
@@ -258,7 +260,7 @@ msgstr ""
 #: cnchi/download/aria2.py:49 cnchi/download/aria2.py:60
 #: cnchi/download/aria2.py:96 cnchi/download/aria2.py:104
 msgid "Can't call Aria2. Error Output: %s"
-msgstr ""
+msgstr "Kan Aria2 niet oproepen. Error: %s"
 
 #: cnchi/download/aria2.py:73
 msgid "Can't add metalink to Aria2. Error Output: %s"
@@ -266,11 +268,11 @@ msgstr ""
 
 #: cnchi/download/aria2.py:86
 msgid "Can't add uris to Aria2. Error Output: %s"
-msgstr ""
+msgstr "Kan geen uris toevoegen aan Aria2. Error: %s"
 
 #: cnchi/download/aria2.py:157
 msgid "Can't run aria2: %s"
-msgstr ""
+msgstr "Kan aria2 niet starten: %s"
 
 #: cnchi/download/download.py:97
 msgid "Can't create download package list. Check log output for details"
