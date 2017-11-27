@@ -239,7 +239,7 @@
             <pkgname>cups-pk-helper</pkgname>
             <!--<pkgname>foomatic-db-nonfree</pkgname>-->
             <pkgname>gsfonts</pkgname>
-            <pkgname lib='gtk'>gtk3-print-backends</pkgname>
+            <!--<pkgname lib='gtk'>gtk3-print-backends</pkgname>-->
             <!--<pkgname>gutenprint</pkgname>-->
             <pkgname>hplip</pkgname>
             <pkgname lib='qt'>print-manager</pkgname>
