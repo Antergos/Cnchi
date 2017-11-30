@@ -291,6 +291,17 @@ class Installation(object):
             if os.path.exists(img):
                 os.remove(img)
 
+        # If intel-ucode or grub2-theme-antergos files exist in /boot they are
+        # most likely either from another linux installation or from a failed
+        # install attempt and need to be removed otherwise pyalpm will refuse
+        # to install those packages (like above)
+        if os.path.exists('/install/boot/intel-ucode.img'):
+            logging.debug("Removing previous intel-ucode.img file found in /boot")
+            os.remove('/install/boot/intel-ucode.img')
+        if os.path.exists('/install/boot/grub/themes/Antergos-Default'):
+            logging.debug("Removing previous Antergos-Default grub2 theme found in /boot")
+            shutil.rmtree('/install/boot/grub/themes/Antergos-Default')
+
         logging.debug("Preparing pacman...")
         self.prepare_pacman()
         logging.debug("Pacman ready")
