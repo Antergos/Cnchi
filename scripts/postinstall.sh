@@ -257,8 +257,6 @@ enlightenment_settings() {
 
     set_dmrc enlightenment
 
-    echo "QT_STYLE_OVERRIDE=gtk" >> ${CN_DESTDIR}/etc/environment
-
     # Add lxpolkit to autostart apps
     cp /etc/xdg/autostart/lxpolkit.desktop ${CN_DESTDIR}/home/${CN_USER_NAME}/.config/autostart
 }
@@ -338,16 +336,18 @@ postinstall() {
     env_files=("${CN_DESTDIR}/etc/environment"
         "${CN_DESTDIR}/home/${CN_USER_NAME}/.bashrc"
         "${CN_DESTDIR}/etc/skel/.bashrc"
-    "${CN_DESTDIR}/etc/profile")
+        "${CN_DESTDIR}/etc/profile")
 
     for file in "${env_files[@]}"
     do
-        echo "# >>> BEGIN ADDED BY CNCHI INSTALLER" >> "${file}"
+        echo "# >>> Added by cnchi installer" >> "${file}"
         if [ "${CN_BROWSER}" != "" ]; then
             echo "BROWSER=/usr/bin/${CN_BROWSER}" >> "${file}"
         fi
         echo "EDITOR=/usr/bin/nano" >> "${file}"
-        echo "# <<< END ADDED BY CNCHI INSTALLER" >> "${file}"
+        # This is inside .bashrc.aliases from the antergos-desktop-settings package
+        #echo "export QT_STYLE_OVERRIDE=gtk" >> "${file}"
+        #echo "export QT_SELECT=qt5" >> "${file}"
     done
 
     # Configure makepkg so that it doesn't compress packages after building.

@@ -1528,3 +1528,14 @@ class Installation(object):
                 nanorc.write('set keycolor cyan\n')
                 nanorc.write('set functioncolor green\n')
                 nanorc.write('include "/usr/share/nano/*.nanorc"\n')
+
+        # Set .bashrc (in skel and user) to load .bashrc.aliases
+        bashrc_files = ["/etc/skel/.bashrc"]
+        bashrc_files.append("/home/{}/.bashrc".format(username))
+        for bashrc_file in bashrc_files:
+            if os.path.exists(bashrc_file):
+                with open(bashrc_file, 'a') as bashrc:
+                    bashrc.write('\n')
+                    bashrc.write('if [ -e ~/.bashrc.aliases ] ; then\n')
+                    bashrc.write('   source ~/.bashrc.aliases\n')
+                    bashrc.write('fi\n')
