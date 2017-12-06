@@ -1539,3 +1539,10 @@ class Installation(object):
                     bashrc.write('if [ -e ~/.bashrc.aliases ] ; then\n')
                     bashrc.write('   source ~/.bashrc.aliases\n')
                     bashrc.write('fi\n')
+
+        # This must be done at the end of the installation when using zfs
+        if self.method == "zfs":
+            logging.debug("Installation done, exporting ZFS pool")
+            pool_name = self.settings.get("zfs_pool_name")
+            cmd = ["zpool", "export", "-f", pool_name]
+            call(cmd)
