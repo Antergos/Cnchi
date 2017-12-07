@@ -157,6 +157,7 @@
         <edition name="i3" description="Tiling window manager">
             <packages>
                 <pkgname>arandr</pkgname>
+                <pkgname>awesome-terminal-fonts</pkgname>
                 <pkgname>dmenu</pkgname>
                 <pkgname>file-roller</pkgname>
                 <pkgname>galculator</pkgname>

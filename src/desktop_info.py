@@ -160,8 +160,10 @@ DESCRIPTIONS = {
                        "and others, but also a whole suite of libraries to help "
                        "you create beautiful user interfaces with much less work"),
 
-    'i3':       _("i3 is a tiling window manager primarily targeted at advanced "
-                  "users and developers."),
+    'i3':       _("i3 is a tiling window manager, completely written from scratch. "
+                  "The target platforms are GNU/Linux and BSD operating systems, "
+                  "its code is Free and Open Source Software (FOSS) under the BSD "
+                  "license. i3 is primarily targeted at advanced users and developers."),
 
     'lxqt':     _("LXQt is the next-generation of LXDE, the Lightweight Desktop "
                   "Environment. It is lightweight, modular, blazing-fast, and "
