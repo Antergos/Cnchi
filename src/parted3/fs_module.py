@@ -196,7 +196,7 @@ def create_fs(part, fstype, label='', other_opts=''):
     comdic = {'ext2': 'mkfs.ext2 -F -q',
               'ext3': 'mkfs.ext3 -F -q',
               'ext4': 'mkfs.ext4 -F -q',
-              'f2fs': 'mkfs.f2fs',
+              'f2fs': 'mkfs.f2fs -f',
               'fat': 'mkfs.vfat -F 32',
               'fat16': 'mkfs.vfat -F 16',
               'fat32': 'mkfs.vfat -F 32',
