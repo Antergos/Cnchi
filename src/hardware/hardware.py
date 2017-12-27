@@ -33,7 +33,8 @@ import logging
 import os
 import subprocess
 
-_HARDWARE_MODULES_PATH = '/usr/share/cnchi/cnchi/hardware/modules'
+# FIXME: Do not use absoulte paths!
+_HARDWARE_MODULES_PATH = '/usr/share/cnchi/src/hardware/modules'
 
 
 class Hardware(object):
