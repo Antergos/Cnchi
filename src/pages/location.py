@@ -86,8 +86,10 @@ class Location(GtkBaseBox):
         """ Translates all ui elements """
         txt = _("The location you select will be used to help determine the "
                 "system locale. It should normally be the country in which "
-                "you reside. Here is a shortlist of locations based on the "
-                "language you selected.")
+                "you reside. Please, note that your system language will be "
+                "determined from this selection. Here is a shortlist of "
+                "locations based on the language you selected (click on show "
+                "all locations to show them all).")
 
         self.label_help.set_text(txt)
         self.label_help.set_name("location-label-help")

@@ -120,7 +120,7 @@ class Language(GtkBaseBox):
         # a11y
         label.set_can_focus(False)
 
-        txt = _("Choose your language")
+        txt = _("Choose the Installer language")
         self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):
