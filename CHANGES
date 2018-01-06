@@ -1,3 +1,14 @@
+[2018-01-01 12:21:33 +0100]  Remove unused link                                                         karasu      {df90324c}
+[2018-01-01 12:20:50 +0100]  Try to clarify language/locale explanation texts                           karasu      {9d8b9906}
+[2017-12-28 13:33:07 +0100]  Fix info.py symlink #834                                                   karasu      {665ce8cc}
+[2017-12-27 10:45:49 +0100]  Modify folder in hardware module. This is a workaround, still needs..      karasu      {ed45d9eb}
+[2017-12-24 15:24:45 +0100]  Add force option to mkfs.f2fs                                              karasu      {fcdc3103}
+[2017-12-07 19:43:50 +0100]  Small changes for i3                                                       karasu      {b0add07b}
+[2017-12-06 12:36:49 +0100]  [zfs] export pool after finishing the installation process                 karasu      {5b768531}
+[2017-12-06 11:54:36 +0100]  Modify .bashrc to load .bashrc.aliases                                     karasu      {3a7ae579}
+[2017-11-30 09:25:05 +0100]  Remove previous files in /boot (grub2 antergos theme and intel-ucod..      karasu      {1f898c69}
+[2017-11-20 08:29:06 +0100]  Updated nl.po translations                                                 karasu      {c1d5e301}
+[2017-11-13 01:51:36 -0600]  Working on getting enough foundational code in place to allow devel..  Dustin Falgout  {496c0cbd}
 [2017-11-09 14:39:16 +0100]  [packages.xml] Use new meta packages                                       karasu      {5f029d3d}
 [2017-11-08 18:57:16 +0100]  [packages.xml] add linux-lts-headers when installing linux-lts             karasu      {89cd6928}
 [2017-11-08 08:24:50 +0100]  [packages.xml] Updated to use new antergos-*-meta packages. Still w..      karasu      {e3c35108}

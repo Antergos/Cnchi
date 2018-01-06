@@ -18,8 +18,10 @@
                 <pkgname>bind-tools</pkgname>
                 <pkgname>dosfstools</pkgname>
                 <pkgname>haveged</pkgname>
+                <pkgname>htop</pkgname>
                 <pkgname>gzip</pkgname>
                 <pkgname>intel-ucode</pkgname>
+                <pkgname>inxi</pkgname>
                 <pkgname>ipw2100-fw</pkgname>
                 <pkgname>ipw2200-fw</pkgname>
                 <pkgname>mlocate</pkgname>
@@ -30,6 +32,7 @@
                 <pkgname>openssh</pkgname>
                 <pkgname>pkgfile</pkgname>
                 <pkgname>reflector</pkgname>
+                <pkgname>screenfetch</pkgname>
                 <pkgname>sudo</pkgname>
                 <pkgname>terminus-font</pkgname>
                 <pkgname>tar</pkgname>
