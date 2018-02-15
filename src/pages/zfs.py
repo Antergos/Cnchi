@@ -30,6 +30,12 @@ import re
 
 import parted
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
+from pages.gtkbasebox import GtkBaseBox
+
 import misc.extra as misc
 from misc.extra import InstallError, random_generator
 from misc.run_cmd import call
@@ -41,11 +47,6 @@ from installation import wrapper
 
 import parted3.fs_module as fs
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
-from pages.gtkbasebox import GtkBaseBox
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -166,6 +167,8 @@ class InstallationZFS(GtkBaseBox):
 
     @staticmethod
     def select_combobox_value(combobox, value):
+        """ Searches a value in the combobox and
+        selects it if it is found """
         model = combobox.get_model()
         combo_iter = model.get_iter(0)
         index = 0
@@ -719,7 +722,7 @@ class InstallationZFS(GtkBaseBox):
                 # Create BOOT partition
                 wrapper.sgdisk_new(device_path, part_num,
                                    "ANTERGOS_BOOT", 512, "8300")
-                
+
                 # Get partition full path
                 self.devices['boot'] = self.get_partition_path(device_path, part_num)
                 self.fs_devices[self.devices['boot']] = "ext4"
@@ -755,7 +758,9 @@ class InstallationZFS(GtkBaseBox):
                     self.mount_devices['/boot'] = self.devices['boot']
                     # mkfs
                     fs.create_fs(
-                        self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+                        self.devices['boot'],
+                        self.fs_devices[self.devices['boot']],
+                        "ANTERGOS_BOOT")
                     part_num += 1
                 else:
                     # systemd-boot, refind
@@ -770,7 +775,9 @@ class InstallationZFS(GtkBaseBox):
                     self.mount_devices['/boot'] = self.devices['boot']
                     # mkfs
                     fs.create_fs(
-                        self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+                        self.devices['boot'],
+                        self.fs_devices[self.devices['boot']],
+                        "ANTERGOS_BOOT")
                     part_num += 1
 
             # The rest of the disk will be of solaris type
@@ -991,23 +998,21 @@ class InstallationZFS(GtkBaseBox):
             identifier and status """
 
         output = call(["zpool", "import"])
-        if not output:
-            return
+        if output:
+            self.existing_pools = {}
 
-        self.existing_pools = {}
-
-        name = identifier = state = None
-        lines = output.split("\n")
-        for line in lines:
-            if "pool:" in line:
-                # Pool info starts
-                name = line.split(": ")[1]
-                identifier = state = None
-            elif "id:" in line:
-                identifier = line.split(": ")[1]
-            elif "state:" in line:
-                state = line.split(": ")[1]
-                self.existing_pools[name] = (identifier, state)
+            name = identifier = state = None
+            lines = output.split("\n")
+            for line in lines:
+                if "pool:" in line:
+                    # Pool info starts
+                    name = line.split(": ")[1]
+                    identifier = state = None
+                elif "id:" in line:
+                    identifier = line.split(": ")[1]
+                elif "state:" in line:
+                    state = line.split(": ")[1]
+                    self.existing_pools[name] = (identifier, state)
 
     def get_pool_id(self, pool_name, include_offline=False):
         """ Returns pool's identifier and status """
@@ -1098,16 +1103,17 @@ class InstallationZFS(GtkBaseBox):
     @staticmethod
     def get_partition_path(device, part_num):
         """ Form partition path from device and partition number """
-
+        full_path = ""
         # Remove /dev/
         path = device.replace('/dev/', '')
         partials = [
             'rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
         found = [p for p in partials if path.startswith(p)]
         if found:
-            return "{0}p{1}".format(device, part_num)
+            full_path = "{0}p{1}".format(device, part_num)
         else:
-            return "{0}{1}".format(device, part_num)
+            full_path = "{0}{1}".format(device, part_num)
+        return full_path
 
     @staticmethod
     def clear_dest_dir():
@@ -1118,8 +1124,7 @@ class InstallationZFS(GtkBaseBox):
         # Check that /install/boot and /install are not mounted
         call(["umount", boot], warning=False)
         call(["umount", DEST_DIR], warning=False)
-
-        call(["zfs", "umount",  "-a"], warning=False)
+        call(["zfs", "umount", "-a"], warning=False)
 
         # Delete /install contents
         for file_name in os.listdir(DEST_DIR):
