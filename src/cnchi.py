@@ -69,6 +69,12 @@ try:
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
+try:
+    _("")
+except:
+    def _(x):
+        return x
+
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"

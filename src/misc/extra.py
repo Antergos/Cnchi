@@ -81,7 +81,6 @@ def is_swap(device):
 
 # PRIVILEGES STARTS HERE -------------------------------------------------------
 
-
 def set_groups_for_uid(uid):
     """ Set groups for user id uid """
     if uid == os.geteuid() or uid == os.getuid():
@@ -372,7 +371,7 @@ def dmimodel():
             model = proc.communicate()[0]
         if 'apple' in manufacturer:
             # MacBook4,1 - strip the 4,1
-            model = re.sub('[^a-zA-Z\s]', '', model)
+            model = re.sub(r'[^a-zA-Z\s]', '', model)
         # Replace each gap of non-alphanumeric characters with a dash.
         # Ensure the resulting string does not begin or end with a dash.
         model = re.sub('[^a-zA-Z0-9]+', '-', model).rstrip('-').lstrip('-')

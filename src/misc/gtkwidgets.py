@@ -23,6 +23,8 @@
 """ Additional GTK widgets (some are borrowed from Ubiquity) """
 
 import cairo
+import gi
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 try:
@@ -82,7 +84,7 @@ class StylizedFrame(Gtk.Bin):
             return getattr(self, prop.name)
         else:
             # return Gtk.Alignment.do_get_property(self, prop)
-            return Gtk.Bin.do_get_property(self, prop)
+            return Gtk.Bin.get_property(self, prop)
 
     def do_set_property(self, prop, value):
         """ Set object property """
@@ -91,7 +93,7 @@ class StylizedFrame(Gtk.Bin):
             self.queue_draw()
         else:
             # Gtk.Alignment.do_set_property(self, prop, value)
-            Gtk.Bin.do_set_property(self, prop, value)
+            Gtk.Bin.set_property(self, prop, value)
 
     def paint_background(self, c):
         """ Draw widget background """
@@ -231,8 +233,7 @@ class PartitionBox(StylizedFrame):
         size = misc.format_size(size)
         self.size.set_markup('<span size="x-large">{0}</span>'.format(size))
 
-    @staticmethod
-    def render_dots():
+    def render_dots(self):
         # FIXME: Dots are rendered over the frame.
         s = cairo.ImageSurface(cairo.FORMAT_ARGB32, 2, 2)
         cr = cairo.Context(s)
@@ -288,7 +289,7 @@ class ResizeWidget(Gtk.Frame):
             name = prop.name.replace('-', '_')
             return getattr(self, name)
         else:
-            return Gtk.Alignment.do_get_property(self, prop)
+            return Gtk.Alignment.get_property(self, prop)
 
     def do_set_property(self, prop, value):
         """ Set object property """
@@ -298,7 +299,7 @@ class ResizeWidget(Gtk.Frame):
             self.queue_draw()
         else:
             # print(prop.name, value)
-            Gtk.Alignment.do_set_property(self, prop, value)
+            Gtk.Alignment.set_property(self, prop, value)
 
     def __init__(self, part_size, min_size, max_size):
         """ part_size: The size (MB) of the existing partition.
