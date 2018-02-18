@@ -55,7 +55,7 @@ class Radeon(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["xf86-video-ati", "libva-vdpau-driver", "libtxc_dxtn"]
+        pkgs = ["xf86-video-ati", "libva-vdpau-driver"]
         if os.uname()[-1] == "x86_64":
             pkgs.extend(["lib32-mesa"])
         return pkgs
