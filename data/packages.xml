@@ -21,7 +21,6 @@
                 <pkgname>htop</pkgname>
                 <pkgname>gzip</pkgname>
                 <pkgname>intel-ucode</pkgname>
-                <pkgname>inxi</pkgname>
                 <pkgname>ipw2100-fw</pkgname>
                 <pkgname>ipw2200-fw</pkgname>
                 <pkgname>mlocate</pkgname>
