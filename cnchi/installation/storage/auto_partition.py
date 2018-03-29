@@ -218,8 +218,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         # Set up luks with a keyfile
         cmd = [
-            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain",
-            "-s", "512", luks_device, luks_key]
+            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
+            "-s", "512", "-h", "sha512", luks_device, luks_key]
         call(cmd, msg=err_msg, fatal=True)
 
         cmd = [
@@ -231,12 +231,9 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
-        # https://code.google.com/p/cryptsetup/wiki/Cryptsetup160
-        # aes-xts-plain
-        # aes-cbc-essiv:sha256
         cmd = [
             "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
-            "-s", "512", "--key-file=-", luks_device]
+            "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
