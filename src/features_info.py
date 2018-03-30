@@ -48,7 +48,9 @@ ICON_NAMES = {
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'sshd': 'network-connect',
-    'visual': 'video-display'}
+    'visual': 'video-display',
+    'lembrame': 'lembrame'
+}
 
 
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
@@ -72,7 +74,9 @@ TITLES = {
     'lts': _("Kernel (LTS version)"),
     'office': _("LibreOffice"),
     'sshd': _("SSH Service"),
-    'visual': _("Visual Effects")}
+    'visual': _("Visual Effects"),
+    'lembrame': _("Lembrame")
+}
 
 DESCRIPTIONS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
@@ -90,7 +94,9 @@ DESCRIPTIONS = {
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
     'sshd': _("Enables Secure SHell service."),
-    'lts': _("Long term support (LTS) Linux kernel and modules.")}
+    'lts': _("Long term support (LTS) Linux kernel and modules."),
+    'lembrame': _("Sync your Gnome and system settings between installations")
+}
 
 TOOLTIPS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
@@ -155,7 +161,11 @@ TOOLTIPS = {
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
                 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
-                "See the compton github page for further information.")}
+                "See the compton github page for further information."),
+    'lembrame': _("Lembrame is a concept tool to sync your settings to the cloud\n"
+                  "and reuse them on your next install to have the same desktop settings,\n"
+                  "packages and more.")
+}
 
 # Delete previous _() dummy declaration
 del _

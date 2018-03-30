@@ -153,6 +153,22 @@ class Features(GtkBaseBox):
             if row[Features.COL_SWITCH] == switch:
                 is_active = switch.get_active()
                 self.settings.set("feature_" + feature, is_active)
+                # Extra actions on this switch trigger
+                self.extra_switch_actions(feature, is_active)
+
+    def extra_switch_actions(self, feature, is_active):
+        # Disable all if Lembrame is selected
+        if feature == 'lembrame' and is_active:
+            logging.debug("Activating Lembrame. Deactivating the rest of the switches")
+            for rowFeature in self.listbox_rows:
+                if rowFeature != 'lembrame':
+                    self.listbox_rows[rowFeature][Features.COL_SWITCH].set_active(False)
+
+        # Disable lembrame if any other option is activated
+        if feature != 'lembrame' and is_active:
+            if self.listbox_rows['lembrame'][Features.COL_SWITCH].get_active():
+                logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
+                self.listbox_rows['lembrame'][Features.COL_SWITCH].set_active(False)
 
     def add_feature_switch(self, feature, box):
         object_name = "switch_" + feature
