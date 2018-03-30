@@ -41,6 +41,8 @@ import misc.extra as misc
 
 from pages.gtkbasebox import GtkBaseBox
 
+from lembrame import LembrameDialog
+
 
 class Graphics(object):
     def nvidia(self):
@@ -365,6 +367,19 @@ class Features(GtkBaseBox):
             else:
                 self.settings.set("feature_lemp", False)
 
+    def ask_lembrame(self):
+        if self.settings.get("feature_lembrame"):
+            dlg = LembrameDialog(
+                self.get_main_window(),
+                self.ui_dir)
+
+            response = dlg.run()
+
+            if response == Gtk.ResponseType.APPLY:
+                print('apply')
+
+            dlg.destroy()
+
     def store_switches(self):
         """ Store current feature selections """
         for feature in self.features:
@@ -380,6 +395,7 @@ class Features(GtkBaseBox):
         self.store_switches()
         self.show_disclaimer_messages()
         self.ask_nginx()
+        self.ask_lembrame()
 
         self.listbox_rows = {}
 
