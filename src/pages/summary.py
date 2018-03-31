@@ -199,8 +199,8 @@ class Summary(GtkBaseBox):
             return False
 
         # Start Lembrame download package
-        lembrame = Lembrame()
-        lembrame_download_status = lembrame.download_file(self.settings)
+        lembrame = Lembrame(self.settings)
+        lembrame_download_status = lembrame.download_file()
 
         install_screen = self.get_install_screen()
         self.process = Process(

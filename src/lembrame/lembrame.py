@@ -44,7 +44,7 @@ class Lembrame:
 
     def __init__(self, settings):
         self.settings = settings
-        self.config = LembrameConfig
+        self.config = LembrameConfig()
         self.credentials = self.settings.get('lembrame_credentials')
 
     def download_file(self):
@@ -73,7 +73,7 @@ class Lembrame:
         req = requests.post(self.config.request_download_endpoint, json=payload)
         if req.status_code == requests.codes.ok:
             self.download_link = req.json()['data']
-            logging.debug("API responded with a download link: %s", self.download_link)
+            logging.debug("API responded with a download link")
             return True
         else:
             logging.debug("Requesting for download link to Lembrame failed")
