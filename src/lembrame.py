@@ -72,24 +72,14 @@ class LembrameDialog(Gtk.Dialog):
     def translate_ui(self):
         self.set_title(_("Cnchi - Lembrame credentials"))
 
-        # label = self.ui.get_object("http_proxy_label")
-        # label.set_text(_("HTTP proxy server:"))
-        # label = self.ui.get_object("https_proxy_label")
-        # label.set_text(_("HTTPS proxy server:"))
-        # label = self.ui.get_object("ftp_proxy_label")
-        # label.set_text(_("FTP proxy server:"))
-        # label = self.ui.get_object("socks_proxy_label")
-        # label.set_text(_("SOCKS host server:"))
-        # label = self.ui.get_object("use_same_proxy_label")
-        # label.set_text(_("Use this proxy server for all protocols"))
-        #
-        # port_names = [
-        #     "http_proxy_port_label", "https_proxy_port_label",
-        #     "https_proxy_port_label", "ftp_proxy_port_label",
-        #     "socks_proxy_port_label"]
-        # for name in port_names:
-        #     label = self.ui.get_object(name)
-        #     label.set_text(_("Port:"))
+        label = self.ui.get_object("lembrame_label")
+        label.set_text(_("You will need to write your UserID and your upload code\n"
+                         "which you should generate first with the Lembrame tool\n"
+                         "before beginning a new installation."))
+        label = self.ui.get_object("userid_label")
+        label.set_text(_("Your UserID:"))
+        label = self.ui.get_object("uploadcode_label")
+        label.set_text(_("Your upload code:"))
 
     def get_credentials(self):
         user_id = self.ui.get_object("userid_entry")
