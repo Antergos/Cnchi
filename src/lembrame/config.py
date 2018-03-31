@@ -29,7 +29,9 @@
 
 class LembrameConfig(object):
     request_download_endpoint = False
+    file_path = False
 
     def __init__(self):
         self.request_download_endpoint = \
             'https://lz6fjo9m5d.execute-api.us-west-2.amazonaws.com/dev/request-download-link'
+        self.file_path = "/tmp/export.tar.gz.encrypted"

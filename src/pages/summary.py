@@ -40,6 +40,7 @@ import desktop_info
 import features_info
 from pages.gtkbasebox import GtkBaseBox
 from installation.process import Process
+from lembrame.lembrame import Lembrame
 
 from misc.extra import InstallError
 
@@ -196,6 +197,10 @@ class Summary(GtkBaseBox):
 
         if response != Gtk.ResponseType.YES:
             return False
+
+        # Start Lembrame download package
+        lembrame = Lembrame()
+        lembrame_download_status = lembrame.download_file(self.settings)
 
         install_screen = self.get_install_screen()
         self.process = Process(
