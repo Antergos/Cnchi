@@ -75,6 +75,7 @@ class Settings(object):
             'feature_office': False,
             'feature_smb': False,
             'feature_visual': False,
+            'feature_lembrame': False,
             'fullname': '',
             'GRUB_CMDLINE_LINUX': '',
             'hostname': 'antergos',

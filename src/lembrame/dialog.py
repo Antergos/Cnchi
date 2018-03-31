@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  lembrame.py
+#  dialog.py
 #
 #  Copyright © 2013-2017 Antergos
 #
@@ -34,17 +34,10 @@ from gi.repository import Gtk
 import os
 import logging
 
+from lembrame.credentials import LembrameCredentials
+
 
 def _(x): return x
-
-
-class LembrameCredentials(object):
-    user_id = False
-    upload_code = False
-
-    def __init__(self, user_id, upload_code):
-        self.user_id = user_id
-        self.upload_code = upload_code
 
 
 class LembrameDialog(Gtk.Dialog):

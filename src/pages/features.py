@@ -41,7 +41,7 @@ import misc.extra as misc
 
 from pages.gtkbasebox import GtkBaseBox
 
-from lembrame import LembrameDialog
+from lembrame.dialog import LembrameDialog
 
 
 class Graphics(object):
