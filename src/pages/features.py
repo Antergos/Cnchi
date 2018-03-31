@@ -376,7 +376,10 @@ class Features(GtkBaseBox):
             response = dlg.run()
 
             if response == Gtk.ResponseType.APPLY:
-                print('apply')
+                logging.debug("Saving Lembrame credentials")
+                self.settings.set(
+                    'lembrame_credentials',
+                    dlg.get_credentials())
 
             dlg.destroy()
 
