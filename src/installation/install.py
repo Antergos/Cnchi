@@ -302,9 +302,6 @@ class Installation(object):
             logging.debug("Removing previous Antergos-Default grub2 theme found in /boot")
             shutil.rmtree('/install/boot/grub/themes/Antergos-Default')
 
-        # Start Lembrame download package if activated
-        self.prepare_lembrame()
-
         logging.debug("Preparing pacman...")
         self.prepare_pacman()
         logging.debug("Pacman ready")
@@ -1550,18 +1547,4 @@ class Installation(object):
             cmd = ["zpool", "export", "-f", pool_name]
             call(cmd)
 
-    def prepare_lembrame(self):
-        if self.settings.get("feature_lembrame"):
-            logging.debug("Preparing Lembrame files")
-            from lembrame.lembrame import Lembrame
 
-            self.queue_event('pulse', 'start')
-            self.queue_event('info', _("Downloading Lembrame file with your synced configuration"))
-
-            lembrame = Lembrame(self.settings)
-            lembrame_download_status = lembrame.download_file()
-
-            if lembrame_download_status:
-                self.queue_event('info', _("Decrypting and setting up your Lembrame file"))
-                logging.debug("Setting up Lembrame configurations")
-                lembrame.setup()

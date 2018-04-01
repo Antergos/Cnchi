@@ -81,11 +81,31 @@ class Process(multiprocessing.Process):
             txt = _("Cannot create download package list (metalinks).")
             raise misc.InstallError(txt)
 
+    def prepare_lembrame(self):
+        if self.settings.get("feature_lembrame"):
+            logging.debug("Preparing Lembrame files")
+            from lembrame.lembrame import Lembrame
+
+            self.queue_event('pulse', 'start')
+            self.queue_event('info', _("Downloading Lembrame file with your synced configuration"))
+
+            lembrame = Lembrame(self.settings)
+            lembrame_download_status = lembrame.download_file()
+
+            if lembrame_download_status:
+                self.queue_event('info', _("Decrypting and setting up your Lembrame file"))
+                logging.debug("Setting up Lembrame configurations")
+                lembrame.setup()
+
     def run(self):
         """ Calculates download package list and then calls run_format and
         run_install. Takes care of the exceptions, too. """
 
         try:
+            # Start Lembrame download package if activated. We'll need the package list to
+            # overwrite the one used by the installer by default
+            self.prepare_lembrame()
+
             # Before formatting, let's try to calculate package download list
             # this way, if something fails (a missing package, mostly) we have
             # not formatted anything yet.
