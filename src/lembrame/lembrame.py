@@ -28,8 +28,20 @@
 
 
 import requests
+import sys
 import os
+import shutil
+import tarfile
+from pathlib import Path
 import logging
+
+try:
+    import libnacl
+except ImportError:
+    sys.stderr.write('Please install python-libnacl package')
+    exit()
+
+import libnacl.utils
 
 from lembrame.config import LembrameConfig
 
@@ -41,16 +53,31 @@ class Lembrame:
     """ Lembrame main class """
 
     download_link = False
+    encrypted_file = False
+    dest_folder = False
+
+    APP_MAGICNUM = b'LEMBRAME0'
+    LEN_MAGICNUM = 9
+    LEN_NONCE = 24
+    LEN_KEY = 32
+    LEN_PROT_BOX = 72
+
+    sha256 = libnacl.crypto_hash_sha256
+    sha512 = libnacl.crypto_hash_sha512
+    rand_nonce = libnacl.utils.rand_nonce
+    salsa_key = libnacl.utils.salsa_key
+    secretbox = libnacl.crypto_secretbox
+    secretbox_open = libnacl.crypto_secretbox_open
 
     def __init__(self, settings):
         self.settings = settings
         self.config = LembrameConfig()
         self.credentials = self.settings.get('lembrame_credentials')
+        self.dest_folder = '/install/home/' + self.settings.get('username') + '/.lembrame-sync'
 
     def download_file(self):
-        """ Download new Cnchi version from github """
+        """ Download the lembrame encrypted file """
         if self.request_download_link():
-            logging.debug("We ", self.credentials.user_id)
             req = requests.get(self.download_link, stream=True)
             if req.status_code == requests.codes.ok:
                 with open(self.config.file_path, 'wb') as encrypted_file:
@@ -66,6 +93,7 @@ class Lembrame:
             return False
 
     def request_download_link(self):
+        """ Request for a signed S3 download link """
         payload = {'uid': self.credentials.user_id}
 
         logging.debug("Requesting download link for uid: %s", self.credentials.user_id)
@@ -78,4 +106,88 @@ class Lembrame:
         else:
             logging.debug("Requesting for download link to Lembrame failed")
             return False
+
+    def setup(self):
+        self.before_setup()
+        logging.debug("Checking if the Lembrame encrypted file exists")
+        encrypted_file = Path(self.config.file_path)
+        if encrypted_file.is_file():
+            self.open_file()
+            if self.verify_file_signature():
+                if self.decrypt_file() is False:
+                    return False
+        else:
+            logging.debug("Lembrame encrypted file doesn't exists")
+            return False
+
+        if self.extract_encrypted_file():
+            logging.debug("Lembrame decrypted file successfully extracted to: %s", self.config.folder_file_path)
+            return True
+        else:
+            return False
+
+    def open_file(self):
+        try:
+            self.encrypted_file = open(self.config.file_path, 'rb')
+        except IOError:
+            logging.debug("Can't read Lembrame encrypted file: %s", IOError)
+
+    def verify_file_signature(self):
+        if self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM:
+            return True
+        else:
+            return False
+
+    def decrypt_file(self):
+        pass_hash, saltnonce = self.get_decryption_hash()
+        prot_key = self.get_key_decryption_file(pass_hash, saltnonce)
+
+        self.encrypted_file.seek(self.LEN_MAGICNUM + self.LEN_NONCE)
+        prot_box = self.encrypted_file.read(self.LEN_PROT_BOX)
+
+        try:
+            prot_keynonce = self.secretbox_open(prot_box, saltnonce, prot_key)
+        except ValueError:
+            logging.debug("Incorrect upload code trying to decrypt Lembrame file")
+            return False
+
+        data_nonce = prot_keynonce[0:self.LEN_NONCE]
+        data_key = prot_keynonce[self.LEN_NONCE:self.LEN_NONCE + self.LEN_KEY]
+
+        self.encrypted_file.seek(self.LEN_MAGICNUM + self.LEN_NONCE + self.LEN_PROT_BOX)
+
+        plaindata = open(self.config.decrypted_file_path, 'xb')
+
+        plaindata.write(self.secretbox_open(self.encrypted_file.read(), data_nonce, data_key))
+
+        return True
+
+    def get_decryption_hash(self):
+        self.encrypted_file.seek(self.LEN_MAGICNUM)
+        saltnonce = self.encrypted_file.read(self.LEN_NONCE)
+        return self.sha512(saltnonce + self.credentials.upload_code.encode('utf-8')), saltnonce
+
+    def get_key_decryption_file(self, pass_hash, salt):
+        for i in range(2, 2 ** 17):
+            pass_hash = self.sha512(salt + pass_hash)
+        return self.sha256(salt + pass_hash)
+
+    def extract_encrypted_file(self):
+        try:
+            tar = tarfile.open(self.config.decrypted_file_path, "r:gz")
+            tar.extractall()
+            tar.close()
+            shutil.copytree(self.config.folder_file_path, self.dest_folder, False, None)
+            return True
+        except tarfile.TarError as err:
+            logging.debug("Error trying to extract Lembrame decrypted file: %s", str(err))
+            return False
+
+    def before_setup(self):
+        logging.debug("Removing existing decrypted files from Lembrame")
+        os.remove(self.config.decrypted_file_path)
+        logging.debug("Removing existing extracted files from encrypted")
+        shutil.rmtree(self.config.folder_file_path)
+        logging.debug("Removing existing .lembrame-sync folder on /install")
+        shutil.rmtree(self.dest_folder)
 

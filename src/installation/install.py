@@ -956,6 +956,17 @@ class Installation(object):
                     "Unable to import LEMP module: %s",
                     str(import_error))
 
+        if self.settings.get("feature_lembrame"):
+            try:
+                from lembrame.lembrame import Lembrame
+                logging.debug("Setting up Lembrame configurations")
+                lembrame = Lembrame(self.settings)
+                lembrame.setup()
+            except ImportError as import_error:
+                logging.warning(
+                    "Unable to import Lembrame module: %s",
+                    str(import_error))
+
         self.enable_services(services)
 
     def setup_display_manager(self):
