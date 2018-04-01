@@ -49,6 +49,12 @@ from lembrame.config import LembrameConfig
 def _(x): return x
 
 
+def get_key_decryption_file(pass_hash, salt):
+    for i in range(2, 2 ** 17):
+        pass_hash = libnacl.crypto_hash_sha512(salt + pass_hash)
+    return libnacl.crypto_hash_sha256(salt + pass_hash)
+
+
 class Lembrame:
     """ Lembrame main class """
 
@@ -61,13 +67,6 @@ class Lembrame:
     LEN_NONCE = 24
     LEN_KEY = 32
     LEN_PROT_BOX = 72
-
-    sha256 = libnacl.crypto_hash_sha256
-    sha512 = libnacl.crypto_hash_sha512
-    rand_nonce = libnacl.utils.rand_nonce
-    salsa_key = libnacl.utils.salsa_key
-    secretbox = libnacl.crypto_secretbox
-    secretbox_open = libnacl.crypto_secretbox_open
 
     def __init__(self, settings):
         self.settings = settings
@@ -144,13 +143,13 @@ class Lembrame:
 
     def decrypt_file(self):
         pass_hash, saltnonce = self.get_decryption_hash()
-        prot_key = self.get_key_decryption_file(pass_hash, saltnonce)
+        prot_key = get_key_decryption_file(pass_hash, saltnonce)
 
         self.encrypted_file.seek(self.LEN_MAGICNUM + self.LEN_NONCE)
         prot_box = self.encrypted_file.read(self.LEN_PROT_BOX)
 
         try:
-            prot_keynonce = self.secretbox_open(prot_box, saltnonce, prot_key)
+            prot_keynonce = libnacl.crypto_secretbox_open(prot_box, saltnonce, prot_key)
         except ValueError:
             logging.debug("Incorrect upload code trying to decrypt Lembrame file")
             return False
@@ -162,24 +161,20 @@ class Lembrame:
 
         plaindata = open(self.config.decrypted_file_path, 'xb')
 
-        plaindata.write(self.secretbox_open(self.encrypted_file.read(), data_nonce, data_key))
+        plaindata.write(libnacl.crypto_secretbox_open(self.encrypted_file.read(), data_nonce, data_key))
 
         return True
 
     def get_decryption_hash(self):
         self.encrypted_file.seek(self.LEN_MAGICNUM)
         saltnonce = self.encrypted_file.read(self.LEN_NONCE)
-        return self.sha512(saltnonce + self.credentials.upload_code.encode('utf-8')), saltnonce
-
-    def get_key_decryption_file(self, pass_hash, salt):
-        for i in range(2, 2 ** 17):
-            pass_hash = self.sha512(salt + pass_hash)
-        return self.sha256(salt + pass_hash)
+        password = saltnonce + self.credentials.get_upload_code().encode('utf-8')
+        return libnacl.crypto_hash_sha512(password), saltnonce
 
     def extract_encrypted_file(self):
         try:
             tar = tarfile.open(self.config.decrypted_file_path, "r:gz")
-            tar.extractall()
+            tar.extractall(self.config.folder_file_path)
             tar.close()
             shutil.copytree(self.config.folder_file_path, self.dest_folder, False, None)
             return True

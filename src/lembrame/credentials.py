@@ -34,4 +34,10 @@ class LembrameCredentials(object):
     def __init__(self, user_id, upload_code):
         self.user_id = user_id
         self.upload_code = upload_code
+    
+    def get_user_id(self):
+        return self.user_id
+
+    def get_upload_code(self):
+        return self.upload_code
 
