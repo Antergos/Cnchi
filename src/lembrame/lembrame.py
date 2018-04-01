@@ -113,9 +113,13 @@ class Lembrame:
         encrypted_file = Path(self.config.file_path)
         if encrypted_file.is_file():
             self.open_file()
-            if self.verify_file_signature():
+            signature = self.verify_file_signature()
+            if signature:
                 if self.decrypt_file() is False:
                     return False
+            else:
+                logging.debug("Signature on the Lembrame file doesn't match")
+                return False
         else:
             logging.debug("Lembrame encrypted file doesn't exists")
             return False
@@ -185,9 +189,13 @@ class Lembrame:
 
     def before_setup(self):
         logging.debug("Removing existing decrypted files from Lembrame")
-        os.remove(self.config.decrypted_file_path)
+        try:
+            os.remove(self.config.decrypted_file_path)
+        except OSError:
+            pass
+
         logging.debug("Removing existing extracted files from encrypted")
-        shutil.rmtree(self.config.folder_file_path)
+        shutil.rmtree(self.config.folder_file_path, True)
         logging.debug("Removing existing .lembrame-sync folder on /install")
-        shutil.rmtree(self.dest_folder)
+        shutil.rmtree(self.dest_folder, True)
 
