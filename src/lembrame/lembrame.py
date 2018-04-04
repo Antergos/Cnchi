@@ -45,6 +45,9 @@ import libnacl.utils
 
 from lembrame.config import LembrameConfig
 
+import misc.gsettings as gsettings
+from misc.run_cmd import chroot_call
+
 
 def _(x): return x
 
@@ -61,6 +64,8 @@ class Lembrame:
     download_link = False
     encrypted_file = False
     dest_folder = False
+    user_home = False
+    install_user_home = False
 
     APP_MAGICNUM = b'LEMBRAME0'
     LEN_MAGICNUM = 9
@@ -72,7 +77,9 @@ class Lembrame:
         self.settings = settings
         self.config = LembrameConfig()
         self.credentials = self.settings.get('lembrame_credentials')
-        self.dest_folder = '/install/home/' + self.settings.get('username') + '/.lembrame-sync'
+        self.user_home = '/home/' + self.settings.get('username')
+        self.install_user_home = '/install/home/' + self.settings.get('username')
+        self.dest_folder = '/.lembrame-sync'
 
     def download_file(self):
         """ Download the lembrame encrypted file """
@@ -176,11 +183,13 @@ class Lembrame:
             tar = tarfile.open(self.config.decrypted_file_path, "r:gz")
             tar.extractall(self.config.folder_file_path)
             tar.close()
-            shutil.copytree(self.config.folder_file_path, self.dest_folder, False, None)
             return True
         except tarfile.TarError as err:
             logging.debug("Error trying to extract Lembrame decrypted file: %s", str(err))
             return False
+
+    def copy_folder_to_dest(self):
+        shutil.copytree(self.config.folder_file_path, self.install_user_home + self.dest_folder, False, None)
 
     def before_setup(self):
         logging.debug("Removing existing decrypted files from Lembrame")
@@ -192,5 +201,34 @@ class Lembrame:
         logging.debug("Removing existing extracted files from encrypted")
         shutil.rmtree(self.config.folder_file_path, True)
         logging.debug("Removing existing .lembrame-sync folder on /install")
-        shutil.rmtree(self.dest_folder, True)
+        shutil.rmtree(self.install_user_home + self.dest_folder, True)
 
+    def overwrite_content(self):
+        # Copy the extracted Lembrame file to the user's home
+        self.copy_folder_to_dest()
+
+        # Check if the background folder has at least one file.
+        # It should have just one, so select the first found by default
+        background_folder = os.listdir(self.install_user_home + self.dest_folder + '/background')
+        if len(background_folder) > 0:
+            logging.debug("Configuring the background")
+            background_image = background_folder[0]
+            gsettings.set(
+                self.settings.get('username'),
+                'org.gnome.desktop.background',
+                'picture-uri',
+                'file://' + self.user_home + self.dest_folder + '/background/' + background_image
+            )
+
+        # Overwrite .bashrc
+        bashrc_file = self.install_user_home + self.dest_folder + '/.bashrc'
+        bashrc_file_dest = self.install_user_home + '/.bashrc'
+        shutil.copy(bashrc_file, bashrc_file_dest)
+
+        # Set the file owner
+        chroot_call([
+            'chown',
+            '-R',
+            self.settings.get('username') + ':' + 'users',
+            self.user_home + self.dest_folder
+        ])

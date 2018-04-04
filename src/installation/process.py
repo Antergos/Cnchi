@@ -93,9 +93,11 @@ class Process(multiprocessing.Process):
             lembrame_download_status = lembrame.download_file()
 
             if lembrame_download_status:
-                self.queue_event('info', _("Decrypting and setting up your Lembrame file"))
+                self.queue_event('info', _("Decrypting your Lembrame file"))
                 logging.debug("Setting up Lembrame configurations")
                 lembrame.setup()
+            self.queue_event('info', _("Initializing package downloading"))
+            self.queue_event('pulse', 'stop')
 
     def run(self):
         """ Calculates download package list and then calls run_format and
