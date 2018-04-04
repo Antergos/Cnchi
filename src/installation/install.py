@@ -56,6 +56,8 @@ from mako.template import Template
 
 import hardware.hardware as hardware
 
+from lembrame.lembrame import Lembrame
+
 from installation.boot import loader
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
@@ -521,10 +523,10 @@ class Installation(object):
 
         elif not result and self.settings.get('desktop').lower() in ['cinnamon', 'mate']:
             # Failure might be due to antergos mirror issues. Try using build server repo.
-            with open('/etc/pacman.conf', 'r') as pacman_conf:
+            with open(self.settings.get('pacman_config_file'), 'r') as pacman_conf:
                 contents = pacman_conf.readlines()
 
-            with open('/etc/pacman.conf', 'w') as new_pacman_conf:
+            with open(self.settings.get('pacman_config_file'), 'w') as new_pacman_conf:
                 for line in contents:
                     if 'antergos-mirrorlist' in line:
                         line = 'Server = http://repo.antergos.info/$repo/$arch'
@@ -1545,7 +1547,6 @@ class Installation(object):
         if self.settings.get("feature_lembrame"):
             logging.debug("Overwriting configs from Lembrame")
             self.queue_event('info', _("Overwriting configs from Lembrame"))
-            from lembrame.lembrame import Lembrame
 
             lembrame = Lembrame(self.settings)
             lembrame.overwrite_content()

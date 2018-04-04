@@ -203,6 +203,17 @@ class Lembrame:
         logging.debug("Removing existing .lembrame-sync folder on /install")
         shutil.rmtree(self.install_user_home + self.dest_folder, True)
 
+    def get_pacman_packages(self):
+        packages = []
+        package_list_file = self.config.folder_file_path + '/' + self.config.pacman_packages
+        package_list = Path(self.config.folder_file_path + '/' + self.config.pacman_packages)
+        logging.debug("Get pacman package list from Lembrame")
+        if package_list.is_file():
+            with open(package_list_file) as line:
+                packages = line.read().splitlines()
+        logging.debug("Packages from Lembrame: %s", ",".join(packages))
+        return packages
+
     def overwrite_content(self):
         # Copy the extracted Lembrame file to the user's home
         self.copy_folder_to_dest()

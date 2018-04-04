@@ -32,6 +32,7 @@ class LembrameConfig(object):
     file_path = False
     decrypted_file_path = False
     folder_file_path = False
+    pacman_packages = False
 
     def __init__(self):
         self.request_download_endpoint = \
@@ -39,3 +40,4 @@ class LembrameConfig(object):
         self.file_path = "/tmp/export.tar.gz.encrypted"
         self.decrypted_file_path = "/tmp/export.tar.gz"
         self.folder_file_path = "/tmp/export"
+        self.pacman_packages = 'pacman_package_list'

@@ -93,6 +93,7 @@ class Settings(object):
             'luks_root_volume': '',
             'luks_root_device': '',
             'network_manager': 'NetworkManager',
+            'pacman_config_file': '/etc/pacman.conf',
             'partition_mode': 'automatic',
             'password': '',
             'proxies': None,
