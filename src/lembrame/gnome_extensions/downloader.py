@@ -47,16 +47,18 @@ class GnomeExtensionsDownloader(object):
         self.extensions_path = self.install_user_home + self.config.gnome_shell_extensions_path
 
     def run(self, extensions):
+        """ Iterate over the list of enabled extensions """
         self.extensions = extensions
+
+        # Create destination folders were we're going to download the extension
+        os.makedirs(self.tmp_downloads, exist_ok=True)
+        os.makedirs(self.extensions_path, exist_ok=True)
 
         for self.extension_name in self.extensions:
             self.download_extension()
 
     def download_extension(self):
-        # Create destination folders were we're going to download the extension
-        os.makedirs(self.tmp_downloads, exist_ok=True)
-        os.makedirs(self.extensions_path, exist_ok=True)
-
+        """ Proceed to download the extension """
         # Gather information
         self.extension_info = self.get_extension_info()
         self.extension_latest_shell_supported = self.get_latest_shell_supported()
@@ -82,6 +84,7 @@ class GnomeExtensionsDownloader(object):
         return False
 
     def get_extension_info(self):
+        """ Request for the complete information about the current GShell extension """
         req = requests.get(self.extension_info_url + self.extension_name, stream=True)
         if req.status_code == requests.codes.ok:
             logging.debug("We got the info for the gnome extension '%s'", self.extension_name)
@@ -91,12 +94,14 @@ class GnomeExtensionsDownloader(object):
             return False
 
     def get_latest_shell_supported(self):
+        """ Get the latest GShell supported version of the current extension """
         latest_supported = max(self.extension_info['shell_version_map'])
         logging.debug("The extension '%s' has '%s' as latest Gnome Shell supported",
                       self.extension_name, latest_supported)
         return latest_supported
 
     def get_extension_download_link(self):
+        """ Based on the latest GShell supported version, ask for the specific information with the download link """
         req_url = self.extension_info_url + \
                   self.extension_name + \
                   "&shell_version=" + \
@@ -110,6 +115,7 @@ class GnomeExtensionsDownloader(object):
             return False
 
     def extract_extension(self):
+        """ Extract ZIP to the final destination """
         try:
             zip_file = zipfile.ZipFile(self.tmp_downloads + self.extension_name, "r")
             zip_file.extractall(self.extensions_path + self.extension_name)
