@@ -250,6 +250,19 @@ class Lembrame:
                 'file://' + self.user_home + self.dest_folder + '/background/' + background_image
             )
 
+        # Check if the screensaver folder has at least one file.
+        # It should have just one, so select the first found by default
+        screensaver_folder = os.listdir(self.install_user_home + self.dest_folder + '/screensaver')
+        if len(screensaver_folder) > 0:
+            logging.debug("Configuring the screensaver")
+            screensaver_image = screensaver_folder[0]
+            gsettings.set(
+                self.settings.get('username'),
+                'org.gnome.desktop.screensaver',
+                'picture-uri',
+                'file://' + self.user_home + self.dest_folder + '/screensaver/' + screensaver_image
+            )
+
         # Overwrite .bashrc
         bashrc_file = self.install_user_home + self.dest_folder + '/.bashrc'
         bashrc_file_dest = self.install_user_home + '/.bashrc'
