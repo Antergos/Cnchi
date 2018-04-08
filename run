@@ -24,7 +24,6 @@ if ! [[ -f /usr/share/cnchi ]]; then
     sudo ln -sf ${CNCHI_DIR} /usr/share/cnchi
 fi
 
-
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
