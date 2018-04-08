@@ -33,6 +33,7 @@ class LembrameConfig(object):
     decrypted_file_path = False
     folder_file_path = False
     pacman_packages = False
+    gnome_extensions_url = False
 
     def __init__(self):
         self.request_download_endpoint = \
@@ -41,3 +42,6 @@ class LembrameConfig(object):
         self.decrypted_file_path = "/tmp/export.tar.gz"
         self.folder_file_path = "/tmp/export"
         self.pacman_packages = 'pacman_package_list'
+        self.dconf_dump = 'dconf_org_gnome_shell'
+        self.gnome_extensions_url = 'https://extensions.gnome.org'
+        self.gnome_shell_extensions_path = '/.local/share/gnome-shell/extensions/'

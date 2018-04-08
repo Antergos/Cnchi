@@ -34,6 +34,7 @@ import shutil
 import tarfile
 from pathlib import Path
 import logging
+import ast
 
 try:
     import libnacl
@@ -44,6 +45,7 @@ except ImportError:
 import libnacl.utils
 
 from lembrame.config import LembrameConfig
+from lembrame.gnome_extensions.downloader import GnomeExtensionsDownloader
 
 import misc.gsettings as gsettings
 from misc.run_cmd import chroot_call
@@ -218,6 +220,17 @@ class Lembrame:
         # Copy the extracted Lembrame file to the user's home
         self.copy_folder_to_dest()
 
+        # Check which gnome shell extensions the user had enabled and proceed
+        # to download them from extensions.gnome.org and put it on the designated folder
+        self.download_gnome_extensions()
+
+        # Enable Gnome Shell extensions and other shell settings like favorite apps
+        gsettings.dconf_load(
+            self.settings.get('username'),
+            '/org/gnome/shell/',
+            self.user_home + self.dest_folder + '/' + self.config.dconf_dump
+        )
+
         # Check if the background folder has at least one file.
         # It should have just one, so select the first found by default
         background_folder = os.listdir(self.install_user_home + self.dest_folder + '/background')
@@ -243,3 +256,23 @@ class Lembrame:
             self.settings.get('username') + ':' + 'users',
             self.user_home + self.dest_folder
         ])
+
+    def download_gnome_extensions(self):
+        dconf_dump_file = Path(self.install_user_home + self.dest_folder + '/' + self.config.dconf_dump)
+        enabled_extensions = []
+        if dconf_dump_file.is_file():
+            with open(dconf_dump_file) as dconf_file:
+                for line in dconf_file:
+                    line = line.rstrip()
+                    if 'enabled-extensions' in line:
+                        line_array = line.split("enabled-extensions=")
+                        if len(line_array) > 0:
+                            enabled_extensions = ast.literal_eval(line_array[1])
+                            logging.debug("Enabled Gnome Shell extensions to download: %s", ''.join(enabled_extensions))
+                        else:
+                            logging.debug("There's no enabled extensions")
+        else:
+            logging.debug("There's a problem with the dconf dump file. Gnome Shell extension can't be downloaded")
+
+        downloader = GnomeExtensionsDownloader(self.install_user_home, self.config)
+        downloader.run(enabled_extensions)

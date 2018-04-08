@@ -52,3 +52,14 @@ def get(installation_user, schema, key):
 
     logging.debug("Running get on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
     return chroot_call(cmd)
+
+
+def dconf_load(installation_user, schema, file):
+    cmd = [
+        'runuser',
+        '-l', installation_user,
+        '-c', "dbus-launch dconf load " + schema + " < " + file
+    ]
+
+    logging.debug("Running dconf_load: %s", ''.join(str(e) + ' ' for e in cmd))
+    return chroot_call(cmd)
