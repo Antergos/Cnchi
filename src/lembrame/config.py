@@ -43,5 +43,6 @@ class LembrameConfig(object):
         self.folder_file_path = "/tmp/export"
         self.pacman_packages = 'pacman_package_list'
         self.dconf_dump = 'dconf_org_gnome_shell'
+        self.display_manager_file = 'display_manager'
         self.gnome_extensions_url = 'https://extensions.gnome.org'
         self.gnome_shell_extensions_path = '/.local/share/gnome-shell/extensions/'

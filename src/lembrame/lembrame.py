@@ -134,6 +134,8 @@ class Lembrame:
 
         if self.extract_encrypted_file():
             logging.debug("Lembrame decrypted file successfully extracted to: %s", self.config.folder_file_path)
+            logging.debug("Overwriting Cnchi config variables")
+            self.overwrite_installer_variables()
             return True
         else:
             return False
@@ -216,6 +218,10 @@ class Lembrame:
         logging.debug("Packages from Lembrame: %s", ",".join(packages))
         return packages
 
+    def overwrite_installer_variables(self):
+        # Overwrite Display Manager
+        self.settings.set('desktop_manager', self.get_synced_display_manager())
+
     def overwrite_content(self):
         # Copy the extracted Lembrame file to the user's home
         self.copy_folder_to_dest()
@@ -276,3 +282,22 @@ class Lembrame:
 
         downloader = GnomeExtensionsDownloader(self.install_user_home, self.config)
         downloader.run(enabled_extensions)
+
+    def get_synced_display_manager(self):
+        # Current default Antergos Display Manager
+        display_manager = 'lightdm'
+
+        dm_file = Path(self.config.folder_file_path + '/' + self.config.display_manager_file)
+        if dm_file.is_file():
+            try:
+                with open(dm_file) as line:
+                    dm_from_file = line.read()
+                    if dm_from_file:
+                        display_manager = dm_from_file
+                    else:
+                        logging.debug("We can't get the Display Manager from the file")
+            except OSError as error:
+                logging.debug("We can't open the file to get the Display Manager: %s", error)
+
+        logging.debug("Display manager selected: %s", display_manager)
+        return display_manager

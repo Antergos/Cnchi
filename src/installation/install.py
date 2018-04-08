@@ -1452,6 +1452,7 @@ class Installation(object):
         logging.debug("File user-dirs-update-gtk.desktop patched.")
 
         # Set lightdm config including autologin if selected
+        # TODO: This function has to be changed to work with Lembrame
         if self.desktop != "base":
             self.setup_display_manager()
 
