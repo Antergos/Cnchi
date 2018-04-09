@@ -49,7 +49,7 @@ ICON_NAMES = {
     'office': 'accessories-text-editor',
     'sshd': 'network-connect',
     'visual': 'video-display',
-    'lembrame': 'lembrame'
+    'lembrame': 'com.antergos.Lembrame'
 }
 
 
