@@ -40,6 +40,7 @@ from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
 
+CLASS_NAME = "DesktopAsk"
 
 class DesktopAsk(GtkBaseBox):
     """ Class to show the Desktop screen """

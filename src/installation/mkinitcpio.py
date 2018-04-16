@@ -38,7 +38,7 @@ from misc.run_cmd import chroot_call
 def run(dest_dir, settings, mount_devices, blvm):
     """ Runs mkinitcpio """
 
-    cpu = get_cpu()
+    #cpu = get_cpu()
 
     # Add lvm and encrypt hooks if necessary
     hooks = ['base', 'udev', 'autodetect',

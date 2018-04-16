@@ -29,7 +29,7 @@
 
 """ Let advanced users manage mirrorlist files """
 
-import os
+
 import logging
 import shutil
 
@@ -44,9 +44,14 @@ except ImportError:
 
 import cairo
 
+
+if __name__ == '__main__':
+    import sys
+    sys.path.append('/usr/share/cnchi/src')
+
+
 from pages.gtkbasebox import GtkBaseBox
 
-import misc.extra as misc
 
 from rank_mirrors import AutoRankmirrorsProcess
 
@@ -56,7 +61,7 @@ MAX_MIRRORS = 6
 DND_ID_LISTBOX_ROW = 6791
 
 if __debug__:
-    def _(x): return x
+    def _(message): return message
 
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
@@ -195,7 +200,7 @@ class MirrorListBox(Gtk.ListBox):
     def set_mirror_active(self, url, active):
         """ Changes the active status in our mirrors list """
         for index, item in enumerate(self.mirrors):
-            (murl, mact) = item
+            murl, mact = item
             if url == murl:
                 self.mirrors[index] = (url, active)
 
@@ -225,9 +230,9 @@ class MirrorListBox(Gtk.ListBox):
         row.draw(ctx)
         row.get_style_context().remove_class("drag-icon")
 
-        (x, y) = widget.translate_coordinates(row, 0, 0)
+        pos_x, pos_y = widget.translate_coordinates(row, 0, 0)
 
-        surface.set_device_offset(-x, -y)
+        surface.set_device_offset(-pos_x, -pos_y)
         Gtk.drag_set_icon_surface(drag_context, surface)
 
         hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND1)
@@ -279,6 +284,7 @@ class MirrorListBox(Gtk.ListBox):
 
 
 class Mirrors(GtkBaseBox):
+    """ Page that shows mirrolists so the user can arrange them manually """
     def __init__(self, params, prev_page="features", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
@@ -411,6 +417,5 @@ class Mirrors(GtkBaseBox):
 
 
 if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Mirrors')
+    from test_page import run
+    run('mirrors')
