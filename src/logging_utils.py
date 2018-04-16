@@ -31,6 +31,7 @@ import uuid
 import requests
 import json
 import os
+
 from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
 
 
@@ -40,7 +41,6 @@ class Singleton(type):
     def __call__(cls, *args, **kwargs):
         if not cls._instance:
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
-
         return cls._instance
 
     def __new__(mcs, *args, **kwargs):
@@ -60,9 +60,8 @@ class Singleton(type):
 class ContextFilter(logging.Filter, metaclass=Singleton):
     def __init__(self):
         super().__init__()
-
-        if self.api_key is None:
-            self.api_key = self.get_bugsnag_api()
+        self.api_key = self.get_bugsnag_api()
+        self.have_install_id = False
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
@@ -86,7 +85,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
         info = {'ip': '0.0.0.0', 'id': '0'}
         url = self.get_url_for_id_request()
-        headers = {self.key: CNCHI_VERSION}
+        headers = {self.api_key: CNCHI_VERSION}
 
         try:
             r = requests.get(url, headers=headers)
@@ -202,9 +201,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             if build_server and self.install_id:
                 url = "{0}&install_id={1}&result={2}"
                 url = url.format(build_server, self.install_id, result)
-                headers = {self.key: CNCHI_VERSION}
+                headers = {self.api_key: CNCHI_VERSION}
                 r = requests.get(url, headers=headers)
-                res = json.loads(r.json())
+                json.loads(r.json())
         except Exception as ex:
             logger = logging.getLogger()
             template = "Can't send install result. An exception of type {0} occured. "
