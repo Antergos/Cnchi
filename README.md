@@ -33,11 +33,11 @@ $ cnchi
 |```-f``` or ```--force```|*Runs cnchi even if it detects that another instance is running*|
 |```-i``` or ```--disable-tryit```|*Disables first screen's 'try it' option*|
 |```-n``` or ```--no-check```|*Makes checks optional in check screen*|
-|```-p``` or ```--packagelist```|*Install the packages referenced by a local xml instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
+|```-p``` or ```--packagelist```|*Install the packages referenced by a local XML instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
 |```-s``` or ```--log-server```|*Choose to which log server send Cnchi logs.  Expects a hostname or an IP address*|
 |```-u``` or ```--update```|*Upgrade/downgrade Cnchi to the web version*|
-|```--disable-update```|*Do not search for new Cnchi versions online*|
-|```--disable-rank-mirrors```|*Does not attempt to rank Arch and Antergos mirrors during installation*|
+|```--disable-update```|*Do does not search for new Cnchi versions online*|
+|```--disable-rank-mirrors```|*Does do not attempt to rank Arch and Antergos mirrors during installation*|
 |```-v``` or ```--verbose```|*Show logging messages to stdout*|
 |```-V``` or ```--version```|*Show Cnchi version and quit*|
 |```-z``` or ```--z_hidden```|*Show options in development (for developers only, do not use this!)*|
