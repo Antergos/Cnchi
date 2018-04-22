@@ -66,8 +66,10 @@ NAMES = {
 }
 
 LIBS = {
-    'gtk': ["cinnamon", "deepin", "gnome", "mate", "openbox", "xfce", "budgie", "enlightenment", "i3"],
-    'qt': ["kde", "lxqt"]
+    'gtk': [
+        "cinnamon", "deepin", "gnome", "mate", "openbox", "xfce", "budgie", "enlightenment", "i3"],
+    'qt': [
+        "kde", "lxqt"]
 }
 
 ALL_FEATURES = ["a11y", "aur", "bluetooth", "cups", "chromium", "firefox", "firewall", "flash",
