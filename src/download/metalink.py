@@ -320,15 +320,6 @@ def build_download_queue(alpm, args=None):
 
     pargs = parse_args(args)
 
-    '''
-    try:
-        conf_file = pargs.conf
-        alpm = pac.Pac(conf_path=conf_file, callback_queue=None)
-    except Exception as ex:
-        logging.error("Can't initialize pyalpm: %s", ex)
-        return None, None, None
-    '''
-
     handle = alpm.get_handle()
     conf = alpm.get_config()
 
@@ -337,17 +328,25 @@ def build_download_queue(alpm, args=None):
     missing_deps = list()
     found = set()
 
-    one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
     antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
     antdb = antdb[0]
-    one_repo_groups = [antdb.read_grp(one_repo_group)
-                       for one_repo_group in one_repo_groups]
+    one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
+    
+    #one_repo_groups = [antdb.read_grp(one_repo_group)
+    #                   for one_repo_group in one_repo_groups_names]
+
+    for one_repo_group_name in one_repo_groups_names:
+        grp = antdb.read_grp(one_repo_group_name)
+        if not grp:
+            grp = ['None', []]
+            logging.warning(
+                "Error reading group '%s' from the antergos repo db",
+                one_repo_group_name)
+        one_repo_groups.append(grp)
+
     one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
-                     for pkg in one_repo_group[1] if one_repo_group}
-
-    # foreign_names = set()
-    # not_found = set()
-
+                    for pkg in one_repo_group[1] if one_repo_group}
+        
     for pkg in requested:
         other_grp = PkgSet()
         for db in handle.get_syncdbs():
