@@ -32,5 +32,30 @@
                 <property name="position">0</property>
             </packing>
         </child>
+        <child>
+            <object class="GtkCheckButton" id="advanced_checkbutton">
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="halign">left</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+                <property name="margin_top">5</property>
+                <signal name="toggled" handler="on_show_advanced_features_toggled" swapped="no"/>
+                    <child>
+                        <object class="GtkLabel" id="advanced_checkbutton_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Use this device for boot loader installation:</property>
+                        </object>
+                    </child>
+            </object>
+            <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+            </packing>
+        </child>
     </object>
 </interface>

@@ -29,16 +29,32 @@
 
 """ Test page (simulates main window to test a ui page) """
 
+import sys
+import os
+
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-import sys
-import os
-
 
 def get_page(page_name, params):
+    """ Import page code so we can execute it """
     page = None
+
+
+
+#    package = package_root + filename
+#    name = filename.capitalize()
+#    # This instruction is the same as "from package import name"
+#    class_name = getattr(__import__(
+#        package, fromlist=[name]), "CLASS_NAME")
+#    obj = getattr(__import__(package, fromlist=[
+#                    class_name]), class_name)()
+#    self.all_objects.append(obj)
+
+
+
+
     if page_name == "desktop":
         import pages.desktop as desktop
         page = desktop.DesktopAsk(params)
@@ -175,7 +191,7 @@ if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("Usage: python test_page.py [page_name]")
     else:
-        page_name = sys.argv[1]
-        if page_name.endswith('.py'):
-            page_name = page_name[:-3]
-        run(page_name)
+        TEST_PAGE = sys.argv[1]
+        if TEST_PAGE.endswith('.py'):
+            TEST_PAGE = TEST_PAGE[:-3]
+        run(TEST_PAGE)

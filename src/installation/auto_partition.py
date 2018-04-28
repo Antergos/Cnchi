@@ -29,9 +29,9 @@
 """ Used by automatic installation """
 
 import os
-import subprocess
 import logging
 import math
+import queue
 
 from misc.extra import InstallError
 from misc.run_cmd import call, popen
@@ -148,7 +148,7 @@ def remove_lvm(device):
     if lvolumes:
         lvolumes = lvolumes.split("\n")
         for lvolume in lvolumes:
-            if len(lvolume) > 0:
+            if lvolume:
                 (lvolume, vgroup, ldevice) = lvolume.split()
                 if device in ldevice:
                     lvdev = "/dev/" + vgroup + "/" + lvolume
@@ -161,7 +161,7 @@ def remove_lvm(device):
         vgnames = vgnames.split("\n")
         for vgname in vgnames:
             (vgname, vgdevice) = vgname.split()
-            if len(vgname) > 0 and device in vgdevice:
+            if vgname and device in vgdevice:
                 call(["vgremove", "-f", vgname], msg=err_msg)
 
     cmd = ["pvs", "-o", "pv_name", "--noheadings"]
@@ -216,8 +216,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         # Set up luks with a keyfile
         cmd = [
-            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain",
-            "-s", "512", luks_device, luks_key]
+            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
+            "-s", "512", "-h", "sha512", luks_device, luks_key]
         call(cmd, msg=err_msg, fatal=True)
 
         cmd = [
@@ -234,7 +234,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         # aes-cbc-essiv:sha256
         cmd = [
             "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
-            "-s", "512", "--key-file=-", luks_device]
+            "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
@@ -248,7 +248,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 class AutoPartition(object):
     """ Class used by the automatic installation method """
 
-    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm, use_home, bootloader, callback_queue):
+    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm,
+                 use_home, bootloader, callback_queue):
         """ Class initialization """
         self.dest_dir = dest_dir
         self.auto_device = auto_device
@@ -281,7 +282,7 @@ class AutoPartition(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug("{0}:{1}".format(event_type, event_text))
+                logging.debug("%s:%s", event_type, event_text)
             return
 
         if event_type in self.last_event:
@@ -378,8 +379,7 @@ class AutoPartition(object):
         found = [p for p in partials if path.startswith(p)]
         if found:
             return "{0}p{1}".format(device, part_num)
-        else:
-            return "{0}{1}".format(device, part_num)
+        return "{0}{1}".format(device, part_num)
 
     def get_devices(self):
         """ Set (and return) all partitions on the device """
@@ -514,6 +514,7 @@ class AutoPartition(object):
         return fs_devices
 
     def get_part_sizes(self, disk_size, start_part_sizes=1):
+        """ Returns a dict with all partition sizes """
         part_sizes = {'disk': disk_size, 'boot': 256, 'efi': 0}
 
         if self.gpt and self.bootloader == "grub2":
@@ -578,6 +579,7 @@ class AutoPartition(object):
         return part_sizes
 
     def log_part_sizes(self, part_sizes):
+        """ Log partition sizes for debugging purposes """
         logging.debug("Total disk size: %dMiB", part_sizes['disk'])
         if self.gpt and self.bootloader == "grub2":
             logging.debug(
@@ -595,6 +597,7 @@ class AutoPartition(object):
             logging.debug("Home partition size: %dMiB", part_sizes['home'])
 
     def run(self):
+        """ Main method. Runs auto partition sequence """
         key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
         # Partition sizes are expressed in MiB
@@ -605,10 +608,10 @@ class AutoPartition(object):
         base_path = os.path.split(size_path)[0]
         if os.path.exists(size_path):
             logical_path = os.path.join(base_path, "queue/logical_block_size")
-            with open(logical_path, 'r') as f:
-                logical_block_size = int(f.read())
-            with open(size_path, 'r') as f:
-                size = int(f.read())
+            with open(logical_path, 'r') as logical_file:
+                logical_block_size = int(logical_file.read())
+            with open(size_path, 'r') as size_file:
+                size = int(size_file.read())
             disk_size = ((logical_block_size * (size - 68)) / 1024) / 1024
         else:
             logging.error("Cannot detect %s device size", device)
@@ -649,7 +652,8 @@ class AutoPartition(object):
             wrapper.sgdisk("clear", device)
             wrapper.parted_mklabel(device, "gpt")
 
-            # Inform the kernel of the partition change. Needed if the hard disk had a MBR partition table.
+            # Inform the kernel of the partition change.
+            # Needed if the hard disk had a MBR partition table.
             err_msg = "Error informing the kernel of the partition change."
             call(["partprobe", device], msg=err_msg, fatal=True)
 
@@ -682,7 +686,8 @@ class AutoPartition(object):
             part_num += 1
 
             if self.lvm:
-                # Create partition for lvm (will store root, swap and home (if desired) logical volumes)
+                # Create partition for lvm
+                # (will store root, swap and home (if desired) logical volumes)
                 wrapper.sgdisk_new(
                     device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
                 part_num += 1
@@ -710,7 +715,8 @@ class AutoPartition(object):
             wrapper.parted_mklabel(device, "msdos")
 
             # Create boot partition (all sizes are in MiB)
-            # if start is -1 wrapper.parted_mkpart assumes that our partition starts at 1 (first partition in disk)
+            # if start is -1 wrapper.parted_mkpart assumes that our partition
+            # starts at 1 (first partition in disk)
             start = -1
             end = part_sizes['boot']
             wrapper.parted_mkpart(device, "primary", start, end)
@@ -719,7 +725,8 @@ class AutoPartition(object):
             wrapper.parted_set(device, "1", "boot", "on")
 
             if self.lvm:
-                # Create partition for lvm (will store root, home (if desired), and swap logical volumes)
+                # Create partition for lvm (will store root, home (if desired),
+                # and swap logical volumes)
                 start = end
                 # end = start + part_sizes['lvm_pv']
                 end = "-1s"
@@ -869,15 +876,17 @@ class AutoPartition(object):
             self.mkfs(devices['home'], fs_devices[devices['home']],
                       mount_points['home'], labels['home'])
 
-        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf in process.py if necessary
-        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified in process.py, too.
+        # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf
+        # in process.py if necessary
+        # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified
+        # in process.py, too.
 
         if self.luks and self.luks_password == "":
             # Copy root keyfile to boot partition and home keyfile to root partition
             # user will choose what to do with it
             # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-            # User shouldn't store the keyfiles unencrypted unless the medium itself is reasonably safe
-            # (boot partition is not)
+            # User shouldn't store the keyfiles unencrypted unless the medium itself
+            # is reasonably safe (boot partition is not)
 
             err_msg = "Can't copy LUKS keyfile to the installation device."
             os.chmod(key_files[0], 0o400)
@@ -900,7 +909,7 @@ if __name__ == '__main__':
     logging.basicConfig(
         filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
 
-    auto = AutoPartition(
+    AutoPartition(
         dest_dir="/install",
         auto_device="/dev/sdb",
         use_luks=True,
@@ -908,5 +917,4 @@ if __name__ == '__main__':
         use_lvm=True,
         use_home=True,
         bootloader="grub2",
-        callback_queue=None)
-    auto.run()
+        callback_queue=None).run()

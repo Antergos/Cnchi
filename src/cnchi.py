@@ -32,6 +32,12 @@
 import os
 import sys
 import shutil
+import logging
+import logging.handlers
+import gettext
+import locale
+import gi
+
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -44,14 +50,6 @@ sys.path.append(os.path.join(CNCHI_PATH, "src/pacman"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
 
-import logging
-import logging.handlers
-import gettext
-import locale
-import uuid
-import gi
-import requests
-import json
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
@@ -71,7 +69,7 @@ except ImportError as err:
 
 try:
     _("")
-except:
+except NameError:
     def _(x):
         return x
 
@@ -94,10 +92,12 @@ class CnchiApp(Gtk.Application):
         Gtk.Application.__init__(self,
                                  application_id="com.antergos.cnchi",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self.TMP_RUNNING = "/tmp/.setup-running"
+        self.tmp_running = "/tmp/.setup-running"
 
     def do_activate(self):
-        """ Override the 'activate' signal of GLib.Application. """
+        """ Override the 'activate' signal of GLib.Application.
+            Shows the default first window of the application (like a new document).
+            This corresponds to the application being launched by the desktop environment. """
         try:
             import main_window
         except ImportError as err:
@@ -118,7 +118,7 @@ class CnchiApp(Gtk.Application):
                     "If you are sure that the installer is not already running\n"
                     "you can run this installer using the --force option\n"
                     "or you can manually delete the offending file.\n\n"
-                    "Offending file: '{0}'").format(self.TMP_RUNNING)
+                    "Offending file: '{0}'").format(self.tmp_running)
             show.error(None, msg)
             return
 
@@ -126,7 +126,7 @@ class CnchiApp(Gtk.Application):
         self.add_window(window)
         window.show()
 
-        with open(self.TMP_RUNNING, "w") as tmp_file:
+        with open(self.tmp_running, "w") as tmp_file:
             txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
             tmp_file.write(txt)
 
@@ -146,9 +146,9 @@ class CnchiApp(Gtk.Application):
 
     def already_running(self):
         """ Check if we're already running """
-        if os.path.exists(self.TMP_RUNNING):
-            logging.debug("File %s already exists.", self.TMP_RUNNING)
-            with open(self.TMP_RUNNING) as setup:
+        if os.path.exists(self.tmp_running):
+            logging.debug("File %s already exists.", self.tmp_running)
+            with open(self.tmp_running) as setup:
                 lines = setup.readlines()
             if len(lines) >= 2:
                 try:
@@ -167,7 +167,7 @@ class CnchiApp(Gtk.Application):
             else:
                 # Cnchi with pid 'pid' is no longer running, we can safely
                 # remove the offending file and continue.
-                os.remove(self.TMP_RUNNING)
+                os.remove(self.tmp_running)
         return False
 
 
@@ -209,51 +209,30 @@ def setup_logging():
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
 
-    if cmd_line.log_server:
-        log_server = cmd_line.log_server
-
-        if log_server == 'bugsnag':
-            if not BUGSNAG_ERROR:
-                # Bugsnag logger
-                bugsnag_api = context_filter.api_key
-                if bugsnag_api is not None:
-                    bugsnag.configure(
-                        api_key=bugsnag_api,
-                        app_version=info.CNCHI_VERSION,
-                        project_root='/usr/share/cnchi/cnchi',
-                        release_stage=info.CNCHI_RELEASE_STAGE)
-                    bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
-                    bugsnag_handler.setLevel(logging.WARNING)
-                    bugsnag_handler.setFormatter(formatter)
-                    bugsnag_handler.addFilter(context_filter.filter)
-                    bugsnag.before_notify(
-                        context_filter.bugsnag_before_notify_callback)
-                    logger.addHandler(bugsnag_handler)
-                    logging.info(
-                        "Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
-                else:
-                    logging.warning(
-                        "Cannot read the bugsnag api key, logging to bugsnag is not possible.")
+    if cmd_line.log_server == 'bugsnag':
+        if not BUGSNAG_ERROR:
+            # Bugsnag logger
+            bugsnag_api = context_filter.api_key
+            if bugsnag_api is not None:
+                bugsnag.configure(
+                    api_key=bugsnag_api,
+                    app_version=info.CNCHI_VERSION,
+                    project_root='/usr/share/cnchi/cnchi',
+                    release_stage=info.CNCHI_RELEASE_STAGE)
+                bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
+                bugsnag_handler.setLevel(logging.WARNING)
+                bugsnag_handler.setFormatter(formatter)
+                bugsnag_handler.addFilter(context_filter.filter)
+                bugsnag.before_notify(
+                    context_filter.bugsnag_before_notify_callback)
+                logger.addHandler(bugsnag_handler)
+                logging.info(
+                    "Sending Cnchi log messages to bugsnag server (using python-bugsnag).")
             else:
-                logging.warning(BUGSNAG_ERROR)
+                logging.warning(
+                    "Cannot read the bugsnag api key, logging to bugsnag is not possible.")
         else:
-            # Socket logger
-            socket_handler = logging.handlers.SocketHandler(
-                log_server,
-                logging.handlers.DEFAULT_TCP_LOGGING_PORT)
-            socket_formatter = logging.Formatter(formatter)
-            socket_handler.setFormatter(socket_formatter)
-            logger.addHandler(socket_handler)
-
-            # Also add uuid filter to requests logs
-            logger_requests = logging.getLogger(
-                "requests.packages.urllib3.connectionpool")
-            logger_requests.addFilter(context_filter.filter)
-
-            uid = str(uuid.uuid1()).split("-")
-            myuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-            logging.info(
-                "Sending Cnchi logs to {0} with id '{1}'".format(log_server, myuid))
+            logging.warning(BUGSNAG_ERROR)
 
 
 def check_gtk_version():
@@ -283,7 +262,6 @@ def check_gtk_version():
         text = "Detected GTK version {0}.{1}.{2} but version >= {3} is needed."
         text = text.format(major, minor, micro, GTK_VERSION_NEEDED)
         try:
-            import show_message as show
             show.error(None, text)
         except ImportError as import_error:
             logging.error(import_error)

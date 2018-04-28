@@ -53,6 +53,12 @@ ICON_NAMES = {
 }
 
 
+# These features are considered 'advanced' so it won't be shown by default
+ADVANCED = [
+    'aur', 'firefox', 'vivaldi', 'firewall', 'flash', 'graphic_drivers',
+    'lamp', 'lts', 'sshd', 'visual']
+
+
 # See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message):
     return message
