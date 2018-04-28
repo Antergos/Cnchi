@@ -689,12 +689,12 @@ def test():
         sys.exit(1)
 
     try:
-        pacman.do_refresh()
+        pacman.refresh()
     except pyalpm.error as err:
         print("Can't update databases: ", err)
         sys.exit(1)
 
-    pacman_options = {"downloadonly": True}
+    # pacman_options = {"downloadonly": True}
     # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()
 
