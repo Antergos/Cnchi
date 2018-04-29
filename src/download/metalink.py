@@ -34,19 +34,19 @@ import logging
 import tempfile
 import os
 
-import xml.dom.minidom as minidom
 import hashlib
 import re
 import argparse
 
 from collections import deque
 
-import pyalpm
-
+import xml.dom.minidom as minidom
 try:
     import xml.etree.cElementTree as eTree
 except ImportError:
     import xml.etree.ElementTree as eTree
+
+import pyalpm
 
 MAX_URLS = 15
 
@@ -113,7 +113,8 @@ def create(alpm, package_name, pacman_conf_file):
         download_queue, not_found, missing_deps = build_download_queue(
             alpm, args=options)
     except Exception as ex:
-        template = "Unable to create download queue for package {0}. An exception of type {1} occured. Arguments:\n{2!r}"
+        template = "Unable to create download queue for package {0}. " \
+            "An exception of type {1} occured. Arguments:\n{2!r}"
         message = template.format(package_name, type(ex).__name__, ex.args)
         logging.error(message)
         return None
@@ -262,8 +263,8 @@ class PkgSet(object):
         return pkg.name in self.pkgs
 
     def __iter__(self):
-        for v in self.pkgs.values():
-            yield v
+        for value in self.pkgs.values():
+            yield value
 
     def __len__(self):
         return len(self.pkgs)
@@ -497,7 +498,7 @@ def test():
             callback_queue=None)
 
         for index in range(1, 10000):
-            print("Creating metalink...")
+            print(index, "Creating metalink...")
             meta4 = create(
                 alpm=pacman,
                 package_name="gnome",
@@ -516,6 +517,6 @@ def test():
         logging.error(message)
 
 
-''' Test case '''
+# Test case
 if __name__ == '__main__':
     test()

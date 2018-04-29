@@ -311,18 +311,19 @@ class AutoPartition(object):
             cmd = ["swapon", device]
             call(cmd, msg=err_msg)
         else:
-            mkfs = {"xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
-                    "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
-                    "reiserfs": "yes | mkreiserfs {0} -l {1} {2}".format(fs_options, label_name, device),
-                    "ext2": "mkfs.ext2 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                    "ext3": "mkfs.ext3 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                    "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                    "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(fs_options, label_name, btrfs_devices),
-                    "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
-                    "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
-                    "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
-                    "fat32": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
-                    "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
+            mkfs = {
+                "xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
+                "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
+                "reiserfs": "yes | mkreiserfs {0} -l {1} {2}".format(fs_options, label_name, device),
+                "ext2": "mkfs.ext2 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                "ext3": "mkfs.ext3 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
+                "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(fs_options, label_name, btrfs_devices),
+                "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
+                "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
+                "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
+                "fat32": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
+                "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():

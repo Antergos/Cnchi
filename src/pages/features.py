@@ -91,8 +91,6 @@ class Features(GtkBaseBox):
 
         self.a11y = params['a11y']
 
-        # TODO: Set this to False and add a checkbox so the user can
-        # hide/show advanced features
         self.show_advanced = False
         self.advanced_checkbutton = self.ui.get_object("advanced_checkbutton")
         self.advanced_checkbutton.set_active(False)
@@ -214,7 +212,7 @@ class Features(GtkBaseBox):
             self.add_feature_switch(feature, box)
             # Add row to our gtklist
             self.listbox.add(box)
-        
+
         self.listbox.show_all()
 
     def update_advanced_features(self):

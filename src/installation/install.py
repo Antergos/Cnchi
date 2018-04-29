@@ -35,6 +35,8 @@ import time
 import re
 import tempfile
 
+from mako.template import Template
+
 import desktop_info
 import encfs
 
@@ -45,18 +47,17 @@ from installation import special_dirs
 from installation import mkinitcpio
 from installation import firewall
 
+from installation.boot import loader
+
+import misc.extra as misc
 from misc.extra import InstallError
 from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
-import misc.extra as misc
 import pacman.pac as pac
-
-from mako.template import Template
 
 import hardware.hardware as hardware
 
-from installation.boot import loader
 
 POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
@@ -315,7 +316,8 @@ class Installation(object):
                 use_proprietary_graphic_drivers=proprietary)
             self.hardware_install.pre_install(DEST_DIR)
         except Exception as ex:
-            template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Error in hardware module. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
@@ -431,7 +433,8 @@ class Installation(object):
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as ex:
             self.pacman = None
-            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't initialize pyalpm. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
@@ -502,7 +505,7 @@ class Installation(object):
 
         stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
 
-        if not result and stale_pkgs and len(stale_pkgs) > 0:
+        if not result and stale_pkgs:
             # Failure might be due to stale cached packages. Delete them and try again.
             if os.path.exists(self.pacman_cache_dir):
                 for stale_pkg in stale_pkgs:
@@ -528,7 +531,6 @@ class Installation(object):
                 for line in contents:
                     if 'antergos-mirrorlist' in line:
                         line = 'Server = http://repo.antergos.info/$repo/$arch'
-
                     new_pacman_conf.write(line)
 
             self.pacman.refresh()
@@ -641,7 +643,7 @@ class Installation(object):
                     not use_lvm):
                 # Modify the crypttab file
                 luks_root_password = self.settings.get("luks_root_password")
-                if luks_root_password and len(luks_root_password) > 0:
+                if luks_root_password:
                     # Use password and not a keyfile
                     home_keyfile = "none"
                 else:
@@ -682,8 +684,7 @@ class Installation(object):
                     continue
 
                 luks_uuid = fs.get_uuid(luks_partition_path)
-
-                if len(luks_uuid) > 0:
+                if luks_uuid:
                     # OK, add it to crypttab with the correct uuid
                     os.chmod(crypttab_path, 0o666)
                     with open(crypttab_path, 'a') as crypttab_file:
@@ -700,7 +701,7 @@ class Installation(object):
 
                 # Finally, the fstab line to mount the unencrypted file system
                 # if a mount point has been specified by the user
-                if len(mount_point) > 0:
+                if mount_point:
                     txt = "{0} {1} {2} defaults 0 0"
                     txt = txt.format(partition_path, mount_point, myfmt)
                     all_lines.append(txt)
@@ -776,6 +777,7 @@ class Installation(object):
         logging.debug("fstab written.")
 
     def set_scheduler(self):
+        """ Copies udev rule for SSDs """
         rule_src = os.path.join(
             self.settings.get('cnchi'),
             'scripts/60-schedulers.rules')
@@ -877,6 +879,7 @@ class Installation(object):
             logging.error("Can't find locale.gen file")
 
     def enable_aur_in_pamac(self):
+        """ Enables AUR searches in pamac config file """
         pamac_conf = "/etc/pamac.conf"
         if os.path.exists(pamac_conf):
             fd, name = tempfile.mkstemp()
@@ -1178,6 +1181,25 @@ class Installation(object):
         call(cmd, timeout=300)
         logging.debug("Post install script completed successfully.")
 
+    @staticmethod
+    def modify_makepkg():
+        """
+            Modify the makeflags to allow for threading.
+            Use threads for xz compression.
+        """
+        makepkg_conf_path = os.path.join(DEST_DIR, 'etc/makepkg.conf')
+        if os.path.exists(makepkg_conf_path):
+            with open(makepkg_conf_path, 'r') as makepkg_conf:
+                contents = makepkg_conf.readlines()
+
+            with open(makepkg_conf_path, 'w') as makepkg_conf:
+                for line in contents:
+                    if '#MAKEFLAGS' in line:
+                        line = 'MAKEFLAGS="-j$(nproc)"\n'
+                    elif 'COMPRESSXZ' in line:
+                        line = 'COMPRESSXZ=(xz -c -z - --threads=0)\n'
+                    makepkg_conf.write(line)
+
     def configure_system(self):
         """ Final install steps
             Set clock, language, timezone
@@ -1268,7 +1290,7 @@ class Installation(object):
                     timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
                                     "0.fr.pool.ntp.org\n")
             except FileNotFoundError as err:
-                logging.warning("Can't find %s file.", timesyncd_path)
+                logging.warning("Can't find %s file: %s", timesyncd_path, err)
             chroot_call(['systemctl', '-fq', 'enable',
                          'systemd-timesyncd.service'])
 
@@ -1317,7 +1339,8 @@ class Installation(object):
                 logging.debug("Running hardware drivers post-install jobs...")
                 self.hardware_install.post_install(DEST_DIR)
             except Exception as ex:
-                template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+                template = "Error in hardware module. " \
+                    "An exception of type {0} occured. Arguments:\n{1!r}"
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
@@ -1460,21 +1483,21 @@ class Installation(object):
         # FIXME: This is not working atm
         if self.settings.get('encrypt_home'):
             self.queue_event('info', _("Encrypting user home dir..."))
-            encfs.setup(username, DEST_DIR)
+            encfs.setup(username, DEST_DIR, password)
             logging.debug("User home dir encrypted")
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
                 self.queue_event('info', _("Installing bootloader..."))
-                from installation.boot import loader
                 boot_loader = loader.Bootloader(
                     DEST_DIR,
                     self.settings,
                     self.mount_devices)
                 boot_loader.install()
             except Exception as ex:
-                template = "Cannot install bootloader. An exception of type {0} occured. Arguments:\n{1!r}"
+                template = "Cannot install bootloader. " \
+                    "An exception of type {0} occured. Arguments:\n{1!r}"
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
@@ -1504,15 +1527,18 @@ class Installation(object):
         pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
         if os.path.exists(pamac_conf) and self.settings.get('feature_aur'):
             logging.debug("Enabling AUR options in pamac")
-            with open(pamac_conf, 'r') as f:
-                file_data = f.read()
+            with open(pamac_conf, 'r') as pamac_conf_file:
+                file_data = pamac_conf_file.read()
             file_data = file_data.replace("#EnableAUR", "EnableAUR")
             file_data = file_data.replace(
                 "#SearchInAURByDefault", "SearchInAURByDefault")
             file_data = file_data.replace(
                 "#CheckAURUpdates", "CheckAURUpdates")
-            with open(pamac_conf, 'w') as f:
-                f.write(file_data)
+            with open(pamac_conf, 'w') as pamac_conf_file:
+                pamac_conf_file.write(file_data)
+
+        # Apply makepkg tweaks upon install (issue #871)
+        self.modify_makepkg()
 
         # Enable colors and syntax highlighting in nano editor
         nanorc_path = os.path.join(DEST_DIR, 'etc/nanorc')
@@ -1529,10 +1555,11 @@ class Installation(object):
                 nanorc.write('set functioncolor green\n')
                 nanorc.write('include "/usr/share/nano/*.nanorc"\n')
 
-        # Set .bashrc (in skel and user) to load .bashrc.aliases
-        bashrc_files = ["/etc/skel/.bashrc"]
-        bashrc_files.append("/home/{}/.bashrc".format(username))
+        logging.debug("Setting .bashrc to load .bashrc.aliases")
+        bashrc_files = ["etc/skel/.bashrc"]
+        bashrc_files.append("home/{}/.bashrc".format(username))
         for bashrc_file in bashrc_files:
+            bashrc_file = os.path.join(DEST_DIR, bashrc_file)
             if os.path.exists(bashrc_file):
                 with open(bashrc_file, 'a') as bashrc:
                     bashrc.write('\n')
