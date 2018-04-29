@@ -115,7 +115,8 @@ class Features(GtkBaseBox):
     def on_show_advanced_features_toggled(self, widget):
         """ Display or hide advanced features """
         self.show_advanced = self.advanced_checkbutton.get_active()
-        self.update_advanced_features()
+        if self.features:
+            self.update_advanced_features()
 
     @staticmethod
     def on_listbox_row_selected(listbox, listbox_row):
