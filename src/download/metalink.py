@@ -331,10 +331,8 @@ def build_download_queue(alpm, args=None):
 
     antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
     antdb = antdb[0]
+
     one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
-    
-    #one_repo_groups = [antdb.read_grp(one_repo_group)
-    #                   for one_repo_group in one_repo_groups_names]
     one_repo_groups = []
     for one_repo_group_name in one_repo_groups_names:
         grp = antdb.read_grp(one_repo_group_name)

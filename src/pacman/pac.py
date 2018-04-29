@@ -266,13 +266,22 @@ class Pac(object):
         # have to ensure we don't clobber the priority of the repos.
         repos = OrderedDict()
         repo_order = []
-        one_repo_groups = ['cinnamon', 'mate', 'mate-extra']
         db_match = [db for db in self.handle.get_syncdbs()
                     if 'antergos' == db.name]
         antdb = OrderedDict()
         antdb['antergos'] = db_match[0]
-        one_repo_groups = [antdb['antergos'].read_grp(one_repo_group)
-                           for one_repo_group in one_repo_groups]
+
+        one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
+        one_repo_groups = []
+        for one_repo_group_name in one_repo_groups_names:
+            grp = antdb['antergos'].read_grp(one_repo_group_name)
+            if not grp:
+                grp = ['None', []]
+                logging.warning(
+                    "Error reading group '%s' from the antergos repo db",
+                    one_repo_group_name)
+            one_repo_groups.append(grp)
+
         one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
                          for pkg in one_repo_group[1] if one_repo_group}
 
@@ -680,12 +689,12 @@ def test():
         sys.exit(1)
 
     try:
-        pacman.do_refresh()
+        pacman.refresh()
     except pyalpm.error as err:
         print("Can't update databases: ", err)
         sys.exit(1)
 
-    pacman_options = {"downloadonly": True}
+    # pacman_options = {"downloadonly": True}
     # pacman.do_install(pkgs=["base"], conflicts=[], options=pacman_options)
     pacman.release()
 
