@@ -38,7 +38,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="halign">left</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="margin_top">5</property>
