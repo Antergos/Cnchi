@@ -1191,7 +1191,6 @@ class Installation(object):
         if os.path.exists(makepkg_conf_path):
             with open(makepkg_conf_path, 'r') as makepkg_conf:
                 contents = makepkg_conf.readlines()
-
             with open(makepkg_conf_path, 'w') as makepkg_conf:
                 for line in contents:
                     if '#MAKEFLAGS' in line:
