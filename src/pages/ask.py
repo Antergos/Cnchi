@@ -87,9 +87,8 @@ def load_zfs():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug("ZFS kernel module loaded successfully.")
     except subprocess.CalledProcessError as err:
-        logging.debug(
-            "Can't load ZFS kernel module: %s",
-            err.output.decode())
+        error_msg = err.output.decode().rstrip()
+        logging.warning("%s", error_msg)
         return False
     return True
 
