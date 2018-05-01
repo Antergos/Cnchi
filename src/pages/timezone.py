@@ -3,7 +3,7 @@
 #
 # timezone.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -42,11 +42,12 @@ import misc.extra as misc
 import misc.timezonemap as timezonemap
 from pages.gtkbasebox import GtkBaseBox
 
-if __debug__:
-    def _(x): return x
-
-NM = 'org.freedesktop.NetworkManager'
-NM_STATE_CONNECTED_GLOBAL = 70
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class Timezone(GtkBaseBox):
@@ -101,7 +102,7 @@ class Timezone(GtkBaseBox):
 
         self.header.set_subtitle(_("Select Your Timezone"))
 
-    def on_location_changed(self, tzmap, tz_location):
+    def on_location_changed(self, _tzmap, tz_location):
         """ User changed its location """
         # loc = self.tzdb.get_loc(self.timezone)
         if not tz_location:
@@ -142,13 +143,13 @@ class Timezone(GtkBaseBox):
             # res will be False if the timezone is unrecognised
             self.forward_button.set_sensitive(res)
 
-    def on_zone_combobox_changed(self, widget):
+    def on_zone_combobox_changed(self, _widget):
         """ Zone changed """
         new_zone = self.combobox_zone.get_active_text()
         if new_zone is not None:
             self.populate_cities(new_zone)
 
-    def on_region_combobox_changed(self, widget):
+    def on_region_combobox_changed(self, _widget):
         """ Region changed """
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
@@ -335,7 +336,8 @@ class AutoTimezoneProcess(multiprocessing.Process):
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
         except Exception as ex:
-            template = "Error getting timezone coordinates. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Error getting timezone coordinates. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             coords = None

@@ -3,7 +3,7 @@
 #
 # welcome.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -28,22 +28,21 @@
 
 """ Welcome screen """
 
-import subprocess
 import os
 import logging
 import sys
-import queue
+
+from gi.repository import GdkPixbuf
 
 import misc.extra as misc
 from pages.gtkbasebox import GtkBaseBox
-from gi.repository import GdkPixbuf
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class Welcome(GtkBaseBox):
@@ -122,6 +121,7 @@ class Welcome(GtkBaseBox):
         self.header.set_subtitle(txt)
 
     def quit_cnchi(self):
+        """ Quits installer """
         misc.remove_temp_files()
         for proc in self.process_list:
             # Wait 'timeout' seconds at most for all processes to end
@@ -132,10 +132,12 @@ class Welcome(GtkBaseBox):
         logging.shutdown()
         sys.exit(0)
 
-    def on_tryit_button_clicked(self, widget, data=None):
+    def on_tryit_button_clicked(self, _widget, _data=None):
+        """ Try live CD, quits installer """
         self.quit_cnchi()
 
-    def on_graph_button_clicked(self, widget, data=None):
+    def on_graph_button_clicked(self, _widget, _data=None):
+        """ User wants to install """
         self.show_loading_message()
         # Tell timezone process to start searching now
         self.settings.set('timezone_start', True)
@@ -143,6 +145,8 @@ class Welcome(GtkBaseBox):
         self.forward_button.clicked()
 
     def show_loading_message(self, do_show=True):
+        """ Shows a message so the user knows Cnchi is loading pages
+            only when running from liveCD """
         if do_show:
             txt = _("Loading, please wait...")
         else:

@@ -3,7 +3,7 @@
 #
 # summary.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -45,10 +45,12 @@ from misc.extra import InstallError
 
 import show_message as show
 
-from misc.gtkwidgets import StateBox
-
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -142,7 +144,7 @@ class Summary(GtkBaseBox):
             txt = ""
             statebox = self.ui.get_object("partitions_statebox")
             changes = install_screen.get_changes()
-            if changes == None or len(changes) == 0:
+            if changes is None or not changes:
                 txt = _("Error getting changes from install screen")
                 logging.error("Error getting changes from install screen")
             else:
@@ -191,7 +193,7 @@ class Summary(GtkBaseBox):
 
         try:
             response = show.question(parent, msg)
-        except TypeError as ex:
+        except TypeError as _ex:
             response = show.question(None, msg)
 
         if response != Gtk.ResponseType.YES:

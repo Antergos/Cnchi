@@ -5,7 +5,7 @@
 #  Copyright (C) 2010 Canonical Ltd.
 #  Written by Evan Dandrea <evan.dandrea@canonical.com>
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

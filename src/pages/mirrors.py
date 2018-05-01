@@ -43,17 +43,13 @@ except ImportError:
     print("No pycairo integration")
 
 import cairo
+from pages.gtkbasebox import GtkBaseBox
+from rank_mirrors import AutoRankmirrorsProcess
 
 
 if __name__ == '__main__':
     import sys
     sys.path.append('/usr/share/cnchi/src')
-
-
-from pages.gtkbasebox import GtkBaseBox
-
-from rank_mirrors import AutoRankmirrorsProcess
-
 
 # When testing, no _() is available
 try:
@@ -336,6 +332,7 @@ class Mirrors(GtkBaseBox):
         self.forward_button.set_sensitive(ok_to_proceed)
 
     def on_rank_radiobutton_toggled(self, _widget):
+        """ Use rankmirrors """
         self.use_rankmirrors = True
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
@@ -343,6 +340,7 @@ class Mirrors(GtkBaseBox):
         self.listboxes_box.set_sensitive(False)
 
     def on_leave_radiobutton_toggled(self, _widget):
+        """ Do not modify mirror lists """
         self.use_rankmirrors = False
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
@@ -350,6 +348,7 @@ class Mirrors(GtkBaseBox):
         self.listboxes_box.set_sensitive(False)
 
     def on_user_radiobutton_toggled(self, _widget):
+        """ Let user choose mirrorlist ordering """
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.show_all()
@@ -357,9 +356,9 @@ class Mirrors(GtkBaseBox):
         self.listboxes_box.set_sensitive(True)
 
     def start_rank_mirrors(self):
-        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        # As user can come and go from/to this screen, we must get sure he/she
-        # has not already run the AutoRankmirrorsProcess before
+        """ Launch rank mirrors process to optimize Arch and Antergos mirrorlists
+            As user can come and go from/to this screen, we must get sure he/she
+            has not already run the AutoRankmirrorsProcess before """
         if not self.rank_mirrors_launched:
             logging.debug("Cnchi is ranking your mirrors lists...")
             proc = AutoRankmirrorsProcess(self.settings)

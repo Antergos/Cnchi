@@ -3,7 +3,7 @@
 #
 # user_info.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -39,15 +39,19 @@ from pages.gtkbasebox import GtkBaseBox
 
 from widgets.webcam_widget import WebcamWidget
 
-ICON_OK = "emblem-default"
-ICON_WARNING = "dialog-warning"
-
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class UserInfo(GtkBaseBox):
     """ Asks for user information """
+
+    ICON_OK = "emblem-default"
+    ICON_WARNING = "dialog-warning"
 
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
@@ -229,7 +233,7 @@ class UserInfo(GtkBaseBox):
         self.forward_button.set_name('fwd_btn_save')
         self.forward_button.set_sensitive(False)
 
-    def on_checkbutton_show_password_toggled(self, widget):
+    def on_checkbutton_show_password_toggled(self, _widget):
         """ show/hide user password """
         btn = self.ui.get_object('checkbutton_show_password')
         shown = btn.get_active()
@@ -253,9 +257,9 @@ class UserInfo(GtkBaseBox):
 
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
-        if len(value) == 0:
+        if not value:
             self.image_is_ok[element].set_from_icon_name(
-                ICON_WARNING,
+                UserInfo.ICON_WARNING,
                 Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok[element].show()
             self.error_label[element].show()
@@ -263,13 +267,13 @@ class UserInfo(GtkBaseBox):
             result = validation.check(element, value)
             if not result:
                 self.image_is_ok[element].set_from_icon_name(
-                    ICON_OK,
+                    UserInfo.ICON_OK,
                     Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
                 self.error_label[element].hide()
             else:
                 self.image_is_ok[element].set_from_icon_name(
-                    ICON_WARNING,
+                    UserInfo.ICON_WARNING,
                     Gtk.IconSize.LARGE_TOOLBAR)
                 self.image_is_ok[element].show()
 
@@ -294,11 +298,11 @@ class UserInfo(GtkBaseBox):
             fullname = self.entry['fullname'].get_text()
             if fullname:
                 self.image_is_ok['fullname'].set_from_icon_name(
-                    ICON_OK,
+                    UserInfo.ICON_OK,
                     Gtk.IconSize.LARGE_TOOLBAR)
             else:
                 self.image_is_ok['fullname'].set_from_icon_name(
-                    ICON_WARNING,
+                    UserInfo.ICON_WARNING,
                     Gtk.IconSize.LARGE_TOOLBAR)
             self.image_is_ok['fullname'].show()
 
@@ -326,7 +330,7 @@ class UserInfo(GtkBaseBox):
             for ok_widget in ok_widgets:
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()
-                if not visible or icon_name == ICON_WARNING:
+                if not visible or icon_name == UserInfo.ICON_WARNING:
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)

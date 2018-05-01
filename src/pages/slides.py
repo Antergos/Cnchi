@@ -3,7 +3,7 @@
 #
 # slides.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -47,14 +47,19 @@ from pages.gtkbasebox import GtkBaseBox
 
 from logging_utils import ContextFilter
 
-if __debug__:
-    def _(x): return x
-
-# There is a bug (I guess its a bug) where webkit2 renders local html files as plain text.
-SLIDES_URI = 'https://antergos.com/cnchi-installer-slideshow'
-
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 class Slides(GtkBaseBox):
+    """ Slides page """
+
+    # There is a bug (I guess its a bug) where webkit2 renders local html files as plain text.
+    URI = 'https://antergos.com/cnchi-installer-slideshow'
+
     def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
         super().__init__(self, params, "slides", prev_page, next_page)
@@ -118,7 +123,7 @@ class Slides(GtkBaseBox):
                 self.web_view.connect(
                     'context-menu', lambda _a, _b, _c, _d: True)
                 self.web_view.set_hexpand(True)
-                self.web_view.load_uri(SLIDES_URI)
+                self.web_view.load_uri(Slides.URI)
             except IOError as io_error:
                 logging.warning(io_error)
 
@@ -142,7 +147,7 @@ class Slides(GtkBaseBox):
         self.header.set_show_close_button(False)
 
     @staticmethod
-    def store_values(**kwargs):
+    def store_values(**_kwargs):
         """ Nothing to be done here """
         return False
 
@@ -202,7 +207,7 @@ class Slides(GtkBaseBox):
             elif event[0] == 'downloads_percent':
                 self.downloads_progress_bar.set_fraction(float(event[1]))
             elif event[0] == 'progress_bar_show_text':
-                if len(event[1]) > 0:
+                if event[1]:
                     # self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
                 else:
