@@ -3,7 +3,7 @@
 #
 # mirrors.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -52,19 +52,19 @@ if __name__ == '__main__':
 
 from pages.gtkbasebox import GtkBaseBox
 
-
 from rank_mirrors import AutoRankmirrorsProcess
 
-# 6 mirrors for Arch repos and 6 for Antergos repos
-MAX_MIRRORS = 6
 
-DND_ID_LISTBOX_ROW = 6791
-
-if __debug__:
-    def _(message): return message
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
+    """ Represents a mirror """
     def __init__(self, url, active, switch_cb, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
         #self.data = data
@@ -121,13 +121,19 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         #self.connect("drag-crop", self.on_drag_crop);
 
     def is_active(self):
+        """ Returns if the mirror is active """
         return self.switch.get_active()
 
 
 class MirrorListBox(Gtk.ListBox):
+    """ List that stores all mirrors """
     __gsignals__ = {
         'switch-activated': (GObject.SIGNAL_RUN_FIRST, None, ())
     }
+
+    # 6 mirrors for Arch repos and 6 for Antergos repos
+    MAX_MIRRORS = 6
+    #DND_ID_LISTBOX_ROW = 6791
 
     def __init__(self, mirrors_file_path):
         super(Gtk.ListBox, self).__init__()
@@ -161,8 +167,8 @@ class MirrorListBox(Gtk.ListBox):
         tmp_lines = []
 
         # Use MAX_MIRRORS at max
-        if len(lines) > MAX_MIRRORS:
-            lines = lines[0:MAX_MIRRORS]
+        if len(lines) > MirrorListBox.MAX_MIRRORS:
+            lines = lines[0:MirrorListBox.MAX_MIRRORS]
 
         # Read mirror info and create mirrors list
         for line in lines:
@@ -200,7 +206,7 @@ class MirrorListBox(Gtk.ListBox):
     def set_mirror_active(self, url, active):
         """ Changes the active status in our mirrors list """
         for index, item in enumerate(self.mirrors):
-            murl, mact = item
+            murl, _mact = item
             if url == murl:
                 self.mirrors[index] = (url, active)
 
@@ -212,7 +218,8 @@ class MirrorListBox(Gtk.ListBox):
                 active_mirrors.append(url)
         return active_mirrors
 
-    def on_switch_activated(self, switch, gparam):
+    def on_switch_activated(self, switch, _gparam):
+        """ Mirror activated """
         row = switch.get_ancestor(Gtk.ListBoxRow)
         if row:
             self.set_mirror_active(row.data, switch.get_active())
@@ -238,7 +245,7 @@ class MirrorListBox(Gtk.ListBox):
         hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND1)
         self.get_window().set_cursor(hand_cursor)
 
-    def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
+    def on_drag_data_get(self, widget, _drag_context, selection_data, _info, _time):
         """ When drag data is requested by the destination """
         row = widget.get_ancestor(Gtk.ListBoxRow)
         listbox_str = str(self)
@@ -247,7 +254,7 @@ class MirrorListBox(Gtk.ListBox):
         selection_data.set_text(data, len(data))
         self.get_window().set_cursor(None)
 
-    def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
+    def on_drag_data_received(self, widget, _drag_context, _x, _y, selection_data, _info, _time):
         """ When drag data is received by the destination """
         data = selection_data.get_text()
         try:
@@ -304,8 +311,8 @@ class Mirrors(GtkBaseBox):
                 "switch-activated", self.on_switch_activated)
             self.listboxes.append(mirror_listbox)
 
-        for index, sw in enumerate(self.scrolledwindows):
-            sw.add(self.listboxes[index])
+        for index, scrolled_window in enumerate(self.scrolledwindows):
+            scrolled_window.add(self.listboxes[index])
 
         self.listboxes_box = self.ui.get_object("listboxes_box")
 
@@ -315,34 +322,34 @@ class Mirrors(GtkBaseBox):
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
 
-    def on_switch_activated(self, widget):
+    def on_switch_activated(self, _widget):
         """ A mirror has been activated/deactivated. We must check if
         at least there is one mirror active for each list """
         self.check_active_mirrors()
 
     def check_active_mirrors(self):
         """ Checks if at least there is one mirror active for each list """
-        ok = True
+        ok_to_proceed = True
         for listbox in self.listboxes:
-            if len(listbox.get_active_mirrors()) == 0:
-                ok = False
-        self.forward_button.set_sensitive(ok)
+            if not listbox.get_active_mirrors():
+                ok_to_proceed = False
+        self.forward_button.set_sensitive(ok_to_proceed)
 
-    def on_rank_radiobutton_toggled(self, widget):
+    def on_rank_radiobutton_toggled(self, _widget):
         self.use_rankmirrors = True
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_leave_radiobutton_toggled(self, widget):
+    def on_leave_radiobutton_toggled(self, _widget):
         self.use_rankmirrors = False
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_user_radiobutton_toggled(self, widget):
+    def on_user_radiobutton_toggled(self, _widget):
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.show_all()

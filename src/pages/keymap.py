@@ -3,7 +3,7 @@
 #
 # keymap.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -32,9 +32,7 @@ import os
 import logging
 import subprocess
 
-import misc.extra as misc
 import misc.keyboard_names as keyboard_names
-import widgets.keyboard_widget as keyboard_widget
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -231,7 +229,7 @@ class Keymap(GtkBaseBox):
 
         return layout, variant
 
-    def on_keymap_row_activated(self, treeview, iterator, path):
+    def on_keymap_row_activated(self, _treeview, _iterator, _path):
         """ Set selected keymap """
         self.forward_button.set_sensitive(True)
         self.store_values()

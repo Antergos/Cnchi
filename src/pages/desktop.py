@@ -208,7 +208,7 @@ class DesktopAsk(GtkBaseBox):
 
     def set_desktop(self, desktop):
         """ Show desktop info """
-        for key in desktop_info.NAMES.keys():
+        for key in desktop_info.NAMES:
             if desktop_info.NAMES[key] == desktop:
                 self.desktop_choice = key
                 self.translate_ui(self.desktop_choice, set_header=False)

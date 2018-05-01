@@ -3,7 +3,7 @@
 #
 #  location.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -49,6 +49,7 @@ from logging_utils import ContextFilter
 
 
 class Location(GtkBaseBox):
+    """ Location page """
     def __init__(self, params, prev_page="check", next_page="timezone"):
         super().__init__(self, params, "location", prev_page, next_page)
 
@@ -78,7 +79,8 @@ class Location(GtkBaseBox):
 
         self.scrolledwindow = self.ui.get_object("scrolledwindow1")
 
-    def on_show_all_locations_checkbox_toggled(self, button, name):
+    def on_show_all_locations_checkbox_toggled(self, button, _name):
+        """ Force to show all locations """
         self.show_all_locations = button.get_active()
         self.fill_listbox()
 
@@ -105,10 +107,12 @@ class Location(GtkBaseBox):
         self.header.set_subtitle(_("Select your location"))
 
     def select_first_listbox_item(self):
+        """ Sets first listbox item as selected """
         listbox_row = self.listbox.get_children()[0]
         self.listbox.select_row(listbox_row)
 
     def hide_all(self):
+        """ Hide all widgets """
         names = [
             "location_box", "label_help", "label_choose_country", "box1",
             "eventbox1", "eventbox2", "scrolledwindow1", "listbox_countries"]
@@ -131,6 +135,7 @@ class Location(GtkBaseBox):
         self.settings.set('install_id', self.get_and_save_install_id())
 
     def load_locales(self):
+        """ Load all locales from locales.xml """
         data_dir = self.settings.get('data')
         xml_path = os.path.join(data_dir, "locale", "locales.xml")
 
@@ -151,7 +156,7 @@ class Location(GtkBaseBox):
                     language_name = item.text
                 elif item.tag == 'locale_name':
                     locale_name = item.text
-            if len(locale_name) > 0 and len(language_name) > 0:
+            if locale_name and language_name:
                 self.locales[locale_name] = language_name
 
         xml_path = os.path.join(data_dir, "locale", "iso3366-1.xml")
@@ -178,6 +183,7 @@ class Location(GtkBaseBox):
                         ", " + countries[country_code]
 
     def get_areas(self):
+        """ Get all territories where a certain language is spoken """
         areas = []
 
         if not self.show_all_locations:
@@ -185,7 +191,7 @@ class Location(GtkBaseBox):
             for locale_name in self.locales:
                 if lang_code in locale_name:
                     areas.append(self.locales[locale_name])
-            if len(areas) == 0:
+            if not areas:
                 # When we don't find any country we put all language codes.
                 # This happens with Esperanto and Asturianu at least.
                 for locale_name in self.locales:
@@ -200,6 +206,7 @@ class Location(GtkBaseBox):
         return areas
 
     def fill_listbox(self):
+        """ Fills listbox with all territories (areas) """
         areas = self.get_areas()
 
         for listbox_row in self.listbox.get_children():
@@ -213,13 +220,15 @@ class Location(GtkBaseBox):
 
         self.selected_country = areas[0]
 
-    def on_listbox_row_selected(self, listbox, listbox_row):
+    def on_listbox_row_selected(self, _listbox, listbox_row):
+        """ A territory (area) has been selected """
         if listbox_row is not None:
             label = listbox_row.get_children()[0]
             if label is not None:
                 self.selected_country = label.get_text()
 
     def set_locale(self, mylocale):
+        """ Sets system locale """
         self.settings.set("locale", mylocale)
 
         # LANG=en_US.UTF-8
@@ -267,7 +276,7 @@ class Location(GtkBaseBox):
                 self.set_locale(mylocale)
         if ',' in location:
             country_name = location.split(',')[1].strip()
-            match = re.search('\(\w+\)', location)
+            match = re.search(r'\(\w+\)', location)
             if match:
                 country_code = match.group()[1:-1].lower()
             else:
@@ -286,6 +295,7 @@ class Location(GtkBaseBox):
 
     @staticmethod
     def get_and_save_install_id():
+        """ Obtains and saves an installation ID for future reference """
         context_filter = ContextFilter()
         return context_filter.get_and_save_install_id(is_location_screen=True)
 

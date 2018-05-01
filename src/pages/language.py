@@ -3,7 +3,7 @@
 #
 #  language.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -26,16 +26,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Language page """
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
 import gettext
 import locale
 import os
 import logging
 import sys
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 from pages.gtkbasebox import GtkBaseBox
 
@@ -49,6 +51,7 @@ LOCALE_DIR = "/usr/share/locale"
 
 
 class Language(GtkBaseBox):
+    """ Language page """
     def __init__(self, params, prev_page="welcome", next_page="check"):
         super().__init__(self, params, "language", prev_page, next_page)
 
@@ -75,23 +78,25 @@ class Language(GtkBaseBox):
         self.main_window = params['main_window']
 
     def get_lang(self):
+        """ Returns LANG environmental variable value """
         return os.environ["LANG"].split(".")[0]
 
     def get_locale(self):
+        """ Returns default locale """
         default_locale = locale.getdefaultlocale()
         if len(default_locale) > 1:
             return default_locale[0] + "." + default_locale[1]
         else:
             return default_locale[0]
 
-    def on_listbox_row_selected(self, listbox, listbox_row):
+    def on_listbox_row_selected(self, _listbox, listbox_row):
         """ Someone selected a different row of the listbox """
         if listbox_row is not None:
             for vbox in listbox_row:
                 for label in vbox.get_children():
-                    (current_language,
-                        sorted_choices,
-                        display_map) = i18n.get_languages(self.language_list)
+                    (_current_language,
+                     _sorted_choices,
+                     display_map) = i18n.get_languages(self.language_list)
                     lang = label.get_text()
                     lang_code = display_map[lang][1]
                     self.set_language(lang_code)
@@ -124,7 +129,8 @@ class Language(GtkBaseBox):
         self.header.set_subtitle(txt)
 
     def langcode_to_lang(self, display_map):
-        # Special cases in which we need the complete current_locale string
+        """ Returns language from current locale """
+        # There are special cases in which we need the complete current_locale string
         if self.current_locale not in ('pt_BR', 'zh_CN', 'zh_TW'):
             self.current_locale = self.current_locale.split("_")[0]
 
@@ -136,8 +142,8 @@ class Language(GtkBaseBox):
         """ Load languages list """
         try:
             (current_language,
-                sorted_choices,
-                display_map) = i18n.get_languages(self.language_list)
+             sorted_choices,
+             display_map) = i18n.get_languages(self.language_list)
         except FileNotFoundError as file_error:
             logging.error(file_error)
             sys.exit(1)
@@ -153,10 +159,11 @@ class Language(GtkBaseBox):
                 self.select_default_row(current_language)
 
     def set_language(self, locale_code):
+        """ Sets language (using environmental variables and gettext) """
         if locale_code is None:
-            locale_code, encoding = locale.getdefaultlocale()
+            locale_code, _encoding = locale.getdefaultlocale()
 
-        if 'en' == locale_code:
+        if locale_code == 'en':
             # Perl expects LANG to be in this format, otherwise it complains which
             # messes up the keyboard widget.
             locale_code = language = 'en_US.UTF-8'
@@ -176,6 +183,7 @@ class Language(GtkBaseBox):
                 locale_code)
 
     def select_default_row(self, language):
+        """ Selects language in lisbox """
         for listbox_row in self.listbox.get_children():
             for vbox in listbox_row.get_children():
                 label = vbox.get_children()[0]
@@ -191,14 +199,13 @@ class Language(GtkBaseBox):
                 for label in vbox.get_children():
                     lang = label.get_text()
 
-        (current_language,
-            sorted_choices,
-            display_map) = i18n.get_languages(self.language_list)
+        (_current_language, _sorted_choices, display_map) = i18n.get_languages(self.language_list)
 
         if lang:
             self.settings.set("language_name", display_map[lang][0])
-            self.settings.set("language_code", display_map[lang][1])
             logging.debug("language_name: %s", display_map[lang][0])
+
+            self.settings.set("language_code", display_map[lang][1])
             logging.debug("language_code: %s", display_map[lang][1])
 
         return True
@@ -213,7 +220,7 @@ class Language(GtkBaseBox):
         self.listbox.set_can_default(True)
         self.main_window.set_default(self.listbox)
 
-    def on_setup_proxy(self, widget, data=None):
+    def on_setup_proxy(self, _widget, _data=None):
         """ Ask for proxy settings """
 
         dlg = ProxyDialog(

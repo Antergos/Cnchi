@@ -2196,10 +2196,11 @@ class InstallationAdvanced(GtkBaseBox):
         return True
 
     def disable_all_widgets(self):
-        """ Disable all edit widgets """
+        """ Disable all page widgets """
         self.enable_all_widgets(status=False)
 
     def enable_all_widgets(self, status=True):
+        """ Enables /disables all page widgets """
         widgets = [
             "partition_list_scrolledwindow",
             "partition_list_treeview",
@@ -2213,6 +2214,7 @@ class InstallationAdvanced(GtkBaseBox):
             Gtk.main_iteration()
 
     def set_bootloader(self):
+        """ Set bootloader setting from the user selection checkbox """
         checkbox = self.ui.get_object("bootloader_device_check")
         if checkbox.get_active() is False:
             self.settings.set('bootloader_install', False)
@@ -2365,14 +2367,14 @@ class InstallationAdvanced(GtkBaseBox):
                     if not error:
                         logging.info(msg)
                     else:
-                        txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}".format(
-                            partition_path, lbl, fisy, msg)
+                        txt = "Couldn't format partition '{0}' with label '{1}' as '{2}': {3}"
+                        txt = txt.format(partition_path, lbl, fisy, msg)
                         logging.error(txt)
-                        txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}").format(
-                            partition_path, lbl, fisy, msg)
+                        txt = _("Couldn't format partition '{0}' with label '{1}' as '{2}': {3}")
+                        txt = txt.format(partition_path, lbl, fisy, msg)
                         show.error(self.get_main_window(), txt)
                 elif (partition_path in self.orig_label_dic and
-                    self.orig_label_dic[partition_path] != lbl):
+                      self.orig_label_dic[partition_path] != lbl):
                     try:
                         fs.label_fs(fisy, partition_path, lbl)
                     except Exception as ex:
