@@ -3,7 +3,7 @@
 #
 #  check.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,24 +29,19 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
+import logging
+import os
 
 from gi.repository import GLib
-
-import subprocess
-import logging
-
-import os
 
 import info
 import updater
 
 import misc.extra as misc
-from misc.run_cmd import call, popen
+from misc.run_cmd import call
 from pages.gtkbasebox import GtkBaseBox
 
 import show_message as show
-
-from misc.gtkwidgets import StateBox
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -168,7 +163,7 @@ class Check(GtkBaseBox):
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
             result = misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
-            if result == None:
+            if result is None:
                 # Cannot read property, something is wrong.
                 logging.warning("Cannot read %s/%s dbus property",
                                 UPOWER_PATH, 'OnBattery')

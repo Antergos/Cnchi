@@ -3,7 +3,7 @@
 #
 # ask.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -30,24 +30,25 @@
 """ Asks which type of installation the user wants to perform """
 
 import os
-import sys
-import queue
 import time
 import logging
 import subprocess
-
-import bootinfo
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+import bootinfo
 from pages.gtkbasebox import GtkBaseBox
-
 import misc.extra as misc
+from browser_window import BrowserWindow
 
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 def check_alongside_disk_layout():
@@ -81,6 +82,7 @@ def check_alongside_disk_layout():
 
 
 def load_zfs():
+    """ Load ZFS kernel module """
     cmd = ["modprobe", "zfs"]
     try:
         with misc.raised_privileges() as __:
@@ -94,6 +96,7 @@ def load_zfs():
 
 
 class InstallationAsk(GtkBaseBox):
+    """ Asks user which type of installation wants to perform """
     def __init__(self, params, prev_page="mirrors", next_page=None):
         super().__init__(self, params, "ask", prev_page, next_page)
 
@@ -146,14 +149,16 @@ class InstallationAsk(GtkBaseBox):
         ask_box = self.ui.get_object("ask")
         ask_box.pack_start(self.alongside_wiki_btn, True, False, 0)
 
-    def on_alongside_wiki_button_clicked(self, widget, data=None):
+        self.browser = None
+
+    def on_alongside_wiki_button_clicked(self, _widget, _data=None):
+        """ Shows browser with wiki page about dual installation """
         try:
-            from browser_window import BrowserWindow
             self.browser = BrowserWindow("Antergos Wiki - Dual Boot")
             url = "https://antergos.com/wiki/install/how-to-dual-boot-antergos-windows-uefi-expanded-by-linuxhat/"
             self.browser.load_url(url)
         except Exception as err:
-            logging.warning("Could not show Antergos wiki: ", err)
+            logging.warning("Could not show Antergos wiki: %s", err)
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
@@ -221,10 +226,10 @@ class InstallationAsk(GtkBaseBox):
             ('use_luks', 'encrypt_checkbutton'), ('use_lvm', 'lvm_checkbutton'),
             ('use_zfs', 'zfs_checkbutton'), ('use_home', 'home_checkbutton')}
 
-        for (setting, widget) in widgets_settings:
-            w = self.ui.get_object(widget)
-            s = self.settings.get(setting)
-            w.set_active(s)
+        for (setting_name, widget_id) in widgets_settings:
+            widget = self.ui.get_object(widget_id)
+            setting_value = self.settings.get(setting_name)
+            widget.set_active(setting_value)
 
         self.translate_ui()
         self.show_all()
@@ -274,8 +279,8 @@ class InstallationAsk(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        description_style = '<span style="italic">{0}</span>'
-        bold_style = '<span weight="bold">{0}</span>'
+        # description_style = '<span style="italic">{0}</span>'
+        # bold_style = '<span weight="bold">{0}</span>'
 
         oses_str = self.get_os_list_str()
 
@@ -283,7 +288,7 @@ class InstallationAsk(GtkBaseBox):
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
-        if len(oses_str) > 0:
+        if oses_str:
             txt = _("Replace {0} with Antergos").format(oses_str)
         else:
             txt = _("Erase disk and install Antergos")
@@ -546,15 +551,19 @@ class InstallationAsk(GtkBaseBox):
             self.enable_automatic_options(True)
 
     def on_automatic_lvm_checkbutton_toggled(self, widget):
+        """ Enables / disables LVM installation """
         if widget.get_active():
             self.next_page = "installation_automatic"
+            # Disable ZFS if using LVM
             check = self.ui.get_object("zfs_checkbutton")
             if check.get_active():
                 check.set_active(False)
 
     def on_automatic_zfs_checkbutton_toggled(self, widget):
+        """ Enables / disables ZFS installation """
         if widget.get_active():
             self.next_page = "installation_zfs"
+            # Disable LVM if using ZFS
             check = self.ui.get_object("lvm_checkbutton")
             if check.get_active():
                 check.set_active(False)

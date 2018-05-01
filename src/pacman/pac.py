@@ -5,7 +5,7 @@
 #
 #  This code is based on previous work by Rémy Oudompheng <remy@archlinux.org>
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -40,12 +40,6 @@ import inspect
 import traceback
 from collections import OrderedDict
 
-try:
-    _("x")
-except NameError:
-    import gettext
-    _ = gettext.gettext
-
 import pacman.alpm_events as alpm
 import pacman.pkginfo as pkginfo
 import pacman.pacman_conf as config
@@ -56,6 +50,13 @@ except ImportError as err:
     # This is already logged elsewhere
     # logging.error(err)
     pass
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
@@ -255,7 +256,7 @@ class Pac(object):
             logging.error("alpm is not initialised")
             raise pyalpm.error
 
-        if len(pkgs) == 0:
+        if not pkgs:
             logging.error("Package list is empty")
             raise pyalpm.error
 
@@ -267,7 +268,7 @@ class Pac(object):
         repos = OrderedDict()
         repo_order = []
         db_match = [db for db in self.handle.get_syncdbs()
-                    if 'antergos' == db.name]
+                    if db.name == 'antergos']
         antdb = OrderedDict()
         antdb['antergos'] = db_match[0]
 
@@ -327,7 +328,7 @@ class Pac(object):
         targets = list(set(targets))
         logging.debug(targets)
 
-        if len(targets) == 0:
+        if not targets:
             logging.error("No targets found")
             return False
 
@@ -344,7 +345,7 @@ class Pac(object):
             logging.error("Can't initialize alpm transaction")
             return False
 
-        for i in range(0, num_targets):
+        for _index in range(0, num_targets):
             result_ok, pkg = self.find_sync_package(targets.pop(), repos)
             if result_ok:
                 transaction.add_pkg(pkg)
@@ -363,7 +364,7 @@ class Pac(object):
             logging.error("alpm is not initialised")
             raise pyalpm.error
 
-        if len(pkgs) == 0:
+        if not pkgs:
             logging.error("Package list is empty")
             raise pyalpm.error
 
@@ -405,7 +406,7 @@ class Pac(object):
         for repo in self.handle.get_syncdbs():
             grp = repo.read_grp(group)
             if grp is not None:
-                name, pkgs = grp
+                _name, pkgs = grp
                 return pkgs
         return None
 
@@ -414,7 +415,7 @@ class Pac(object):
         if not pkg_names:
             pkg_names = []
         packages_info = {}
-        if len(pkg_names) == 0:
+        if not pkg_names:
             # Store info from all packages from all repos
             for repo in self.handle.get_syncdbs():
                 for pkg in repo.pkgcache:
@@ -541,7 +542,7 @@ class Pac(object):
         else:
             action = ""
 
-        if len(action) > 0:
+        if action:
             self.queue_event('info', action)
 
     def cb_log(self, level, line):

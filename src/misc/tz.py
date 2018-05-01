@@ -5,7 +5,7 @@
 #
 # Copyright (C) 2006, 2007 Canonical Ltd.
 # Written by Colin Watson <cjwatson@ubuntu.com>.
-# New modifications Copyright © 2013-2017 Antergos
+# New modifications Copyright © 2013-2018 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -46,16 +46,16 @@ def _seconds_since_epoch(my_datetime):
 class SystemTzInfo(datetime.tzinfo):
     """ Class that represents current timezone info """
 
-    def __init__(self, tz=None):
-        self.tz = tz
+    def __init__(self, timezone=None):
+        self.timezone = timezone
 
     def _select_tz(self):
         """ Select timezone """
         tzbackup = None
         if 'TZ' in os.environ:
             tzbackup = os.environ['TZ']
-        if self.tz is not None:
-            os.environ['TZ'] = self.tz
+        if self.timezone is not None:
+            os.environ['TZ'] = self.timezone
         time.tzset()
         return tzbackup
 
@@ -69,7 +69,7 @@ class SystemTzInfo(datetime.tzinfo):
             os.environ['TZ'] = tzbackup
         time.tzset()
 
-    def utcoffset(self, dt):
+    def utcoffset(self, my_datetime):
         """ Get utc offset (taking dst into account) """
         tzbackup = self._select_tz()
         try:
@@ -77,7 +77,7 @@ class SystemTzInfo(datetime.tzinfo):
                 # no Daylight Saving Time (DST) information
                 dst_minutes = -time.timezone / 60
             else:
-                localtime = time.localtime(_seconds_since_epoch(dt))
+                localtime = time.localtime(_seconds_since_epoch(my_datetime))
                 if localtime.tm_isdst != 1:
                     # not in DST
                     dst_minutes = -time.timezone / 60
@@ -95,10 +95,10 @@ class SystemTzInfo(datetime.tzinfo):
         self._restore_tz(tzbackup)
         return daylight
 
-    def is_dst(self, dt):
+    def is_dst(self, my_datetime):
         """ Are we in DST? """
         tzbackup = self._select_tz()
-        localtime = time.localtime(_seconds_since_epoch(dt))
+        localtime = time.localtime(_seconds_since_epoch(my_datetime))
         isdst = localtime.tm_isdst
         self._restore_tz(tzbackup)
         return isdst
@@ -133,7 +133,7 @@ class SystemTzInfo(datetime.tzinfo):
 
     def tzname(self, unused_dt):
         """ Return timezone """
-        return self.tz
+        return self.timezone
 
     def tzname_letters(self, my_datetime):
         """ Get localtime """
@@ -303,30 +303,30 @@ class _Database(object):
             else:
                 self.cc_to_locs[loc.country] = [loc]
 
-    def get_loc(self, tz):
+    def get_loc(self, timezone):
         """ Get timezone's location """
         try:
-            return self.tz_to_loc[tz]
-        except:
+            return self.tz_to_loc[timezone]
+        except IndexError:
             # Sometimes we'll encounter timezones that aren't really
             # city-zones, like "US/Eastern" or "Mexico/General".  So first,
             # we check if the timezone is known.  If it isn't, we search for
             # one with the same md5sum and make a reference to it
             try:
-                zone_path = os.path.join('/usr/share/zoneinfo', tz)
+                zone_path = os.path.join('/usr/share/zoneinfo', timezone)
                 with open(zone_path, 'rb') as tz_file:
                     md5sum = hashlib.md5(tz_file.read()).digest()
 
                 for loc in self.locations:
                     if md5sum == loc.md5sum:
-                        self.tz_to_loc[tz] = loc
+                        self.tz_to_loc[timezone] = loc
                         return loc
             except IOError:
                 pass
 
             # If not found, oh well, just warn and move on.
-            logging.error('Could not understand timezone %s', tz)
-            self.tz_to_loc[tz] = None  # save it for the future
+            logging.error('Could not understand timezone %s', timezone)
+            self.tz_to_loc[timezone] = None  # save it for the future
             return None
 
     def get_locations(self):

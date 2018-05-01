@@ -11,7 +11,8 @@
 """  Validation module """
 
 if __debug__:
-    def _(x): return x
+    def _(message):
+        return message
 
 
 def check_grub_device(device):
@@ -102,6 +103,7 @@ def check_hostname(name):
 
 
 def password_strength(password):
+    """ Checks password strength """
     upper = lower = digit = symbol = 0
     for char in password:
         if char.isdigit():
@@ -133,6 +135,7 @@ def password_strength(password):
 
 
 def human_password_strength(password):
+    """ Converts password strength to a human message """
     strength = password_strength(password)
     length = len(password)
     if length == 0:
