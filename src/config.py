@@ -151,7 +151,7 @@ class Settings(object):
         """ Set one setting's value """
         settings = self._get_settings()
         current = settings.get(key, 'keyerror')
-        exists = 'keyerror' != current
+        exists = current != 'keyerror'
 
         if exists and current and isinstance(current, list) and not isinstance(value, list):
             settings[key].append(value)

@@ -3,7 +3,7 @@
 #
 # show_message.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -30,11 +30,18 @@
 
 import sys
 import os
-import multiprocessing
+#import multiprocessing
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(msg):
+        return msg
 
 
 def fatal_error(parent, my_message):
@@ -122,10 +129,3 @@ def question(parent, my_message):
     response = msg_dialog.run()
     msg_dialog.destroy()
     return response
-
-
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message

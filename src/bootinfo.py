@@ -41,8 +41,12 @@ try:
 except ImportError:
     import extra as misc
 
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 # constants
 WIN_DIRS = ["windows", "WINDOWS", "Windows"]
@@ -282,7 +286,7 @@ def get_os_dict():
     with open("/proc/partitions", 'r') as partitions_file:
         for line in partitions_file:
             line_split = line.split()
-            if len(line_split) > 0:
+            if line_split:
                 device = line_split[3]
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
@@ -304,6 +308,7 @@ def get_os_dict():
 
 
 def windows_startup_folder(mount_path):
+    """ Returns windows startup folder """
     locations = [
         # Windows 8
         'ProgramData/Microsoft/Windows/Start Menu/Programs/StartUp',

@@ -67,11 +67,12 @@ try:
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
+# When testing, no _() is available
 try:
     _("")
-except NameError:
-    def _(x):
-        return x
+except NameError as err:
+    def _(message):
+        return message
 
 # Useful vars for gettext (translations)
 APP_NAME = "cnchi"
@@ -265,10 +266,9 @@ def check_gtk_version():
             show.error(None, text)
         except ImportError as import_error:
             logging.error(import_error)
-        finally:
-            return False
+        return False
     else:
-        logging.info("Using GTK v{0}.{1}.{2}".format(major, minor, micro))
+        logging.info("Using GTK v%d.%d.%d", major, minor, micro)
 
     return True
 
@@ -283,13 +283,11 @@ def check_pyalpm_version():
         logging.info(txt)
     except (NameError, ImportError) as err:
         try:
-            import show_message as show
             show.error(None, err)
+            logging.error(err)
         except ImportError as import_error:
             logging.error(import_error)
-        finally:
-            logging.error(err)
-            return False
+        return False
 
     return True
 
@@ -450,7 +448,7 @@ def setup_gettext():
     gettext.textdomain(APP_NAME)
     gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 
-    locale_code, encoding = locale.getdefaultlocale()
+    locale_code, _encoding = locale.getdefaultlocale()
     lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
     lang.install()
 

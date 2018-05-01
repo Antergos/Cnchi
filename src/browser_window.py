@@ -28,8 +28,6 @@
 
 """ Web View """
 
-import logging
-
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
@@ -37,7 +35,8 @@ from gi.repository import Gtk, GLib, WebKit2
 
 
 class BrowserWindow(Gtk.Window):
-    def __init__(self, title, width=800, height=600):
+    """ Shows a browser window showing passed url """
+    def __init__(self, _title, width=800, height=600):
         Gtk.Window.__init__(self)
 
         self.set_size_request(width, height)
@@ -57,16 +56,19 @@ class BrowserWindow(Gtk.Window):
 
         scrolled_window.add(self.webview)
 
-    def on_destroy(self, event, data):
+    def on_destroy(self, _event, _data):
+        """ Destroys window """
         self.destroy()
 
-    def decide_policy_cb(self, decision, type, data):
-        # Allows all (security flaw, but we do not care when installing)
+    def decide_policy_cb(self, decision, _type, data):
+        """ Allows all (security flaw, but we do not care when installing) """
         return True
 
     def load_changed_cb(self, webview, load_event):
+        """ Show browser window when url is loaded """
         if load_event == WebKit2.LoadEvent.FINISHED:
             self.show_all()
 
     def load_url(self, url):
+        """ Load url """
         GLib.idle_add(self.webview.load_uri, url)

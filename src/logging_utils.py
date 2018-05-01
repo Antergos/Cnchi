@@ -3,7 +3,7 @@
 #
 # logging_utils.py
 #
-# Copyright © 2015-2017 Antergos
+# Copyright © 2015-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -26,11 +26,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Logging utils to ease log calls """
+
 import logging
 import uuid
-import requests
 import json
 import os
+import requests
 
 from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
 
@@ -62,6 +64,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         super().__init__()
         self.api_key = self.get_bugsnag_api()
         self.have_install_id = False
+        self.after_location_screen = False
+        self.install_id = ""
+        self.ip = '0.0.0.0'
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
@@ -77,7 +82,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         if is_location_screen:
             self.after_location_screen = True
 
-        if 'development' == CNCHI_RELEASE_STAGE:
+        if CNCHI_RELEASE_STAGE == 'development':
             self.install_id = 'development'
             self.ip = '0.0.0.0'
             self.have_install_id = True
@@ -88,13 +93,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         headers = {self.api_key: CNCHI_VERSION}
 
         try:
-            r = requests.get(url, headers=headers)
-            r.raise_for_status()
-            info = json.loads(r.json())
+            req = requests.get(url, headers=headers)
+            req.raise_for_status()
+            info = json.loads(req.json())
         except Exception as err:
             logger = logging.getLogger()
-            msg = "Unable to get an Id for this installation. Error: {0}".format(
-                err.args)
+            msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
             logger.debug(msg)
 
         try:
@@ -202,8 +206,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 url = "{0}&install_id={1}&result={2}"
                 url = url.format(build_server, self.install_id, result)
                 headers = {self.api_key: CNCHI_VERSION}
-                r = requests.get(url, headers=headers)
-                json.loads(r.json())
+                req = requests.get(url, headers=headers)
+                json.loads(req.json())
         except Exception as ex:
             logger = logging.getLogger()
             template = "Can't send install result. An exception of type {0} occured. "

@@ -3,7 +3,7 @@
 #
 #  info.py
 #
-#  Copyright © 2013-2016 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,7 +29,7 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.14.437"
+CNCHI_VERSION = "0.14.438"
 CNCHI_WEBSITE = "http://www.antergos.com"
 CNCHI_RELEASE_STAGE = "production"
 

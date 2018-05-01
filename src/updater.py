@@ -3,7 +3,7 @@
 #
 # updater.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -35,19 +35,29 @@ import os
 import logging
 import shutil
 
-import misc.extra as misc
-
 import requests
 
-_update_info_url = "https://raw.github.com/Antergos/Cnchi/master/update.info"
-_master_zip_url = "https://github.com/Antergos/Cnchi/archive/master.zip"
-_update_info = "/usr/share/cnchi/update.info"
+import misc.extra as misc
 
-_src_dir = os.path.dirname(__file__) or '.'
-_base_dir = os.path.join(_src_dir, "..")
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
+
+UPDATE_INFO_URL = "https://raw.github.com/Antergos/Cnchi/master/update.info"
+MASTER_ZIP_URL = "https://github.com/Antergos/Cnchi/archive/master.zip"
+UPDATE_INFO = "/usr/share/cnchi/update.info"
+
+SRC_DIR = os.path.dirname(__file__) or '.'
+BASE_DIR = os.path.join(SRC_DIR, "..")
 
 
 def get_md5_from_file(filename):
+    """ Get md5 hash from file """
     with open(filename, 'rb') as myfile:
         buf = myfile.read()
         md5 = get_md5_from_text(buf)
@@ -62,6 +72,7 @@ def get_md5_from_text(text):
 
 
 class Updater(object):
+    """ Updater class (deprecated). """
     def __init__(self, local_cnchi_version, force_update=False):
         self.remote_version = ""
         self.local_cnchi_version = local_cnchi_version
@@ -69,22 +80,22 @@ class Updater(object):
 
         self.force = force_update
 
-        if not os.path.exists(_update_info):
+        if not os.path.exists(UPDATE_INFO):
             logging.debug(
                 "Cannot not find %s file. "
                 "Cnchi will not be able to update itself.",
-                _update_info)
+                UPDATE_INFO)
             return
 
         # Get local info (local update.info)
-        with open(_update_info, "r") as local_update_info:
+        with open(UPDATE_INFO, "r") as local_update_info:
             response = local_update_info.read()
             if response:
                 update_info = json.loads(response)
                 self.local_files = update_info['files']
 
         try:
-            req = requests.get(_update_info_url, stream=True, timeout=5)
+            req = requests.get(UPDATE_INFO_URL, stream=True, timeout=5)
         except requests.exceptions.ConnectionError as conn_error:
             logging.error(conn_error)
             return
@@ -162,7 +173,8 @@ class Updater(object):
             try:
                 self.unzip_and_copy(zip_path)
             except Exception as ex:
-                template = "Cannot update Cnchi. An exception of type {0} occured. Arguments:\n{1!r}"
+                template = "Cannot update Cnchi. " \
+                    "An exception of type {0} occured. Arguments:\n{1!r}"
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
                 return False
@@ -172,7 +184,7 @@ class Updater(object):
     @staticmethod
     def download_master_zip(zip_path):
         """ Download new Cnchi version from github """
-        req = requests.get(_master_zip_url, stream=True)
+        req = requests.get(MASTER_ZIP_URL, stream=True)
         if req.status_code == requests.codes.ok:
             with open(zip_path, 'wb') as zip_file:
                 for data in req.iter_content(1024):
