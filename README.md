@@ -13,8 +13,8 @@ This is the latest, unreleased version of Cnchi, AKA: **Cnchi Next**.
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.410|Bug Fixes Only|
-|**Cnchi Next**|**master**|**v0.15.319**|**Development**|
+|Cnchi Stable|[0.14.x](https://github.com/Antergos/Cnchi/tree/0.14.x)|v0.14.426|Bug Fixes Only|
+|**Cnchi Next**|**master**|**v0.15.320**|**Development**|
 
 
 ## Usage:
@@ -37,7 +37,6 @@ $ cnchi
 |```-s``` or ```--log-server```|*Choose to which log server send Cnchi logs.  Expects a hostname or an IP address*|
 |```-u``` or ```--update```|*Upgrade/downgrade Cnchi to the web version*|
 |```--disable-update```|*Do not search for new Cnchi versions online*|
-|```--disable-rank-mirrors```|*Does not attempt to rank Arch and Antergos mirrors during installation*|
 |```-v``` or ```--verbose```|*Show logging messages to stdout*|
 |```-V``` or ```--version```|*Show Cnchi version and quit*|
 |```-z``` or ```--z_hidden```|*Show options in development (for developers only, do not use this!)*|

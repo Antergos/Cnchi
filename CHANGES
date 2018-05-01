@@ -1,3 +1,26 @@
+[2018-05-01 15:33:25 +0200]  Linting finished                                                           karasu      {d2764774}
+[2018-05-01 14:51:30 +0200]  All pages linted                                                           karasu      {1ecaac85}
+[2018-05-01 14:36:04 +0200]  Linting...                                                                 karasu      {27158d36}
+[2018-05-01 13:28:28 +0200]  And even more linting...                                                   karasu      {b3c2724a}
+[2018-05-01 12:18:48 +0200]  More linting...                                                            karasu      {efcba868}
+[2018-05-01 11:30:53 +0200]  5 years...                                                                 karasu      {c5cc9474}
+[2018-05-01 11:26:23 +0200]  More linting...                                                            karasu      {94955465}
+[2018-04-29 18:26:19 +0200]  Clear message when not loading zfs module                                  karasu      {8d597b62}
+[2018-04-29 18:22:29 +0200]  Remove unharmful errors                                                    karasu      {e7c23045}
+[2018-04-29 18:07:02 +0200]  Avoid unharmful exception                                                  karasu      {422ca6a1}
+[2018-04-29 18:02:51 +0200]  Split install.py in two files (install.py and post_install.py). Nee..      karasu      {e03c05da}
+[2018-04-29 17:08:14 +0200]  Forgot to do a git pull... so version number was wrong.                    karasu      {241fb090}
+[2018-04-29 17:06:19 +0200]  Merge branch '0.14.x' of github.com:Antergos/Cnchi into 0.14.x             karasu      {39b0e0c4}
+[2018-04-29 17:05:44 +0200]  Implements #871                                                            karasu      {4f9177dd}
+[2018-04-28 14:50:25 +0200]  Minor changes in pac.py                                                    karasu      {3a54e211}
+[2018-04-28 14:45:08 +0200]  Do not crash when searching for missing groups in Antergos reposito..      karasu      {4593ace7}
+[2018-04-28 11:44:15 +0200]  Fixes typo.                                                                karasu      {971efd23}
+[2018-04-28 10:08:58 +0200]  Do not crash when a group is missing in the Antergos repository dat..      karasu      {b3358c75}
+[2018-04-22 21:26:04 +0200]  Advanced features are only shown if the user desires so.                   karasu      {34a91873}
+[2018-04-22 18:48:13 +0200]  https://github.com/Antergos/Cnchi/pull/864                                 karasu      {4066812f}
+[2018-04-16 22:08:46 +0200]  Just cleaning code                                                         karasu      {c5f05dc6}
+[2018-04-16 09:51:01 +0200]  self.key does not exist. Is it self.api_key ?                              karasu      {62a7bee5}
+[2018-03-20 23:53:09 +0100]  Inxi package got removed from upstream                                     karasu      {7023562e}
 [2018-03-20 23:52:09 +0100]  Inxi package got removed                                                   karasu      {ad471fe0}
 [2018-02-18 11:12:12 +0100]  Merge pull request #854 from notmatt/mbs_no_dxtn_14                    Gustau Castells {25ecf7aa}
 [2018-02-17 15:34:25 -0800]  Removes obsolete package libtxc_dxtn                                   Matthew Smillie {8b3dc84f}
