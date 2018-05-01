@@ -3,7 +3,7 @@
 #
 # auto_partition.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -26,7 +26,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" Used by automatic installation """
+""" AutoPartition module, used by automatic installation """
 
 import os
 import logging
@@ -47,8 +47,6 @@ If we don't catch the exception here, it will be caught in process.py and manage
 On the other hand, if we want to clarify the exception message we can catch it here
 and then raise an InstallError exception.
 '''
-
-""" AutoPartition module """
 
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
@@ -312,18 +310,30 @@ class AutoPartition(object):
             call(cmd, msg=err_msg)
         else:
             mkfs = {
-                "xfs": "mkfs.xfs {0} -L {1} -f {2}".format(fs_options, label_name, device),
-                "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(fs_options, label_name, device),
-                "reiserfs": "yes | mkreiserfs {0} -l {1} {2}".format(fs_options, label_name, device),
-                "ext2": "mkfs.ext2 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                "ext3": "mkfs.ext3 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(fs_options, label_name, device),
-                "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(fs_options, label_name, btrfs_devices),
-                "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(fs_options, label_name, device),
-                "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(fs_options, label_name, device),
-                "vfat": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
-                "fat32": "mkfs.vfat {0} -n {1} {2}".format(fs_options, label_name, device),
-                "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(fs_options, label_name, device)}
+                "xfs": "mkfs.xfs {0} -L {1} -f {2}".format(
+                    fs_options, label_name, device),
+                "jfs": "yes | mkfs.jfs {0} -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "reiserfs": "yes | mkreiserfs {0} -l {1} {2}".format(
+                    fs_options, label_name, device),
+                "ext2": "mkfs.ext2 -q {0} -F -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "ext3": "mkfs.ext3 -q {0} -F -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "ext4": "mkfs.ext4 -q {0} -F -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "btrfs": "mkfs.btrfs {0} -L {1} {2}".format(
+                    fs_options, label_name, btrfs_devices),
+                "nilfs2": "mkfs.nilfs2 {0} -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "ntfs-3g": "mkfs.ntfs {0} -L {1} {2}".format(
+                    fs_options, label_name, device),
+                "vfat": "mkfs.vfat {0} -n {1} {2}".format(
+                    fs_options, label_name, device),
+                "fat32": "mkfs.vfat {0} -n {1} {2}".format(
+                    fs_options, label_name, device),
+                "f2fs": "mkfs.f2fs {0} -l {1} {2}".format(
+                    fs_options, label_name, device)}
 
             # Make sure the fs type is one we can handle
             if fs_type not in mkfs.keys():

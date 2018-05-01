@@ -6,7 +6,7 @@
 # Original author: Thomas Wood <thomas.wood@intel.com>
 # Portions from Ubiquity, Copyright (C) 2009 Canonical Ltd.
 # Written in C by Evan Dandrea <evand@ubuntu.com>
-# Python port Copyright © 2013-2017 Antergos
+# Python port Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -39,9 +39,12 @@ import sys
 import logging
 
 import gi
-gi.require_version('PangoCairo', '1.0')
 gi.require_version('Gtk', '3.0')
-from gi.repository import GObject, GLib, Gdk, Gtk, GdkPixbuf, Pango, PangoCairo
+gi.require_version('Gdk', '3.0')
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf
+
+gi.require_version('PangoCairo', '1.0')
+from gi.repository import Pango, PangoCairo
 
 try:
     import misc.tz as tz
@@ -53,58 +56,6 @@ try:
 except ImportError:
     import xml.etree.ElementTree as elementTree
 
-PIN_HOT_POINT_X = 8
-PIN_HOT_POINT_Y = 15
-LOCATION_CHANGED = 0
-
-G_PI_4 = 0.78539816339744830961566084581987572104929234984378
-
-TIMEZONEMAP_IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
-OLSEN_MAP_TIMEZONES_PATH = "/usr/share/cnchi/data/locale/timezones.xml"
-
-BUBBLE_TEXT_FONT = "Sans 9"
-
-# COLOR_CODES is (offset, red, green, blue, alpha)
-COLOR_CODES = [
-    (-11.0, 43, 0, 0, 255),
-    (-10.0, 85, 0, 0, 255),
-    (-9.5, 102, 255, 0, 255),
-    (-9.0, 128, 0, 0, 255),
-    (-8.0, 170, 0, 0, 255),
-    (-7.0, 212, 0, 0, 255),
-    (-6.0, 255, 0, 1, 255),  # north
-    (-6.0, 255, 0, 0, 255),  # south
-    (-5.0, 255, 42, 42, 255),
-    (-4.5, 192, 255, 0, 255),
-    (-4.0, 255, 85, 85, 255),
-    (-3.5, 0, 255, 0, 255),
-    (-3.0, 255, 128, 128, 255),
-    (-2.0, 255, 170, 170, 255),
-    (-1.0, 255, 213, 213, 255),
-    (0.0, 43, 17, 0, 255),
-    (1.0, 85, 34, 0, 255),  # eastern Europe
-    (2.0, 128, 51, 0, 255),
-    (3.0, 170, 68, 0, 255),
-    (3.5, 0, 255, 102, 255),
-    (4.0, 212, 85, 0, 255),
-    (4.5, 0, 204, 255, 255),
-    (5.0, 255, 102, 0, 255),
-    (5.5, 0, 102, 255, 255),
-    (5.75, 0, 238, 207, 247),
-    (6.0, 255, 127, 42, 255),
-    (6.5, 204, 0, 254, 254),
-    (7.0, 255, 153, 85, 255),
-    (8.0, 255, 179, 128, 255),
-    (9.0, 255, 204, 170, 255),
-    (9.5, 170, 0, 68, 250),
-    (10.0, 255, 230, 213, 255),
-    (10.5, 212, 124, 21, 250),
-    (11.0, 212, 170, 0, 255),
-    (11.5, 249, 25, 87, 253),
-    (12.0, 255, 204, 0, 255),
-    (12.75, 254, 74, 100, 248),
-    (13.0, 255, 85, 153, 250)]
-
 
 class TimezoneMap(Gtk.Widget):
     """ Widget that allows to select user's timezone """
@@ -112,6 +63,60 @@ class TimezoneMap(Gtk.Widget):
 
     __gsignals__ = {
         'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
+
+    PIN_HOT_POINT_X = 8
+    PIN_HOT_POINT_Y = 15
+    LOCATION_CHANGED = 0
+
+    G_PI_4 = 0.78539816339744830961566084581987572104929234984378
+
+    # FIXME: Do not use absoulte paths
+    IMAGES_PATH = "/usr/share/cnchi/data/images/timezonemap"
+    OLSEN_MAP_PATH = "/usr/share/cnchi/data/locale/timezones.xml"
+
+    BUBBLE_TEXT_FONT = "Sans 9"
+
+    # COLOR_CODES is (offset, red, green, blue, alpha)
+    COLOR_CODES = [
+        (-11.0, 43, 0, 0, 255),
+        (-10.0, 85, 0, 0, 255),
+        (-9.5, 102, 255, 0, 255),
+        (-9.0, 128, 0, 0, 255),
+        (-8.0, 170, 0, 0, 255),
+        (-7.0, 212, 0, 0, 255),
+        (-6.0, 255, 0, 1, 255),  # north
+        (-6.0, 255, 0, 0, 255),  # south
+        (-5.0, 255, 42, 42, 255),
+        (-4.5, 192, 255, 0, 255),
+        (-4.0, 255, 85, 85, 255),
+        (-3.5, 0, 255, 0, 255),
+        (-3.0, 255, 128, 128, 255),
+        (-2.0, 255, 170, 170, 255),
+        (-1.0, 255, 213, 213, 255),
+        (0.0, 43, 17, 0, 255),
+        (1.0, 85, 34, 0, 255),  # eastern Europe
+        (2.0, 128, 51, 0, 255),
+        (3.0, 170, 68, 0, 255),
+        (3.5, 0, 255, 102, 255),
+        (4.0, 212, 85, 0, 255),
+        (4.5, 0, 204, 255, 255),
+        (5.0, 255, 102, 0, 255),
+        (5.5, 0, 102, 255, 255),
+        (5.75, 0, 238, 207, 247),
+        (6.0, 255, 127, 42, 255),
+        (6.5, 204, 0, 254, 254),
+        (7.0, 255, 153, 85, 255),
+        (8.0, 255, 179, 128, 255),
+        (9.0, 255, 204, 170, 255),
+        (9.5, 170, 0, 68, 250),
+        (10.0, 255, 230, 213, 255),
+        (10.5, 212, 124, 21, 250),
+        (11.0, 212, 170, 0, 255),
+        (11.5, 249, 25, 87, 253),
+        (12.0, 255, 204, 0, 255),
+        (12.75, 254, 74, 100, 248),
+        (13.0, 255, 85, 153, 250)]
+
 
     def __init__(self):
         Gtk.Widget.__init__(self)
@@ -134,21 +139,22 @@ class TimezoneMap(Gtk.Widget):
 
         try:
             self._orig_background = GdkPixbuf.Pixbuf.new_from_file(
-                os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg.png"))
+                os.path.join(TimezoneMap.IMAGES_PATH, "bg.png"))
 
             self._orig_background_dim = GdkPixbuf.Pixbuf.new_from_file(
-                os.path.join(TIMEZONEMAP_IMAGES_PATH, "bg_dim.png"))
+                os.path.join(TimezoneMap.IMAGES_PATH, "bg_dim.png"))
 
             self._orig_color_map = GdkPixbuf.Pixbuf.new_from_file(
-                os.path.join(TIMEZONEMAP_IMAGES_PATH, "cc.png"))
+                os.path.join(TimezoneMap.IMAGES_PATH, "cc.png"))
 
             self._olsen_map = GdkPixbuf.Pixbuf.new_from_file(
-                os.path.join(TIMEZONEMAP_IMAGES_PATH, "olsen_map.png"))
+                os.path.join(TimezoneMap.IMAGES_PATH, "olsen_map.png"))
 
             self._pin = GdkPixbuf.Pixbuf.new_from_file(
-                os.path.join(TIMEZONEMAP_IMAGES_PATH, "pin.png"))
+                os.path.join(TimezoneMap.IMAGES_PATH, "pin.png"))
         except Exception as ex:
-            template = "Error loading timezone widget. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Error loading timezone widget. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
             sys.exit(1)
@@ -157,7 +163,7 @@ class TimezoneMap(Gtk.Widget):
 
     def load_olsen_map_timezones(self):
         try:
-            tree = elementTree.parse(OLSEN_MAP_TIMEZONES_PATH)
+            tree = elementTree.parse(TimezoneMap.OLSEN_MAP_PATH)
             self.olsen_map_timezones = []
             root = tree.getroot()
             for tz_name in root.iter("timezone_name"):
@@ -257,7 +263,7 @@ class TimezoneMap(Gtk.Widget):
 
         self.set_window(window)
 
-    def draw_text_bubble(self, cr, pointx, pointy):
+    def draw_text_bubble(self, context, pointx, pointy):
         """ Draw bubble with information text """
         margin_top = 12.0
         margin_bottom = 12.0
@@ -272,15 +278,15 @@ class TimezoneMap(Gtk.Widget):
 
         alloc = self.get_allocation()
 
-        layout = PangoCairo.create_layout(cr)
+        layout = PangoCairo.create_layout(context)
 
-        font_description = Pango.font_description_from_string(BUBBLE_TEXT_FONT)
+        font_description = Pango.font_description_from_string(TimezoneMap.BUBBLE_TEXT_FONT)
         layout.set_font_description(font_description)
 
         layout.set_alignment(Pango.Alignment.CENTER)
         layout.set_spacing(3)
         layout.set_markup(self._bubble_text)
-        (ink_rect, logical_rect) = layout.get_pixel_extents()
+        (_ink_rect, logical_rect) = layout.get_pixel_extents()
 
         # Calculate the bubble size based on the text layout size
         width = logical_rect.width + margin_left + margin_right
@@ -297,25 +303,25 @@ class TimezoneMap(Gtk.Widget):
         x = self.clamp(x, 0, alloc.width - width)
         y = self.clamp(y, 0, alloc.height - height)
 
-        cr.save()
-        cr.translate(x, y)
+        context.save()
+        context.translate(x, y)
 
         # Draw the bubble
-        cr.new_sub_path()
-        cr.arc(width - rounded, rounded, rounded, -math.pi / 2, 0)
-        cr.arc(width - rounded, height - rounded, rounded, 0, math.pi / 2)
-        cr.arc(rounded, height - rounded, rounded, math.pi / 2, math.pi)
-        cr.arc(rounded, rounded, rounded, math.pi, math.radians(270))
-        cr.close_path()
+        context.new_sub_path()
+        context.arc(width - rounded, rounded, rounded, -math.pi / 2, 0)
+        context.arc(width - rounded, height - rounded, rounded, 0, math.pi / 2)
+        context.arc(rounded, height - rounded, rounded, math.pi / 2, math.pi)
+        context.arc(rounded, rounded, rounded, math.pi, math.radians(270))
+        context.close_path()
 
-        cr.set_source_rgba(0.2, 0.2, 0.2, 0.7)
-        cr.fill()
+        context.set_source_rgba(0.2, 0.2, 0.2, 0.7)
+        context.fill()
 
         # And finally draw the text
-        cr.set_source_rgb(1, 1, 1)
-        cr.move_to(margin_left, margin_top)
-        PangoCairo.show_layout(cr, layout)
-        cr.restore()
+        context.set_source_rgb(1, 1, 1)
+        context.move_to(margin_left, margin_top)
+        PangoCairo.show_layout(context, layout)
+        context.restore()
 
     def do_draw(self, cr):
         """ Draw widget """
@@ -337,7 +343,7 @@ class TimezoneMap(Gtk.Widget):
         else:
             filename = "timezone_%g_dim.png" % offset
 
-        path = os.path.join(TIMEZONEMAP_IMAGES_PATH, filename)
+        path = os.path.join(TimezoneMap.IMAGES_PATH, filename)
         try:
             orig_highlight = GdkPixbuf.Pixbuf.new_from_file(path)
         except Exception as ex:
@@ -377,8 +383,8 @@ class TimezoneMap(Gtk.Widget):
                 Gdk.cairo_set_source_pixbuf(
                     cr,
                     self._pin,
-                    pointx - PIN_HOT_POINT_X,
-                    pointy - PIN_HOT_POINT_Y)
+                    pointx - TimezoneMap.PIN_HOT_POINT_X,
+                    pointy - TimezoneMap.PIN_HOT_POINT_Y)
                 cr.paint()
 
     def set_location(self, tz_location):
@@ -418,7 +424,7 @@ class TimezoneMap(Gtk.Widget):
         my_blue = pixels[int(rowstride * y + x * 4) + 2]
         my_alpha = pixels[int(rowstride * y + x * 4) + 3]
 
-        for color_code in COLOR_CODES:
+        for color_code in TimezoneMap.COLOR_CODES:
             (offset, red, green, blue, alpha) = color_code
             if (red == my_red and
                     green == my_green and
@@ -446,10 +452,10 @@ class TimezoneMap(Gtk.Widget):
             pointx = self.convert_longitude_to_x(longitude, width)
             pointy = self.convert_latitude_to_y(latitude, height)
 
-            dx = pointx - x
-            dy = pointy - y
+            diff_x = pointx - x
+            diff_y = pointy - y
 
-            dist = dx * dx + dy * dy
+            dist = diff_x * diff_x + diff_y * diff_y
 
             if small_dist == -1 or dist < small_dist:
                 nearest_tz_location = tz_location
@@ -560,11 +566,12 @@ class TimezoneMap(Gtk.Widget):
 
         top_per = top_lat / 180.0
 
-        y = 1.25 * math.log(math.tan(G_PI_4 + 0.4 * math.radians(latitude)))
+        y = 1.25 * math.log(math.tan(TimezoneMap.G_PI_4 +
+                                     0.4 * math.radians(latitude)))
 
         full_range = 4.6068250867599998
         top_offset = full_range * top_per
-        tangent = math.tan(G_PI_4 + 0.4 * math.radians(bottom_lat))
+        tangent = math.tan(TimezoneMap.G_PI_4 + 0.4 * math.radians(bottom_lat))
         map_range = math.fabs(1.25 * math.log(tangent) - top_offset)
         y = math.fabs(y - top_offset)
         y = y / map_range
@@ -581,7 +588,8 @@ class TimezoneMap(Gtk.Widget):
         return x_value
 
 
-def test():
+def test_module():
+    """ Test module function """
     win = Gtk.Window()
     tzmap = TimezoneMap()
     win.add(tzmap)
@@ -601,4 +609,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    test_module()

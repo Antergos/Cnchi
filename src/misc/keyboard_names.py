@@ -3,7 +3,7 @@
 #
 # keyboard_names.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,8 +23,10 @@
 
 import logging
 import os
-from gi.repository import GObject
 from collections import OrderedDict
+
+from gi.repository import GObject
+
 
 try:
     import xml.etree.cElementTree as eTree
@@ -224,7 +226,7 @@ class KeyboardNames(object):
         """ Get variant description by its name (and layout name)"""
         try:
             return str(self.layouts[name].variants[variant_name])
-        except KeyError as key_error:
+        except KeyError as _key_error:
             return None
 
     def get_variant_descriptions(self, name):

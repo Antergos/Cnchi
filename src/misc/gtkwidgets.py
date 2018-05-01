@@ -4,7 +4,7 @@
 # gtkwidgets.py
 #
 # Copyright (c) 2012 Canonical Ltd.
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,18 +39,24 @@ def refresh():
         Gtk.main_iteration()
 
 
-def draw_round_rect(c, r, x, y, w, h):
+def draw_round_rect(context, rounded, start_x, start_y, width, height):
     """ Draw a rectangle with rounded corners """
-    c.move_to(x + r, y)
-    c.line_to(x + w - r, y)
-    c.curve_to(x + w, y, x + w, y, x + w, y + r)
-    c.line_to(x + w, y + h - r)
-    c.curve_to(x + w, y + h, x + w, y + h, x + w - r, y + h)
-    c.line_to(x + r, y + h)
-    c.curve_to(x, y + h, x, y + h, x, y + h - r)
-    c.line_to(x, y + r)
-    c.curve_to(x, y, x, y, x + r, y)
-    c.close_path()
+    x_width = start_x + width
+    y_height = start_y + height
+
+    context.move_to(start_x + rounded, start_y)
+    context.line_to(x_width - rounded, start_y)
+    context.curve_to(x_width, start_y, x_width, start_y,
+                     x_width, start_y + rounded)
+    context.line_to(x_width, y_height - rounded)
+    context.curve_to(x_width, y_height, x_width,
+                     y_height, x_width - rounded, y_height)
+    context.line_to(start_x + rounded, y_height)
+    context.curve_to(start_x, y_height, start_x, y_height, start_x, y_height - rounded)
+    context.line_to(start_x, start_y + rounded)
+    context.curve_to(start_x, start_y, start_x, start_y,
+                     start_x + rounded, start_y)
+    context.close_path()
 
 
 def gtk_to_cairo_color(gtk_color):
@@ -95,29 +101,29 @@ class StylizedFrame(Gtk.Bin):
             # Gtk.Alignment.do_set_property(self, prop, value)
             Gtk.Bin.set_property(self, prop, value)
 
-    def paint_background(self, c):
+    def paint_background(self, context):
         """ Draw widget background """
-        c.set_source_rgb(*gtk_to_cairo_color('#fbfbfb'))
+        context.set_source_rgb(*gtk_to_cairo_color('#fbfbfb'))
         alloc = self.get_allocation()
-        draw_round_rect(c, self.radius,
+        draw_round_rect(context, self.radius,
                         self.width / 2, self.width / 2,
                         alloc.width - self.width,
                         alloc.height - self.width)
-        c.fill_preserve()
+        context.fill_preserve()
 
-    def do_draw(self, c):
+    def do_draw(self, context):
         """ Draw widget """
         # Background
-        self.paint_background(c)
+        self.paint_background(context)
         # Edge
-        c.set_source_rgb(*gtk_to_cairo_color('#c7c7c6'))
-        c.set_line_width(self.width)
-        c.stroke()
+        context.set_source_rgb(*gtk_to_cairo_color('#c7c7c6'))
+        context.set_line_width(self.width)
+        context.stroke()
         if self.get_child():
             left = self.get_margin_start()
             top = self.get_margin_top()
-            c.translate(left, top)
-            self.get_child().draw(c)
+            context.translate(left, top)
+            self.get_child().draw(context)
 
 
 GObject.type_register(StylizedFrame)
@@ -190,7 +196,7 @@ class PartitionBox(StylizedFrame):
         vbox = Gtk.Box()
         vbox.set_orientation(Gtk.Orientation.VERTICAL)
 
-        if len(icon_file) > 0:
+        if icon_file:
             self.logo = Gtk.Image.new_from_file(icon_file)
         else:
             self.logo = Gtk.Image.new_from_icon_name(
@@ -234,32 +240,34 @@ class PartitionBox(StylizedFrame):
         self.size.set_markup('<span size="x-large">{0}</span>'.format(size))
 
     def render_dots(self):
+        """ Draw dots """
         # FIXME: Dots are rendered over the frame.
-        s = cairo.ImageSurface(cairo.FORMAT_ARGB32, 2, 2)
-        cr = cairo.Context(s)
-        cr.set_source_rgb(*gtk_to_cairo_color('#b6b0a9'))
-        cr.rectangle(1, 1, 1, 1)
-        cr.fill()
-        pattern = cairo.SurfacePattern(s)
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 2, 2)
+        context = cairo.Context(surface)
+        context.set_source_rgb(*gtk_to_cairo_color('#b6b0a9'))
+        context.rectangle(1, 1, 1, 1)
+        context.fill()
+        pattern = cairo.SurfacePattern(surface)
         return pattern
 
-    def paint_background(self, c):
+    def paint_background(self, context):
         """ Draw widget background """
-        StylizedFrame.paint_background(self, c)
-        a = self.get_allocation()
+        StylizedFrame.paint_background(self, context)
+        alloc = self.get_allocation()
         pattern = self.render_dots()
         pattern.set_extend(cairo.EXTEND_REPEAT)
-        c.set_source(pattern)
-        c.fill_preserve()
+        context.set_source(pattern)
+        context.fill_preserve()
 
-        g = cairo.RadialGradient(a.width / 2, a.height / 2, 0, a.width / 2,
-                                 a.height / 2,
-                                 a.width > a.height and a.width or a.height)
-        g.add_color_stop_rgba(0.00, 1, 1, 1, 1.00)
-        g.add_color_stop_rgba(0.25, 1, 1, 1, 0.75)
-        g.add_color_stop_rgba(0.40, 1, 1, 1, 0.00)
-        c.set_source(g)
-        c.fill_preserve()
+        gradient = cairo.RadialGradient(
+            alloc.width / 2, alloc.height / 2, 0, alloc.width / 2,
+            alloc.height / 2,
+            alloc.width > alloc.height and alloc.width or alloc.height)
+        gradient.add_color_stop_rgba(0.00, 1, 1, 1, 1.00)
+        gradient.add_color_stop_rgba(0.25, 1, 1, 1, 0.75)
+        gradient.add_color_stop_rgba(0.40, 1, 1, 1, 0.00)
+        context.set_source(gradient)
+        context.fill_preserve()
 
 
 GObject.type_register(PartitionBox)
@@ -372,9 +380,9 @@ class ResizeWidget(Gtk.Frame):
         self.set_allocation(allocation)
 
         if not self.set_size_request_done:
-            s1 = self.existing_part.get_allocation().width
-            s2 = self.new_part.get_allocation().width
-            total_width = s1 + s2
+            s1_width = self.existing_part.get_allocation().width
+            s2_width = self.new_part.get_allocation().width
+            total_width = s1_width + s2_width
 
             tmp = float(self.min_size) / self.part_size
             pixels = int(tmp * total_width)
@@ -390,35 +398,35 @@ class ResizeWidget(Gtk.Frame):
         """ Draw widget """
         Gtk.Frame.do_draw(self, cr)
 
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
+        s1_width = self.existing_part.get_allocation().width
+        s2_width = self.new_part.get_allocation().width
+        total_width = s1_width + s2_width
 
-        percent = (float(s1) / float(total_width))
+        percent = (float(s1_width) / float(total_width))
         self.existing_part.set_size_in_mb(percent * self.part_size)
 
-        percent = (float(s2) / float(total_width))
+        percent = (float(s2_width) / float(total_width))
         self.new_part.set_size_in_mb(percent * self.part_size)
 
     def set_pref_size(self, size):
         """ Set preferred size """
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
+        s1_width = self.existing_part.get_allocation().width
+        s2_width = self.new_part.get_allocation().width
+        total_width = s1_width + s2_width
 
         percent = (float(size) / float(self.part_size))
         val = percent * total_width
         self.paned.set_position(int(val))
 
     def get_size(self):
-        """Returns the size of the old partition,
-           clipped to the minimum and maximum sizes."""
+        """ Returns the size of the old partition,
+            clipped to the minimum and maximum sizes. """
 
-        s1 = self.existing_part.get_allocation().width
-        s2 = self.new_part.get_allocation().width
-        total_width = s1 + s2
+        s1_width = self.existing_part.get_allocation().width
+        s2_width = self.new_part.get_allocation().width
+        total_width = s1_width + s2_width
 
-        size = int(float(s1) * self.part_size / float(total_width))
+        size = int(float(s1_width) * self.part_size / float(total_width))
         if size < self.min_size:
             return self.min_size
         elif size > self.max_size:
@@ -516,4 +524,5 @@ class Builder(Gtk.Builder):
         return super().add_from_file(filename)
 
     def get_object_ids(self):
+        """ Returns all objects ids """
         return self._widget_ids

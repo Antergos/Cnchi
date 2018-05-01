@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 #
 #  Copyright (c) 2012 Canonical Ltd.
-#  Copyright (c) 2013-2015 Antergos
+#  Copyright (c) 2013-2018 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 """ Extra functions """
 
-from collections import namedtuple
 import contextlib
 import grp
 import os
@@ -455,36 +454,6 @@ def add_connection_watch(func):
         # using ssh with X forwarding, and are therefore connected.  This
         # allows us to proceed with a minimum of complaint.
         func(True)
-
-
-def install_size():
-    if min_install_size:
-        return min_install_size
-
-    # Fallback size to 5 GB
-    size = 5 * 1024 * 1024 * 1024
-
-    # Maximal size to 8 GB
-    max_size = 8 * 1024 * 1024 * 1024
-
-    try:
-        with open('/cdrom/casper/filesystem.size') as fp:
-            size = int(fp.readline())
-    except IOError:
-        pass
-
-    # TODO substitute into the template for the state box.
-    min_disk_size = size * 2  # fudge factor
-
-    # Set minimum size to 8GB if current minimum size is larger
-    # than 8GB and we still have an extra 20% of free space
-    if min_disk_size > max_size > 1.2 * size:
-        min_disk_size = max_size
-
-    return min_disk_size
-
-
-min_install_size = None
 
 
 def get_network():

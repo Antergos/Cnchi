@@ -3,7 +3,7 @@
 #
 # systemd_networkd.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -68,7 +68,7 @@ def setup(ssid=None, passphrase=None):
         output = subprocess.check_output(cmd).decode().split('\n')
         for line in output:
             fields = line.split()
-            if len(fields) > 0:
+            if fields:
                 link = fields[1]
                 if link.startswith("eth") or link.startswith("enp"):
                     links.append(link)

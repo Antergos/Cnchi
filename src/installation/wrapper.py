@@ -3,7 +3,7 @@
 #
 #  wrapper.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -34,6 +34,13 @@ import logging
 from misc.extra import InstallError
 from misc.run_cmd import call
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 def wipefs(device, fatal=True):
     """ Wipe fs from device """
@@ -43,7 +50,8 @@ def wipefs(device, fatal=True):
 
 
 def dd(input_device, output_device, bs=512, count=2048, seek=0):
-    """ Helper function to call dd """
+    """ Helper function to call dd
+        Copy a file, converting and formatting according to the operands."""
     cmd = [
         'dd',
         'if={0}'.format(input_device),

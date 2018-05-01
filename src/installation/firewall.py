@@ -3,7 +3,7 @@
 #
 # firewall.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 # Based on parts of ufw code © 2012 Canonical
 #
 # This file is part of Cnchi.
@@ -40,6 +40,13 @@ try:
 except ImportError:
     _UFW = False
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 def run(params, dest_dir="/install"):
     """ Setup ufw """
@@ -68,26 +75,26 @@ def run(params, dest_dir="/install"):
     res = ""
     try:
         cmd_line = ufw.frontend.parse_command(cmd)
-        ui = ufw.frontend.UFWFrontend(cmd_line.dryrun)
+        frontend = ufw.frontend.UFWFrontend(cmd_line.dryrun)
         if app_action and 'type' in cmd_line.data and cmd_line.data['type'] == 'app':
-            res = ui.do_application_action(
+            res = frontend.do_application_action(
                 cmd_line.action, cmd_line.data['name'])
         else:
             bailout = False
             if cmd_line.action == "enable" and not cmd_line.force and \
-               not ui.continue_under_ssh():
+               not frontend.continue_under_ssh():
                 res = _("Aborted")
                 bailout = True
 
             if not bailout:
                 if 'rule' in cmd_line.data:
-                    res = ui.do_action(
+                    res = frontend.do_action(
                         cmd_line.action,
                         cmd_line.data['rule'],
                         cmd_line.data['iptype'],
                         cmd_line.force)
                 else:
-                    res = ui.do_action(
+                    res = frontend.do_action(
                         cmd_line.action,
                         "",
                         "",

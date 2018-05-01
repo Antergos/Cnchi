@@ -3,7 +3,7 @@
 #
 # process.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -43,6 +43,13 @@ import misc.extra as misc
 from download import download
 
 from installation import select_packages as pack
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class Process(multiprocessing.Process):
