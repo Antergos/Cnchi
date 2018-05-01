@@ -3,7 +3,7 @@
 #
 # download_requests.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -33,13 +33,20 @@ import os
 import logging
 import queue
 import shutil
-import requests
 import time
 import hashlib
 import socket
 import io
 import threading
 
+import requests
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 def get_md5(file_name):
     """ Gets md5 hash from a file """
@@ -133,7 +140,7 @@ class Download(object):
             "Downloading packages to pacman cache dir '%s'",
             self.pacman_cache_dir)
 
-        while len(downloads) > 0:
+        while downloads:
             needs_to_download = True
 
             # Get package to download from downloads list
@@ -242,8 +249,7 @@ class Download(object):
 
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
-
-                # TODO : Rethink this. Providec cache can be the ISO itself, so we
+                # TODO : Rethink this. Provided cache can be the ISO itself, so we
                 # can leave the ISO without any space and the installation will fail.
 
                 # copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
@@ -257,12 +263,13 @@ class Download(object):
                 # requests failed to obtain the file. Wrong url?
                 msg = "Can't download %s, Cnchi will try another mirror."
                 logging.debug(msg, url)
-                # delays for 60 seconds
-                time.sleep(60)
+                # delays for 20 seconds
+                time.sleep(20)
 
         return download_ok
 
     def download_url(self, url, dst_path, md5hash=""):
+        """ Downloads file from url to dst_path and checks its md5 hash """
         percent = 0
         completed_length = 0
         start = time.perf_counter()
@@ -324,11 +331,11 @@ class Download(object):
     def format_progress_message(self, percent, bps):
         """ Formats speed message information """
         if bps >= (1024 * 1024):
-            Mbps = bps / (1024 * 1024)
-            msg = "{0}%   {1:.2f} Mbps".format(int(percent * 100), Mbps)
+            mbps = bps / (1024 * 1024)
+            msg = "{0}%   {1:.2f} Mbps".format(int(percent * 100), mbps)
         elif bps >= 1024:
-            Kbps = bps / 1024
-            msg = "{0}%   {1:.2f} Kbps".format(int(percent * 100), Kbps)
+            kbps = bps / 1024
+            msg = "{0}%   {1:.2f} Kbps".format(int(percent * 100), kbps)
         else:
             msg = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
         return msg
@@ -338,7 +345,7 @@ class Download(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug("{0}: {1}".format(event_type, event_text))
+                logging.debug("%s: %s", event_type, event_text)
             return
 
         if event_type in self.last_event:

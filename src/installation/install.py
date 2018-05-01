@@ -294,6 +294,7 @@ class Installation(object):
             logging.debug("Running hardware drivers pre-install jobs...")
             proprietary = self.settings.get('feature_graphic_drivers')
             self.hardware_install = hardware.HardwareInstall(
+                self.settings.get("cnchi"),
                 use_proprietary_graphic_drivers=proprietary)
             self.hardware_install.pre_install(DEST_DIR)
         except Exception as ex:

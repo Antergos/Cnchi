@@ -3,7 +3,7 @@
 #
 #  hardware.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -33,8 +33,8 @@ import logging
 import os
 import subprocess
 
-# FIXME: Do not use absoulte paths!
-_HARDWARE_MODULES_PATH = '/usr/share/cnchi/src/hardware/modules'
+
+#_HARDWARE_MODULES_PATH = '/usr/share/cnchi/src/hardware/modules'
 
 
 class Hardware(object):
@@ -103,7 +103,7 @@ class Hardware(object):
             return False
 
         for line in lines:
-            if len(line) > 0:
+            if line:
                 class_id = "0x{0}".format(line.split()[1].rstrip(":")[0:2])
                 if class_id == self.class_id:
                     dev = line.split()[2].split(":")
@@ -185,16 +185,16 @@ class Hardware(object):
 
 
 class HardwareInstall(object):
-    """ This class checks user's hardware
+    """ This class checks user's hardware """
 
-    If 'use_proprietary_graphic_drivers' is True, this module will try to
-    install the proprietary variants of the graphic drivers available
-    (only if the hardware is detected). For non graphical drivers,
-    the open one is always choosen as default.
-    """
-
-    def __init__(self, use_proprietary_graphic_drivers=False):
+    def __init__(self, cnchi_path, use_proprietary_graphic_drivers=False):
+        """ If 'use_proprietary_graphic_drivers' is True, this module will try to
+        install the proprietary variants of the graphic drivers available
+        (only if the hardware is detected). For non graphical drivers,
+        the open one is always choosen as default. """
         self.use_proprietary_graphic_drivers = use_proprietary_graphic_drivers
+
+        self.modules_path = os.path.join(cnchi_path, "src/hardware/modules")
 
         # All available objects
         self.all_objects = []
@@ -206,8 +206,13 @@ class HardwareInstall(object):
         # All objects that are really used
         self.objects_used = []
 
+        self.scan_driver_modules()
+        self.detect_devices()
+
+    def scan_driver_modules(self):
+        """ searches for modules with driver information """
         try:
-            dirs = os.listdir(_HARDWARE_MODULES_PATH)
+            dirs = os.listdir(self.modules_path)
         except FileNotFoundError:
             dirs = os.listdir("modules")
 
@@ -230,7 +235,7 @@ class HardwareInstall(object):
                     class_name = getattr(__import__(
                         package, fromlist=[name]), "CLASS_NAME")
                     obj = getattr(__import__(package, fromlist=[
-                                  class_name]), class_name)()
+                        class_name]), class_name)()
                     self.all_objects.append(obj)
                 except ImportError as err:
                     logging.error(
@@ -241,7 +246,8 @@ class HardwareInstall(object):
                     message = template.format(type(ex).__name__, ex.args)
                     logging.error(message)
 
-        # Detect devices
+    def detect_devices(self):
+        """ Detect devices """
         try:
             devices = self.get_devices()
         except subprocess.CalledProcessError as err:
@@ -268,7 +274,6 @@ class HardwareInstall(object):
                     logging.debug(
                         "Driver %s is needed by (%s, %s, %s)",
                         obj.class_name, class_id, vendor_id, product_id)
-                    # print("Driver", obj.class_name, "is needed by", class_id, vendor_id, product_id)
                     if device not in self.objects_found:
                         self.objects_found[device] = [obj]
                     else:
@@ -334,7 +339,7 @@ class HardwareInstall(object):
         lines = lines.decode().split("\n")
 
         for line in lines:
-            if len(line) > 0:
+            if line:
                 class_id = line.split()[1].rstrip(":")[0:2]
                 dev = line.split()[2].split(":")
                 devices.append(("0x" + class_id, "0x" + dev[0], "0x" + dev[1]))
@@ -345,7 +350,7 @@ class HardwareInstall(object):
         lines = lines.decode().split("\n")
 
         for line in lines:
-            if len(line) > 0:
+            if line:
                 dev = line.split()[5].split(":")
                 devices.append(("0", "0x" + dev[0], "0x" + dev[1]))
 
@@ -393,11 +398,14 @@ def test():
         """ Helper function """
         return text
 
-    hardware_install = HardwareInstall(use_proprietary_graphic_drivers=False)
-    # hardware_install = HardwareInstall(use_proprietary_graphic_drivers=True)
+    use_proprietary_graphic_drivers = False
+
+    hardware_install = HardwareInstall(
+        "/usr/share/cnchi/src/hardware/modules",
+        use_proprietary_graphic_drivers)
     hardware_pkgs = hardware_install.get_packages()
     print(hardware_install.get_found_driver_names())
-    if len(hardware_pkgs) > 0:
+    if hardware_pkgs:
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)

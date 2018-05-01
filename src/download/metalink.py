@@ -3,8 +3,8 @@
 #
 #  metalink.py
 #
-#  Code from pm2ml Copyright (C) 2012-2013 Xyne
-#  Copyright © 2013-2017 Antergos
+#  Parts of code from pm2ml Copyright (C) 2012-2013 Xyne
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -214,13 +214,14 @@ class Metalink(object):
         self.files.appendChild(file_)
         self.add_urls(file_, urls)
 
-    def add_db(self, db, sigs=False):
+    def add_db(self, database, sigs=False):
         """Add a sync db."""
         file_ = self.doc.createElement("file")
-        name = db.name + '.db'
+        name = database.name + '.db'
         file_.setAttribute("name", name)
         self.files.appendChild(file_)
-        urls = list(os.path.join(url, db.name + '.db') for url in db.servers)
+        urls = list(os.path.join(url, database.name + '.db')
+                    for url in database.servers)
         self.add_urls(file_, urls)
         if sigs:
             self.add_file(name + '.sig', (u + '.sig' for u in urls))
@@ -241,6 +242,7 @@ class PkgSet(object):
         return 'PkgSet({0})'.format(repr(self.pkgs))
 
     def add(self, pkg):
+        """ Adds package info to the set """
         self.pkgs[pkg.name] = pkg
 
     def __and__(self, other):
@@ -283,14 +285,18 @@ class DownloadQueue(object):
     def __nonzero__(self):
         return self.dbs or self.sync_pkgs
 
-    def add_db(self, db, sigs=False):
-        self.dbs.append((db, sigs))
+    def add_db(self, database, sigs=False):
+        """ Adds db info and signatures to the queue """
+        self.dbs.append((database, sigs))
 
     def add_sync_pkg(self, pkg, urls, sigs=False):
+        """ Adds package and its urls to the queue """
         self.sync_pkgs.append((pkg, urls, sigs))
 
 
 def parse_args(args):
+    """ Parse arguments to build_download_queue function
+        These arguments mimic pacman ones """
     parser = argparse.ArgumentParser()
 
     parser.add_argument('pkgs', nargs='*', default=[], metavar='<pkgname>',
@@ -329,7 +335,7 @@ def build_download_queue(alpm, args=None):
     missing_deps = list()
     found = set()
 
-    antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
+    antdb = [db for db in handle.get_syncdbs() if db.name == 'antergos']
     antdb = antdb[0]
 
     one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
@@ -343,13 +349,14 @@ def build_download_queue(alpm, args=None):
                 one_repo_group_name)
         one_repo_groups.append(grp)
 
-    one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
-                    for pkg in one_repo_group[1] if one_repo_group}
-        
+    one_repo_pkgs = {
+        pkg for one_repo_group in one_repo_groups
+        for pkg in one_repo_group[1] if one_repo_group}
+
     for pkg in requested:
         other_grp = PkgSet()
         for db in handle.get_syncdbs():
-            if pkg in one_repo_pkgs and 'antergos' != db.name:
+            if pkg in one_repo_pkgs and db.name != 'antergos':
                 # pkg should be sourced from the antergos repo only.
                 db = antdb
 
@@ -426,11 +433,11 @@ def get_checksum(path, typ):
     new_hash = hashlib.new(typ)
     block_size = new_hash.block_size
     try:
-        with open(path, 'rb') as f:
-            buf = f.read(block_size)
+        with open(path, 'rb') as myfile:
+            buf = myfile.read(block_size)
             while buf:
                 new_hash.update(buf)
-                buf = f.read(block_size)
+                buf = myfile.read(block_size)
         return new_hash.hexdigest()
     except FileNotFoundError:
         return -1
@@ -471,7 +478,8 @@ def needs_sig(siglevel, insistence, prefix):
     return False
 
 
-def test():
+def test_module():
+    """ Module test function """
     import gettext
 
     _ = gettext.gettext
@@ -488,7 +496,7 @@ def test():
 
     import gc
     import pprint
-    import cnchi.pacman.pac as pac
+    import pacman.pac as pac
 
     try:
         pacman = pac.Pac(
@@ -517,4 +525,4 @@ def test():
 
 # Test case
 if __name__ == '__main__':
-    test()
+    test_module()

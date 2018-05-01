@@ -457,7 +457,7 @@ class PostInstallation(object):
         """ Enables AUR searches in pamac config file """
         pamac_conf = "/etc/pamac.conf"
         if os.path.exists(pamac_conf):
-            fd, name = tempfile.mkstemp()
+            _fd, name = tempfile.mkstemp()
             fout = open(name, 'w')
             with open(pamac_conf) as fin:
                 for line in fin:

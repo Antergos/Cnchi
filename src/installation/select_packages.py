@@ -3,7 +3,7 @@
 #
 # select_packages.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -39,12 +39,18 @@ except ImportError as err:
 import desktop_info
 import info
 
-
 import pacman.pac as pac
 import misc.extra as misc
 from misc.extra import InstallError
 
 import hardware.hardware as hardware
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 DEST_DIR = "/install"
 PKGLIST_URL = 'https://raw.githubusercontent.com/Antergos/Cnchi/master/data/packages.xml'
@@ -125,7 +131,8 @@ class SelectPackages(object):
         try:
             pacman = pac.Pac("/etc/pacman.conf", self.callback_queue)
         except Exception as ex:
-            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't initialize pyalpm. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
@@ -140,7 +147,8 @@ class SelectPackages(object):
             pacman.release()
             del pacman
         except Exception as ex:
-            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't release pyalpm. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
@@ -189,7 +197,7 @@ class SelectPackages(object):
         packages_xml_data = None
         packages_xml_filename = None
 
-        if len(self.alternate_package_list) > 0:
+        if self.alternate_package_list:
             # Use file passed by parameter (overrides server one)
             packages_xml_filename = self.alternate_package_list
         else:
@@ -199,7 +207,6 @@ class SelectPackages(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                # url = '{0}packages-{1}.xml'.format(PKGLIST_URL, info.CNCHI_VERSION.rsplit('.')[-2])
                 url = PKGLIST_URL
                 logging.debug("Getting url %s...", url)
                 req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -266,7 +273,8 @@ class SelectPackages(object):
         try:
             # Detect which hardware drivers are needed
             hardware_install = hardware.HardwareInstall(
-                use_proprietary_graphic_drivers=self.settings.get('feature_graphic_drivers'))
+                self.settings.get("cnchi"),
+                self.settings.get('feature_graphic_drivers'))
             driver_names = hardware_install.get_found_driver_names()
             if driver_names:
                 logging.debug(
@@ -286,7 +294,8 @@ class SelectPackages(object):
             # Add conflicting hardware packages to our conflicts list
             self.conflicts.extend(hardware_install.get_conflicts())
         except Exception as ex:
-            template = "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Error in hardware module. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 

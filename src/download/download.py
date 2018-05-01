@@ -3,7 +3,7 @@
 #
 # download.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -38,6 +38,12 @@ import download.download_requests as download_requests
 
 import misc.extra as misc
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 class DownloadPackages(object):
     """ Class to download packages using Aria2, requests (default) or urllib
@@ -136,7 +142,8 @@ class DownloadPackages(object):
                 return None
         except Exception as ex:
             self.metalinks = None
-            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't initialize pyalpm. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             return
@@ -177,7 +184,8 @@ class DownloadPackages(object):
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
         except Exception as ex:
-            template = "Can't create download set. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't create download set. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             self.metalinks = None
