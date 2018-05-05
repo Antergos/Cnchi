@@ -123,7 +123,7 @@ class Welcome(GtkBaseBox):
     def quit_cnchi(self):
         """ Quits installer """
         misc.remove_temp_files()
-        for proc in self.process_list:
+        for (proc, _pipe) in self.process_list:
             # Wait 'timeout' seconds at most for all processes to end
             proc.join(timeout=5)
             if proc.is_alive():

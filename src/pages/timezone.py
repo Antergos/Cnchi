@@ -222,8 +222,7 @@ class Timezone(GtkBaseBox):
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
         proc.name = "timezone"
-        self.process_list.append(proc)
-        # self.global_process_queue.put(proc)
+        self.process_list.append((proc, None))
         proc.start()
 
     @staticmethod

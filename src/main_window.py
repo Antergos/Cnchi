@@ -388,6 +388,14 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
+
+        (min_width, natural_width) = self.get_preferred_width()
+        (min_height, natural_height) = self.get_preferred_width()
+        logging.debug("Main window minimal size: %dx%d", min_width, min_height)
+        logging.debug("Main window natural size: %dx%d", natural_width, natural_height)
+        logging.debug("Setting main window size to %dx%d",
+                      self._main_window_width, self._main_window_height)
+
         self.set_size_request(self._main_window_width,
                               self._main_window_height)
         self.set_default_size(self._main_window_width,
@@ -436,7 +444,7 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files()
             logging.info("Quiting installer...")
-            for proc in self.process_list:
+            for (proc, _pipe) in self.process_list:
                 if proc.is_alive():
                     proc.terminate()
                     proc.join()

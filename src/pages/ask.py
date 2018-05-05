@@ -30,7 +30,6 @@
 """ Asks which type of installation the user wants to perform """
 
 import os
-import time
 import logging
 import subprocess
 
@@ -473,25 +472,17 @@ class InstallationAsk(GtkBaseBox):
 
         return True
 
-    def wait(self):
-        """ Check if there are still processes running and
-            waits for them to finish """
-        must_wait = False
-        for proc in self.process_list:
-            if proc.is_alive():
-                must_wait = True
-                break
-
-        if not must_wait:
-            return
+    def create_wait_window(self):
+        """ Creates a wait dialog so the user knows that cnchi is updating
+        the mirror lists. Returns the wait window and its progress bar """
 
         txt1 = _("Ranking mirrors")
-        txt1 = "<big>{0}</big>".format(txt1)
+        txt1 = "<big>{}</big>".format(txt1)
 
         txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
         txt2 += "\n\n"
         txt2 += _("Please be patient...")
-        txt2 = "<i>{0}</i>".format(txt2)
+        txt2 = "<i>{}</i>".format(txt2)
 
         wait_ui = Gtk.Builder()
         ui_file = os.path.join(self.ui_dir, "wait.ui")
@@ -504,14 +495,33 @@ class InstallationAsk(GtkBaseBox):
         lbl2.set_markup(txt2)
 
         progress_bar = wait_ui.get_object("progressbar")
+        progress_bar.set_fraction(0.0)
 
         wait_window = wait_ui.get_object("wait_window")
         wait_window.set_modal(True)
         wait_window.set_transient_for(self.get_main_window())
         wait_window.set_default_size(320, 240)
         wait_window.set_position(Gtk.WindowPosition.CENTER)
+
+        return (wait_window, progress_bar)
+
+    def wait(self):
+        """ Check if there are still processes running and
+            waits for them to finish """
+
+        # Check if there are still processes to finish
+        must_wait = False
+        for (proc, _pipe) in self.process_list:
+            if proc.is_alive():
+                must_wait = True
+                break
+        if not must_wait:
+            return
+
+        (wait_window, progress_bar) = self.create_wait_window()
         wait_window.show_all()
 
+        # Disable ask page (so the user can't click on it)
         ask_box = self.ui.get_object("ask")
         if ask_box:
             ask_box.set_sensitive(False)
@@ -519,20 +529,25 @@ class InstallationAsk(GtkBaseBox):
         logging.debug("Waiting for all external processes to finish...")
         while must_wait:
             must_wait = False
-            for proc in self.process_list:
-                # This waits until process finishes, no matter the time.
+            for (proc, pipe) in self.process_list:
                 if proc.is_alive():
+                    if proc.name == "rankmirrors" and pipe and pipe.poll():
+                        # Update wait window progress bar
+                        try:
+                            fraction = pipe.recv()
+                            progress_bar.set_fraction(fraction)
+                        except EOFError as _err:
+                            pass
                     must_wait = True
-            # Just wait...
-            time.sleep(0.1)
-            # Update our progressbar dialog
-            progress_bar.pulse()
+
             while Gtk.events_pending():
                 Gtk.main_iteration()
         logging.debug(
             "All external processes are finished. Installation can go on")
         wait_window.hide()
+        wait_window.destroy()
 
+        # Enable ask page so the user can continue the installation process
         if ask_box:
             ask_box.set_sensitive(True)
 
