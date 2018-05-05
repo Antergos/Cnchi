@@ -214,11 +214,14 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             q_in.put(mirror['url'])
 
         # Wait for queue to empty
+        old_fraction = 0.0
         while not q_in.empty():
             fraction = 1.0 - float(q_in.qsize()) / float(len(mirrors))
-            self.fraction.send(fraction)
-            time.sleep(0.1)
+            if fraction != old_fraction:
+                self.fraction.send(fraction)
+                old_fraction = fraction
         
+        self.fraction.send(1.0)
         self.fraction.close()
 
         # Wait for all threads to complete
