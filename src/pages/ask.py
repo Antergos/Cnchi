@@ -500,7 +500,7 @@ class InstallationAsk(GtkBaseBox):
         wait_window = wait_ui.get_object("wait_window")
         wait_window.set_modal(True)
         wait_window.set_transient_for(self.get_main_window())
-        wait_window.set_default_size(320, 240)
+        wait_window.set_default_size(360, 180)
         wait_window.set_position(Gtk.WindowPosition.CENTER)
 
         return (wait_window, progress_bar)
