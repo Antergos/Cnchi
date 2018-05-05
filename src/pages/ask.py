@@ -30,7 +30,6 @@
 """ Asks which type of installation the user wants to perform """
 
 import os
-import time
 import logging
 import subprocess
 
@@ -510,11 +509,9 @@ class InstallationAsk(GtkBaseBox):
         """ Check if there are still processes running and
             waits for them to finish """
 
-        fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
-        self.settings.set("rankmirrors_fraction_pipe", None)
-
+        # Check if there are still processes to finish
         must_wait = False
-        for proc in self.process_list:
+        for (proc, _pipe) in self.process_list:
             if proc.is_alive():
                 must_wait = True
                 break
@@ -532,13 +529,12 @@ class InstallationAsk(GtkBaseBox):
         logging.debug("Waiting for all external processes to finish...")
         while must_wait:
             must_wait = False
-            for proc in self.process_list:
-                # This waits until process finishes, no matter the time.
+            for (proc, pipe) in self.process_list:
                 if proc.is_alive():
-                    if fraction_pipe and fraction_pipe.poll() and proc.name == "rankmirrors":
+                    if proc.name == "rankmirrors" and pipe and pipe.poll():
                         # Update wait window progress bar
                         try:
-                            fraction = fraction_pipe.recv()
+                            fraction = pipe.recv()
                             progress_bar.set_fraction(fraction)
                         except EOFError as _err:
                             pass

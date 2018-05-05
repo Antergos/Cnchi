@@ -444,7 +444,7 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files()
             logging.info("Quiting installer...")
-            for proc in self.process_list:
+            for (proc, _pipe) in self.process_list:
                 if proc.is_alive():
                     proc.terminate()
                     proc.join()

@@ -364,12 +364,11 @@ class Mirrors(GtkBaseBox):
             logging.debug("Cnchi is ranking your mirrors lists...")
             parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
             # Store parent_conn for later use in ask.py (rankmirrors dialog)
-            self.settings.set("rankmirrors_fraction_pipe", parent_conn)
             proc = AutoRankmirrorsProcess(self.settings, child_conn)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()
-            self.process_list.append(proc)
+            self.process_list.append((proc, parent_conn))
             self.rank_mirrors_launched = True
 
     def prepare(self, direction):
