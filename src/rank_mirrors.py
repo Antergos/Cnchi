@@ -219,6 +219,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         # Wait for queue to empty
         while not q_in.empty():
             self.fraction = q_in.qsize() / len(mirrors)
+            # Just wait...
+            time.sleep(0.1)
 
         # Notify threads it's time to exit
         exit_threads = True
