@@ -534,7 +534,7 @@ class InstallationAsk(GtkBaseBox):
                 if proc.is_alive():
                     if proc.name == "rankmirrors":
                         # Update our progress bar
-                        fraction = proc.fraction
+                        fraction = proc.get_fraction()
                         logging.debug("fraction: %f", fraction)
                         progress_bar.set_fraction(fraction)
 
