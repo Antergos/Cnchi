@@ -362,11 +362,6 @@ class Mirrors(GtkBaseBox):
             has not already run the AutoRankmirrorsProcess before """
         if not self.rank_mirrors_launched:
             logging.debug("Cnchi is ranking your mirrors lists...")
-            """ Returns a pair (conn1, conn2) of Connection objects representing
-                the ends of a pipe. If duplex is True (the default) then the pipe
-                is bidirectional. If duplex is False then the pipe is unidirectional:
-                conn1 can only be used for receiving messages and conn2 can only be
-                used for sending messages. """
             parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
             # Store parent_conn for later use in ask.py (rankmirrors dialog)
             self.settings.set("rankmirrors_fraction_pipe", parent_conn)

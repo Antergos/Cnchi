@@ -510,6 +510,9 @@ class InstallationAsk(GtkBaseBox):
         """ Check if there are still processes running and
             waits for them to finish """
 
+        fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
+        self.settings.set("rankmirrors_fraction_pipe", None)
+
         must_wait = False
         for proc in self.process_list:
             if proc.is_alive():
@@ -527,8 +530,6 @@ class InstallationAsk(GtkBaseBox):
             ask_box.set_sensitive(False)
 
         logging.debug("Waiting for all external processes to finish...")
-        fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
-        self.settings.set("rankmirrors_fraction_pipe", None)
         while must_wait:
             must_wait = False
             for proc in self.process_list:
