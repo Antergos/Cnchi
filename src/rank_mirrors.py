@@ -57,6 +57,9 @@ except NameError as err:
 class AutoRankmirrorsProcess(multiprocessing.Process):
     """ Process class that downloads and sorts the mirrorlist """
 
+    fraction = 0.0
+    #fraction_lock = threading.Lock()
+
     def __init__(self, settings):
         """ Initialize process class """
         super().__init__()
@@ -67,7 +70,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
         self.arch_mirrorlist_ranked = []
         self.settings = settings
-        self.fraction = 0.0
 
     @staticmethod
     def is_good_mirror(my_mirror):
@@ -145,10 +147,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         return mirrors
 
-    def get_fraction(self):
-        logging.debug("self.fraction = %f", self.fraction)
-        return self.fraction
-
     def sort_mirrors_by_speed(self, mirrors=None, threads=5):
         """ Sorts mirror list """
         # Ensure that "mirrors" is a list and not a generator.
@@ -222,7 +220,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Wait for queue to empty
         while not q_in.empty():
-            self.fraction = 1.0 - float(q_in.qsize()) / float(len(mirrors))
+            AutoRankmirrorsProcess.fraction = 1.0 - \
+                float(q_in.qsize()) / float(len(mirrors))
             time.sleep(0.1)
 
         # Notify threads it's time to exit
@@ -358,7 +357,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
 def test_module():
     """ Helper function to test this module """
-    proc = AutoRankmirrorsProcess({})
+    proc = AutoRankmirrorsProcess(settings={})
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
