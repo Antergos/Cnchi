@@ -1,3 +1,4 @@
+[2018-05-05 11:36:33 +0200]  Do not use settings to store process pipe                                  karasu      {ff7f5973}
 [2018-05-05 11:27:18 +0200]  Minor changes                                                              karasu      {85eaf85e}
 [2018-05-05 10:38:59 +0200]  Cleaned up a bit                                                           karasu      {6c4d2497}
 [2018-05-05 10:27:33 +0200]  Try to not use timers                                                      karasu      {9b854293}

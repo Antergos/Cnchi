@@ -130,15 +130,17 @@ class MirrorListBox(Gtk.ListBox):
 
     # 6 mirrors for Arch repos and 6 for Antergos repos
     MAX_MIRRORS = 6
-    #DND_ID_LISTBOX_ROW = 6791
+    # DND_ID_LISTBOX_ROW = 6791
 
-    def __init__(self, mirrors_file_path):
+    def __init__(self, mirrors_file_path, settings):
         super(Gtk.ListBox, self).__init__()
         self.mirrors_file_path = mirrors_file_path
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
         # self.connect("row-selected", self.on_listbox_row_selected)
         # self.sort_func(self.listbox_sort_by_name, None)
+
+        self.settings = settings
 
         # List. Each element is a tuple (url, active)
         self.mirrors = []
@@ -265,7 +267,12 @@ class MirrorListBox(Gtk.ListBox):
         except (KeyError, ValueError) as err:
             logging.warning(err)
 
-    def save_changes(self):
+    def trim_mirror_url(self, url):
+        url = url.ltrim("Server = ")
+        url = url.rtrim("/$repo/os/$arch")
+        return url
+
+    def save_changes(self, use_rankmirrors=False):
         """ Save mirrors in mirrors list file """
         # Save a backup if possible
         src = self.mirrors_file_path
@@ -286,6 +293,15 @@ class MirrorListBox(Gtk.ListBox):
                     line = "#" + line
                 mfile.write(line)
 
+        # If this is the Arch mirrorlist and we are not using rankmirrors,
+        # we need to save it to rankmirrors_result in settings
+        arch_mirrors = []
+        if not use_rankmirrors and self.mirrors_file_path == "/etc/pacman.d/mirrorlist":
+            for (url, active) in self.mirrors:
+                if active:
+                    arch_mirrors.append(self.trim_mirror_url(url))
+            self.settings.set('rankmirrors_result', arch_mirrors)
+
 
 class Mirrors(GtkBaseBox):
     """ Page that shows mirrolists so the user can arrange them manually """
@@ -303,7 +319,7 @@ class Mirrors(GtkBaseBox):
                         "/etc/pacman.d/antergos-mirrorlist"]
 
         for mirror_file in mirror_files:
-            mirror_listbox = MirrorListBox(mirror_file)
+            mirror_listbox = MirrorListBox(mirror_file, self.settings)
             mirror_listbox.connect(
                 "switch-activated", self.on_switch_activated)
             self.listboxes.append(mirror_listbox)
@@ -418,7 +434,7 @@ class Mirrors(GtkBaseBox):
             self.start_rank_mirrors()
         if self.use_listboxes:
             for listbox in self.listboxes:
-                listbox.save_changes()
+                listbox.save_changes(self.use_rankmirrors)
         return True
 
     def get_next_page(self):

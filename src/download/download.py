@@ -146,7 +146,7 @@ class DownloadPackages(object):
                 "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
-            return
+            return None
 
         try:
             for package_name in self.package_names:
@@ -169,8 +169,7 @@ class DownloadPackages(object):
                         self.metalinks[key] = metalink_info[key]
                         urls = metalink_info[key]['urls']
                         if self.settings:
-                            # Sort urls based on the mirrorlist
-                            # we created earlier
+                            # Sort urls based on the rankmirrors mirrorlist
                             sorted_urls = sorted(
                                 urls,
                                 key=self.url_sort_helper)
@@ -189,7 +188,7 @@ class DownloadPackages(object):
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             self.metalinks = None
-            return
+            return None
 
         try:
             pacman.release()
@@ -199,7 +198,7 @@ class DownloadPackages(object):
             template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
-            return
+            return None
 
         # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")
