@@ -355,7 +355,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
 def test_module():
     """ Helper function to test this module """
-    proc = AutoRankmirrorsProcess(settings={})
+    proc = AutoRankmirrorsProcess({}, None)
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()

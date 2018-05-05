@@ -31,6 +31,7 @@
 
 
 import logging
+import multiprocessing
 import shutil
 
 import gi
