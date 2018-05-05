@@ -388,6 +388,14 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
+
+        (min_width, natural_width) = self.get_preferred_width()
+        (min_height, natural_height) = self.get_preferred_width()
+        logging.debug("Main window minimal size: %dx%d", min_width, min_height)
+        logging.debug("Main window natural size: %dx%d", natural_width, natural_height)
+        logging.debug("Setting main window size to %dx%d",
+                      self._main_window_width, self._main_window_height)
+
         self.set_size_request(self._main_window_width,
                               self._main_window_height)
         self.set_default_size(self._main_window_width,

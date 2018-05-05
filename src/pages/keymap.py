@@ -40,6 +40,7 @@ from gi.repository import Gtk, GLib
 
 from pages.gtkbasebox import GtkBaseBox
 
+import widgets.keyboard_widget
 
 class Keymap(GtkBaseBox):
     """ Keymap screen """
