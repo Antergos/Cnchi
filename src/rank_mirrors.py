@@ -57,10 +57,7 @@ except NameError as err:
 class AutoRankmirrorsProcess(multiprocessing.Process):
     """ Process class that downloads and sorts the mirrorlist """
 
-    fraction = 0.0
-    #fraction_lock = threading.Lock()
-
-    def __init__(self, settings):
+    def __init__(self, settings, fraction_pipe):
         """ Initialize process class """
         super().__init__()
         self.rankmirrors_pid = None
@@ -70,6 +67,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
         self.arch_mirrorlist_ranked = []
         self.settings = settings
+        self.fraction = fraction_pipe
 
     @staticmethod
     def is_good_mirror(my_mirror):
@@ -220,8 +218,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Wait for queue to empty
         while not q_in.empty():
-            AutoRankmirrorsProcess.fraction = 1.0 - \
-                float(q_in.qsize()) / float(len(mirrors))
+            fraction = 1.0 - float(q_in.qsize()) / float(len(mirrors))
+            self.fraction.send(fraction)
             time.sleep(0.1)
 
         # Notify threads it's time to exit

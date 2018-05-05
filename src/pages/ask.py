@@ -528,13 +528,14 @@ class InstallationAsk(GtkBaseBox):
 
         logging.debug("Waiting for all external processes to finish (rankmirrors, timezone)...")
         while must_wait:
+            fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
             must_wait = False
             for proc in self.process_list:
                 # This waits until process finishes, no matter the time.
                 if proc.is_alive():
-                    if proc.name == "rankmirrors":
+                    if fraction_pipe and proc.name == "rankmirrors":
                         # Update our progress bar
-                        fraction = proc.fraction
+                        fraction = fraction_pipe.recv()
                         logging.debug("fraction: %f", fraction)
                         progress_bar.set_fraction(fraction)
 
