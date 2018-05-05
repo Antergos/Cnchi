@@ -218,7 +218,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         # Wait for queue to empty
         while not q_in.empty():
-            self.fraction = q_in.qsize() / len(mirrors)
+            self.fraction = float(q_in.qsize()) / float(len(mirrors))
+            logging.debug("self.fraction = %f", self.fraction)
             # Just wait...
             time.sleep(0.1)
 
