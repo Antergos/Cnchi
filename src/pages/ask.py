@@ -476,23 +476,23 @@ class InstallationAsk(GtkBaseBox):
         """ Creates a wait dialog so the user knows that cnchi is updating
         the mirror lists. Returns the wait window and its progress bar """
 
-        txt1 = _("Ranking mirrors")
-        txt1 = "<big>{}</big>".format(txt1)
+        action_txt = _("Ranking mirrors")
+        action_txt = "<big>{}</big>".format(action_txt)
 
-        txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
-        txt2 += "\n\n"
-        txt2 += _("Please be patient...")
-        txt2 = "<i>{}</i>".format(txt2)
+        description_txt = _("Cnchi is still updating and optimizing your mirror lists.")
+        description_txt += "\n\n"
+        description_txt += _("Please be patient...")
+        description_txt = "<i>{}</i>".format(description_txt)
 
         wait_ui = Gtk.Builder()
         ui_file = os.path.join(self.ui_dir, "wait.ui")
         wait_ui.add_from_file(ui_file)
 
-        lbl1 = wait_ui.get_object("label1")
-        lbl1.set_markup(txt1)
+        action_lbl = wait_ui.get_object("action_label")
+        action_lbl.set_markup(action_txt)
 
-        lbl2 = wait_ui.get_object("label2")
-        lbl2.set_markup(txt2)
+        description_lbl = wait_ui.get_object("description_label")
+        description_lbl.set_markup(description_txt)
 
         progress_bar = wait_ui.get_object("progressbar")
         progress_bar.set_fraction(0.0)
