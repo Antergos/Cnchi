@@ -221,6 +221,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             fraction = 1.0 - float(q_in.qsize()) / float(len(mirrors))
             self.fraction.send(fraction)
             time.sleep(0.1)
+        
+        self.fraction.close()
 
         # Notify threads it's time to exit
         exit_threads = True
@@ -347,6 +349,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         logging.debug(
             "Running rankmirrors command to sort Antergos mirrors...")
         self.run_rankmirrors()
+        
         self.arch_mirrorlist_ranked = [
             x for x in self.arch_mirrorlist_ranked if x]
         self.settings.set('rankmirrors_result', self.arch_mirrorlist_ranked)
