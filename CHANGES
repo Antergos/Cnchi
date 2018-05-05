@@ -1,3 +1,4 @@
+[2018-05-05 12:20:11 +0200]  Fix not using mirrorlist when not using rankmirrors                        karasu      {a53e899a}
 [2018-05-05 11:36:33 +0200]  Do not use settings to store process pipe                                  karasu      {ff7f5973}
 [2018-05-05 11:27:18 +0200]  Minor changes                                                              karasu      {85eaf85e}
 [2018-05-05 10:38:59 +0200]  Cleaned up a bit                                                           karasu      {6c4d2497}
