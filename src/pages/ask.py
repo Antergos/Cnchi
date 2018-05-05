@@ -542,7 +542,6 @@ class InstallationAsk(GtkBaseBox):
                             progress_bar.set_fraction(fraction)
                         except EOFError as _err:
                             pass
-                    logging.debug("proc %s is alive!", proc.name)
                     must_wait = True
 
             while Gtk.events_pending():
