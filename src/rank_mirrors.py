@@ -67,6 +67,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         self.arch_mirror_status = "http://www.archlinux.org/mirrors/status/json/"
         self.arch_mirrorlist_ranked = []
         self.settings = settings
+        self.fraction = 0.0
 
     @staticmethod
     def is_good_mirror(my_mirror):
@@ -144,14 +145,20 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         return mirrors
 
-    @staticmethod
-    def sort_mirrors_by_speed(mirrors=None, threads=5):
+    def sort_mirrors_by_speed(self, mirrors=None, threads=5):
         """ Sorts mirror list """
         # Ensure that "mirrors" is a list and not a generator.
         if not isinstance(mirrors, list):
             mirrors = list(mirrors)
 
-        threads = min(threads, len(mirrors))
+        num_threads = min(threads, len(mirrors))
+        my_threads = []
+        # URL input queue.Queue
+        q_in = queue.Queue()
+        # URL and rate output queue.Queue
+        q_out = queue.Queue()
+
+        exit_threads = False
 
         rates = {}
 
@@ -160,49 +167,47 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             cmd = ["pacman", "-Ss", "cryptsetup"]
             line = subprocess.check_output(cmd).decode().split()
             version = line[1]
-            logging.debug('cryptsetup version is: %s', version)
+            logging.debug(
+                'cryptsetup version is: %s (used to test mirror speed)', version)
         except subprocess.CalledProcessError as err:
             logging.debug(err)
             version = False
 
-        # URL input queue.Queue
-        q_in = queue.Queue()
-        # URL and rate output queue.Queue
-        q_out = queue.Queue()
-
         def worker():
             """ worker thread. Retrieves data to test mirror speed """
-            while True:
-                url = q_in.get()
-                if version:
-                    db_subpath = 'core/os/x86_64/cryptsetup-{0}-x86_64.pkg.tar.xz'
-                    db_subpath = db_subpath.format(version)
-                else:
-                    db_subpath = 'core/os/x86_64/core.db.tar.gz'
-                db_url = url + db_subpath
-                # Leave the rate as 0 if the connection fails.
-                # TODO: Consider more graceful error handling.
-                rate = 0
-                dtime = float('NaN')
+            while not exit_threads:
+                if not q_in.empty():
+                    url = q_in.get()
+                    if version:
+                        db_subpath = 'core/os/x86_64/cryptsetup-{0}-x86_64.pkg.tar.xz'
+                        db_subpath = db_subpath.format(version)
+                    else:
+                        db_subpath = 'core/os/x86_64/core.db.tar.gz'
+                    db_url = url + db_subpath
+                    # Leave the rate as 0 if the connection fails.
+                    # TODO: Consider more graceful error handling.
+                    rate = 0
+                    dtime = float('NaN')
 
-                req = urllib.request.Request(url=db_url)
-                try:
-                    time0 = time.time()
-                    with urllib.request.urlopen(req, None, 5) as my_file:
-                        size = len(my_file.read())
-                        dtime = time.time() - time0
-                        rate = size / dtime
-                except (OSError,
-                        urllib.error.HTTPError,
-                        http.client.HTTPException):
-                    pass
-                q_out.put((url, rate, dtime))
-                q_in.task_done()
+                    req = urllib.request.Request(url=db_url)
+                    try:
+                        time0 = time.time()
+                        with urllib.request.urlopen(req, None, 5) as my_file:
+                            size = len(my_file.read())
+                            dtime = time.time() - time0
+                            rate = size / dtime
+                    except (OSError,
+                            urllib.error.HTTPError,
+                            http.client.HTTPException):
+                        pass
+                    q_out.put((url, rate, dtime))
+                    q_in.task_done()
 
         # Launch threads
-        for _i in range(threads):
+        for _i in range(num_threads):
             my_thread = threading.Thread(target=worker)
             my_thread.start()
+            my_threads.append(my_thread)
 
         # Load the input queue.Queue
         url_len = 0
@@ -211,7 +216,18 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             logging.debug("Rating mirror '%s'", mirror['url'])
             q_in.put(mirror['url'])
 
-        q_in.join()
+        # Wait for queue to empty
+        while not q_in.empty():
+            self.fraction = q_in.qsize() / len(mirrors)
+
+        # Notify threads it's time to exit
+        exit_threads = True
+
+        # Wait for all threads to complete
+        for thread in my_threads:
+            thread.join()
+
+        #q_in.join()
 
         # Log some extra data.
         url_len = str(url_len)
@@ -335,10 +351,13 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         logging.debug("Auto mirror selection has been run successfully.")
 
-
-if __name__ == '__main__':
+def test_module():
+    """ Helper function to test this module """
     proc = AutoRankmirrorsProcess({})
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
     proc.join()
+
+if __name__ == '__main__':
+    test_module()
