@@ -57,7 +57,7 @@ from gi.repository import Gio, Gtk, GObject
 import misc.extra as misc
 import show_message as show
 import info
-import updater
+
 from logging_utils import ContextFilter
 
 try:
@@ -366,14 +366,6 @@ def parse_options():
                " Expects a hostname or an IP address"),
         nargs='?')
     parser.add_argument(
-        "-u", "--update",
-        help=_("Upgrade/downgrade Cnchi to the web version"),
-        action="store_true")
-    parser.add_argument(
-        "--disable-update",
-        help=_("Do not search for new Cnchi versions online"),
-        action="store_true")
-    parser.add_argument(
         "-v", "--verbose",
         help=_("Show logging messages to stdout"),
         action="store_true")
@@ -413,33 +405,6 @@ def threads_init():
     if minor < 10 or (minor == 10 and micro < 2):
         GObject.threads_init()
         # Gdk.threads_init()
-
-
-def update_cnchi():
-    """ Runs updater function to update cnchi to the latest version if necessary """
-    upd = updater.Updater(
-        force_update=cmd_line.update,
-        local_cnchi_version=info.CNCHI_VERSION)
-
-    if upd.update():
-        logging.info("Program updated! Restarting...")
-        misc.remove_temp_files()
-        if cmd_line.update:
-            # Remove -u and --update options from new call
-            new_argv = []
-            for argv in sys.argv:
-                if argv != "-u" and argv != "--update":
-                    new_argv.append(argv)
-        else:
-            new_argv = sys.argv
-
-        # Do not try to update again now
-        new_argv.append("--disable-update")
-
-        # Run another instance of Cnchi (which will be the new version)
-        with misc.raised_privileges() as __:
-            os.execl(sys.executable, *([sys.executable] + new_argv))
-        sys.exit(0)
 
 
 def setup_gettext():
@@ -511,9 +476,6 @@ def init_cnchi():
     # Check ISO version where Cnchi is running from
     if not check_iso_version():
         sys.exit(1)
-
-    # if not cmd_line.disable_update:
-        # update_cnchi()
 
     # Init PyObject Threads
     threads_init()

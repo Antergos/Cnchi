@@ -29,13 +29,14 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
+import dbus
 import logging
 import os
+import subprocess
 
 from gi.repository import GLib
 
 import info
-import updater
 
 import misc.extra as misc
 from misc.run_cmd import call
@@ -59,7 +60,6 @@ class Check(GtkBaseBox):
 
         self.remove_timer = False
 
-        self.updater = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
@@ -67,6 +67,7 @@ class Check(GtkBaseBox):
         self.prepare_best_results = None
         self.updated = None
         self.packaging_issues = None
+        self.remote_version = None
 
         self.label_space = self.ui.get_object("label_space")
 
@@ -157,8 +158,6 @@ class Check(GtkBaseBox):
 
     def on_battery(self):
         """ Checks if we are on battery power """
-        import dbus
-
         if self.has_battery():
             bus = dbus.SystemBus()
             upower = bus.get_object(UPOWER, UPOWER_PATH)
@@ -206,12 +205,62 @@ class Check(GtkBaseBox):
         return max_size >= MIN_ROOT_SIZE
 
     def is_updated(self):
-        """ Checks that cnchi version is, at least, latest stable """
-        if self.updater is None:
-            # Only call updater once
-            self.updater = updater.Updater(
-                local_cnchi_version=info.CNCHI_VERSION)
-        return not self.updater.is_remote_version_newer()
+        """ Checks that we're running the latest stable cnchi version """
+        remote_version = self.get_cnchi_version_in_repo()
+        local_version = info.CNCHI_VERSION
+
+        if remote_version:
+            return self.compare_versions(remote_version, local_version)
+        else:
+            return False
+
+    def compare_versions(self, remote, local):
+        """ Compares Cnchi versions (local vs remote) and returns true
+            if local is at least as new as remote """
+        
+        remote = remote.split('.')
+        local = local.split('.')
+
+        for i, remote_val in enumerate(remote):
+            remote[i] = int(remote_val)
+
+        for i, local_val in enumerate(local):
+            local[i] = int(local_val)
+
+        if remote[0] < local[0]:
+            return True
+        
+        if remote[0] > local[0]:
+            return False
+
+        if remote[1] < local[1]:
+            return True        
+        
+        if remote[1] > local[1]:
+            return False
+        
+        if remote[2] >  local[2]:
+            return False
+        
+        return True
+
+    def get_cnchi_version_in_repo(self):
+        """ Checks cnchi version in the Antergos repository """
+        if not self.remote_version:
+            try:
+                cmd = ["pacman", "-Ss", "cnchi"]
+                line = subprocess.check_output(cmd).decode().split()
+                version = line[1]
+                if '-' in version:
+                    version = version.split('-')[0]
+                logging.debug(
+                    'Cnchi version in the repository is: %s', version)
+            except subprocess.CalledProcessError as err:
+                logging.debug(err)
+                version = None
+            return version
+        else:
+            return self.remote_version
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """
