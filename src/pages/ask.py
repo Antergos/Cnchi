@@ -528,6 +528,7 @@ class InstallationAsk(GtkBaseBox):
 
         logging.debug("Waiting for all external processes to finish (rankmirrors, timezone)...")
         fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
+        self.settings.set("rankmirrors_fraction_pipe", None)
         while must_wait:
             must_wait = False
             for proc in self.process_list:
@@ -543,8 +544,6 @@ class InstallationAsk(GtkBaseBox):
                             pass
                     logging.debug("proc %s is alive!", proc.name)
                     must_wait = True
-            # Just wait...
-            time.sleep(0.1)
 
             while Gtk.events_pending():
                 Gtk.main_iteration()

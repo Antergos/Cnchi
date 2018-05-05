@@ -152,17 +152,15 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             mirrors = list(mirrors)
 
         num_threads = min(threads, len(mirrors))
-        my_threads = []
         # URL input queue.Queue
         q_in = queue.Queue()
         # URL and rate output queue.Queue
         q_out = queue.Queue()
 
-        exit_threads = False
-
         rates = {}
 
         # Check version of cryptsetup pkg (used to test mirror speed)
+        logging.debug('Checking cryptsetup version with pacman...')
         try:
             cmd = ["pacman", "-Ss", "cryptsetup"]
             line = subprocess.check_output(cmd).decode().split()
@@ -175,7 +173,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
 
         def worker():
             """ worker thread. Retrieves data to test mirror speed """
-            while not exit_threads:
+            while True:
                 if not q_in.empty():
                     url = q_in.get()
                     if version:
@@ -207,7 +205,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         for _i in range(num_threads):
             my_thread = threading.Thread(target=worker)
             my_thread.start()
-            my_threads.append(my_thread)
 
         # Load the input queue.Queue
         url_len = 0
@@ -224,14 +221,8 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         
         self.fraction.close()
 
-        # Notify threads it's time to exit
-        exit_threads = True
-
         # Wait for all threads to complete
-        for thread in my_threads:
-            thread.join()
-
-        #q_in.join()
+        q_in.join()
 
         # Log some extra data.
         url_len = str(url_len)

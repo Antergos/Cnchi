@@ -1,0 +1,11 @@
+[2018-05-05 10:09:11 +0200]  Missing import                                                             karasu      {f1099860}
+[2018-05-05 10:01:38 +0200]  Close pipe when done, also do not block if there is nothing else to..      karasu      {83bac114}
+[2018-05-05 09:49:59 +0200]  Forgot import                                                              karasu      {8802c4ec}
+[2018-05-05 09:47:07 +0200]  AutoRankMirrors is a process...                                            karasu      {86590686}
+[2018-05-05 09:19:52 +0200]  Fix typo                                                                   karasu      {25997190}
+[2018-05-05 09:17:04 +0200]  rank mirrors dialog                                                        karasu      {f3a3489c}
+[2018-05-05 08:55:54 +0200]  Still learning                                                             karasu      {e811f881}
+[2018-05-05 08:50:55 +0200]  fraction does not work                                                     karasu      {7568c0de}
+[2018-05-05 08:46:24 +0200]  rank mirrors dialog sucks                                                  karasu      {4b2d65c8}
+[2018-05-05 08:35:38 +0200]  Fix missing import                                                         karasu      {07cc6448}
+[2018-05-05 08:15:12 +0200]  Trying to improve rank mirrors dialog window                               karasu      {4a3a4c4e}
