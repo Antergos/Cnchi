@@ -526,7 +526,7 @@ class InstallationAsk(GtkBaseBox):
         if ask_box:
             ask_box.set_sensitive(False)
 
-        logging.debug("Waiting for all external processes to finish (rankmirrors, timezone)...")
+        logging.debug("Waiting for all external processes to finish...")
         fraction_pipe = self.settings.get("rankmirrors_fraction_pipe")
         self.settings.set("rankmirrors_fraction_pipe", None)
         while must_wait:
@@ -535,10 +535,9 @@ class InstallationAsk(GtkBaseBox):
                 # This waits until process finishes, no matter the time.
                 if proc.is_alive():
                     if fraction_pipe and fraction_pipe.poll() and proc.name == "rankmirrors":
-                        # Update our progress bar
+                        # Update wait window progress bar
                         try:
                             fraction = fraction_pipe.recv()
-                            logging.debug("fraction: %f", fraction)
                             progress_bar.set_fraction(fraction)
                         except EOFError as _err:
                             pass
@@ -547,7 +546,7 @@ class InstallationAsk(GtkBaseBox):
             while Gtk.events_pending():
                 Gtk.main_iteration()
         logging.debug(
-            "All external processes (rankmirrors, timezone) are finished. Installation can go on")
+            "All external processes are finished. Installation can go on")
         wait_window.hide()
         wait_window.destroy()
 

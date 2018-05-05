@@ -1,3 +1,4 @@
+[2018-05-05 10:27:33 +0200]  Try to not use timers                                                      karasu      {9b854293}
 [2018-05-05 10:25:00 +0200]  Remove unnecessary debug message                                           karasu      {9c336ed2}
 [2018-05-05 10:21:03 +0200]  something odd is happening with settings                                   karasu      {329064a2}
 [2018-05-05 10:09:11 +0200]  Missing import                                                             karasu      {f1099860}

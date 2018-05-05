@@ -106,11 +106,12 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 pacnew_path = self.antergos_mirrorlist + ".pacnew"
                 if os.path.exists(pacnew_path):
                     shutil.copy(pacnew_path, self.antergos_mirrorlist)
+                logging.debug("Mirrorlists updated successfully")
             except subprocess.CalledProcessError as why:
-                logging.debug(
+                logging.warning(
                     'Cannot update antergos-mirrorlist package: %s', why)
             except OSError as why:
-                logging.debug('Error copying new mirrorlist files: %s', why)
+                logging.warning('Error copying new mirrorlist files: %s', why)
         self.sync()
 
     def get_mirror_stats(self):
