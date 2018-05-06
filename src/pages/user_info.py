@@ -37,7 +37,7 @@ import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
-from widgets.webcam_widget import WebcamWidget
+import widgets.webcam_widget as webcam
 
 # When testing, no _() is available
 try:
@@ -88,12 +88,13 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        ##overlay = self.ui.get_object('user_info_overlay')
-        ##overlay.show()
-        ##self.webcam = WebcamWidget()
-        ##overlay.add_overlay(self.webcam)
-        ##self.webcam.set_halign (Gtk.Align.START)
-        ##self.webcam.set_valign (Gtk.Align.START)
+        # Camera
+        overlay = self.ui.get_object('user_info_overlay')
+        overlay.show()
+        self.webcam = webcam.WebcamWidget()
+        overlay.add_overlay(self.webcam)
+        self.webcam.set_halign(Gtk.Align.START)
+        self.webcam.set_valign(Gtk.Align.START)
 
 
     def translate_ui(self):
@@ -223,7 +224,9 @@ class UserInfo(GtkBaseBox):
         self.translate_ui()
         self.show_all()
         self.hide_widgets()
-        ## self.webcam.show_all()
+
+        if self.webcam.pipeline:
+            self.webcam.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":
@@ -334,8 +337,3 @@ class UserInfo(GtkBaseBox):
                     all_ok = False
 
         self.forward_button.set_sensitive(all_ok)
-
-
-if __name__ == '__main__':
-    from test_screen import _, run
-    run('UserInfo')
