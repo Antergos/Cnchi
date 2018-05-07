@@ -221,10 +221,11 @@
             <pkgname>vim</pkgname>
         </feature>
         <feature name="aur">
-            <pkgname>yaourt</pkgname>
+            <pkgname>aurman</pkgname>
+            <pkgname>bzr</pkgname>
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
-            <pkgname>bzr</pkgname>
+            <pkgname>yaourt</pkgname>
         </feature>
         <feature name="battery">
             <pkgname>tlp</pkgname>
