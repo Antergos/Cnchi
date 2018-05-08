@@ -47,6 +47,8 @@ import requests
 
 import misc.extra as misc
 
+import update_db
+
 # When testing, no _() is available
 try:
     _("")
@@ -77,42 +79,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 my_mirror['protocol'] == 'http' and
                 int(my_mirror['delay']) <= 3600)
 
-    @staticmethod
-    def sync():
-        """ Synchronize cached writes to persistent storage """
-        try:
-            subprocess.check_call(['sync'])
-        except subprocess.CalledProcessError as why:
-            logging.warning(
-                "Can't synchronize cached writes to persistent storage: %s",
-                why)
-
-    def update_mirrorlist(self):
-        """ Make sure we have the latest antergos-mirrorlist files """
-        with misc.raised_privileges() as __:
-            try:
-                cmd = [
-                    'pacman',
-                    '-Syy',
-                    '--noconfirm',
-                    '--noprogressbar',
-                    '--quiet',
-                    'antergos-mirrorlist']
-                with open(os.devnull, 'w') as fnull:
-                    subprocess.call(cmd, stdout=fnull,
-                                    stderr=subprocess.STDOUT)
-                # Use the new downloaded mirrorlist (.pacnew) files (if any)
-                pacnew_path = self.antergos_mirrorlist + ".pacnew"
-                if os.path.exists(pacnew_path):
-                    shutil.copy(pacnew_path, self.antergos_mirrorlist)
-                self.sync()
-                logging.debug("Mirrorlists updated successfully")
-            except subprocess.CalledProcessError as why:
-                logging.warning(
-                    'Cannot update antergos-mirrorlist package: %s', why)
-            except OSError as why:
-                logging.warning('Error copying new mirrorlist files: %s', why)
-
     def get_mirror_stats(self):
         """ Retrieve the current mirror status JSON data. """
 
@@ -129,7 +95,6 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 logging.debug(
                     'Failed to retrieve mirror status information: %s',
                     err)
-
         try:
             # Remove servers that have not synced, and parse the "last_sync"
             # times for comparison later.
@@ -275,7 +240,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                 # Write new one
                 with open(self.antergos_mirrorlist, 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
-                self.sync()
+                update_db.sync()
 
     def run_rankmirrors(self):
         """ Runs rankmirrors to sort Antergos mirrors """
@@ -295,7 +260,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
                     with misc.raised_privileges() as __:
                         with open(self.antergos_mirrorlist, 'w') as antergos_mirrorlist_file:
                             antergos_mirrorlist_file.write(temp_file.read())
-                    self.sync()
+                    update_db.sync()
             except subprocess.CalledProcessError as why:
                 logging.debug(
                     'Cannot run rankmirrors on Antergos mirrorlist: %s',
@@ -319,7 +284,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
         with misc.raised_privileges() as __:
             with open(self.arch_mirrorlist, 'w') as arch_mirrors:
                 arch_mirrors.write(output)
-            self.sync()
+            update_db.sync()
 
     def run(self):
         """ Run process """
@@ -329,7 +294,7 @@ class AutoRankmirrorsProcess(multiprocessing.Process):
             time.sleep(2)  # Delay, try again after 2 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
-        self.update_mirrorlist()
+        update_db.update_mirrorlists()
 
         logging.debug("Filtering and sorting Arch mirrors...")
         self.filter_and_sort_arch_mirrorlist()
