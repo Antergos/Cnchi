@@ -33,7 +33,7 @@ import os
 import shutil
 import subprocess
 
-import misc
+import misc.extra as misc
 
 def sync():
     """ Synchronize cached writes to persistent storage """
@@ -71,3 +71,8 @@ def update_mirrorlists():
                 'Cannot update antergos-mirrorlist package: %s', why)
         except OSError as why:
             logging.warning('Error copying new mirrorlist files: %s', why)
+
+def test():
+    update_mirrorlists()
+    with misc.raised_privileges() as __:
+        sync()
