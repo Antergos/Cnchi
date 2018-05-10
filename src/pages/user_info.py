@@ -129,8 +129,11 @@ class UserInfo(GtkBaseBox):
                 self.avatar_image.set_from_file(icon_path)
             else:
                 self.avatar_image = Gtk.Image.new_from_file(icon_path)
-                # To receive this signal, the GdkWindow associated to the
-                #  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
+                ## To receive this signal, the GdkWindow associated to the
+                ##  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
+                #window = self.avatar_image.get_parent_window()
+                #if window:
+
                 self.avatar_image.connect(
                     'button-press-event',
                     self.avatar_clicked)
