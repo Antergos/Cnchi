@@ -12,8 +12,8 @@
     <property name="hexpand">true</property>
     <child>
       <object class="GtkOverlay" id="user_info_overlay">
-        <property name="width_request">60</property>
-        <property name="height_request">80</property>
+        <property name="width_request">160</property>
+        <property name="height_request">90</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>

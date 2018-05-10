@@ -28,9 +28,11 @@
 
 """ User info screen """
 
+import os
+
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 import misc.validation as validation
 import show_message as show
@@ -52,6 +54,8 @@ class UserInfo(GtkBaseBox):
 
     ICON_OK = "emblem-default"
     ICON_WARNING = "dialog-warning"
+    USER_ICON_WIDTH = 160
+    USER_ICON_HEIGHT = 160
 
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
@@ -88,13 +92,34 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        # Camera
         overlay = self.ui.get_object('user_info_overlay')
         overlay.show()
+ 
+        # Camera
         self.webcam = webcam.WebcamWidget()
-        overlay.add_overlay(self.webcam)
-        self.webcam.set_halign(Gtk.Align.START)
-        self.webcam.set_valign(Gtk.Align.START)
+        if not self.webcam.error:
+            overlay.add_overlay(self.webcam)
+            self.webcam.set_halign(Gtk.Align.START)
+            self.webcam.set_valign(Gtk.Align.START)
+        else:
+            # User icon path
+            data_path = self.settings.get('data')
+            icon_path = os.path.join(data_path, 'images/user_icon.png')
+            if os.path.exists(icon_path):
+                self.user_icon = Gtk.Image.new_from_file(icon_path)
+                pixbuf = self.user_icon.get_pixbuf()
+                new_pixbuf = pixbuf.scale_simple(
+                    UserInfo.USER_ICON_WIDTH,
+                    UserInfo.USER_ICON_HEIGHT,
+                    GdkPixbuf.InterpType.BILINEAR)
+                self.user_icon.clear()
+                self.user_icon = Gtk.Image.new_from_pixbuf(new_pixbuf)
+                overlay.set_size_request(
+                    UserInfo.USER_ICON_WIDTH,
+                    UserInfo.USER_ICON_HEIGHT)
+                overlay.add_overlay(self.user_icon)
+            else:
+                self.user_icon = None
 
 
     def translate_ui(self):
@@ -225,8 +250,10 @@ class UserInfo(GtkBaseBox):
         self.show_all()
         self.hide_widgets()
 
-        if self.webcam.pipeline:
+        if not self.webcam.error:
             self.webcam.show_all()
+        elif self.user_icon:
+            self.user_icon.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":

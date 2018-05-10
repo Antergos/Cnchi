@@ -22,6 +22,7 @@ class WebcamWidget(Gtk.DrawingArea):
         self.pipeline = None
         self.xid = None
         self.bus = None
+        self.error = False
 
         if not os.path.exists("/dev/video0"):
             self.destroy()
@@ -38,6 +39,8 @@ class WebcamWidget(Gtk.DrawingArea):
 
     def create_video_pipeline(self, width, height):
         """ Create GStreamer pipeline """
+
+        # Create pipeline
         self.pipeline = Gst.Pipeline.new()
 
         # Create bus to get events from GStreamer pipeline
@@ -51,18 +54,22 @@ class WebcamWidget(Gtk.DrawingArea):
         # Create GStreamer elements
         self.source = Gst.ElementFactory.make('autovideosrc', 'source')
         self.sink = Gst.ElementFactory.make('autovideosink', 'sink')
+ 
+        if self.source and self.sink:
+            #fmt_str = 'video/x-raw, format=(string)YV12, '
+            fmt_str = 'video/x-raw, '
+            fmt_str += 'width=(int){0}, height=(int){1}, '.format(width, height)
+            fmt_str += 'pixel-aspect-ratio=(fraction)1/1, '
+            fmt_str += 'interlace-mode=(string)progressive, '
+            fmt_str += 'framerate=(fraction){ 30/1, 24/1, 20/1, 15/1, 10/1, 15/2, 5/1 }'
+            caps = Gst.caps_from_string(fmt_str)
 
-        #fmt_str = 'video/x-raw, format=(string)YV12, '
-        fmt_str = 'video/x-raw, '
-        fmt_str += 'width=(int){0}, height=(int){1}, '.format(width, height)
-        fmt_str += 'pixel-aspect-ratio=(fraction)1/1, '
-        fmt_str += 'interlace-mode=(string)progressive, '
-        fmt_str += 'framerate=(fraction){ 30/1, 24/1, 20/1, 15/1, 10/1, 15/2, 5/1 }'
-        caps = Gst.caps_from_string(fmt_str)
-
-        # Add elements to the pipeline
-        self.pipeline.add(self.source, self.sink)
-        self.source.link_filtered(self.sink, caps)
+            # Add elements to the pipeline
+            self.pipeline.add(self.source)
+            self.pipeline.add(self.sink)
+            self.source.link_filtered(self.sink, caps)
+        else:
+            self.error = True
 
     def show_all(self):
         """ You need to get the XID after window.show_all().  You shouldn't get it
