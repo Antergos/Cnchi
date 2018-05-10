@@ -56,6 +56,9 @@ class UserInfo(GtkBaseBox):
     ICON_WARNING = "dialog-warning"
     USER_ICON_WIDTH = 160
     USER_ICON_HEIGHT = 160
+    # These cannot be any values, must conform to camera capabilities
+    CAMERA_WIDTH = 160
+    CAMERA_HEIGHT = 90
 
     def __init__(self, params, prev_page=None, next_page="slides"):
         super().__init__(self, params, "user_info", prev_page, next_page)
@@ -96,8 +99,13 @@ class UserInfo(GtkBaseBox):
         overlay.show()
  
         # Camera
-        self.webcam = webcam.WebcamWidget()
+        self.webcam = webcam.WebcamWidget(
+            UserInfo.CAMERA_WIDTH,
+            UserInfo.CAMERA_HEIGHT)
         if not self.webcam.error:
+            overlay.set_size_request(
+                UserInfo.CAMERA_WIDTH,
+                UserInfo.CAMERA_HEIGHT)
             overlay.add_overlay(self.webcam)
             self.webcam.set_halign(Gtk.Align.START)
             self.webcam.set_valign(Gtk.Align.START)
