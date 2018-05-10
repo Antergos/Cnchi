@@ -129,24 +129,22 @@ class UserInfo(GtkBaseBox):
                 self.avatar_image.set_from_file(icon_path)
             else:
                 self.avatar_image = Gtk.Image.new_from_file(icon_path)
-                ## To receive this signal, the GdkWindow associated to the
-                ##  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
-                #window = self.avatar_image.get_parent_window()
-                #if window:
-
-                self.avatar_image.connect(
-                    'button-press-event',
-                    self.avatar_clicked)
             pixbuf = self.avatar_image.get_pixbuf()
             new_pixbuf = pixbuf.scale_simple(
                 UserInfo.USER_ICON_WIDTH,
                 UserInfo.USER_ICON_HEIGHT,
                 GdkPixbuf.InterpType.BILINEAR)
             self.avatar_image.set_from_pixbuf(new_pixbuf)
+
+            #self.event_box.connect(
+            #    'button-release-event',
+            #    self.avatar_clicked)
+
             self.overlay.set_size_request(
                 UserInfo.USER_ICON_WIDTH,
                 UserInfo.USER_ICON_HEIGHT)
             self.overlay.add_overlay(self.avatar_image)
+
         else:
             self.avatar_image = None
             logging.warning("Cannot load '%s' avatar", avatar)
