@@ -25,6 +25,8 @@ class WebcamWidget(Gtk.DrawingArea):
         self.error = False
 
         if not os.path.exists("/dev/video0"):
+            logging.warning("Cannot find any camera. Camera widget won't be used")
+            self.error = True
             self.destroy()
             return
 
@@ -68,7 +70,10 @@ class WebcamWidget(Gtk.DrawingArea):
             self.pipeline.add(self.source)
             self.pipeline.add(self.sink)
             self.source.link_filtered(self.sink, caps)
+
+            logging.debug("Camera found. Video pipeline created.")
         else:
+            logging.debug("Cannot initialize camera.")
             self.error = True
 
     def show_all(self):

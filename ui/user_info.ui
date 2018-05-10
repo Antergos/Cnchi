@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.1 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkBox" id="user_info">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="orientation">vertical</property>
-    <property name="spacing">10</property>
     <property name="halign">center</property>
     <property name="valign">center</property>
-    <property name="hexpand">true</property>
+    <property name="hexpand">True</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">10</property>
     <child>
       <object class="GtkOverlay" id="user_info_overlay">
         <property name="width_request">160</property>
@@ -37,9 +37,9 @@
         <property name="margin_end">20</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
+        <property name="hexpand">True</property>
         <property name="row_spacing">6</property>
         <property name="column_spacing">6</property>
-        <property name="hexpand">true</property>
         <child>
           <object class="GtkLabel" id="fullname_label">
             <property name="visible">True</property>

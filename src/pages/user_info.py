@@ -28,7 +28,9 @@
 
 """ User info screen """
 
+import logging
 import os
+import random
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -95,40 +97,61 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        overlay = self.ui.get_object('user_info_overlay')
-        overlay.show()
+        data_path = self.settings.get('data')
+        self.avatars_path = os.path.join(data_path, 'images/avatars')
+        self.avatars = ['bob', 'jarry', 'jonathan', 'mike', 'suzanne', 'tom']
+
+        self.overlay = self.ui.get_object('user_info_overlay')
+        self.overlay.show()
+
+        self.avatar_image = None
  
         # Camera
         self.webcam = webcam.WebcamWidget(
             UserInfo.CAMERA_WIDTH,
             UserInfo.CAMERA_HEIGHT)
         if not self.webcam.error:
-            overlay.set_size_request(
+            self.overlay.set_size_request(
                 UserInfo.CAMERA_WIDTH,
                 UserInfo.CAMERA_HEIGHT)
-            overlay.add_overlay(self.webcam)
+            self.overlay.add_overlay(self.webcam)
             self.webcam.set_halign(Gtk.Align.START)
             self.webcam.set_valign(Gtk.Align.START)
         else:
-            # User icon path
-            data_path = self.settings.get('data')
-            icon_path = os.path.join(data_path, 'images/user_icon.png')
-            if os.path.exists(icon_path):
-                self.user_icon = Gtk.Image.new_from_file(icon_path)
-                pixbuf = self.user_icon.get_pixbuf()
-                new_pixbuf = pixbuf.scale_simple(
-                    UserInfo.USER_ICON_WIDTH,
-                    UserInfo.USER_ICON_HEIGHT,
-                    GdkPixbuf.InterpType.BILINEAR)
-                self.user_icon.clear()
-                self.user_icon = Gtk.Image.new_from_pixbuf(new_pixbuf)
-                overlay.set_size_request(
-                    UserInfo.USER_ICON_WIDTH,
-                    UserInfo.USER_ICON_HEIGHT)
-                overlay.add_overlay(self.user_icon)
-            else:
-                self.user_icon = None
+            random.seed()
+            avatar = random.choice(self.avatars)
+            self.set_avatar(avatar)
 
+    def set_avatar(self, avatar):
+        icon_path = os.path.join(self.avatars_path, avatar + '.png')
+        if os.path.exists(icon_path):
+            if self.avatar_image:
+                self.avatar_image.set_from_file(icon_path)
+            else:
+                self.avatar_image = Gtk.Image.new_from_file(icon_path)
+                # To receive this signal, the GdkWindow associated to the
+                #  widget needs to enable the GDK_BUTTON_PRESS_MASK mask.
+                self.avatar_image.connect(
+                    'button-press-event',
+                    self.avatar_clicked)
+            pixbuf = self.avatar_image.get_pixbuf()
+            new_pixbuf = pixbuf.scale_simple(
+                UserInfo.USER_ICON_WIDTH,
+                UserInfo.USER_ICON_HEIGHT,
+                GdkPixbuf.InterpType.BILINEAR)
+            self.avatar_image.set_from_pixbuf(new_pixbuf)
+            self.overlay.set_size_request(
+                UserInfo.USER_ICON_WIDTH,
+                UserInfo.USER_ICON_HEIGHT)
+            self.overlay.add_overlay(self.avatar_image)
+        else:
+            self.avatar_image = None
+            logging.warning("Cannot load '%s' avatar", avatar)
+
+
+    def avatar_clicked(self, _widget):
+        """ Avatar image has been clicked """
+        logging.debug("EO!!!!")
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -260,8 +283,8 @@ class UserInfo(GtkBaseBox):
 
         if not self.webcam.error:
             self.webcam.show_all()
-        elif self.user_icon:
-            self.user_icon.show_all()
+        elif self.avatar_image:
+            self.avatar_image.show_all()
 
         # Disable autologin if using 'base' desktop
         if self.settings.get('desktop') == "base":
