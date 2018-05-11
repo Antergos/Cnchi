@@ -36,12 +36,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GdkPixbuf
 
-import misc.validation as validation
 import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
 import widgets.webcam_widget as webcam
+
+import misc.validation as validation
+import misc.avatars_view as avatars_view
 
 # When testing, no _() is available
 try:
@@ -56,8 +58,8 @@ class UserInfo(GtkBaseBox):
 
     ICON_OK = "emblem-default"
     ICON_WARNING = "dialog-warning"
-    USER_ICON_WIDTH = 160
-    USER_ICON_HEIGHT = 160
+    AVATAR_WIDTH = 160
+    AVATAR_HEIGHT = 160
     # These cannot be any values, must conform to camera capabilities
     CAMERA_WIDTH = 160
     CAMERA_HEIGHT = 90
@@ -131,28 +133,31 @@ class UserInfo(GtkBaseBox):
                 self.avatar_image = Gtk.Image.new_from_file(icon_path)
             pixbuf = self.avatar_image.get_pixbuf()
             new_pixbuf = pixbuf.scale_simple(
-                UserInfo.USER_ICON_WIDTH,
-                UserInfo.USER_ICON_HEIGHT,
+                UserInfo.AVATAR_WIDTH,
+                UserInfo.AVATAR_HEIGHT,
                 GdkPixbuf.InterpType.BILINEAR)
             self.avatar_image.set_from_pixbuf(new_pixbuf)
 
-            #self.event_box.connect(
-            #    'button-release-event',
-            #    self.avatar_clicked)
+            event_box = Gtk.EventBox.new()
+            event_box.connect(
+                'button-press-event',
+                self.avatar_clicked)
 
             self.overlay.set_size_request(
-                UserInfo.USER_ICON_WIDTH,
-                UserInfo.USER_ICON_HEIGHT)
-            self.overlay.add_overlay(self.avatar_image)
+                UserInfo.AVATAR_WIDTH,
+                UserInfo.AVATAR_HEIGHT)
+            self.overlay.add_overlay(event_box)
+            event_box.add(self.avatar_image)
 
         else:
             self.avatar_image = None
             logging.warning("Cannot load '%s' avatar", avatar)
 
 
-    def avatar_clicked(self, _widget):
+    def avatar_clicked(self, _widget, _button):
         """ Avatar image has been clicked """
-        logging.debug("EO!!!!")
+        #avatars_view
+        pass
 
     def translate_ui(self):
         """ Translates all ui elements """
