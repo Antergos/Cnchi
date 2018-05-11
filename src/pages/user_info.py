@@ -43,7 +43,7 @@ from pages.gtkbasebox import GtkBaseBox
 import widgets.webcam_widget as webcam
 
 import misc.validation as validation
-import misc.avatars_view as avatars_view
+import misc.avatars as avatars_chooser
 
 # When testing, no _() is available
 try:
@@ -99,8 +99,8 @@ class UserInfo(GtkBaseBox):
         self.require_password = True
         self.encrypt_home = False
 
-        data_path = self.settings.get('data')
-        self.avatars_path = os.path.join(data_path, 'images/avatars')
+        self.data_path = self.settings.get('data')
+        self.avatars_path = os.path.join(self.data_path, 'images/avatars')
         self.avatars = ['bob', 'jarry', 'jonathan', 'mike', 'suzanne', 'tom']
 
         self.overlay = self.ui.get_object('user_info_overlay')
@@ -156,8 +156,13 @@ class UserInfo(GtkBaseBox):
 
     def avatar_clicked(self, _widget, _button):
         """ Avatar image has been clicked """
-        #avatars_view
-        pass
+        main_window = self.settings.get("main_window")
+        avatars = avatars_chooser.Avatars(
+            0, 0, self.data_path, main_window)
+        avatars.run()
+        avatar = avatars.selected_avatar
+        print("AVATAR:", avatar)
+        avatars.destroy()
 
     def translate_ui(self):
         """ Translates all ui elements """
