@@ -41,7 +41,7 @@ except NameError as err:
 
 
 class Avatars(Gtk.Dialog):
-            
+    """ Avatar chooser dialog """        
     AVATARS = ['bob', 'jarry', 'jonathan', 'mike', 'suzanne', 'tom']
     AVATAR_WIDTH = 64
     AVATAR_HEIGHT = 64
@@ -50,27 +50,27 @@ class Avatars(Gtk.Dialog):
         Gtk.Dialog.__init__(self)
         if parent:
             self.set_transient_for(parent)
-        #self.set_type_hint(Gdk.WindowTypeHint.MENU)
-        #self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_modal(True)
         self.set_decorated(False)
         self.set_title(_("Choose your avatar"))
 
-        self.set_border_width(30)
-        self.set_default_size(800, 400)
+        self.set_border_width(0)
+        self.set_default_size(-1, -1)
+        self.set_resizable(False)
 
         self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
 
         self.selected_avatar = None
 
-        self.list_store = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
+        self.list_store = Gtk.ListStore(str, GdkPixbuf.Pixbuf)
         self.avatars_path = os.path.join(data_path, 'images/avatars')
         
         iconview = Gtk.IconView()
         iconview.set_model(self.list_store)
+        iconview.set_item_width(60)
         iconview.set_text_column(0)
         iconview.set_pixbuf_column(1)
-        iconview.set_tooltip_column(2)
+        #iconview.set_tooltip_column(2)
         iconview.set_activate_on_single_click(True)
         iconview.connect("item-activated", self.avatar_selected)
         
@@ -87,8 +87,7 @@ class Avatars(Gtk.Dialog):
                 Avatars.AVATAR_WIDTH,
                 Avatars.AVATAR_HEIGHT,
                 GdkPixbuf.InterpType.BILINEAR)
-            tooltip = ""
-            self.list_store.append([avatar, new_pixbuf, tooltip])
+            self.list_store.append([avatar, new_pixbuf])
         self.show_all()
     
     def avatar_selected(self, iconview, treepath):

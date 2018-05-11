@@ -161,6 +161,8 @@ def run(page_name):
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
 
+    settings.set('main_window', None)
+
     params = {
         'a11y': False,
         'title': "Cnchi",
