@@ -107,6 +107,7 @@ class UserInfo(GtkBaseBox):
         self.overlay.show()
 
         self.avatar_image = None
+        self.selected_avatar_path = None
  
         # Camera
         self.webcam = webcam.WebcamWidget(
@@ -120,6 +121,7 @@ class UserInfo(GtkBaseBox):
             self.webcam.set_halign(Gtk.Align.START)
             self.webcam.set_valign(Gtk.Align.START)
         else:
+            # Can't find a camera, use an avatar icon
             random.seed()
             avatar = random.choice(self.avatars)
             self.set_avatar(avatar)
@@ -127,33 +129,31 @@ class UserInfo(GtkBaseBox):
     def set_avatar(self, avatar):
         icon_path = os.path.join(self.avatars_path, avatar + '.png')
         if os.path.exists(icon_path):
-            if self.avatar_image:
-                self.avatar_image.set_from_file(icon_path)
-            else:
+            if not self.avatar_image:
                 self.avatar_image = Gtk.Image.new_from_file(icon_path)
+                event_box = Gtk.EventBox.new()
+                event_box.connect(
+                    'button-press-event',
+                    self.avatar_clicked)
+                self.overlay.set_size_request(
+                    UserInfo.AVATAR_WIDTH,
+                    UserInfo.AVATAR_HEIGHT)
+                self.overlay.add_overlay(event_box)
+                event_box.add(self.avatar_image)
+            else:
+                self.avatar_image.set_from_file(icon_path)
+            self.selected_avatar_path = icon_path
+            # Resize it
             pixbuf = self.avatar_image.get_pixbuf()
             new_pixbuf = pixbuf.scale_simple(
                 UserInfo.AVATAR_WIDTH,
                 UserInfo.AVATAR_HEIGHT,
                 GdkPixbuf.InterpType.BILINEAR)
             self.avatar_image.set_from_pixbuf(new_pixbuf)
-
-            event_box = Gtk.EventBox.new()
-            event_box.connect(
-                'button-press-event',
-                self.avatar_clicked)
-
-            self.overlay.set_size_request(
-                UserInfo.AVATAR_WIDTH,
-                UserInfo.AVATAR_HEIGHT)
-            self.overlay.add_overlay(event_box)
-            event_box.add(self.avatar_image)
-
         else:
             self.avatar_image = None
             logging.warning("Cannot load '%s' avatar", avatar)
-
-
+  
     def avatar_clicked(self, _widget, _button):
         """ Avatar image has been clicked """
         main_window = self.settings.get("main_window")
@@ -161,7 +161,8 @@ class UserInfo(GtkBaseBox):
             0, 0, self.data_path, main_window)
         avatars.run()
         avatar = avatars.selected_avatar
-        print("AVATAR:", avatar)
+        if avatar:
+            self.set_avatar(avatar)
         avatars.destroy()
 
     def translate_ui(self):

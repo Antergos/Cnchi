@@ -56,10 +56,12 @@ class Avatars(Gtk.Dialog):
         self.set_decorated(False)
         self.set_title(_("Choose your avatar"))
 
-        self.set_border_width(10)
-        self.set_default_size(400, 400)
+        self.set_border_width(30)
+        self.set_default_size(800, 400)
 
         self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+
+        self.selected_avatar = None
 
         self.list_store = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
         self.avatars_path = os.path.join(data_path, 'images/avatars')
@@ -90,7 +92,6 @@ class Avatars(Gtk.Dialog):
         self.show_all()
     
     def avatar_selected(self, iconview, treepath):
-        print("Selected item:", self.list_store[treepath][0])
         self.selected_avatar = self.list_store[treepath][0]
 
 def test_module():
