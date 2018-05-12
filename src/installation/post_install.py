@@ -400,7 +400,6 @@ class PostInstallation(object):
         except FileExistsError:
             pass
 
-
     @staticmethod
     def update_pacman_conf():
         """ Add Antergos and multilib repos """
@@ -453,7 +452,8 @@ class PostInstallation(object):
         else:
             logging.error("Can't find locale.gen file")
 
-    def enable_aur_in_pamac(self):
+    @staticmethod
+    def enable_aur_in_pamac():
         """ Enables AUR searches in pamac config file """
         pamac_conf = "/etc/pamac.conf"
         if os.path.exists(pamac_conf):
@@ -608,11 +608,10 @@ class PostInstallation(object):
         logging.debug("Saving ALSA settings...")
         chroot_call(['alsactl', 'store'])
         logging.debug("ALSA settings saved.")
-    @staticmethod
 
+    @staticmethod
     def set_fluidsynth():
         """ Sets fluidsynth configuration file """
-
         fluid_path = os.path.join(DEST_DIR, "etc/conf.d/fluidsynth")
         if os.path.exists(fluid_path):
             audio_system = "alsa"
@@ -665,7 +664,8 @@ class PostInstallation(object):
             except FileExistsError:
                 logging.warning("File %s already exists.", dst)
 
-    def get_installed_zfs_version(self):
+    @staticmethod
+    def get_installed_zfs_version():
         """ Get installed zfs version """
         zfs_version = "0.6.5.4"
         path = "/install/usr/src"
@@ -679,7 +679,8 @@ class PostInstallation(object):
                     logging.warning("Can't get zfs version from %s", file_name)
         return zfs_version
 
-    def get_installed_kernel_versions(self):
+    @staticmethod
+    def get_installed_kernel_versions():
         """ Get installed kernel versions """
         kernel_versions = []
         path = "/install/usr/lib/modules"
@@ -719,10 +720,8 @@ class PostInstallation(object):
 
     @staticmethod
     def modify_makepkg():
-        """
-            Modify the makeflags to allow for threading.
-            Use threads for xz compression.
-        """
+        """ Modify the makeflags to allow for threading.
+            Use threads for xz compression. """
         makepkg_conf_path = os.path.join(DEST_DIR, 'etc/makepkg.conf')
         if os.path.exists(makepkg_conf_path):
             with open(makepkg_conf_path, 'r') as makepkg_conf:
@@ -737,7 +736,6 @@ class PostInstallation(object):
 
     def setup_user(self):
         """ Set user parameters """
-
         username = self.settings.get('user_name')
         fullname = self.settings.get('user_fullname')
         password = self.settings.get('user_password')
@@ -774,8 +772,7 @@ class PostInstallation(object):
             default_groups += ',autologin'
 
         cmd = [
-            'useradd',
-            '--create-home',
+            'useradd', '--create-home',
             '--shell', '/bin/bash',
             '--gid', 'users',
             '--groups', default_groups,

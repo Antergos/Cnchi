@@ -48,7 +48,6 @@ import hardware.hardware as hardware
 
 import post_install
 
-POSTINSTALL_SCRIPT = 'postinstall.sh'
 DEST_DIR = "/install"
 
 # When testing, no _() is available
@@ -57,7 +56,6 @@ try:
 except NameError as err:
     def _(message):
         return message
-
 
 class Installation(object):
     """ Installation process thread class """
