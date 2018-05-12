@@ -34,7 +34,7 @@ import re
 import tempfile
 
 import desktop_info
-import encfs
+#import encfs
 
 from installation import mkinitcpio
 from installation import firewall
@@ -46,9 +46,6 @@ from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
 
-POSTINSTALL_SCRIPT = 'postinstall.sh'
-DEST_DIR = "/install"
-
 # When testing, no _() is available
 try:
     _("")
@@ -56,8 +53,11 @@ except NameError as err:
     def _(message):
         return message
 
+DEST_DIR = "/install"
+
 class PostInstallation(object):
     """ Post-Installation process thread class """
+    POSTINSTALL_SCRIPT = 'postinstall.sh'
 
     def __init__(
             self,
@@ -546,7 +546,7 @@ class PostInstallation(object):
         else:
             session = "default"
 
-        username = self.settings.get('username')
+        username = self.settings.get('user_name')
         autologin = not self.settings.get('require_password')
 
         lightdm_greeter = "lightdm-webkit2-greeter"
@@ -608,8 +608,8 @@ class PostInstallation(object):
         logging.debug("Saving ALSA settings...")
         chroot_call(['alsactl', 'store'])
         logging.debug("ALSA settings saved.")
-
     @staticmethod
+
     def set_fluidsynth():
         """ Sets fluidsynth configuration file """
 
@@ -699,11 +699,11 @@ class PostInstallation(object):
         script_path_postinstall = os.path.join(
             self.settings.get('cnchi'),
             "scripts",
-            POSTINSTALL_SCRIPT)
+            PostInstallation.POSTINSTALL_SCRIPT)
         cmd = [
             "/usr/bin/bash",
             script_path_postinstall,
-            self.settings.get('username'),
+            self.settings.get('user_name'),
             DEST_DIR,
             self.desktop,
             self.settings.get("locale"),
@@ -734,6 +734,149 @@ class PostInstallation(object):
                     elif 'COMPRESSXZ' in line:
                         line = 'COMPRESSXZ=(xz -c -z - --threads=0)\n'
                     makepkg_conf.write(line)
+
+    def setup_user(self):
+        """ Set user parameters """
+
+        username = self.settings.get('user_name')
+        fullname = self.settings.get('user_fullname')
+        password = self.settings.get('user_password')
+        hostname = self.settings.get('hostname')
+
+        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")
+        if not os.path.exists(sudoers_dir):
+            os.mkdir(sudoers_dir, 0o710)
+        sudoers_path = os.path.join(sudoers_dir, "10-installer")
+        try:
+            with open(sudoers_path, "w") as sudoers:
+                sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
+            os.chmod(sudoers_path, 0o440)
+            logging.debug("Sudo configuration for user %s done.", username)
+        except IOError as io_error:
+            # Do not fail if can't write 10-installer file.
+            # Something bad must be happening, though.
+            logging.error(io_error)
+
+        # Setup user
+
+        default_groups = 'wheel'
+
+        if self.virtual_box:
+            # Why there is no vboxusers group? Add it ourselves.
+            chroot_call(['groupadd', 'vboxusers'])
+            default_groups += ',vboxusers,vboxsf'
+            self.enable_services(["vboxservice"])
+
+        if self.settings.get('require_password') is False:
+            # Prepare system for autologin.
+            # LightDM needs the user to be in the autologin group.
+            chroot_call(['groupadd', 'autologin'])
+            default_groups += ',autologin'
+
+        cmd = [
+            'useradd',
+            '--create-home',
+            '--shell', '/bin/bash',
+            '--gid', 'users',
+            '--groups', default_groups,
+            username]
+        chroot_call(cmd)
+        logging.debug("User %s added.", username)
+
+        self.change_user_password(username, password)
+
+        chroot_call(['chfn', '-f', fullname, username])
+        home_dir = os.path.join("/home", username)
+        cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
+        chroot_call(cmd)
+
+        # Set hostname
+        hostname_path = os.path.join(DEST_DIR, "etc/hostname")
+        if not os.path.exists(hostname_path):
+            with open(hostname_path, "w") as hostname_file:
+                hostname_file.write(hostname)
+
+        logging.debug("Hostname set to %s", hostname)
+
+        # User password is the root password
+        self.change_user_password('root', password)
+        logging.debug("Set the same password to root.")
+
+        ## Encrypt user's home directory if requested
+        #if self.settings.get('encrypt_home'):
+        #    self.queue_event('info', _("Encrypting user home dir..."))
+        #    encfs.setup(username, DEST_DIR, password)
+        #    logging.debug("User home dir encrypted")
+
+    @staticmethod
+    def nano_setup():
+        """ Enable colors and syntax highlighting in nano editor """
+        nanorc_path = os.path.join(DEST_DIR, 'etc/nanorc')
+        if os.path.exists(nanorc_path):
+            logging.debug(
+                "Enabling colors and syntax highlighting in nano editor")
+            with open(nanorc_path, 'a') as nanorc:
+                nanorc.write('\n')
+                nanorc.write('# Added by Cnchi (Antergos Installer)\n')
+                nanorc.write('set titlecolor brightwhite,blue\n')
+                nanorc.write('set statuscolor brightwhite,green\n')
+                nanorc.write('set numbercolor cyan\n')
+                nanorc.write('set keycolor cyan\n')
+                nanorc.write('set functioncolor green\n')
+                nanorc.write('include "/usr/share/nano/*.nanorc"\n')
+
+    def rebuild_zfs_modules(self):
+        """ Sometimes dkms tries to build the zfs module before spl. """
+        self.queue_event('info', _("Building zfs modules..."))
+        zfs_version = self.get_installed_zfs_version()
+        spl_module = 'spl/{}'.format(zfs_version)
+        zfs_module = 'zfs/{}'.format(zfs_version)
+        kernel_versions = self.get_installed_kernel_versions()
+        if kernel_versions:
+            for kernel_version in kernel_versions:
+                logging.debug(
+                    "Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
+                chroot_call(
+                    ['dkms', 'install', spl_module, '-k', kernel_version])
+                chroot_call(
+                    ['dkms', 'install', zfs_module, '-k', kernel_version])
+        else:
+            # No kernel version found, try to install for current kernel
+            logging.debug(
+                "Installing zfs v%s modules for current kernel.", zfs_version)
+            chroot_call(['dkms', 'install', spl_module])
+            chroot_call(['dkms', 'install', zfs_module])
+
+    def pamac_setup(self):
+        """ Enable AUR in pamac if AUR feature selected """
+        pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
+        if os.path.exists(pamac_conf) and self.settings.get('feature_aur'):
+            logging.debug("Enabling AUR options in pamac")
+            with open(pamac_conf, 'r') as pamac_conf_file:
+                file_data = pamac_conf_file.read()
+            file_data = file_data.replace("#EnableAUR", "EnableAUR")
+            file_data = file_data.replace(
+                "#SearchInAURByDefault", "SearchInAURByDefault")
+            file_data = file_data.replace(
+                "#CheckAURUpdates", "CheckAURUpdates")
+            with open(pamac_conf, 'w') as pamac_conf_file:
+                pamac_conf_file.write(file_data)
+
+    @staticmethod
+    def setup_timesyncd():
+        """ Setups and enables time sync service """
+        timesyncd_path = os.path.join(DEST_DIR, "etc/systemd/timesyncd.conf")
+        try:
+            with open(timesyncd_path, 'w') as timesyncd:
+                timesyncd.write("[Time]\n")
+                timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org "
+                                "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
+                timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
+                                "0.fr.pool.ntp.org\n")
+        except FileNotFoundError as err:
+            logging.warning("Can't find %s file: %s", timesyncd_path, err)
+        chroot_call(['systemctl', '-fq', 'enable',
+                     'systemd-timesyncd.service'])
 
     def configure_system(self, hardware_install):
         """ Final install steps.
@@ -784,12 +927,10 @@ class PostInstallation(object):
 
         # Add Antergos repo to /etc/pacman.conf
         self.update_pacman_conf()
-
         logging.debug("pacman.conf has been created successfully")
 
         # Enable some useful services
         services = []
-
         if self.desktop != "base":
             # In base there's no desktop manager ;)
             services.append(self.settings.get("desktop_manager"))
@@ -798,33 +939,17 @@ class PostInstallation(object):
             # If bumblebee (optimus cards) is installed, enable it
             if os.path.exists(os.path.join(DEST_DIR, "usr/lib/systemd/system/bumblebeed.service")):
                 services.extend(["bumblebee"])
-
         services.extend(["ModemManager", "haveged"])
-
         if self.method == "zfs":
             # Beginning with ZOL version 0.6.5.8 the ZFS service unit files have
             # been changed so that you need to explicitly enable any ZFS services
             # you want to run.
             services.extend(["zfs.target", "zfs-import-cache", "zfs-mount"])
-
         self.enable_services(services)
 
         # Enable timesyncd service
         if self.settings.get("use_timesyncd"):
-            timesyncd_path = os.path.join(
-                DEST_DIR,
-                "etc/systemd/timesyncd.conf")
-            try:
-                with open(timesyncd_path, 'w') as timesyncd:
-                    timesyncd.write("[Time]\n")
-                    timesyncd.write("NTP=0.arch.pool.ntp.org 1.arch.pool.ntp.org "
-                                    "2.arch.pool.ntp.org 3.arch.pool.ntp.org\n")
-                    timesyncd.write("FallbackNTP=0.pool.ntp.org 1.pool.ntp.org "
-                                    "0.fr.pool.ntp.org\n")
-            except FileNotFoundError as err:
-                logging.warning("Can't find %s file: %s", timesyncd_path, err)
-            chroot_call(['systemctl', '-fq', 'enable',
-                         'systemd-timesyncd.service'])
+            self.setup_timesyncd()
 
         # Set timezone
         zone = self.settings.get("timezone_zone")
@@ -843,26 +968,6 @@ class PostInstallation(object):
             # Wait five seconds and try again
             time.sleep(5)
 
-        # Set user parameters
-        username = self.settings.get('user_name')
-        fullname = self.settings.get('user_fullname')
-        password = self.settings.get('user_password')
-        hostname = self.settings.get('hostname')
-
-        sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")
-        if not os.path.exists(sudoers_dir):
-            os.mkdir(sudoers_dir, 0o710)
-        sudoers_path = os.path.join(sudoers_dir, "10-installer")
-        try:
-            with open(sudoers_path, "w") as sudoers:
-                sudoers.write('{0} ALL=(ALL) ALL\n'.format(username))
-            os.chmod(sudoers_path, 0o440)
-            logging.debug("Sudo configuration for user %s done.", username)
-        except IOError as io_error:
-            # Do not fail if can't write 10-installer file.
-            # Something bad must be happening, though.
-            logging.error(io_error)
-
         # Configure detected hardware
         # NOTE: Because hardware can need extra repos, this code must run
         # always after having called the update_pacman_conf method
@@ -876,50 +981,7 @@ class PostInstallation(object):
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
-        # Setup user
-
-        default_groups = 'wheel'
-
-        if self.virtual_box:
-            # Why there is no vboxusers group? Add it ourselves.
-            chroot_call(['groupadd', 'vboxusers'])
-            default_groups += ',vboxusers,vboxsf'
-            self.enable_services(["vboxservice"])
-
-        if self.settings.get('require_password') is False:
-            # Prepare system for autologin.
-            # LightDM needs the user to be in the autologin group.
-            chroot_call(['groupadd', 'autologin'])
-            default_groups += ',autologin'
-
-        cmd = [
-            'useradd',
-            '--create-home',
-            '--shell', '/bin/bash',
-            '--gid', 'users',
-            '--groups', default_groups,
-            username]
-        chroot_call(cmd)
-        logging.debug("User %s added.", username)
-
-        self.change_user_password(username, password)
-
-        chroot_call(['chfn', '-f', fullname, username])
-        home_dir = os.path.join("/home", username)
-        cmd = ['chown', '-R', '{0}:users'.format(username), home_dir]
-        chroot_call(cmd)
-
-        # Set hostname
-        hostname_path = os.path.join(DEST_DIR, "etc/hostname")
-        if not os.path.exists(hostname_path):
-            with open(hostname_path, "w") as hostname_file:
-                hostname_file.write(hostname)
-
-        logging.debug("Hostname set to %s", hostname)
-
-        # User password is the root password
-        self.change_user_password('root', password)
-        logging.debug("Set the same password to root.")
+        self.setup_user()
 
         # Generate locales
         locale = self.settings.get("locale")
@@ -973,25 +1035,7 @@ class PostInstallation(object):
 
         # FIXME: Temporary workaround for spl and zfs packages
         if self.method == "zfs":
-            self.queue_event('info', _("Building zfs modules..."))
-            zfs_version = self.get_installed_zfs_version()
-            spl_module = 'spl/{}'.format(zfs_version)
-            zfs_module = 'zfs/{}'.format(zfs_version)
-            kernel_versions = self.get_installed_kernel_versions()
-            if kernel_versions:
-                for kernel_version in kernel_versions:
-                    logging.debug(
-                        "Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
-                    chroot_call(
-                        ['dkms', 'install', spl_module, '-k', kernel_version])
-                    chroot_call(
-                        ['dkms', 'install', zfs_module, '-k', kernel_version])
-            else:
-                # No kernel version found, try to install for current kernel
-                logging.debug(
-                    "Installing zfs v%s modules for current kernel.", zfs_version)
-                chroot_call(['dkms', 'install', spl_module])
-                chroot_call(['dkms', 'install', zfs_module])
+            self.rebuild_zfs_modules()
 
         # Let's start without using hwdetect for mkinitcpio.conf.
         # It should work out of the box most of the time.
@@ -1011,13 +1055,6 @@ class PostInstallation(object):
         # Configure user features (firewall, libreoffice language pack, ...)
         self.setup_features()
 
-        # Encrypt user's home directory if requested
-        # FIXME: This is not working atm
-        if self.settings.get('encrypt_home'):
-            self.queue_event('info', _("Encrypting user home dir..."))
-            encfs.setup(username, DEST_DIR, password)
-            logging.debug("User home dir encrypted")
-
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
@@ -1033,7 +1070,7 @@ class PostInstallation(object):
                 message = template.format(type(ex).__name__, ex.args)
                 logging.error(message)
 
-        # Create an initial database for mandb
+        # Create an initial database for mandb (slow)
         #self.queue_event('info', _("Updating man pages..."))
         #chroot_call(["mandb", "--quiet"])
 
@@ -1056,39 +1093,16 @@ class PostInstallation(object):
             shutil.copy2(src, dst)
 
         # Enable AUR in pamac if AUR feature selected
-        pamac_conf = os.path.join(DEST_DIR, 'etc/pamac.conf')
-        if os.path.exists(pamac_conf) and self.settings.get('feature_aur'):
-            logging.debug("Enabling AUR options in pamac")
-            with open(pamac_conf, 'r') as pamac_conf_file:
-                file_data = pamac_conf_file.read()
-            file_data = file_data.replace("#EnableAUR", "EnableAUR")
-            file_data = file_data.replace(
-                "#SearchInAURByDefault", "SearchInAURByDefault")
-            file_data = file_data.replace(
-                "#CheckAURUpdates", "CheckAURUpdates")
-            with open(pamac_conf, 'w') as pamac_conf_file:
-                pamac_conf_file.write(file_data)
+        self.pamac_setup()
 
         # Apply makepkg tweaks upon install (issue #871)
         self.modify_makepkg()
 
-        # Enable colors and syntax highlighting in nano editor
-        nanorc_path = os.path.join(DEST_DIR, 'etc/nanorc')
-        if os.path.exists(nanorc_path):
-            logging.debug(
-                "Enabling colors and syntax highlighting in nano editor")
-            with open(nanorc_path, 'a') as nanorc:
-                nanorc.write('\n')
-                nanorc.write('# Added by Cnchi (Antergos Installer)\n')
-                nanorc.write('set titlecolor brightwhite,blue\n')
-                nanorc.write('set statuscolor brightwhite,green\n')
-                nanorc.write('set numbercolor cyan\n')
-                nanorc.write('set keycolor cyan\n')
-                nanorc.write('set functioncolor green\n')
-                nanorc.write('include "/usr/share/nano/*.nanorc"\n')
+        self.nano_setup()
 
         logging.debug("Setting .bashrc to load .bashrc.aliases")
         bashrc_files = ["etc/skel/.bashrc"]
+        username = self.settings.get('user_name')
         bashrc_files.append("home/{}/.bashrc".format(username))
         for bashrc_file in bashrc_files:
             bashrc_file = os.path.join(DEST_DIR, bashrc_file)
