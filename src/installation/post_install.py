@@ -34,7 +34,6 @@ import re
 import tempfile
 
 import desktop_info
-#import encfs
 
 from installation import mkinitcpio
 from installation import firewall
@@ -802,7 +801,7 @@ class PostInstallation(object):
         ## Encrypt user's home directory if requested
         #if self.settings.get('encrypt_home'):
         #    self.queue_event('info', _("Encrypting user home dir..."))
-        #    encfs.setup(username, DEST_DIR, password)
+        #    cryfs.setup(username, DEST_DIR, password)
         #    logging.debug("User home dir encrypted")
 
     @staticmethod
