@@ -158,7 +158,7 @@ class UserInfo(GtkBaseBox):
         """ Avatar image has been clicked """
         main_window = self.settings.get("main_window")
         avatars = avatars_chooser.Avatars(
-            0, 0, self.data_path, main_window)
+            self.data_path, main_window)
         avatars.run()
         avatar = avatars.selected_avatar
         if avatar:
@@ -167,64 +167,44 @@ class UserInfo(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        label = self.ui.get_object('fullname_label')
-        txt = _("Your name:")
-        label.set_markup(txt)
 
-        label = self.ui.get_object('fullname')
-        txt = _("Your name")
-        label.set_placeholder_text(txt)
+        labels = {
+            'fullname_label': _("Your name:"),
+            'hostname_label': _("Your computer's name:"),
+            'username_label': _("Pick a username:"),
+            'password_label': _("Choose a password:"),
+            'verified_password_label': _("Confirm your password:")}
 
-        label = self.ui.get_object('hostname_label')
-        txt = _("Your computer's name:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('hostname')
-        txt = _("Hostname")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('username_label')
-        txt = _("Pick a username:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('username')
-        txt = _("Username")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('password_label')
-        txt = _("Choose a password:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('password')
-        txt = _("Password")
-        label.set_placeholder_text(txt)
-
-        label = self.ui.get_object('verified_password_label')
-        txt = _("Confirm your password:")
-        label.set_markup(txt)
-
-        label = self.ui.get_object('verified_password')
-        txt = _("Confirm password")
-        label.set_placeholder_text(txt)
+        for name, txt in labels.items():
+            label = self.ui.get_object(name)
+            label.set_markup(txt)
 
         label = self.ui.get_object('hostname_extra_label')
         txt = _("Identifies your system to other computers and devices.")
         txt = '<span size="small">{0}</span>'.format(txt)
         label.set_markup(txt)
 
+        labels = {
+            'fullname': _("Your name"),
+            'hostname': _("Hostname"),
+            'username': _("Username"),
+            'password': _("Password"),
+            'verified_password': _("Confirm password")}
+
+        for name, txt in labels.items():
+            label = self.ui.get_object(name)
+            label.set_placeholder_text(txt)
+
+        labels = {
+            'hostname': _("You must enter a name"),
+            'username': _("You must enter a username"),
+            'password': _("You must enter a password")}
+
         small_dark_red = '<small><span color="darkred">{0}</span></small>'
 
-        txt = _("You must enter a name")
-        txt = small_dark_red.format(txt)
-        self.error_label['hostname'].set_markup(txt)
-
-        txt = _("You must enter a username")
-        txt = small_dark_red.format(txt)
-        self.error_label['username'].set_markup(txt)
-
-        txt = _("You must enter a password")
-        txt = small_dark_red.format(txt)
-        self.error_label['password'].set_markup(txt)
+        for name, txt in labels.items():
+            txt = small_dark_red.format(txt)
+            self.error_label[name].set_markup(txt)
 
         self.login['auto'].set_label(_("Log in automatically"))
         self.login['pass'].set_label(_("Require my password to log in"))
@@ -235,13 +215,6 @@ class UserInfo(GtkBaseBox):
 
         self.header.set_subtitle(_("Create Your User Account"))
 
-        # Restore forward button text (from install now! to go-next)
-        # self.forward_button.set_label("")
-        # image1 = Gtk.Image.new_from_icon_name(
-        #   "go-next",
-        #   Gtk.IconSize.LARGE_TOOLBAR)
-        # self.forward_button.set_image(image1)
-        # self.forward_button.set_always_show_image(True)
 
     def hide_widgets(self):
         """ Hide unused and message widgets """
@@ -268,10 +241,10 @@ class UserInfo(GtkBaseBox):
         """ Store all user values in self.settings """
         # For developer testing
         # Do not use this, is confusing for others when testing dev version
-        self.settings.set('fullname', self.entry['fullname'].get_text())
+        self.settings.set('user_fullname', self.entry['fullname'].get_text())
         self.settings.set('hostname', self.entry['hostname'].get_text())
-        self.settings.set('username', self.entry['username'].get_text())
-        self.settings.set('password', self.entry['password'].get_text())
+        self.settings.set('user_name', self.entry['username'].get_text())
+        self.settings.set('user_password', self.entry['password'].get_text())
         self.settings.set('require_password', self.require_password)
 
         self.settings.set('encrypt_home', False)

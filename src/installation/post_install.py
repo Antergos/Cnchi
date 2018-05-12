@@ -844,9 +844,9 @@ class PostInstallation(object):
             time.sleep(5)
 
         # Set user parameters
-        username = self.settings.get('username')
-        fullname = self.settings.get('fullname')
-        password = self.settings.get('password')
+        username = self.settings.get('user_name')
+        fullname = self.settings.get('user_fullname')
+        password = self.settings.get('user_password')
         hostname = self.settings.get('hostname')
 
         sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")

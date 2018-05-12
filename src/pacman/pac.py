@@ -278,9 +278,9 @@ class Pac(object):
             grp = antdb['antergos'].read_grp(one_repo_group_name)
             if not grp:
                 grp = ['None', []]
-                logging.warning(
-                    "Error reading group '%s' from the antergos repo db",
-                    one_repo_group_name)
+                #logging.warning(
+                #    "Error reading group '%s' from the antergos repo db",
+                #    one_repo_group_name)
             one_repo_groups.append(grp)
 
         one_repo_pkgs = {pkg for one_repo_group in one_repo_groups

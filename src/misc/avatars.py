@@ -46,7 +46,7 @@ class Avatars(Gtk.Dialog):
     AVATAR_WIDTH = 64
     AVATAR_HEIGHT = 64
 
-    def __init__(self, pos_x, pos_y, data_path, parent=None):
+    def __init__(self, data_path, parent=None):
         Gtk.Dialog.__init__(self)
         if parent:
             self.set_transient_for(parent)
@@ -54,7 +54,7 @@ class Avatars(Gtk.Dialog):
         self.set_decorated(False)
         self.set_title(_("Choose your avatar"))
 
-        self.set_border_width(0)
+        self.set_border_width(3)
         self.set_default_size(-1, -1)
         self.set_resizable(False)
 
@@ -90,7 +90,7 @@ class Avatars(Gtk.Dialog):
             self.list_store.append([avatar, new_pixbuf])
         self.show_all()
     
-    def avatar_selected(self, iconview, treepath):
+    def avatar_selected(self, _iconview, treepath):
         self.selected_avatar = self.list_store[treepath][0]
 
 def test_module():
