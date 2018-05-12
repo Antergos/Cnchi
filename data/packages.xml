@@ -14,8 +14,9 @@
                 <!-- Group -->
                 <pkgname>base-devel</pkgname>
                 <pkgname>bash-completion</pkgname>
-                <pkgname>crda</pkgname>
                 <pkgname>bind-tools</pkgname>
+                <pkgname>crda</pkgname>
+                <pkgname>cryfs</pkgname>
                 <pkgname>dosfstools</pkgname>
                 <pkgname>haveged</pkgname>
                 <pkgname>htop</pkgname>
