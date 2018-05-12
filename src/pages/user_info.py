@@ -108,7 +108,7 @@ class UserInfo(GtkBaseBox):
 
         self.avatar_image = None
         self.selected_avatar_path = None
- 
+
         # Camera
         self.webcam = webcam.WebcamWidget(
             UserInfo.CAMERA_WIDTH,
@@ -127,6 +127,7 @@ class UserInfo(GtkBaseBox):
             self.set_avatar(avatar)
 
     def set_avatar(self, avatar):
+        """ Sets avatar image """
         icon_path = os.path.join(self.avatars_path, avatar + '.png')
         if os.path.exists(icon_path):
             if not self.avatar_image:
@@ -153,7 +154,7 @@ class UserInfo(GtkBaseBox):
         else:
             self.avatar_image = None
             logging.warning("Cannot load '%s' avatar", avatar)
-  
+
     def avatar_clicked(self, _widget, _button):
         """ Avatar image has been clicked """
         main_window = self.settings.get("main_window")
