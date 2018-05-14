@@ -39,7 +39,6 @@ import subprocess
 import logging
 import time
 import os
-import shutil
 import tempfile
 import multiprocessing
 

@@ -41,6 +41,7 @@ from installation import firewall
 from installation.boot import loader
 
 import misc.extra as misc
+import misc.gocryptfs as gocryptfs
 from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
@@ -425,7 +426,6 @@ class PostInstallation(object):
                         antlines += '[antergos]\n'
                         antlines += 'SigLevel = PackageRequired\n'
                         antlines += 'Include = /etc/pacman.d/antergos-mirrorlist\n\n'
-
                         pacman_file.write(antlines)
 
                     pacman_file.write(pacline)
@@ -798,11 +798,25 @@ class PostInstallation(object):
         self.change_user_password('root', password)
         logging.debug("Set the same password to root.")
 
+        # set user's avatar
+        avatar = self.settings.get('user_avatar')
+        if avatar and os.path.exists(avatar):
+            try:
+                dst = os.path.join(
+                    DEST_DIR,
+                    'var/lib/AccountsService/icons',
+                    username + '.png')
+                shutil.copy(avatar, dst)
+            except FileNotFoundError:
+                logging.warning("Can't copy %s log to %s", avatar, dst)
+            except FileExistsError:
+                pass
+
         ## Encrypt user's home directory if requested
-        #if self.settings.get('encrypt_home'):
-        #    self.queue_event('info', _("Encrypting user home dir..."))
-        #    cryfs.setup(username, DEST_DIR, password)
-        #    logging.debug("User home dir encrypted")
+        if self.settings.get('encrypt_home'):
+            self.queue_event('info', _("Encrypting user home dir..."))
+            gocryptfs.setup(username, "users", DEST_DIR, password)
+            logging.debug("User home dir encrypted")
 
     @staticmethod
     def nano_setup():

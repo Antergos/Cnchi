@@ -229,13 +229,9 @@ class UserInfo(GtkBaseBox):
 
         self.password_strength.hide()
 
-        # Hide encryption if using LUKS encryption (user must use one or
-        # the other but not both)
+        # Hide cryfs encryption if using LUKS encryption
+        # (user must use one or the other but not both)
         if self.settings.get('use_luks'):
-            self.login['encrypt'].hide()
-
-        # TODO: Fix home encryption and stop hiding its widget
-        if not self.settings.get('z_hidden'):
             self.login['encrypt'].hide()
 
     def store_values(self):
@@ -255,6 +251,9 @@ class UserInfo(GtkBaseBox):
             res = show.question(self.get_main_window(), message)
             if res == Gtk.ResponseType.YES:
                 self.settings.set('encrypt_home', True)
+
+        # Store user's avatar
+        self.settings.set('user_avatar', self.selected_avatar_path)
 
         # Let installer_process know that all info has been entered
         self.settings.set('user_info_done', True)
