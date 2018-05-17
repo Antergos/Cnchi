@@ -1,4 +1,30 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# webcam_widget.py
+#
+# Copyright © 2013-2018 Antergos
+#
+# This file is part of Cnchi.
+#
+# Cnchi is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# Cnchi is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# The following additional terms are in effect as per Section 7 of the license:
+#
+# The preservation of all legal notices and author attributions in
+# the material or in the Appropriate Legal Notices displayed
+# by works containing it is required.
+#
+# You should have received a copy of the GNU General Public License
+# along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 import logging
 import os
@@ -103,7 +129,8 @@ class WebcamWidget(Gtk.DrawingArea):
 
 GObject.type_register(WebcamWidget)
 
-if __name__ == '__main__':
+
+def test_module():
     window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
     window.set_title("Webcam test")
     window.set_default_size(160, 90)
@@ -117,9 +144,12 @@ if __name__ == '__main__':
     overlay.add_overlay(webcam)
     webcam.set_halign(Gtk.Align.START)
     webcam.set_valign(Gtk.Align.START)
-    
+
     vbox.add(overlay)
     window.show_all()
     webcam.show_all()
     GObject.threads_init()
     Gtk.main()
+
+if __name__ == '__main__':
+    test_module()
