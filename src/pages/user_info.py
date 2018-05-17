@@ -120,7 +120,15 @@ class UserInfo(GtkBaseBox):
             self.overlay.set_size_request(
                 UserInfo.CAMERA_WIDTH,
                 UserInfo.CAMERA_HEIGHT)
-            self.overlay.add_overlay(self.webcam)
+
+            event_box = Gtk.EventBox.new()
+            event_box.connect(
+                'button-press-event',
+                self.webcam.clicked)
+
+            self.overlay.add_overlay(event_box)
+            event_box.add(self.webcam)
+
             self.webcam.set_halign(Gtk.Align.START)
             self.webcam.set_valign(Gtk.Align.START)
         else:

@@ -126,11 +126,14 @@ class WebcamWidget(Gtk.DrawingArea):
         """ A gst error has occurred """
         logging.error(msg.parse_error())
 
+    def clicked(self, _event_box, _event_button):
+        pass
 
 GObject.type_register(WebcamWidget)
 
 
 def test_module():
+    """ function to test this module """
     window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
     window.set_title("Webcam test")
     window.set_default_size(160, 90)
@@ -141,7 +144,15 @@ def test_module():
     overlay = Gtk.Overlay.new()
     overlay.show()
     webcam = WebcamWidget()
-    overlay.add_overlay(webcam)
+
+    event_box = Gtk.EventBox.new()
+    event_box.connect(
+        'button-press-event',
+        webcam.clicked)
+
+    overlay.add_overlay(event_box)
+    event_box.add(webcam)
+
     webcam.set_halign(Gtk.Align.START)
     webcam.set_valign(Gtk.Align.START)
 
