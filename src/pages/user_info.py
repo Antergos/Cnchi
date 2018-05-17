@@ -110,10 +110,13 @@ class UserInfo(GtkBaseBox):
         self.selected_avatar_path = None
 
         # Camera
-        self.webcam = webcam.WebcamWidget(
-            UserInfo.CAMERA_WIDTH,
-            UserInfo.CAMERA_HEIGHT)
-        if not self.webcam.error:
+        # TODO: Store avatar from the video when user clicks on it
+        # We disable webcam widget until this is done
+        self.webcam = None
+        #self.webcam = webcam.WebcamWidget(
+        #    UserInfo.CAMERA_WIDTH,
+        #    UserInfo.CAMERA_HEIGHT)
+        if self.webcam and not self.webcam.error:
             self.overlay.set_size_request(
                 UserInfo.CAMERA_WIDTH,
                 UserInfo.CAMERA_HEIGHT)
@@ -234,8 +237,8 @@ class UserInfo(GtkBaseBox):
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
         
-        # TODO: Setup installed system so it mounts gocrypt home folder on boot
-        # Meanwhile, we need to deactivate the encrypt widget
+        # TODO: Setup installed system so it mounts encrypted home folder on boot
+        # FIXME: We need to deactivate the encrypt widget as it is not finished
         self.login['encrypt'].hide()
 
     def store_values(self):
@@ -270,7 +273,7 @@ class UserInfo(GtkBaseBox):
         self.show_all()
         self.hide_widgets()
 
-        if not self.webcam.error:
+        if self.webcam and not self.webcam.error:
             self.webcam.show_all()
         elif self.avatar_image:
             self.avatar_image.show_all()
