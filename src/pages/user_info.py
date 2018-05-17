@@ -233,6 +233,10 @@ class UserInfo(GtkBaseBox):
         # (user must use one or the other but not both)
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
+        
+        # TODO: Setup installed system so it mounts gocrypt home folder on boot
+        # Meanwhile, we need to deactivate the encrypt widget
+        self.login['encrypt'].hide()
 
     def store_values(self):
         """ Store all user values in self.settings """

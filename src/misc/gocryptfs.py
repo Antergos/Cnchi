@@ -36,28 +36,58 @@ except ModuleNotFoundError as _err:
 
 # https://github.com/rfjakob/gocryptfs/blob/master/Documentation/CLI_ABI.md
 
-def _gocryptfs(cmd, password):
-    """ Calls gocrypt program (giving the password through a pipe).
-        cmd: tuple """
-    cat = subprocess.Popen(("echo", password), stdout=subprocess.PIPE)
-    output = subprocess.check_output(cmd, stdin=cat.stdout)
-    cat.wait()
-    logging.debug(output)
+def _sync():
+    """ Synchronize cached writes to persistent storage """
+    try:
+        subprocess.check_call(['sync'])
+    except subprocess.CalledProcessError as why:
+        logging.warning(
+            "Can't synchronize cached writes to persistent storage: %s",
+            why)
 
+def _gocryptfs(params, username, password):
+    """ Calls gocrypt program (giving the password through a pipe). """
 
-def _gocryptfs_binary():
-    """ Checks if gocrypt binary file exists """
-    if os.path.exists("/usr/bin/gocryptfs") or os.path.exists("/usr/local/bin/gocryptfs"):
-        return True
-    return False
+    cmd = ['/usr/bin/gocryptfs'] + params    
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+    proc.stdin.write(password.encode())
+    proc.stdin.close()
+    proc.wait()
+    _sync()
+
+def _restore_user_home_files(paths, username=None, usergroup=None):
+    """ Copies previously saved user files to its original destination """    
+         
+    with os.scandir(paths['backup']) as it:
+        for entry in it:
+            src = os.path.join(paths['backup'], entry.name)
+            dst = os.path.join(paths['plain'], entry.name)
+            if entry.is_file():
+                shutil.copy(src, dst)
+            elif entry.is_dir():
+                shutil.copytree(src, dst)
+            # Set correct owner
+            if username and usergroup:
+                shutil.chown(dst, username, usergroup)
+
+    # Remove backup
+    shutil.rmtree(paths['backup'], ignore_errors=True)
+   
+    # Fix gocrypt files owner in cipher directory
+    if username and usergroup:
+        gocrypt_files = ["gocryptfs.conf","gocryptfs.diriv"]
+        for gocrypt_file in gocrypt_files:
+            path = os.path.join(paths['cipher'], gocrypt_file)
+            if os.path.exists(path):
+                shutil.chown(path, username, usergroup)
 
 def setup(username, usergroup, install_dir, password):
     """ Prepare home folder to be stored using cryfs """
 
-    if _gocryptfs_binary():
+    if os.path.exists("/usr/bin/gocryptfs"):
         paths = {
             'plain': os.path.join(install_dir, 'home', username),
-            'backup': os.path.join(install_dir, 'home', username + '.backup'),
+            'backup': os.path.join(install_dir, 'home', '.' + username + '.backup'),
             'cipher': os.path.join(install_dir, 'home', '.' + username)
         }
 
@@ -68,29 +98,32 @@ def setup(username, usergroup, install_dir, password):
         # Backup home user directory
         with misc.raised_privileges() as __:
             try:
+                # Save all user files before doing anything
                 shutil.move(paths['plain'], paths['backup'])
-                os.makedirs(paths['plain'], mode=0o755, exist_ok=True)
-                os.makedirs(paths['cipher'], mode=0o755, exist_ok=True)
-                # Encrypt (using gocryptfs)
+                _sync()
+
+                # Create user dirs (plain and cipher)
+                os.makedirs(paths['plain'], mode=0o700, exist_ok=True)
+                os.makedirs(paths['cipher'], mode=0o700, exist_ok=True)
+
+                # Set correct owner
+                shutil.chown(paths['plain'], username, usergroup)
+                shutil.chown(paths['cipher'], username, usergroup)
+
                 # gocryptfs -init cipher
+                _gocryptfs(['-init', '-q', '--', paths['cipher']],
+                    username, password)
+                
                 # gocryptfs cipher plain
-
-                # echo "xxx" | gocryptfs cipher plain
-
-                _gocryptfs(('gocryptfs', '-init', paths['cipher']), password)
-
-                # FIXME: Does not work!
-                _gocryptfs(('gocryptfs', paths['cipher'], paths['plain']), password)
+                _gocryptfs(['-q', '--', paths['cipher'], paths['plain']],
+                    username, password)
 
                 # Restore all user home files
-                #shutil.move(os.path.join(paths['backup'], '*'), paths['plain'])
-
-                # Restore owner
-                #for path in paths:
-                #    shutil.chown(path, username, usergroup)
+                _restore_user_home_files(paths, username, usergroup)
             except PermissionError as err:
                 logging.error(err)
-                return
+            except FileNotFoundError as err:
+                logging.warning(err)
     else:
         logging.error("Cannot find gocryptfs program. Is it really installed?")
 
