@@ -41,20 +41,6 @@ def get_page(page_name, params):
     """ Import page code so we can execute it """
     page = None
 
-
-
-#    package = package_root + filename
-#    name = filename.capitalize()
-#    # This instruction is the same as "from package import name"
-#    class_name = getattr(__import__(
-#        package, fromlist=[name]), "CLASS_NAME")
-#    obj = getattr(__import__(package, fromlist=[
-#                    class_name]), class_name)()
-#    self.all_objects.append(obj)
-
-
-
-
     if page_name == "desktop":
         import pages.desktop as desktop
         page = desktop.DesktopAsk(params)
@@ -110,6 +96,9 @@ def get_page(page_name, params):
     elif page_name == "mirrors":
         import pages.mirrors as mirrors
         page = mirrors.Mirrors(params)
+    elif page_name == "cache":
+        import pages.cache as cache
+        page = cache.Cache(params)
     return page
 
 
