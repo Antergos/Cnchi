@@ -115,11 +115,7 @@ class Features(GtkBaseBox):
     def on_show_advanced_features_toggled(self, _widget):
         """ Display or hide advanced features """
         self.show_advanced = self.advanced_checkbutton.get_active()
-        try:
-            if self.features:
-                self.update_advanced_features()
-        except AttributeError:
-            pass
+        self.update_advanced_features()
 
     @staticmethod
     def on_listbox_row_selected(_listbox, listbox_row):
@@ -221,14 +217,18 @@ class Features(GtkBaseBox):
 
     def update_advanced_features(self):
         """ Shows or hides advanced features """
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            box = row[Features.COL_ICON].get_parent()
-            listboxrow = box.get_parent()
-            if feature in features_info.ADVANCED and not self.show_advanced:
-                listboxrow.hide()
-            else:
-                listboxrow.show()
+        try:
+            if self.features:
+                for feature in self.features:
+                    row = self.listbox_rows[feature]
+                    box = row[Features.COL_ICON].get_parent()
+                    listboxrow = box.get_parent()
+                    if feature in features_info.ADVANCED and not self.show_advanced:
+                        listboxrow.hide()
+                    else:
+                        listboxrow.show()
+        except AttributeError as msg:
+            logging.debug(msg)
 
     @staticmethod
     def listbox_sort_by_name(row1, row2, _user_data):
@@ -439,8 +439,3 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Features')

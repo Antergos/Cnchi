@@ -26,6 +26,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Widget that shows a web camera feed """
+
 import logging
 import os
 
@@ -40,6 +42,7 @@ from gi.repository import GdkX11, GstVideo
 
 
 class WebcamWidget(Gtk.DrawingArea):
+    """ Webcam widget """
     __gtype_name__ = 'WebcamWidget'
     def __init__(self, width=160, height=90):
 
@@ -62,7 +65,7 @@ class WebcamWidget(Gtk.DrawingArea):
         Gst.init(None)
 
         self.create_video_pipeline(width, height)
-    
+
         self.connect('destroy', self.on_destroy)
 
     def create_video_pipeline(self, width, height):
@@ -82,7 +85,7 @@ class WebcamWidget(Gtk.DrawingArea):
         # Create GStreamer elements
         self.source = Gst.ElementFactory.make('autovideosrc', 'source')
         self.sink = Gst.ElementFactory.make('autovideosink', 'sink')
- 
+
         if self.source and self.sink:
             #fmt_str = 'video/x-raw, format=(string)YV12, '
             fmt_str = 'video/x-raw, '
@@ -112,12 +115,14 @@ class WebcamWidget(Gtk.DrawingArea):
             self.pipeline.set_state(Gst.State.PLAYING)
 
     def on_destroy(self, _data):
+        """ Widget is destroyed. Stop playing """
         if self.pipeline:
             # Stop playing
             self.pipeline.set_state(Gst.State.NULL)
         self.destroy()
 
     def on_sync_message(self, _bus, msg):
+        """ This is needed to make the video output in our DrawingArea """
         if msg.get_structure().get_name() == 'prepare-window-handle':
             msg.src.set_property('force-aspect-ratio', True)
             msg.src.set_window_handle(self.xid)
@@ -127,6 +132,7 @@ class WebcamWidget(Gtk.DrawingArea):
         logging.error(msg.parse_error())
 
     def clicked(self, _event_box, _event_button):
+        """ User clicks on camera widget """
         pass
 
 GObject.type_register(WebcamWidget)
