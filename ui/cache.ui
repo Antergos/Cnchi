@@ -17,7 +17,7 @@
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <child>
-                    <object class="GtkImage" id="image1">
+                    <object class="GtkImage" id="image_warning">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
@@ -75,7 +75,7 @@
                 <property name="halign">center</property>
                 <property name="spacing">5</property>
                 <child>
-                    <object class="GtkLabel" id="select_drive_label">
+                    <object class="GtkLabel" id="select_part_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">end</property>
@@ -88,11 +88,11 @@
                     </packing>
                 </child>
                 <child>
-                    <object class="GtkComboBoxText" id="select_drive">
+                    <object class="GtkComboBoxText" id="select_part">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <signal name="changed" handler="on_select_drive_changed" swapped="no"/>
+                        <signal name="changed" handler="select_part_changed" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
