@@ -36,7 +36,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">center</property>
-                        <property name="label" translatable="yes">Use an additional cache (optional)\nThis installer needs to download a TON of packages from the Internet!</property>
+                        <property name="label" translatable="yes"></property>
                         <property name="use_markup">True</property>
                         <property name="wrap">True</property>
                     </object>
@@ -58,7 +58,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
-                <property name="label" translatable="yes">You can use an aditional drive to use as packages' cache.\nIn case you need to restart this installation you won't be\nneeding to download all previous downloaded packages again\n\nPlease, choose now the drive to use as cache.\nIt needs to be be already formated and unmounted!</property>
+                <property name="label" translatable="yes"></property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
             </object>

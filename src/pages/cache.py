@@ -70,14 +70,14 @@ class Cache(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('info_label')
-        par1 = _("You can use an aditional device or partition to use as packages' cache.\n"
-                 "In case you need to restart this installation you won't be needing to\n"
+        par1 = _("You can use an aditional device or partition to use as packages' cache. "
+                 "In case you need to restart this\ninstallation you won't be needing to "
                  "re-download all packages again.")
         par2 = _("It <b>cannot</b> be the same device or partition where you "
                  "are installing Antergos.")
-        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b>\n"
-                 "If you select a <b>partition</b> instead, its contents will be <b>preserved</b>.")
-        par4 = _("When choosing a partition, you must be sure that it is alread formated\n"
+        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b> On the "
+                 "other hand, if you select a <b>partition</b> its contents will be <b>preserved</b>.")
+        par4 = _("When choosing a partition, you must be sure that it is alread formated "
                  "and unmounted!")
         par5 = _("Please, choose now the device (or partition) to use as cache.")
         txt = "{0}\n\n{1}\n\n{2}\n\n{3}\n\n{4}".format(par1, par2, par3, par4, par5)
