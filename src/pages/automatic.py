@@ -49,6 +49,13 @@ import parted3.fs_module as fs
 
 DEST_DIR = "/install"
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 class InstallationAutomatic(GtkBaseBox):
     """ Automatic Installation Screen """
@@ -149,10 +156,10 @@ class InstallationAutomatic(GtkBaseBox):
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
                 # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size_in_gigabytes = int(
-                    (dev.length * dev.sectorSize) / 1000000000)
+                size = dev.length * dev.sectorSize
+                size_gbytes = int(parted.formatBytes(size, 'GB'))
                 line = '{0} [{1} GB] ({2})'
-                line = line.format(dev.model, size_in_gigabytes, dev.path)
+                line = line.format(dev.model, size_gbytes, dev.path)
                 self.device_store.append_text(line)
                 self.devices[line] = dev.path
                 self.bootloader_device_entry.append_text(line)
@@ -365,15 +372,3 @@ class InstallationAutomatic(GtkBaseBox):
             ssd)
 
         self.installation.start()
-
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-    run('InstallationAutomatic')

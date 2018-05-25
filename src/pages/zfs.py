@@ -47,6 +47,12 @@ from installation import wrapper
 
 import parted3.fs_module as fs
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 COL_USE_ACTIVE = 0
 COL_USE_VISIBLE = 1
@@ -183,13 +189,13 @@ class InstallationZFS(GtkBaseBox):
                 combo_iter = model.iter_next(combo_iter)
         return found
 
-    def on_bootloader_entry_changed(self, widget):
+    def on_bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
         if line is not None:
             self.bootloader = line.lower()
 
-    def on_use_device_toggled(self, widget, path):
+    def on_use_device_toggled(self, _widget, path):
         """ Use device clicked """
         status = self.device_list_store[path][COL_USE_ACTIVE]
         self.device_list_store[path][COL_USE_ACTIVE] = not status
@@ -255,22 +261,15 @@ class InstallationZFS(GtkBaseBox):
             # Skip cdrom, raid, lvm volumes or encryptfs
             if (not dev.path.startswith("/dev/sr") and
                     not dev.path.startswith("/dev/mapper")):
-                size_in_gigabytes = int(
-                    (dev.length * dev.sectorSize) / 1000000000)
+                size = dev.length * dev.sectorSize
+                size_gbytes = int(parted.formatBytes(size, 'GB'))
                 # Use check | Disk (sda) | Size(GB) | Name (device name)
                 if dev.path.startswith("/dev/"):
                     path = dev.path[len("/dev/"):]
                 else:
                     path = dev.path
                 disk_id = self.ids.get(path, "")
-                row = [
-                    False,
-                    True,
-                    True,
-                    path,
-                    size_in_gigabytes,
-                    dev.model,
-                    disk_id]
+                row = [False, True, True, path, size_gbytes, dev.model, disk_id]
                 self.device_list_store.append(None, row)
 
         self.device_list.set_model(self.device_list_store)
@@ -423,7 +422,7 @@ class InstallationZFS(GtkBaseBox):
 
         return is_ok
 
-    def on_pool_type_help_btn_clicked(self, widget):
+    def on_pool_type_help_btn_clicked(self, _widget):
         """ User clicked pool type help button """
         combo = self.ui.get_object('pool_type_combo')
         tree_iter = combo.get_active_iter()
@@ -459,7 +458,7 @@ class InstallationZFS(GtkBaseBox):
         if msg:
             show.message(self.get_main_window(), msg)
 
-    def on_force_4k_help_btn_clicked(self, widget):
+    def on_force_4k_help_btn_clicked(self, _widget):
         """ Show 4k help to the user """
         msg = _("Advanced Format (AF) is a new disk format which natively "
                 "uses a 4,096 byte instead of 512 byte sector size. To "
@@ -472,7 +471,7 @@ class InstallationZFS(GtkBaseBox):
                 "bytes by selecting this option.")
         show.message(self.get_main_window(), msg)
 
-    def on_encrypt_swap_btn_toggled(self, widget):
+    def on_encrypt_swap_btn_toggled(self, _widget):
         """ Swap encrypt button """
         self.zfs_options["encrypt_swap"] = not self.zfs_options["encrypt_swap"]
 
@@ -490,14 +489,14 @@ class InstallationZFS(GtkBaseBox):
         self.zfs_options["encrypt_disk"] = status
         self.settings.set('use_luks', status)
 
-    def on_pool_name_btn_toggled(self, widget):
+    def on_pool_name_btn_toggled(self, _widget):
         """ Use a specific pool name """
         obj = self.ui.get_object('pool_name_entry')
         status = not obj.get_sensitive()
         obj.set_sensitive(status)
         self.zfs_options["use_pool_name"] = status
 
-    def on_force_4k_btn_toggled(self, widget):
+    def on_force_4k_btn_toggled(self, _widget):
         """ Force 4k sector size """
         self.zfs_options["force_4k"] = not self.zfs_options["force_4k"]
 
@@ -541,7 +540,7 @@ class InstallationZFS(GtkBaseBox):
         txt = self.ui.get_object("swap_size_entry").get_text()
         try:
             self.zfs_options["swap_size"] = int(txt)
-        except ValueError as verror:
+        except ValueError as _verror:
             # Error reading value, set 8GB as default
             self.zfs_options["swap_size"] = 8192
 
@@ -562,6 +561,7 @@ class InstallationZFS(GtkBaseBox):
 
     @staticmethod
     def pool_name_is_valid(name):
+        """ Checks that pool name is a valid name """
         allowed = re.search(r'([a-zA-Z0-9_\-\.: ])+', name)
         reserved = re.match(r'c[0-9]([a-zA-Z0-9_\-\.: ])+', name)
 
@@ -1277,16 +1277,3 @@ class InstallationZFS(GtkBaseBox):
             self.fs_devices)
 
         self.installation.start()
-
-
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    # When testing, no _() is available
-
-    from test_screen import _, run
-    run('zfs')

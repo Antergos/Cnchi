@@ -29,14 +29,13 @@
 
 """ Cache selection screen """
 
-import os
 import logging
+import os
+import subprocess
 
 import parted
 
 import misc.extra as misc
-from misc.run_cmd import call
-#import parted3.fs_module as fs
 import show_message as show
 
 import gi
@@ -75,8 +74,9 @@ class Cache(GtkBaseBox):
                  "re-download all packages again.")
         par2 = _("It <b>cannot</b> be the same device or partition where you "
                  "are installing Antergos.")
-        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b> On the "
-                 "other hand, if you select a <b>partition</b> its contents will be <b>preserved</b>.")
+        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b> "
+                 "On the other hand, if you select a <b>partition</b> its contents will be "
+                 "<b>preserved</b>.")
         par4 = _("When choosing a partition, you must be sure that it is alread formated "
                  "and unmounted!")
         par5 = _("Please, choose now the device (or partition) to use as cache.")
@@ -100,20 +100,20 @@ class Cache(GtkBaseBox):
             # avoid cdrom and any raid, lvm volumes or encryptfs
             if not dev.path.startswith("/dev/sr") and \
                not dev.path.startswith("/dev/mapper"):
-                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size_in_gigabytes = int(
-                    (dev.length * dev.sectorSize) / 1000000000)
-                line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
+                size = dev.length * dev.sectorSize
+                size_gbytes = int(parted.formatBytes(size, 'GB'))
+                line = '{0} [{1} GB] ({2})'.format(dev.model, size_gbytes, dev.path)
                 self.part_store.append_text(line)
                 self.devices_and_partitions[line] = (dev.path, None)
                 # Now check device partitions
                 disk = parted.newDisk(dev)
                 for partition in disk.partitions:
                     if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
-                        length = int(
-                            (partition.geometry.length * dev.sectorSize) / (1024 * 1024 * 1024))
-                        if length > 0:
-                            line = '\t{0} [{1} GB]'.format(partition.path, length)
+                        size = partition.geometry.length * dev.sectorSize
+                        size_gbytes = int(parted.formatBytes(size, 'GB'))
+                        if size_gbytes > 0:
+                            line = '\t{0} [{1} GB]'.format(
+                                partition.path, size_gbytes)
                             self.part_store.append_text(line)
                             self.devices_and_partitions[line] = (dev.path, partition.path)
 
@@ -173,12 +173,34 @@ class Cache(GtkBaseBox):
             mount_dir = ("/mnt/cnchi-cache")
             if not os.path.exists(mount_dir):
                 os.makedirs(mount_dir)
-            call(["mount", partition_path, mount_dir])
-            logging.debug("%s partition mounted on %s to be used as xz cache",
-                          partition_path, mount_dir)
-            return mount_dir
+            if self.mount_partition(partition_path, mount_dir):
+                logging.debug("%s partition mounted on %s to be used as xz cache",
+                              partition_path, mount_dir)
+                return mount_dir
+            else:
+                logging.warning("Could not mount %s in %s to be used as xz cache",
+                                partition_path, mount_dir)
+                return None
         else:
             return None
+
+    @staticmethod
+    def mount_partition(path, mount_dir):
+        """ Mounts device path in mount_dir """
+        try:
+            cmd = ["mount", path, mount_dir]
+            output = subprocess.check_output(
+                cmd,
+                stdin=None,
+                stderr=subprocess.STDOUT,
+                timeout=None)
+            output = output.decode()
+            if output:
+                logging.debug(output.strip('\n'))
+            return True
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
+            logging.error(err)
+            return False
 
     def store_values(self):
         """ Store selected values """

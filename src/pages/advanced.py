@@ -42,6 +42,7 @@ import misc.extra as misc
 import misc.validation as validation
 from misc.run_cmd import call
 
+import parted
 import parted3.partition_module as pm
 import parted3.fs_module as fs
 import parted3.lvm as lvm
@@ -53,6 +54,14 @@ from installation import action
 import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
@@ -327,13 +336,11 @@ class InstallationAdvanced(GtkBaseBox):
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
                 if (not dev.path.startswith("/dev/sr") and
                         not dev.path.startswith("/dev/mapper")):
-                    # Hard drives measure themselves assuming
-                    # kilo=1000, mega=1mil, etc
-                    size_in_gigabytes = int(
-                        (dev.length * dev.sectorSize) / 1000000000)
+                    size = dev.length * dev.sectorSize
+                    size_gbytes = int(parted.formatBytes(size, 'GB'))
                     line = '{0} [{1} GB] ({2})'.format(
                         dev.model,
-                        size_in_gigabytes,
+                        size_gbytes,
                         dev.path)
                     self.bootloader_device_entry.append_text(line)
                     self.bootloader_devices[line] = dev.path
@@ -2449,16 +2456,3 @@ class InstallationAdvanced(GtkBaseBox):
             self.ssd,
             self.blvm)
         self.installation.start()
-
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('InstallationAdvanced')

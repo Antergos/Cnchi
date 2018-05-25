@@ -268,6 +268,7 @@ class MirrorListBox(Gtk.ListBox):
             logging.warning(err)
 
     def trim_mirror_url(self, url):
+        """ Get url from full mirrorlist line """
         url = url.ltrim("Server = ")
         url = url.rtrim("/$repo/os/$arch")
         return url
