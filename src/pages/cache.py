@@ -47,6 +47,8 @@ from pages.gtkbasebox import GtkBaseBox
 class Cache(GtkBaseBox):
     """ Cache selection screen"""
 
+    CACHE_DIRECTORY = "/mnt/cnchi-cache"
+
     def __init__(self, params, prev_page="features", next_page="mirrors"):
         super().__init__(self, params, "cache", prev_page, next_page)
 
@@ -138,6 +140,7 @@ class Cache(GtkBaseBox):
         self.translate_ui()
         self.populate_partitions()
         self.show_all()
+        self.umount_cache()
 
     def prepare_whole_device(self, device_path):
         """ Function that deletes device and creates a partition
@@ -160,6 +163,22 @@ class Cache(GtkBaseBox):
 
         return None
 
+    def umount_cache(self):
+        """ Unmount cache directory (just in case) """
+        if os.path.exists(Cache.CACHE_DIRECTORY):
+            try:
+                cmd = ["umount", Cache.CACHE_DIRECTORY]
+                output = subprocess.check_output(
+                    cmd,
+                    stdin=None,
+                    stderr=subprocess.STDOUT,
+                    timeout=None)
+                output = output.decode()
+                if output:
+                    logging.debug(output.strip('\n'))
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
+                logging.warning(err)
+
     def mount_cache(self, device_path, partition_path):
         """ Mounts cache partition into a folder
         If only a device is specified, cnchi will erase
@@ -170,7 +189,7 @@ class Cache(GtkBaseBox):
                 partition_path = self.prepare_whole_device(device_path)
                 if not partition_path:
                     return None
-            mount_dir = ("/mnt/cnchi-cache")
+            mount_dir = Cache.CACHE_DIRECTORY
             if not os.path.exists(mount_dir):
                 os.makedirs(mount_dir)
             if self.mount_partition(partition_path, mount_dir):
