@@ -32,18 +32,18 @@
 import os
 import logging
 
+import parted
+
+import misc.extra as misc
+from misc.run_cmd import call
+#import parted3.fs_module as fs
+import show_message as show
+
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-import parted
-
 from pages.gtkbasebox import GtkBaseBox
-
-import misc.extra as misc
-from misc.run_cmd import call
-import parted3.fs_module as fs
-
 
 class Cache(GtkBaseBox):
     """ Cache selection screen"""
@@ -51,15 +51,17 @@ class Cache(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "cache", prev_page, next_page)
 
-        self.cache_partition = None
+        # Stores device and partition tuple that will be used as cache
+        # if partition is None, cnchi will try to use the whole device
+        self.cache_path = (None, None)
         self.part_store = self.ui.get_object('select_part')
         self.part_label = self.ui.get_object('select_part_label')
-        self.partitions = {}
+        self.devices_and_partitions = {}
 
     def translate_ui(self):
         """ Translate widgets """
         txt = _("Select cache partition:")
-        self.device_label.set_markup(txt)
+        self.part_label.set_markup(txt)
 
         label = self.ui.get_object('text_info')
         txt = _("Use an additional cache (optional)\n"
@@ -68,28 +70,31 @@ class Cache(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.ui.get_object('info_label')
-        txt = _("You can use an aditional partition to use as packages' cache.\n"
-                "In case you need to restart this installation you won't be\n"
-                "needing to download all previous downloaded packages again\n\n"
-                "It cannot be the same device where you are installing Antergos\n\n"
-                "Please, choose now the device (and partition) to use as cache.\n"
-                "It needs to be be already formated and unmounted!")
+        par1 = _("You can use an aditional device or partition to use as packages' cache.\n"
+                 "In case you need to restart this installation you won't be needing to\n"
+                 "re-download all packages again.")
+        par2 = _("It <b>cannot</b> be the same device or partition where you "
+                 "are installing Antergos.")
+        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b>\n"
+                 "If you select a <b>partition</b> instead, its contents will be <b>preserved</b>.")
+        par4 = _("When choosing a partition, you must be sure that it is alread formated\n"
+                 "and unmounted!")
+        par5 = _("Please, choose now the device (or partition) to use as cache.")
+        txt = "{0}\n\n{1}\n\n{2}\n\n{3}\n\n{4}".format(par1, par2, par3, par4, par5)
         label.set_markup(txt)
 
         self.header.set_subtitle(_("Cache selection (optional)"))
 
     def populate_partitions(self):
-        """ Fill list with devices """
+        """ Fill list with devices' partitions """
         with misc.raised_privileges() as __:
             device_list = parted.getAllDevices()
 
         self.part_store.remove_all()
-        self.partitions = {}
+        self.devices_and_partitions = {}
 
         self.part_store.append_text("None")
-        self.partitions["None"] = None
-
-        devices = {}
+        self.devices_and_partitions["None"] = (None, None)
 
         for dev in device_list:
             # avoid cdrom and any raid, lvm volumes or encryptfs
@@ -99,11 +104,20 @@ class Cache(GtkBaseBox):
                 size_in_gigabytes = int(
                     (dev.length * dev.sectorSize) / 1000000000)
                 line = '{0} [{1} GB] ({2})'.format(dev.model, size_in_gigabytes, dev.path)
-                #self.device_store.append_text(line)
-                devices[line] = dev.path
-                logging.debug(line)
+                self.part_store.append_text(line)
+                self.devices_and_partitions[line] = (dev.path, None)
+                # Now check device partitions
+                disk = parted.newDisk(dev)
+                for partition in disk.partitions:
+                    if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
+                        length = int(
+                            (partition.geometry.length * dev.sectorSize) / (1024 * 1024 * 1024))
+                        if length > 0:
+                            line = '\t{0} [{1} GB]'.format(partition.path, length)
+                            self.part_store.append_text(line)
+                            self.devices_and_partitions[line] = (dev.path, partition.path)
 
-        self.select_first_combobox_item(self.device_store)
+        self.select_first_combobox_item(self.part_store)
 
     @staticmethod
     def select_first_combobox_item(combobox):
@@ -114,10 +128,9 @@ class Cache(GtkBaseBox):
 
     def select_part_changed(self, _widget):
         """ User selected another drive """
-        line = self.device_store.get_active_text()
+        line = self.part_store.get_active_text()
         if line is not None:
-            self.cache_device = self.devices[line]
-            print("****", self.cache_device)
+            self.cache_path = self.devices_and_partitions[line]
         self.forward_button.set_sensitive(True)
 
     def prepare(self, direction):
@@ -126,26 +139,56 @@ class Cache(GtkBaseBox):
         self.populate_partitions()
         self.show_all()
 
-    def mount_device(self):
-        """ Mounts cache device into a temporary folder """
-        device = self.cache_partition
-        if device:
+    def prepare_whole_device(self, device_path):
+        """ Function that deletes device and creates a partition
+        to be used as cache for xz packages """
+        with misc.raised_privileges() as __:
+            dev = parted.getDevice(device_path)
+            # Create a new device's partition table
+            disk = parted.freshDisk(dev, 'gpt')
+            geometry = parted.Geometry(start=0, length=dev.length, device=dev)
+            new_partition = parted.Partition(
+                disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
+            disk.addPartition(new_partition)
+
+            txt = _("Device {} will be fully erased! Are you sure?").format(device_path)
+            response = show.question(self.get_main_window(), txt)
+            if response == Gtk.ResponseType.YES:
+                disk.commit()
+                if len(disk.partitions) == 1:
+                    return disk.partitions[0]
+
+        return None
+
+    def mount_cache(self, device_path, partition_path):
+        """ Mounts cache partition into a folder
+        If only a device is specified, cnchi will erase
+        it and create a partition in it """
+        if device_path:
+            if not partition_path:
+                # Use the whole device as cache.
+                partition_path = self.prepare_whole_device(device_path)
+                if not partition_path:
+                    return None
             mount_dir = ("/mnt/cnchi-cache")
             if not os.path.exists(mount_dir):
                 os.makedirs(mount_dir)
-            call(["mount", device, mount_dir])
+            call(["mount", partition_path, mount_dir])
+            logging.debug("%s partition mounted on %s to be used as xz cache",
+                          partition_path, mount_dir)
             return mount_dir
         else:
             return None
 
     def store_values(self):
         """ Store selected values """
-        
-        xz_cache_dir = self.mount_device()
+        device_path, partition_path = self.cache_path
+        xz_cache_dir = self.mount_cache(device_path, partition_path)
         if xz_cache_dir:
             xz_cache = self.settings.get('xz_cache')
             xz_cache.append(xz_cache_dir)
             self.settings.set('xz_cache', xz_cache)
+            logging.debug("%s added to xz cache", xz_cache_dir)
         return True
 
 # When testing, no _() is available
@@ -154,4 +197,3 @@ try:
 except NameError as err:
     def _(message):
         return message
-
