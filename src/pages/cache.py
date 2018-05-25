@@ -48,7 +48,7 @@ from pages.gtkbasebox import GtkBaseBox
 class Cache(GtkBaseBox):
     """ Cache selection screen"""
 
-    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
+    def __init__(self, params, prev_page="features", next_page="mirrors"):
         super().__init__(self, params, "cache", prev_page, next_page)
 
         # Stores device and partition tuple that will be used as cache

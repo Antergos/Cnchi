@@ -305,7 +305,7 @@ class MirrorListBox(Gtk.ListBox):
 
 class Mirrors(GtkBaseBox):
     """ Page that shows mirrolists so the user can arrange them manually """
-    def __init__(self, params, prev_page="features", next_page="installation_ask"):
+    def __init__(self, params, prev_page="cache", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
         # Set up lists

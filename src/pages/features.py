@@ -81,7 +81,7 @@ class Features(GtkBaseBox):
     COL_DESCRIPTION = 2
     COL_SWITCH = 3
 
-    def __init__(self, params, prev_page="desktop", next_page="mirrors"):
+    def __init__(self, params, prev_page="desktop", next_page="cache"):
         """ Initializes features ui """
         super().__init__(self, params, "features", prev_page, next_page)
 

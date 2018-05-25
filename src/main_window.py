@@ -41,6 +41,7 @@ import misc.extra as misc
 import pages.welcome
 import pages.language
 import pages.location
+import pages.cache
 import pages.check
 import pages.desktop
 import pages.features
@@ -339,8 +340,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.pages["check"] = pages.check.Check(self.params)
         self.pages["location"] = pages.location.Location(self.params)
 
-        self.pages["mirrors"] = pages.mirrors.Mirrors(self.params)
-
         self.pages["timezone"] = pages.timezone.Timezone(self.params)
 
         if self.settings.get('desktop_ask'):
@@ -354,6 +353,9 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["features"] = pages.features.Features(
                 self.params,
                 prev_page='keymap')
+
+        self.pages["cache"] = pages.cache.Cache(self.params)
+        self.pages["mirrors"] = pages.mirrors.Mirrors(self.params)
 
         self.pages["installation_ask"] = pages.ask.InstallationAsk(
             self.params)
