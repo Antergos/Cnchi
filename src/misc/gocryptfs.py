@@ -28,6 +28,7 @@ import logging
 import os
 import shutil
 import subprocess
+import tempfile
 
 try:
     import misc.extra as misc
@@ -47,21 +48,22 @@ def _sync():
 
 def _gocryptfs(params, username, password):
     """ Calls gocrypt program (giving the password through a pipe). """
+    try:
+        cmd = ['/usr/bin/gocryptfs'] + params
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+        proc.stdin.write(password.encode())
+        proc.stdin.close()
+        proc.wait()
+        _sync()
+    except subprocess.CalledProcessError as why:
+        logging.warning("Error calling gocryptfs: %s", why)
 
-    cmd = ['/usr/bin/gocryptfs'] + params    
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-    proc.stdin.write(password.encode())
-    proc.stdin.close()
-    proc.wait()
-    _sync()
-
-def _restore_user_home_files(paths, username=None, usergroup=None):
-    """ Copies previously saved user files to its original destination """    
-         
-    with os.scandir(paths['backup']) as it:
-        for entry in it:
-            src = os.path.join(paths['backup'], entry.name)
-            dst = os.path.join(paths['plain'], entry.name)
+def _copy_folder_contents(src_path, dst_path, username=None, usergroup=None):
+    """ Copies all files from user's home folder """
+    with os.scandir(src_path) as items:
+        for entry in items:
+            src = os.path.join(src_path, entry.name)
+            dst = os.path.join(dst_path, entry.name)
             if entry.is_file():
                 shutil.copy(src, dst)
             elif entry.is_dir():
@@ -70,12 +72,14 @@ def _restore_user_home_files(paths, username=None, usergroup=None):
             if username and usergroup:
                 shutil.chown(dst, username, usergroup)
 
-    # Remove backup
-    shutil.rmtree(paths['backup'], ignore_errors=True)
-   
+def _restore_user_home_files(paths, username=None, usergroup=None):
+    """ Copies previously saved user files to its original destination """
+
+    _copy_folder_contents(paths['backup'], paths['plain'])
+
     # Fix gocrypt files owner in cipher directory
     if username and usergroup:
-        gocrypt_files = ["gocryptfs.conf","gocryptfs.diriv"]
+        gocrypt_files = ["gocryptfs.conf", "gocryptfs.diriv"]
         for gocrypt_file in gocrypt_files:
             path = os.path.join(paths['cipher'], gocrypt_file)
             if os.path.exists(path):
@@ -87,43 +91,48 @@ def setup(username, usergroup, install_dir, password):
     if os.path.exists("/usr/bin/gocryptfs"):
         paths = {
             'plain': os.path.join(install_dir, 'home', username),
-            'backup': os.path.join(install_dir, 'home', '.' + username + '.backup'),
             'cipher': os.path.join(install_dir, 'home', '.' + username)
         }
 
-        logging.debug("User folder (plain): %s", paths['plain'])
-        logging.debug("User folder (backup): %s", paths['backup'])
-        logging.debug("User folder (cipher): %s", paths['cipher'])
+        with tempfile.TemporaryDirectory() as backup_dir:
+            paths['backup'] = backup_dir
+            logging.debug("User folder (plain): %s", paths['plain'])
+            logging.debug("User folder (backup): %s", paths['backup'])
+            logging.debug("User folder (cipher): %s", paths['cipher'])
 
-        # Backup home user directory
-        with misc.raised_privileges() as __:
-            try:
-                # Save all user files before doing anything
-                shutil.move(paths['plain'], paths['backup'])
-                _sync()
+            # Backup home user directory
+            with misc.raised_privileges() as __:
+                try:
+                    # Save all user files before doing anything
+                    _copy_folder_contents(paths['plain'], paths['backup'])
+                    _sync()
 
-                # Create user dirs (plain and cipher)
-                os.makedirs(paths['plain'], mode=0o700, exist_ok=True)
-                os.makedirs(paths['cipher'], mode=0o700, exist_ok=True)
+                    # Create user dirs (plain and cipher)
+                    os.makedirs(paths['plain'], mode=0o700, exist_ok=True)
+                    os.makedirs(paths['cipher'], mode=0o700, exist_ok=True)
 
-                # Set correct owner
-                shutil.chown(paths['plain'], username, usergroup)
-                shutil.chown(paths['cipher'], username, usergroup)
+                    # Set correct owner
+                    shutil.chown(paths['plain'], username, usergroup)
+                    shutil.chown(paths['cipher'], username, usergroup)
 
-                # gocryptfs -init cipher
-                _gocryptfs(['-init', '-q', '--', paths['cipher']],
-                    username, password)
-                
-                # gocryptfs cipher plain
-                _gocryptfs(['-q', '--', paths['cipher'], paths['plain']],
-                    username, password)
+                    # gocryptfs -init cipher
+                    _gocryptfs(['-init', '-q', '--', paths['cipher']],
+                            username, password)
 
-                # Restore all user home files
-                _restore_user_home_files(paths, username, usergroup)
-            except PermissionError as err:
-                logging.error(err)
-            except FileNotFoundError as err:
-                logging.warning(err)
+                    # Before mounting, delete user's home folder
+                    shutil.rmtree(paths['plain'])
+                    os.makedirs(paths['plain'], mode=0o700)
+
+                    # gocryptfs cipher plain
+                    _gocryptfs(['-q', '--', paths['cipher'], paths['plain']],
+                            username, password)
+
+                    # Restore all user home files
+                    _restore_user_home_files(paths, username, usergroup)
+                except (shutil.Error, PermissionError, LookupError) as err:
+                    logging.error(err)
+                except FileNotFoundError as err:
+                    logging.warning(err)
     else:
         logging.error("Cannot find gocryptfs program. Is it really installed?")
 

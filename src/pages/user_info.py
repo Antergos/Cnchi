@@ -244,7 +244,7 @@ class UserInfo(GtkBaseBox):
         # (user must use one or the other but not both)
         if self.settings.get('use_luks'):
             self.login['encrypt'].hide()
-        
+
         # TODO: Setup installed system so it mounts encrypted home folder on boot
         # FIXME: We need to deactivate the encrypt widget as it is not finished
         self.login['encrypt'].hide()
