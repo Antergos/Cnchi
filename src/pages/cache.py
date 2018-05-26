@@ -110,16 +110,19 @@ class Cache(GtkBaseBox):
                 self.part_store.append_text(line)
                 self.devices_and_partitions[line] = (dev.path, None)
                 # Now check device partitions
-                disk = parted.newDisk(dev)
-                for partition in disk.partitions:
-                    if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
-                        size = partition.geometry.length * dev.sectorSize
-                        size_gbytes = int(parted.formatBytes(size, 'GB'))
-                        if size_gbytes > 0:
-                            line = '\t{0} [{1} GB]'.format(
-                                partition.path, size_gbytes)
-                            self.part_store.append_text(line)
-                            self.devices_and_partitions[line] = (dev.path, partition.path)
+                try:
+                    disk = parted.newDisk(dev)
+                    for partition in disk.partitions:
+                        if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
+                            size = partition.geometry.length * dev.sectorSize
+                            size_gbytes = int(parted.formatBytes(size, 'GB'))
+                            if size_gbytes > 0:
+                                line = '\t{0} [{1} GB]'.format(
+                                    partition.path, size_gbytes)
+                                self.part_store.append_text(line)
+                                self.devices_and_partitions[line] = (dev.path, partition.path)
+                except parted._ped.DiskException as err:
+                    logging.warning(err)
 
         self.select_first_combobox_item(self.part_store)
 
