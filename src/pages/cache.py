@@ -165,7 +165,7 @@ class Cache(GtkBaseBox):
             if response == Gtk.ResponseType.YES:
                 disk.commit()
                 if len(disk.partitions) == 1:
-                    return disk.partitions[0]
+                    return disk.partitions[0].path
 
         return None
 

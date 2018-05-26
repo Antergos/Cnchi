@@ -1,3 +1,4 @@
+[2018-05-26 02:50:03 +0200]  Using whole drive as cache is not working                                  karasu      {abd51cc8}
 [2018-05-26 02:43:21 +0200]  Small text modification                                                    karasu      {493aea6d}
 [2018-05-26 02:37:58 +0200]  Try to catch disklabel exception (parted)                                  karasu      {e979138f}
 [2018-05-26 02:32:09 +0200]  Text changes                                                               karasu      {58be1882}
