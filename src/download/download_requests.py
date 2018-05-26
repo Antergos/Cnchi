@@ -60,7 +60,7 @@ def get_md5(file_name):
 class CopyToCache(threading.Thread):
     ''' Class thread to copy a xz file to the user's
         provided cache directory '''
-    
+
     PACMAN_ISO_CACHE = "/var/cache/pacman/pkg"
 
     def __init__(self, origin, xz_cache_dirs):
@@ -71,6 +71,7 @@ class CopyToCache(threading.Thread):
     def run(self):
         basename = os.path.basename(self.origin)
         for xz_cache_dir in self.xz_cache_dirs:
+            # Avoid using the ISO itself
             if xz_cache_dir != CopyToCache.PACMAN_ISO_CACHE:
                 dst = os.path.join(xz_cache_dir, basename)
                 # Try to copy the file, do not worry if it's not possible
@@ -252,12 +253,9 @@ class Download(object):
 
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
-                # TODO : Rethink this. Provided cache can be the ISO itself, so we
-                # can leave the ISO without any space and the installation will fail.
-
-                # copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                # self.copy_to_cache_threads += [copy_to_cache_thread]
-                # copy_to_cache_thread.start()
+                copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
+                self.copy_to_cache_threads += [copy_to_cache_thread]
+                copy_to_cache_thread.start()
 
                 # Get out of the for loop, as we managed
                 # to download the package
