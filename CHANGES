@@ -1,3 +1,4 @@
+[2018-05-25 20:17:58 +0200]  Umount cache folder when loading cache page                                karasu      {b1691154}
 [2018-05-25 20:12:13 +0200]  Use parted.formatBytes                                                     karasu      {9117c6e3}
 [2018-05-25 19:34:27 +0200]  Use full page width                                                        karasu      {68b65c30}
 [2018-05-25 19:27:18 +0200]  Call cache page (between features and mirrors pages)                       karasu      {d9fe018d}

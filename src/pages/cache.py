@@ -65,29 +65,31 @@ class Cache(GtkBaseBox):
         self.part_label.set_markup(txt)
 
         label = self.ui.get_object('text_info')
-        txt = _("Use an additional cache (optional)\n"
+        txt = _("It is recommended to use an additional cache\n"
                 "This installer needs to download a TON of packages from the Internet!")
-        txt = "<b>{0}</b>".format(txt)
+        txt = "<b>{}</b>".format(txt)
         label.set_markup(txt)
 
         label = self.ui.get_object('info_label')
         par1 = _("You can use an aditional device or partition to use as packages' cache. "
-                 "In case you need to restart this\ninstallation you won't be needing to "
+                 "In case you need to restart this installation\nyou won't be needing to "
                  "re-download all packages again.")
-        par2 = _("It <b>cannot</b> be the same device or partition where you "
+        par2 = _("- It <b>cannot</b> be the same device or partition where you "
                  "are installing Antergos.")
-        par3 = _("If you select a <b>device</b>, its contents will be fully <b>DELETED!</b> "
-                 "On the other hand, if you select a <b>partition</b> its contents will be "
-                 "<b>preserved</b>.")
-        par4 = _("When choosing a partition, you must be sure that it is alread formated "
-                 "and unmounted!")
-        par5 = _("Please, choose now the device (or partition) to use as cache.")
-        txt = "{0}\n\n{1}\n\n{2}\n\n{3}\n\n{4}".format(par1, par2, par3, par4, par5)
+        par3 = _("- If you select a <b>device</b>, its contents will be fully <b>DELETED!</b>")
+        par4 = _("- If you select a <b>partition</b> its contents will be <b>preserved</b> "
+                 "(you must be sure that it is alread formated and unmounted!)")
+        par5 = _("If this is not the first time you are running this installer you "
+                 "need to select a partition, and not a drive (selecting a drive will\n"
+                 "delete the packages you have already downloaded).")
+        par6 = _("Please, choose now the device (or partition) to use as cache.")
+        txt = "{0}\n\n{1}\n{2}\n{3}\n\n{4}\n\n{5}".format(
+            par1, par2, par3, par4, par5, par6)
         label.set_markup(txt)
 
         self.header.set_subtitle(_("Cache selection (optional)"))
 
-    def populate_partitions(self):
+    def populate_devices_and_partitions(self):
         """ Fill list with devices' partitions """
         with misc.raised_privileges() as __:
             device_list = parted.getAllDevices()
@@ -138,7 +140,7 @@ class Cache(GtkBaseBox):
     def prepare(self, direction):
         """ Get screen ready """
         self.translate_ui()
-        self.populate_partitions()
+        self.populate_devices_and_partitions()
         self.show_all()
         self.umount_cache()
 
@@ -163,7 +165,8 @@ class Cache(GtkBaseBox):
 
         return None
 
-    def umount_cache(self):
+    @staticmethod
+    def umount_cache():
         """ Unmount cache directory (just in case) """
         if os.path.exists(Cache.CACHE_DIRECTORY):
             try:
@@ -227,9 +230,10 @@ class Cache(GtkBaseBox):
         xz_cache_dir = self.mount_cache(device_path, partition_path)
         if xz_cache_dir:
             xz_cache = self.settings.get('xz_cache')
-            xz_cache.append(xz_cache_dir)
-            self.settings.set('xz_cache', xz_cache)
-            logging.debug("%s added to xz cache", xz_cache_dir)
+            if xz_cache_dir not in xz_cache:
+                xz_cache.append(xz_cache_dir)
+                self.settings.set('xz_cache', xz_cache)
+                logging.debug("%s added to xz cache", xz_cache_dir)
         return True
 
 # When testing, no _() is available
