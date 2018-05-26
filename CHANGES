@@ -1,3 +1,4 @@
+[2018-05-26 03:18:25 +0200]  Copy to cache was commented out                                            karasu      {0ed5e9b7}
 [2018-05-26 03:09:50 +0200]  Copy xz packages to provided cache, too.                                   karasu      {f606164d}
 [2018-05-26 03:02:23 +0200]  Create filesystem for the new partition                                    karasu      {930222a6}
 [2018-05-26 02:52:51 +0200]  Use path and not partition object                                          karasu      {d26e35f7}

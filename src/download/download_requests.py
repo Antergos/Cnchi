@@ -148,7 +148,7 @@ class Download(object):
             needs_to_download = True
 
             # Get package to download from downloads list
-            identity, element = downloads.popitem()
+            _identity, element = downloads.popitem()
 
             self.queue_event('percent', '0')
 
