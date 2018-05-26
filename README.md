@@ -3,7 +3,7 @@
 
 <a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a> &nbsp;&nbsp;&nbsp;[![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
 
-You are viewing the `0.14.x` branch.
+You are viewing the `0.16.x` branch.
 
 ## Current Status
 
@@ -11,9 +11,9 @@ This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|**Cnchi Stable**|**0.14.x**|**v0.14.344**|**Bug Fixes Only**|
-|Cnchi Next|master|v0.15.219|Development|
+|*Cnchi Legacy*|*0.14.x*|*v0.14.473*|*Frozen*|
+|*Cnchi Stable*|*0.16.x*|*v0.16.344*|*Bug Fixes Only*|
+|Cnchi Next|master|v0.17.219|Development|
 
 
 ## Usage:
