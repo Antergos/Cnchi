@@ -83,7 +83,7 @@ class Cache(GtkBaseBox):
                  "need to select a partition, and not a drive (selecting a drive will\n"
                  "delete the packages you have already downloaded).")
         par6 = _("Please, choose now the device (or partition) to use as cache.")
-        txt = "{0}\n\n{1}\n{2}\n{3}\n\n{4}\n\n{5}".format(
+        txt = "{0}\n\n{1}\n{2}\n{3}\n\n{4}\n\n{5}\n".format(
             par1, par2, par3, par4, par5, par6)
         label.set_markup(txt)
 
@@ -121,8 +121,9 @@ class Cache(GtkBaseBox):
                                     partition.path, size_gbytes)
                                 self.part_store.append_text(line)
                                 self.devices_and_partitions[line] = (dev.path, partition.path)
-                except parted._ped.DiskException as err:
-                    logging.warning(err)
+                except parted._ped.DiskException as warn:
+                    # It could be that the device has no partition table
+                    logging.warning(warn)
 
         self.select_first_combobox_item(self.part_store)
 
