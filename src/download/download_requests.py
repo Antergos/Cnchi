@@ -60,6 +60,8 @@ def get_md5(file_name):
 class CopyToCache(threading.Thread):
     ''' Class thread to copy a xz file to the user's
         provided cache directory '''
+    
+    PACMAN_ISO_CACHE = "/var/cache/pacman/pkg"
 
     def __init__(self, origin, xz_cache_dirs):
         threading.Thread.__init__(self)
@@ -69,12 +71,13 @@ class CopyToCache(threading.Thread):
     def run(self):
         basename = os.path.basename(self.origin)
         for xz_cache_dir in self.xz_cache_dirs:
-            dst = os.path.join(xz_cache_dir, basename)
-            # Try to copy the file, do not worry if it's not possible
-            try:
-                shutil.copy(self.origin, dst)
-            except (FileNotFoundError, FileExistsError, OSError):
-                pass
+            if xz_cache_dir != CopyToCache.PACMAN_ISO_CACHE:
+                dst = os.path.join(xz_cache_dir, basename)
+                # Try to copy the file, do not worry if it's not possible
+                try:
+                    shutil.copy(self.origin, dst)
+                except (FileNotFoundError, FileExistsError, OSError):
+                    pass
 
 
 class Download(object):

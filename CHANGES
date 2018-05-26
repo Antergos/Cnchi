@@ -1,3 +1,4 @@
+[2018-05-26 03:02:23 +0200]  Create filesystem for the new partition                                    karasu      {930222a6}
 [2018-05-26 02:52:51 +0200]  Use path and not partition object                                          karasu      {d26e35f7}
 [2018-05-26 02:50:03 +0200]  Using whole drive as cache is not working                                  karasu      {abd51cc8}
 [2018-05-26 02:43:21 +0200]  Small text modification                                                    karasu      {493aea6d}

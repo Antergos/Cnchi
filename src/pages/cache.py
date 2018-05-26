@@ -188,8 +188,8 @@ class Cache(GtkBaseBox):
                 output = output.decode()
                 if output:
                     logging.debug(output.strip('\n'))
-            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
-                logging.warning(err)
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as msg:
+                logging.debug(msg)
 
     def mount_cache(self, device_path, partition_path):
         """ Mounts cache partition into a folder
