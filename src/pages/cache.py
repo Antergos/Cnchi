@@ -191,7 +191,7 @@ class Cache(GtkBaseBox):
         If only a device is specified, cnchi will erase
         it and create a partition in it """
         if device_path:
-            if not partition_path:
+            if partition_path is None:
                 # Use the whole device as cache.
                 partition_path = self.prepare_whole_device(device_path)
                 if not partition_path:
@@ -203,12 +203,9 @@ class Cache(GtkBaseBox):
                 logging.debug("%s partition mounted on %s to be used as xz cache",
                               partition_path, mount_dir)
                 return mount_dir
-            else:
-                logging.warning("Could not mount %s in %s to be used as xz cache",
-                                partition_path, mount_dir)
-                return None
-        else:
-            return None
+            logging.warning("Could not mount %s in %s to be used as xz cache",
+                            partition_path, mount_dir)
+        return None
 
     @staticmethod
     def mount_partition(path, mount_dir):
