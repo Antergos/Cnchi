@@ -35,12 +35,13 @@ import subprocess
 
 import parted
 
-import misc.extra as misc
-import show_message as show
-
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+
+import misc.extra as misc
+import show_message as show
+import parted3.fs_module as fs
 
 from pages.gtkbasebox import GtkBaseBox
 
@@ -165,7 +166,11 @@ class Cache(GtkBaseBox):
             if response == Gtk.ResponseType.YES:
                 disk.commit()
                 if len(disk.partitions) == 1:
-                    return disk.partitions[0].path
+                    path = disk.partitions[0].path
+                    error, msg = fs.create_fs(path, "ext4")
+                    if error:
+                        logging.error(msg)
+                    return path
 
         return None
 

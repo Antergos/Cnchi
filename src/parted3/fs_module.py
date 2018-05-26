@@ -36,8 +36,6 @@ import os
 
 import misc.extra as misc
 
-from misc.run_cmd import call
-
 # constants
 NAMES = [
     'btrfs', 'ext2', 'ext3', 'ext4', 'fat16', 'fat32', 'f2fs', 'ntfs', 'jfs',
@@ -45,6 +43,12 @@ NAMES = [
 
 COMMON_MOUNT_POINTS = ['/', '/boot', '/boot/efi', '/home', '/usr', '/var']
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 def get_uuid(part):
     """ Get partition UUID """
@@ -324,7 +328,7 @@ def resize_ntfs(part, new_size_in_mb):
 
 
 @misc.raise_privileges
-def resize_fat(part, new_size_in_mb):
+def resize_fat(_part, _new_size_in_mb):
     """ Resize a fat partition """
     # https://bbs.archlinux.org/viewtopic.php?id=131728
     # the only Linux tool that was capable of resizing fat32, isn't capable of it anymore?
