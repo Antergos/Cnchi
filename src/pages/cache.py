@@ -161,7 +161,7 @@ class Cache(GtkBaseBox):
                 disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
             disk.addPartition(new_partition)
 
-            txt = _("Device {} will be fully erased! Are you sure?").format(device_path)
+            txt = _("Device {} will be fully erased! Are you REALLY sure?").format(device_path)
             response = show.question(self.get_main_window(), txt)
             if response == Gtk.ResponseType.YES:
                 disk.commit()
@@ -240,7 +240,8 @@ class Cache(GtkBaseBox):
                 xz_cache.append(xz_cache_dir)
                 self.settings.set('xz_cache', xz_cache)
                 logging.debug("%s added to xz cache", xz_cache_dir)
-        return True
+                return True
+        return False
 
 # When testing, no _() is available
 try:
