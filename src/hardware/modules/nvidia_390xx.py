@@ -46,18 +46,14 @@ PRIORITY = 1
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 
-
 PCI_FILE = "nvidia-390xx.ids"
-
-DEVICES = []
-
 
 class Nvidia390xx(Hardware):
     """ Nvidia v390 proprietary graphics driver """
 
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY, PCI_FILE)
+                          VENDOR_ID, PCI_FILE, PRIORITY, PCI_FILE)
 
     @staticmethod
     def get_packages():

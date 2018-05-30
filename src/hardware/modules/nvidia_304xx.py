@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  nvidia_304.py
+#  nvidia_304xx.py
 #
 #  Copyright © 2013-2018 Antergos
 #

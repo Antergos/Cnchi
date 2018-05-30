@@ -55,15 +55,11 @@ For GeForce 400 series cards and newer [NVCx and newer], install the nvidia or
 
 PCI_FILE = "nvidia.ids"
 
-DEVICES = []
-
-
 class Nvidia(Hardware):
     """ Nvidia proprietary graphics driver """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY, PCI_FILE)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY, PCI_FILE)
 
     @staticmethod
     def get_packages():

@@ -54,15 +54,11 @@ For GeForce 8000/9000 and 100-300 series cards [NV5x, NV8x, NV9x and NVAx] from
 
 PCI_FILE = "nvidia-340xx.ids"
 
-DEVICES = []
-
-
 class Nvidia340xx(Hardware):
     """ Nvidia v340 proprietary graphics driver """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY, PCI_FILE)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY, PCI_FILE)
 
     @staticmethod
     def get_packages():

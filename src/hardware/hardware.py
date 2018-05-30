@@ -59,6 +59,9 @@ class Hardware(object):
             with open(path, 'r') as ids_file:
                 lines = ids_file.readlines()
 
+            for index, line in enumerate(lines):
+                lines[index] = line.lower()
+
             self.devices = []
             for line in lines:
                 self.devices.extend(line.split())
