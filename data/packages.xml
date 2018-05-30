@@ -228,7 +228,8 @@
             <pkgname>git</pkgname>
             <pkgname>yaourt</pkgname>
         </feature>
-        <feature name="battery">
+        <feature name="energy">
+            <pkgname>thermald</pkgname>
             <pkgname>tlp</pkgname>
         </feature>
         <feature name="bluetooth">
