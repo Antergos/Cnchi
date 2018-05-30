@@ -63,7 +63,7 @@ MIN_ROOT_SIZE = 6000000000
 class Summary(GtkBaseBox):
     """ Summary Screen """
 
-    def __init__(self, params, prev_page="", next_page="user_info"):
+    def __init__(self, params, prev_page="user_info", next_page="slides"):
         """ Init class ui """
         super().__init__(self, params, "summary", prev_page, next_page)
 

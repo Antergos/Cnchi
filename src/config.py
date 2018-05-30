@@ -118,7 +118,6 @@ class Settings(object):
             'use_zfs': False,
             'use_same_proxy_for_all_protocols': False,
             'user_avatar': '',
-            'user_info_done': False,
             'user_fullname': '',
             'user_name': '',
             'user_password': '',

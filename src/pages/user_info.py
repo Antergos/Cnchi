@@ -64,7 +64,7 @@ class UserInfo(GtkBaseBox):
     CAMERA_WIDTH = 160
     CAMERA_HEIGHT = 90
 
-    def __init__(self, params, prev_page=None, next_page="slides"):
+    def __init__(self, params, prev_page=None, next_page="summary"):
         super().__init__(self, params, "user_info", prev_page, next_page)
 
         self.image_is_ok = dict()
@@ -251,14 +251,13 @@ class UserInfo(GtkBaseBox):
 
     def store_values(self):
         """ Store all user values in self.settings """
-        # For developer testing
-        # Do not use this, is confusing for others when testing dev version
         self.settings.set('user_fullname', self.entry['fullname'].get_text())
         self.settings.set('hostname', self.entry['hostname'].get_text())
         self.settings.set('user_name', self.entry['username'].get_text())
         self.settings.set('user_password', self.entry['password'].get_text())
         self.settings.set('require_password', self.require_password)
 
+        # FIXME: Allow home encryption
         self.settings.set('encrypt_home', False)
         if self.encrypt_home:
             message = _(
@@ -269,9 +268,6 @@ class UserInfo(GtkBaseBox):
 
         # Store user's avatar
         self.settings.set('user_avatar', self.selected_avatar_path)
-
-        # Let installer_process know that all info has been entered
-        self.settings.set('user_info_done', True)
 
         return True
 

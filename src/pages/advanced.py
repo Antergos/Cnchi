@@ -84,7 +84,7 @@ class InstallationAdvanced(GtkBaseBox):
     COL_ENCRYPTED = 15
 
     def __init__(self, params, prev_page="installation_ask",
-                 next_page="summary"):
+                 next_page="user_info"):
         # Call base class
         super().__init__(self, params, "advanced", prev_page, next_page)
 

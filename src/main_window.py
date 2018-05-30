@@ -372,8 +372,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.params)
         self.pages["installation_zfs"] = pages.zfs.InstallationZFS(
             self.params)
-        self.pages["summary"] = pages.summary.Summary(self.params)
         self.pages["user_info"] = pages.user_info.UserInfo(self.params)
+        self.pages["summary"] = pages.summary.Summary(self.params)
         self.pages["slides"] = pages.slides.Slides(self.params)
 
         diff = 2

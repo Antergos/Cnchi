@@ -971,12 +971,6 @@ class PostInstallation(object):
             logging.warning(
                 "Can't read selected timezone! Will leave it to UTC.")
 
-        # Wait FOREVER until the user sets his params
-        # FIXME: We can wait here forever!
-        while self.settings.get('user_info_done') is False:
-            # Wait five seconds and try again
-            time.sleep(5)
-
         # Configure detected hardware
         # NOTE: Because hardware can need extra repos, this code must run
         # always after having called the update_pacman_conf method

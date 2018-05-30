@@ -60,7 +60,7 @@ except NameError as err:
 class InstallationAutomatic(GtkBaseBox):
     """ Automatic Installation Screen """
 
-    def __init__(self, params, prev_page="installation_ask", next_page="summary"):
+    def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "automatic", prev_page, next_page)
 
         self.auto_device = None
