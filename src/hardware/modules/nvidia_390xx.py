@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  nvidia_340xx.py
+#  nvidia_390xx.py
 #
 #  Copyright © 2013-2018 Antergos
 #
@@ -36,7 +36,7 @@ except ImportError:
 
 import os
 
-CLASS_NAME = "Nvidia340xx"
+CLASS_NAME = "Nvidia390xx"
 CLASS_ID = "0x03"
 VENDOR_ID = "0x10de"
 
@@ -46,19 +46,14 @@ PRIORITY = 1
 
 # See https://wiki.archlinux.org/index.php/NVIDIA#Installing
 
-"""
-For GeForce 8000/9000 and 100-300 series cards [NV5x, NV8x, NV9x and NVAx] from
-    around 2006-2010, install the nvidia-340xx or nvidia-340xx-lts, available in
-    the official repositories.
-"""
 
-PCI_FILE = "nvidia-340xx.ids"
+PCI_FILE = "nvidia-390xx.ids"
 
 DEVICES = []
 
 
-class Nvidia340xx(Hardware):
-    """ Nvidia v340 proprietary graphics driver """
+class Nvidia390xx(Hardware):
+    """ Nvidia v390 proprietary graphics driver """
 
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID,
@@ -67,9 +62,9 @@ class Nvidia340xx(Hardware):
     @staticmethod
     def get_packages():
         """ Get all required packages """
-        pkgs = ["nvidia-340xx", "libvdpau"]
+        pkgs = ["nvidia-390xx", "libvdpau"]
         if os.uname()[-1] == "x86_64":
-            pkgs.extend(["lib32-nvidia-340xx-utils", "lib32-libvdpau"])
+            pkgs.extend(["lib32-nvidia-390xx-utils", "lib32-libvdpau"])
         return pkgs
 
     @staticmethod

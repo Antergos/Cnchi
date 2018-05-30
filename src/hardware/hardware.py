@@ -33,23 +33,38 @@ import logging
 import os
 import subprocess
 
-
-#_HARDWARE_MODULES_PATH = '/usr/share/cnchi/src/hardware/modules'
-
-
 class Hardware(object):
     """ This is an abstract class. You need to use this as base """
 
-    def __init__(self, class_name=None, class_id=None, vendor_id=None,
-                 devices=None, priority=-1, enabled=True):
+    # FIXME: Do not use a fixed path
+    PCI_FILES_PATH = '/usr/share/cnchi/data/pci'
+
+    def __init__(self, class_name, class_id, vendor_id, pci_file, priority=-1, enabled=True):
         self.class_name = class_name
         self.class_id = class_id
         self.vendor_id = vendor_id
-        self.devices = devices
+        self.devices = []
         self.priority = priority
+        self.pci_file = pci_file
         self.enabled = enabled
 
         self.product_id = ""
+ 
+        path = os.path.join(Hardware.PCI_FILES_PATH, pci_file)
+        self.load_pci_file(path)
+
+    def load_pci_file(self, path):
+        """ Load pci file with all pci ids """
+        if os.path.exists(path):     
+            with open(path, 'r') as ids_file:
+                lines = ids_file.readlines()
+
+            self.devices = []
+            for line in lines:
+                self.devices.extend(line.split())
+
+            for index, pci_id in enumerate(self.devices):
+                self.devices[index] = "0x" + pci_id
 
     def get_packages(self):
         """ Returns all necessary packages to install """
