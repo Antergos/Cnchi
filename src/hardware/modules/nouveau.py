@@ -42,7 +42,7 @@ VENDOR_ID = "0x10de"
 DEVICES = []
 
 # Give this driver more priority so it is chosen instead of
-# nvidia or nvidia-340xx or nvidia-304xx
+# nvidia or nvidia-390xx or nvidia-340xx or nvidia-304xx
 PRIORITY = 3
 
 
@@ -50,8 +50,7 @@ class Nouveau(Hardware):
     """ Nvidia open graphics driver """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES, PRIORITY)
 
     @staticmethod
     def get_packages():

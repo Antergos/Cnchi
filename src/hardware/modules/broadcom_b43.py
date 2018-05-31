@@ -40,22 +40,16 @@ CLASS_NAME = "BroadcomB43"
 CLASS_ID = "0x02"
 VENDOR_ID = "0x14e4"
 
-DEVICES = [
-    '0x0576', '0x4307', '0x4311', '0x4312', '0x4315', '0x4318', '0x4319',
-    '0x4320', '0x4322', '0x4324', '0x432a', '0x432c', '0x432d', '0x4331',
-    '0x4350', '0x4353', '0x4357', '0x4358', '0x4359', '0x43a9', '0x43aa',
-    '0xa8d6', '0xa8d8', '0xa8db', '0xa99d']
-
 # Give this driver more priority so it is chosen instead of Broadcom_b43_legacy
 PRIORITY = 1
 
+PCI_FILE = "broadcom_b43.ids"
 
 class BroadcomB43(Hardware):
     """ Broadcom b43 """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY)
 
     @staticmethod
     def get_packages():

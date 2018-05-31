@@ -41,7 +41,6 @@ CLASS_ID = "0x03"
 VENDOR_ID = "0x8086"
 DEVICES = []
 
-
 class Intel915(Hardware):
     """ Intel i915 graphics driver """
 
