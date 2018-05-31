@@ -564,7 +564,7 @@ class PostInstallation(object):
             with open(path, 'r') as fin:
                 lines = fin.readlines()
             for index, line in enumerate(lines):
-                if line.startswith("ExecStart=/usr/bin/thermald"):
+                if line.startswith("ExecStart") and "--ignore-cpuid-check" not in line:
                     lines[index] += " --ignore-cpuid-check"
             with open(path, 'w') as fout:
                 fout.writelines(lines)
