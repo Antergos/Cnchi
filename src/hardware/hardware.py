@@ -50,10 +50,13 @@ class Hardware(object):
 
         self.product_id = ""
  
-        path = os.path.join(Hardware.PCI_FILES_PATH, pci_file_or_devices)
-        if os.path.exists(path):     
-            self.pci_file = pci_file_or_devices
-            self.load_pci_file(path)
+        if type(pci_file_or_devices) == str:
+            path = os.path.join(Hardware.PCI_FILES_PATH, pci_file_or_devices)
+            if os.path.exists(path):     
+                self.pci_file = pci_file_or_devices
+                self.load_pci_file(path)
+            else:
+                logging.error("Cannot find %s file", path)
         else:
             self.devices = pci_file_or_devices
 
@@ -427,6 +430,7 @@ def test():
     hardware_pkgs = hardware_install.get_packages()
     print(hardware_install.get_found_driver_names())
     if hardware_pkgs:
+        print(hardware_pkgs)
         txt = " ".join(hardware_pkgs)
         print("Hardware module added these packages :")
         print(txt)
