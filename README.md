@@ -67,11 +67,12 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - python-gobject
  - python-mako
  - python-requests
+ - geoip (python-geoip2, python-maxminddb, geoip2-database)
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
  - webkit2gtk
  - upower
- - encfs, pam_encfs
+ - gocryptfs
  - iso-codes
  - clutter, clutter-gtk, clutter-gst
  - gsteamer1.0

@@ -569,7 +569,6 @@ class PostInstallation(object):
             with open(path, 'w') as fout:
                 fout.writelines(lines)
 
-
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
         txt = _("Configuring LightDM desktop manager...")
