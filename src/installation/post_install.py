@@ -375,12 +375,25 @@ class PostInstallation(object):
         for name in services:
             path = os.path.join(
                 DEST_DIR,
-                "usr/lib/systemd/system/{0}.service".format(name))
+                "usr/lib/systemd/system/{}.service".format(name))
             if os.path.exists(path):
                 chroot_call(['systemctl', '-fq', 'enable', name])
                 logging.debug("Service '%s' has been enabled.", name)
             else:
                 logging.warning("Can't find service %s", name)
+
+    @staticmethod
+    def mask_services(services):
+        """ Masks services """
+        for name in services:
+            path = os.path.join(
+                DEST_DIR,
+                "usr/lib/systemd/system/{}.service".format(name))
+            if os.path.exists(path):
+                chroot_call(['systemctl', '-fq', 'mask', name])
+                logging.debug("Service '%s' has been masked.", name)
+            else:
+                logging.warning("Cannot find service %s (mask)", name)
 
     @staticmethod
     def change_user_password(user, new_password):
@@ -477,6 +490,7 @@ class PostInstallation(object):
     def setup_features(self):
         """ Do all set up needed by the user's selected features """
         services = []
+        masked = []
 
         if self.settings.get("feature_aur"):
             self.enable_aur_in_pamac()
@@ -533,7 +547,28 @@ class PostInstallation(object):
                     "Unable to import LEMP module: %s",
                     str(import_error))
 
+        if self.settings.get("feature_energy"):
+            # tlp
+            services.extend(['tlp.service', 'tlp-sleep.service'])
+            masked.extend(['systemd-rfkill.service', 'systemd-rfkill.socket'])
+            # thermald
+            services.append('thermald')
+
+        self.mask_services(masked)
         self.enable_services(services)
+
+    def fix_thermald_service(self):
+        """ Adds --ignore-cpuid-check to thermald service file """
+        path = os.path.join(DEST_DIR, "usr/lib/systemd/system/thermald.service")
+        if os.path.exists(path):
+            with open(path, 'r') as fin:
+                lines = fin.readlines()
+            for index, line in enumerate(lines):
+                if line.startswith("ExecStart=/usr/bin/thermald"):
+                    lines[index] += " --ignore-cpuid-check"
+            with open(path, 'w') as fout:
+                fout.writelines(lines)
+
 
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
@@ -1115,6 +1150,9 @@ class PostInstallation(object):
                     bashrc.write('if [ -e ~/.bashrc.aliases ] ; then\n')
                     bashrc.write('   source ~/.bashrc.aliases\n')
                     bashrc.write('fi\n')
+
+        # Fixes thermald service file
+        self.fix_thermald_service()
 
         # This must be done at the end of the installation when using zfs
         if self.method == "zfs":
