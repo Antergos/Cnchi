@@ -42,6 +42,8 @@ import misc.extra as misc
 import misc.timezonemap as timezonemap
 from pages.gtkbasebox import GtkBaseBox
 
+import geoip
+
 # When testing, no _() is available
 try:
     _("")
@@ -296,6 +298,49 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
     def run(self):
         """ main thread method """
+        # Do not start looking for our timezone until we've reached the
+        # language screen (welcome.py sets timezone_start to true when
+        # next is clicked)
+        while not self.settings.get('timezone_start'):
+            time.sleep(2)
+
+        coords = self.use_geoip()
+        if not coords:
+            msg = "Could not detect your timezone using GeoIP database. Let's use another method."
+            logging.warning(msg)
+            coords = self.use_geo_antergos()
+
+        if coords:
+            logging.debug(
+                _("Timezone (latitude %s, longitude %s) detected."),
+                coords[0],
+                coords[1])
+            self.coords_queue.put(coords)
+        else:
+            logging.warning("Could not detect your timezone!")
+
+    @staticmethod
+    def use_geoip():
+        """ Determine our location using GeoIP database """
+        logging.debug("Getting your location using GeoIP database")
+        location = geoip.GeoIP().get_location()
+        if location:
+            return [location.latitude, location.longitude]
+        return None
+
+    @staticmethod
+    def maybe_wait_for_network():
+        """ Waits until there is an Internet connection available """
+        if not misc.has_connection():
+            logging.warning(
+                "Can't get network status. Cnchi will try again in a moment")
+            while not misc.has_connection():
+                time.sleep(4)  # Wait 4 seconds and try again
+        logging.debug("A working network connection has been detected.")
+
+
+    def use_geo_antergos(self):
+        """ Determine our location using geo.antergos.com """
         # Calculate logo hash
         logo = "data/images/antergos/antergos-logo-mini2.png"
         logo_path = os.path.join(self.settings.get("cnchi"), logo)
@@ -306,23 +351,11 @@ class AutoTimezoneProcess(multiprocessing.Process):
         logo_digest = logo_hasher.digest()
 
         # Wait until there is an Internet connection available
-        if not misc.has_connection():
-            logging.warning(
-                "Can't get network status. Cnchi will try again in a moment")
-            while not misc.has_connection():
-                time.sleep(4)  # Wait 4 seconds and try again
-
-        logging.debug("A working network connection has been detected.")
-
-        # Do not start looking for our timezone until we've reached the
-        # language screen (welcome.py sets timezone_start to true when
-        # next is clicked)
-        while not self.settings.get('timezone_start'):
-            time.sleep(2)
+        self.maybe_wait_for_network()
 
         # OK, now get our timezone
-
         logging.debug("We have connection. Let's get our timezone")
+
         try:
             url = urllib.request.Request(
                 url="http://geo.antergos.com",
@@ -330,21 +363,15 @@ class AutoTimezoneProcess(multiprocessing.Process):
                 headers={"User-Agent": "Antergos Installer", "Connection": "close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
-
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
+            else:
+                coords = coords.split()
         except Exception as ex:
             template = "Error getting timezone coordinates. " \
                 "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             coords = None
-
-        if coords:
-            coords = coords.split()
-            logging.debug(
-                _("Timezone (latitude %s, longitude %s) detected."),
-                coords[0],
-                coords[1])
-            self.coords_queue.put(coords)
+        return coords
