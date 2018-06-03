@@ -47,6 +47,7 @@ from gi.repository import Gtk
 from pages.gtkbasebox import GtkBaseBox
 from logging_utils import ContextFilter
 
+import geoip
 
 class Location(GtkBaseBox):
     """ Location page """
@@ -66,6 +67,7 @@ class Location(GtkBaseBox):
         self.locales = {}
         self.load_locales()
 
+        self.geoip_country = None
         self.selected_country = ""
 
         self.show_all_locations = False
@@ -83,14 +85,16 @@ class Location(GtkBaseBox):
         """ Force to show all locations """
         self.show_all_locations = button.get_active()
         self.fill_listbox()
+        if not self.show_all_locations:
+            self.select_detected_country()
 
     def translate_ui(self):
         """ Translates all ui elements """
         par1 = _("The location you select will be used to help determine the "
-                "system locale. It should normally be the country in which "
-                "you reside.")
+                 "system locale. It should normally be the country in which "
+                 "you reside.")
         par2 = _("Please, note that your system language will be "
-                "determined from this selection.")
+                 "determined from this selection.")
         par3 = _("Here is a shortlist of locations based on the language you "
                  "selected for this installer (click on show all locations "
                  "to show them all).")
@@ -113,6 +117,27 @@ class Location(GtkBaseBox):
         listbox_row = self.listbox.get_children()[0]
         self.listbox.select_row(listbox_row)
 
+    def select_detected_country(self):
+        """ Selects listbox item that matches detected country using GeoIP database """
+        if not self.geoip_country:
+            logging.debug("Getting your country using GeoIP database")
+            self.geoip_country = geoip.GeoIP().get_country()
+        if self.geoip_country:
+            names = self.geoip_country.names
+            #logging.debug(names)
+            for listbox_row in self.listbox.get_children():
+                label = listbox_row.get_children()[0]
+                if label is not None:
+                    label = label.get_text()
+                    for name in names.values():                    
+                        if name in label:
+                            self.selected_country = label
+                            self.listbox.select_row(listbox_row)
+                            return
+            self.select_first_listbox_item()
+        else:
+            self.select_first_listbox_item()
+
     def hide_all(self):
         """ Hide all widgets """
         names = [
@@ -128,7 +153,7 @@ class Location(GtkBaseBox):
         self.hide_all()
 
         self.fill_listbox()
-        self.select_first_listbox_item()
+        self.select_detected_country()
         self.translate_ui()
         self.forward_button.set_sensitive(True)
 

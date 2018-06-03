@@ -44,6 +44,8 @@ class GeoIP(object):
     REPO_CITY_DATABASE = '/usr/share/GeoIP/GeoLite2-City.mmdb'
     LOCAL_CITY_DATABASE = '/usr/share/cnchi/data/GeoLite2-City.mmdb'
 
+    SERVERS = ["moc.tsetnosj.pi", "pi/0003:kt.ateb-sogretna"]
+
     def __init__(self):
         self.record = None
         self._maybe_wait_for_network()
@@ -82,9 +84,17 @@ class GeoIP(object):
     @staticmethod
     def _get_external_ip():
         """ Get external IP """
-        json_text = requests.get("http://ip.jsontest.com/").text
-        data = json.loads(json_text)
-        return data['ip']
+        for srv in GeoIP.SERVERS:
+            srv = "http://" + srv[::-1]
+            try:
+                json_text = requests.get(srv).text
+                if not "503 Over Quota" in json_text:
+                    data = json.loads(json_text)
+                    return data['ip']
+            except (requests.ConnectionError, json.decoder.JSONDecodeError) as err:
+                logging.warning(
+                    "Error getting external IP from %s: %s", srv, err)
+        return None
 
     def _load_database(self, db_path, myip):
         """ Loads cities database """
@@ -124,10 +134,10 @@ class GeoIP(object):
 def test_module():
     """ Test module """
     geo = GeoIP()
-    print(geo.get_city())
-    print(geo.get_country())
-    print(geo.get_continent())
-    print(geo.get_location())
+    print("City:", geo.get_city())
+    print("Country:", geo.get_country())
+    print("Continent:", geo.get_continent())
+    print("Location:", geo.get_location())
 
 
 if __name__ == "__main__":
