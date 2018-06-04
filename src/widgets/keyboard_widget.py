@@ -431,27 +431,25 @@ class KeyboardWidget(Gtk.DrawingArea):
 
     def load_codes(self):
         """ Load keyboard codes """
+        
         if self.layout is None:
             return
 
-        cmd = [
-            "/usr/share/cnchi/scripts/ckbcomp",
-            "-model",
-            "pc106",
-            "-layout",
-            self.layout]
+        cmd = ["/usr/share/cnchi/scripts/ckbcomp",
+               "-model", "pc106",
+               "-layout", self.layout]
 
         if self.variant:
             cmd.extend(["-variant", self.variant])
 
         cmd.append("-compact")
-        output = []
 
         try:
-            with raised_privileges() as privileged:
+            with raised_privileges() as __:
                 output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 if output:
-                    output = output.decode().split('\n')
+                    output = output.decode()
+                    output = output.split('\n')
         except subprocess.CalledProcessError as process_error:
             logging.error(
                 "Error running command %s: %s",

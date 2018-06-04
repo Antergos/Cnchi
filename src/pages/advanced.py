@@ -66,23 +66,6 @@ except NameError as err:
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
 
-    COL_PATH = 0
-    COL_FS = 1
-    COL_MOUNT_POINT = 2
-    COL_LABEL = 3
-    COL_FORMAT_ACTIVE = 4
-    COL_FORMAT_VISIBLE = 5
-    COL_SIZE = 6
-    COL_USED = 7
-    COL_PARTITION_PATH = 8
-    COL_FLAGS = 9
-    COL_PARTITION_TYPE = 10
-    COL_FORMAT_SENSITIVE = 11
-    COL_SSD_ACTIVE = 12
-    COL_SSD_VISIBLE = 13
-    COL_SSD_SENSITIVE = 14
-    COL_ENCRYPTED = 15
-
     def __init__(self, params, prev_page="installation_ask",
                  next_page="user_info"):
         # Call base class
@@ -168,7 +151,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Initialise our partition list tree view
         self.partition_list = self.ui.get_object('partition_list_treeview')
         self.partition_list_store = None
-        self.prepare_partition_list()
+        self.partition_list.prepare()
 
         self.partition_list.set_hexpand(True)
 
@@ -437,6 +420,7 @@ class InstallationAdvanced(GtkBaseBox):
             self.bootloader = line.lower()
             self.check_mount_points()
 
+    """
     def prepare_partition_list(self):
         """ Create columns for our treeview """
         render_text = Gtk.CellRendererText()
@@ -486,6 +470,7 @@ class InstallationAdvanced(GtkBaseBox):
             visible=InstallationAdvanced.COL_SSD_VISIBLE,
             sensitive=InstallationAdvanced.COL_SSD_SENSITIVE)
         self.partition_list.append_column(col)
+    """
 
     @staticmethod
     def get_size(length, sector_size):
