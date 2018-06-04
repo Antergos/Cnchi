@@ -37,7 +37,7 @@ import desktop_info
 
 from installation import mkinitcpio
 from installation import firewall
-
+from installation import systemd_networkd
 from installation.boot import loader
 
 import misc.extra as misc
@@ -71,6 +71,8 @@ class PostInstallation(object):
         """ Initialize installation class """
         self.settings = settings
         self.callback_queue = callback_queue
+
+        self.pacman_conf_updated = False
 
         self.method = self.settings.get('partition_mode')
         self.desktop = self.settings.get('desktop').lower()
@@ -950,7 +952,6 @@ class PostInstallation(object):
             # Setup systemd_networkd
             # TODO: Ask user for SSID and passphrase if a wireless link is
             # found (here or inside systemd_networkd.setup() ?)
-            from installation import systemd_networkd
             systemd_networkd.setup()
 
         logging.debug("Network configuration done.")
@@ -970,6 +971,7 @@ class PostInstallation(object):
 
         # Add Antergos repo to /etc/pacman.conf
         self.update_pacman_conf()
+        self.pacman_conf_updated = True
         logging.debug("pacman.conf has been created successfully")
 
         # Enable some useful services
@@ -1008,7 +1010,7 @@ class PostInstallation(object):
         # Configure detected hardware
         # NOTE: Because hardware can need extra repos, this code must run
         # always after having called the update_pacman_conf method
-        if hardware_install:
+        if self.pacman_conf_updated and hardware_install:
             try:
                 logging.debug("Running hardware drivers post-install jobs...")
                 hardware_install.post_install(DEST_DIR)

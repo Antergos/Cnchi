@@ -42,26 +42,29 @@ import misc.extra as misc
 
 from pages.gtkbasebox import GtkBaseBox
 
+from hardware.modules.nvidia import Nvidia
+from hardware.modules.nvidia_390xx import Nvidia390xx
+from hardware.modules.nvidia_340xx import Nvidia340xx
+from hardware.modules.nvidia_304xx import Nvidia304xx
+from hardware.modules.catalyst import Catalyst
+from hardware.modules.amdgpu import AMDGpu
+from hardware.modules.amdgpu_ext import AMDGpuExt
 
 class Graphics(object):
     """ Gets graphic device info using the hardware module """
     def nvidia(self):
         """ Returns true if an nVidia card is detected """
-        from hardware.modules.nvidia import Nvidia
-        if Nvidia().detect():
-            return True
-        from hardware.modules.nvidia_340xx import Nvidia340xx
-        if Nvidia340xx().detect():
-            return True
-        from hardware.modules.nvidia_304xx import Nvidia304xx
-        if Nvidia304xx().detect():
+        if (Nvidia().detect() or Nvidia390xx().detect() or
+            Nvidia340xx().detect() or Nvidia304xx().detect()):
             return True
         return False
 
     def amd(self):
         """ Returns true if an AMD card is detected """
-        from hardware.modules.catalyst import Catalyst
-        return Catalyst().detect()
+        if (Catalyst().detect() or AMDGpu.detect() or
+            AMDGpuExt.detect()):
+            return True
+        return False
 
     def i915(self):
         """ Returns if an Intel card is detected """
@@ -85,7 +88,7 @@ class Features(GtkBaseBox):
         """ Initializes features ui """
         super().__init__(self, params, "features", prev_page, next_page)
 
-        self.detect = Graphics()
+        self.graphics = Graphics()
 
         self.listbox_rows = {}
 
@@ -190,12 +193,13 @@ class Features(GtkBaseBox):
         # Only add graphic-driver feature if an AMD or Nvidia is detected
         if "graphic_drivers" in self.features:
             allow = False
-            if self.detect.amd():
+            if self.graphics.amd():
                 allow = True
-            if self.detect.nvidia() and not self.detect.bumblebee():
+            if self.graphics.nvidia() and not self.graphics.bumblebee():
                 allow = True
             if not allow:
-                logging.debug("Removing proprietary graphic drivers feature.")
+                logging.debug("Neither AMD or Nvidia cards have been detected. "
+                              "Removing proprietary graphic drivers feature.")
                 self.features.remove("graphic_drivers")
 
         for feature in self.features:

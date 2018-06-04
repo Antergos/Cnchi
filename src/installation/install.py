@@ -286,8 +286,7 @@ class Installation(object):
         self.prepare_pacman()
         logging.debug("Pacman ready")
 
-        # Run pre-install scripts (only catalyst does something here atm)
-        # Note: Catalyst is disabled in catalyst.py
+        # Run driver's pre-install scripts
         try:
             logging.debug("Running hardware drivers pre-install jobs...")
             proprietary = self.settings.get('feature_graphic_drivers')
@@ -297,7 +296,7 @@ class Installation(object):
             self.hardware_install.pre_install(DEST_DIR)
         except Exception as ex:
             template = "Error in hardware module. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
+                       "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
@@ -396,8 +395,8 @@ class Installation(object):
             self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
         except Exception as ex:
             self.pacman = None
-            template = "Can't initialize pyalpm. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
+            template = ("Can't initialize pyalpm. "
+                        "An exception of type {0} occured. Arguments:\n{1!r}")
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
