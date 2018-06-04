@@ -195,7 +195,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <signal name="changed" handler="on_edit_partition_use_combo_changed" swapped="no"/>
+                                <signal name="changed" handler="edit_partition_use_combo_changed" swapped="no"/>
                                 <accessibility>
                                     <relation type="labelled-by" target="edit_partition_use_label"/>
                                 </accessibility>
@@ -314,13 +314,13 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">end</property>
                         <child>
-                            <object class="GtkButton" id="edit_partition_encryption_settings">
+                            <object class="GtkButton" id="edit_partition_luks_settings">
                                 <property name="label" translatable="yes">Encryption options...</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_edit_partition_encryption_settings_clicked" swapped="no"/>
+                                <signal name="clicked" handler="edit_partition_luks_settings_clicked" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -450,7 +450,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <signal name="changed" handler="on_create_partition_use_combo_changed" swapped="no"/>
+                                <signal name="changed" handler="create_partition_use_combo_changed" swapped="no"/>
                                 <accessibility>
                                     <relation type="labelled-by" target="create_partition_use_label"/>
                                 </accessibility>
@@ -664,7 +664,7 @@
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
                                         <property name="group">create_partition_create_type_primary</property>
-                                        <signal name="toggled" handler="on_create_partition_create_type_extended_toggled" swapped="no"/>
+                                        <signal name="toggled" handler="create_partition_create_type_extended_toggled" swapped="no"/>
                                     </object>
                                     <packing>
                                         <property name="left_attach">0</property>
@@ -720,13 +720,13 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">end</property>
                         <child>
-                            <object class="GtkButton" id="create_partition_encryption_settings">
+                            <object class="GtkButton" id="create_partition_luks_settings">
                                 <property name="label" translatable="yes">Encryption options...</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_create_partition_encryption_settings_clicked" swapped="no"/>
+                                <signal name="clicked" handler="create_partition_luks_settings_clicked" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -794,20 +794,22 @@
         <property name="margin_start">20</property>
         <property name="margin_end">20</property>
         <child>
-            <object class="GtkScrolledWindow" id="partition_list_scrolledwindow">
+            <object class="GtkScrolledWindow" id="partition_treeview_scrolledwindow">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
+                <!--
                 <child>
-                    <object class="GtkTreeView" id="partition_list_treeview">
+                    <object class="GtkTreeView" id="partition_treeview">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <signal name="row-activated" handler="on_partition_list_treeview_row_activated" swapped="no"/>
+                        <signal name="row-activated" handler="partition_treeview_row_activated" swapped="no"/>
                         <child internal-child="selection">
                             <object class="GtkTreeSelection" id="treeview-selection"/>
                         </child>
                     </object>
                 </child>
+                -->
             </object>
             <packing>
                 <property name="expand">True</property>
@@ -827,7 +829,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_new_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_new_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -842,7 +844,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_delete_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_delete_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -857,7 +859,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_edit_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_edit_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -886,7 +888,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_new_label_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_new_label_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -901,7 +903,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_lvm_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_lvm_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -916,7 +918,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_partition_list_undo_activate" swapped="no"/>
+                        <signal name="clicked" handler="partition_treeview_undo_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -1023,7 +1025,7 @@
                         <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
+                        <signal name="toggled" handler="bootloader_device_check_toggled" swapped="no"/>
                         <child>
                             <object class="GtkLabel" id="bootloader_device_info_label">
                                 <property name="visible">True</property>
@@ -1060,7 +1062,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="margin_start">5</property>
-                                <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
+                                <signal name="changed" handler="bootloader_entry_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -1086,7 +1088,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="margin_start">5</property>
-                                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+                                <signal name="changed" handler="bootloader_device_entry_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -1215,7 +1217,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="halign">start</property>
-                                <signal name="activate" handler="on_luks_use_luks_switch_activate" swapped="no"/>
+                                <signal name="activate" handler="luks_use_luks_switch_activate" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -1255,7 +1257,7 @@
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">20</property>
                                 <property name="placeholder_text">Password</property>
-                                <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                                <signal name="changed" handler="luks_password_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -1271,7 +1273,7 @@
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">20</property>
                                 <property name="placeholder_text">Confirm password</property>
-                                <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                                <signal name="changed" handler="luks_password_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>

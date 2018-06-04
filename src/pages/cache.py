@@ -126,14 +126,7 @@ class Cache(GtkBaseBox):
                     # It could be that the device has no partition table
                     logging.warning(warn)
 
-        self.select_first_combobox_item(self.part_store)
-
-    @staticmethod
-    def select_first_combobox_item(combobox):
-        """ Selects first item """
-        tree_model = combobox.get_model()
-        tree_iter = tree_model.get_iter_first()
-        combobox.set_active_iter(tree_iter)
+        misc.select_first_combobox_item(self.part_store)
 
     def select_part_changed(self, _widget):
         """ User selected another drive """
