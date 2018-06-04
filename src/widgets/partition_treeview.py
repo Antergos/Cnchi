@@ -146,7 +146,7 @@ class PartitionTreeview(Gtk.TreeView):
     def create_store(self):
         """ Create store for our data model """
 
-        if self.store is not None:
+        if self.store:
             self.store.clear()
 
         self.store = Gtk.TreeStore(

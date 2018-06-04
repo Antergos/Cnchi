@@ -280,7 +280,7 @@ class InstallationAdvanced(GtkBaseBox):
         model, tree_iter = selection.get_selected()
 
         path = None
-        if tree_iter is not None:
+        if tree_iter:
             path = model[tree_iter][PartitionTreeview.COL_PATH]
 
         if not path:
@@ -341,7 +341,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         for path in sorted(self.disks):
             (disk, _result) = self.disks[path]
-            if disk is not None:
+            if disk:
                 dev = disk.device
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
                 if (not dev.path.startswith("/dev/sr") and
@@ -366,7 +366,7 @@ class InstallationAdvanced(GtkBaseBox):
         combo_iter = model.get_iter_first()
         index = 0
         found = False
-        while combo_iter is not None and not found:
+        while combo_iter and not found:
             if value.lower() in model[combo_iter][0].lower():
                 combobox.set_active_iter(combo_iter)
                 combo_iter = None
@@ -413,13 +413,13 @@ class InstallationAdvanced(GtkBaseBox):
     def bootloader_device_entry_changed(self, _widget):
         """ Get new selected bootloader device """
         line = self.bootloader_device_entry.get_active_text()
-        if line is not None:
+        if line:
             self.bootloader_device = self.bootloader_devices[line]
 
     def bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
-        if line is not None:
+        if line:
             self.bootloader = line.lower()
             self.check_mount_points()
 
@@ -742,7 +742,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         if combo_model:
             combo_iter = combo_model.get_iter_first()
-            while combo_iter is not None:
+            while combo_iter:
                 combo_row = combo_model[combo_iter]
                 if combo_row[0] and combo_row[0] in row[PartitionTreeview.COL_FS]:
                     combo.set_active_iter(combo_iter)
@@ -884,7 +884,7 @@ class InstallationAdvanced(GtkBaseBox):
     def get_disk_path_from_selection(model, tree_iter):
         """ Helper function that returns the disk path where the selected
             partition is in """
-        if tree_iter is not None and model is not None:
+        if tree_iter and model:
             row = model[tree_iter]
             # partition_path = row[COL_PARTITION_PATH]
 
@@ -2108,9 +2108,9 @@ class InstallationAdvanced(GtkBaseBox):
     def set_cursor(cursor_type):
         """ Sets mouse cursor in root window """
         gdk_screen = Gdk.Screen.get_default()
-        if gdk_screen is not None:
+        if gdk_screen:
             gdk_window = gdk_screen.get_root_window()
-            if gdk_window is not None:
+            if gdk_window:
                 gdk_window.set_cursor(Gdk.Cursor(cursor_type))
 
     def store_values(self):
