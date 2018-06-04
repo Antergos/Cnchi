@@ -42,6 +42,7 @@ import parted
 
 import misc.extra as misc
 import misc.validation as validation
+from misc.gtkwidgets import StateBox
 from misc.run_cmd import call
 
 import parted3.partition_module as pm
@@ -1579,7 +1580,7 @@ class InstallationAdvanced(GtkBaseBox):
         label.set_markup(txt)
 
         txt = _("Encryption Options...")
-        button = self.ui.get_object('create_partition_encryption_settings')
+        button = self.ui.get_object('create_partition_luks_settings')
         button.set_label(txt)
 
         # Translate dialog "Edit partition"
@@ -1600,7 +1601,7 @@ class InstallationAdvanced(GtkBaseBox):
         label.set_markup(txt)
 
         txt = _("Encryption Options...")
-        button = self.ui.get_object('edit_partition_encryption_settings')
+        button = self.ui.get_object('edit_partition_luks_settings')
         button.set_label(txt)
 
         # Create disk partition table dialog
