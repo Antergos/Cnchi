@@ -38,6 +38,11 @@ from download import download
 from installation import auto_partition
 from installation import special_dirs
 
+try:
+    import post_install
+except ModuleNotFoundError:
+    import installation.post_install
+
 import misc.extra as misc
 from misc.extra import InstallError
 from misc.run_cmd import call
@@ -45,8 +50,6 @@ from misc.run_cmd import call
 import pacman.pac as pac
 
 import hardware.hardware as hardware
-
-import post_install
 
 DEST_DIR = "/install"
 
