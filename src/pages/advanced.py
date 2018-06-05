@@ -67,6 +67,15 @@ except NameError as err:
         return message
 
 
+class CreatePartitionDialog(Gtk.Dialog):
+    """ Shows creation partition dialog """
+    def __init__(self):
+        Gtk.Dialog.__init__(self)
+
+
+
+
+
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
 
@@ -1063,6 +1072,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Added extended, moving extended details up here
 
         # Get the objects from the dialog
+        # HERE! @@@@
         radio = {
             "primary": self.ui.get_object('create_partition_create_type_primary'),
             "logical": self.ui.get_object('create_partition_create_type_logical'),
