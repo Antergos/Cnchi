@@ -59,21 +59,16 @@ from pages.gtkbasebox import GtkBaseBox
 
 from widgets.partition_treeview import PartitionTreeview
 
+# Dialogs
+from dialogs.create_partition import CreatePartitionDialog
+
+
 # When testing, no _() is available
 try:
     _("")
 except NameError as err:
     def _(message):
         return message
-
-
-class CreatePartitionDialog(Gtk.Dialog):
-    """ Shows creation partition dialog """
-    def __init__(self):
-        Gtk.Dialog.__init__(self)
-
-
-
 
 
 class InstallationAdvanced(GtkBaseBox):
@@ -146,9 +141,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
+
         # Create and edit partition dialogs
-        self.create_partition_dialog = self.ui.get_object(
-            'create_partition_dialog')
+        #self.create_partition_dialog = self.ui.get_object(
+        #    'create_partition_dialog')
+        main_window = self.get_main_window()
+        self.create_partition_dialog = CreatePartitionDialog(main_window)
         self.edit_partition_dialog = self.ui.get_object(
             'edit_partition_dialog')
 

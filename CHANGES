@@ -1,3 +1,4 @@
+[2018-06-05 22:42:14 +0200]  moving advanced dialogs (ui and py) to individual files (wip)              karasu      {8f18a587}
 [2018-06-04 22:54:36 +0200]  Remove "is not None"                                                       karasu      {c8731060}
 [2018-06-04 22:50:50 +0200]  Small fixes in advanced                                                    karasu      {f0ca1fe9}
 [2018-06-04 22:45:32 +0200]  Fix import                                                                 karasu      {48ca94aa}
