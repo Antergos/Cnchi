@@ -141,12 +141,10 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
-
         # Create and edit partition dialogs
-        #self.create_partition_dialog = self.ui.get_object(
-        #    'create_partition_dialog')
         main_window = self.get_main_window()
-        self.create_partition_dialog = CreatePartitionDialog(main_window)
+        self.create_part_dlg = CreatePartitionDialog(
+            self.ui_dir, main_window)
         self.edit_partition_dialog = self.ui.get_object(
             'edit_partition_dialog')
 
@@ -171,9 +169,6 @@ class InstallationAdvanced(GtkBaseBox):
         # Connect partition treeview's checkbox cells
         self.partition_treeview.connect_format_cell(self.format_cell_toggled)
         self.partition_treeview.connect_ssd_cell(self.ssd_cell_toggled)
-
-        # Get encryption (LUKS) options dialog
-        self.luks_dialog = self.ui.get_object('luks_dialog')
 
         switch = self.ui.get_object('luks_use_luks_switch')
         switch.connect('notify::active', self.luks_use_luks_switch_activate)
@@ -1068,38 +1063,7 @@ class InstallationAdvanced(GtkBaseBox):
         (disk, _result) = self.disks[disk_path]
 
         # Added extended, moving extended details up here
-
-        # Get the objects from the dialog
-        # HERE! @@@@
-        radio = {
-            "primary": self.ui.get_object('create_partition_create_type_primary'),
-            "logical": self.ui.get_object('create_partition_create_type_logical'),
-            "extended": self.ui.get_object('create_partition_create_type_extended')}
-
-        radio["primary"].set_active(True)
-        radio["logical"].set_active(False)
-        radio["extended"].set_active(False)
-
-        radio["primary"].set_visible(True)
-        radio["logical"].set_visible(True)
-        radio["extended"].set_visible(True)
-
-        supports_extended = disk.supportsFeature(pm.DISK_EXTENDED)
-
-        if not supports_extended:
-            radio["extended"].set_visible(False)
-
         extended = disk.getExtendedPartition()
-
-        if is_primary_or_extended and extended:
-            radio["logical"].set_visible(False)
-            radio["extended"].set_visible(False)
-        elif is_primary_or_extended and not extended:
-            radio["logical"].set_visible(False)
-        elif not is_primary_or_extended:
-            radio["primary"].set_visible(False)
-            radio["logical"].set_active(True)
-            radio["extended"].set_visible(False)
 
         if is_primary_or_extended:
             # Get how many primary partitions are already created on disk
@@ -1117,12 +1081,13 @@ class InstallationAdvanced(GtkBaseBox):
                 show.warning(self.get_main_window(), msg)
                 return
 
-        radio["begin"] = self.ui.get_object(
-            'create_partition_create_place_beginning')
-        radio["end"] = self.ui.get_object('create_partition_create_place_end')
+        # ------------------------------------------------------------------
+        
+        # Get the objects from the dialog
+        params = {}
+        params['supports_extended'] = disk.supportsFeature(pm.DISK_EXTENDED)
+        params['extended_partition'] = extended
 
-        radio["begin"].set_active(True)
-        radio["end"].set_active(False)
 
         # Prepare size spin
 
@@ -1134,48 +1099,22 @@ class InstallationAdvanced(GtkBaseBox):
         max_size_mb = int((partition.geometry.length *
                            dev.sectorSize) / 1000000) + 1
 
-        size_spin = self.ui.get_object('create_partition_size_spinbutton')
-        size_spin.set_digits(0)
-        adjustment = Gtk.Adjustment(
-            value=max_size_mb,
-            lower=1,
-            upper=max_size_mb,
-            step_increment=1,
-            page_increment=10,
-            page_size=0)
-        size_spin.set_adjustment(adjustment)
-        size_spin.set_value(max_size_mb)
+        params['max_size_mb'] = max_size_mb
 
-        # label
-        label_entry = self.ui.get_object('create_partition_label_entry')
-        label_entry.set_text("")
-
-        # use as (fs)
-        fs_combo = self.ui.get_object('create_partition_use_combo')
-        fs_combo.set_active(3)
-
-        # mount combo entry
-        mount_combo = self.ui.get_object('create_partition_mount_combo_entry')
-        mount_combo.set_text("")
+        self.create_part_dlg.prepare(params)
 
         # Empty luks dialog options (for encryption properties dialog)
         self.luks_dialog_options = (False, "", "")
 
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        self.create_partition_dialog.set_transient_for(self.get_main_window())
-
         # Finally, show the create partition dialog
-        response = self.create_partition_dialog.run()
+        response = self.create_part_dlg.run()
         if response == Gtk.ResponseType.OK:
-            mylabel = label_entry.get_text().replace(" ", "")
+            mylabel = self.create_part_dlg.get_label()
             if mylabel and not mylabel.isalpha():
-                logging.warning(
-                    "%s is not a valid label. Cnchi will set no label at all",
-                    mylabel)
+                logging.warning("%s is not a valid label.", mylabel)
                 mylabel = ""
 
-            mymount = mount_combo.get_text().strip()
+            mymount = self.create_part_dlg.get_mount_point()
             if mymount in self.diskdic['mounts']:
                 show.warning(
                     self.get_main_window(),
@@ -1184,18 +1123,15 @@ class InstallationAdvanced(GtkBaseBox):
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
 
-                myfs = fs_combo.get_active_text()
-
-                if myfs is None:
-                    myfs = ""
+                myfs = self.create_part_dlg.get_fs()
 
                 if myfs == 'swap':
                     mymount = 'swap'
 
                 # Get selected size
-                size = int(size_spin.get_value())
+                size = self.create_part_dlg.get_size()
 
-                beg_var = radio["begin"].get_active()
+                beg_var = self.create_part_dlg.get_beginning_point()
 
                 start_sector = partition.geometry.start
                 end_sector = partition.geometry.end
@@ -1208,10 +1144,10 @@ class InstallationAdvanced(GtkBaseBox):
 
                 # User wants to create an extended, logical or primary partition
 
-                if radio["primary"].get_active():
+                if self.create_part_dlg.wants_primary():
                     logging.debug("Creating a primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
-                elif radio["extended"].get_active():
+                elif self.create_part_dlg.wants_extended():
                     # Not mounting extended partitions.
                     if mymount:
                         if mymount in self.diskdic['mounts']:
@@ -1223,7 +1159,7 @@ class InstallationAdvanced(GtkBaseBox):
                     formatme = False
                     logging.debug("Creating an extended partition")
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
-                elif radio["logical"].get_active():
+                elif self.create_part_dlg.wants_logical():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
@@ -1260,131 +1196,16 @@ class InstallationAdvanced(GtkBaseBox):
                 # Update partition list treeview
                 self.update_view()
 
-        self.create_partition_dialog.hide()
+        self.create_part_dlg.hide()
 
     # ---------------------------------------------------------------------
 
-    def edit_partition_luks_settings_clicked(self, widget):
-        """ User clicks on edit partition luks settings """
-        self.partition_luks_settings_clicked(widget)
+    #def edit_partition_luks_settings_clicked(self, widget):
+    #    """ User clicks on edit partition luks settings """
+    #    self.partition_luks_settings_clicked(widget)
 
-    def create_partition_luks_settings_clicked(self, widget):
-        """ User clicks on create partition luks settings """
-        self.partition_luks_settings_clicked(widget)
-
-    def partition_luks_settings_clicked(self, _widget):
-        """ Show LUKS encryption options dialog """
-        # TODO: Check Password confirmation (compare both entries)
-
-        entry_vol_name = self.ui.get_object('luks_vol_name_entry')
-        entry_password = self.ui.get_object('luks_password_entry')
-        entry_password_confirm = self.ui.get_object(
-            'luks_password_confirm_entry')
-
-        (use_luks, vol_name, password) = self.luks_dialog_options
-
-        entry_vol_name.set_text(vol_name)
-        entry_password.set_text(password)
-        entry_password_confirm.set_text(password)
-
-        switch_use_luks = self.ui.get_object('luks_use_luks_switch')
-        switch_use_luks.set_active(use_luks)
-        self.enable_luks_widgets(use_luks)
-
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        self.luks_dialog.set_transient_for(self.get_main_window())
-
-        # Show warning message
-        if not self.luks_dialog_warning_message_shown:
-            show.warning(
-                self.get_main_window(),
-                _("Using LUKS encryption will DELETE all partition contents!"))
-            self.luks_dialog_warning_message_shown = True
-
-        response = self.luks_dialog.run()
-        if response == Gtk.ResponseType.OK:
-            use_luks = switch_use_luks.get_active()
-            vol_name = entry_vol_name.get_text()
-            password = entry_password.get_text()
-            if use_luks:
-                if vol_name and password:
-                    if password == entry_password_confirm.get_text():
-                        # Save new choices
-                        self.luks_dialog_options = (
-                            use_luks, vol_name, password)
-                    else:
-                        msg = _(
-                            "LUKS passwords do not match! Encryption NOT enabled.")
-                        show.warning(self.get_main_window(), msg)
-                        self.luks_dialog_options = (False, "", "")
-                else:
-                    msg = _(
-                        "Volume name and password are mandatory! Encryption NOT enabled.")
-                    show.warning(self.get_main_window(), msg)
-                    self.luks_dialog_options = (False, "", "")
-            else:
-                self.luks_dialog_options = (False, "", "")
-
-        self.luks_dialog.hide()
-
-    def luks_use_luks_switch_activate(self, widget, _data):
-        """ User enables / disables luks encription """
-        self.enable_luks_widgets(widget.get_active())
-
-    def enable_luks_widgets(self, status):
-        """ Enables or disables the LUKS encryption dialog widgets """
-        w_sensitive = ['luks_vol_name_label', 'luks_password_label',
-                       'luks_password_confirm_label', 'luks_vol_name_entry',
-                       'luks_password_entry', 'luks_password_confirm_entry']
-        w_hide = ['luks_password_confirm_image', 'luks_password_status_label']
-
-        for w_name in w_sensitive:
-            widget = self.ui.get_object(w_name)
-            widget.set_sensitive(status)
-
-        if status is False:
-            for w_name in w_hide:
-                widget = self.ui.get_object(w_name)
-                widget.hide()
-
-        widget = self.ui.get_object('luks_use_luks_switch')
-        widget.set_active(status)
 
     # ---------------------------------------------------------------------
-
-    def create_partition_create_type_extended_toggled(self, widget):
-        """ If user selects to create an extended partition,
-            some widgets must be disabled """
-        wdgts = {
-            'use_label':   self.ui.get_object('create_partition_use_label'),
-            'use_combo':   self.ui.get_object('create_partition_use_combo'),
-            'mount_label': self.ui.get_object('create_partition_mount_label'),
-            'mount_combo': self.ui.get_object('create_partition_mount_combo'),
-            'label_label': self.ui.get_object('create_partition_label_label'),
-            'label_entry': self.ui.get_object('create_partition_label_entry')}
-
-        sensitive = True
-
-        if widget.get_active():
-            sensitive = False
-
-        for i in wdgts:
-            wdgts[i].set_sensitive(sensitive)
-
-    def create_partition_use_combo_changed(self, selection):
-        """ If user selects a swap fs, it can't be mounted the usual way """
-        fs_selected = selection.get_active_text()
-
-        p_mount_combo = self.ui.get_object('create_partition_mount_combo')
-        p_mount_label = self.ui.get_object('create_partition_mount_label')
-
-        if fs_selected == 'swap':
-            p_mount_combo.hide()
-            p_mount_label.hide()
-        else:
-            p_mount_combo.show()
-            p_mount_label.show()
 
     def edit_partition_use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <object class="GtkDialog" id="luks_dialog">
+    <object class="GtkDialog" id="luks_settings_dialog">
         <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="title" translatable="yes">Encryption properties</property>
@@ -15,7 +15,7 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">end</property>
                         <child>
-                            <object class="GtkButton" id="luks_cancel_button">
+                            <object class="GtkButton" id="cancel_button">
                                 <property name="label">_Cancel</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -31,7 +31,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkButton" id="luks_ok_button">
+                            <object class="GtkButton" id="ok_button">
                                 <property name="label">_Apply</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -55,7 +55,7 @@
                     </packing>
                 </child>
                 <child>
-                    <object class="GtkGrid" id="luks_options_grid">
+                    <object class="GtkGrid" id="options_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_start">10</property>
@@ -65,7 +65,7 @@
                         <property name="row_spacing">10</property>
                         <property name="column_spacing">8</property>
                         <child>
-                            <object class="GtkLabel" id="luks_vol_name_label">
+                            <object class="GtkLabel" id="vol_name_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
@@ -77,7 +77,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="luks_password_label">
+                            <object class="GtkLabel" id="password_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
@@ -89,7 +89,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="luks_password_confirm_label">
+                            <object class="GtkLabel" id="password_confirm_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
@@ -101,12 +101,12 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkSwitch" id="luks_use_luks_switch">
+                            <object class="GtkSwitch" id="use_luks_switch">
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="halign">start</property>
-                                <signal name="activate" handler="luks_use_luks_switch_activate" swapped="no"/>
+                                <signal name="activate" handler="use_luks_switch_activate" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -114,7 +114,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="luks_use_luks_label">
+                            <object class="GtkLabel" id="use_luks_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
@@ -127,7 +127,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkEntry" id="luks_vol_name_entry">
+                            <object class="GtkEntry" id="vol_name_entry">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">•</property>
@@ -138,7 +138,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkEntry" id="luks_password_entry">
+                            <object class="GtkEntry" id="password_entry">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="visibility">False</property>
@@ -146,7 +146,7 @@
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">20</property>
                                 <property name="placeholder_text">Password</property>
-                                <signal name="changed" handler="luks_password_changed" swapped="no"/>
+                                <signal name="changed" handler="password_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -154,7 +154,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkEntry" id="luks_password_confirm_entry">
+                            <object class="GtkEntry" id="password_confirm_entry">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="visibility">False</property>
@@ -162,7 +162,7 @@
                                 <property name="activates_default">True</property>
                                 <property name="width_chars">20</property>
                                 <property name="placeholder_text">Confirm password</property>
-                                <signal name="changed" handler="luks_password_changed" swapped="no"/>
+                                <signal name="changed" handler="password_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -170,7 +170,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkImage" id="luks_password_confirm_image">
+                            <object class="GtkImage" id="password_confirm_image">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <!--<property name="stock">gtk-yes</property>-->
@@ -181,7 +181,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="luks_password_strength">
+                            <object class="GtkLabel" id="password_strength">
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkgreen"&gt;Strong password&lt;/span&gt;&lt;/small&gt;</property>
@@ -193,7 +193,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="luks_password_status_label">
+                            <object class="GtkLabel" id="password_status_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                             </object>
@@ -234,8 +234,8 @@
             </object>
         </child>
         <action-widgets>
-            <action-widget response="-6">luks_cancel_button</action-widget>
-            <action-widget response="-5">luks_ok_button</action-widget>
+            <action-widget response="-6">cancel_button</action-widget>
+            <action-widget response="-5">ok_button</action-widget>
         </action-widgets>
     </object>
 </interface>
