@@ -226,6 +226,9 @@ class Cache(GtkBaseBox):
     def store_values(self):
         """ Store selected values """
         device_path, partition_path = self.cache_path
+        if not device_path and not partition_path:
+            # User does not want to use cache
+            return True
         xz_cache_dir = self.mount_cache(device_path, partition_path)
         if xz_cache_dir:
             xz_cache = self.settings.get('xz_cache')
