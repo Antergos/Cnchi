@@ -1237,10 +1237,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         btns = [
             "changelist_cancelbutton",
-            "create_table_dialog_cancel",
-            "edit_partition_cancel",
-            "create_partition_cancel",
-            "luks_cancel_button"]
+            "create_table_dialog_cancel"]
 
         for btn_id in btns:
             btn = self.ui.get_object(btn_id)
@@ -1248,87 +1245,11 @@ class InstallationAdvanced(GtkBaseBox):
 
         btns = [
             "changelist_okbutton",
-            "create_table_dialog_ok",
-            "edit_partition_ok",
-            "create_partition_ok",
-            "luks_ok_button"]
+            "create_table_dialog_ok"]
 
         for btn_id in btns:
             btn = self.ui.get_object(btn_id)
             btn.set_label(_("_Apply"))
-
-        # Translate dialog "Create partition"
-
-        self.create_partition_dialog.set_title(_("Create partition"))
-
-        txt = _("Location:")
-        label = self.ui.get_object('create_partition_create_place_label')
-        label.set_markup(txt)
-
-        txt = _("Size:")
-        label = self.ui.get_object('create_partition_size_label')
-        label.set_markup(txt)
-
-        txt = _("Type:")
-        label = self.ui.get_object('create_partition_create_type_label')
-        label.set_markup(txt)
-
-        txt = _("Primary")
-        button = self.ui.get_object('create_partition_create_type_primary')
-        button.set_label(txt)
-
-        txt = _("Logical")
-        button = self.ui.get_object('create_partition_create_type_logical')
-        button.set_label(txt)
-
-        txt = _("Extended")
-        button = self.ui.get_object('create_partition_create_type_extended')
-        button.set_label(txt)
-
-        txt = _("Beginning of this space")
-        button = self.ui.get_object('create_partition_create_place_beginning')
-        button.set_label(txt)
-
-        txt = _("End of this space")
-        button = self.ui.get_object('create_partition_create_place_end')
-        button.set_label(txt)
-
-        txt = _("Use As:")
-        label = self.ui.get_object('create_partition_use_label')
-        label.set_markup(txt)
-
-        txt = _("Mount Point:")
-        label = self.ui.get_object('create_partition_mount_label')
-        label.set_markup(txt)
-
-        txt = _("Label (optional):")
-        label = self.ui.get_object('create_partition_label_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('create_partition_luks_settings')
-        button.set_label(txt)
-
-        # Translate dialog "Edit partition"
-        txt = _("Use As:")
-        label = self.ui.get_object('edit_partition_use_label')
-        label.set_markup(txt)
-
-        txt = _("Mount Point:")
-        label = self.ui.get_object('edit_partition_mount_label')
-        label.set_markup(txt)
-
-        txt = _("Label (optional):")
-        label = self.ui.get_object('edit_partition_label_label')
-        label.set_markup(txt)
-
-        txt = _("Format:")
-        label = self.ui.get_object('edit_partition_format_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('edit_partition_luks_settings')
-        button.set_label(txt)
 
         # Create disk partition table dialog
         txt = _("Partition Table Type:")
@@ -1338,25 +1259,8 @@ class InstallationAdvanced(GtkBaseBox):
         dialog = self.ui.get_object("create_table_dialog")
         dialog.set_title(_("Create Partition Table"))
 
-        # LUKS options dialog
 
-        self.luks_dialog.set_title(_("Encryption properties"))
 
-        txt = _("Use LUKS encryption:")
-        label = self.ui.get_object('luks_use_luks_label')
-        label.set_markup(txt)
-
-        txt = _("LUKS volume name:")
-        label = self.ui.get_object('luks_vol_name_label')
-        label.set_markup(txt)
-
-        txt = _("Password:")
-        label = self.ui.get_object('luks_password_label')
-        label.set_markup(txt)
-
-        txt = _("Confirm password:")
-        label = self.ui.get_object('luks_password_confirm_label')
-        label.set_markup(txt)
 
     def prepare(self, direction):
         """ Prepare our dialog to show/hide/activate/deactivate

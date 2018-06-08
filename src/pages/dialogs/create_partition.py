@@ -42,6 +42,13 @@ import parted3.fs_module as fs
 
 from dialogs.luks_settings import LuksSettingsDialog
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 class CreatePartitionDialog(Gtk.Dialog):
     """ Shows creation partition dialog """
     
@@ -213,16 +220,73 @@ class CreatePartitionDialog(Gtk.Dialog):
         
         # Assign images to buttons
         btns = [
-            ("cancel", "dialog-cancel"),
-            ("ok", "dialog-apply")]
+            ('cancel', 'dialog-cancel', _('_Cancel')),
+            ('ok', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
-            (btn_id, icon) = grp
+            (btn_id, icon, lbl) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
-    
+            btn.set_label(lbl)
+
+        self.translate_ui()
+
+    def translate_ui(self):
+        """ Translate user interface """
+        # Translate dialog "Create partition"
+
+        self.set_title(_("Create partition"))
+
+        txt = _("Location:")
+        label = self.ui.get_object('create_place_label')
+        label.set_markup(txt)
+
+        txt = _("Size:")
+        label = self.ui.get_object('size_label')
+        label.set_markup(txt)
+
+        txt = _("Type:")
+        label = self.ui.get_object('create_type_label')
+        label.set_markup(txt)
+
+        txt = _("Primary")
+        button = self.ui.get_object('create_type_primary')
+        button.set_label(txt)
+
+        txt = _("Logical")
+        button = self.ui.get_object('create_type_logical')
+        button.set_label(txt)
+
+        txt = _("Extended")
+        button = self.ui.get_object('create_type_extended')
+        button.set_label(txt)
+
+        txt = _("Beginning of this space")
+        button = self.ui.get_object('create_place_beginning')
+        button.set_label(txt)
+
+        txt = _("End of this space")
+        button = self.ui.get_object('create_place_end')
+        button.set_label(txt)
+
+        txt = _("Use As:")
+        label = self.ui.get_object('use_label')
+        label.set_markup(txt)
+
+        txt = _("Mount Point:")
+        label = self.ui.get_object('mount_label')
+        label.set_markup(txt)
+
+        txt = _("Label (optional):")
+        label = self.ui.get_object('label_label')
+        label.set_markup(txt)
+
+        txt = _("Encryption Options...")
+        button = self.ui.get_object('luks_settings')
+        button.set_label(txt)
+
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
             some widgets must be disabled """

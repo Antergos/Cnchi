@@ -37,6 +37,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 class LuksSettingsDialog(Gtk.Dialog):
     """ Shows LUKS settings dialog """
     
@@ -86,16 +93,34 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         # Assign images to buttons
         btns = [
-            ("cancel_button", "dialog-cancel"),
-            ("ok_button", "dialog-apply")]
+            ('cancel_button', 'dialog-cancel', _('_Cancel')),
+            ('ok_button', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
-            (btn_id, icon) = grp
+            (btn_id, icon, lbl) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
+            btn.set_label(lbl)
+        
+        self.translate_ui()
 
+    def translate_ui(self):
+        """ Translate dialog widgets """
+        self.set_title(_("Encryption properties"))
+
+        labels = [
+            ('use_luks_label', _("Use LUKS encryption:")),
+            ('vol_name_label', _("LUKS volume name:")),
+            ('password_label', _("Password:")),
+            ('password_confirm_label', _("Confirm password:"))
+        ]
+
+        for grp in labels:
+            name, txt = grp
+            label = self.ui.get_object(name)
+            label.set_markup(txt)
 
     def get_use_luks(self):
         switch = self.ui.get_object('use_luks_switch')

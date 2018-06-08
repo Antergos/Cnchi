@@ -42,6 +42,13 @@ import parted3.fs_module as fs
 
 from dialogs.luks_settings import LuksSettingsDialog
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 class EditPartitionDialog(Gtk.Dialog):
     """ Shows edit partition dialog """
     
@@ -211,15 +218,18 @@ class EditPartitionDialog(Gtk.Dialog):
 
         # Assign images to buttons
         btns = [
-            ("edit_partition_cancel", "dialog-cancel"),
-            ("edit_partition_ok", "dialog-apply")]
+            ('cancel', 'dialog-cancel', _('_Cancel')),
+            ('ok', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
-            (btn_id, icon) = grp
+            (btn_id, icon, lbl) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
+            btn.set_label(lbl)
+        
+        self.translate_ui()
 
     def use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
@@ -306,3 +316,25 @@ class EditPartitionDialog(Gtk.Dialog):
         format_check = self.ui.get_object('format_check')
         format_check.set_active(format_active)
         format_check.set_sensitive(format_sensitive)
+
+    def translate_ui(self):
+        """ Translates dialog interface """
+        txt = _("Use As:")
+        label = self.ui.get_object('use_label')
+        label.set_markup(txt)
+
+        txt = _("Mount Point:")
+        label = self.ui.get_object('mount_label')
+        label.set_markup(txt)
+
+        txt = _("Label (optional):")
+        label = self.ui.get_object('label_label')
+        label.set_markup(txt)
+
+        txt = _("Format:")
+        label = self.ui.get_object('format_label')
+        label.set_markup(txt)
+
+        txt = _("Encryption Options...")
+        button = self.ui.get_object('luks_settings')
+        button.set_label(txt)
