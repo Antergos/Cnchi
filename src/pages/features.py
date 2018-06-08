@@ -61,8 +61,8 @@ class Graphics(object):
 
     def amd(self):
         """ Returns true if an AMD card is detected """
-        if (Catalyst().detect() or AMDGpu.detect() or
-            AMDGpuExt.detect()):
+        if (Catalyst().detect() or AMDGpu().detect() or
+            AMDGpuExp().detect()):
             return True
         return False
 
