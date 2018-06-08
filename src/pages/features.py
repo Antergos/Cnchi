@@ -198,7 +198,7 @@ class Features(GtkBaseBox):
             if self.graphics.nvidia() and not self.graphics.bumblebee():
                 allow = True
             if not allow:
-                logging.debug("Neither AMD or Nvidia cards have been detected. "
+                logging.debug("Neither AMD nor Nvidia cards have been detected. "
                               "Removing proprietary graphic drivers feature.")
                 self.features.remove("graphic_drivers")
 
