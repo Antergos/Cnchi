@@ -173,9 +173,7 @@ class InstallationAdvanced(GtkBaseBox):
             ("changelist_cancelbutton", "dialog-cancel"),
             ("changelist_okbutton", "dialog-apply"),
             ("create_table_dialog_cancel", "dialog-cancel"),
-            ("create_table_dialog_ok", "dialog-apply"),
-            ("luks_cancel_button", "dialog-cancel"),
-            ("luks_ok_button", "dialog-apply")]
+            ("create_table_dialog_ok", "dialog-apply")]
 
         for grp in btns:
             (btn_id, icon) = grp
