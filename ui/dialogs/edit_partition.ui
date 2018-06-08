@@ -13,7 +13,7 @@
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                    <object class="GtkGrid" id="edit_partition_dialog_grid">
+                    <object class="GtkGrid" id="dialog_grid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="valign">start</property>
@@ -21,7 +21,7 @@
                         <property name="row_spacing">7</property>
                         <property name="column_spacing">6</property>
                         <child>
-                            <object class="GtkLabel" id="edit_partition_use_label">
+                            <object class="GtkLabel" id="use_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="xalign">1</property>
@@ -36,14 +36,14 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkComboBoxText" id="edit_partition_use_combo">
+                            <object class="GtkComboBoxText" id="use_combo">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="hexpand">True</property>
-                                <signal name="changed" handler="edit_partition_use_combo_changed" swapped="no"/>
+                                <signal name="changed" handler="use_combo_changed" swapped="no"/>
                                 <accessibility>
-                                    <relation type="labelled-by" target="edit_partition_use_label"/>
+                                    <relation type="labelled-by" target="use_label"/>
                                 </accessibility>
                             </object>
                             <packing>
@@ -54,7 +54,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="edit_partition_mount_label">
+                            <object class="GtkLabel" id="mount_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="xalign">1</property>
@@ -69,19 +69,19 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkComboBoxText" id="edit_partition_mount_combo">
+                            <object class="GtkComboBoxText" id="mount_combo">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
                                 <property name="has_entry">True</property>
                                 <child internal-child="entry">
-                                    <object class="GtkEntry" id="edit_partition_mount_combo_entry">
+                                    <object class="GtkEntry" id="mount_combo_entry">
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">•</property>
                                     </object>
                                 </child>
                                 <accessibility>
-                                    <relation type="labelled-by" target="edit_partition_mount_label"/>
+                                    <relation type="labelled-by" target="mount_label"/>
                                 </accessibility>
                             </object>
                             <packing>
@@ -92,7 +92,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="edit_partition_label_label">
+                            <object class="GtkLabel" id="label_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Label (optional):</property>
@@ -105,7 +105,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkEntry" id="edit_partition_label_entry">
+                            <object class="GtkEntry" id="label_entry">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
@@ -118,7 +118,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkLabel" id="edit_partition_format_label">
+                            <object class="GtkLabel" id="format_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">1</property>
@@ -132,7 +132,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkCheckButton" id="edit_partition_format_check">
+                            <object class="GtkCheckButton" id="format_check">
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -160,13 +160,13 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">end</property>
                         <child>
-                            <object class="GtkButton" id="edit_partition_luks_settings">
+                            <object class="GtkButton" id="luks_settings">
                                 <property name="label" translatable="yes">Encryption options...</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <signal name="clicked" handler="edit_partition_luks_settings_clicked" swapped="no"/>
+                                <signal name="clicked" handler="luks_settings_clicked" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -175,7 +175,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkButton" id="edit_partition_cancel">
+                            <object class="GtkButton" id="cancel">
                                 <property name="label">_Cancel</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -192,7 +192,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkButton" id="edit_partition_ok">
+                            <object class="GtkButton" id="ok">
                                 <property name="label">_Apply</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -220,8 +220,8 @@
             </object>
         </child>
         <action-widgets>
-            <action-widget response="-6">edit_partition_cancel</action-widget>
-            <action-widget response="-5">edit_partition_ok</action-widget>
+            <action-widget response="-6">cancel</action-widget>
+            <action-widget response="-5">ok</action-widget>
         </action-widgets>
     </object>
 </interface>

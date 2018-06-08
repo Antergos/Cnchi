@@ -1,3 +1,4 @@
+[2018-06-08 09:36:54 +0200]  luks settings done                                                         karasu      {c8d21a89}
 [2018-06-07 23:45:01 +0200]  Working on luks settings dialog and create partition dialog (wip)          karasu      {2b5503da}
 [2018-06-06 18:03:04 +0200]  Working on splitting advanced code (wip)                                   karasu      {a98d311b}
 [2018-06-05 22:42:14 +0200]  moving advanced dialogs (ui and py) to individual files (wip)              karasu      {8f18a587}

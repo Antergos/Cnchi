@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# create_partition.py
+# edit_partition.py
 #
 # Copyright © 2013-2018 Antergos
 #
@@ -42,10 +42,10 @@ import parted3.fs_module as fs
 
 from luks_settings import LuksSettingsDialog
 
-class CreatePartitionDialog(Gtk.Dialog):
-    """ Shows creation partition dialog """
+class EditPartitionDialog(Gtk.Dialog):
+    """ Shows edit partition dialog """
     
-    UI_FILE="create_partition.ui"
+    UI_FILE="edit_partition.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
@@ -54,7 +54,7 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         self.ui = Gtk.Builder()
         self.ui_dir = ui_dir
-        ui_file = os.path.join(ui_dir, CreatePartitionDialog.UI_FILE)
+        ui_file = os.path.join(ui_dir, EditPartitionDialog.UI_FILE)
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
@@ -109,6 +109,11 @@ class CreatePartitionDialog(Gtk.Dialog):
         """ Returns where the new partition should start """
         beg = self.ui.get_object('create_place_beginning')
         return beg.get_active()
+    
+    def is_format_active(self):
+        """ Returns if format checkbox is active """
+        format_check = self.ui.get_object('format_check')
+        return format_check.get_active()
 
     def wants_primary(self):
         """ Returns True if the user wants to create a primary partition """
@@ -124,29 +129,22 @@ class CreatePartitionDialog(Gtk.Dialog):
 
     def prepare(self, params):
         """ Prepare elements for showing (before run)
-            params: 'supports_extended, 'extended_partition', 
-            'is_primary_or_extended' """
-       
-        # Initialize filesystem combobox
+            params: 'supports_extended, 'extended_partition', """
+        
+        # Initialize filesystems combobox
         combo = self.ui.get_object('use_combo')
         combo.remove_all()
         for fs_name in sorted(fs.NAMES):
             combo.append_text(fs_name)
         combo.set_wrap_width(2)
 
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")  
-        # Automatically select first entry
-        misc.select_first_combobox_item(combo)
-
-        # Initialize mount points combobox
-        combo = self.ui.get_object('mount_combo')
-        combo.remove_all()
-        for mount_point in fs.COMMON_MOUNT_POINTS:
-            combo.append_text(mount_point)
+        # Initialize our create and edit partition dialog mount points' combo.
+        names = ['create_partition_mount_combo', 'edit_partition_mount_combo']
+        for name in names:
+            combo = self.ui.get_object(name)
+            combo.remove_all()
+            for mount_point in fs.COMMON_MOUNT_POINTS:
+                combo.append_text(mount_point)
 
         radio = {
             "primary": self.ui.get_object('create_type_primary'),
@@ -209,13 +207,27 @@ class CreatePartitionDialog(Gtk.Dialog):
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
+
+    def use_combo_changed(self, selection):
+        """ If user selects a swap fs, it can't be mounted the usual way """
+        fs_selected = selection.get_active_text()
+
+        mount_combo = self.ui.get_object('mount_combo')
+        mount_label = self.ui.get_object('mount_label')
+
+        if fs_selected == 'swap':
+            mount_combo.hide()
+            mount_label.hide()
+        else:
+            mount_combo.show()
+            mount_label.show()
     
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
             some widgets must be disabled """
         wdgts = {
-            'use_label': self.ui.get_object('use_label'),
-            'use_combo': self.ui.get_object('use_combo'),
+            'use_label':   self.ui.get_object('use_label'),
+            'use_combo':   self.ui.get_object('use_combo'),
             'mount_label': self.ui.get_object('mount_label'),
             'mount_combo': self.ui.get_object('mount_combo'),
             'label_label': self.ui.get_object('label_label'),
@@ -242,4 +254,42 @@ class CreatePartitionDialog(Gtk.Dialog):
             self.luks_options = self.luks_dialog.get_options()
 
         self.luks_dialog.hide()
-           
+
+    def set_partition_info(self, partition_info):
+        """ Sets partition info to widgets """
+        self.set_filesystem(partition_info['filesystems'])
+        self.set_mount_point(partition_info['mount_point'])
+        self.set_label(partition_info['label'])
+        self.set_format(
+            partition_info['format_active'],
+            partition_info['format_sensitive'])
+
+    def set_filesystem(self, filesystem):
+        """ Selects the fs in the combobox """
+        combo = self.ui.get_object('use_combo')
+        combo_model = combo.get_model()
+
+        combo_iter = combo_model.get_iter_first()
+        while combo_iter:
+            combo_row = combo_model[combo_iter]
+            if combo_row[0] and combo_row[0] in filesystem:
+                combo.set_active_iter(combo_iter)
+                combo_iter = None
+            else:
+                combo_iter = combo_model.iter_next(combo_iter)
+
+    def set_mount_point(self, mount_point):
+        """ Sets current mount point """
+        mount_combo_entry = self.ui.get_object('mount_combo_entry')
+        mount_combo_entry.set_text(mount_point)
+    
+    def set_label(self, label):
+        """ Sets current partition label """
+        label_entry = self.ui.get_object('label_entry')
+        label_entry.set_text(label)
+
+    def set_format(self, format_active, format_sensitive):
+        """ Sets format checkbox """
+        format_check = self.ui.get_object('format_check')
+        format_check.set_active(format_active)
+        format_check.set_sensitive(format_sensitive)
