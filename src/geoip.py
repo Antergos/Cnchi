@@ -35,6 +35,7 @@ import os
 import time
 import requests
 
+import maxminddb
 import geoip2.database
 import misc.extra as misc
 
@@ -98,8 +99,11 @@ class GeoIP(object):
 
     def _load_database(self, db_path, myip):
         """ Loads cities database """
-        reader = geoip2.database.Reader(db_path)
-        self.record = reader.city(myip)
+        try:
+            reader = geoip2.database.Reader(db_path)
+            self.record = reader.city(myip)
+        except maxminddb.errors.InvalidDatabaseError as err:
+            logging.error(err)
 
     def get_city(self):
         """ Returns city information

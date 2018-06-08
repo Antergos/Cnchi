@@ -152,20 +152,15 @@ class InstallationAdvanced(GtkBaseBox):
             'partition_treeview_scrolledwindow')
         self.partition_treeview = PartitionTreeview()
         self.partition_treeview.prepare()
-        self.partition_treeview.set_hexpand(True)
         self.scrolledwindow.add(self.partition_treeview)
 
         # Connect partition treeview's checkbox cells
         self.partition_treeview.connect_format_cell(self.format_cell_toggled)
         self.partition_treeview.connect_ssd_cell(self.ssd_cell_toggled)
 
-        switch = self.ui.get_object('luks_use_luks_switch')
-        switch.connect('notify::active', self.luks_use_luks_switch_activate)
-
         # Connect changing selection in the partition list treeview
         select = self.partition_treeview.get_selection()
-        select.connect(
-            "changed",
+        select.connect("changed",
             self.partition_treeview_selection_changed)
 
         # Assign images to buttons
@@ -179,10 +174,6 @@ class InstallationAdvanced(GtkBaseBox):
             ("changelist_okbutton", "dialog-apply"),
             ("create_table_dialog_cancel", "dialog-cancel"),
             ("create_table_dialog_ok", "dialog-apply"),
-            ("edit_partition_cancel", "dialog-cancel"),
-            ("edit_partition_ok", "dialog-apply"),
-            ("create_partition_cancel", "dialog-cancel"),
-            ("create_partition_ok", "dialog-apply"),
             ("luks_cancel_button", "dialog-cancel"),
             ("luks_ok_button", "dialog-apply")]
 
@@ -190,8 +181,11 @@ class InstallationAdvanced(GtkBaseBox):
             (btn_id, icon) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
-            btn.set_always_show_image(True)
-            btn.set_image(image)
+            if not btn:
+                logging.warning(btn_id)
+            else:
+                btn.set_always_show_image(True)
+                btn.set_image(image)
 
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
@@ -249,20 +243,21 @@ class InstallationAdvanced(GtkBaseBox):
         if not path:
             return
 
-        button = {"undo": self.ui.get_object('partition_button_undo'),
-                  "new": self.ui.get_object('partition_button_new'),
-                  "delete": self.ui.get_object('partition_button_delete'),
-                  "edit": self.ui.get_object('partition_button_edit'),
-                  "new_label": self.ui.get_object('partition_button_new_label')}
+        button = {
+            'undo': self.ui.get_object('partition_button_undo'),
+            'new': self.ui.get_object('partition_button_new'),
+            'delete': self.ui.get_object('partition_button_delete'),
+            'edit': self.ui.get_object('partition_button_edit'),
+            'new_label': self.ui.get_object('partition_button_new_label')}
 
         for key in button:
             button[key].set_sensitive(False)
 
         if self.stage_opts:
-            button["undo"].set_sensitive(True)
+            button['undo'].set_sensitive(True)
 
         if path == _("free space"):
-            button["new"].set_sensitive(True)
+            button['new'].set_sensitive(True)
         else:
             disks = pm.get_devices()
             if ((path not in disks and 'dev/mapper' not in path) or
@@ -278,18 +273,18 @@ class InstallationAdvanced(GtkBaseBox):
                     # It's an extended partition and has logical ones in it,
                     # so it can't be edited or deleted until the logical ones
                     # are deleted first.
-                    button["delete"].set_sensitive(False)
-                    button["edit"].set_sensitive(False)
+                    button['delete'].set_sensitive(False)
+                    button['edit'].set_sensitive(False)
                 else:
                     if '/mapper' in path:
-                        button["delete"].set_sensitive(False)
+                        button['delete'].set_sensitive(False)
                     else:
-                        button["delete"].set_sensitive(True)
+                        button['delete'].set_sensitive(True)
 
-                    button["edit"].set_sensitive(True)
+                    button['edit'].set_sensitive(True)
             else:
                 # A drive (disk) is selected
-                button["new_label"].set_sensitive(True)
+                button['new_label'].set_sensitive(True)
 
     def fill_bootloader_device_entry(self):
         """ Get all devices where we can put our bootloader.
@@ -1120,7 +1115,6 @@ class InstallationAdvanced(GtkBaseBox):
     #def edit_partition_luks_settings_clicked(self, widget):
     #    """ User clicks on edit partition luks settings """
     #    self.partition_luks_settings_clicked(widget)
-
 
     # ---------------------------------------------------------------------
 

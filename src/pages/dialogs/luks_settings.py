@@ -84,6 +84,19 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         self.maybe_show_warning_message()
 
+        # Assign images to buttons
+        btns = [
+            ("cancel_button", "dialog-cancel"),
+            ("ok_button", "dialog-apply")]
+
+        for grp in btns:
+            (btn_id, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            btn = self.ui.get_object(btn_id)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
+
+
     def get_use_luks(self):
         switch = self.ui.get_object('use_luks_switch')
         return switch.get_active()

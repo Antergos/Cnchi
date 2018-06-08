@@ -40,7 +40,7 @@ from gi.repository import Gtk, Gdk
 import misc.extra as misc
 import parted3.fs_module as fs
 
-from luks_settings import LuksSettingsDialog
+from dialogs.luks_settings import LuksSettingsDialog
 
 class CreatePartitionDialog(Gtk.Dialog):
     """ Shows creation partition dialog """
@@ -54,11 +54,12 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         self.ui = Gtk.Builder()
         self.ui_dir = ui_dir
-        ui_file = os.path.join(ui_dir, CreatePartitionDialog.UI_FILE)
+        ui_file = os.path.join(
+            ui_dir, 'dialogs', CreatePartitionDialog.UI_FILE)
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
-        self.ui.connect_signals()
+        self.ui.connect_signals(self)
 
         self.luks_dialog = None
 
@@ -209,6 +210,18 @@ class CreatePartitionDialog(Gtk.Dialog):
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
+        
+        # Assign images to buttons
+        btns = [
+            ("cancel", "dialog-cancel"),
+            ("ok", "dialog-apply")]
+
+        for grp in btns:
+            (btn_id, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            btn = self.ui.get_object(btn_id)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
     
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
@@ -242,4 +255,17 @@ class CreatePartitionDialog(Gtk.Dialog):
             self.luks_options = self.luks_dialog.get_options()
 
         self.luks_dialog.hide()
-           
+
+    def use_combo_changed(self, selection):
+        """ If user selects a swap fs, it can't be mounted the usual way """
+        fs_selected = selection.get_active_text()
+
+        mount_combo = self.ui.get_object('mount_combo')
+        mount_label = self.ui.get_object('mount_label')
+
+        if fs_selected == 'swap':
+            mount_combo.hide()
+            mount_label.hide()
+        else:
+            mount_combo.show()
+            mount_label.show()

@@ -40,7 +40,7 @@ from gi.repository import Gtk, Gdk
 import misc.extra as misc
 import parted3.fs_module as fs
 
-from luks_settings import LuksSettingsDialog
+from dialogs.luks_settings import LuksSettingsDialog
 
 class EditPartitionDialog(Gtk.Dialog):
     """ Shows edit partition dialog """
@@ -54,11 +54,12 @@ class EditPartitionDialog(Gtk.Dialog):
 
         self.ui = Gtk.Builder()
         self.ui_dir = ui_dir
-        ui_file = os.path.join(ui_dir, EditPartitionDialog.UI_FILE)
+        ui_file = os.path.join(
+            ui_dir, 'dialogs', EditPartitionDialog.UI_FILE)
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
-        self.ui.connect_signals()
+        self.ui.connect_signals(self)
 
         self.luks_dialog = None
 
@@ -207,6 +208,18 @@ class EditPartitionDialog(Gtk.Dialog):
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
+
+        # Assign images to buttons
+        btns = [
+            ("edit_partition_cancel", "dialog-cancel"),
+            ("edit_partition_ok", "dialog-apply")]
+
+        for grp in btns:
+            (btn_id, icon) = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            btn = self.ui.get_object(btn_id)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
 
     def use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """

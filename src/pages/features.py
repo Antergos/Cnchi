@@ -48,7 +48,7 @@ from hardware.modules.nvidia_340xx import Nvidia340xx
 from hardware.modules.nvidia_304xx import Nvidia304xx
 from hardware.modules.catalyst import Catalyst
 from hardware.modules.amdgpu import AMDGpu
-from hardware.modules.amdgpu_ext import AMDGpuExt
+from hardware.modules.amdgpu_exp import AMDGpuExp
 
 class Graphics(object):
     """ Gets graphic device info using the hardware module """

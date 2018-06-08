@@ -155,7 +155,7 @@
                                         <property name="receives_default">False</property>
                                         <property name="use_underline">True</property>
                                         <property name="draw_indicator">True</property>
-                                        <property name="group">create_partition_create_place_beginning</property>
+                                        <property name="group">create_place_beginning</property>
                                     </object>
                                     <packing>
                                         <property name="left_attach">0</property>

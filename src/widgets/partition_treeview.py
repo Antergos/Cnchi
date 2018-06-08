@@ -121,6 +121,8 @@ class PartitionTreeview(Gtk.TreeView):
             sensitive=PartitionTreeview.COL_SSD_SENSITIVE)
         self.append_column(col)
 
+        self.set_hexpand(True)
+
     def connect_format_cell(self, callback):
         """ Helper to connect a callback function with the format checkbox cell """
         self.format_toggle.connect("toggled", callback)

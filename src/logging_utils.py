@@ -113,7 +113,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
     @staticmethod
     def get_bugsnag_api():
         config_path = '/etc/cnchi.conf'
+        alt_config_path = '/usr/share/cnchi/data/cnchi.conf'
         bugsnag_api = None
+
+        if (not os.path.exists(config_path) and 
+            os.path.exists(alt_config_path)):
+            config_path = alt_config_path
 
         if os.path.exists(config_path):
             with open(config_path) as bugsnag_conf:
@@ -123,6 +128,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
     def get_url_for_id_request(self):
         build_server = None
+
         if self.api_key and 'development' != CNCHI_RELEASE_STAGE:
             parts = {
                 1: 'com',
@@ -137,7 +143,6 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 parts[2], parts[7], parts[4], parts[5],
                 parts[1], parts[3], parts[6], self.api_key
             )
-
         return build_server
 
     @staticmethod
