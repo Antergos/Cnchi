@@ -55,10 +55,10 @@ class CreatePartitionDialog(Gtk.Dialog):
         # Connect UI signals
         self.ui.connect_signals()
 
-        # luks options in a 
-            tuple (use_luks, vol_name, password) """
-        
-        options = (False, "", "")
+        self.luks_dialog = None
+
+        # luks options in a tuple (use_luks, vol_name, password) """
+        self.luks_options = (False, "", "")
 
     def get_label(self):
         """ Returns partition label """
@@ -168,7 +168,9 @@ class CreatePartitionDialog(Gtk.Dialog):
         mount_combo.set_text("")
         
         # Get encryption (LUKS) options dialog
-        self.luks_dialog = LuksSettingsDialog(self.ui_dir, self.transient_for)
+        if not self.luks_dialog:
+            self.luks_dialog = LuksSettingsDialog(
+                self.ui_dir, self.transient_for)
 
     def use_combo_changed(self, selection):
         """ If user selects a swap fs, it can't be mounted the usual way """
@@ -208,11 +210,12 @@ class CreatePartitionDialog(Gtk.Dialog):
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
-        self.luks_dialog.prepare(self.luks_dialog_options)
+        
+        self.luks_dialog.prepare(self.luks_options)
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:
-            self.luks_dialog_options = self.luks_dialog.get_options()
+            self.luks_options = self.luks_dialog.get_options()
 
         self.luks_dialog.hide()
            

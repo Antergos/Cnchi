@@ -67,7 +67,6 @@ class LuksSettingsDialog(Gtk.Dialog):
 
     def prepare(self, options):
         """ Show LUKS encryption options dialog """
-        # TODO: Check Password confirmation (compare both entries)
 
         entry_vol_name = self.ui.get_object('vol_name_entry')
         entry_password = self.ui.get_object('password_entry')
@@ -148,4 +147,5 @@ class LuksSettingsDialog(Gtk.Dialog):
                 msg = _(
                     "Volume name and password are mandatory! Encryption NOT enabled.")
                 show.warning(self.transient_for, msg)
+        
         return options
