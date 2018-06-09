@@ -132,8 +132,10 @@ class CreatePartitionDialog(Gtk.Dialog):
 
     def prepare(self, params):
         """ Prepare elements for showing (before run)
-            params: 'supports_extended, 'extended_partition', 
-            'is_primary_or_extended' """
+            params: 'supports_extended,
+                    'extended_partition', 
+                    'is_primary_or_extended',
+                    'max_size_mb' """
        
         # Initialize filesystem combobox
         combo = self.ui.get_object('use_combo')

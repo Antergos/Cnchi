@@ -980,7 +980,7 @@ class InstallationAdvanced(GtkBaseBox):
         params = {}
         params['supports_extended'] = disk.supportsFeature(pm.DISK_EXTENDED)
         params['extended_partition'] = extended
-
+        params['is_primary_or_extended'] = is_primary_or_extended
 
         # Prepare size spin
 
