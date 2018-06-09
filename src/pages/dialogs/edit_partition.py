@@ -135,9 +135,8 @@ class EditPartitionDialog(Gtk.Dialog):
         """ Returns True if the user wants to create a primary partition """
         return self.ui.get_object('create_type_extended').get_active()
 
-    def prepare(self, params):
-        """ Prepare elements for showing (before run)
-            params: 'supports_extended, 'extended_partition', """
+    def prepare(self):
+        """ Prepare elements for showing (before run) """
         
         # Initialize filesystems combobox
         combo = self.ui.get_object('use_combo')
@@ -146,59 +145,12 @@ class EditPartitionDialog(Gtk.Dialog):
             combo.append_text(fs_name)
         combo.set_wrap_width(2)
 
-        # Initialize our create and edit partition dialog mount points' combo.
-        names = ['create_partition_mount_combo', 'edit_partition_mount_combo']
-        for name in names:
-            combo = self.ui.get_object(name)
-            combo.remove_all()
-            for mount_point in fs.COMMON_MOUNT_POINTS:
-                combo.append_text(mount_point)
+        # Initialize edit partition dialog mount point combobox.
+        combo = self.ui.get_object('edit_partition_mount_combo')
+        combo.remove_all()
+        for mount_point in fs.COMMON_MOUNT_POINTS:
+            combo.append_text(mount_point)
 
-        radio = {
-            "primary": self.ui.get_object('create_type_primary'),
-            "logical": self.ui.get_object('create_type_logical'),
-            "extended": self.ui.get_object('create_type_extended')}
-
-        radio['primary'].set_active(True)
-        radio['logical'].set_active(False)
-        radio['extended'].set_active(False)
-
-        radio['primary'].set_visible(True)
-        radio['logical'].set_visible(True)
-        radio['extended'].set_visible(True)
-
-        if not params['supports_extended']:
-            radio['extended'].set_visible(False)
-
-        if params['is_primary_or_extended'] and params['extended_partition']:
-            radio['logical'].set_visible(False)
-            radio['extended'].set_visible(False)
-        elif params['is_primary_or_extended'] and not params['extended_partition']:
-            radio['logical'].set_visible(False)
-        elif not params['is_primary_or_extended']:
-            radio['primary'].set_visible(False)
-            radio['logical'].set_active(True)
-            radio['extended'].set_visible(False)
-
-        radio['begin'] = self.ui.get_object('create_place_beginning')
-        radio['end'] = self.ui.get_object('create_place_end')
-
-        radio['begin'].set_active(True)
-        radio['end'].set_active(False)
-
-        # Prepare size spin
-        size_spin = self.ui.get_object('size_spinbutton')
-        size_spin.set_digits(0)
-        adjustment = Gtk.Adjustment(
-            value=params['max_size_mb'],
-            lower=1,
-            upper=params['max_size_mb'],
-            step_increment=1,
-            page_increment=10,
-            page_size=0)
-        size_spin.set_adjustment(adjustment)
-        size_spin.set_value(params['max_size_mb'])
-        
         # label
         label_entry = self.ui.get_object('label_entry')
         label_entry.set_text("")
@@ -216,7 +168,7 @@ class EditPartitionDialog(Gtk.Dialog):
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
 
-        # Assign images to buttons
+        # Assign labels and images to buttons
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
             ('ok', 'dialog-apply', _('_Apply'))]

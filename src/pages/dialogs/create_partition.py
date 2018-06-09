@@ -130,34 +130,12 @@ class CreatePartitionDialog(Gtk.Dialog):
         """ Returns True if the user wants to create a primary partition """
         return self.ui.get_object('create_type_extended').get_active()
 
-    def prepare(self, params):
-        """ Prepare elements for showing (before run)
+    def prepare_radiobuttons(self, params):
+        """ Prepare radio buttons for showing (before run)
             params: 'supports_extended,
                     'extended_partition', 
                     'is_primary_or_extended',
                     'max_size_mb' """
-       
-        # Initialize filesystem combobox
-        combo = self.ui.get_object('use_combo')
-        combo.remove_all()
-        for fs_name in sorted(fs.NAMES):
-            combo.append_text(fs_name)
-        combo.set_wrap_width(2)
-
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")  
-        # Automatically select first entry
-        misc.select_first_combobox_item(combo)
-
-        # Initialize mount points combobox
-        combo = self.ui.get_object('mount_combo')
-        combo.remove_all()
-        for mount_point in fs.COMMON_MOUNT_POINTS:
-            combo.append_text(mount_point)
-
         radio = {
             "primary": self.ui.get_object('create_type_primary'),
             "logical": self.ui.get_object('create_type_logical'),
@@ -190,6 +168,36 @@ class CreatePartitionDialog(Gtk.Dialog):
         radio['begin'].set_active(True)
         radio['end'].set_active(False)
 
+    def prepare(self, params):
+        """ Prepare elements for showing (before run)
+            params: 'supports_extended,
+                    'extended_partition', 
+                    'is_primary_or_extended',
+                    'max_size_mb' """
+       
+        # Initialize filesystem combobox
+        combo = self.ui.get_object('use_combo')
+        combo.remove_all()
+        for fs_name in sorted(fs.NAMES):
+            combo.append_text(fs_name)
+        combo.set_wrap_width(2)
+
+        # Initialize partition_types_combo
+        combo = self.ui.get_object('partition_types_combo')
+        combo.remove_all()
+        combo.append_text("msdos (MBR)")
+        combo.append_text("GUID Partition Table (GPT)")  
+        # Automatically select first entry
+        misc.select_first_combobox_item(combo)
+
+        # Initialize mount points combobox
+        combo = self.ui.get_object('mount_combo')
+        combo.remove_all()
+        for mount_point in fs.COMMON_MOUNT_POINTS:
+            combo.append_text(mount_point)
+        
+        self.prepare_radiobuttons(params)
+
         # Prepare size spin
         size_spin = self.ui.get_object('size_spinbutton')
         size_spin.set_digits(0)
@@ -220,7 +228,7 @@ class CreatePartitionDialog(Gtk.Dialog):
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
         
-        # Assign images to buttons
+        # Assign labels and images to buttons
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
             ('ok', 'dialog-apply', _('_Apply'))]
