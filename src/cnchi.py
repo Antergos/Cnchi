@@ -48,6 +48,7 @@ sys.path.append(os.path.join(CNCHI_PATH, "src/installation"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/misc"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/pacman"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages/dialogs"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
 
 

@@ -29,13 +29,25 @@
 
 """ Test page (simulates main window to test a ui page) """
 
-import sys
 import os
+import sys
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+
+CNCHI_PATH = "/usr/share/cnchi"
+sys.path.append(CNCHI_PATH)
+sys.path.append(os.path.join(CNCHI_PATH, "src"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/download"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/hardware"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/installation"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/misc"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pacman"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages/dialogs"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
 
 def get_page(page_name, params):
     """ Import page code so we can execute it """
