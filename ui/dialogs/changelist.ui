@@ -19,7 +19,7 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">end</property>
                         <child>
-                            <object class="GtkButton" id="changelist_cancelbutton">
+                            <object class="GtkButton" id="cancel_button">
                                 <property name="label">_Cancel</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -35,7 +35,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkButton" id="changelist_okbutton">
+                            <object class="GtkButton" id="ok_button">
                                 <property name="label">_Apply</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -64,8 +64,8 @@
             </object>
         </child>
         <action-widgets>
-            <action-widget response="-5">changelist_okbutton</action-widget>
-            <action-widget response="-6">changelist_cancelbutton</action-widget>
+            <action-widget response="-5">ok_button</action-widget>
+            <action-widget response="-6">cancel_button</action-widget>
         </action-widgets>
     </object>
 </interface>

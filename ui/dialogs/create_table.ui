@@ -26,7 +26,7 @@
                         <property name="can_focus">False</property>
                         <property name="layout_style">center</property>
                         <child>
-                            <object class="GtkButton" id="create_table_dialog_cancel">
+                            <object class="GtkButton" id="dialog_cancel">
                                 <property name="label">_Cancel</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -42,7 +42,7 @@
                             </packing>
                         </child>
                         <child>
-                            <object class="GtkButton" id="create_table_dialog_ok">
+                            <object class="GtkButton" id="dialog_ok">
                                 <property name="label">_Apply</property>
                                 <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
@@ -82,8 +82,8 @@
             </object>
         </child>
         <action-widgets>
-            <action-widget response="-6">create_table_dialog_cancel</action-widget>
-            <action-widget response="-5">create_table_dialog_ok</action-widget>
+            <action-widget response="-6">dialog_cancel</action-widget>
+            <action-widget response="-5">dialog_ok</action-widget>
         </action-widgets>
     </object>
 </interface>

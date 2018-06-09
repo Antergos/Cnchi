@@ -62,6 +62,7 @@ from widgets.partition_treeview import PartitionTreeview
 # Dialogs
 from dialogs.create_partition import CreatePartitionDialog
 from dialogs.edit_partition import EditPartitionDialog
+from dialogs.create_table import CreateTableDialog
 
 
 # When testing, no _() is available
@@ -162,28 +163,6 @@ class InstallationAdvanced(GtkBaseBox):
         select = self.partition_treeview.get_selection()
         select.connect("changed",
             self.partition_treeview_selection_changed)
-
-        # Assign images to buttons
-        btns = [
-            ("partition_button_undo", "edit-undo-symbolic"),
-            ("partition_button_new", "list-add-symbolic"),
-            ("partition_button_delete", "list-remove-symbolic"),
-            ("partition_button_edit", "system-run-symbolic"),
-            ("partition_button_new_label", "edit-clear-all-symbolic"),
-            ("changelist_cancelbutton", "dialog-cancel"),
-            ("changelist_okbutton", "dialog-apply"),
-            ("create_table_dialog_cancel", "dialog-cancel"),
-            ("create_table_dialog_ok", "dialog-apply")]
-
-        for grp in btns:
-            (btn_id, icon) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
-            if not btn:
-                logging.warning(btn_id)
-            else:
-                btn.set_always_show_image(True)
-                btn.set_image(image)
 
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
@@ -1217,48 +1196,21 @@ class InstallationAdvanced(GtkBaseBox):
         # label = self.ui.get_object('part_advanced_warning_message')
         # label.set_markup(txt)
 
-        # Assign labels to buttons
-        btn = self.ui.get_object("partition_button_undo")
-        btn.set_label(_("Undo"))
-
-        btn = self.ui.get_object("partition_button_new")
-        btn.set_label(_("New"))
-
-        btn = self.ui.get_object("partition_button_delete")
-        btn.set_label(_("Delete"))
-
-        btn = self.ui.get_object("partition_button_edit")
-        btn.set_label(_("Edit..."))
-
-        btn = self.ui.get_object("partition_button_new_label")
-        btn.set_label(_("New partition table"))
-
+        # Assign labels and images to buttons
         btns = [
-            "changelist_cancelbutton",
-            "create_table_dialog_cancel"]
+            ("partition_button_undo", "edit-undo-symbolic", _("Undo")),
+            ("partition_button_new", "list-add-symbolic", _("New")),
+            ("partition_button_delete", "list-remove-symbolic", _("Delete")),
+            ("partition_button_edit", "system-run-symbolic", _("Edit...")),
+            ("partition_button_new_label", "edit-clear-all-symbolic", _("New partition table"))]
 
-        for btn_id in btns:
+        for grp in btns:
+            btn_id, icon, lbl = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
-            btn.set_label(_("_Cancel"))
-
-        btns = [
-            "changelist_okbutton",
-            "create_table_dialog_ok"]
-
-        for btn_id in btns:
-            btn = self.ui.get_object(btn_id)
-            btn.set_label(_("_Apply"))
-
-        # Create disk partition table dialog
-        txt = _("Partition Table Type:")
-        label = self.ui.get_object('partition_type_label')
-        label.set_markup(txt)
-
-        dialog = self.ui.get_object("create_table_dialog")
-        dialog.set_title(_("Create Partition Table"))
-
-
-
+            btn.set_always_show_image(True)
+            btn.set_image(image)
+            btn.set_label(lbl)
 
     def prepare(self, direction):
         """ Prepare our dialog to show/hide/activate/deactivate
@@ -1312,42 +1264,37 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         # disk_sel, result = self.disks[disk_path]
-
-        dialog = self.ui.get_object("create_table_dialog")
-
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        dialog.set_transient_for(self.get_main_window())
+        main_window = self.get_main_window()
+        dialog = CreateTableDialog(self.ui_dir, main_window)
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            combo = self.ui.get_object('partition_types_combo')
-            line = combo.get_active_text()
+            line = dialog.get_table_type()
             if line:
                 # by default, use msdos type
                 ptype = 'msdos'
 
-                if "GPT" in line:
+                if 'gpt' in line:
                     ptype = 'gpt'
 
-                logging.info(
-                    "Creating a new %s partition table for disk %s",
-                    ptype,
-                    disk_path)
+                msg = "Creating a new %s partition table for disk %s"
+                logging.info(msg, ptype, disk_path)
 
                 new_disk = pm.make_new_disk(disk_path, ptype)
                 self.disks[disk_path] = (new_disk, pm.OK)
 
                 self.update_view()
-
-                if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
+                
+                is_uefi = os.path.exists('/sys/firmware/efi')
+                
+                if ptype == 'gpt' and not is_uefi:
                     # Show warning (https://github.com/Antergos/Cnchi/issues/63)
                     msg = _(
                         "GRUB requires a BIOS Boot Partition in BIOS systems "
                         "to embed its core.img file due to lack of post-MBR "
                         "embed gap in GPT disks.\n\n"
                         "Cnchi will create this BIOS Boot Partition for you.")
-                    show.warning(self.get_main_window(), msg)
+                    show.warning(main_window, msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
         dialog.hide()
@@ -1366,12 +1313,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         partitions = pm.get_partitions(disk)
         partition_list = pm.order_partitions(partitions)
-        p = None
+        mypart = None
         for partition_path in partition_list:
-            p = partitions[partition_path]
+            mypart = partitions[partition_path]
 
         # Get how many primary partitions are already created on disk
-        if p is None or disk.primaryPartitionCount > 0:
+        if mypart is None or disk.primaryPartitionCount > 0:
             # BIOS GPT Boot partition must be the first one on the disk
             txt = "Can't create BIOS GPT Boot partition!"
             logging.error(txt)
@@ -1392,8 +1339,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         beg_var = True
 
-        start_sector = p.geometry.start
-        end_sector = p.geometry.end
+        start_sector = mypart.geometry.start
+        end_sector = mypart.geometry.end
         geometry = pm.geom_builder(disk, start_sector, end_sector, size, beg_var)
 
         part = pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
@@ -1401,22 +1348,23 @@ class InstallationAdvanced(GtkBaseBox):
         res, myerr = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
 
         if res:
-            txt = "Couldn't create BIOS GPT Boot partition: {0}".format(myerr)
-            logging.error(txt)
-            txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(
-                myerr)
+            txt = "Couldn't create BIOS GPT Boot partition: %s"
+            logging.error(txt, myerr)
+            txt = _("Couldn't create BIOS GPT Boot partition: {}").format(myerr)
             show.error(self.get_main_window(), txt)
+            return
 
         # Store stage partition info in self.stage_opts
+
         old_parts = []
-        for y in self.all_partitions:
-            for z in y:
-                old_parts.append(z)
+        for mydisk in self.all_partitions:
+            for partition in mydisk:
+                old_parts.append(partition)
 
         partitions = pm.get_partitions(disk)
-        for e in partitions:
-            if e not in old_parts:
-                uid = self.gen_partition_uid(partition=partitions[e])
+        for part in partitions:
+            if part not in old_parts:
+                uid = self.gen_partition_uid(partition=partitions[part])
                 self.stage_opts[uid] = (
                     True, mylabel, mymount, myfmt, formatme)
 
@@ -1452,8 +1400,8 @@ class InstallationAdvanced(GtkBaseBox):
     def check_mount_points(self):
         """ Check that all necessary mount points are specified.
             At least root (/) partition must be defined and in UEFI systems
-            a fat partition mounted in /boot (Systemd-boot) or /boot/efi (grub2)
-            must be defined too. """
+            a fat32 partition mounted in /boot (Systemd-boot) or
+            /boot/efi (grub2) must be defined too. """
 
         check_parts = ["/", "/boot", "/boot/efi", "swap"]
 
@@ -1608,12 +1556,12 @@ class InstallationAdvanced(GtkBaseBox):
 
     def get_changes(self):
         """ Grab all changes for confirmation """
-        changelist = []
+        changes = []
 
         # First, show partitions that will be deleted
         self.to_be_deleted.sort()
         for partition_path in self.to_be_deleted:
-            changelist.append(action.Action("delete", partition_path))
+            changes.append(action.Action("delete", partition_path))
 
         # Store values as
         # (path, create?, label?, format?, mount_point, encrypt?)
@@ -1660,14 +1608,9 @@ class InstallationAdvanced(GtkBaseBox):
                     else:
                         action_type = "modify"
 
-                    act = action.Action(
-                        action_type,
-                        partition_path,
-                        relabel,
-                        fmt,
-                        mnt,
-                        encrypt)
-                    changelist.append(act)
+                    act = action.Action(action_type, partition_path,
+                        relabel, fmt, mnt, encrypt)
+                    changes.append(act)
                     logging.debug(str(act))
 
         if self.disks:
@@ -1686,7 +1629,7 @@ class InstallationAdvanced(GtkBaseBox):
                         if disk.device.busy or pm.check_mounted(partitions[partition_path]):
                             self.unmount_partition(partition_path)
 
-                        (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
+                        is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
 
                         # Advanced method formats root by default
                         # https://github.com/Antergos/Cnchi/issues/8
@@ -1710,7 +1653,7 @@ class InstallationAdvanced(GtkBaseBox):
                             createme = False
 
                         if uid in self.luks_options:
-                            (use_luks, _vol_name, _password) = self.luks_options[uid]
+                            use_luks, _vol_name, _password = self.luks_options[uid]
                             if use_luks:
                                 encrypt = True
 
@@ -1719,17 +1662,12 @@ class InstallationAdvanced(GtkBaseBox):
                         else:
                             action_type = "modify"
 
-                        act = action.Action(
-                            action_type,
-                            partition_path,
-                            relabel,
-                            fmt,
-                            mnt,
-                            encrypt)
-                        changelist.append(act)
+                        act = action.Action(action_type, partition_path,
+                            relabel, fmt, mnt, encrypt)
+                        changes.append(act)
                         logging.debug(str(act))
 
-        return changelist
+        return changes
 
     @staticmethod
     def set_cursor(cursor_type):

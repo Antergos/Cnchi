@@ -319,22 +319,16 @@ class EditPartitionDialog(Gtk.Dialog):
 
     def translate_ui(self):
         """ Translates dialog interface """
-        txt = _("Use As:")
-        label = self.ui.get_object('use_label')
-        label.set_markup(txt)
 
-        txt = _("Mount Point:")
-        label = self.ui.get_object('mount_label')
-        label.set_markup(txt)
+        btns = [
+            ('use_label', _("Use As:")),
+            ('mount_label', _("Mount Point:")),
+            ('label_label', _("Label (optional):")),
+            ('format_label', _("Format:")),
+            ('luks_settings', _("Encryption Options..."))]
+        
+        for grp in btns:
+            btn_id, lbl = grp
+            btn = self.ui.get_object(btn_id)
+            btn.set_label(lbl)
 
-        txt = _("Label (optional):")
-        label = self.ui.get_object('label_label')
-        label.set_markup(txt)
-
-        txt = _("Format:")
-        label = self.ui.get_object('format_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('luks_settings')
-        button.set_label(txt)

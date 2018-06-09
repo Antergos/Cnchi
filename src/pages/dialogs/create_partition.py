@@ -239,53 +239,24 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         self.set_title(_("Create partition"))
 
-        txt = _("Location:")
-        label = self.ui.get_object('create_place_label')
-        label.set_markup(txt)
+        btns = [
+            ('create_place_label', _("Location:")),
+            ('size_label', _("Size:")),
+            ('create_type_label', _("Type:")),
+            ('create_type_primary', _("Primary")),
+            ('create_type_logical', _("Logical")),
+            ('create_type_extended', _("Extended")),
+            ('create_place_beginning', _("Beginning of this space")),
+            ('create_place_end', _("End of this space")),
+            ('use_label', _("Use As:")),
+            ('mount_label', _("Mount Point:")),
+            ('label_label', _("Label (optional):")),
+            ('luks_settings', _("Encryption Options..."))]
 
-        txt = _("Size:")
-        label = self.ui.get_object('size_label')
-        label.set_markup(txt)
-
-        txt = _("Type:")
-        label = self.ui.get_object('create_type_label')
-        label.set_markup(txt)
-
-        txt = _("Primary")
-        button = self.ui.get_object('create_type_primary')
-        button.set_label(txt)
-
-        txt = _("Logical")
-        button = self.ui.get_object('create_type_logical')
-        button.set_label(txt)
-
-        txt = _("Extended")
-        button = self.ui.get_object('create_type_extended')
-        button.set_label(txt)
-
-        txt = _("Beginning of this space")
-        button = self.ui.get_object('create_place_beginning')
-        button.set_label(txt)
-
-        txt = _("End of this space")
-        button = self.ui.get_object('create_place_end')
-        button.set_label(txt)
-
-        txt = _("Use As:")
-        label = self.ui.get_object('use_label')
-        label.set_markup(txt)
-
-        txt = _("Mount Point:")
-        label = self.ui.get_object('mount_label')
-        label.set_markup(txt)
-
-        txt = _("Label (optional):")
-        label = self.ui.get_object('label_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('luks_settings')
-        button.set_label(txt)
+        for grp in btns:
+            btn_id, lbl = grp
+            btn = self.ui.get_object(btn_id)
+            btn.set_label(lbl)
 
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
