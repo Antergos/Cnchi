@@ -51,8 +51,8 @@ except NameError as err:
 
 class EditPartitionDialog(Gtk.Dialog):
     """ Shows edit partition dialog """
-    
-    UI_FILE="edit_partition.ui"
+
+    UI_FILE = "edit_partition.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
@@ -89,35 +89,29 @@ class EditPartitionDialog(Gtk.Dialog):
                     label = ""
             return label.replace(" ", "_")
         return ""
-    
+
     def get_mount_point(self):
         """ Returns mount point for the new partition """
         mount_combo = self.ui.get_object('mount_combo_entry')
         if mount_combo:
             return mount_combo.get_text().strip()
         return ""
-    
+
     def get_filesystem(self):
         """ Returns desired filesystem """
         fs_combo = self.ui.get_object('use_combo')
         if fs_combo:
-            fs = fs_combo.get_active_text()
-            if fs is None:
-                fs = ""
-            return fs
+            filesystem = fs_combo.get_active_text()
+            if filesystem is None:
+                filesystem = ""
+            return filesystem
         return ""
-    
-    def get_size(self):
-        """ Returns desired partition size """
-        size_spin = self.ui.get_object('size_spinbutton')
-        size = int(size_spin.get_value())
-        return size
-    
+
     def get_beginning_point(self):
         """ Returns where the new partition should start """
         beg = self.ui.get_object('create_place_beginning')
         return beg.get_active()
-    
+
     def is_format_active(self):
         """ Returns if format checkbox is active """
         format_check = self.ui.get_object('format_check')
@@ -125,7 +119,7 @@ class EditPartitionDialog(Gtk.Dialog):
 
     def prepare(self):
         """ Prepare elements for showing (before run) """
-        
+
         # Initialize filesystems combobox
         combo = self.ui.get_object('use_combo')
         combo.remove_all()
@@ -150,7 +144,7 @@ class EditPartitionDialog(Gtk.Dialog):
         # mount combo entry
         mount_combo = self.ui.get_object('mount_combo_entry')
         mount_combo.set_text("")
-        
+
         # Get encryption (LUKS) options dialog
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
@@ -168,7 +162,7 @@ class EditPartitionDialog(Gtk.Dialog):
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
-        
+
         self.translate_ui()
 
     def use_combo_changed(self, selection):
@@ -184,7 +178,7 @@ class EditPartitionDialog(Gtk.Dialog):
         else:
             mount_combo.show()
             mount_label.show()
-    
+
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
             some widgets must be disabled """
@@ -203,13 +197,13 @@ class EditPartitionDialog(Gtk.Dialog):
 
         for i in wdgts:
             wdgts[i].set_sensitive(sensitive)
-    
+
     def luks_settings_clicked(self, _widget):
         """ Show luks settings dialog """
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
-        
+
         self.luks_dialog.prepare(self.luks_options)
 
         response = self.luks_dialog.run()
@@ -245,7 +239,7 @@ class EditPartitionDialog(Gtk.Dialog):
         """ Sets current mount point """
         mount_combo_entry = self.ui.get_object('mount_combo_entry')
         mount_combo_entry.set_text(mount_point)
-    
+
     def set_label(self, label):
         """ Sets current partition label """
         label_entry = self.ui.get_object('label_entry')
@@ -266,9 +260,8 @@ class EditPartitionDialog(Gtk.Dialog):
             ('label_label', _("Label (optional):")),
             ('format_label', _("Format:")),
             ('luks_settings', _("Encryption Options..."))]
-        
+
         for grp in btns:
             btn_id, lbl = grp
             btn = self.ui.get_object(btn_id)
             btn.set_label(lbl)
-

@@ -51,8 +51,8 @@ except NameError as err:
 
 class CreatePartitionDialog(Gtk.Dialog):
     """ Shows creation partition dialog """
-    
-    UI_FILE="create_partition.ui"
+
+    UI_FILE = "create_partition.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
@@ -89,30 +89,30 @@ class CreatePartitionDialog(Gtk.Dialog):
                     label = ""
             return label.replace(" ", "_")
         return ""
-    
+
     def get_mount_point(self):
         """ Returns mount point for the new partition """
         mount_combo = self.ui.get_object('mount_combo_entry')
         if mount_combo:
             return mount_combo.get_text().strip()
         return ""
-    
+
     def get_filesystem(self):
         """ Returns desired filesystem """
         fs_combo = self.ui.get_object('use_combo')
         if fs_combo:
-            fs = fs_combo.get_active_text()
-            if fs is None:
-                fs = ""
-            return fs
+            filesystem = fs_combo.get_active_text()
+            if filesystem is None:
+                filesystem = ""
+            return filesystem
         return ""
-    
-    def get_size(self):
+
+    def get_partition_size(self):
         """ Returns desired partition size """
         size_spin = self.ui.get_object('size_spinbutton')
         size = int(size_spin.get_value())
         return size
-    
+
     def get_beginning_point(self):
         """ Returns where the new partition should start """
         beg = self.ui.get_object('create_place_beginning')
@@ -125,7 +125,7 @@ class CreatePartitionDialog(Gtk.Dialog):
     def wants_logical(self):
         """ Returns True if the user wants to create a primary partition """
         return self.ui.get_object('create_type_logical').get_active()
-    
+
     def wants_extended(self):
         """ Returns True if the user wants to create a primary partition """
         return self.ui.get_object('create_type_extended').get_active()
@@ -133,7 +133,7 @@ class CreatePartitionDialog(Gtk.Dialog):
     def prepare_radiobuttons(self, params):
         """ Prepare radio buttons for showing (before run)
             params: 'supports_extended,
-                    'extended_partition', 
+                    'extended_partition',
                     'is_primary_or_extended',
                     'max_size_mb' """
         radio = {
@@ -171,10 +171,10 @@ class CreatePartitionDialog(Gtk.Dialog):
     def prepare(self, params):
         """ Prepare elements for showing (before run)
             params: 'supports_extended,
-                    'extended_partition', 
+                    'extended_partition',
                     'is_primary_or_extended',
                     'max_size_mb' """
-       
+
         # Initialize filesystem combobox
         combo = self.ui.get_object('use_combo')
         combo.remove_all()
@@ -186,7 +186,7 @@ class CreatePartitionDialog(Gtk.Dialog):
         combo = self.ui.get_object('partition_types_combo')
         combo.remove_all()
         combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")  
+        combo.append_text("GUID Partition Table (GPT)")
         # Automatically select first entry
         misc.select_first_combobox_item(combo)
 
@@ -195,7 +195,7 @@ class CreatePartitionDialog(Gtk.Dialog):
         combo.remove_all()
         for mount_point in fs.COMMON_MOUNT_POINTS:
             combo.append_text(mount_point)
-        
+
         self.prepare_radiobuttons(params)
 
         # Prepare size spin
@@ -210,7 +210,7 @@ class CreatePartitionDialog(Gtk.Dialog):
             page_size=0)
         size_spin.set_adjustment(adjustment)
         size_spin.set_value(params['max_size_mb'])
-        
+
         # label
         label_entry = self.ui.get_object('label_entry')
         label_entry.set_text("")
@@ -222,12 +222,12 @@ class CreatePartitionDialog(Gtk.Dialog):
         # mount combo entry
         mount_combo = self.ui.get_object('mount_combo_entry')
         mount_combo.set_text("")
-        
+
         # Get encryption (LUKS) options dialog
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
-        
+
         # Assign labels and images to buttons
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
@@ -286,13 +286,13 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         for i in wdgts:
             wdgts[i].set_sensitive(sensitive)
-    
+
     def luks_settings_clicked(self, _widget):
         """ Show luks settings dialog """
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
-        
+
         self.luks_dialog.prepare(self.luks_options)
 
         response = self.luks_dialog.run()

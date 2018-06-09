@@ -42,7 +42,7 @@ import parted
 
 import misc.extra as misc
 import misc.validation as validation
-from misc.gtkwidgets import StateBox
+#from misc.gtkwidgets import StateBox
 from misc.run_cmd import call
 
 import parted3.partition_module as pm
@@ -161,8 +161,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Connect changing selection in the partition list treeview
         select = self.partition_treeview.get_selection()
-        select.connect("changed",
-            self.partition_treeview_selection_changed)
+        select.connect("changed", self.partition_treeview_selection_changed)
 
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
@@ -757,9 +756,9 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
                     self.settings.set('use_luks_in_root',
-                                      self.luks_dialog_options[0])
+                                      self.edit_part_dlg.luks_options[0])
                     self.settings.set('luks_root_volume',
-                                      self.luks_dialog_options[1])
+                                      self.edit_part_dlg.luks_options[1])
 
         self.edit_part_dlg.hide()
 
@@ -975,7 +974,7 @@ class InstallationAdvanced(GtkBaseBox):
                 return
 
         # ------------------------------------------------------------------
-        
+
         # Get the objects from the dialog
         params = {}
         params['supports_extended'] = disk.supportsFeature(pm.DISK_EXTENDED)
@@ -995,9 +994,6 @@ class InstallationAdvanced(GtkBaseBox):
         params['max_size_mb'] = max_size_mb
 
         self.create_part_dlg.prepare(params)
-
-        # Empty luks dialog options (for encryption properties dialog)
-        self.luks_dialog_options = (False, "", "")
 
         # Finally, show the create partition dialog
         response = self.create_part_dlg.run()
@@ -1019,7 +1015,7 @@ class InstallationAdvanced(GtkBaseBox):
                     mymount = 'swap'
 
                 # Get selected size
-                size = self.create_part_dlg.get_size()
+                size = self.create_part_dlg.get_partition_size()
 
                 beg_var = self.create_part_dlg.get_beginning_point()
 
@@ -1073,14 +1069,14 @@ class InstallationAdvanced(GtkBaseBox):
                         uid = self.gen_partition_uid(partition=partitions[e])
                         self.stage_opts[uid] = (
                             True, mylabel, mymount, myfs, formatme)
-                        self.luks_options[uid] = self.luks_dialog_options
+                        self.luks_options[uid] = self.edit_part_dlg.luks_options
                         if mymount == "/":
                             # Set if we'll be using LUKS in the root partition
                             # (for process.py to know)
                             self.settings.set(
-                                'use_luks_in_root', self.luks_dialog_options[0])
+                                'use_luks_in_root', self.edit_part_dlg.luks_options[0])
                             self.settings.set(
-                                'luks_root_volume', self.luks_dialog_options[1])
+                                'luks_root_volume', self.edit_part_dlg.luks_options[1])
 
                 # Update partition list treeview
                 self.update_view()
@@ -1104,7 +1100,6 @@ class InstallationAdvanced(GtkBaseBox):
         # Empty stage partitions' options
         self.stage_opts = {}
         self.luks_options = {}
-        self.luks_dialog_options = (False, "", "")
 
         # Empty to be deleted partitions list
         self.to_be_deleted = []
@@ -1284,7 +1279,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.disks[disk_path] = (new_disk, pm.OK)
 
                 self.update_view()
-                
+
                 is_uefi = os.path.exists('/sys/firmware/efi')
 
                 if ptype == 'gpt' and not is_uefi:
@@ -1609,7 +1604,7 @@ class InstallationAdvanced(GtkBaseBox):
                         action_type = "modify"
 
                     act = action.Action(action_type, partition_path,
-                        relabel, fmt, mnt, encrypt)
+                                        relabel, fmt, mnt, encrypt)
                     changes.append(act)
                     logging.debug(str(act))
 
@@ -1663,7 +1658,7 @@ class InstallationAdvanced(GtkBaseBox):
                             action_type = "modify"
 
                         act = action.Action(action_type, partition_path,
-                            relabel, fmt, mnt, encrypt)
+                                            relabel, fmt, mnt, encrypt)
                         changes.append(act)
                         logging.debug(str(act))
 
@@ -1692,7 +1687,7 @@ class InstallationAdvanced(GtkBaseBox):
         widgets = [
             "partition_treeview_scrolledwindow",
             "partition_treeview", "box2",
-            "box3","box4"]
+            "box3", "box4"]
         for name in widgets:
             widget = self.ui.get_object(name)
             widget.set_sensitive(status)
