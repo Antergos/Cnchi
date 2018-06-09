@@ -676,7 +676,7 @@ class InstallationAdvanced(GtkBaseBox):
                 "Can't edit a partition with a LVM filesystem type")
             return
 
-        self.edition_partition_dialog.prepare()
+        self.edit_part_dlg.prepare()
 
         # Fill partition dialog with correct data
         partition_info = {
@@ -733,19 +733,20 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_fs == 'swap':
                     new_mount = 'swap'
 
-                if os.path.exists('/sys/firmware/efi'):
-                    if new_mount == "/boot" and new_fs != "fat32":
+                is_uefi = os.path.exists('/sys/firmware/efi')
+                if is_uefi and new_fs != "fat32":
+                    if new_mount == "/boot":
                         # search for /boot/efi
                         boot_efi_exists = False
                         for tmp_uid in self.stage_opts:
                             opt = self.stage_opts[tmp_uid]
-                            if opt[2] == '/boot/efi':
+                            if opt and opt[2] == '/boot/efi':
                                 boot_efi_exists = True
                         # if no /boot/efi is defined, /boot must be fat32 (force it)
                         if not boot_efi_exists:
                             self.show_partition_edit_error(4)
                             new_fs = "fat32"
-                    elif new_mount == "/boot/efi" and new_fs != "fat32":
+                    elif new_mount == "/boot/efi":
                         self.show_partition_edit_error(5)
                         new_fs = "fat32"
 
@@ -755,13 +756,12 @@ class InstallationAdvanced(GtkBaseBox):
 
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
-                    # (for process.py to know)
                     self.settings.set('use_luks_in_root',
                                       self.luks_dialog_options[0])
                     self.settings.set('luks_root_volume',
                                       self.luks_dialog_options[1])
 
-        self.edit_partition_dialog.hide()
+        self.edit_part_dlg.hide()
 
         # Update the partition list treeview
         self.update_view()
@@ -1286,7 +1286,7 @@ class InstallationAdvanced(GtkBaseBox):
                 self.update_view()
                 
                 is_uefi = os.path.exists('/sys/firmware/efi')
-                
+
                 if ptype == 'gpt' and not is_uefi:
                     # Show warning (https://github.com/Antergos/Cnchi/issues/63)
                     msg = _(
