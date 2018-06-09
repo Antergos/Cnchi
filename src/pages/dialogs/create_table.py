@@ -37,10 +37,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-import misc.extra as misc
-import parted3.fs_module as fs
-
-
 # When testing, no _() is available
 try:
     _("")
