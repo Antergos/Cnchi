@@ -123,18 +123,6 @@ class EditPartitionDialog(Gtk.Dialog):
         format_check = self.ui.get_object('format_check')
         return format_check.get_active()
 
-    def wants_primary(self):
-        """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_primary').get_active()
-
-    def wants_logical(self):
-        """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_logical').get_active()
-    
-    def wants_extended(self):
-        """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_extended').get_active()
-
     def prepare(self):
         """ Prepare elements for showing (before run) """
         
@@ -146,7 +134,7 @@ class EditPartitionDialog(Gtk.Dialog):
         combo.set_wrap_width(2)
 
         # Initialize edit partition dialog mount point combobox.
-        combo = self.ui.get_object('edit_partition_mount_combo')
+        combo = self.ui.get_object('mount_combo')
         combo.remove_all()
         for mount_point in fs.COMMON_MOUNT_POINTS:
             combo.append_text(mount_point)
