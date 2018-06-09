@@ -1,3 +1,4 @@
+[2018-06-09 18:39:06 +0200]  Create Table Dialog is not working                                         karasu      {07838784}
 [2018-06-09 18:24:42 +0200]  Fix import when testing                                                    karasu      {5f60d860}
 [2018-06-09 18:19:58 +0200]  Code cleanup (trailing spaces mostly)                                      karasu      {e5315a3f}
 [2018-06-09 18:09:25 +0200]  Fix typo and remove unused code                                            karasu      {146a1075}

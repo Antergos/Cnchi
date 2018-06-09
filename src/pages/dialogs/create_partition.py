@@ -68,9 +68,16 @@ class CreatePartitionDialog(Gtk.Dialog):
         self.ui.connect_signals(self)
 
         self.luks_dialog = None
-
         # luks options in a tuple (use_luks, vol_name, password) """
         self.luks_options = (False, "", "")
+
+        area = self.get_content_area()
+        area.add(self.ui.get_object('dialog-vbox3'))
+
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+
+        self.show_all()
 
     def get_label(self):
         """ Returns partition label """

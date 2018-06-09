@@ -29,9 +29,7 @@
 
 """ Create disk table dialog (advanced mode) """
 
-import logging
 import os
-import re
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -49,11 +47,12 @@ except NameError as err:
 class CreateTableDialog(Gtk.Dialog):
     """ Shows creation table disk dialog """
 
+    __gtype_name__ = "CreateTableDialog"
+
     UI_FILE = "create_table.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
-        self.transient_for = transient_for
         self.set_transient_for(transient_for)
 
         self.ui = Gtk.Builder()
@@ -64,26 +63,16 @@ class CreateTableDialog(Gtk.Dialog):
 
         # Connect UI signals
         self.ui.connect_signals(self)
+        
+        area = self.get_content_area()
+        area.add(self.ui.get_object('create_table_vbox'))
 
-        self.translate_ui()
-        self.prepare()
-
-    def translate_ui(self):
-        """ Prepare dialog """
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
         self.set_title(_("Create Partition Table"))
-
-        btns = [
-            ("dialog_cancel", "dialog-cancel", _("_Cancel")),
-            ("dialog_ok", "dialog-apply", _("_Apply"))]
-
-        for grp in btns:
-            (btn_id, icon, lbl) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
-            btn.set_always_show_image(True)
-            btn.set_image(image)
-            btn.set_label(lbl)
+        self.prepare()
+        self.show_all()
 
     def get_table_type(self):
         """ Returns selected table type (msdos or gpt) """

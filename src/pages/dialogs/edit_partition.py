@@ -67,8 +67,9 @@ class EditPartitionDialog(Gtk.Dialog):
         # Connect UI signals
         self.ui.connect_signals(self)
 
-        self.luks_dialog = None
 
+
+        self.luks_dialog = None
         # luks options in a tuple (use_luks, vol_name, password) """
         self.luks_options = (False, "", "")
 
