@@ -1,89 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-    <object class="GtkDialog" id="create_table_dialog">
+  <requires lib="gtk+" version="3.6"/>
+  <object class="GtkDialog" id="create_table_dialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="type_hint">dialog</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox4">
         <property name="can_focus">False</property>
-        <property name="border_width">5</property>
-        <property name="type_hint">dialog</property>
-        <child internal-child="vbox">
-            <object class="GtkBox" id="dialog-vbox4">
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">20</property>
-                <child>
-                    <object class="GtkLabel" id="partition_type_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Partition table type:</property>
-                    </object>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                    </packing>
-                </child>
-                <child internal-child="action_area">
-                    <object class="GtkButtonBox" id="dialog-action_area4">
-                        <property name="can_focus">False</property>
-                        <property name="layout_style">center</property>
-                        <child>
-                            <object class="GtkButton" id="dialog_cancel">
-                                <property name="label">_Cancel</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="use_underline">True</property>
-                                <property name="always_show_image">True</property>
-                            </object>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkButton" id="dialog_ok">
-                                <property name="label">_Apply</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="use_underline">True</property>
-                                <property name="always_show_image">True</property>
-                            </object>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                    </object>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">0</property>
-                    </packing>
-                </child>
-                <child>
-                    <object class="GtkComboBoxText" id="partition_types_combo">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">center</property>
-                        <property name="margin_start">20</property>
-                        <property name="margin_end">20</property>
-                    </object>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                    </packing>
-                </child>
-            </object>
+        <property name="orientation">vertical</property>
+        <property name="spacing">20</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area4">
+            <property name="can_focus">False</property>
+            <property name="layout_style">center</property>
+            <child>
+              <object class="GtkButton" id="dialog_cancel">
+                <property name="label">_Cancel</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="dialog_ok">
+                <property name="label">_Apply</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_underline">True</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
         </child>
-        <action-widgets>
-            <action-widget response="-6">dialog_cancel</action-widget>
-            <action-widget response="-5">dialog_ok</action-widget>
-        </action-widgets>
-    </object>
+        <child>
+          <object class="GtkLabel" id="partition_type_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Partition table type:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="partition_types_combo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="margin_start">20</property>
+            <property name="margin_end">20</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">dialog_cancel</action-widget>
+      <action-widget response="-5">dialog_ok</action-widget>
+    </action-widgets>
+  </object>
 </interface>

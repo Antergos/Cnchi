@@ -37,6 +37,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+import misc.extra as misc
+
 # When testing, no _() is available
 try:
     _("")
@@ -46,8 +48,8 @@ except NameError as err:
 
 class CreateTableDialog(Gtk.Dialog):
     """ Shows creation table disk dialog """
-    
-    UI_FILE="create_table.ui"
+
+    UI_FILE = "create_table.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
@@ -64,12 +66,13 @@ class CreateTableDialog(Gtk.Dialog):
         self.ui.connect_signals(self)
 
         self.translate_ui()
+        self.prepare()
 
     def translate_ui(self):
         """ Prepare dialog """
 
         self.set_title(_("Create Partition Table"))
-        
+
         btns = [
             ("dialog_cancel", "dialog-cancel", _("_Cancel")),
             ("dialog_ok", "dialog-apply", _("_Apply"))]
@@ -91,3 +94,12 @@ class CreateTableDialog(Gtk.Dialog):
             if line:
                 line = line.lower()
         return line
+
+    def prepare(self):
+        """ Prepare partition types combobox """
+        combo = self.ui.get_object('partition_types_combo')
+        combo.remove_all()
+        combo.append_text("msdos (MBR)")
+        combo.append_text("GUID Partition Table (GPT)")
+        # Automatically select first entry
+        misc.select_first_combobox_item(combo)

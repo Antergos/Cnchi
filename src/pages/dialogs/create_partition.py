@@ -37,7 +37,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-import misc.extra as misc
 import parted3.fs_module as fs
 
 from dialogs.luks_settings import LuksSettingsDialog
@@ -181,14 +180,6 @@ class CreatePartitionDialog(Gtk.Dialog):
         for fs_name in sorted(fs.NAMES):
             combo.append_text(fs_name)
         combo.set_wrap_width(2)
-
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")
-        # Automatically select first entry
-        misc.select_first_combobox_item(combo)
 
         # Initialize mount points combobox
         combo = self.ui.get_object('mount_combo')
