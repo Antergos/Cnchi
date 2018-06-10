@@ -1276,7 +1276,7 @@ class InstallationAdvanced(GtkBaseBox):
                     show.warning(main_window, msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
-        dialog.hide()
+        self.create_table_dlg.hide()
 
     def create_bios_gpt_boot_partition(self, disk_path):
         """ Create an unformatted partition with no filesystem and with a
