@@ -235,7 +235,7 @@ class CreatePartitionDialog(Gtk.Dialog):
         for grp in btns:
             btn_id, icon, lbl = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.buttons['btn_id']
+            btn = self.buttons[btn_id]
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
