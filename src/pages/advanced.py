@@ -63,7 +63,6 @@ from dialogs.create_partition import CreatePartitionDialog
 from dialogs.edit_partition import EditPartitionDialog
 from dialogs.create_table import CreateTableDialog
 
-
 # When testing, no _() is available
 try:
     _("")

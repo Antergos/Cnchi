@@ -291,6 +291,11 @@ class CreatePartitionDialog(Gtk.Dialog):
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
 
+        # Do not show warning message when creating
+        # a new partition. It's obvious all data will be
+        # erased.
+        self.luks_dialog.warning_message_shown = True
+
         self.luks_dialog.show_all()
         self.luks_dialog.prepare(self.luks_options)
 
