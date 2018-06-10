@@ -109,7 +109,7 @@ class LuksSettingsDialog(Gtk.Dialog):
             ('apply', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
-            (btn_id, icon, lbl) = grp
+            btn_id, icon, lbl = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.buttons[btn_id]
             btn.set_always_show_image(True)
@@ -154,7 +154,7 @@ class LuksSettingsDialog(Gtk.Dialog):
         entry = self.ui.get_object('password_confirm_entry')
         return entry.get_text()
 
-    def use_luks_switch_activate(self, widget, _data):
+    def use_luks_switch_activated(self, widget, _data):
         """ User enables / disables luks encription """
         self.enable_widgets(widget.get_active())
 

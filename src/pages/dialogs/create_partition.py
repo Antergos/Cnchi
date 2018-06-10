@@ -296,7 +296,7 @@ class CreatePartitionDialog(Gtk.Dialog):
         self.luks_dialog.show_all()
 
         response = self.luks_dialog.run()
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.APPLY:
             self.luks_options = self.luks_dialog.get_options()
 
         self.luks_dialog.hide()
