@@ -74,24 +74,11 @@ class CreatePartitionDialog(Gtk.Dialog):
         area = self.get_content_area()
         area.add(self.ui.get_object('create_partition_vbox'))
 
-        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-
-        self.add_luks_button()
-
-
-    def add_luks_button(self):
-        pass
-        """
-        <object class="GtkButton" id="luks_settings">
-                        <property name="label" translatable="yes">Encryption options...</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <signal name="clicked" handler="luks_settings_clicked" swapped="no"/>
-                    </object>
-        """
+        self.buttons = {}
+        self.buttons['apply'] = self.add_button(
+            Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.buttons['cancel'] = self.add_button(
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
     def get_label(self):
         """ Returns partition label """
@@ -241,19 +228,18 @@ class CreatePartitionDialog(Gtk.Dialog):
                 self.ui_dir, self.transient_for)
 
         # Assign labels and images to buttons
-        """
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
-            ('ok', 'dialog-apply', _('_Apply'))]
+            ('apply', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
-            (btn_id, icon, lbl) = grp
+            btn_id, icon, lbl = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
+            btn = self.buttons['btn_id']
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
-        """
+
         self.translate_ui()
 
     def translate_ui(self):
@@ -262,7 +248,7 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         self.set_title(_("Create partition"))
 
-        btns = [
+        labels = [
             ('create_place_label', _("Location:")),
             ('size_label', _("Size:")),
             ('create_type_label', _("Type:")),
@@ -273,13 +259,12 @@ class CreatePartitionDialog(Gtk.Dialog):
             ('create_place_end', _("End of this space")),
             ('use_label', _("Use As:")),
             ('mount_label', _("Mount Point:")),
-            ('label_label', _("Label (optional):")),
-            ('luks_settings', _("Encryption Options..."))]
+            ('label_label', _("Label (optional):"))]
 
-        for grp in btns:
-            btn_id, lbl = grp
-            btn = self.ui.get_object(btn_id)
-            btn.set_label(lbl)
+        for grp in labels:
+            label_id, text = grp
+            label = self.ui.get_object(label_id)
+            label.set_label(text)
 
     def create_type_extended_toggled(self, widget):
         """ If user selects to create an extended partition,
@@ -307,6 +292,8 @@ class CreatePartitionDialog(Gtk.Dialog):
                 self.ui_dir, self.transient_for)
 
         self.luks_dialog.prepare(self.luks_options)
+
+        self.luks_dialog.show_all()
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.OK:

@@ -1,3 +1,4 @@
+[2018-06-10 17:49:11 +0200]  Remove ok/apply buttons' modifications                                     karasu      {5d109de6}
 [2018-06-10 17:47:34 +0200]  Fix luks_settings password_changed                                         karasu      {dcda0545}
 [2018-06-10 17:32:53 +0200]  Add show_all()                                                             karasu      {e254abbb}
 [2018-06-10 17:31:21 +0200]  Add show_all                                                               karasu      {0b0c48a4}

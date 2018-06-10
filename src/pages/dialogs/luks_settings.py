@@ -70,9 +70,11 @@ class LuksSettingsDialog(Gtk.Dialog):
         area = self.get_content_area()
         area.add(self.ui.get_object('luks_settings_vbox'))
 
-        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-
+        self.buttons = {}
+        self.buttons['apply'] = self.add_button(
+            Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.buttons['cancel'] = self.add_button(
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
     def maybe_show_warning_message(self):
         """ Show warning message """
@@ -89,7 +91,7 @@ class LuksSettingsDialog(Gtk.Dialog):
         entry_password = self.ui.get_object('password_entry')
         entry_password_confirm = self.ui.get_object('password_confirm_entry')
 
-        (use_luks, vol_name, password) = options
+        use_luks, vol_name, password = options
 
         entry_vol_name.set_text(vol_name)
         entry_password.set_text(password)
@@ -103,13 +105,13 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         # Assign images to buttons
         btns = [
-            ('cancel_button', 'dialog-cancel', _('_Cancel')),
-            ('ok_button', 'dialog-apply', _('_Apply'))]
+            ('cancel', 'dialog-cancel', _('_Cancel')),
+            ('apply', 'dialog-apply', _('_Apply'))]
 
         for grp in btns:
             (btn_id, icon, lbl) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
+            btn = self.buttons[btn_id]
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
@@ -133,18 +135,22 @@ class LuksSettingsDialog(Gtk.Dialog):
             label.set_markup(txt)
 
     def get_use_luks(self):
+        """ Returns if luks switch is activated or not """
         switch = self.ui.get_object('use_luks_switch')
         return switch.get_active()
 
     def get_vol_name(self):
+        """ Returns volume name """
         entry = self.ui.get_object('vol_name_entry')
         return entry.get_text()
 
     def get_password(self):
+        """ Returns luks password """
         entry = self.ui.get_object('password_entry')
         return entry.get_text()
 
     def get_password_confirm(self):
+        """ Returns luks password confirmation """
         entry = self.ui.get_object('password_confirm_entry')
         return entry.get_text()
 
