@@ -1,3 +1,4 @@
+[2018-06-10 19:19:08 +0200]  Fix gtkswitch signal                                                       karasu      {fe35dbd5}
 [2018-06-10 18:52:01 +0200]  Advanced dialogs bugfixing                                                 karasu      {63515e90}
 [2018-06-10 18:42:20 +0200]  Edit partition when double clicking on a partition in partition tre..      karasu      {51b413ee}
 [2018-06-10 18:30:32 +0200]  Fix typo                                                                   karasu      {8cb7a9f2}
