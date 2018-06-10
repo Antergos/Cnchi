@@ -1,3 +1,4 @@
+[2018-06-10 19:29:50 +0200]  Do not show 'strong password' as default (even when password was no..      karasu      {53520274}
 [2018-06-10 19:20:30 +0200]  Change switch function in timezone                                         karasu      {48b2d1e9}
 [2018-06-10 19:19:08 +0200]  Fix gtkswitch signal                                                       karasu      {fe35dbd5}
 [2018-06-10 18:52:01 +0200]  Advanced dialogs bugfixing                                                 karasu      {63515e90}
