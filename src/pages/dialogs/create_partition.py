@@ -291,9 +291,8 @@ class CreatePartitionDialog(Gtk.Dialog):
             self.luks_dialog = LuksSettingsDialog(
                 self.ui_dir, self.transient_for)
 
-        self.luks_dialog.prepare(self.luks_options)
-
         self.luks_dialog.show_all()
+        self.luks_dialog.prepare(self.luks_options)
 
         response = self.luks_dialog.run()
         if response == Gtk.ResponseType.APPLY:

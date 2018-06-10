@@ -116,7 +116,9 @@ class LuksSettingsDialog(Gtk.Dialog):
             btn.set_image(image)
             btn.set_label(lbl)
 
+        self.hide_password_info()
         self.translate_ui()
+        
 
     def translate_ui(self):
         """ Translate dialog widgets """
@@ -176,7 +178,9 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         widget = self.ui.get_object('use_luks_switch')
         widget.set_active(status)
-
+        if status:
+            self.password_changed()
+        
     def get_options(self):
         """ Returns luks options in a 
             tuple (use_luks, vol_name, password) """
@@ -204,7 +208,13 @@ class LuksSettingsDialog(Gtk.Dialog):
         
         return options
 
-    def password_changed(self, widget):
+    def hide_password_info(self):
+        """ Hide password's information """
+        self.ui.get_object('password_confirm_image').hide()
+        self.ui.get_object('password_status_label').hide()
+        self.ui.get_object('password_strength').hide()
+
+    def password_changed(self, _widget=None):
         """ User has introduced new information. Check it here. """
         password = {}
         password['entry'] = self.ui.get_object('password_entry')
@@ -213,8 +223,7 @@ class LuksSettingsDialog(Gtk.Dialog):
         password['status'] = self.ui.get_object('password_status_label')
         password['strength'] = self.ui.get_object('password_strength')
 
-        if widget in [password['entry'], password['confirm']]:
-            validation.check_password(
-                password['entry'], password['confirm'],
-                password['image'], password['status'],
-                password['strength'])
+        validation.check_password(
+            password['entry'], password['confirm'],
+            password['image'], password['status'],
+            password['strength'])

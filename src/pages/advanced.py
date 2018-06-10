@@ -656,8 +656,8 @@ class InstallationAdvanced(GtkBaseBox):
                 "Can't edit a partition with a LVM filesystem type")
             return
 
-        self.edit_part_dlg.prepare()
         self.edit_part_dlg.show_all()
+        self.edit_part_dlg.prepare()
 
         # Fill partition dialog with correct data
         partition_info = {
@@ -975,8 +975,8 @@ class InstallationAdvanced(GtkBaseBox):
 
         params['max_size_mb'] = max_size_mb
 
-        self.create_part_dlg.prepare(params)
         self.create_part_dlg.show_all()
+        self.create_part_dlg.prepare(params)
 
         # Finally, show the create partition dialog
         response = self.create_part_dlg.run()
@@ -1245,6 +1245,7 @@ class InstallationAdvanced(GtkBaseBox):
         main_window = self.get_main_window()
 
         self.create_table_dlg.show_all()
+        self.create_table_dlg.prepare()
 
         response = self.create_table_dlg.run()
         if response == Gtk.ResponseType.APPLY:
