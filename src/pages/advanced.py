@@ -676,6 +676,7 @@ class InstallationAdvanced(GtkBaseBox):
             return
 
         self.edit_part_dlg.prepare()
+        self.edit_part_dlg.show_all()
 
         # Fill partition dialog with correct data
         partition_info = {
@@ -994,6 +995,7 @@ class InstallationAdvanced(GtkBaseBox):
         params['max_size_mb'] = max_size_mb
 
         self.create_part_dlg.prepare(params)
+        self.create_part_dlg.show_all()
 
         # Finally, show the create partition dialog
         response = self.create_part_dlg.run()
