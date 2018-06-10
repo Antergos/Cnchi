@@ -148,8 +148,6 @@ class InstallationAdvanced(GtkBaseBox):
             'bootloader_device_entry')
         self.bootloader_devices = {}
 
-        # Initialise our partition list tree view
-        #<signal name="row-activated" handler="partition_treeview_row_activated" swapped="no"/>
         self.scrolledwindow = self.ui.get_object(
             'partition_treeview_scrolledwindow')
         self.partition_treeview = PartitionTreeview()
@@ -160,9 +158,11 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_treeview.connect_format_cell(self.format_cell_toggled)
         self.partition_treeview.connect_ssd_cell(self.ssd_cell_toggled)
 
+        self.partition_treeview.connect('row-activated', self.partition_treeview_row_activated)
+
         # Connect changing selection in the partition list treeview
         select = self.partition_treeview.get_selection()
-        select.connect("changed", self.partition_treeview_selection_changed)
+        select.connect('changed', self.partition_treeview_selection_changed)
 
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
@@ -887,7 +887,7 @@ class InstallationAdvanced(GtkBaseBox):
     # ---------------------------------------------------------------------
 
     def partition_treeview_new_activated(self, _button):
-        """ Add a new partition """
+        """ Create a new partition """
         selection = self.partition_treeview.get_selection()
 
         if not selection:
