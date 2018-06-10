@@ -72,7 +72,6 @@ class CreateTableDialog(Gtk.Dialog):
 
         self.set_title(_("Create Partition Table"))
         self.prepare()
-        self.show_all()
 
     def get_table_type(self):
         """ Returns selected table type (msdos or gpt) """

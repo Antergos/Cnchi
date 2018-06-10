@@ -1261,6 +1261,7 @@ class InstallationAdvanced(GtkBaseBox):
         # disk_sel, result = self.disks[disk_path]
         main_window = self.get_main_window()
         dialog = CreateTableDialog(self.ui_dir, main_window)
+        dialog.show_all()
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:

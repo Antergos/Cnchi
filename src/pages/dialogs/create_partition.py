@@ -72,12 +72,27 @@ class CreatePartitionDialog(Gtk.Dialog):
         self.luks_options = (False, "", "")
 
         area = self.get_content_area()
-        area.add(self.ui.get_object('dialog-vbox3'))
+        area.add(self.ui.get_object('create_partition_vbox'))
 
         self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
 
-        self.show_all()
+        self.add_luks_button()
+
+        #self.show_all()
+
+    def add_luks_button(self):
+        pass
+        """
+        <object class="GtkButton" id="luks_settings">
+                        <property name="label" translatable="yes">Encryption options...</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="luks_settings_clicked" swapped="no"/>
+                    </object>
+        """
 
     def get_label(self):
         """ Returns partition label """
