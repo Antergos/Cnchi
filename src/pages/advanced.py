@@ -132,11 +132,13 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Init GUI elements
 
-        # Create and edit partition dialogs
+        # Dialogs
         main_window = self.get_main_window()
         self.create_part_dlg = CreatePartitionDialog(
             self.ui_dir, main_window)
         self.edit_part_dlg = EditPartitionDialog(
+            self.ui_dir, main_window)
+        self.create_table_dlg = CreateTableDialog(
             self.ui_dir, main_window)
 
         self.bootloader = "grub2"
@@ -684,7 +686,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Show edit partition dialog
         response = self.edit_part_dlg.run()
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.APPLY:
             new_mount = self.edit_part_dlg.get_mount_point()
             new_fs = self.edit_part_dlg.get_filesystem()
             new_format = self.edit_part_dlg.is_format_active()
@@ -978,7 +980,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         # Finally, show the create partition dialog
         response = self.create_part_dlg.run()
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.APPLY:
             mylabel = self.create_part_dlg.get_label()
 
             mymount = self.create_part_dlg.get_mount_point()
@@ -1241,12 +1243,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         # disk_sel, result = self.disks[disk_path]
         main_window = self.get_main_window()
-        dialog = CreateTableDialog(self.ui_dir, main_window)
-        dialog.show_all()
 
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            line = dialog.get_table_type()
+        self.create_table_dlg.show_all()
+
+        response = self.create_table_dlg.run()
+        if response == Gtk.ResponseType.APPLY:
+            line = self.create_table_dlg.get_table_type()
             if line:
                 # by default, use msdos type
                 ptype = 'msdos'
