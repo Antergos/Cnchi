@@ -171,6 +171,7 @@ class EditPartitionDialog(Gtk.Dialog):
                 self.ui_dir, self.transient_for)
 
         # Assign labels and images to buttons
+        """
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
             ('ok', 'dialog-apply', _('_Apply'))]
@@ -182,6 +183,7 @@ class EditPartitionDialog(Gtk.Dialog):
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
+        """
 
         self.translate_ui()
 

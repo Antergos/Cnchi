@@ -1,3 +1,4 @@
+[2018-06-10 17:47:34 +0200]  Fix luks_settings password_changed                                         karasu      {dcda0545}
 [2018-06-10 17:32:53 +0200]  Add show_all()                                                             karasu      {e254abbb}
 [2018-06-10 17:31:21 +0200]  Add show_all                                                               karasu      {0b0c48a4}
 [2018-06-09 19:56:14 +0200]  Create table dialog is working. The others need fixing                     karasu      {3d8e27e3}

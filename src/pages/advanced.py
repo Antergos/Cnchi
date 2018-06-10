@@ -41,7 +41,6 @@ from gi.repository import Gtk, Gdk
 import parted
 
 import misc.extra as misc
-import misc.validation as validation
 from misc.gtkwidgets import StateBox
 from misc.run_cmd import call
 
