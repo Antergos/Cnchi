@@ -622,26 +622,6 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_treeview.load_model()
         self.partition_treeview.expand_all()
 
-    def luks_password_changed(self, widget):
-        """ User has introduced new information. Check it here. """
-        luks_password_entry = self.ui.get_object('luks_password_entry')
-        luks_password_confirm_entry = self.ui.get_object(
-            'luks_password_confirm_entry')
-        luks_password_confirm_image = self.ui.get_object(
-            'luks_password_confirm_image')
-        luks_password_status_label = self.ui.get_object(
-            'luks_password_status_label')
-        luks_password_strength = self.ui.get_object('luks_password_strength')
-
-        if (widget == luks_password_entry or
-                widget == luks_password_confirm_entry):
-            validation.check_password(
-                luks_password_entry,
-                luks_password_confirm_entry,
-                luks_password_confirm_image,
-                luks_password_status_label,
-                luks_password_strength)
-
     # ---------------------------------------------------------------------
 
     def show_partition_edit_error(self, error):

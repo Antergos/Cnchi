@@ -33,6 +33,8 @@ import os
 
 import show_message as show
 
+import misc.validation as validation
+
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
@@ -46,8 +48,8 @@ except NameError as err:
 
 class LuksSettingsDialog(Gtk.Dialog):
     """ Shows LUKS settings dialog """
-    
-    UI_FILE="luks_settings.ui"
+
+    UI_FILE = "luks_settings.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
@@ -55,14 +57,22 @@ class LuksSettingsDialog(Gtk.Dialog):
         self.set_transient_for(transient_for)
 
         self.ui = Gtk.Builder()
-        ui_file = os.path.join(ui_dir, LuksSettingsDialog.UI_FILE)
+        ui_file = os.path.join(
+            ui_dir, 'dialogs', LuksSettingsDialog.UI_FILE)
         self.ui.add_from_file(ui_file)
 
         # Connect UI signals
-        self.ui.connect_signals()
+        self.ui.connect_signals(self)
 
         # Show an warning message just once
         self.warning_message_shown = False
+
+        area = self.get_content_area()
+        area.add(self.ui.get_object('luks_settings_vbox'))
+
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+
 
     def maybe_show_warning_message(self):
         """ Show warning message """
@@ -103,7 +113,7 @@ class LuksSettingsDialog(Gtk.Dialog):
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
-        
+
         self.translate_ui()
 
     def translate_ui(self):
@@ -125,15 +135,15 @@ class LuksSettingsDialog(Gtk.Dialog):
     def get_use_luks(self):
         switch = self.ui.get_object('use_luks_switch')
         return switch.get_active()
-    
+
     def get_vol_name(self):
         entry = self.ui.get_object('vol_name_entry')
         return entry.get_text()
-    
+
     def get_password(self):
         entry = self.ui.get_object('password_entry')
         return entry.get_text()
-    
+
     def get_password_confirm(self):
         entry = self.ui.get_object('password_confirm_entry')
         return entry.get_text()
@@ -187,3 +197,18 @@ class LuksSettingsDialog(Gtk.Dialog):
                 show.warning(self.transient_for, msg)
         
         return options
+
+    def password_changed(self, widget):
+        """ User has introduced new information. Check it here. """
+        password = {}
+        password['entry'] = self.ui.get_object('password_entry')
+        password['confirm'] = self.ui.get_object('password_confirm_entry')
+        password['image'] = self.ui.get_object('password_confirm_image')
+        password['status'] = self.ui.get_object('password_status_label')
+        password['strength'] = self.ui.get_object('password_strength')
+
+        if widget in [password['entry'], password['confirm']]:
+            validation.check_password(
+                password['entry'], password['confirm'],
+                password['image'], password['status'],
+                password['strength'])

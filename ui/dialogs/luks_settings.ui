@@ -1,241 +1,164 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-    <object class="GtkDialog" id="luks_settings_dialog">
+    <object class="GtkBox" id="luks_settings_vbox">
         <property name="can_focus">False</property>
-        <property name="border_width">5</property>
-        <property name="title" translatable="yes">Encryption properties</property>
-        <property name="type_hint">dialog</property>
-        <child internal-child="vbox">
-            <object class="GtkBox" id="dialog-vbox8">
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+            <object class="GtkGrid" id="options_grid">
+                <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">2</property>
-                <child internal-child="action_area">
-                    <object class="GtkButtonBox" id="dialog-action_area8">
+                <property name="margin_start">10</property>
+                <property name="margin_end">10</property>
+                <property name="margin_top">5</property>
+                <property name="margin_bottom">5</property>
+                <property name="row_spacing">10</property>
+                <property name="column_spacing">8</property>
+                <child>
+                    <object class="GtkLabel" id="vol_name_label">
+                        <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="layout_style">end</property>
-                        <child>
-                            <object class="GtkButton" id="cancel_button">
-                                <property name="label">_Cancel</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="use_underline">True</property>
-                                <property name="always_show_image">True</property>
-                            </object>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkButton" id="ok_button">
-                                <property name="label">_Apply</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="use_underline">True</property>
-                                <property name="always_show_image">True</property>
-                            </object>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">LUKS volume name:</property>
                     </object>
                     <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">0</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
                     </packing>
                 </child>
                 <child>
-                    <object class="GtkGrid" id="options_grid">
+                    <object class="GtkLabel" id="password_label">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="margin_start">10</property>
-                        <property name="margin_end">10</property>
-                        <property name="margin_top">5</property>
-                        <property name="margin_bottom">5</property>
-                        <property name="row_spacing">10</property>
-                        <property name="column_spacing">8</property>
-                        <child>
-                            <object class="GtkLabel" id="vol_name_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xalign">1</property>
-                                <property name="label" translatable="yes">LUKS volume name:</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="password_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xalign">1</property>
-                                <property name="label" translatable="yes">Password:</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="password_confirm_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xalign">1</property>
-                                <property name="label" translatable="yes">Confirm password:</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkSwitch" id="use_luks_switch">
-                                <property name="use_action_appearance">False</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="halign">start</property>
-                                <signal name="activate" handler="use_luks_switch_activate" swapped="no"/>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="use_luks_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="xalign">1</property>
-                                <property name="label" translatable="yes">Use LUKS encryption:
-                                </property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkEntry" id="vol_name_entry">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="invisible_char">•</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkEntry" id="password_entry">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="visibility">False</property>
-                                <property name="invisible_char">●</property>
-                                <property name="activates_default">True</property>
-                                <property name="width_chars">20</property>
-                                <property name="placeholder_text">Password</property>
-                                <signal name="changed" handler="password_changed" swapped="no"/>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkEntry" id="password_confirm_entry">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="visibility">False</property>
-                                <property name="invisible_char">●</property>
-                                <property name="activates_default">True</property>
-                                <property name="width_chars">20</property>
-                                <property name="placeholder_text">Confirm password</property>
-                                <signal name="changed" handler="password_changed" swapped="no"/>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkImage" id="password_confirm_image">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <!--<property name="stock">gtk-yes</property>-->
-                            </object>
-                            <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="password_strength">
-                                <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkgreen"&gt;Strong password&lt;/span&gt;&lt;/small&gt;</property>
-                                <property name="use_markup">True</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <object class="GtkLabel" id="password_status_label">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                            </object>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
-                        <child>
-                            <placeholder/>
-                        </child>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Password:</property>
                     </object>
                     <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">5</property>
-                        <property name="position">1</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="password_confirm_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Confirm password:</property>
+                    </object>
+                    <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkSwitch" id="use_luks_switch">
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="halign">start</property>
+                        <signal name="activate" handler="use_luks_switch_activate" swapped="no"/>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="use_luks_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Use LUKS encryption:
+                        </property>
+                    </object>
+                    <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkEntry" id="vol_name_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">•</property>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkEntry" id="password_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="visibility">False</property>
+                        <property name="invisible_char">●</property>
+                        <property name="activates_default">True</property>
+                        <property name="width_chars">20</property>
+                        <property name="placeholder_text">Password</property>
+                        <signal name="changed" handler="password_changed" swapped="no"/>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkEntry" id="password_confirm_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="visibility">False</property>
+                        <property name="invisible_char">●</property>
+                        <property name="activates_default">True</property>
+                        <property name="width_chars">20</property>
+                        <property name="placeholder_text">Confirm password</property>
+                        <signal name="changed" handler="password_changed" swapped="no"/>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkImage" id="password_confirm_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <!--<property name="stock">gtk-yes</property>-->
+                    </object>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="password_strength">
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">&lt;small&gt;&lt;span color="darkgreen"&gt;Strong password&lt;/span&gt;&lt;/small&gt;</property>
+                        <property name="use_markup">True</property>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="password_status_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                    </object>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">5</property>
                     </packing>
                 </child>
             </object>
+            <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">1</property>
+            </packing>
         </child>
-        <action-widgets>
-            <action-widget response="-6">cancel_button</action-widget>
-            <action-widget response="-5">ok_button</action-widget>
-        </action-widgets>
     </object>
 </interface>

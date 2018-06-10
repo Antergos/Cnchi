@@ -35,7 +35,7 @@ import re
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 import parted3.fs_module as fs
 
@@ -67,11 +67,31 @@ class EditPartitionDialog(Gtk.Dialog):
         # Connect UI signals
         self.ui.connect_signals(self)
 
-
-
         self.luks_dialog = None
         # luks options in a tuple (use_luks, vol_name, password) """
         self.luks_options = (False, "", "")
+
+        area = self.get_content_area()
+        area.add(self.ui.get_object('edit_partition_vbox'))
+
+        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+
+        self.add_luks_button()
+
+
+    def add_luks_button(self):
+        pass
+        """
+        <object class="GtkButton" id="luks_settings">
+                        <property name="label" translatable="yes">Encryption options...</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="luks_settings_clicked" swapped="no"/>
+                    </object>
+        """
 
     def get_label(self):
         """ Returns partition label """

@@ -35,7 +35,7 @@ import re
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 import parted3.fs_module as fs
 
@@ -79,7 +79,6 @@ class CreatePartitionDialog(Gtk.Dialog):
 
         self.add_luks_button()
 
-        #self.show_all()
 
     def add_luks_button(self):
         pass
