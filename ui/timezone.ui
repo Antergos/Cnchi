@@ -116,7 +116,7 @@
                         <property name="can_focus">True</property>
                         <property name="halign">start</property>
                         <property name="active">True</property>
-                        <signal name="activate" handler="on_switch_ntp_activate" swapped="no"/>
+                        <signal name="notify::active" handler="on_switch_ntp_activate" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">True</property>
