@@ -118,7 +118,7 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         self.hide_password_info()
         self.translate_ui()
-        
+
 
     def translate_ui(self):
         """ Translate dialog widgets """
@@ -180,11 +180,11 @@ class LuksSettingsDialog(Gtk.Dialog):
         widget.set_active(status)
         if status:
             self.password_changed()
-        
+
     def get_options(self):
-        """ Returns luks options in a 
+        """ Returns luks options in a
             tuple (use_luks, vol_name, password) """
-        
+
         options = (False, "", "")
 
         use_luks = self.get_use_luks()
@@ -205,7 +205,7 @@ class LuksSettingsDialog(Gtk.Dialog):
                 msg = _(
                     "Volume name and password are mandatory! Encryption NOT enabled.")
                 show.warning(self.transient_for, msg)
-        
+
         return options
 
     def hide_password_info(self):

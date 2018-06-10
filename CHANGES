@@ -1,3 +1,4 @@
+[2018-06-10 19:39:53 +0200]  Seems to be working now                                                    karasu      {92179026}
 [2018-06-10 19:34:25 +0200]  align labels in luks dialog                                                karasu      {48d87181}
 [2018-06-10 19:29:50 +0200]  Do not show 'strong password' as default (even when password was no..      karasu      {53520274}
 [2018-06-10 19:20:30 +0200]  Change switch function in timezone                                         karasu      {48b2d1e9}

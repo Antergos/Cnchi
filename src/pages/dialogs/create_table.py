@@ -33,7 +33,7 @@ import os
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 import misc.extra as misc
 
@@ -63,7 +63,7 @@ class CreateTableDialog(Gtk.Dialog):
 
         # Connect UI signals
         self.ui.connect_signals(self)
-        
+
         area = self.get_content_area()
         area.add(self.ui.get_object('create_table_vbox'))
 

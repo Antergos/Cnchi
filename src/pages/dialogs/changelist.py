@@ -29,13 +29,11 @@
 
 """ Changelist dialog (advanced mode) """
 
-import logging
 import os
-import re
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 
 # When testing, no _() is available
 try:
@@ -46,8 +44,8 @@ except NameError as err:
 
 class ChangeListDialog(Gtk.Dialog):
     """ Shows change confirmation dialog """
-    
-    UI_FILE="changelist.ui"
+
+    UI_FILE = "changelist.ui"
 
     def __init__(self, ui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)

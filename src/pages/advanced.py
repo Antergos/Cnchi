@@ -1042,13 +1042,14 @@ class InstallationAdvanced(GtkBaseBox):
 
                 # Store new stage partition info in self.stage_opts
                 old_parts = []
-                for y in self.all_partitions:
-                    for z in y:
-                        old_parts.append(z)
+                for mydevice in self.all_partitions:
+                    for part in mydevice:
+                        old_parts.append(part)
+
                 partitions = pm.get_partitions(disk)
-                for e in partitions:
-                    if e not in old_parts:
-                        uid = self.gen_partition_uid(partition=partitions[e])
+                for part in partitions:
+                    if part not in old_parts:
+                        uid = self.gen_partition_uid(partition=partitions[part])
                         self.stage_opts[uid] = (
                             True, mylabel, mymount, myfs, formatme)
                         self.luks_options[uid] = self.edit_part_dlg.luks_options
