@@ -214,10 +214,11 @@ class Check(GtkBaseBox):
         else:
             return False
 
-    def compare_versions(self, remote, local):
+    @staticmethod
+    def compare_versions(remote, local):
         """ Compares Cnchi versions (local vs remote) and returns true
             if local is at least as new as remote """
-        
+
         remote = remote.split('.')
         local = local.split('.')
 

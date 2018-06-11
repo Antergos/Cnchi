@@ -81,13 +81,14 @@ class Language(GtkBaseBox):
         """ Returns LANG environmental variable value """
         return os.environ["LANG"].split(".")[0]
 
-    def get_locale(self):
+    @staticmethod
+    def get_locale():
         """ Returns default locale """
-        default_locale = locale.getdefaultlocale()
-        if len(default_locale) > 1:
-            return default_locale[0] + "." + default_locale[1]
+        def_locale = locale.getdefaultlocale()
+        if len(def_locale) > 1:
+            return def_locale[0] + "." + def_locale[1]
         else:
-            return default_locale[0]
+            return def_locale[0]
 
     def on_listbox_row_selected(self, _listbox, listbox_row):
         """ Someone selected a different row of the listbox """

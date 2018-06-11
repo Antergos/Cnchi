@@ -653,16 +653,14 @@ class InstallationZFS(GtkBaseBox):
             # Create fresh MBR table
             wrapper.parted_mklabel(device_path, "msdos")
 
-        """
-        if self.zfs_options["encrypt_disk"]:
-            from installation import auto_partition as ap
-            vol_name = device_path.split("/")[-1]
-            ap.setup_luks(
-                luks_device=device_path,
-                luks_name=vol_name,
-                luks_pass=self.zfs_options["encrypt_password"])
-            self.settings.set("use_luks", True)
-        """
+        #if self.zfs_options["encrypt_disk"]:
+        #    from installation import auto_partition as ap
+        #    vol_name = device_path.split("/")[-1]
+        #    ap.setup_luks(
+        #        luks_device=device_path,
+        #        luks_name=vol_name,
+        #        luks_pass=self.zfs_options["encrypt_password"])
+        #    self.settings.set("use_luks", True)
 
         call(["sync"])
 
@@ -1076,7 +1074,7 @@ class InstallationZFS(GtkBaseBox):
 
         for pool_name in self.existing_pools:
             if "antergos" in pool_name.lower():
-                pool_id, pool_state = self.existing_pools[pool_name]
+                #pool_id, pool_state = self.existing_pools[pool_name]
                 destroy_cmd = ['zpool', 'destroy', '-f', pool_name]
                 if not call(destroy_cmd, warning=False):
                     destroy_cmd = ['zfs', 'destroy', '-R', '-f', pool_name]

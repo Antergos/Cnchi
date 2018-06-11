@@ -116,7 +116,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         alt_config_path = '/usr/share/cnchi/data/cnchi.conf'
         bugsnag_api = None
 
-        if (not os.path.exists(config_path) and 
+        if (not os.path.exists(config_path) and
             os.path.exists(alt_config_path)):
             config_path = alt_config_path
 

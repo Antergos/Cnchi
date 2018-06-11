@@ -187,7 +187,7 @@ class PacmanConfig(collections.OrderedDict):
 
     def load_from_options(self, options):
         """ Load options from 'options' variable """
-        global _LOGMASK
+        #global _LOGMASK
         if options.root is not None:
             self.options["RootDir"] = options.root
         if options.dbpath is not None:
@@ -200,8 +200,8 @@ class PacmanConfig(collections.OrderedDict):
             self.options["LogFile"] = options.logfile
         if options.cachedir is not None:
             self.options["CacheDir"] = [options.cachedir]
-        if options.debug:
-            _LOGMASK = 0xffff
+        #if options.debug:
+        #    _LOGMASK = 0xffff
 
     def apply(self, handle):
         """ Apply stored options to alpm handle """

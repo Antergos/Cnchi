@@ -95,7 +95,7 @@ class Avatars(Gtk.Dialog):
 
 def test_module():
     data_path = "/usr/share/cnchi/data"
-    window = Avatars(0, 0, data_path)
+    window = Avatars(data_path)
     window.show_all()
     Gtk.main()
 

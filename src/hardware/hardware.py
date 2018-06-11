@@ -49,7 +49,7 @@ class Hardware(object):
         self.enabled = enabled
 
         self.product_id = ""
- 
+
         if type(pci_file_or_devices) == str:
             path = os.path.join(Hardware.PCI_FILES_PATH, pci_file_or_devices)
             if os.path.exists(path):     

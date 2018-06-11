@@ -49,26 +49,30 @@ from hardware.modules.nvidia_304xx import Nvidia304xx
 from hardware.modules.catalyst import Catalyst
 from hardware.modules.amdgpu import AMDGpu
 from hardware.modules.amdgpu_exp import AMDGpuExp
+from hardware.modules.i915 import Intel915
 
 class Graphics(object):
     """ Gets graphic device info using the hardware module """
-    def nvidia(self):
+
+    @staticmethod
+    def nvidia():
         """ Returns true if an nVidia card is detected """
         if (Nvidia().detect() or Nvidia390xx().detect() or
             Nvidia340xx().detect() or Nvidia304xx().detect()):
             return True
         return False
 
-    def amd(self):
+    @staticmethod
+    def amd():
         """ Returns true if an AMD card is detected """
         if (Catalyst().detect() or AMDGpu().detect() or
             AMDGpuExp().detect()):
             return True
         return False
 
-    def i915(self):
+    @staticmethod
+    def i915():
         """ Returns if an Intel card is detected """
-        from hardware.modules.i915 import Intel915
         return Intel915().detect()
 
     def bumblebee(self):

@@ -431,7 +431,7 @@ class KeyboardWidget(Gtk.DrawingArea):
 
     def load_codes(self):
         """ Load keyboard codes """
-        
+
         if self.layout is None:
             return
 

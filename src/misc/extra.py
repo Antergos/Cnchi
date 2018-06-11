@@ -186,7 +186,7 @@ def raise_privileges(func):
 
     @wraps(func)
     def helper(*args, **kwargs):
-        with raised_privileges() as privileged:
+        with raised_privileges() as __:
             return func(*args, **kwargs)
 
     return helper
