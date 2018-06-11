@@ -611,6 +611,30 @@ def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
 
 
+def select_combobox_value(combobox, value):
+    """ Force combobox to select a specific value """
+    model = combobox.get_model()
+    combo_iter = model.get_iter(0)
+    index = 0
+    found = False
+    while combo_iter is not None and not found:
+        if value.lower() == model[combo_iter][0].lower():
+            combobox.set_active_iter(combo_iter)
+            combo_iter = None
+            found = True
+        else:
+            index += 1
+            combo_iter = model.iter_next(combo_iter)
+    return found
+
+
+def select_first_combobox_item(combobox):
+    """ Automatically select the first entry """
+    tree_model = combobox.get_model()
+    tree_iter = tree_model.get_iter_first()
+    combobox.set_active_iter(tree_iter)
+
+
 class InstallError(Exception):
     """ Exception class called upon an installer error """
 

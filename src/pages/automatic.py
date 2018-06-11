@@ -166,15 +166,8 @@ class InstallationAutomatic(GtkBaseBox):
                 self.bootloader_devices[line] = dev.path
                 logging.debug(line)
 
-        self.select_first_combobox_item(self.device_store)
-        self.select_first_combobox_item(self.bootloader_device_entry)
-
-    @staticmethod
-    def select_first_combobox_item(combobox):
-        """ Selects first item """
-        tree_model = combobox.get_model()
-        tree_iter = tree_model.get_iter_first()
-        combobox.set_active_iter(tree_iter)
+        misc.select_first_combobox_item(self.device_store)
+        misc.select_first_combobox_item(self.bootloader_device_entry)
 
     def on_select_drive_changed(self, _widget):
         """ User selected another drive """

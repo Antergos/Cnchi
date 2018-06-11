@@ -283,7 +283,7 @@ class Timezone(GtkBaseBox):
 
         return True
 
-    def on_switch_ntp_activate(self, ntp_switch):
+    def on_switch_ntp_activate(self, ntp_switch, _data):
         """ activated/deactivated ntp switch """
         self.settings.set('use_timesyncd', ntp_switch.get_active())
 

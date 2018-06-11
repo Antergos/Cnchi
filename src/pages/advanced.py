@@ -38,11 +38,12 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
+import parted
+
 import misc.extra as misc
-import misc.validation as validation
+from misc.gtkwidgets import StateBox
 from misc.run_cmd import call
 
-import parted
 import parted3.partition_module as pm
 import parted3.fs_module as fs
 import parted3.lvm as lvm
@@ -55,6 +56,13 @@ import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
+from widgets.partition_treeview import PartitionTreeview
+
+# Dialogs
+from dialogs.create_partition import CreatePartitionDialog
+from dialogs.edit_partition import EditPartitionDialog
+from dialogs.create_table import CreateTableDialog
+
 # When testing, no _() is available
 try:
     _("")
@@ -65,23 +73,6 @@ except NameError as err:
 
 class InstallationAdvanced(GtkBaseBox):
     """ Installation advanced class. Custom partitioning. """
-
-    COL_PATH = 0
-    COL_FS = 1
-    COL_MOUNT_POINT = 2
-    COL_LABEL = 3
-    COL_FORMAT_ACTIVE = 4
-    COL_FORMAT_VISIBLE = 5
-    COL_SIZE = 6
-    COL_USED = 7
-    COL_PARTITION_PATH = 8
-    COL_FLAGS = 9
-    COL_PARTITION_TYPE = 10
-    COL_FORMAT_SENSITIVE = 11
-    COL_SSD_ACTIVE = 12
-    COL_SSD_VISIBLE = 13
-    COL_SSD_SENSITIVE = 14
-    COL_ENCRYPTED = 15
 
     def __init__(self, params, prev_page="installation_ask",
                  next_page="user_info"):
@@ -106,13 +97,7 @@ class InstallationAdvanced(GtkBaseBox):
         # uses partition uid as index
         self.luks_options = {}
 
-        # Store here LUKS options for current partition (create/edit dialog)
-        # (they will finally be stored in luks_options if user selects ok
-        # in create/edit partition dialog)
-        # stores tuple (use_luks, vol_name, password)
-        self.luks_dialog_options = (False, "", "")
-
-        self.first_time_in_fill_partition_list = True
+        self.first_time_in_fill_partition_treeview = True
 
         self.orig_label_dic = {}
         self.orig_part_dic = {}
@@ -144,19 +129,16 @@ class InstallationAdvanced(GtkBaseBox):
         # Store here ALL partitions from ALL devices
         self.all_partitions = []
 
-        # Show warning message when opening luks options dialog for
-        # the first time
-        self.luks_dialog_warning_message_shown = False
-
         # Init GUI elements
 
-        # Create and edit partition dialogs
-        self.create_partition_dialog = self.ui.get_object(
-            'create_partition_dialog')
-        self.edit_partition_dialog = self.ui.get_object(
-            'edit_partition_dialog')
-
-        self.initialize_widgets()
+        # Dialogs
+        main_window = self.get_main_window()
+        self.create_part_dlg = CreatePartitionDialog(
+            self.ui_dir, main_window)
+        self.edit_part_dlg = EditPartitionDialog(
+            self.ui_dir, main_window)
+        self.create_table_dlg = CreateTableDialog(
+            self.ui_dir, main_window)
 
         self.bootloader = "grub2"
         self.bootloader_device = ""
@@ -165,77 +147,38 @@ class InstallationAdvanced(GtkBaseBox):
             'bootloader_device_entry')
         self.bootloader_devices = {}
 
-        # Initialise our partition list tree view
-        self.partition_list = self.ui.get_object('partition_list_treeview')
-        self.partition_list_store = None
-        self.prepare_partition_list()
+        self.scrolledwindow = self.ui.get_object(
+            'partition_treeview_scrolledwindow')
+        self.partition_treeview = PartitionTreeview()
+        self.partition_treeview.prepare()
+        self.scrolledwindow.add(self.partition_treeview)
 
-        self.partition_list.set_hexpand(True)
+        # Connect partition treeview's checkbox cells
+        self.partition_treeview.connect_format_cell(self.format_cell_toggled)
+        self.partition_treeview.connect_ssd_cell(self.ssd_cell_toggled)
 
-        # Get encryption (LUKS) options dialog
-        self.luks_dialog = self.ui.get_object('luks_dialog')
-
-        switch = self.ui.get_object('luks_use_luks_switch')
-        switch.connect('notify::active', self.on_luks_use_luks_switch_activate)
+        self.partition_treeview.connect('row-activated', self.partition_treeview_row_activated)
 
         # Connect changing selection in the partition list treeview
-        select = self.partition_list.get_selection()
-        select.connect(
-            "changed",
-            self.on_partition_list_treeview_selection_changed)
+        select = self.partition_treeview.get_selection()
+        select.connect('changed', self.partition_treeview_selection_changed)
 
-        # Assign images to buttons
-        btns = [
-            ("partition_button_undo", "edit-undo-symbolic"),
-            ("partition_button_new", "list-add-symbolic"),
-            ("partition_button_delete", "list-remove-symbolic"),
-            ("partition_button_edit", "system-run-symbolic"),
-            ("partition_button_new_label", "edit-clear-all-symbolic"),
-            ("changelist_cancelbutton", "dialog-cancel"),
-            ("changelist_okbutton", "dialog-apply"),
-            ("create_table_dialog_cancel", "dialog-cancel"),
-            ("create_table_dialog_ok", "dialog-apply"),
-            ("edit_partition_cancel", "dialog-cancel"),
-            ("edit_partition_ok", "dialog-apply"),
-            ("create_partition_cancel", "dialog-cancel"),
-            ("create_partition_ok", "dialog-apply"),
-            ("luks_cancel_button", "dialog-cancel"),
-            ("luks_ok_button", "dialog-apply")]
+    def ssd_cell_toggled(self, _widget, path):
+        """ User confirms selected disk is a ssd disk (or not) """
+        disk_path = self.partition_treeview.store[path][PartitionTreeview.COL_PATH]
+        self.ssd[disk_path] = self.partition_treeview.store[path][PartitionTreeview.COL_SSD_ACTIVE]
 
-        for grp in btns:
-            (btn_id, icon) = grp
-            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
-            btn.set_always_show_image(True)
-            btn.set_image(image)
-
-    def initialize_widgets(self):
-        """ Initialize all page widgets """
-        # Initialize our create/edit partition dialogs filesystems combos.
-        names = ['create_partition_use_combo', 'edit_partition_use_combo']
-        for name in names:
-            combo = self.ui.get_object(name)
-            combo.remove_all()
-            for fs_name in sorted(fs.NAMES):
-                combo.append_text(fs_name)
-            combo.set_wrap_width(2)
-
-        # Initialize partition_types_combo
-        combo = self.ui.get_object('partition_types_combo')
-        combo.remove_all()
-        combo.append_text("msdos (MBR)")
-        combo.append_text("GUID Partition Table (GPT)")
-
-        # Automatically select first entry
-        self.select_first_combobox_item(combo)
-
-        # Initialize our create and edit partition dialog mount points' combo.
-        names = ['create_partition_mount_combo', 'edit_partition_mount_combo']
-        for name in names:
-            combo = self.ui.get_object(name)
-            combo.remove_all()
-            for mount_point in fs.COMMON_MOUNT_POINTS:
-                combo.append_text(mount_point)
+    def format_cell_toggled(self, _widget, path):
+        """ Mark a partition to be formatted """
+        partition_path = self.partition_treeview.store[path][PartitionTreeview.COL_PATH]
+        uid = self.gen_partition_uid(path=partition_path)
+        # As it's not a new partition, we set it to False
+        self.stage_opts[uid] = (
+            False,
+            self.partition_treeview.store[path][PartitionTreeview.COL_LABEL],
+            self.partition_treeview.store[path][PartitionTreeview.COL_MOUNT_POINT],
+            self.partition_treeview.store[path][PartitionTreeview.COL_FS],
+            self.partition_treeview.store[path][PartitionTreeview.COL_FORMAT_ACTIVE])
 
     def gen_partition_uid(self, partition=None, path=None):
         """ Function to generate uid by partition object or path """
@@ -270,26 +213,27 @@ class InstallationAdvanced(GtkBaseBox):
         model, tree_iter = selection.get_selected()
 
         path = None
-        if tree_iter is not None:
-            path = model[tree_iter][InstallationAdvanced.COL_PATH]
+        if tree_iter:
+            path = model[tree_iter][PartitionTreeview.COL_PATH]
 
         if not path:
             return
 
-        button = {"undo": self.ui.get_object('partition_button_undo'),
-                  "new": self.ui.get_object('partition_button_new'),
-                  "delete": self.ui.get_object('partition_button_delete'),
-                  "edit": self.ui.get_object('partition_button_edit'),
-                  "new_label": self.ui.get_object('partition_button_new_label')}
+        button = {
+            'undo': self.ui.get_object('partition_button_undo'),
+            'new': self.ui.get_object('partition_button_new'),
+            'delete': self.ui.get_object('partition_button_delete'),
+            'edit': self.ui.get_object('partition_button_edit'),
+            'new_label': self.ui.get_object('partition_button_new_label')}
 
         for key in button:
             button[key].set_sensitive(False)
 
         if self.stage_opts:
-            button["undo"].set_sensitive(True)
+            button['undo'].set_sensitive(True)
 
         if path == _("free space"):
-            button["new"].set_sensitive(True)
+            button['new'].set_sensitive(True)
         else:
             disks = pm.get_devices()
             if ((path not in disks and 'dev/mapper' not in path) or
@@ -300,23 +244,23 @@ class InstallationAdvanced(GtkBaseBox):
                     if path in i and '/mapper' not in path and '/' in path:
                         diskobj = i[path].disk.device.path
                 if (diskobj and
-                        model[tree_iter][InstallationAdvanced.COL_FS] == 'extended' and
+                        model[tree_iter][PartitionTreeview.COL_FS] == 'extended' and
                         self.diskdic[diskobj]['has_logical']):
                     # It's an extended partition and has logical ones in it,
                     # so it can't be edited or deleted until the logical ones
                     # are deleted first.
-                    button["delete"].set_sensitive(False)
-                    button["edit"].set_sensitive(False)
+                    button['delete'].set_sensitive(False)
+                    button['edit'].set_sensitive(False)
                 else:
                     if '/mapper' in path:
-                        button["delete"].set_sensitive(False)
+                        button['delete'].set_sensitive(False)
                     else:
-                        button["delete"].set_sensitive(True)
+                        button['delete'].set_sensitive(True)
 
-                    button["edit"].set_sensitive(True)
+                    button['edit'].set_sensitive(True)
             else:
                 # A drive (disk) is selected
-                button["new_label"].set_sensitive(True)
+                button['new_label'].set_sensitive(True)
 
     def fill_bootloader_device_entry(self):
         """ Get all devices where we can put our bootloader.
@@ -331,7 +275,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         for path in sorted(self.disks):
             (disk, _result) = self.disks[path]
-            if disk is not None:
+            if disk:
                 dev = disk.device
                 # Avoid cdrom and any raid, lvm volumes or encryptfs
                 if (not dev.path.startswith("/dev/sr") and
@@ -347,7 +291,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         if not self.select_bootdevice(self.bootloader_device_entry, self.bootloader_device):
             # Automatically select first entry
-            self.select_first_combobox_item(self.bootloader_device_entry)
+            misc.select_first_combobox_item(self.bootloader_device_entry)
 
     @staticmethod
     def select_bootdevice(combobox, value):
@@ -356,7 +300,7 @@ class InstallationAdvanced(GtkBaseBox):
         combo_iter = model.get_iter_first()
         index = 0
         found = False
-        while combo_iter is not None and not found:
+        while combo_iter and not found:
             if value.lower() in model[combo_iter][0].lower():
                 combobox.set_active_iter(combo_iter)
                 combo_iter = None
@@ -377,7 +321,7 @@ class InstallationAdvanced(GtkBaseBox):
             # TODO: rEFInd needs more testing
             # self.bootloader_entry.append_text("rEFInd")
 
-            if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
+            if not misc.select_combobox_value(self.bootloader_entry, self.bootloader):
                 # Automatically select first entry
                 self.bootloader_entry.set_active(0)
             self.bootloader_entry.show()
@@ -388,24 +332,7 @@ class InstallationAdvanced(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    @staticmethod
-    def select_combobox_value(combobox, value):
-        """ Force combobox to select a specific value """
-        model = combobox.get_model()
-        combo_iter = model.get_iter(0)
-        index = 0
-        found = False
-        while combo_iter is not None and not found:
-            if value.lower() == model[combo_iter][0].lower():
-                combobox.set_active_iter(combo_iter)
-                combo_iter = None
-                found = True
-            else:
-                index += 1
-                combo_iter = model.iter_next(combo_iter)
-        return found
-
-    def on_bootloader_device_check_toggled(self, checkbox):
+    def bootloader_device_check_toggled(self, checkbox):
         """ Enable / disable bootloader installation """
         status = checkbox.get_active()
 
@@ -417,75 +344,18 @@ class InstallationAdvanced(GtkBaseBox):
             widget = self.ui.get_object(widget_id)
             widget.set_sensitive(status)
 
-    @staticmethod
-    def select_first_combobox_item(combobox):
-        """ Automatically select first entry """
-        tree_model = combobox.get_model()
-        tree_iter = tree_model.get_iter_first()
-        combobox.set_active_iter(tree_iter)
-
-    def on_bootloader_device_entry_changed(self, _widget):
+    def bootloader_device_entry_changed(self, _widget):
         """ Get new selected bootloader device """
         line = self.bootloader_device_entry.get_active_text()
-        if line is not None:
+        if line:
             self.bootloader_device = self.bootloader_devices[line]
 
-    def on_bootloader_entry_changed(self, _widget):
+    def bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
-        if line is not None:
+        if line:
             self.bootloader = line.lower()
             self.check_mount_points()
-
-    def prepare_partition_list(self):
-        """ Create columns for our treeview """
-        render_text = Gtk.CellRendererText()
-
-        col = Gtk.TreeViewColumn(_("Device"), render_text, text=InstallationAdvanced.COL_PATH)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Type"), render_text, text=InstallationAdvanced.COL_FS)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(
-            _("Mount point"), render_text, text=InstallationAdvanced.COL_MOUNT_POINT)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(
-            _("Label"), render_text, text=InstallationAdvanced.COL_LABEL)
-        self.partition_list.append_column(col)
-
-        format_toggle = Gtk.CellRendererToggle()
-        format_toggle.connect("toggled", self.on_format_cell_toggled)
-
-        col = Gtk.TreeViewColumn(
-            _("Format"),
-            format_toggle,
-            active=InstallationAdvanced.COL_FORMAT_ACTIVE,
-            visible=InstallationAdvanced.COL_FORMAT_VISIBLE,
-            sensitive=InstallationAdvanced.COL_FORMAT_SENSITIVE)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Size"), render_text, text=InstallationAdvanced.COL_SIZE)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(_("Used"), render_text, text=InstallationAdvanced.COL_USED)
-        self.partition_list.append_column(col)
-
-        col = Gtk.TreeViewColumn(
-            _("Flags"), render_text, text=InstallationAdvanced.COL_FLAGS)
-        self.partition_list.append_column(col)
-
-        ssd_toggle = Gtk.CellRendererToggle()
-        ssd_toggle.connect("toggled", self.on_ssd_cell_toggled)
-
-        col = Gtk.TreeViewColumn(
-            _("SSD"),
-            ssd_toggle,
-            active=InstallationAdvanced.COL_SSD_ACTIVE,
-            visible=InstallationAdvanced.COL_SSD_VISIBLE,
-            sensitive=InstallationAdvanced.COL_SSD_SENSITIVE)
-        self.partition_list.append_column(col)
 
     @staticmethod
     def get_size(length, sector_size):
@@ -508,16 +378,10 @@ class InstallationAdvanced(GtkBaseBox):
 
         return size_txt
 
-    def fill_partition_list(self):
+    def fill_partition_treeview(self):
         """ Fill the partition list with all the data. """
 
-        # We will store our data model in 'partition_list_store'
-        if self.partition_list_store is not None:
-            self.partition_list_store.clear()
-
-        self.partition_list_store = Gtk.TreeStore(
-            str, str, str, str, bool, bool, str, str, str, str, int, bool,
-            bool, bool, bool, bool)
+        self.partition_treeview.create_store()
 
         # Be sure to call get_devices once
         if self.disks is None:
@@ -540,7 +404,7 @@ class InstallationAdvanced(GtkBaseBox):
                 row = [
                     volume_group, "", "", "", False, False, "", "", "", "",
                     0, False, is_ssd, False, False, False]
-                lvparent = self.partition_list_store.append(None, row)
+                lvparent = self.partition_treeview.append(None, row)
                 for logical_volume in logical_volumes:
                     fmt_enable = True
                     fmt_active = False
@@ -586,9 +450,9 @@ class InstallationAdvanced(GtkBaseBox):
                            fmt_active, formatable, '', '', partition_path,
                            "", 0, fmt_enable, is_ssd, False, False, False]
 
-                    self.partition_list_store.append(lvparent, row)
+                    self.partition_treeview.append(lvparent, row)
 
-                    if self.first_time_in_fill_partition_list:
+                    if self.first_time_in_fill_partition_treeview:
                         self.orig_part_dic[partition_path] = uid
                         self.orig_label_dic[partition_path] = label
 
@@ -613,7 +477,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # Disk without a partition table
                 row = [disk_path, "", "", "", False, False, "", "", "", "",
                        0, False, is_ssd, False, False, False]
-                self.partition_list_store.append(None, row)
+                self.partition_treeview.append(None, row)
             elif '/dev/mapper/' in disk_path:
                 # Already added
                 continue
@@ -626,7 +490,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # Append the device info to our model
                 row = [dev.path, "", "", "", False, False, size_txt, "", "",
                        "", 0, False, is_ssd, True, True, False]
-                disk_parent = self.partition_list_store.append(None, row)
+                disk_parent = self.partition_treeview.append(None, row)
 
                 extended_parent = None
 
@@ -696,7 +560,7 @@ class InstallationAdvanced(GtkBaseBox):
                     else:
                         fmt_enable = True
                         if _("free space") not in path:
-                            if self.first_time_in_fill_partition_list:
+                            if self.first_time_in_fill_partition_treeview:
                                 if mount_point:
                                     used = pm.get_used_space(partition)
                                 else:
@@ -740,69 +604,41 @@ class InstallationAdvanced(GtkBaseBox):
                         # Our parent (in the treeview) will be the disk we're in
                         parent = disk_parent
 
-                    tree_iter = self.partition_list_store.append(parent, row)
+                    tree_iter = self.partition_treeview.append(parent, row)
 
                     # If we're an extended partition, all the logical partitions
                     # that follow will be shown as children of this one
                     if partition.type == pm.PARTITION_EXTENDED:
                         extended_parent = tree_iter
 
-                    if self.first_time_in_fill_partition_list:
+                    if self.first_time_in_fill_partition_treeview:
                         uid = self.gen_partition_uid(partition=partition)
                         self.orig_part_dic[partition.path] = uid
                         self.orig_label_dic[partition.path] = label
 
-        self.first_time_in_fill_partition_list = False
+        self.first_time_in_fill_partition_treeview = False
 
         # Assign our new model to our treeview
-        self.partition_list.set_model(self.partition_list_store)
-        self.partition_list.expand_all()
+        self.partition_treeview.load_model()
+        self.partition_treeview.expand_all()
 
-    def on_format_cell_toggled(self, _widget, path):
-        """ Mark a partition to be formatted """
-        status = self.partition_list_store[path][InstallationAdvanced.COL_FORMAT_ACTIVE]
-        self.partition_list_store[path][InstallationAdvanced.COL_FORMAT_ACTIVE] = not status
+    # ---------------------------------------------------------------------
 
-        partition_path = self.partition_list_store[path][InstallationAdvanced.COL_PATH]
-        uid = self.gen_partition_uid(path=partition_path)
-        # As it's not a new partition, we set it to False
-        self.stage_opts[uid] = (
-            False,
-            self.partition_list_store[path][InstallationAdvanced.COL_LABEL],
-            self.partition_list_store[path][InstallationAdvanced.COL_MOUNT_POINT],
-            self.partition_list_store[path][InstallationAdvanced.COL_FS],
-            self.partition_list_store[path][InstallationAdvanced.COL_FORMAT_ACTIVE])
+    def show_partition_edit_error(self, error):
+        """ Show partition edit error to user """
+        errors = [
+            _("Can't use same mount point twice."),
+            _("Root partition must be formatted."),
+            _("Root partition cannot be NTFS or FAT32"),
+            _("Home partition cannot be NTFS or FAT32"),
+            _("As no /boot/efi is defined (yet), /boot needs to be fat32."),
+            _("/boot/efi needs to be fat32.")]
+        main_window = self.get_main_window()
+        show.warning(main_window, errors[error])
 
-    def on_ssd_cell_toggled(self, _widget, path):
-        """ Mark disk as ssd """
-        status = self.partition_list_store[path][InstallationAdvanced.COL_SSD_ACTIVE]
-        self.partition_list_store[path][InstallationAdvanced.COL_SSD_ACTIVE] = not status
-        disk_path = self.partition_list_store[path][InstallationAdvanced.COL_PATH]
-        self.ssd[disk_path] = self.partition_list_store[path][InstallationAdvanced.COL_SSD_ACTIVE]
-
-    def on_luks_password_changed(self, widget):
-        """ User has introduced new information. Check it here. """
-        luks_password_entry = self.ui.get_object('luks_password_entry')
-        luks_password_confirm_entry = self.ui.get_object(
-            'luks_password_confirm_entry')
-        luks_password_confirm_image = self.ui.get_object(
-            'luks_password_confirm_image')
-        luks_password_status_label = self.ui.get_object(
-            'luks_password_status_label')
-        luks_password_strength = self.ui.get_object('luks_password_strength')
-
-        if (widget == luks_password_entry or
-                widget == luks_password_confirm_entry):
-            validation.check_password(
-                luks_password_entry,
-                luks_password_confirm_entry,
-                luks_password_confirm_image,
-                luks_password_status_label,
-                luks_password_strength)
-
-    def on_partition_list_edit_activate(self, _button):
+    def partition_treeview_edit_activated(self, _button):
         """ The user wants to edit a partition """
-        selection = self.partition_list.get_selection()
+        selection = self.partition_treeview.get_selection()
         if not selection:
             return
 
@@ -814,108 +650,60 @@ class InstallationAdvanced(GtkBaseBox):
         row = model[tree_iter]
 
         # Can't edit a partition that uses a LVM filesystem type
-        if "lvm2" in row[InstallationAdvanced.COL_FS].lower():
+        if "lvm2" in row[PartitionTreeview.COL_FS].lower():
             logging.warning(
                 "Can't edit a partition with a LVM filesystem type")
             return
 
+        self.edit_part_dlg.show_all()
+        self.edit_part_dlg.prepare()
+
         # Fill partition dialog with correct data
+        partition_info = {
+            "filesystem": row[PartitionTreeview.COL_FS],
+            "mount_point": row[PartitionTreeview.COL_MOUNT_POINT],
+            "label": row[PartitionTreeview.COL_LABEL],
+            "format_active": row[PartitionTreeview.COL_FORMAT_ACTIVE],
+            "format_sensitive": row[PartitionTreeview.COL_FORMAT_SENSITIVE]
+        }
 
-        # Select the fs in dialog combobox
-        combo = self.ui.get_object('edit_partition_use_combo')
-        combo_model = combo.get_model()
-        if combo_model is None:
-            """ Issue 451 : combo_model is None
-                Can't reproduce it here. Let's try to reload combo contents """
-            self.initialize_widgets()
-            combo_model = combo.get_model()
-
-        if combo_model:
-            combo_iter = combo_model.get_iter_first()
-            while combo_iter is not None:
-                combo_row = combo_model[combo_iter]
-                if combo_row[0] and combo_row[0] in row[InstallationAdvanced.COL_FS]:
-                    combo.set_active_iter(combo_iter)
-                    combo_iter = None
-                else:
-                    combo_iter = combo_model.iter_next(combo_iter)
-
-        # Set the mount point in dialog combobox
-        mount_combo_entry = self.ui.get_object(
-            'edit_partition_mount_combo_entry')
-        mount_combo_entry.set_text(row[InstallationAdvanced.COL_MOUNT_POINT])
-
-        # Set label entry
-        label_entry = self.ui.get_object('edit_partition_label_entry')
-        label_entry.set_text(row[InstallationAdvanced.COL_LABEL])
-
-        # Must format?
-        format_check = self.ui.get_object('edit_partition_format_check')
-        format_check.set_active(row[InstallationAdvanced.COL_FORMAT_ACTIVE])
-        format_check.set_sensitive(
-            row[InstallationAdvanced.COL_FORMAT_SENSITIVE])
+        self.edit_part_dlg.set_partition_info(partition_info)
 
         # Be sure to just call get_devices once
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        '''
-        # Get disk path
-        disk_path = self.get_disk_path_from_selection(model, tree_iter)
-        try:
-            disk, result = self.disks[disk_path]
-        except Exception as ex:
-            disk = None
-        '''
-
         uid = self.gen_partition_uid(
-            path=row[InstallationAdvanced.COL_PARTITION_PATH])
+            path=row[PartitionTreeview.COL_PARTITION_PATH])
 
         # Get LUKS info for the encryption properties dialog
         if uid in self.luks_options:
-            self.luks_dialog_options = self.luks_options[uid]
+            options = self.luks_options[uid]
         else:
-            self.luks_dialog_options = (False, "", "")
-
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        main_window = self.get_main_window()
-        self.edit_partition_dialog.set_transient_for(main_window)
+            options = (False, "", "")
+        self.edit_part_dlg.luks_options = options
 
         # Show edit partition dialog
-        response = self.edit_partition_dialog.run()
-
-        if response == Gtk.ResponseType.OK:
-            new_mount = mount_combo_entry.get_text().strip()
-            new_fs = combo.get_active_text()
-            new_format = format_check.get_active()
+        response = self.edit_part_dlg.run()
+        if response == Gtk.ResponseType.APPLY:
+            new_mount = self.edit_part_dlg.get_mount_point()
+            new_fs = self.edit_part_dlg.get_filesystem()
+            new_format = self.edit_part_dlg.is_format_active()
+            new_label = self.edit_part_dlg.get_label()
 
             if (new_mount in self.diskdic['mounts'] and
-                    new_mount != row[InstallationAdvanced.COL_MOUNT_POINT]):
-                show.warning(main_window, _(
-                    "Can't use same mount point twice."))
-            elif new_mount == "/" and not format_check.get_active():
-                show.warning(main_window, _(
-                    'Root partition must be formatted.'))
-            elif new_mount == "/" and (new_fs == "fat32" or new_fs == "ntfs"):
-                show.warning(main_window, _(
-                    'Root partition cannot be NTFS or FAT32'))
-            elif new_mount == "/home" and (new_fs == "fat32" or new_fs == "ntfs"):
-                show.warning(main_window, _(
-                    '/home partition cannot be NTFS or FAT32'))
+                    new_mount != row[PartitionTreeview.COL_MOUNT_POINT]):
+                self.show_partition_edit_error(0)
+            elif new_mount == "/" and not new_format:
+                self.show_partition_edit_error(1)
+            elif new_mount == "/" and new_fs in ["fat32", "ntfs"]:
+                self.show_partition_edit_error(2)
+            elif new_mount == "/home" and new_fs in ["fat32", "ntfs"]:
+                self.show_partition_edit_error(3)
             else:
-                if row[InstallationAdvanced.COL_MOUNT_POINT]:
+                if row[PartitionTreeview.COL_MOUNT_POINT]:
                     self.diskdic['mounts'].remove(
-                        row[InstallationAdvanced.COL_MOUNT_POINT])
-
-                new_label = label_entry.get_text().replace(" ", "")
-                if new_label:
-                    if len(new_label) > 16:
-                        new_label = new_label[:16]
-                    pattern = re.compile(r"\w+")
-                    if not pattern.fullmatch(new_label):
-                        logging.debug("'%s' is not a valid label.", new_label)
-                        new_label = ""
+                        row[PartitionTreeview.COL_MOUNT_POINT])
 
                 if uid in self.stage_opts:
                     is_new = self.stage_opts[uid][0]
@@ -925,45 +713,42 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_fs == 'swap':
                     new_mount = 'swap'
 
-                if os.path.exists('/sys/firmware/efi'):
-                    if new_mount == "/boot" and new_fs != "fat32":
+                is_uefi = os.path.exists('/sys/firmware/efi')
+                if is_uefi and new_fs != "fat32":
+                    if new_mount == "/boot":
                         # search for /boot/efi
                         boot_efi_exists = False
                         for tmp_uid in self.stage_opts:
                             opt = self.stage_opts[tmp_uid]
-                            if opt[2] == '/boot/efi':
+                            if opt and opt[2] == '/boot/efi':
                                 boot_efi_exists = True
-                        # if no /boot/efi is defined, /boot must be fat32
+                        # if no /boot/efi is defined, /boot must be fat32 (force it)
                         if not boot_efi_exists:
-                            show.warning(
-                                main_window,
-                                _('As no /boot/efi is defined (yet), /boot needs to be fat32.'))
+                            self.show_partition_edit_error(4)
                             new_fs = "fat32"
-                    elif new_mount == "/boot/efi" and new_fs != "fat32":
-                        show.warning(main_window, _(
-                            '/boot/efi needs to be fat32.'))
+                    elif new_mount == "/boot/efi":
+                        self.show_partition_edit_error(5)
                         new_fs = "fat32"
 
                 self.stage_opts[uid] = (
                     is_new, new_label, new_mount, new_fs, new_format)
-                self.luks_options[uid] = self.luks_dialog_options
+                self.luks_options[uid] = self.edit_part_dlg.luks_options
 
                 if new_mount == "/":
                     # Set if we'll be using LUKS in the root partition
-                    # (for process.py to know)
                     self.settings.set('use_luks_in_root',
-                                      self.luks_dialog_options[0])
+                                      self.edit_part_dlg.luks_options[0])
                     self.settings.set('luks_root_volume',
-                                      self.luks_dialog_options[1])
+                                      self.edit_part_dlg.luks_options[1])
 
-        self.edit_partition_dialog.hide()
+        self.edit_part_dlg.hide()
 
         # Update the partition list treeview
         self.update_view()
 
     def update_view(self):
         """ Reloads widgets contents """
-        self.fill_partition_list()
+        self.fill_partition_treeview()
         self.fill_bootloader_device_entry()
         self.fill_bootloader_entry()
         # Check if correct mount points are already defined, so we can
@@ -974,12 +759,12 @@ class InstallationAdvanced(GtkBaseBox):
     def get_disk_path_from_selection(model, tree_iter):
         """ Helper function that returns the disk path where the selected
             partition is in """
-        if tree_iter is not None and model is not None:
+        if tree_iter and model:
             row = model[tree_iter]
             # partition_path = row[COL_PARTITION_PATH]
 
             # Get partition type from the user selection
-            part_type = row[InstallationAdvanced.COL_PARTITION_TYPE]
+            part_type = row[PartitionTreeview.COL_PARTITION_TYPE]
 
             # Get our parent drive
             parent_iter = model.iter_parent(tree_iter)
@@ -990,13 +775,15 @@ class InstallationAdvanced(GtkBaseBox):
                 # partition we're in)
                 parent_iter = model.iter_parent(parent_iter)
 
-            return model[parent_iter][InstallationAdvanced.COL_PATH]
+            return model[parent_iter][PartitionTreeview.COL_PATH]
         else:
             return None
 
-    def on_partition_list_delete_activate(self, _button):
+    # ---------------------------------------------------------------------
+
+    def partition_treeview_delete_activated(self, _button):
         """ Delete partition """
-        selection = self.partition_list.get_selection()
+        selection = self.partition_treeview.get_selection()
         if not selection:
             return
 
@@ -1010,9 +797,9 @@ class InstallationAdvanced(GtkBaseBox):
         # Get row data
         row = model[tree_iter]
 
-        mount_point = row[InstallationAdvanced.COL_MOUNT_POINT]
+        mount_point = row[PartitionTreeview.COL_MOUNT_POINT]
         # size_available = row[COL_SIZE]
-        partition_path = row[InstallationAdvanced.COL_PARTITION_PATH]
+        partition_path = row[PartitionTreeview.COL_PARTITION_PATH]
 
         if mount_point in self.diskdic['mounts']:
             self.diskdic['mounts'].remove(mount_point)
@@ -1096,9 +883,11 @@ class InstallationAdvanced(GtkBaseBox):
                     partition = line[0]
         return partition
 
-    def on_partition_list_new_activate(self, _button):
-        """ Add a new partition """
-        selection = self.partition_list.get_selection()
+    # ---------------------------------------------------------------------
+
+    def partition_treeview_new_activated(self, _button):
+        """ Create a new partition """
+        selection = self.partition_treeview.get_selection()
 
         if not selection:
             return
@@ -1114,18 +903,18 @@ class InstallationAdvanced(GtkBaseBox):
         row = model[tree_iter]
 
         # Get partition type from the user selection
-        part_type = row[InstallationAdvanced.COL_PARTITION_TYPE]
+        part_type = row[PartitionTreeview.COL_PARTITION_TYPE]
 
         # Check that the user has selected a free space row.
         if part_type not in (pm.PARTITION_FREESPACE, pm.PARTITION_FREESPACE_EXTENDED):
             return
 
         # size_available = row[COL_SIZE]
-        partition_path = row[InstallationAdvanced.COL_PARTITION_PATH]
+        partition_path = row[PartitionTreeview.COL_PARTITION_PATH]
 
         # Get our parent drive
         parent_iter = model.iter_parent(tree_iter)
-        parent_part_type = model[parent_iter][InstallationAdvanced.COL_PARTITION_TYPE]
+        parent_part_type = model[parent_iter][PartitionTreeview.COL_PARTITION_TYPE]
 
         if parent_part_type == pm.PARTITION_EXTENDED:
             # We're creating a partition inside an already created extended
@@ -1137,7 +926,7 @@ class InstallationAdvanced(GtkBaseBox):
         else:
             is_primary_or_extended = True
 
-        disk_path = model[parent_iter][InstallationAdvanced.COL_PATH]
+        disk_path = model[parent_iter][PartitionTreeview.COL_PATH]
         self.disks_changed.append(disk_path)
 
         # Be sure to just call get_devices once
@@ -1147,37 +936,7 @@ class InstallationAdvanced(GtkBaseBox):
         (disk, _result) = self.disks[disk_path]
 
         # Added extended, moving extended details up here
-
-        # Get the objects from the dialog
-        radio = {
-            "primary": self.ui.get_object('create_partition_create_type_primary'),
-            "logical": self.ui.get_object('create_partition_create_type_logical'),
-            "extended": self.ui.get_object('create_partition_create_type_extended')}
-
-        radio["primary"].set_active(True)
-        radio["logical"].set_active(False)
-        radio["extended"].set_active(False)
-
-        radio["primary"].set_visible(True)
-        radio["logical"].set_visible(True)
-        radio["extended"].set_visible(True)
-
-        supports_extended = disk.supportsFeature(pm.DISK_EXTENDED)
-
-        if not supports_extended:
-            radio["extended"].set_visible(False)
-
         extended = disk.getExtendedPartition()
-
-        if is_primary_or_extended and extended:
-            radio["logical"].set_visible(False)
-            radio["extended"].set_visible(False)
-        elif is_primary_or_extended and not extended:
-            radio["logical"].set_visible(False)
-        elif not is_primary_or_extended:
-            radio["primary"].set_visible(False)
-            radio["logical"].set_active(True)
-            radio["extended"].set_visible(False)
 
         if is_primary_or_extended:
             # Get how many primary partitions are already created on disk
@@ -1195,12 +954,13 @@ class InstallationAdvanced(GtkBaseBox):
                 show.warning(self.get_main_window(), msg)
                 return
 
-        radio["begin"] = self.ui.get_object(
-            'create_partition_create_place_beginning')
-        radio["end"] = self.ui.get_object('create_partition_create_place_end')
+        # ------------------------------------------------------------------
 
-        radio["begin"].set_active(True)
-        radio["end"].set_active(False)
+        # Get the objects from the dialog
+        params = {}
+        params['supports_extended'] = disk.supportsFeature(pm.DISK_EXTENDED)
+        params['extended_partition'] = extended
+        params['is_primary_or_extended'] = is_primary_or_extended
 
         # Prepare size spin
 
@@ -1212,68 +972,34 @@ class InstallationAdvanced(GtkBaseBox):
         max_size_mb = int((partition.geometry.length *
                            dev.sectorSize) / 1000000) + 1
 
-        size_spin = self.ui.get_object('create_partition_size_spinbutton')
-        size_spin.set_digits(0)
-        adjustment = Gtk.Adjustment(
-            value=max_size_mb,
-            lower=1,
-            upper=max_size_mb,
-            step_increment=1,
-            page_increment=10,
-            page_size=0)
-        size_spin.set_adjustment(adjustment)
-        size_spin.set_value(max_size_mb)
+        params['max_size_mb'] = max_size_mb
 
-        # label
-        label_entry = self.ui.get_object('create_partition_label_entry')
-        label_entry.set_text("")
-
-        # use as (fs)
-        fs_combo = self.ui.get_object('create_partition_use_combo')
-        fs_combo.set_active(3)
-
-        # mount combo entry
-        mount_combo = self.ui.get_object('create_partition_mount_combo_entry')
-        mount_combo.set_text("")
-
-        # Empty luks dialog options (for encryption properties dialog)
-        self.luks_dialog_options = (False, "", "")
-
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        self.create_partition_dialog.set_transient_for(self.get_main_window())
+        self.create_part_dlg.show_all()
+        self.create_part_dlg.prepare(params)
 
         # Finally, show the create partition dialog
-        response = self.create_partition_dialog.run()
-        if response == Gtk.ResponseType.OK:
-            mylabel = label_entry.get_text().replace(" ", "")
-            if mylabel and not mylabel.isalpha():
-                logging.warning(
-                    "%s is not a valid label. Cnchi will set no label at all",
-                    mylabel)
-                mylabel = ""
+        response = self.create_part_dlg.run()
+        if response == Gtk.ResponseType.APPLY:
+            mylabel = self.create_part_dlg.get_label()
 
-            mymount = mount_combo.get_text().strip()
+            mymount = self.create_part_dlg.get_mount_point()
             if mymount in self.diskdic['mounts']:
                 show.warning(
                     self.get_main_window(),
-                    _("Can't use same mount point twice..."))
+                    _("Can't use same mount point twice."))
             else:
                 if mymount:
                     self.diskdic['mounts'].append(mymount)
 
-                myfs = fs_combo.get_active_text()
-
-                if myfs is None:
-                    myfs = ""
+                myfs = self.create_part_dlg.get_filesystem()
 
                 if myfs == 'swap':
                     mymount = 'swap'
 
                 # Get selected size
-                size = int(size_spin.get_value())
+                size = self.create_part_dlg.get_partition_size()
 
-                beg_var = radio["begin"].get_active()
+                beg_var = self.create_part_dlg.get_beginning_point()
 
                 start_sector = partition.geometry.start
                 end_sector = partition.geometry.end
@@ -1285,11 +1011,10 @@ class InstallationAdvanced(GtkBaseBox):
                     beg_var)
 
                 # User wants to create an extended, logical or primary partition
-
-                if radio["primary"].get_active():
+                if self.create_part_dlg.wants_primary():
                     logging.debug("Creating a primary partition")
                     pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
-                elif radio["extended"].get_active():
+                elif self.create_part_dlg.wants_extended():
                     # Not mounting extended partitions.
                     if mymount:
                         if mymount in self.diskdic['mounts']:
@@ -1301,7 +1026,7 @@ class InstallationAdvanced(GtkBaseBox):
                     formatme = False
                     logging.debug("Creating an extended partition")
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
-                elif radio["logical"].get_active():
+                elif self.create_part_dlg.wants_logical():
                     logical_count = len(list(disk.getLogicalPartitions()))
                     max_logicals = disk.getMaxLogicalPartitions()
                     if logical_count < max_logicals:
@@ -1317,162 +1042,39 @@ class InstallationAdvanced(GtkBaseBox):
 
                 # Store new stage partition info in self.stage_opts
                 old_parts = []
-                for y in self.all_partitions:
-                    for z in y:
-                        old_parts.append(z)
+                for mydevice in self.all_partitions:
+                    for part in mydevice:
+                        old_parts.append(part)
+
                 partitions = pm.get_partitions(disk)
-                for e in partitions:
-                    if e not in old_parts:
-                        uid = self.gen_partition_uid(partition=partitions[e])
+                for part in partitions:
+                    if part not in old_parts:
+                        uid = self.gen_partition_uid(partition=partitions[part])
                         self.stage_opts[uid] = (
                             True, mylabel, mymount, myfs, formatme)
-                        self.luks_options[uid] = self.luks_dialog_options
+                        self.luks_options[uid] = self.edit_part_dlg.luks_options
                         if mymount == "/":
                             # Set if we'll be using LUKS in the root partition
                             # (for process.py to know)
                             self.settings.set(
-                                'use_luks_in_root', self.luks_dialog_options[0])
+                                'use_luks_in_root', self.edit_part_dlg.luks_options[0])
                             self.settings.set(
-                                'luks_root_volume', self.luks_dialog_options[1])
+                                'luks_root_volume', self.edit_part_dlg.luks_options[1])
 
                 # Update partition list treeview
                 self.update_view()
 
-        self.create_partition_dialog.hide()
+        self.create_part_dlg.hide()
 
-    def on_edit_partition_encryption_settings_clicked(self, widget):
-        self.partition_encryption_settings_clicked(widget)
+    # ---------------------------------------------------------------------
 
-    def on_create_partition_encryption_settings_clicked(self, widget):
-        self.partition_encryption_settings_clicked(widget)
+    #def edit_partition_luks_settings_clicked(self, widget):
+    #    """ User clicks on edit partition luks settings """
+    #    self.partition_luks_settings_clicked(widget)
 
-    def partition_encryption_settings_clicked(self, _widget):
-        """ Show LUKS encryption options dialog """
-        # TODO: Check Password confirmation (compare both entries)
+    # ---------------------------------------------------------------------
 
-        entry_vol_name = self.ui.get_object('luks_vol_name_entry')
-        entry_password = self.ui.get_object('luks_password_entry')
-        entry_password_confirm = self.ui.get_object(
-            'luks_password_confirm_entry')
-
-        (use_luks, vol_name, password) = self.luks_dialog_options
-
-        entry_vol_name.set_text(vol_name)
-        entry_password.set_text(password)
-        entry_password_confirm.set_text(password)
-
-        switch_use_luks = self.ui.get_object('luks_use_luks_switch')
-        switch_use_luks.set_active(use_luks)
-        self.enable_luks_widgets(use_luks)
-
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        self.luks_dialog.set_transient_for(self.get_main_window())
-
-        # Show warning message
-        if not self.luks_dialog_warning_message_shown:
-            show.warning(
-                self.get_main_window(),
-                _("Using LUKS encryption will DELETE all partition contents!"))
-            self.luks_dialog_warning_message_shown = True
-
-        response = self.luks_dialog.run()
-        if response == Gtk.ResponseType.OK:
-            use_luks = switch_use_luks.get_active()
-            vol_name = entry_vol_name.get_text()
-            password = entry_password.get_text()
-            if use_luks:
-                if vol_name and password:
-                    if password == entry_password_confirm.get_text():
-                        # Save new choices
-                        self.luks_dialog_options = (
-                            use_luks, vol_name, password)
-                    else:
-                        msg = _(
-                            "LUKS passwords do not match! Encryption NOT enabled.")
-                        show.warning(self.get_main_window(), msg)
-                        self.luks_dialog_options = (False, "", "")
-                else:
-                    msg = _(
-                        "Volume name and password are mandatory! Encryption NOT enabled.")
-                    show.warning(self.get_main_window(), msg)
-                    self.luks_dialog_options = (False, "", "")
-            else:
-                self.luks_dialog_options = (False, "", "")
-
-        self.luks_dialog.hide()
-
-    def on_luks_use_luks_switch_activate(self, widget, _data):
-        """ User enables / disables luks encription """
-        self.enable_luks_widgets(widget.get_active())
-
-    def enable_luks_widgets(self, status):
-        """ Enables or disables the LUKS encryption dialog widgets """
-        w_sensitive = ['luks_vol_name_label', 'luks_password_label',
-                       'luks_password_confirm_label', 'luks_vol_name_entry',
-                       'luks_password_entry', 'luks_password_confirm_entry']
-        w_hide = ['luks_password_confirm_image', 'luks_password_status_label']
-
-        for w_name in w_sensitive:
-            widget = self.ui.get_object(w_name)
-            widget.set_sensitive(status)
-
-        if status is False:
-            for w_name in w_hide:
-                widget = self.ui.get_object(w_name)
-                widget.hide()
-
-        widget = self.ui.get_object('luks_use_luks_switch')
-        widget.set_active(status)
-
-    def on_create_partition_create_type_extended_toggled(self, widget):
-        """ If user selects to create an extended partition,
-            some widgets must be disabled """
-        wdgts = {
-            'use_label': self.ui.get_object('create_partition_use_label'),
-            'use_combo': self.ui.get_object('create_partition_use_combo'),
-            'mount_label': self.ui.get_object('create_partition_mount_label'),
-            'mount_combo': self.ui.get_object('create_partition_mount_combo'),
-            'label_label': self.ui.get_object('create_partition_label_label'),
-            'label_entry': self.ui.get_object('create_partition_label_entry')}
-
-        sensitive = True
-
-        if widget.get_active():
-            sensitive = False
-
-        for i in wdgts:
-            wdgts[i].set_sensitive(sensitive)
-
-    def on_create_partition_use_combo_changed(self, selection):
-        """ If user selects a swap fs, it can't be mounted the usual way """
-        fs_selected = selection.get_active_text()
-
-        p_mount_combo = self.ui.get_object('create_partition_mount_combo')
-        p_mount_label = self.ui.get_object('create_partition_mount_label')
-
-        if fs_selected == 'swap':
-            p_mount_combo.hide()
-            p_mount_label.hide()
-        else:
-            p_mount_combo.show()
-            p_mount_label.show()
-
-    def on_edit_partition_use_combo_changed(self, selection):
-        """ If user selects a swap fs, it can't be mounted the usual way """
-        fs_selected = selection.get_active_text()
-
-        p_mount_combo = self.ui.get_object('edit_partition_mount_combo')
-        p_mount_label = self.ui.get_object('edit_partition_mount_label')
-
-        if fs_selected == 'swap':
-            p_mount_combo.hide()
-            p_mount_label.hide()
-        else:
-            p_mount_combo.show()
-            p_mount_label.show()
-
-    def on_partition_list_undo_activate(self, _button):
+    def partition_treeview_undo_activated(self, _button):
         """ Undo all user changes """
         # To undo user changes, we simply reload all devices
         self.disks = pm.get_devices()
@@ -1481,7 +1083,6 @@ class InstallationAdvanced(GtkBaseBox):
         # Empty stage partitions' options
         self.stage_opts = {}
         self.luks_options = {}
-        self.luks_dialog_options = (False, "", "")
 
         # Empty to be deleted partitions list
         self.to_be_deleted = []
@@ -1489,41 +1090,41 @@ class InstallationAdvanced(GtkBaseBox):
         # Refresh our partition treeview
         self.update_view()
 
-    def on_partition_list_treeview_selection_changed(self, selection):
+    def partition_treeview_selection_changed(self, selection):
         """ Selection in treeview changed, call check_buttons to update them """
         self.check_buttons(selection)
         return False
 
     @staticmethod
-    def on_partition_list_treeview_button_press_event(_widget, _event):
+    def partition_treeview_button_press_event(_widget, _event):
         """ Called when clicked on the partition list treeview. """
         # Not doing anything here atm (just return false to not stop the
         # chain of events)
         return False
 
     @staticmethod
-    def on_partition_list_treeview_key_press_event(_widget, _event):
+    def partition_treeview_key_press_event(_widget, _event):
         """ Called when a key is pressed when the partition list treeview
             has focus. """
         # Not doing anything here atm (just return false to not stop the
         # chain of events)
         return False
 
-    def on_partition_list_treeview_row_activated(self, _path, _column, _user_data):
+    def partition_treeview_row_activated(self, _path, _column, _user_data):
         """ Simulate a click in new or edit if a partition or free space
             is double clicked """
         button_edit = self.ui.get_object('partition_button_edit')
         button_new = self.ui.get_object('partition_button_new')
 
         if button_edit.get_sensitive():
-            self.on_partition_list_edit_activate(None)
+            self.partition_treeview_edit_activated(None)
         elif button_new.get_sensitive():
-            self.on_partition_list_new_activate(None)
+            self.partition_treeview_new_activated(None)
 
         return False
 
     @staticmethod
-    def on_partition_list_treeview_popup_menu(_widget):
+    def partition_treeview_popup_menu(_widget):
         """ Show right click popup menu """
         # Not doing anything here (return false to not stop the chain of events)
         return False
@@ -1573,148 +1174,25 @@ class InstallationAdvanced(GtkBaseBox):
         # label = self.ui.get_object('part_advanced_warning_message')
         # label.set_markup(txt)
 
-        # Assign labels to buttons
-        btn = self.ui.get_object("partition_button_undo")
-        btn.set_label(_("Undo"))
-
-        btn = self.ui.get_object("partition_button_new")
-        btn.set_label(_("New"))
-
-        btn = self.ui.get_object("partition_button_delete")
-        btn.set_label(_("Delete"))
-
-        btn = self.ui.get_object("partition_button_edit")
-        btn.set_label(_("Edit..."))
-
-        btn = self.ui.get_object("partition_button_new_label")
-        btn.set_label(_("New partition table"))
-
+        # Assign labels and images to buttons
         btns = [
-            "changelist_cancelbutton",
-            "create_table_dialog_cancel",
-            "edit_partition_cancel",
-            "create_partition_cancel",
-            "luks_cancel_button"]
+            ("partition_button_undo", "edit-undo-symbolic", _("Undo")),
+            ("partition_button_new", "list-add-symbolic", _("New")),
+            ("partition_button_delete", "list-remove-symbolic", _("Delete")),
+            ("partition_button_edit", "system-run-symbolic", _("Edit...")),
+            ("partition_button_new_label", "edit-clear-all-symbolic", _("New partition table"))]
 
-        for btn_id in btns:
+        for grp in btns:
+            btn_id, icon, lbl = grp
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             btn = self.ui.get_object(btn_id)
-            btn.set_label(_("_Cancel"))
-
-        btns = [
-            "changelist_okbutton",
-            "create_table_dialog_ok",
-            "edit_partition_ok",
-            "create_partition_ok",
-            "luks_ok_button"]
-
-        for btn_id in btns:
-            btn = self.ui.get_object(btn_id)
-            btn.set_label(_("_Apply"))
-
-        # Translate dialog "Create partition"
-
-        self.create_partition_dialog.set_title(_("Create partition"))
-
-        txt = _("Location:")
-        label = self.ui.get_object('create_partition_create_place_label')
-        label.set_markup(txt)
-
-        txt = _("Size:")
-        label = self.ui.get_object('create_partition_size_label')
-        label.set_markup(txt)
-
-        txt = _("Type:")
-        label = self.ui.get_object('create_partition_create_type_label')
-        label.set_markup(txt)
-
-        txt = _("Primary")
-        button = self.ui.get_object('create_partition_create_type_primary')
-        button.set_label(txt)
-
-        txt = _("Logical")
-        button = self.ui.get_object('create_partition_create_type_logical')
-        button.set_label(txt)
-
-        txt = _("Extended")
-        button = self.ui.get_object('create_partition_create_type_extended')
-        button.set_label(txt)
-
-        txt = _("Beginning of this space")
-        button = self.ui.get_object('create_partition_create_place_beginning')
-        button.set_label(txt)
-
-        txt = _("End of this space")
-        button = self.ui.get_object('create_partition_create_place_end')
-        button.set_label(txt)
-
-        txt = _("Use As:")
-        label = self.ui.get_object('create_partition_use_label')
-        label.set_markup(txt)
-
-        txt = _("Mount Point:")
-        label = self.ui.get_object('create_partition_mount_label')
-        label.set_markup(txt)
-
-        txt = _("Label (optional):")
-        label = self.ui.get_object('create_partition_label_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('create_partition_encryption_settings')
-        button.set_label(txt)
-
-        # Translate dialog "Edit partition"
-        txt = _("Use As:")
-        label = self.ui.get_object('edit_partition_use_label')
-        label.set_markup(txt)
-
-        txt = _("Mount Point:")
-        label = self.ui.get_object('edit_partition_mount_label')
-        label.set_markup(txt)
-
-        txt = _("Label (optional):")
-        label = self.ui.get_object('edit_partition_label_label')
-        label.set_markup(txt)
-
-        txt = _("Format:")
-        label = self.ui.get_object('edit_partition_format_label')
-        label.set_markup(txt)
-
-        txt = _("Encryption Options...")
-        button = self.ui.get_object('edit_partition_encryption_settings')
-        button.set_label(txt)
-
-        # Create disk partition table dialog
-        txt = _("Partition Table Type:")
-        label = self.ui.get_object('partition_type_label')
-        label.set_markup(txt)
-
-        dialog = self.ui.get_object("create_table_dialog")
-        dialog.set_title(_("Create Partition Table"))
-
-        # LUKS options dialog
-
-        self.luks_dialog.set_title(_("Encryption properties"))
-
-        txt = _("Use LUKS encryption:")
-        label = self.ui.get_object('luks_use_luks_label')
-        label.set_markup(txt)
-
-        txt = _("LUKS volume name:")
-        label = self.ui.get_object('luks_vol_name_label')
-        label.set_markup(txt)
-
-        txt = _("Password:")
-        label = self.ui.get_object('luks_password_label')
-        label.set_markup(txt)
-
-        txt = _("Confirm password:")
-        label = self.ui.get_object('luks_password_confirm_label')
-        label.set_markup(txt)
+            btn.set_always_show_image(True)
+            btn.set_image(image)
+            btn.set_label(lbl)
 
     def prepare(self, direction):
-        """ Prepare our dialog to show/hide/activate/deactivate what's
-            necessary """
+        """ Prepare our dialog to show/hide/activate/deactivate
+            what's necessary """
 
         self.translate_ui()
         self.update_view()
@@ -1744,12 +1222,12 @@ class InstallationAdvanced(GtkBaseBox):
             button = self.ui.get_object(widget_id)
             button.set_sensitive(False)
 
-    def on_partition_list_new_label_activate(self, _button):
+    def partition_treeview_new_label_activated(self, _button):
         """ Create a new partition table """
         # TODO: We should check first if there's any mounted partition
         # (including swap)
 
-        selection = self.partition_list.get_selection()
+        selection = self.partition_treeview.get_selection()
         if not selection:
             return
 
@@ -1764,45 +1242,42 @@ class InstallationAdvanced(GtkBaseBox):
             self.disks = pm.get_devices()
 
         # disk_sel, result = self.disks[disk_path]
+        main_window = self.get_main_window()
 
-        dialog = self.ui.get_object("create_table_dialog")
+        self.create_table_dlg.show_all()
+        self.create_table_dlg.prepare()
 
-        # Dialog windows should be set transient for the main application
-        # window they were spawned from.
-        dialog.set_transient_for(self.get_main_window())
-
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            combo = self.ui.get_object('partition_types_combo')
-            line = combo.get_active_text()
+        response = self.create_table_dlg.run()
+        if response == Gtk.ResponseType.APPLY:
+            line = self.create_table_dlg.get_table_type()
             if line:
                 # by default, use msdos type
                 ptype = 'msdos'
 
-                if "GPT" in line:
+                if 'gpt' in line:
                     ptype = 'gpt'
 
-                logging.info(
-                    "Creating a new %s partition table for disk %s",
-                    ptype,
-                    disk_path)
+                msg = "Creating a new %s partition table for disk %s"
+                logging.info(msg, ptype, disk_path)
 
                 new_disk = pm.make_new_disk(disk_path, ptype)
                 self.disks[disk_path] = (new_disk, pm.OK)
 
                 self.update_view()
 
-                if ptype == 'gpt' and not os.path.exists('/sys/firmware/efi'):
+                is_uefi = os.path.exists('/sys/firmware/efi')
+
+                if ptype == 'gpt' and not is_uefi:
                     # Show warning (https://github.com/Antergos/Cnchi/issues/63)
                     msg = _(
                         "GRUB requires a BIOS Boot Partition in BIOS systems "
                         "to embed its core.img file due to lack of post-MBR "
                         "embed gap in GPT disks.\n\n"
                         "Cnchi will create this BIOS Boot Partition for you.")
-                    show.warning(self.get_main_window(), msg)
+                    show.warning(main_window, msg)
                     self.create_bios_gpt_boot_partition(disk_path)
 
-        dialog.hide()
+        self.create_table_dlg.hide()
 
     def create_bios_gpt_boot_partition(self, disk_path):
         """ Create an unformatted partition with no filesystem and with a
@@ -1818,12 +1293,12 @@ class InstallationAdvanced(GtkBaseBox):
 
         partitions = pm.get_partitions(disk)
         partition_list = pm.order_partitions(partitions)
-        p = None
+        mypart = None
         for partition_path in partition_list:
-            p = partitions[partition_path]
+            mypart = partitions[partition_path]
 
         # Get how many primary partitions are already created on disk
-        if p is None or disk.primaryPartitionCount > 0:
+        if mypart is None or disk.primaryPartitionCount > 0:
             # BIOS GPT Boot partition must be the first one on the disk
             txt = "Can't create BIOS GPT Boot partition!"
             logging.error(txt)
@@ -1844,43 +1319,40 @@ class InstallationAdvanced(GtkBaseBox):
 
         beg_var = True
 
-        start_sector = p.geometry.start
-        end_sector = p.geometry.end
-        geometry = pm.geom_builder(
-            disk,
-            start_sector,
-            end_sector,
-            size,
-            beg_var)
+        start_sector = mypart.geometry.start
+        end_sector = mypart.geometry.end
+        geometry = pm.geom_builder(disk, start_sector, end_sector, size, beg_var)
 
         part = pm.create_partition(disk, pm.PARTITION_PRIMARY, geometry)
 
         res, myerr = pm.set_flag(pm.PED_PARTITION_BIOS_GRUB, part)
 
         if res:
-            txt = "Couldn't create BIOS GPT Boot partition: {0}".format(myerr)
-            logging.error(txt)
-            txt = _("Couldn't create BIOS GPT Boot partition: {0}").format(
-                myerr)
+            txt = "Couldn't create BIOS GPT Boot partition: %s"
+            logging.error(txt, myerr)
+            txt = _("Couldn't create BIOS GPT Boot partition: {}").format(myerr)
             show.error(self.get_main_window(), txt)
+            return
 
         # Store stage partition info in self.stage_opts
+
         old_parts = []
-        for y in self.all_partitions:
-            for z in y:
-                old_parts.append(z)
+        for mydisk in self.all_partitions:
+            for partition in mydisk:
+                old_parts.append(partition)
 
         partitions = pm.get_partitions(disk)
-        for e in partitions:
-            if e not in old_parts:
-                uid = self.gen_partition_uid(partition=partitions[e])
+        for part in partitions:
+            if part not in old_parts:
+                uid = self.gen_partition_uid(partition=partitions[part])
                 self.stage_opts[uid] = (
                     True, mylabel, mymount, myfmt, formatme)
 
         # Update partition list treeview
         self.update_view()
 
-    def on_partition_list_lvm_activate(self, button):
+    def partition_treeview_lvm_activated(self, button):
+        """ Not done """
         pass
 
     @staticmethod
@@ -1906,11 +1378,10 @@ class InstallationAdvanced(GtkBaseBox):
         return False
 
     def check_mount_points(self):
-        """
-        Check that all necessary mount points are specified.
-        At least root (/) partition must be defined and in UEFI systems
-        a fat partition mounted in /boot (Systemd-boot) or /boot/efi (grub2) must be defined too.
-        """
+        """ Check that all necessary mount points are specified.
+            At least root (/) partition must be defined and in UEFI systems
+            a fat32 partition mounted in /boot (Systemd-boot) or
+            /boot/efi (grub2) must be defined too. """
 
         check_parts = ["/", "/boot", "/boot/efi", "swap"]
 
@@ -2065,12 +1536,12 @@ class InstallationAdvanced(GtkBaseBox):
 
     def get_changes(self):
         """ Grab all changes for confirmation """
-        changelist = []
+        changes = []
 
         # First, show partitions that will be deleted
         self.to_be_deleted.sort()
         for partition_path in self.to_be_deleted:
-            changelist.append(action.Action("delete", partition_path))
+            changes.append(action.Action("delete", partition_path))
 
         # Store values as
         # (path, create?, label?, format?, mount_point, encrypt?)
@@ -2117,14 +1588,9 @@ class InstallationAdvanced(GtkBaseBox):
                     else:
                         action_type = "modify"
 
-                    act = action.Action(
-                        action_type,
-                        partition_path,
-                        relabel,
-                        fmt,
-                        mnt,
-                        encrypt)
-                    changelist.append(act)
+                    act = action.Action(action_type, partition_path,
+                                        relabel, fmt, mnt, encrypt)
+                    changes.append(act)
                     logging.debug(str(act))
 
         if self.disks:
@@ -2143,7 +1609,7 @@ class InstallationAdvanced(GtkBaseBox):
                         if disk.device.busy or pm.check_mounted(partitions[partition_path]):
                             self.unmount_partition(partition_path)
 
-                        (is_new, lbl, mnt, fsystem, fmt) = self.stage_opts[uid]
+                        is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
 
                         # Advanced method formats root by default
                         # https://github.com/Antergos/Cnchi/issues/8
@@ -2167,7 +1633,7 @@ class InstallationAdvanced(GtkBaseBox):
                             createme = False
 
                         if uid in self.luks_options:
-                            (use_luks, _vol_name, _password) = self.luks_options[uid]
+                            use_luks, _vol_name, _password = self.luks_options[uid]
                             if use_luks:
                                 encrypt = True
 
@@ -2176,25 +1642,20 @@ class InstallationAdvanced(GtkBaseBox):
                         else:
                             action_type = "modify"
 
-                        act = action.Action(
-                            action_type,
-                            partition_path,
-                            relabel,
-                            fmt,
-                            mnt,
-                            encrypt)
-                        changelist.append(act)
+                        act = action.Action(action_type, partition_path,
+                                            relabel, fmt, mnt, encrypt)
+                        changes.append(act)
                         logging.debug(str(act))
 
-        return changelist
+        return changes
 
     @staticmethod
     def set_cursor(cursor_type):
         """ Sets mouse cursor in root window """
         gdk_screen = Gdk.Screen.get_default()
-        if gdk_screen is not None:
+        if gdk_screen:
             gdk_window = gdk_screen.get_root_window()
-            if gdk_window is not None:
+            if gdk_window:
                 gdk_window.set_cursor(Gdk.Cursor(cursor_type))
 
     def store_values(self):
@@ -2207,13 +1668,11 @@ class InstallationAdvanced(GtkBaseBox):
         self.enable_all_widgets(status=False)
 
     def enable_all_widgets(self, status=True):
-        """ Enables /disables all page widgets """
+        """ Enables / disables all page widgets """
         widgets = [
-            "partition_list_scrolledwindow",
-            "partition_list_treeview",
-            "box2",
-            "box3",
-            "box4"]
+            "partition_treeview_scrolledwindow",
+            "partition_treeview", "box2",
+            "box3", "box4"]
         for name in widgets:
             widget = self.ui.get_object(name)
             widget.set_sensitive(status)
@@ -2341,10 +1800,12 @@ class InstallationAdvanced(GtkBaseBox):
                         if not error:
                             logging.info(msg)
                         else:
-                            txt = "Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}"
+                            txt = ("Couldn't format LUKS device '{0}' with "
+                                   "label '{1}' as '{2}': {3}")
                             txt = txt.format(luks_device, lbl, fisy, msg)
                             logging.error(txt)
-                            txt = _("Couldn't format LUKS device '{0}' with label '{1}' as '{2}': {3}")
+                            txt = _("Couldn't format LUKS device '{0}' with "
+                                    "label '{1}' as '{2}': {3}")
                             txt = txt.format(luks_device, lbl, fisy, msg)
                             show.error(self.get_main_window(), txt)
 

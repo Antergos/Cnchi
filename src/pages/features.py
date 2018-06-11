@@ -48,7 +48,7 @@ from hardware.modules.nvidia_340xx import Nvidia340xx
 from hardware.modules.nvidia_304xx import Nvidia304xx
 from hardware.modules.catalyst import Catalyst
 from hardware.modules.amdgpu import AMDGpu
-from hardware.modules.amdgpu_ext import AMDGpuExt
+from hardware.modules.amdgpu_exp import AMDGpuExp
 
 class Graphics(object):
     """ Gets graphic device info using the hardware module """
@@ -61,8 +61,8 @@ class Graphics(object):
 
     def amd(self):
         """ Returns true if an AMD card is detected """
-        if (Catalyst().detect() or AMDGpu.detect() or
-            AMDGpuExt.detect()):
+        if (Catalyst().detect() or AMDGpu().detect() or
+            AMDGpuExp().detect()):
             return True
         return False
 
@@ -198,7 +198,7 @@ class Features(GtkBaseBox):
             if self.graphics.nvidia() and not self.graphics.bumblebee():
                 allow = True
             if not allow:
-                logging.debug("Neither AMD or Nvidia cards have been detected. "
+                logging.debug("Neither AMD nor Nvidia cards have been detected. "
                               "Removing proprietary graphic drivers feature.")
                 self.features.remove("graphic_drivers")
 

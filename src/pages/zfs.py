@@ -161,7 +161,7 @@ class InstallationZFS(GtkBaseBox):
             # self.bootloader_entry.append_text("Systemd-boot")
             # self.bootloader_entry.append_text("rEFInd")
 
-            if not self.select_combobox_value(self.bootloader_entry, self.bootloader):
+            if not misc.select_combobox_value(self.bootloader_entry, self.bootloader):
                 # Automatically select first entry
                 self.bootloader_entry.set_active(0)
             self.bootloader_entry.show()
@@ -170,24 +170,6 @@ class InstallationZFS(GtkBaseBox):
             widget = self.ui.get_object("bootloader_label")
             if widget:
                 widget.hide()
-
-    @staticmethod
-    def select_combobox_value(combobox, value):
-        """ Searches a value in the combobox and
-        selects it if it is found """
-        model = combobox.get_model()
-        combo_iter = model.get_iter(0)
-        index = 0
-        found = False
-        while combo_iter is not None and not found:
-            if value.lower() == model[combo_iter][0].lower():
-                combobox.set_active_iter(combo_iter)
-                combo_iter = None
-                found = True
-            else:
-                index += 1
-                combo_iter = model.iter_next(combo_iter)
-        return found
 
     def on_bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """

@@ -1,0 +1,41 @@
+[2018-06-10 19:39:53 +0200]  Seems to be working now                                                    karasu      {92179026}
+[2018-06-10 19:34:25 +0200]  align labels in luks dialog                                                karasu      {48d87181}
+[2018-06-10 19:29:50 +0200]  Do not show 'strong password' as default (even when password was no..      karasu      {53520274}
+[2018-06-10 19:20:30 +0200]  Change switch function in timezone                                         karasu      {48b2d1e9}
+[2018-06-10 19:19:08 +0200]  Fix gtkswitch signal                                                       karasu      {fe35dbd5}
+[2018-06-10 18:52:01 +0200]  Advanced dialogs bugfixing                                                 karasu      {63515e90}
+[2018-06-10 18:42:20 +0200]  Edit partition when double clicking on a partition in partition tre..      karasu      {51b413ee}
+[2018-06-10 18:30:32 +0200]  Fix typo                                                                   karasu      {8cb7a9f2}
+[2018-06-10 18:27:30 +0200]  Forgot to change this var                                                  karasu      {f856839d}
+[2018-06-10 18:25:32 +0200]  Changed OK to APPLY                                                        karasu      {be34b911}
+[2018-06-10 18:15:37 +0200]  More dialog fixing. Nearly finished.                                       karasu      {ce952d80}
+[2018-06-10 17:49:11 +0200]  Remove ok/apply buttons' modifications                                     karasu      {5d109de6}
+[2018-06-10 17:47:34 +0200]  Fix luks_settings password_changed                                         karasu      {dcda0545}
+[2018-06-10 17:32:53 +0200]  Add show_all()                                                             karasu      {e254abbb}
+[2018-06-10 17:31:21 +0200]  Add show_all                                                               karasu      {0b0c48a4}
+[2018-06-09 19:56:14 +0200]  Create table dialog is working. The others need fixing                     karasu      {3d8e27e3}
+[2018-06-09 18:39:06 +0200]  Create Table Dialog is not working                                         karasu      {07838784}
+[2018-06-09 18:24:42 +0200]  Fix import when testing                                                    karasu      {5f60d860}
+[2018-06-09 18:19:58 +0200]  Code cleanup (trailing spaces mostly)                                      karasu      {e5315a3f}
+[2018-06-09 18:09:25 +0200]  Fix typo and remove unused code                                            karasu      {146a1075}
+[2018-06-09 18:07:07 +0200]  More fixes in advanced dialogs                                             karasu      {0a70a02f}
+[2018-06-09 17:16:48 +0200]  Missing param                                                              karasu      {3cdb8f25}
+[2018-06-09 16:59:34 +0200]  Fix typos                                                                  karasu      {6eb0a770}
+[2018-06-09 16:50:15 +0200]  Remove unused imports                                                      karasu      {2195c284}
+[2018-06-09 16:48:52 +0200]  Added missing dialogs (still wip)                                          karasu      {5fb69b13}
+[2018-06-09 01:43:03 +0200]  Remove unused code                                                         karasu      {d15e54f8}
+[2018-06-09 01:40:39 +0200]  Fixed translations in create/edit partition dialog                         karasu      {c326a178}
+[2018-06-09 01:13:34 +0200]  Fixes cache page bug                                                       karasu      {dddc1a45}
+[2018-06-09 01:08:57 +0200]  Add missing tooltip                                                        karasu      {1d55f0c7}
+[2018-06-09 01:02:32 +0200]  Fixed typos                                                                karasu      {7c45b1a8}
+[2018-06-09 01:00:55 +0200]  Working this out.                                                          karasu      {c688ab9b}
+[2018-06-08 20:28:08 +0200]  Edit dialog done. Create and Edit dialogs should have a common pare..      karasu      {08d602fb}
+[2018-06-08 09:36:54 +0200]  luks settings done                                                         karasu      {c8d21a89}
+[2018-06-07 23:45:01 +0200]  Working on luks settings dialog and create partition dialog (wip)          karasu      {2b5503da}
+[2018-06-06 18:03:04 +0200]  Working on splitting advanced code (wip)                                   karasu      {a98d311b}
+[2018-06-05 22:42:14 +0200]  moving advanced dialogs (ui and py) to individual files (wip)              karasu      {8f18a587}
+[2018-06-04 22:54:36 +0200]  Remove "is not None"                                                       karasu      {c8731060}
+[2018-06-04 22:50:50 +0200]  Small fixes in advanced                                                    karasu      {f0ca1fe9}
+[2018-06-04 22:45:32 +0200]  Fix import                                                                 karasu      {48ca94aa}
+[2018-06-04 22:22:40 +0200]  Working on making advanced module smaller (first step, moving treev..      karasu      {5c84add1}
+[2018-06-04 13:18:12 +0200]  Move partition treeview from advanced.py to partition_treeview.py (..      karasu      {bd64de3e}

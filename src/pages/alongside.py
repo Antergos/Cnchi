@@ -229,14 +229,7 @@ class InstallationAlongside(GtkBaseBox):
         device = txt.split("(")[1][:-1]
         # print(device)
         self.set_resize_widget(device)
-
-    @staticmethod
-    def select_first_combobox_item(combobox):
-        """ Automatically select first entry """
-        tree_model = combobox.get_model()
-        tree_iter = tree_model.get_iter_first()
-        combobox.set_active_iter(tree_iter)
-
+    
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
@@ -259,7 +252,7 @@ class InstallationAlongside(GtkBaseBox):
                     new_device_found = True
                     line = "{0} ({1})".format(self.oses[device], device)
                     self.choose_partition_combo.append_text(line)
-            self.select_first_combobox_item(self.choose_partition_combo)
+            misc.select_first_combobox_item(self.choose_partition_combo)
             self.show_all()
             if not new_device_found:
                 txt = _(
