@@ -878,7 +878,7 @@ class InstallationZFS(GtkBaseBox):
             mem_total = subprocess.check_output(cmd).decode().split()
             mem_total = int(mem_total[1])
             mem = mem_total / 1024
-        except (subprocess.CalledProcessError, ValueError) as mem_error:
+        except (subprocess.CalledProcessError, ValueError) as _mem_error:
             logging.warning("Can't get system memory")
             mem = 4096
 
@@ -967,7 +967,7 @@ class InstallationZFS(GtkBaseBox):
             mount it because / is not empty (same for /home if it's in a zvol). """
         try:
             cmd = ["zfs", "set", "mountpoint={0}".format(mount_point), zvol]
-            output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+            _output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             err_output = err.output.decode().strip("\n")
             # It's ok if it fails

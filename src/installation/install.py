@@ -38,10 +38,7 @@ from download import download
 from installation import auto_partition
 from installation import special_dirs
 
-try:
-    import post_install
-except ModuleNotFoundError:
-    import installation.post_install
+import post_install
 
 import misc.extra as misc
 from misc.extra import InstallError

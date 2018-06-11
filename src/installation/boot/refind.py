@@ -31,8 +31,6 @@
 
 import logging
 
-import parted3.fs_module as fs
-
 from misc.run_cmd import chroot_call
 
 

@@ -138,9 +138,9 @@ def create(alpm, package_name, pacman_conf_file):
     return metalink
 
 
-""" From here comes modified code from pm2ml
-    pm2ml is Copyright (C) 2012-2013 Xyne
-    More info: http://xyne.archlinux.ca/projects/pm2ml """
+# From here comes modified code from pm2ml
+# pm2ml is Copyright (C) 2012-2013 Xyne
+# More info: http://xyne.archlinux.ca/projects/pm2ml
 
 
 def download_queue_to_metalink(download_queue):

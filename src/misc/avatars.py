@@ -26,11 +26,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Avatar chooser dialog """
+
 import os
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf
 
 # When testing, no _() is available
 try:
@@ -41,7 +43,7 @@ except NameError as err:
 
 
 class Avatars(Gtk.Dialog):
-    """ Avatar chooser dialog """        
+    """ Avatar chooser dialog """
     AVATARS = ['bob', 'jarry', 'jonathan', 'mike', 'suzanne', 'tom']
     AVATAR_WIDTH = 64
     AVATAR_HEIGHT = 64
@@ -64,7 +66,7 @@ class Avatars(Gtk.Dialog):
 
         self.list_store = Gtk.ListStore(str, GdkPixbuf.Pixbuf)
         self.avatars_path = os.path.join(data_path, 'images/avatars')
-        
+
         iconview = Gtk.IconView()
         iconview.set_model(self.list_store)
         iconview.set_item_width(60)
@@ -73,7 +75,7 @@ class Avatars(Gtk.Dialog):
         #iconview.set_tooltip_column(2)
         iconview.set_activate_on_single_click(True)
         iconview.connect("item-activated", self.avatar_selected)
-        
+
         area = self.get_content_area()
         area.add(iconview)
 
@@ -89,11 +91,13 @@ class Avatars(Gtk.Dialog):
                 GdkPixbuf.InterpType.BILINEAR)
             self.list_store.append([avatar, new_pixbuf])
         self.show_all()
-    
+
     def avatar_selected(self, _iconview, treepath):
+        """ Store selected avatar """
         self.selected_avatar = self.list_store[treepath][0]
 
 def test_module():
+    """ Test avatar dialog """
     data_path = "/usr/share/cnchi/data"
     window = Avatars(data_path)
     window.show_all()

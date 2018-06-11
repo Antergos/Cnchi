@@ -39,12 +39,12 @@ import parted3.fs_module as fs
 
 from installation import wrapper
 
-""" NOTE: Exceptions in this file
-
-On a warning situation, Cnchi should try to continue, so we need to catch the exception here.
-If we don't catch the exception here, it will be caught in process.py and managed as a fatal error.
-On the other hand, if we want to clarify the exception message we can catch it here
-and then raise an InstallError exception. """
+# NOTE: Exceptions in this file
+# On a warning situation, Cnchi should try to continue, so we need to catch
+# the exception here. If we don't catch the exception here, it will be caught
+# in process.py and managed as a fatal error. On the other hand, if we want
+# to clarify the exception message we can catch it here and then raise an
+# InstallError exception.
 
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000

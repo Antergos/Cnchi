@@ -39,7 +39,6 @@ ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
 
 
 def _seconds_since_epoch(my_datetime):
-    # TODO cjwatson 2006-02-23: %s escape is not portable
     return int(my_datetime.replace(tzinfo=None).strftime('%s'))
 
 
@@ -69,7 +68,7 @@ class SystemTzInfo(datetime.tzinfo):
             os.environ['TZ'] = tzbackup
         time.tzset()
 
-    def utcoffset(self, my_datetime):
+    def utcoffset(self, dt):
         """ Get utc offset (taking dst into account) """
         tzbackup = self._select_tz()
         try:
@@ -77,7 +76,7 @@ class SystemTzInfo(datetime.tzinfo):
                 # no Daylight Saving Time (DST) information
                 dst_minutes = -time.timezone / 60
             else:
-                localtime = time.localtime(_seconds_since_epoch(my_datetime))
+                localtime = time.localtime(_seconds_since_epoch(dt))
                 if localtime.tm_isdst != 1:
                     # not in DST
                     dst_minutes = -time.timezone / 60

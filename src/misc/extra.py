@@ -31,16 +31,12 @@ import syslog
 import socket
 import locale
 import logging
-import dbus
 import urllib
+import dbus
 from socket import timeout
 import random
 import string
 
-try:
-    import misc.osextras as osextras
-except ImportError:
-    import osextras
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -409,9 +405,7 @@ def get_nm_state():
         state = get_prop(manager, NM, 'State')
     except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
         logging.warning(dbus_err)
-        state = False
-    finally:
-        return state
+    return state
 
 
 def has_connection():
@@ -524,7 +518,7 @@ def remove_temp_files():
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
             # FIXME: Some of these tmp files are created with sudo privileges
-            with raised_privileges() as privileged:
+            with raised_privileges() as __:
                 os.remove(path)
 
 

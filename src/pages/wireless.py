@@ -154,6 +154,7 @@ class Wireless(GtkBaseBox):
             btn = self.ui.get_object('use_wireless')
             btn.set_sensitive(False)
 
+    @staticmethod
     def store_values():
         return True
 
