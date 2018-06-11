@@ -1,7 +1,7 @@
 # Cnchi
 **Graphical Installer for Antergos Linux**
 
-<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a> &nbsp;&nbsp;&nbsp;[![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
+![Codacy Badge](https://api.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660) [![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
 
 You are viewing the `0.16.x` branch.
 
@@ -11,9 +11,9 @@ This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|*Cnchi Legacy*|*0.14.x*|*0.14.473*|*Frozen*|
-|**Cnchi Stable**|**0.16.x**|**0.16.3**|**Bug Fixes Only**|
-|Cnchi Next|master|0.17.219|Development|
+|Cnchi Stable|0.14.x|0.14.473|Frozen|
+|Cnchi Development|0.16.x|0.16.x|Development|
+|Cnchi Next (UI agnostic)|master|0.17.x|Development|
 
 
 ## Usage:
