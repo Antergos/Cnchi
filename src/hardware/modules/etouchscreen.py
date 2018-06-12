@@ -62,7 +62,7 @@ class ETouchScreen(Hardware):
     def post_install(dest_dir):
         """ Post install commands """
         try:
-            subprocess.check_call(["rmmod", "usbtouchscreen"])
+            subprocess.check_call(["/usr/bin/rmmod", "usbtouchscreen"])
         except subprocess.CalledProcessError:
             pass
         

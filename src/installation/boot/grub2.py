@@ -252,14 +252,16 @@ class Grub2(object):
         else:
             logging.warning("Can't find script %s", script_path)
 
-    def grub_ripper(self):
+    @staticmethod
+    def grub_ripper():
+        """ Kills grub-mount process """
         while True:
             time.sleep(10)
             try:
                 ret = subprocess.check_output(
-                    ['pidof', 'grub-mount']).decode().strip()
+                    ['/usr/bin/pidof', 'grub-mount']).decode().strip()
                 if ret:
-                    subprocess.check_output(['kill', '-9', ret.split()[0]])
+                    subprocess.check_output(['/usr/bin/kill', '-9', ret.split()[0]])
                 else:
                     break
             except subprocess.CalledProcessError as err:
@@ -456,8 +458,8 @@ class Grub2(object):
             # Ignore if already exists
             pass
 
-
-if __name__ == '__main__':
+def test_module():
+    """ Test this module """
     os.makedirs("/install/etc/default", mode=0o755, exist_ok=True)
     shutil.copy2("/etc/default/grub", "/install/etc/default/grub")
     dest_dir = "/install"
@@ -470,3 +472,6 @@ if __name__ == '__main__':
     uuids["/boot"] = "ZXCV"
     grub2 = Grub2(dest_dir, settings, uuids)
     grub2.modify_grub_default()
+
+if __name__ == '__main__':
+    test_module()

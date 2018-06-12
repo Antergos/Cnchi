@@ -38,6 +38,7 @@ from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
 
 
 class Singleton(type):
+    """ Single instance """
     _instance = None
 
     def __call__(cls, *args, **kwargs):
@@ -47,7 +48,7 @@ class Singleton(type):
 
     def __new__(mcs, *args, **kwargs):
         obj = super().__new__(mcs, *args, **kwargs)
-        obj.ip = None
+        obj.ip_addr = None
         obj.install_id = None
         obj.api_key = None
         obj.have_install_id = False
@@ -60,31 +61,33 @@ class Singleton(type):
 
 
 class ContextFilter(logging.Filter, metaclass=Singleton):
+    """ Context filter for logging methods to send logs to bugsnag """
     def __init__(self):
         super().__init__()
         self.api_key = self.get_bugsnag_api()
         self.have_install_id = False
         self.after_location_screen = False
         self.install_id = ""
-        self.ip = '0.0.0.0'
+        self.ip_addr = '0.0.0.0'
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
         record.uuid = uid[3] + "-" + uid[1] + "-" + uid[2] + "-" + uid[4]
-        record.ip = self.ip
+        record.ip_addr = self.ip_addr
         record.install_id = self.install_id
         return True
 
     def get_and_save_install_id(self, is_location_screen=False):
+        """ Obtain an install identification """
         if self.have_install_id:
-            return
+            return self.install_id
 
         if is_location_screen:
             self.after_location_screen = True
 
         if CNCHI_RELEASE_STAGE == 'development':
             self.install_id = 'development'
-            self.ip = '0.0.0.0'
+            self.ip_addr = '0.0.0.0'
             self.have_install_id = True
             return 'development'
 
@@ -102,7 +105,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             logger.debug(msg)
 
         try:
-            self.ip = info['ip']
+            self.ip_addr = info['ip']
             self.install_id = info['id']
             self.have_install_id = True
         except (TypeError, KeyError):
@@ -112,12 +115,13 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
     @staticmethod
     def get_bugsnag_api():
+        """ Gets bugsnag API key """
         config_path = '/etc/cnchi.conf'
         alt_config_path = '/usr/share/cnchi/data/cnchi.conf'
         bugsnag_api = None
 
         if (not os.path.exists(config_path) and
-            os.path.exists(alt_config_path)):
+                os.path.exists(alt_config_path)):
             config_path = alt_config_path
 
         if os.path.exists(config_path):
@@ -127,17 +131,13 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         return bugsnag_api
 
     def get_url_for_id_request(self):
+        """ Constructs bugsnag url """
         build_server = None
 
-        if self.api_key and 'development' != CNCHI_RELEASE_STAGE:
+        if self.api_key and CNCHI_RELEASE_STAGE != 'development':
             parts = {
-                1: 'com',
-                2: 'http',
-                3: 'hook',
-                4: 'build',
-                5: 'antergos',
-                6: 'cnchi',
-                7: '://'
+                1: 'com', 2: 'http', 3: 'hook', 4: 'build',
+                5: 'antergos', 6: 'cnchi', 7: '://'
             }
             build_server = '{}{}{}.{}.{}/{}?{}={}'.format(
                 parts[2], parts[7], parts[4], parts[5],
@@ -147,10 +147,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
     @staticmethod
     def filter_log_lines(log):
+        """ Filter log lines """
         keep_lines = []
         look_for = ['[WARNING]', '[ERROR]']
         log_lines = log.readlines()
 
+        # C0200:Consider using enumerate instead of iterating with range and len
         for i in range(0, len(log_lines)):
             for pattern in look_for:
                 if pattern in log_lines[i]:
@@ -170,6 +172,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         return keep_lines
 
     def bugsnag_before_notify_callback(self, notification=None):
+        """ Filter unwanted notifications here """
         if notification is not None:
             excluded = ["No such interface '/org/freedesktop/UPower'"]
 
@@ -179,12 +182,12 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             if self.after_location_screen and not self.have_install_id:
                 self.get_and_save_install_id()
 
-            notification.user = {"id": self.ip,
+            notification.user = {"id": self.ip_addr,
                                  "name": self.install_id,
                                  "install_id": self.install_id}
 
             logs = ['/tmp/{0}.log'.format(n)
-                    for n in ['cnchi', 'pacman', 'postinstall']]
+                    for n in ['cnchi', 'cnchi-alpm', 'pacman', 'postinstall']]
             missing = [f for f in logs if not os.path.exists(f)]
             if missing:
                 for log in missing:
@@ -203,8 +206,10 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                         notification.add_tab('logs', parse)
 
             return notification
+        return False
 
     def send_install_result(self, result):
+        """ Sends install result to bugsnag server """
         try:
             build_server = self.get_url_for_id_request()
             if build_server and self.install_id:
