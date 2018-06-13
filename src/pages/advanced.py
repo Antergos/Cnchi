@@ -688,7 +688,7 @@ class InstallationAdvanced(GtkBaseBox):
         if response == Gtk.ResponseType.APPLY:
             new_mount = self.edit_part_dlg.get_mount_point()
             new_fs = self.edit_part_dlg.get_filesystem()
-            new_format = self.edit_part_dlg.is_format_active()
+            new_format = self.edit_part_dlg.wants_format()
             new_label = self.edit_part_dlg.get_label()
 
             if (new_mount in self.diskdic['mounts'] and
