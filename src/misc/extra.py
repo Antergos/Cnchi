@@ -22,20 +22,21 @@
 
 import contextlib
 import grp
-import os
-import pwd
-import re
-import shutil
-import subprocess
-import syslog
-import socket
 import locale
 import logging
-import urllib
-import dbus
-from socket import timeout
+import os
+import pwd
 import random
+import re
+import shutil
+import socket
+from socket import timeout
 import string
+import subprocess
+import syslog
+import urllib
+
+import dbus
 
 
 NM = 'org.freedesktop.NetworkManager'
@@ -66,8 +67,8 @@ def utf8(my_string, errors="strict"):
 def is_swap(device):
     """ Check if device is a swap device """
     try:
-        with open('/proc/swaps') as fp:
-            for line in fp:
+        with open('/proc/swaps') as swaps:
+            for line in swaps:
                 if line.startswith(device + ' '):
                     return True
     except OSError as os_error:
@@ -182,6 +183,7 @@ def raise_privileges(func):
 
     @wraps(func)
     def helper(*args, **kwargs):
+        """ Function that runs func function with raised privileges """
         with raised_privileges() as __:
             return func(*args, **kwargs)
 
@@ -198,7 +200,7 @@ def is_removable(device):
     devpath = None
     is_partition = False
     removable_bus = False
-    cmd = ['udevadm', 'info', '-q', 'property', '-n', device]
+    cmd = ['/usr/bin/udevadm', 'info', '-q', 'property', '-n', device]
     subp = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -221,18 +223,18 @@ def is_removable(device):
             with open(removable_path) as removable:
                 if removable.readline().strip() != '0':
                     is_device_removable = True
-        except IOError:
-            pass
+        except IOError as err:
+            logging.warning(err)
         if is_device_removable:
             try:
-                cmd = ['udevadm', 'info', '-q', 'name', '-p', devpath]
+                cmd = ['/usr/bin/udevadm', 'info', '-q', 'name', '-p', devpath]
                 subp = subprocess.Popen(cmd,
                                         stdout=subprocess.PIPE,
                                         universal_newlines=True)
                 part = subp.communicate()[0].splitlines()[0].strip()
                 return os.path.join('/dev', part)
-            except Exception:
-                pass
+            except subprocess.CalledProcessError as err:
+                logging.warning(err)
     return None
 
 
@@ -241,8 +243,8 @@ def mount_info(path):
     fsname = ''
     fstype = ''
     writable = ''
-    with open('/proc/mounts') as fp:
-        for line in fp:
+    with open('/proc/mounts') as mounts:
+        for line in mounts:
             line = line.split()
             if line[1] == path:
                 fsname = line[0]
@@ -253,7 +255,7 @@ def mount_info(path):
 
 def udevadm_info(args):
     """ Helper function to run udevadm """
-    fullargs = ['udevadm', 'info', '-q', 'property']
+    fullargs = ['/usr/bin/udevadm', 'info', '-q', 'property']
     fullargs.extend(args)
     udevadm = {}
     subp = subprocess.Popen(
@@ -339,18 +341,16 @@ def dmimodel():
         # Silence annoying warnings during the test suite.
         kwargs['stderr'] = open('/dev/null', 'w')
     try:
+        cmd = ['/usr/bin/dmidecode', '--string', 'system-manufacturer']
         proc = subprocess.Popen(
-            ['dmidecode', '--string', 'system-manufacturer'],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-            **kwargs)
+            cmd, stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
         manufacturer = proc.communicate()[0]
         if not manufacturer:
-            return
+            return ""
         manufacturer = manufacturer.lower()
         if 'to be filled' in manufacturer:
             # Don't bother with products in development.
-            return
+            return ""
         if 'bochs' in manufacturer or 'vmware' in manufacturer:
             model = 'virtual machine'
             # VirtualBox sets an appropriate system-product-name.
@@ -360,7 +360,7 @@ def dmimodel():
             else:
                 key = 'system-product-name'
             proc = subprocess.Popen(
-                ['dmidecode', '--string', key],
+                ['/usr/bin/dmidecode', '--string', key],
                 stdout=subprocess.PIPE,
                 universal_newlines=True)
             model = proc.communicate()[0]
@@ -371,8 +371,8 @@ def dmimodel():
         # Ensure the resulting string does not begin or end with a dash.
         model = re.sub('[^a-zA-Z0-9]+', '-', model).rstrip('-').lstrip('-')
         if model.lower() == 'not-available':
-            return
-    except Exception:
+            return ""
+    except subprocess.CalledProcessError:
         syslog.syslog(syslog.LOG_ERR, 'Unable to determine the model from DMI')
     finally:
         if 'stderr' in kwargs:
@@ -453,14 +453,14 @@ def add_connection_watch(func):
 def get_network():
     """ Get our own network ip """
     # Open a connection to our server
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    mysocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        s.connect(("antergos.com", 1234))
+        mysocket.connect(("antergos.com", 1234))
     except OSError as err:
         logging.error(err)
         return ""
-    myip = s.getsockname()[0]
-    s.close()
+    myip = mysocket.getsockname()[0]
+    mysocket.close()
 
     # Parse our ip
     intip = False
@@ -507,17 +507,14 @@ def gtk_refresh():
 def remove_temp_files():
     """ Remove Cnchi temporary files """
     temp_files = [
-        ".setup-running",
-        ".km-running",
+        ".setup-running", ".km-running",
         "setup-pacman-running",
         "setup-mkinitcpio-running",
-        ".tz-running",
-        ".setup",
-        "Cnchi.log"]
+        ".tz-running", ".setup",
+        "cnchi.log", "cnchi-alpm.log"]
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
-            # FIXME: Some of these tmp files are created with sudo privileges
             with raised_privileges() as __:
                 os.remove(path)
 
@@ -570,7 +567,7 @@ def is_partition_extended(partition):
     for line in lines:
         if "major" not in line:
             info = line.split()
-            if len(info) > 0 and info[2] == '1' and info[3] == partition:
+            if len(info) > 3 and info[2] == '1' and info[3] == partition:
                 return True
 
     return False
@@ -584,9 +581,8 @@ def get_partitions():
     for line in lines:
         if "major" not in line:
             info = line.split()
-            if len(info) > 0:
-                if len(info[3]) > len("sdX") and "loop" not in info[3]:
-                    partitions_list.append("/dev/" + info[3])
+            if info and len(info[3]) > len("sdX") and "loop" not in info[3]:
+                partitions_list.append("/dev/" + info[3])
     return partitions_list
 
 
