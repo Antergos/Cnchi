@@ -32,7 +32,7 @@ import tempfile
 
 try:
     import misc.extra as misc
-except ModuleNotFoundError as _err:
+except ImportError as _err:
     import extra as misc
 
 # https://github.com/rfjakob/gocryptfs/blob/master/Documentation/CLI_ABI.md
@@ -40,13 +40,13 @@ except ModuleNotFoundError as _err:
 def _sync():
     """ Synchronize cached writes to persistent storage """
     try:
-        subprocess.check_call(['sync'])
+        subprocess.check_call(['/usr/bin/sync'])
     except subprocess.CalledProcessError as why:
         logging.warning(
             "Can't synchronize cached writes to persistent storage: %s",
             why)
 
-def _gocryptfs(params, username, password):
+def _gocryptfs(params, _username, password):
     """ Calls gocrypt program (giving the password through a pipe). """
     try:
         cmd = ['/usr/bin/gocryptfs'] + params
@@ -116,16 +116,16 @@ def setup(username, usergroup, install_dir, password):
                     shutil.chown(paths['cipher'], username, usergroup)
 
                     # gocryptfs -init cipher
-                    _gocryptfs(['-init', '-q', '--', paths['cipher']],
-                            username, password)
+                    params = ['-init', '-q', '--', paths['cipher']]
+                    _gocryptfs(params, username, password)
 
                     # Before mounting, delete user's home folder
                     shutil.rmtree(paths['plain'])
                     os.makedirs(paths['plain'], mode=0o700)
 
                     # gocryptfs cipher plain
-                    _gocryptfs(['-q', '--', paths['cipher'], paths['plain']],
-                            username, password)
+                    params = ['-q', '--', paths['cipher'], paths['plain']]
+                    _gocryptfs(params, username, password)
 
                     # Restore all user home files
                     _restore_user_home_files(paths, username, usergroup)
