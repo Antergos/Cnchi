@@ -26,12 +26,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-
 """ Create partition dialog (advanced mode) """
-
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 
 try:
     from dialogs.partition_base import PartitionBaseDialog
