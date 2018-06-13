@@ -35,13 +35,21 @@ import logging
 
 import misc.extra as misc
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 @misc.raise_privileges
 def get_used_ntfs(part):
     """ Gets used space in a NTFS partition """
     used = 0
     try:
-        result = subprocess.check_output(["ntfsinfo", "-mf", part])
+        result = subprocess.check_output(
+            ["/usr/bin/ntfsinfo", "-mf", part])
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of NTFS partition %s")
@@ -66,7 +74,8 @@ def get_used_ext(part):
     """ Gets used space in an ext4 partition """
     used = 0
     try:
-        result = subprocess.check_output(["dumpe2fs", "-h", part])
+        result = subprocess.check_output(
+            ["/usr/bin/dumpe2fs", "-h", part])
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of EXTFS partition %s")
@@ -91,7 +100,8 @@ def get_used_fat(part):
     """ Gets used space in a FAT partition """
     used = 0
     try:
-        result = subprocess.check_output(["fsck.fat", "-n", "-v", part])
+        result = subprocess.check_output(
+            ["/usr/bin/fsck.fat", "-n", "-v", part])
     except subprocess.CalledProcessError as err:
         if b'Dirty bit is set' in err.output:
             result = err.output
@@ -126,7 +136,8 @@ def get_used_jfs(part):
     """ Gets used space in a JFS partition """
     used = 0
     try:
-        result = subprocess.check_output(["jfs_fsck", "-n", part])
+        result = subprocess.check_output(
+            ["/usr/bin/jfs_fsck", "-n", part])
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of JFS partition %s")
@@ -152,7 +163,8 @@ def get_used_reiser(part):
     """ Gets used space in a REISER partition """
     used = 0
     try:
-        result = subprocess.check_output(["debugreiserfs", "-d", part])
+        result = subprocess.check_output(
+            ["/usr/bin/debugreiserfs", "-d", part])
     except subprocess.CalledProcessError as err:
         result = None
         txt = _("Can't detect used space of REISERFS partition %s")
@@ -181,7 +193,8 @@ def get_used_btrfs(part, show_error=True):
     """ Gets used space in a Btrfs partition """
     used = 0
     try:
-        result = subprocess.check_output(["btrfs", "filesystem", "show", part])
+        result = subprocess.check_output(
+            ["/usr/bin/btrfs", "filesystem", "show", part])
     except subprocess.CalledProcessError as err:
         result = None
         if show_error:
