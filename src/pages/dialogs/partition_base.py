@@ -37,7 +37,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-import misc.extra as misc
 import parted3.fs_module as fs
 
 try:
@@ -81,7 +80,7 @@ class PartitionBaseDialog(Gtk.Dialog):
         area.add(self.ui.get_object(ui_info['ui_object']))
 
         self.add_stock_buttons()
-    
+
     def add_stock_buttons(self):
         self.buttons = {}
         self.buttons['apply'] = self.add_button(
@@ -210,7 +209,7 @@ class PartitionBaseDialog(Gtk.Dialog):
         for mount_point in fs.COMMON_MOUNT_POINTS:
             combo.append_text(mount_point)
         
-         # label
+        # label
         label_entry = self.ui.get_object('label_entry')
         label_entry.set_text("")
 
