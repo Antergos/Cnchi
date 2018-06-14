@@ -52,20 +52,11 @@ except NameError as err:
     def _(message):
         return message
 
-DEST_DIR = "/install"
-PKGLIST_URL = 'https://raw.githubusercontent.com/Antergos/Cnchi/master/data/packages.xml'
-
-
-def write_file(filecontents, filename):
-    """ writes a string of data to disk """
-    os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
-
-    with open(filename, "w") as my_file:
-        my_file.write(filecontents)
-
 
 class SelectPackages(object):
     """ Package list creation class """
+
+    PKGLIST_URL = 'https://raw.githubusercontent.com/Antergos/Cnchi/master/data/packages.xml'
 
     def __init__(self, settings, callback_queue):
         """ Initialize package class """
@@ -168,11 +159,11 @@ class SelectPackages(object):
             return False
 
         lib = pkg.attrib.get('lib')
-        if lib and not self.desktop in libs[lib]:
+        if lib and self.desktop not in libs[lib]:
             return False
 
         desktops = pkg.attrib.get('desktops')
-        if desktops and not self.desktop in desktops:
+        if desktops and self.desktop not in desktops:
             return False
 
         # If package is a Desktop Manager or a Network Manager,
@@ -191,15 +182,14 @@ class SelectPackages(object):
         self.packages.append(pkg.text)
         return True
 
-    def select_packages(self):
-        """ Get package list from the Internet """
-        self.packages = []
-        packages_xml_data = None
-        packages_xml_filename = None
+    def get_xml_root_node(self):
+        """ Loads xml data and returns the root node """
+        xml_data = None
+        xml_filename = None
 
         if self.alternate_package_list:
             # Use file passed by parameter (overrides server one)
-            packages_xml_filename = self.alternate_package_list
+            xml_filename = self.alternate_package_list
         else:
             # The list of packages is retrieved from an online XML to let us
             # control the pkgname in case of any modification
@@ -207,15 +197,15 @@ class SelectPackages(object):
             self.queue_event('info', _("Getting package list..."))
 
             try:
-                url = PKGLIST_URL
+                url = SelectPackages.PKGLIST_URL
                 logging.debug("Getting url %s...", url)
                 req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-                packages_xml_data = req.content
+                xml_data = req.content
             except RequestException as url_error:
                 # If the installer can't retrieve the remote file Cnchi will use
                 # a local copy, which might be updated or not.
                 data_dir = self.settings.get("data")
-                packages_xml_filename = os.path.join(data_dir, 'packages.xml')
+                xml_filename = os.path.join(data_dir, 'packages.xml')
                 msg = "{0}. Can't retrieve remote package list, using the local file instead."
                 msg = msg.format(url_error)
                 if info.CNCHI_RELEASE_STAGE == "production":
@@ -223,53 +213,36 @@ class SelectPackages(object):
                 else:
                     logging.debug(msg)
 
-        if packages_xml_data != None:
+        if xml_data is not None:
             logging.debug("Loading xml data from server...")
-            xml_root = eTree.fromstring(packages_xml_data)
+            xml_root = eTree.fromstring(xml_data)
         else:
-            logging.debug("Loading %s", packages_xml_filename)
-            xml_tree = eTree.parse(packages_xml_filename)
+            logging.debug("Loading %s", xml_filename)
+            xml_tree = eTree.parse(xml_filename)
             xml_root = xml_tree.getroot()
+        return xml_root
 
-        for editions in xml_root.iter('editions'):
-            for edition in editions.iter('edition'):
-                name = edition.attrib.get("name").lower()
+    def set_kde_language_pack(self):
+        """ Adds kde language packages """
+        pkg_text = ""
+        base_name = 'kde-l10n-'
+        lang_name = self.settings.get("language_name").lower()
+        if lang_name == "english":
+            # There're some English variants available but not all of them.
+            lang_packs = ['en_gb']
+            locale = self.settings.get('locale').split('.')[0].lower()
+            if locale in lang_packs:
+                pkg_text = base_name + locale
+        else:
+            # All the other language packs use their language code
+            lang_code = self.settings.get('language_code').lower()
+            pkg_text = base_name + lang_code
+        if pkg_text:
+            logging.debug("Selected kde language pack: %s", pkg_text)
+            self.packages.append(pkg_text)
 
-                # Add common packages to all desktops (including base)
-                if name == "common":
-                    for pkg in edition.iter('pkgname'):
-                        self.add_package(pkg)
-
-                # Add common graphical packages
-                if name == "graphic" and self.desktop != "base":
-                    for pkg in edition.iter('pkgname'):
-                        self.add_package(pkg)
-
-                # Add specific desktop packages
-                if name == self.desktop:
-                    logging.debug("Adding %s desktop packages", self.desktop)
-                    for pkg in edition.iter('pkgname'):
-                        self.add_package(pkg)
-
-        # Set KDE language pack
-        if self.desktop == 'kde':
-            pkg_text = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
-                if locale in lang_packs:
-                    pkg_text = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
-                pkg_text = base_name + lang_code
-            if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg_text)
-                self.packages.append(pkg_text)
-
+    def add_drivers(self):
+        """ Add package drivers """
         try:
             # Detect which hardware drivers are needed
             hardware_install = hardware.HardwareInstall(
@@ -299,17 +272,8 @@ class SelectPackages(object):
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
-        # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
-        if self.vbox and self.desktop == "base":
-            self.packages.append("virtualbox-guest-utils-nox")
-
-        # Add linux-lts-headers if LTS kernel is installed in a vbox vm
-        # only if not already appended
-        if self.vbox and self.settings.get('feature_lts'):
-            if "linux-lts-headers" not in self.packages:
-                self.packages.append("linux-lts-headers")
-
-        # Add filesystem packages
+    def add_filesystems(self, xml_root):
+        """ Add filesystem packages """
         logging.debug("Adding filesystem packages")
         for child in xml_root.iter("filesystems"):
             for pkg in child.iter('pkgname'):
@@ -322,6 +286,7 @@ class SelectPackages(object):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
+    def maybe_add_chinese_fonts(self, xml_root):
         # Add chinese fonts
         lang_code = self.settings.get("language_code")
         if lang_code in ["zh_TW", "zh_CN"]:
@@ -329,6 +294,52 @@ class SelectPackages(object):
             for child in xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
+
+    def select_packages(self):
+        """ Get package list from the Internet """
+        self.packages = []
+
+        xml_root = self.get_xml_root_node()
+
+        for editions in xml_root.iter('editions'):
+            for edition in editions.iter('edition'):
+                name = edition.attrib.get("name").lower()
+
+                # Add common packages to all desktops (including base)
+                if name == "common":
+                    for pkg in edition.iter('pkgname'):
+                        self.add_package(pkg)
+
+                # Add common graphical packages
+                if name == "graphic" and self.desktop != "base":
+                    for pkg in edition.iter('pkgname'):
+                        self.add_package(pkg)
+
+                # Add specific desktop packages
+                if name == self.desktop:
+                    logging.debug("Adding %s desktop packages", self.desktop)
+                    for pkg in edition.iter('pkgname'):
+                        self.add_package(pkg)
+
+        # Set KDE language pack
+        if self.desktop == 'kde':
+            self.set_kde_language_pack()
+
+        # Add drivers' packages        
+        self.add_drivers()
+
+        # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
+        if self.vbox and self.desktop == 'base':
+            self.packages.append("virtualbox-guest-utils-nox")
+
+        # Add linux-lts-headers if LTS kernel is installed in a vbox vm
+        if self.vbox and self.settings.get('feature_lts'):
+            if 'linux-lts-headers' not in self.packages:
+                self.packages.append('linux-lts-headers')
+
+        self.add_filesystems(xml_root)
+
+        self.maybe_add_chinese_fonts(xml_root)
 
         # Add bootloader packages if needed
         if self.settings.get('bootloader_install'):
@@ -349,9 +360,14 @@ class SelectPackages(object):
         # Check for user desired features and add them to our installation
         logging.debug(
             "Check for user desired features and add them to our installation")
-        self.add_features_packages(xml_root)
+        self.add_features(xml_root)
         logging.debug("All features needed packages have been added")
 
+        self.cleanup_packages_list()
+        logging.debug("Packages list: %s", ",".join(self.packages))
+
+    def cleanup_packages_list(self):
+        """ Cleans up a bit our packages list """
         # Remove duplicates
         self.packages = list(set(self.packages))
         self.conflicts = list(set(self.conflicts))
@@ -363,11 +379,9 @@ class SelectPackages(object):
         # Remove any package from self.packages that is already in self.conflicts
         if self.conflicts:
             logging.debug("Conflicts list: %s", ", ".join(self.conflicts))
-            for pkg in self.packages:
-                if pkg in self.conflicts:
+            for pkg in self.conflicts:
+                if pkg in self.packages:
                     self.packages.remove(pkg)
-
-        logging.debug("Packages list: %s", ",".join(self.packages))
 
     def add_conflicts(self, conflicts):
         """ Maintains a list of conflicting packages """
@@ -380,7 +394,7 @@ class SelectPackages(object):
             else:
                 self.conflicts.append(conflicts)
 
-    def add_features_packages(self, xml_root):
+    def add_features(self, xml_root):
         """ Selects packages based on user selected features """
 
         # Add necessary packages for user desired features to our install list
