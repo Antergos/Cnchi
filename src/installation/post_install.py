@@ -159,6 +159,22 @@ class PostInstallation(object):
                 except FileExistsError:
                     pass
 
+    def add_swap_to_fstab(self, uuid, partition_path):
+        """ Create swap line for fstab """
+        # If using a TRIM supported SSD,
+        # discard is a valid mount option for swap
+        if partition_path in self.ssd:
+            opts = "defaults,discard"
+        else:
+            opts = "defaults"
+
+        if self.settings.get("zfs"):
+            # We can't use UUID with zfs, so we will use device name
+            txt = "{0} swap swap {1} 0 0".format(partition_path, opts)
+        else:
+            txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
+        return txt
+
     def auto_fstab(self):
         """ Create /etc/fstab file """
 
@@ -195,19 +211,7 @@ class PostInstallation(object):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                # If using a TRIM supported SSD, discard is a valid mount
-                # option for swap
-                if partition_path in self.ssd:
-                    opts = "defaults,discard"
-                else:
-                    opts = "defaults"
-
-                if self.settings.get("zfs"):
-                    # We can't use UUID with zfs, so we will use device name
-                    txt = "{0} swap swap {1} 0 0".format(partition_path, opts)
-                else:
-                    txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
-
+                txt = self.add_swap_to_fstab(uuid, partition_path)
                 all_lines.append(txt)
                 logging.debug("Added %s to fstab", txt)
                 continue
@@ -286,17 +290,17 @@ class PostInstallation(object):
                     logging.debug("Added %s to fstab", txt)
                 continue
 
+            # Avoid adding a partition to fstab when it has no mount point
+            # (swap has been checked above)
+            if mount_point == "":
+                continue
+
             # fstab uses vfat to mount fat16 and fat32 partitions
             if "fat" in myfmt:
                 myfmt = 'vfat'
 
             if "btrfs" in myfmt:
                 self.settings.set('btrfs', True)
-
-            # Avoid adding a partition to fstab when it has no mount point
-            # (swap has been checked above)
-            if mount_point == "":
-                continue
 
             # Create mount point on destination system if it yet doesn't exist
             full_path = os.path.join(DEST_DIR, mount_point)
