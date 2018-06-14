@@ -114,12 +114,12 @@ def umount(dest_dir):
         mount_point = dest_dir + mount_point
         logging.debug("Unmounting %s", format(mount_point))
         try:
-            subprocess.check_call(["umount", mount_point])
+            subprocess.check_call(["/usr/bin/umount", mount_point])
         except subprocess.CalledProcessError:
             logging.debug(
                 "Can't unmount %s. Trying -l to force it.", mount_point)
             try:
-                subprocess.check_call(["umount", "-l", mount_point])
+                subprocess.check_call(["/usr/bin/umount", "-l", mount_point])
             except subprocess.CalledProcessError as process_error:
                 logging.warning(
                     "Unable to unmount %s, command %s failed: %s",

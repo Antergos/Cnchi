@@ -38,7 +38,7 @@ import misc.extra as misc
 def sync():
     """ Synchronize cached writes to persistent storage """
     try:
-        subprocess.check_call(['sync'])
+        subprocess.check_call(['/usr/bin/sync'])
     except subprocess.CalledProcessError as why:
         logging.warning(
             "Can't synchronize cached writes to persistent storage: %s",
