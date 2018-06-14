@@ -120,11 +120,12 @@ class KeyboardWidget(Gtk.DrawingArea):
         self.font = "Helvetica"
 
         # Load fonts from:
-        # ttf-aboriginal-sans, ttf-indic-otf, ttf-khmer, ttf-lohit-fonts,
-        # ttf-myanmar3, ttf-thaana-fonts, ttf-tlwg
+        # ttf-aboriginal-sans, ttf-indic-otf, ttf-khmer,
+        # ttf-lohit-fonts, ttf-myanmar3, ttf-thaana-fonts,
+        # ttf-tlwg
 
         fonts = {
-            'Aboriginal Sans': ['chr']
+            'Aboriginal Sans': ['chr'],
             'Akaash': ['bd'],
             'Gargi': ['np', 'in'],
             'khmerOS': ['kh'],
@@ -137,18 +138,19 @@ class KeyboardWidget(Gtk.DrawingArea):
             'Malayalam': ['mal', 'mal_lalitha'],
             'MVBoli': ['mv'],
             'Myanmar3': ['mm'],
-            'Oriya': ['geo', 'urd-phonetic3', 'urd-phonetic', 'urd-winkeys',
-                      'af', 'ara', 'am', 'cn', 'ge', 'gr', 'gn', 'ir',
-                      'iq', 'ie', 'il', 'la', 'ma', 'pk', 'lk', 'sy'],
+            'Oriya': [
+                'geo', 'urd-phonetic3', 'urd-phonetic', 'urd-winkeys',
+                'af', 'ara', 'am', 'cn', 'ge', 'gr', 'gn', 'ir',
+                'iq', 'ie', 'il', 'la', 'ma', 'pk', 'lk', 'sy'],
             'Padmaa': ['guj'],
             'Tlwg Mono': ['th'],
             'TSCu_Times': ['tam_TAB', 'tam_TSCII', 'tam_unicode']
         }
 
-        # TODO: Fix this!
         for font in fonts:
             if self.layout in fonts[font] or self.variant in fonts[font]:
-                return font
+                self.font = font
+                break
 
     def set_variant(self, variant):
         """ Set keymap layout variant """
@@ -380,7 +382,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             return " "
 
     def load_codes(self):
-        """ Load keyboard codes """
+        """ Load keyboard codes (script ckbcomp is needed!) """
 
         if self.layout is None:
             return
