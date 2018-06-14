@@ -109,7 +109,8 @@ class PostInstallation(object):
         datetime = "{0}-{1}".format(time.strftime("%Y%m%d"),
                                     time.strftime("%H%M%S"))
 
-        file_names = ["cnchi", "postinstall", "pacman"]
+        file_names = [
+            'cnchi', 'cnchi-alpm', 'postinstall', 'pacman']
 
         for name in file_names:
             src = os.path.join("/tmp", "{0}.log".format(name))
@@ -559,7 +560,8 @@ class PostInstallation(object):
         self.mask_services(masked)
         self.enable_services(services)
 
-    def fix_thermald_service(self):
+    @staticmethod
+    def fix_thermald_service():
         """ Adds --ignore-cpuid-check to thermald service file """
         path = os.path.join(DEST_DIR, "usr/lib/systemd/system/thermald.service")
         if os.path.exists(path):
