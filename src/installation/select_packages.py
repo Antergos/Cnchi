@@ -325,7 +325,7 @@ class SelectPackages(object):
         if self.desktop == 'kde':
             self.set_kde_language_pack()
 
-        # Add drivers' packages        
+        # Add drivers' packages
         self.add_drivers()
 
         # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
