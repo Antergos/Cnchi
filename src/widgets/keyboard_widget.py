@@ -40,7 +40,6 @@ from gi.repository import Gtk, GObject
 
 import cairo
 
-from misc.run_cmd import call
 from misc.extra import raised_privileges
 
 
@@ -117,88 +116,39 @@ class KeyboardWidget(Gtk.DrawingArea):
         # broken: ad (Andorra), lk (Sri Lanka), brai (Braille)
         # ?!?: us:chr
 
+        # Default
         self.font = "Helvetica"
 
-        # Load fonts from ttf-aboriginal-sans package
-
-        # us:chr
-        if self.variant == "chr":
-            self.font = "Aboriginal Sans"
-
         # Load fonts from:
-        # ttf-indic-otf, ttf-khmer, ttf-lohit-fonts, ttf-myanmar3
-        # ttf-thaana-fonts, ttf-tlwg
+        # ttf-aboriginal-sans, ttf-indic-otf, ttf-khmer, ttf-lohit-fonts,
+        # ttf-myanmar3, ttf-thaana-fonts, ttf-tlwg
 
-        # Font: Akaash
-        if self.layout == "bd":
-            self.font = "Akaash"
+        fonts = {
+            'Aboriginal Sans': ['chr']
+            'Akaash': ['bd'],
+            'Gargi': ['np', 'in'],
+            'khmerOS': ['kh'],
+            'Lohit Bengali': ['ben_probhat', 'ben'],
+            'Lohit Kannada': ['kan'],
+            'Lohit Oriya': ['ori'],
+            'Lohit Punjabi': ['guru', 'jhelum'],
+            'Lohit Tamil': ['tam_keyboard_with_numerals', 'tam'],
+            'Lohit Telugu': ['tel'],
+            'Malayalam': ['mal', 'mal_lalitha'],
+            'MVBoli': ['mv'],
+            'Myanmar3': ['mm'],
+            'Oriya': ['geo', 'urd-phonetic3', 'urd-phonetic', 'urd-winkeys',
+                      'af', 'ara', 'am', 'cn', 'ge', 'gr', 'gn', 'ir',
+                      'iq', 'ie', 'il', 'la', 'ma', 'pk', 'lk', 'sy'],
+            'Padmaa': ['guj'],
+            'Tlwg Mono': ['th'],
+            'TSCu_Times': ['tam_TAB', 'tam_TSCII', 'tam_unicode']
+        }
 
-        # Font: Gari
-        if self.layout == "np" or self.layout == "in":
-            self.font = "Gargi"
-
-        # Font: KhmerOS
-        if self.layout == "kh":
-            self.font = "KhmerOS"
-
-        # Font: Bengali
-        if self.variant == "ben_probhat" or self.variant == "ben":
-            self.font = "Lohit Bengali"
-
-        # Font: Padmaa
-        if self.variant == "guj":  # not all keys
-            self.font = "Padmaa"
-
-        # Font: Punjabi
-        if self.variant == "guru" or self.variant == "jhelum":
-            self.font = "Lohit Punjabi"
-
-        # Font: Kannada
-        if self.variant == "kan":
-            self.font = "Lohit Kannada"
-
-        # Font: Malayalam
-        if self.variant == "mal" or self.variant == "mal_lalitha":
-            self.font = "Malayalam"
-
-        # Font: Tamil
-        if self.variant == "tam_keyboard_with_numerals" or self.variant == "tam":
-            self.font = "Lohit Tamil"
-
-        # Font: TSCu Times
-        lst = ["tam_TAB", "tam_TSCII", "tam_unicode"]
-        if self.variant in lst:
-            self.font = "TSCu_Times"
-
-        # Font: Telugu
-        if self.variant == "tel":
-            self.font = "Lohit Telugu"
-
-        # Font: Oriya
-        lst = [
-            "af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il",
-            "la", "ma", "pk", "lk", "sy"]
-        if self.layout in lst:
-            self.font = "Oriya"
-
-        lst = ["geo", "urd-phonetic3", "urd-phonetic", "urd-winkeys"]
-        if self.variant in lst:
-            self.font = "Oriya"
-
-        if self.variant == "ori":
-            self.font = "Lohit Oriya"
-
-        # Font: Mv Boli
-        if self.layout == "mv":
-            self.font = "MVBoli"
-
-        # Font: Myanmar
-        if self.layout == "mm":
-            self.font = "Myanmar3"
-
-        # Font: Tlwg
-        if self.layout == "th":
-            self.font = "Tlwg Mono"
+        # TODO: Fix this!
+        for font in fonts:
+            if self.layout in fonts[font] or self.variant in fonts[font]:
+                return font
 
     def set_variant(self, variant):
         """ Set keymap layout variant """
