@@ -159,7 +159,7 @@ class PostInstallation(object):
                 except FileExistsError:
                     pass
 
-    def add_swap_to_fstab(self, uuid, partition_path):
+    def get_swap_fstab_line(self, uuid, partition_path):
         """ Create swap line for fstab """
         # If using a TRIM supported SSD,
         # discard is a valid mount option for swap
@@ -174,6 +174,58 @@ class PostInstallation(object):
         else:
             txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
         return txt
+
+    def add_vol_to_crypttab(self, vol_name, uuid, keyfile='none'):
+        """ Modify the crypttab file """
+        crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
+        os.chmod(crypttab_path, 0o666)
+        with open(crypttab_path, 'a') as crypttab_file:
+            line = "{0} /dev/disk/by-uuid/{1} {2} luks\n"
+            line = line.format(vol_name, uuid, keyfile)
+            crypttab_file.write(line)
+            logging.debug("Added %s to crypttab", line)
+        os.chmod(crypttab_path, 0o600)
+
+    @staticmethod
+    def get_device_fstab_line(partition_path, mount_point, myfmt, opts='defaults', chk='0'):
+        """ Create fstab line """
+        txt = "{0} {1} {2} {3} 0 {4}"
+        txt = txt.format(partition_path, mount_point, myfmt, opts, chk)
+        logging.debug("Added %s to fstab", txt)
+        return txt
+
+    @staticmethod
+    def get_uuid_fstab_line(uuid, mount_point, myfmt, opts='defaults', chk='0'):
+        """ Create fstab line """
+        txt = "UUID={0} {1} {2} {3} 0 {4}"
+        txt = txt.format(uuid, mount_point, myfmt, opts, chk)
+        logging.debug("Added %s to fstab", txt)
+        return txt
+
+    @staticmethod
+    def get_mount_options(myfmt, is_ssd):
+        """ Adds mount options depending on filesystem """
+        opts = ""
+        if not is_ssd:
+            if "btrfs" in myfmt:
+                opts = "defaults,relatime,space_cache,autodefrag,inode_cache"
+            elif "f2fs" in myfmt:
+                opts = "defaults,noatime"
+            elif "ext3" in myfmt or "ext4" in myfmt:
+                opts = "defaults,relatime,data=ordered"
+            else:
+                opts = "defaults,relatime"
+        else:
+            # As of linux kernel version 3.7, the following
+            # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
+            if myfmt in ["ext4", "jfs", "xfs"]:
+                opts = "defaults,noatime,discard"
+            elif myfmt == "btrfs":
+                opts = ("defaults,noatime,compress=lzo,ssd,discard,"
+                        "space_cache,autodefrag,inode_cache")
+            else:
+                opts = "defaults,noatime"
+        return opts
 
     def auto_fstab(self):
         """ Create /etc/fstab file """
@@ -211,53 +263,40 @@ class PostInstallation(object):
 
             # Take care of swap partitions
             if "swap" in myfmt:
-                txt = self.add_swap_to_fstab(uuid, partition_path)
+                txt = self.get_swap_fstab_line(uuid, partition_path)
                 all_lines.append(txt)
                 logging.debug("Added %s to fstab", txt)
                 continue
-
-            crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
 
             # Fix for home + luks, no lvm (from Automatic Install)
             if ("/home" in mount_point and
-                    self.method == "automatic" and
-                    use_luks and
-                    not use_lvm):
-                # Modify the crypttab file
-                luks_root_password = self.settings.get("luks_root_password")
-                if luks_root_password:
+                self.method == "automatic" and
+                use_luks and not use_lvm and
+                '/dev/mapper' in partition_path):
+
+                keyfile = '/etc/luks-keys/home'
+                if self.settings.get("luks_root_password"):
                     # Use password and not a keyfile
-                    home_keyfile = "none"
-                else:
-                    # Use a keyfile
-                    home_keyfile = "/etc/luks-keys/home"
+                    keyfile = 'none'
+                
+                vol_name = partition_path[len("/dev/mapper/"):]
+                self.add_vol_to_crypttab(vol_name, uuid, keyfile)
 
-                os.chmod(crypttab_path, 0o666)
-                with open(crypttab_path, 'a') as crypttab_file:
-                    line = "cryptAntergosHome /dev/disk/by-uuid/{0} {1} luks\n".format(
-                        uuid, home_keyfile)
-                    crypttab_file.write(line)
-                    logging.debug("Added %s to crypttab", line)
-                os.chmod(crypttab_path, 0o600)
-
-                # Add line to fstab
-                txt = "/dev/mapper/cryptAntergosHome {0} {1} defaults 0 0".format(
-                    mount_point, myfmt)
+                # Add cryptAntergosHome line to fstab
+                txt = self.get_device_fstab_line(partition_path, mount_point, myfmt)
                 all_lines.append(txt)
-                logging.debug("Added %s to fstab", txt)
                 continue
 
             # Add all LUKS partitions from Advanced Install (except root).
-            if (self.method == "advanced" and
-                    mount_point is not "/" and
-                    use_luks and
-                    "/dev/mapper" in partition_path):
+            if (self.method == 'advanced' and
+                mount_point is not '/' and
+                use_luks and '/dev/mapper' in partition_path):
+
                 # As the mapper with the filesystem will have a different UUID
                 # than the partition it is encrypted in, we have to take care
                 # of this here. Then we will be able to add it to crypttab
-
-                vol_name = partition_path[len("/dev/mapper/"):]
                 try:
+                    vol_name = partition_path[len("/dev/mapper/"):]
                     luks_partition_path = "/dev/" + pknames[vol_name]
                 except KeyError:
                     logging.error(
@@ -267,14 +306,7 @@ class PostInstallation(object):
 
                 luks_uuid = fs.get_uuid(luks_partition_path)
                 if luks_uuid:
-                    # OK, add it to crypttab with the correct uuid
-                    os.chmod(crypttab_path, 0o666)
-                    with open(crypttab_path, 'a') as crypttab_file:
-                        line = "{0} /dev/disk/by-uuid/{1} none luks\n"
-                        line = line.format(vol_name, luks_uuid)
-                        crypttab_file.write(line)
-                        logging.debug("Added %s to crypttab", line)
-                    os.chmod(crypttab_path, 0o600)
+                    self.add_vol_to_crypttab(vol_name, luks_uuid)
                 else:
                     logging.error(
                         "Can't add luks uuid to crypttab for %s partition",
@@ -284,10 +316,8 @@ class PostInstallation(object):
                 # Finally, the fstab line to mount the unencrypted file system
                 # if a mount point has been specified by the user
                 if mount_point:
-                    txt = "{0} {1} {2} defaults 0 0"
-                    txt = txt.format(partition_path, mount_point, myfmt)
+                    txt = self.get_device_fstab_line(partition_path, mount_point, myfmt)
                     all_lines.append(txt)
-                    logging.debug("Added %s to fstab", txt)
                 continue
 
             # Avoid adding a partition to fstab when it has no mount point
@@ -308,7 +338,6 @@ class PostInstallation(object):
 
             # Is ssd ?
             # Device list example: {'/dev/sdb': False, '/dev/sda': True}
-
             txt = "Device list : {0}".format(self.ssd)
             logging.debug(txt)
             device = re.sub("[0-9]+$", "", partition_path)
@@ -316,39 +345,16 @@ class PostInstallation(object):
             txt = "Device: {0}, SSD: {1}".format(device, is_ssd)
             logging.debug(txt)
 
-            # Add mount options parameters
-            if not is_ssd:
-                if "btrfs" in myfmt:
-                    opts = "defaults,relatime,space_cache,autodefrag,inode_cache"
-                elif "f2fs" in myfmt:
-                    opts = "defaults,noatime"
-                elif "ext3" in myfmt or "ext4" in myfmt:
-                    opts = "defaults,relatime,data=ordered"
-                else:
-                    opts = "defaults,relatime"
-            else:
-                # As of linux kernel version 3.7, the following
-                # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-                if myfmt in ["ext4", "jfs", "xfs"]:
-                    opts = "defaults,noatime,discard"
-                elif myfmt == "btrfs":
-                    opts = ("defaults,noatime,compress=lzo,ssd,discard,"
-                            "space_cache,autodefrag,inode_cache")
-                else:
-                    opts = "defaults,noatime"
-
-            if mount_point == "/" and myfmt not in ["btrfs", "f2fs"]:
-                chk = '1'
-            else:
-                chk = '0'
-
+            # Get mount options
+            opts = self.get_mount_options(myfmt, is_ssd)
+            chk = '0'
             if mount_point == "/":
+                if myfmt not in ['btrfs', 'f2fs']:
+                    chk = '1'
                 self.settings.set('ruuid', uuid)
 
-            txt = "UUID={0} {1} {2} {3} 0 {4}"
-            txt = txt.format(uuid, mount_point, myfmt, opts, chk)
+            txt = self.get_uuid_fstab_line(uuid, mount_point, myfmt, opts, chk)
             all_lines.append(txt)
-            logging.debug("Added %s to fstab", txt)
 
         full_text = '\n'.join(all_lines) + '\n'
 
