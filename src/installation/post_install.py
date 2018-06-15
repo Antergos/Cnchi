@@ -175,7 +175,8 @@ class PostInstallation(object):
             txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
         return txt
 
-    def add_vol_to_crypttab(self, vol_name, uuid, keyfile='none'):
+    @staticmethod
+    def add_vol_to_crypttab(vol_name, uuid, keyfile='none'):
         """ Modify the crypttab file """
         crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
         os.chmod(crypttab_path, 0o666)
@@ -270,15 +271,15 @@ class PostInstallation(object):
 
             # Fix for home + luks, no lvm (from Automatic Install)
             if ("/home" in mount_point and
-                self.method == "automatic" and
-                use_luks and not use_lvm and
-                '/dev/mapper' in partition_path):
+                    self.method == "automatic" and
+                    use_luks and not use_lvm and
+                    '/dev/mapper' in partition_path):
 
                 keyfile = '/etc/luks-keys/home'
                 if self.settings.get("luks_root_password"):
                     # Use password and not a keyfile
                     keyfile = 'none'
-                
+
                 vol_name = partition_path[len("/dev/mapper/"):]
                 self.add_vol_to_crypttab(vol_name, uuid, keyfile)
 
@@ -289,8 +290,8 @@ class PostInstallation(object):
 
             # Add all LUKS partitions from Advanced Install (except root).
             if (self.method == 'advanced' and
-                mount_point is not '/' and
-                use_luks and '/dev/mapper' in partition_path):
+                    mount_point is not '/' and
+                    use_luks and '/dev/mapper' in partition_path):
 
                 # As the mapper with the filesystem will have a different UUID
                 # than the partition it is encrypted in, we have to take care
