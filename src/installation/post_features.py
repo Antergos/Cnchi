@@ -30,13 +30,15 @@ import shutil
 import tempfile
 
 from installation import firewall
+from installation import services as srv
 import misc.extra as misc
 
 class PostFeatures(object):
+    """ Manages post installation of selected features """
     def __init__(self, settings):
         self.settings = settings
 
-    def setup_features(self):
+    def setup(self):
         """ Do all set up needed by the user's selected features """
         services = []
         masked = []
@@ -103,8 +105,8 @@ class PostFeatures(object):
             # thermald
             services.append('thermald')
 
-        self.mask_services(masked)
-        self.enable_services(services)
+        srv.mask_services(masked)
+        srv.enable_services(services)
 
     @staticmethod
     def enable_aur_in_pamac():
@@ -128,29 +130,3 @@ class PostFeatures(object):
             logging.debug("Enabled AUR in %s file", pamac_conf)
         else:
             logging.warning("Cannot find %s file", pamac_conf)
-
-    @staticmethod
-    def enable_services(services):
-        """ Enables all services that are in the list 'services' """
-        for name in services:
-            path = os.path.join(
-                DEST_DIR,
-                "usr/lib/systemd/system/{}.service".format(name))
-            if os.path.exists(path):
-                chroot_call(['systemctl', '-fq', 'enable', name])
-                logging.debug("Service '%s' has been enabled.", name)
-            else:
-                logging.warning("Can't find service %s", name)
-
-    @staticmethod
-    def mask_services(services):
-        """ Masks services """
-        for name in services:
-            path = os.path.join(
-                DEST_DIR,
-                "usr/lib/systemd/system/{}.service".format(name))
-            if os.path.exists(path):
-                chroot_call(['systemctl', '-fq', 'mask', name])
-                logging.debug("Service '%s' has been masked.", name)
-            else:
-                logging.warning("Cannot find service %s (mask)", name)

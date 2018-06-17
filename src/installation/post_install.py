@@ -41,6 +41,7 @@ from installation.boot import loader
 
 from installation.post_fstab import PostFstab
 from installation.post_features import PostFeatures
+from installation import services as srv
 
 import misc.extra as misc
 import misc.gocryptfs as gocryptfs
@@ -489,7 +490,7 @@ class PostInstallation(object):
             # Why there is no vboxusers group? Add it ourselves.
             chroot_call(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
-            self.enable_services(["vboxservice"])
+            srv.enable_services(["vboxservice"])
 
         if self.settings.get('require_password') is False:
             # Prepare system for autologin.
@@ -657,7 +658,7 @@ class PostInstallation(object):
             # networkmanager or connman daemons (atm it's just base install)
             # Enable systemd_networkd services
             # https://github.com/Antergos/Cnchi/issues/332#issuecomment-108745026
-            self.enable_services(["systemd-networkd", "systemd-resolved"])
+            srv.enable_services(["systemd-networkd", "systemd-resolved"])
             # Setup systemd_networkd
             # TODO: Ask user for SSID and passphrase if a wireless link is
             # found (here or inside systemd_networkd.setup() ?)
@@ -699,7 +700,7 @@ class PostInstallation(object):
             # been changed so that you need to explicitly enable any ZFS services
             # you want to run.
             services.extend(["zfs.target", "zfs-import-cache", "zfs-mount"])
-        self.enable_services(services)
+        srv.enable_services(services)
 
         # Enable timesyncd service
         if self.settings.get("use_timesyncd"):
@@ -801,7 +802,9 @@ class PostInstallation(object):
             self.setup_display_manager()
 
         # Configure user features (firewall, libreoffice language pack, ...)
-        self.setup_features()
+        #self.setup_features()
+        post_features = PostFeatures(self.settings)
+        post_features.setup()
 
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):

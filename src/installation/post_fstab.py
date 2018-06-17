@@ -31,6 +31,8 @@ import re
 import parted3.fs_module as fs
 
 class PostFstab(object):
+    """ Setup /etc/fstab """
+
     DEST_DIR = '/install'
 
     def __init__(self, method, mount_devices, fs_devices, ssd, settings):
@@ -64,7 +66,7 @@ class PostFstab(object):
     @staticmethod
     def add_vol_to_crypttab(vol_name, uuid, keyfile='none'):
         """ Modify the crypttab file """
-        crypttab_path = os.path.join(AutoFstab.DEST_DIR, 'etc/crypttab')
+        crypttab_path = os.path.join(PostFstab.DEST_DIR, 'etc/crypttab')
         os.chmod(crypttab_path, 0o666)
         with open(crypttab_path, 'a') as crypttab_file:
             line = "{0} /dev/disk/by-uuid/{1} {2} luks\n"
@@ -214,7 +216,7 @@ class PostFstab(object):
                 myfmt = 'vfat'
 
             # Create mount point on destination system if it yet doesn't exist
-            full_path = os.path.join(AutoFstab.DEST_DIR, mount_point)
+            full_path = os.path.join(PostFstab.DEST_DIR, mount_point)
             os.makedirs(full_path, mode=0o755, exist_ok=True)
 
             # Is ssd ?
@@ -239,6 +241,6 @@ class PostFstab(object):
 
         full_text = '\n'.join(all_lines) + '\n'
 
-        fstab_path = os.path.join(AutoFstab.DEST_DIR, 'etc/fstab')
+        fstab_path = os.path.join(PostFstab.DEST_DIR, 'etc/fstab')
         with open(fstab_path, 'w') as fstab_file:
             fstab_file.write(full_text)
