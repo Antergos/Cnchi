@@ -36,9 +36,11 @@ import tempfile
 import desktop_info
 
 from installation import mkinitcpio
-from installation import firewall
 from installation import systemd_networkd
 from installation.boot import loader
+
+from installation.post_fstab import PostFstab
+from installation.post_features import PostFeatures
 
 import misc.extra as misc
 import misc.gocryptfs as gocryptfs
@@ -159,212 +161,6 @@ class PostInstallation(object):
                 except FileExistsError:
                     pass
 
-    def get_swap_fstab_line(self, uuid, partition_path):
-        """ Create swap line for fstab """
-        # If using a TRIM supported SSD,
-        # discard is a valid mount option for swap
-        if partition_path in self.ssd:
-            opts = "defaults,discard"
-        else:
-            opts = "defaults"
-
-        if self.settings.get("zfs"):
-            # We can't use UUID with zfs, so we will use device name
-            txt = "{0} swap swap {1} 0 0".format(partition_path, opts)
-        else:
-            txt = "UUID={0} swap swap {1} 0 0".format(uuid, opts)
-        return txt
-
-    @staticmethod
-    def add_vol_to_crypttab(vol_name, uuid, keyfile='none'):
-        """ Modify the crypttab file """
-        crypttab_path = os.path.join(DEST_DIR, 'etc/crypttab')
-        os.chmod(crypttab_path, 0o666)
-        with open(crypttab_path, 'a') as crypttab_file:
-            line = "{0} /dev/disk/by-uuid/{1} {2} luks\n"
-            line = line.format(vol_name, uuid, keyfile)
-            crypttab_file.write(line)
-            logging.debug("Added %s to crypttab", line)
-        os.chmod(crypttab_path, 0o600)
-
-    @staticmethod
-    def get_device_fstab_line(partition_path, mount_point, myfmt, opts='defaults', chk='0'):
-        """ Create fstab line """
-        txt = "{0} {1} {2} {3} 0 {4}"
-        txt = txt.format(partition_path, mount_point, myfmt, opts, chk)
-        logging.debug("Added %s to fstab", txt)
-        return txt
-
-    @staticmethod
-    def get_uuid_fstab_line(uuid, mount_point, myfmt, opts='defaults', chk='0'):
-        """ Create fstab line """
-        txt = "UUID={0} {1} {2} {3} 0 {4}"
-        txt = txt.format(uuid, mount_point, myfmt, opts, chk)
-        logging.debug("Added %s to fstab", txt)
-        return txt
-
-    @staticmethod
-    def get_mount_options(myfmt, is_ssd):
-        """ Adds mount options depending on filesystem """
-        opts = ""
-        if not is_ssd:
-            if "btrfs" in myfmt:
-                opts = "defaults,relatime,space_cache,autodefrag,inode_cache"
-            elif "f2fs" in myfmt:
-                opts = "defaults,noatime"
-            elif "ext3" in myfmt or "ext4" in myfmt:
-                opts = "defaults,relatime,data=ordered"
-            else:
-                opts = "defaults,relatime"
-        else:
-            # As of linux kernel version 3.7, the following
-            # filesystems support TRIM: ext4, btrfs, JFS, and XFS.
-            if myfmt in ["ext4", "jfs", "xfs"]:
-                opts = "defaults,noatime,discard"
-            elif myfmt == "btrfs":
-                opts = ("defaults,noatime,compress=lzo,ssd,discard,"
-                        "space_cache,autodefrag,inode_cache")
-            else:
-                opts = "defaults,noatime"
-        return opts
-
-    def auto_fstab(self):
-        """ Create /etc/fstab file """
-
-        all_lines = [
-            "# /etc/fstab: static file system information.",
-            "#",
-            "# Use 'blkid' to print the universally unique identifier for a",
-            "# device; this may be used with UUID= as a more robust way to name devices",
-            "# that works even if disks are added and removed. See fstab(5).",
-            "#",
-            "# <file system> <mount point>   <type>  <options>       <dump>  <pass>",
-            "#"]
-
-        use_luks = self.settings.get("use_luks")
-        use_lvm = self.settings.get("use_lvm")
-
-        # Use lsblk to be able to match LUKS UUID with mapper UUID
-        pknames = fs.get_pknames()
-
-        for mount_point in self.mount_devices:
-            partition_path = self.mount_devices[mount_point]
-            uuid = fs.get_uuid(partition_path)
-            if uuid == "":
-                logging.warning(
-                    "Can't get %s partition UUID. It won't be added to fstab",
-                    partition_path)
-                continue
-
-            if partition_path in self.fs_devices:
-                myfmt = self.fs_devices[partition_path]
-            else:
-                # It hasn't any filesystem defined, skip it.
-                continue
-
-            # Take care of swap partitions
-            if "swap" in myfmt:
-                txt = self.get_swap_fstab_line(uuid, partition_path)
-                all_lines.append(txt)
-                logging.debug("Added %s to fstab", txt)
-                continue
-
-            # Fix for home + luks, no lvm (from Automatic Install)
-            if ("/home" in mount_point and
-                    self.method == "automatic" and
-                    use_luks and not use_lvm and
-                    '/dev/mapper' in partition_path):
-
-                keyfile = '/etc/luks-keys/home'
-                if self.settings.get("luks_root_password"):
-                    # Use password and not a keyfile
-                    keyfile = 'none'
-
-                vol_name = partition_path[len("/dev/mapper/"):]
-                self.add_vol_to_crypttab(vol_name, uuid, keyfile)
-
-                # Add cryptAntergosHome line to fstab
-                txt = self.get_device_fstab_line(partition_path, mount_point, myfmt)
-                all_lines.append(txt)
-                continue
-
-            # Add all LUKS partitions from Advanced Install (except root).
-            if (self.method == 'advanced' and
-                    mount_point is not '/' and
-                    use_luks and '/dev/mapper' in partition_path):
-
-                # As the mapper with the filesystem will have a different UUID
-                # than the partition it is encrypted in, we have to take care
-                # of this here. Then we will be able to add it to crypttab
-                try:
-                    vol_name = partition_path[len("/dev/mapper/"):]
-                    luks_partition_path = "/dev/" + pknames[vol_name]
-                except KeyError:
-                    logging.error(
-                        "Can't find the PKNAME value of %s",
-                        partition_path)
-                    continue
-
-                luks_uuid = fs.get_uuid(luks_partition_path)
-                if luks_uuid:
-                    self.add_vol_to_crypttab(vol_name, luks_uuid)
-                else:
-                    logging.error(
-                        "Can't add luks uuid to crypttab for %s partition",
-                        luks_partition_path)
-                    continue
-
-                # Finally, the fstab line to mount the unencrypted file system
-                # if a mount point has been specified by the user
-                if mount_point:
-                    txt = self.get_device_fstab_line(partition_path, mount_point, myfmt)
-                    all_lines.append(txt)
-                continue
-
-            # Avoid adding a partition to fstab when it has no mount point
-            # (swap has been checked above)
-            if mount_point == "":
-                continue
-
-            # fstab uses vfat to mount fat16 and fat32 partitions
-            if "fat" in myfmt:
-                myfmt = 'vfat'
-
-            if "btrfs" in myfmt:
-                self.settings.set('btrfs', True)
-
-            # Create mount point on destination system if it yet doesn't exist
-            full_path = os.path.join(DEST_DIR, mount_point)
-            os.makedirs(full_path, mode=0o755, exist_ok=True)
-
-            # Is ssd ?
-            # Device list example: {'/dev/sdb': False, '/dev/sda': True}
-            txt = "Device list : {0}".format(self.ssd)
-            logging.debug(txt)
-            device = re.sub("[0-9]+$", "", partition_path)
-            is_ssd = self.ssd.get(device)
-            txt = "Device: {0}, SSD: {1}".format(device, is_ssd)
-            logging.debug(txt)
-
-            # Get mount options
-            opts = self.get_mount_options(myfmt, is_ssd)
-            chk = '0'
-            if mount_point == "/":
-                if myfmt not in ['btrfs', 'f2fs']:
-                    chk = '1'
-                self.settings.set('ruuid', uuid)
-
-            txt = self.get_uuid_fstab_line(uuid, mount_point, myfmt, opts, chk)
-            all_lines.append(txt)
-
-        full_text = '\n'.join(all_lines) + '\n'
-
-        fstab_path = os.path.join(DEST_DIR, 'etc/fstab')
-        with open(fstab_path, 'w') as fstab_file:
-            fstab_file.write(full_text)
-
-        logging.debug("fstab written.")
-
     def set_scheduler(self):
         """ Copies udev rule for SSDs """
         rule_src = os.path.join(
@@ -382,32 +178,6 @@ class PostInstallation(object):
                 rule_src)
         except FileExistsError:
             pass
-
-    @staticmethod
-    def enable_services(services):
-        """ Enables all services that are in the list 'services' """
-        for name in services:
-            path = os.path.join(
-                DEST_DIR,
-                "usr/lib/systemd/system/{}.service".format(name))
-            if os.path.exists(path):
-                chroot_call(['systemctl', '-fq', 'enable', name])
-                logging.debug("Service '%s' has been enabled.", name)
-            else:
-                logging.warning("Can't find service %s", name)
-
-    @staticmethod
-    def mask_services(services):
-        """ Masks services """
-        for name in services:
-            path = os.path.join(
-                DEST_DIR,
-                "usr/lib/systemd/system/{}.service".format(name))
-            if os.path.exists(path):
-                chroot_call(['systemctl', '-fq', 'mask', name])
-                logging.debug("Service '%s' has been masked.", name)
-            else:
-                logging.warning("Cannot find service %s (mask)", name)
 
     @staticmethod
     def change_user_password(user, new_password):
@@ -478,99 +248,7 @@ class PostInstallation(object):
         else:
             logging.error("Can't find locale.gen file")
 
-    @staticmethod
-    def enable_aur_in_pamac():
-        """ Enables AUR searches in pamac config file """
-        pamac_conf = "/etc/pamac.conf"
-        if os.path.exists(pamac_conf):
-            _fd, name = tempfile.mkstemp()
-            fout = open(name, 'w')
-            with open(pamac_conf) as fin:
-                for line in fin:
-                    if line.startswith("#"):
-                        if "EnableAUR" in line:
-                            line = "EnableAUR\n"
-                        elif "SearchInAURByDefault" in line:
-                            line = "SearchInAURByDefault\n"
-                        elif "CheckAURUpdates" in line:
-                            line = "CheckAURUpdates\n"
-                    fout.write(line)
-            fout.close()
-            shutil.move(name, pamac_conf)
-            logging.debug("Enabled AUR in %s file", pamac_conf)
-        else:
-            logging.warning("Cannot find %s file", pamac_conf)
-
-    def setup_features(self):
-        """ Do all set up needed by the user's selected features """
-        services = []
-        masked = []
-
-        if self.settings.get("feature_aur"):
-            self.enable_aur_in_pamac()
-
-        if self.settings.get("feature_bluetooth"):
-            services.append('bluetooth')
-
-        if self.settings.get("feature_cups"):
-            services.append('org.cups.cupsd')
-            services.append('avahi-daemon')
-
-        # openssh comes with two kinds of systemd service files:
-        # sshd.service, which will keep the SSH daemon permanently active and
-        # fork for each incoming connection. It is especially suitable for systems
-        # with a large amount of SSH traffic.
-        # sshd.socket + sshd@.service, which spawn on-demand instances of the SSH
-        # daemon per connection. Using it implies that systemd listens on the SSH
-        # socket and will only start the daemon process for an incoming connection.
-        # It is the recommended way to run sshd in almost all cases.
-        if self.settings.get("feature_sshd"):
-            services.append('sshd.socket')
-
-        if self.settings.get("feature_firewall"):
-            logging.debug("Configuring firewall...")
-            # Set firewall rules
-            firewall.run(["default", "deny"])
-            toallow = misc.get_network()
-            if toallow:
-                firewall.run(["allow", "from", toallow])
-            firewall.run(["allow", "Transmission"])
-            firewall.run(["allow", "SSH"])
-            firewall.run(["enable"])
-            services.append('ufw')
-
-        if (self.settings.get("feature_lamp") and
-                not self.settings.get("feature_lemp")):
-            try:
-                from installation import lamp
-                logging.debug("Configuring LAMP...")
-                lamp.setup()
-                services.extend(["httpd", "mysqld"])
-            except ImportError as import_error:
-                logging.warning(
-                    "Unable to import LAMP module: %s",
-                    str(import_error))
-        elif self.settings.get("feature_lemp"):
-            try:
-                from installation import lemp
-                logging.debug("Configuring LEMP...")
-                lemp.setup()
-                services.extend(["nginx", "mysqld", "php-fpm"])
-            except ImportError as import_error:
-                logging.warning(
-                    "Unable to import LEMP module: %s",
-                    str(import_error))
-
-        if self.settings.get("feature_energy"):
-            # tlp
-            services.extend(['tlp.service', 'tlp-sleep.service'])
-            masked.extend(['systemd-rfkill.service', 'systemd-rfkill.socket'])
-            # thermald
-            services.append('thermald')
-
-        self.mask_services(masked)
-        self.enable_services(services)
-
+    
     @staticmethod
     def fix_thermald_service():
         """ Adds --ignore-cpuid-check to thermald service file """
@@ -936,6 +614,16 @@ class PostInstallation(object):
         chroot_call(['systemctl', '-fq', 'enable',
                      'systemd-timesyncd.service'])
 
+    def check_btrfs(self):
+        for mount_point in self.mount_devices:
+            partition_path = self.mount_devices[mount_point]
+            uuid = fs.get_uuid(partition_path)
+            if uuid and partition_path in self.fs_devices:
+                myfmt = self.fs_devices[partition_path]
+                if myfmt == 'btrfs':
+                    return True
+        return False
+
     def configure_system(self, hardware_install):
         """ Final install steps.
             Set clock, language, timezone, run mkinitcpio,
@@ -944,8 +632,16 @@ class PostInstallation(object):
         self.queue_event('pulse', 'start')
         self.queue_event('info', _("Configuring your new system"))
 
-        self.auto_fstab()
+        auto_fstab = PostFstab(
+            self.method, self.mount_devices, self.fs_devices, self.ssd, self.settings)
+        auto_fstab.run()
+        if auto_fstab.root_uuid:
+            self.settings.set('ruuid', auto_fstab.root_uuid)
         logging.debug("fstab file generated.")
+
+        # Check if we have any btrfs device
+        if self.check_btrfs():
+            self.settings.set('btrfs', True)
 
         # If SSD was detected copy udev rule for deadline scheduler
         if self.ssd:
