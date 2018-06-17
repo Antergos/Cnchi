@@ -30,8 +30,6 @@ import os
 import queue
 import shutil
 import time
-import re
-import tempfile
 
 import desktop_info
 
@@ -43,7 +41,6 @@ from installation.post_fstab import PostFstab
 from installation.post_features import PostFeatures
 from installation import services as srv
 
-import misc.extra as misc
 import misc.gocryptfs as gocryptfs
 from misc.run_cmd import call, chroot_call
 
@@ -249,7 +246,6 @@ class PostInstallation(object):
         else:
             logging.error("Can't find locale.gen file")
 
-    
     @staticmethod
     def fix_thermald_service():
         """ Adds --ignore-cpuid-check to thermald service file """
@@ -616,6 +612,7 @@ class PostInstallation(object):
                      'systemd-timesyncd.service'])
 
     def check_btrfs(self):
+        """ Checks if any device will be using btrfs """
         for mount_point in self.mount_devices:
             partition_path = self.mount_devices[mount_point]
             uuid = fs.get_uuid(partition_path)
