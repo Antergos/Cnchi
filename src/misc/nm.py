@@ -19,6 +19,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" Networkmanager interface """
+
 import string
 import subprocess
 
@@ -47,23 +49,28 @@ NM_STATE_CONNECTED_GLOBAL = 70
 # TODO: DBus exceptions.  Catch 'em all.
 
 def decode_ssid(characters):
+    """ Converts ssid to UTF-8 """
     return bytearray(characters).decode('UTF-8', 'replace')
 
 
 def get_prop(obj, iface, prop):
+    """ get dbus property """
     try:
         return obj.Get(iface, prop, dbus_interface=dbus.PROPERTIES_IFACE)
-    except dbus.DBusException as e:
-        if e.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
+    except dbus.DBusException as err:
+        if err.get_dbus_name() == 'org.freedesktop.DBus.Error.UnknownMethod':
             return None
         else:
             raise
 
 
 def get_vendor_and_model(udi):
+    """ Gets device vendor and model """
     vendor = ''
     model = ''
-    cmd = ['udevadm', 'info', '--path={0}'.format(udi), '--query=property']
+    cmd = [
+        '/usr/bin/udevadm', 'info', '--path={0}'.format(udi),
+        '--query=property']
     with open('/dev/null', 'w') as devnull:
         out = subprocess.Popen(
             cmd, stdout=subprocess.PIPE, stderr=devnull,
@@ -79,6 +86,7 @@ def get_vendor_and_model(udi):
 
 
 def wireless_hardware_present():
+    """ Checks if a wireless device is present """
     # NetworkManager keeps DBus objects for wireless devices around even when
     # the hardware switch is off.
     bus = dbus.SystemBus()
@@ -94,8 +102,10 @@ def wireless_hardware_present():
     return False
 
 
-class NetworkManager:
+class NetworkManagerModel:
+    """ Network manager model """
     def __init__(self, model, state_changed=None):
+        """ Initialize class properties """
         self.model = model
         self.timeout_id = 0
         self.rows_changed_id = None
@@ -108,6 +118,7 @@ class NetworkManager:
         self.passphrases_cache = {}
 
     def start(self, state_changed=None):
+        """ Open system bus (dbus) and do some checks """
         self.bus = dbus.SystemBus()
         self.manager = self.bus.get_object(
             NM, '/org/freedesktop/NetworkManager')
@@ -124,9 +135,11 @@ class NetworkManager:
         self.build_passphrase_cache()
 
     def get_state(self):
+        """ Gets Networkmanager status """
         return self.manager.state()
 
     def is_connected(self, device, ap):
+        """ Checks if a wireless device is active (connected) """
         device_obj = self.bus.get_object(NM, device)
         connectedap = get_prop(device_obj, NM_DEVICE_WIFI, 'ActiveAccessPoint')
         if not connectedap:
@@ -139,6 +152,7 @@ class NetworkManager:
             return False
 
     def connect_to_ap(self, device, ap, passphrase=None):
+        """ Try to connect to an Access Point """
         device_obj = self.bus.get_object(NM, device)
         ap_list = device_obj.GetAccessPoints(dbus_interface=NM_DEVICE_WIFI)
         saved_strength = 0
@@ -165,6 +179,7 @@ class NetworkManager:
         self.active_device_obj = device_obj
 
     def disconnect_from_ap(self):
+        """ Disconnect from an Access Point """
         if self.active_connection is not None:
             self.manager.DeactivateConnection(self.active_connection)
             self.active_connection = None
@@ -177,6 +192,7 @@ class NetworkManager:
             self.active_conn = None
 
     def build_passphrase_cache(self):
+        """ Build passphrase cache """
         self.passphrases_cache = {}
         settings_obj = self.bus.get_object(NM, NM_SETTINGS_PATH)
         for conn in settings_obj.ListConnections(dbus_interface=NM_SETTINGS):
@@ -194,15 +210,18 @@ class NetworkManager:
                         raise
 
     def ssid_in_model(self, iterator, ssid, security):
-        i = self.model.iter_children(iterator)
-        while i:
-            row = self.model[i]
+        """ Get iterator to the model that has a specific ssid """
+        myiter = self.model.iter_children(iterator)
+        while myiter:
+            row = self.model[myiter]
             if row[0] == ssid and row[1] == security:
-                return i
-            i = self.model.iter_next(i)
+                return myiter
+            myiter = self.model.iter_next(myiter)
         return None
 
     def prune(self, iterator, ssids):
+        """ Remove all model items that have a different
+            sid from ssids list """
         to_remove = []
         while iterator:
             ssid = self.model[iterator][0]
@@ -213,27 +232,31 @@ class NetworkManager:
             self.model.remove(iterator)
 
     def queue_build_cache(self, *args):
+        """ Set timeout that will call build_cache """
         if self.timeout_id:
             GLib.source_remove(self.timeout_id)
         self.timeout_id = GLib.timeout_add(500, self.build_cache)
 
     def properties_changed(self, props, path=None):
+        """ Checks if Access Point's strength has changed """
         if 'Strength' in props:
             ap_obj = self.bus.get_object(NM, path)
             ssid = get_prop(ap_obj, NM_AP, 'Ssid')
             if ssid:
                 ssid = decode_ssid(ssid)
-                security = (get_prop(ap_obj, NM_AP, 'WpaFlags') != 0 or
-                            get_prop(ap_obj, NM_AP, 'RsnFlags') != 0)
+                wpa_flags = get_prop(ap_obj, NM_AP, 'WpaFlags')
+                rsn_flags = get_prop(ap_obj, NM_AP, 'RsnFlags')
+                security = (wpa_flags != 0 or rsn_flags != 0)
                 strength = int(props['Strength'])
                 iterator = self.model.get_iter_first()
                 while iterator:
-                    i = self.ssid_in_model(iterator, ssid, security)
-                    if i:
-                        self.model.set_value(i, 2, strength)
+                    _ssid = self.ssid_in_model(iterator, ssid, security)
+                    if _ssid:
+                        self.model.set_value(_ssid, 2, strength)
                     iterator = self.model.iter_next(iterator)
 
     def build_cache(self):
+        """ Build cache (model) """
         devices = self.manager.GetDevices()
         for device_path in devices:
             device_obj = self.bus.get_object(NM, device_path)
@@ -241,12 +264,12 @@ class NetworkManager:
             if device_type_prop != DEVICE_TYPE_WIFI:
                 continue
             iterator = None
-            i = self.model.get_iter_first()
-            while i:
-                if self.model[i][0] == device_path:
-                    iterator = i
+            myiter = self.model.get_iter_first()
+            while myiter:
+                if self.model[myiter][0] == device_path:
+                    iterator = myiter
                     break
-                i = self.model.iter_next(i)
+                myiter = self.model.iter_next(myiter)
             if not iterator:
                 udi = get_prop(device_obj, NM_DEVICE, 'Udi')
                 if udi:
@@ -263,25 +286,29 @@ class NetworkManager:
                 if ssid:
                     ssid = decode_ssid(ssid)
                     strength = int(get_prop(ap_obj, NM_AP, 'Strength') or 0)
-                    security = (get_prop(ap_obj, NM_AP, 'WpaFlags') != 0 or
-                                get_prop(ap_obj, NM_AP, 'RsnFlags') != 0)
-                    i = self.ssid_in_model(iterator, ssid, security)
-                    if not i:
+                    wpa_flags = get_prop(ap_obj, NM_AP, 'WpaFlags')
+                    rsn_flags = get_prop(ap_obj, NM_AP, 'RsnFlags')
+                    security = (wpa_flags != 0 or rsn_flags != 0)
+                    _ssid = self.ssid_in_model(iterator, ssid, security)
+                    if not _ssid:
                         self.model.append(iterator, [ssid, security, strength])
                     else:
-                        self.model.set_value(i, 2, strength)
+                        self.model.set_value(_ssid, 2, strength)
                     ssids.append(ssid)
-            i = self.model.iter_children(iterator)
-            self.prune(i, ssids)
-        i = self.model.get_iter_first()
-        self.prune(i, devices)
+            myiter = self.model.iter_children(iterator)
+            self.prune(myiter, ssids)
+        myiter = self.model.get_iter_first()
+        self.prune(myiter, devices)
         return False
 
 
 class NetworkManagerTreeView(Gtk.TreeView):
+    """ Treeview that will show all Access Points """
+
     __gtype_name__ = 'NetworkManagerTreeView'
 
     def __init__(self, password_entry=None, state_changed=None):
+        """ Init treeview and its model """
         Gtk.TreeView.__init__(self)
         self.user_collapsed = {}
         self.icons = []
@@ -290,7 +317,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         model = Gtk.TreeStore(str, object, object)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         # TODO eventually this will subclass GenericTreeModel.
-        self.wifi_model = NetworkManager(model, state_changed)
+        self.wifi_model = NetworkManagerModel(model, state_changed)
         self.set_model(model)
 
         ssid_column = Gtk.TreeViewColumn('')
@@ -307,11 +334,10 @@ class NetworkManagerTreeView(Gtk.TreeView):
         self.setup_row_expansion_handling(model)
 
     def setup_row_expansion_handling(self, model):
-        """
-        If the user collapses a row, save that state. If all the APs go away
-        and then return, such as when the user toggles the wifi kill switch,
-        the UI should keep the row collapsed if it already was, or expand it.
-        """
+        """ If the user collapses a row, save that state. 
+            If all the APs go away and then return, such as when
+            the user toggles the wifi kill switch, the UI should
+            keep the row collapsed if it already was, or expand it. """
         self.expand_all()
         self.rows_changed_id = None
 
@@ -333,55 +359,56 @@ class NetworkManagerTreeView(Gtk.TreeView):
         self.connect('row-expanded', collapsed, False)
 
     def rows_changed(self, *args):
+        """ Rows changed in treeview """
         model = self.get_model()
-        i = model.get_iter_first()
-        while i:
-            udi = model[i][0]
+        myiter = model.get_iter_first()
+        while myiter:
+            udi = model[myiter][0]
             try:
                 if not self.user_collapsed[udi]:
-                    path = model.get_path(i)
+                    path = model.get_path(myiter)
                     self.expand_row(path, False)
             except KeyError:
-                path = model.get_path(i)
+                path = model.get_path(myiter)
                 self.expand_row(path, False)
-            i = model.iter_next(i)
+            myiter = model.iter_next(myiter)
 
     def get_state(self):
+        """ Return Wifi status """
         return self.wifi_model.get_state()
 
     def disconnect_from_ap(self):
+        """ Disconnects from the Access Point """
         self.wifi_model.disconnect_from_ap()
 
     def row_activated(self, unused, path, column):
+        """ An AP (row) has been selected """
         passphrase = None
         if self.password_entry:
             passphrase = self.password_entry.get_text()
         self.connect_to_selection(passphrase)
 
     def configure_icons(self):
-        it = Gtk.IconTheme()
+        """ Configure wifi signal icons """
+        icon_theme = Gtk.IconTheme()
         default = Gtk.IconTheme.get_default()
         default = default.load_icon(Gtk.STOCK_MISSING_IMAGE, 22, 0)
-        it.set_custom_theme('ubuntu-mono-light')
+        icon_theme.set_custom_theme('ubuntu-mono-light')
         self.icons = []
-        for n in ['nm-signal-00',
-                  'nm-signal-25',
-                  'nm-signal-50',
-                  'nm-signal-75',
-                  'nm-signal-100',
-                  'nm-signal-00-secure',
-                  'nm-signal-25-secure',
-                  'nm-signal-50-secure',
-                  'nm-signal-75-secure',
-                  'nm-signal-100-secure']:
-            ico = it.lookup_icon(n, 22, 0)
-            if ico:
-                ico = ico.load_icon()
+        icon_names = [
+            'nm-signal-00', 'nm-signal-25', 'nm-signal-50', 'nm-signal-75',
+            'nm-signal-100', 'nm-signal-00-secure', 'nm-signal-25-secure',
+            'nm-signal-50-secure', 'nm-signal-75-secure', 'nm-signal-100-secure']
+        for name in icon_names:
+            icon = icon_theme.lookup_icon(name, 22, 0)
+            if icon:
+                icon = icon.load_icon()
             else:
-                ico = default
-            self.icons.append(ico)
+                icon = default
+            self.icons.append(icon)
 
     def pixbuf_func(self, column, cell, model, iterator, data):
+        """ Set icon based on wifi signal's strength """
         if not model.iter_parent(iterator):
             cell.set_property('pixbuf', None)
             return
@@ -397,6 +424,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         else:
             icon = 4
         if model[iterator][1]:
+            # Secure
             icon += 5
         cell.set_property('pixbuf', self.icons[icon])
 
@@ -411,6 +439,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
             cell.set_property('text', ssid)
 
     def get_passphrase(self, ssid):
+        """ Get passphrase for Access Point (identified by ssid) """
         try:
             cached = self.wifi_model.passphrases_cache[ssid]
         except KeyError:
@@ -418,12 +447,14 @@ class NetworkManagerTreeView(Gtk.TreeView):
         return cached
 
     def is_row_an_ap(self):
+        """ Checks that the selected row is an Access Point reference """
         model, iterator = self.get_selection().get_selected()
         if iterator is None:
             return False
         return model.iter_parent(iterator) is not None
 
     def is_row_connected(self):
+        """ Checks that the selected Access Point is connected """
         model, iterator = self.get_selection().get_selected()
         if iterator is None:
             return False
@@ -435,6 +466,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
             return False
 
     def connect_to_selection(self, passphrase):
+        """ Try to connect to the Access Point referenced by current selection """
         model, iterator = self.get_selection().get_selected()
         ssid = model[iterator][0]
         parent = model.iter_parent(iterator)
@@ -446,6 +478,7 @@ GObject.type_register(NetworkManagerTreeView)
 
 
 class NetworkManagerWidget(Gtk.Box):
+    """ Widget that will contain the NetworkManagerTreeView """
     __gtype_name__ = 'NetworkManagerWidget'
     __gsignals__ = {
         'connection': (
@@ -458,6 +491,7 @@ class NetworkManagerWidget(Gtk.Box):
             (GObject.TYPE_BOOLEAN,))}
 
     def __init__(self):
+        """ Init widget """
         Gtk.Box.__init__(self)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.set_spacing(12)
@@ -470,6 +504,7 @@ class NetworkManagerWidget(Gtk.Box):
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         scrolled_window.add(self.view)
         self.pack_start(scrolled_window, True, True, 0)
+        
         self.hbox = Gtk.Box(spacing=6)
         self.pack_start(self.hbox, False, True, 0)
         self.password_label = Gtk.Label('Password:')
@@ -482,21 +517,26 @@ class NetworkManagerWidget(Gtk.Box):
         self.hbox.pack_start(self.password_entry, True, True, 0)
         self.hbox.pack_start(self.display_password, False, True, 0)
         self.hbox.set_sensitive(False)
+        
         self.selection = self.view.get_selection()
         self.selection.connect('changed', self.changed)
         self.show_all()
 
     def translate(self, password_label_text, display_password_text):
+        """ Translate labels """
         self.password_label.set_label(password_label_text)
         self.display_password.set_label(display_password_text)
 
     def get_state(self):
+        """ Get connection status """
         return self.view.get_state()
 
     def is_row_an_ap(self):
+        """ Checks that a row referencing an Access Point is selected """
         return self.view.is_row_an_ap()
 
     def is_row_connected(self):
+        """ Checks if the selected Access Point is connected """
         return self.view.is_row_connected()
 
     def select_usable_row(self):
@@ -506,32 +546,39 @@ class NetworkManagerWidget(Gtk.Box):
         self.emit('connection', state)
 
     def password_is_valid(self):
+        """ Checks if the password is well formed """
         passphrase = self.password_entry.get_text()
         if 7 < len(passphrase) < 64:
             return True
         if len(passphrase) == 64:
-            for c in passphrase:
-                if c not in string.hexdigits:
+            # Must be hexadecimal
+            for character in passphrase:
+                if character not in string.hexdigits:
                     return False
             return True
         else:
             return False
 
     def connect_to_ap(self, *args):
+        """ Tries to connect to the selected Access Point """
         if self.password_is_valid():
             passphrase = self.password_entry.get_text()
             self.view.connect_to_selection(passphrase)
 
     def disconnect_from_ap(self):
+        """ Disconnects from the selected Access Point """
         self.view.disconnect_from_ap()
 
     def password_entry_changed(self, *args):
+        """ Checks if new password is valid """
         self.emit('pw_validated', self.password_is_valid())
 
     def display_password_toggled(self, *args):
+        """ shows/hides password """ 
         self.password_entry.set_visibility(self.display_password.get_active())
 
     def changed(self, selection):
+        """ Another Access Point has been selected """
         iterator = selection.get_selected()[1]
         if not iterator:
             return
@@ -552,12 +599,16 @@ class NetworkManagerWidget(Gtk.Box):
 
 GObject.type_register(NetworkManagerWidget)
 
-if __name__ == '__main__':
+def test_module():
+    """ Helper function to test this module """
     window = Gtk.Window()
     window.connect('destroy', Gtk.main_quit)
     window.set_size_request(300, 300)
     window.set_border_width(12)
-    nm = NetworkManagerWidget()
-    window.add(nm)
+    nm_widget = NetworkManagerWidget()
+    window.add(nm_widget)
     window.show_all()
     Gtk.main()
+
+if __name__ == '__main__':
+    test_module()
