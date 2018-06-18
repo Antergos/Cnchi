@@ -12,7 +12,7 @@ You are viewing the `0.16.x` branch.
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|Cnchi Stable|0.14.x|0.14.473|Frozen|
+|Cnchi Stable|0.14.x|![0.14.473](https://github.com/Antergos/Cnchi/releases)|Frozen|
 |Cnchi Development|0.16.x|0.16.x|Development|
 |Cnchi Next (UI agnostic)|master|0.17.x|Development|
 
