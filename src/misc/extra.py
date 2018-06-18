@@ -93,20 +93,28 @@ def set_groups_for_uid(uid):
             syslog.syslog(syslog.LOG_ERR, line)
 
 
+def get_uid_gid():
+    """ Returns uid and gid from SUDO_* env vars """
+    uid = os.environ.get('SUDO_UID')
+    gid = os.environ.get('SUDO_GID')
+    if uid:
+        uid = int(uid)
+    if gid:
+        gid = int(gid)
+    return (uid, gid)
+
+
 def drop_all_privileges():
     """ Drop root privileges """
     # gconf needs both the UID and effective UID set.
     global _DROPPED_PRIVILEGES
-    uid = os.environ.get('SUDO_UID')
-    gid = os.environ.get('SUDO_GID')
-    if uid is not None:
-        uid = int(uid)
+
+    (uid, gid) = get_uid_gid()
+    if uid:
         set_groups_for_uid(uid)
-    if gid is not None:
-        gid = int(gid)
+    if gid:
         os.setregid(gid, gid)
-    if uid is not None:
-        uid = int(uid)
+    if uid:
         os.setreuid(uid, uid)
         os.environ['HOME'] = pwd.getpwuid(uid).pw_dir
         os.environ['LOGNAME'] = pwd.getpwuid(uid).pw_name
@@ -118,15 +126,12 @@ def drop_privileges():
     global _DROPPED_PRIVILEGES
     assert _DROPPED_PRIVILEGES is not None
     if _DROPPED_PRIVILEGES == 0:
-        uid = os.environ.get('SUDO_UID')
-        gid = os.environ.get('SUDO_GID')
-        if uid is not None:
-            uid = int(uid)
+        (uid, gid) = get_uid_gid()
+        if uid:
             set_groups_for_uid(uid)
-        if gid is not None:
-            gid = int(gid)
+        if gid:
             os.setegid(gid)
-        if uid is not None:
+        if uid:
             os.seteuid(uid)
     _DROPPED_PRIVILEGES += 1
 
@@ -147,15 +152,13 @@ def drop_privileges_save():
     # At the moment, we only know how to handle this when effective
     # privileges were already dropped.
     assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
-    uid = os.environ.get('SUDO_UID')
-    gid = os.environ.get('SUDO_GID')
-    if uid is not None:
-        uid = int(uid)
+    (uid, gid) = get_uid_gid()
+    if uid:
         set_groups_for_uid(uid)
-    if gid is not None:
+    if gid:
         gid = int(gid)
         os.setresgid(gid, gid, 0)
-    if uid is not None:
+    if uid:
         os.setresuid(uid, uid, 0)
 
 
