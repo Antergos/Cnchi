@@ -55,8 +55,8 @@ def update_mirrorlists():
         '--quiet',
         'pacman-mirrorlist',
         'antergos-mirrorlist']
-    with misc.raised_privileges() as __:
-        try:            
+    with misc.raised_privileges():
+        try:
             with open(os.devnull, 'w') as fnull:
                 subprocess.call(cmd, stdout=fnull,
                                 stderr=subprocess.STDOUT)
@@ -73,6 +73,11 @@ def update_mirrorlists():
             logging.warning('Error copying new mirrorlist files: %s', why)
 
 def test():
+    """ Tests this module """
     update_mirrorlists()
-    with misc.raised_privileges() as __:
+    with misc.raised_privileges():
         sync()
+
+
+if __name__ == '__main__':
+    test()
