@@ -184,7 +184,7 @@ def raise_privileges(func):
     @wraps(func)
     def helper(*args, **kwargs):
         """ Function that runs func function with raised privileges """
-        with raised_privileges() as __:
+        with raised_privileges():
             return func(*args, **kwargs)
 
     return helper
@@ -515,7 +515,7 @@ def remove_temp_files():
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
-            with raised_privileges() as __:
+            with raised_privileges():
                 os.remove(path)
 
 
