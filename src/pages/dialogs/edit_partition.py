@@ -52,7 +52,7 @@ class EditPartitionDialog(PartitionBaseDialog):
             'ui_dir': ui_dir,
             'ui_file': EditPartitionDialog.UI_FILE,
             'ui_object': EditPartitionDialog.UI_OBJECT}
-        PartitionBaseDialog.__init__(self, ui_info, transient_for)
+        PartitionBaseDialog.__init__(self, self, ui_info, transient_for)
 
     def wants_format(self):
         """ Returns if format checkbox is active """

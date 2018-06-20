@@ -81,12 +81,13 @@ class PartitionBaseDialog(Gtk.Dialog):
         self.add_stock_buttons()
 
     def add_stock_buttons(self):
+        """ Adds apply and cancel buttons to the dialog """
         self.buttons = {}
         self.buttons['apply'] = self.add_button(
             Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
         self.buttons['cancel'] = self.add_button(
             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        
+
         # Assign labels and images to buttons
         btns = [
             ('cancel', 'dialog-cancel', _('_Cancel')),
@@ -207,7 +208,7 @@ class PartitionBaseDialog(Gtk.Dialog):
         combo.remove_all()
         for mount_point in fs.COMMON_MOUNT_POINTS:
             combo.append_text(mount_point)
-        
+
         # label
         label_entry = self.ui.get_object('label_entry')
         label_entry.set_text("")

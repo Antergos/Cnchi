@@ -55,7 +55,7 @@ class CreatePartitionDialog(PartitionBaseDialog):
             'ui_dir': ui_dir,
             'ui_file': CreatePartitionDialog.UI_FILE,
             'ui_object': CreatePartitionDialog.UI_OBJECT}
-        PartitionBaseDialog.__init__(self, ui_info, transient_for)
+        PartitionBaseDialog.__init__(self, self, ui_info, transient_for)
 
     def get_partition_size(self):
         """ Returns desired partition size """
@@ -114,7 +114,7 @@ class CreatePartitionDialog(PartitionBaseDialog):
         radio['end'].set_active(False)
 
     def prepare_size_spin(self, max_size_mb):
-        # Prepare size spin
+        """ Prepare size spin """
         size_spin = self.ui.get_object('size_spinbutton')
         size_spin.set_digits(0)
         adjustment = Gtk.Adjustment(
