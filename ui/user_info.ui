@@ -415,7 +415,7 @@
             <property name="halign">start</property>
             <property name="valign">start</property>
             <property name="draw_indicator">True</property>
-            <signal name="toggled" handler="on_checkbutton_show_password_toggled" swapped="no"/>
+            <signal name="toggled" handler="checkbutton_show_password_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -437,7 +437,7 @@
                 <property name="halign">start</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">login_pass</property>
-                <signal name="clicked" handler="on_authentication_toggled" swapped="no"/>
+                <signal name="clicked" handler="authentication_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -470,7 +470,7 @@
                 <property name="halign">start</property>
                 <property name="margin_start">20</property>
                 <property name="draw_indicator">True</property>
-                <signal name="clicked" handler="on_authentication_toggled" swapped="no"/>
+                <signal name="clicked" handler="authentication_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

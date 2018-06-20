@@ -286,18 +286,17 @@ class UserInfo(GtkBaseBox):
         if self.settings.get('desktop') == "base":
             self.login['auto'].set_sensitive(False)
 
-        self.forward_button.set_label(_('Save'))
-        self.forward_button.set_name('fwd_btn_save')
+        # Disable forward button until user data is filled correctly
         self.forward_button.set_sensitive(False)
 
-    def on_checkbutton_show_password_toggled(self, _widget):
+    def checkbutton_show_password_toggled(self, _widget):
         """ show/hide user password """
         btn = self.ui.get_object('checkbutton_show_password')
         shown = btn.get_active()
         self.entry['password'].set_visibility(shown)
         self.entry['verified_password'].set_visibility(shown)
 
-    def on_authentication_toggled(self, widget):
+    def authentication_toggled(self, widget):
         """ User has changed autologin or home encrypting """
 
         if widget == self.login['auto']:
@@ -389,5 +388,4 @@ class UserInfo(GtkBaseBox):
                 visible = ok_widget.is_visible()
                 if not visible or icon_name == UserInfo.ICON_WARNING:
                     all_ok = False
-
         self.forward_button.set_sensitive(all_ok)
