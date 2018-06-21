@@ -310,9 +310,3 @@ class Slides(GtkBaseBox):
         subprocess.call(cmd)
         cmd = ["/usr/bin/systemctl", "reboot", "--force", "--no-wall"]
         subprocess.call(cmd)
-
-
-if __name__ == '__main__':
-    from test_screen import run
-
-    run('Slides')
