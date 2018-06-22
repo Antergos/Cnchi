@@ -55,16 +55,15 @@ class DownloadPackages(object):
     def __init__(
             self,
             package_names,
-            pacman_conf_file,
-            pacman_cache_dir,
+            pacman_conf,
             settings=None,
             callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         self.package_names = package_names
 
-        self.pacman_conf_file = pacman_conf_file
-        self.pacman_cache_dir = pacman_cache_dir
+        self.pacman_conf_file = pacman_conf['file']
+        self.pacman_cache_dir = pacman_conf['cache']
 
         self.settings = settings
         if self.settings:
@@ -241,10 +240,13 @@ def test():
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
+    pacman_conf = {}
+    pacman_conf['file'] = '/tmp/pacman.conf'
+    pacman_conf['cache'] = '/tmp/pkg'
+
     download_packages = DownloadPackages(
-        package_names=["gedit"],
-        pacman_conf_file="/etc/pacman.conf",
-        pacman_cache_dir="/tmp/pkg",
+        package_names=['gedit'],
+        pacman_conf=pacman_conf,
         settings=None,
         callback_queue=None)
     download_packages.start()

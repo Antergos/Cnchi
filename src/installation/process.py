@@ -73,11 +73,13 @@ class Process(multiprocessing.Process):
             txt = _("Cannot create package list.")
             raise misc.InstallError(txt)
 
-        # Won't download anything here. It's just to create the metalinks list
+        # We won't download anything here. It's just to create the metalinks list
+        pacman_conf = {}
+        pacman_conf['file'] = '/etc/pacman.conf'
+        pacman_conf['cache'] = '/var/cache/pacman/pkg'
         self.down = download.DownloadPackages(
             package_names=self.pkg.packages,
-            pacman_conf_file='/etc/pacman.conf',
-            pacman_cache_dir='/var/cache/pacman/pkg',
+            pacman_conf=pacman_conf,
             settings=self.settings,
             callback_queue=self.callback_queue)
 

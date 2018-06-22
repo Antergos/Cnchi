@@ -348,10 +348,13 @@ class Installation(object):
 
         self.pacman_cache_dir = os.path.join(DEST_DIR, 'var/cache/pacman/pkg')
 
+        pacman_conf = {}
+        pacman_conf['file'] = '/tmp/pacman.conf'
+        pacman_conf['cache'] = self.pacman_cache_dir
+
         download_packages = download.DownloadPackages(
             package_names=self.packages,
-            pacman_conf_file='/tmp/pacman.conf',
-            pacman_cache_dir=self.pacman_cache_dir,
+            pacman_conf=pacman_conf,
             settings=self.settings,
             callback_queue=self.callback_queue)
 
