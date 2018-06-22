@@ -105,7 +105,7 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         self.space = 6
 
-        self.kb = None
+        self.keyboard = None
 
     def set_layout(self, layout):
         """ Set keymap layout """
@@ -168,40 +168,41 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         # Most keyboards are 105 key so default to that
         if self.layout in kbl_104:
-            self.kb = self.kb_104
+            self.keyboard = self.kb_104
         elif self.layout in kbl_106:
-            self.kb = self.kb_106
-        elif self.kb != self.kb_105:
-            self.kb = self.kb_105
+            self.keyboard = self.kb_106
+        elif self.keyboard != self.kb_105:
+            self.keyboard = self.kb_105
 
     @staticmethod
-    def rounded_rectangle(cr, x, y, width, height, aspect=1.0):
+    def rounded_rectangle(context, x, y, width, height, aspect=1.0):
+        """ Draws a rectangle with rounded corners """
         corner_radius = height / 10.0
         radius = corner_radius / aspect
         degrees = math.pi / 180.0
 
-        cr.new_sub_path()
-        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
-        cr.arc(x + width - radius, y + height -
-               radius, radius, 0, 90 * degrees)
-        cr.arc(x + radius, y + height - radius,
-               radius, 90 * degrees, 180 * degrees)
-        cr.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
-        cr.close_path()
+        context.new_sub_path()
+        context.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
+        context.arc(x + width - radius, y + height -
+                    radius, radius, 0, 90 * degrees)
+        context.arc(x + radius, y + height - radius,
+                    radius, 90 * degrees, 180 * degrees)
+        context.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
+        context.close_path()
 
-        cr.set_source_rgb(0.5, 0.5, 0.5)
-        cr.fill_preserve()
-        cr.set_source_rgba(0.2, 0.2, 0.2, 0.5)
-        cr.set_line_width(2)
-        cr.stroke()
+        context.set_source_rgb(0.5, 0.5, 0.5)
+        context.fill_preserve()
+        context.set_source_rgba(0.2, 0.2, 0.2, 0.5)
+        context.set_line_width(2)
+        context.stroke()
 
-    def do_draw(self, cr):
-        """ The 'cr' variable is the current Cairo context """
+    def do_draw(self, context):
+        """ context: current Cairo context """
         # alloc = self.get_allocation()
         # real_width = alloc.width
         # real_height = alloc.height
 
-        if not self.kb:
+        if not self.keyboard:
             return
 
         width = 460
@@ -211,16 +212,16 @@ class KeyboardWidget(Gtk.DrawingArea):
         key_w = (usable_width - 14 * self.space) / 15
 
         # Set background color to transparent
-        cr.set_source_rgba(1.0, 1.0, 1.0, 0.0)
-        cr.paint()
+        context.set_source_rgba(1.0, 1.0, 1.0, 0.0)
+        context.paint()
 
-        cr.set_source_rgb(0.84, 0.84, 0.84)
-        cr.set_line_width(2)
+        context.set_source_rgb(0.84, 0.84, 0.84)
+        context.set_line_width(2)
 
-        cr.rectangle(0, 0, width, height)
-        cr.stroke()
+        context.rectangle(0, 0, width, height)
+        context.stroke()
 
-        cr.set_source_rgb(0.22, 0.22, 0.22)
+        context.set_source_rgb(0.22, 0.22, 0.22)
 
         rx = 3
 
@@ -229,7 +230,7 @@ class KeyboardWidget(Gtk.DrawingArea):
         kw = key_w
 
         # Use this to show real widget size (useful when debugging this widget)
-        # cr.rectangle(0, 0, real_width, real_height)
+        # context.rectangle(0, 0, real_width, real_height)
 
         def draw_row(row, sx, sy, last_end=False):
             """ Draw a row of the keyboard """
@@ -244,34 +245,34 @@ class KeyboardWidget(Gtk.DrawingArea):
                 if i == len(keys) - 1 and last_end:
                     rect = (rect[0], rect[1], rw, rect[3])
 
-                self.rounded_rectangle(cr, rect[0], rect[1], rect[2], rect[3])
+                self.rounded_rectangle(context, rect[0], rect[1], rect[2], rect[3])
 
                 px = rect[0] + 5
                 py = rect[1] + rect[3] - (rect[3] / 4)
 
                 if self.codes and len(self.codes) > 0:
                     # Draw lower character
-                    cr.set_source_rgb(1.0, 1.0, 1.0)
-                    cr.select_font_face(
+                    context.set_source_rgb(1.0, 1.0, 1.0)
+                    context.select_font_face(
                         self.font,
                         cairo.FONT_SLANT_NORMAL,
                         cairo.FONT_WEIGHT_BOLD)
-                    cr.set_font_size(10)
-                    cr.move_to(px, py)
-                    cr.show_text(self.regular_text(k))
+                    context.set_font_size(10)
+                    context.move_to(px, py)
+                    context.show_text(self.regular_text(k))
 
                     px = rect[0] + 5
                     py = rect[1] + (rect[3] / 3)
 
                     # Draw upper character
-                    cr.set_source_rgb(0.82, 0.82, 0.82)
-                    cr.select_font_face(
+                    context.set_source_rgb(0.82, 0.82, 0.82)
+                    context.select_font_face(
                         self.font,
                         cairo.FONT_SLANT_NORMAL,
                         cairo.FONT_WEIGHT_NORMAL)
-                    cr.set_font_size(8)
-                    cr.move_to(px, py)
-                    cr.show_text(self.shift_text(k))
+                    context.set_font_size(8)
+                    context.move_to(px, py)
+                    context.show_text(self.shift_text(k))
 
                 rw = rw - space - kw
                 x = x + space + kw
@@ -281,8 +282,8 @@ class KeyboardWidget(Gtk.DrawingArea):
         x = 6
         y = 6
 
-        keys = self.kb["keys"]
-        ext_return = self.kb["extended_return"]
+        keys = self.keyboard["keys"]
+        ext_return = self.keyboard["extended_return"]
 
         first_key_w = 0
 
@@ -294,10 +295,10 @@ class KeyboardWidget(Gtk.DrawingArea):
             if first_key_w > 0:
                 first_key_w *= 1.375
 
-                if self.kb == self.kb_105 and i == 3:
+                if self.keyboard == self.kb_105 and i == 3:
                     first_key_w = kw * 1.275
 
-                self.rounded_rectangle(cr, 6, y, first_key_w, kw)
+                self.rounded_rectangle(context, 6, y, first_key_w, kw)
                 x = 6 + first_key_w + space
             else:
                 first_key_w = kw
@@ -308,7 +309,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             remaining_widths[i] = rw
 
             if i != 1 and i != 2:
-                self.rounded_rectangle(cr, x, y, rw, kw)
+                self.rounded_rectangle(context, x, y, rw, kw)
 
             x = .5
             y = y + space + kw
@@ -326,27 +327,27 @@ class KeyboardWidget(Gtk.DrawingArea):
             # one can only hope
             degrees = math.pi / 180.0
 
-            cr.new_sub_path()
+            context.new_sub_path()
 
-            cr.move_to(x1, y1 + rx)
-            cr.arc(x1 + rx, y1 + rx, rx, 180 * degrees, -90 * degrees)
-            cr.line_to(x1 + w1 - rx, y1)
-            cr.arc(x1 + w1 - rx, y1 + rx, rx, -90 * degrees, 0)
-            cr.line_to(x1 + w1, y2 + kw - rx)
-            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0, 90 * degrees)
-            cr.line_to(x2 + rx, y2 + kw)
-            cr.arc(x2 + rx, y2 + kw - rx, rx, 90 * degrees, 180 * degrees)
-            cr.line_to(x2, y1 + kw)
-            cr.line_to(x1 + rx, y1 + kw)
-            cr.arc(x1 + rx, y1 + kw - rx, rx, 90 * degrees, 180 * degrees)
+            context.move_to(x1, y1 + rx)
+            context.arc(x1 + rx, y1 + rx, rx, 180 * degrees, -90 * degrees)
+            context.line_to(x1 + w1 - rx, y1)
+            context.arc(x1 + w1 - rx, y1 + rx, rx, -90 * degrees, 0)
+            context.line_to(x1 + w1, y2 + kw - rx)
+            context.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0, 90 * degrees)
+            context.line_to(x2 + rx, y2 + kw)
+            context.arc(x2 + rx, y2 + kw - rx, rx, 90 * degrees, 180 * degrees)
+            context.line_to(x2, y1 + kw)
+            context.line_to(x1 + rx, y1 + kw)
+            context.arc(x1 + rx, y1 + kw - rx, rx, 90 * degrees, 180 * degrees)
 
-            cr.close_path()
+            context.close_path()
 
-            cr.set_source_rgb(0.5, 0.5, 0.5)
-            cr.fill_preserve()
-            cr.set_source_rgba(0.2, 0.2, 0.2, 0.5)
-            cr.set_line_width(2)
-            cr.stroke()
+            context.set_source_rgb(0.5, 0.5, 0.5)
+            context.fill_preserve()
+            context.set_source_rgba(0.2, 0.2, 0.2, 0.5)
+            context.set_line_width(2)
+            context.stroke()
         else:
             x = remaining_x[2]
             # Changed .5 to 6 because return key was out of line
@@ -397,16 +398,14 @@ class KeyboardWidget(Gtk.DrawingArea):
         cmd.append("-compact")
 
         try:
-            with raised_privileges() as __:
+            with raised_privileges():
                 output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 if output:
                     output = output.decode()
                     output = output.split('\n')
         except subprocess.CalledProcessError as process_error:
-            logging.error(
-                "Error running command %s: %s",
-                process_error.cmd,
-                process_error)
+            msg = "Error running command %s: %s"
+            logging.error(msg, process_error.cmd, process_error)
             return
 
         # Clear current codes
