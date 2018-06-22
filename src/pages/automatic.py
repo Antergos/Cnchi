@@ -133,7 +133,7 @@ class InstallationAutomatic(GtkBaseBox):
         label = self.ui.get_object('bootloader_device_label')
         label.set_markup(txt)
 
-    def on_checkbutton_show_password_toggled(self, _widget):
+    def show_password_toggled(self, _widget):
         """ show/hide LUKS passwords """
         btn = self.ui.get_object('checkbutton_show_password')
         show = btn.get_active()
@@ -142,7 +142,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def populate_devices(self):
         """ Fill list with devices """
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             device_list = parted.getAllDevices()
 
         self.device_store.remove_all()
@@ -169,7 +169,7 @@ class InstallationAutomatic(GtkBaseBox):
         misc.select_first_combobox_item(self.device_store)
         misc.select_first_combobox_item(self.bootloader_device_entry)
 
-    def on_select_drive_changed(self, _widget):
+    def select_drive_changed(self, _widget):
         """ User selected another drive """
         line = self.device_store.get_active_text()
         if line is not None:
@@ -198,7 +198,7 @@ class InstallationAutomatic(GtkBaseBox):
 
         return True
 
-    def on_luks_password_changed(self, _widget):
+    def luks_password_changed(self, _widget):
         """ User has changed LUKS password """
         luks_password = self.entry['luks_password'].get_text()
         luks_password_confirm = self.entry['luks_password_confirm'].get_text()
@@ -238,7 +238,7 @@ class InstallationAutomatic(GtkBaseBox):
                 widget = self.ui.get_object(widget_id)
                 widget.hide()
 
-    def on_bootloader_device_check_toggled(self, checkbox):
+    def bootloader_device_check_toggled(self, checkbox):
         """ User wants to install (or not) boot loader """
         status = checkbox.get_active()
 
@@ -254,13 +254,13 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.settings.set('bootloader_install', status)
 
-    def on_bootloader_device_entry_changed(self, _widget):
+    def bootloader_device_entry_changed(self, _widget):
         """ Get new selected bootloader device """
         line = self.bootloader_device_entry.get_active_text()
         if line is not None:
             self.bootloader_device = self.bootloader_devices[line]
 
-    def on_bootloader_entry_changed(self, _widget):
+    def bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """
         line = self.bootloader_entry.get_active_text()
         if line is not None:
