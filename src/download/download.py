@@ -46,11 +46,8 @@ except NameError as err:
         return message
 
 class DownloadPackages(object):
-    """ Class to download packages using Aria2, requests (default) or urllib
-        This class tries to previously download all necessary packages for
-        Antergos installation using aria2, requests or urllib
-        Aria2 is known to use too much memory (not Aria2's fault but ours)
-        so until it's fixed it it's not advised to use it """
+    """ Class to download packages. This class tries to previously download
+        all necessary packages for  Antergos installation using requests. """
 
     def __init__(
             self,
