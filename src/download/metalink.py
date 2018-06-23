@@ -101,10 +101,9 @@ def get_info(metalink):
 def create(alpm, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    # options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
     options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
 
-    if package_name is "databases":
+    if package_name == "databases":
         options.append("--refresh")
     else:
         options.append(package_name)
@@ -360,7 +359,7 @@ def resolve_deps(alpm_handle, other, alldeps):
             if pyalpm.find_satisfier(local_cache, dep) is None or alldeps:
                 for database in syncdbs:
                     prov = pyalpm.find_satisfier(database.pkgcache, dep)
-                    if prov is not None:
+                    if prov:
                         other.add(prov)
                         if prov.name not in seen:
                             seen.add(prov.name)
@@ -371,25 +370,14 @@ def resolve_deps(alpm_handle, other, alldeps):
     return other, missing_deps
 
 
-def build_download_queue(alpm, args=None):
-    """ Function to build a download queue.
-        Needs a pkgname in args """
-
-    pargs = parse_args(args)
-
-    handle = alpm.get_handle()
-    conf = alpm.get_config()
-
-    requested = set(pargs.pkgs)
+def create_package_set(requested, repo_pkgs, antdb, alpm_handle):
+    """ Create package set from requested set """
     other = PkgSet()
-    missing_deps = list()
     found = set()
-
-    repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
 
     for pkg in requested:
         other_grp = PkgSet()
-        for database in handle.get_syncdbs():
+        for database in alpm_handle.get_syncdbs():
             if pkg in repo_pkgs and database.name != 'antergos':
                 # pkg should be sourced from the antergos repo only.
                 database = antdb
@@ -407,6 +395,24 @@ def build_download_queue(alpm, args=None):
                     break
         else:
             other |= other_grp
+    return found, other
+
+def build_download_queue(alpm, args=None):
+    """ Function to build a download queue.
+        Needs a pkgname in args """
+
+    pargs = parse_args(args)
+
+    requested = set(pargs.pkgs)
+
+    handle = alpm.get_handle()
+    conf = alpm.get_config()
+
+    missing_deps = list()
+
+    ant_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
+
+    found, other = create_package_set(requested, ant_repo_pkgs, antdb, handle)
 
     # foreign_names = requested - set(x.name for x in other)
 
@@ -420,9 +426,9 @@ def build_download_queue(alpm, args=None):
         other = PkgSet(list(check_cache(conf, other)))
 
     # Build download queue
-
     download_queue = DownloadQueue()
 
+    # Add databases (and their signature)
     if pargs.db:
         for database in handle.get_syncdbs():
             try:
@@ -432,6 +438,7 @@ def build_download_queue(alpm, args=None):
             download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
             download_queue.add_db(database, download_sig)
 
+    # Add packages (pkg, url, signature)
     for pkg in other:
         try:
             siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
@@ -537,7 +544,7 @@ def test_module():
         pacman.release()
         del pacman
     except Exception as ex:
-        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+        template = "Can't initialize pyalpm. An exception of type {} occured. Arguments:\n{1!r}"
         message = template.format(type(ex).__name__, ex.args)
         logging.error(message)
 
