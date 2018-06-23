@@ -175,19 +175,21 @@ class KeyboardWidget(Gtk.DrawingArea):
             self.keyboard = self.kb_105
 
     @staticmethod
-    def rounded_rectangle(context, x, y, width, height, aspect=1.0):
+    def rounded_rectangle(context, start_x, start_y, width, height, aspect=1.0):
         """ Draws a rectangle with rounded corners """
         corner_radius = height / 10.0
         radius = corner_radius / aspect
         degrees = math.pi / 180.0
+        degrees_90 = 90 * degrees
+        degrees_180 = 180 * degrees
 
         context.new_sub_path()
-        context.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
-        context.arc(x + width - radius, y + height -
-                    radius, radius, 0, 90 * degrees)
-        context.arc(x + radius, y + height - radius,
-                    radius, 90 * degrees, 180 * degrees)
-        context.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
+        context.arc(start_x + width - radius, start_y + radius, radius, -degrees_90, 0)
+        context.arc(start_x + width - radius, start_y + height -
+                    radius, radius, 0, degrees_90)
+        context.arc(start_x + radius, start_y + height - radius,
+                    radius, degrees_90, degrees_180)
+        context.arc(start_x + radius, start_y + radius, radius, degrees_180, 270 * degrees)
         context.close_path()
 
         context.set_source_rgb(0.5, 0.5, 0.5)
