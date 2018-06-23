@@ -325,26 +325,50 @@ def get_antergos_repo_pkgs(alpm_handle):
     """ Returns pkgs from Antergos groups (cinnamon, mate, mate-extra) and
         the antergos db info """
 
-    antdb = [database for database in alpm_handle.get_syncdbs() if database.name ==
-             'antergos']
-    antdb = antdb[0]
+    antdb = None
+    for database in alpm_handle.get_syncdbs():
+        if database.name == 'antergos':
+            antdb = database
+            break
 
-    one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
-    one_repo_groups = []
-    for one_repo_group_name in one_repo_groups_names:
-        grp = antdb.read_grp(one_repo_group_name)
-        if not grp:
-            grp = ['None', []]
-            #logging.warning(
-            #    "Error reading group '%s' from the antergos repo db",
-            #    one_repo_group_name)
-        one_repo_groups.append(grp)
+    group_names = ['cinnamon', 'mate', 'mate-extra']
+    repo_groups = []
+    for group_name in group_names:
+        group = antdb.read_grp(group_name)
+        if not group:
+            # Group does not exist
+            group = ['None', []]
+        repo_groups.append(group)
 
-    one_repo_pkgs = {
-        pkg for one_repo_group in one_repo_groups
-        for pkg in one_repo_group[1] if one_repo_group}
+    repo_pkgs = {
+        pkg for repo_group in repo_groups
+        for pkg in repo_group[1] if repo_group}
 
-    return one_repo_pkgs, antdb
+    return repo_pkgs, antdb
+
+
+def resolve_deps(alpm_handle, other, alldeps):
+    """ Resolve dependencies """
+    missing_deps = []
+    queue = deque(other)
+    local_cache = alpm_handle.get_localdb().pkgcache
+    syncdbs = alpm_handle.get_syncdbs()
+    seen = set(queue)
+    while queue:
+        pkg = queue.popleft()
+        for dep in pkg.depends:
+            if pyalpm.find_satisfier(local_cache, dep) is None or alldeps:
+                for database in syncdbs:
+                    prov = pyalpm.find_satisfier(database.pkgcache, dep)
+                    if prov is not None:
+                        other.add(prov)
+                        if prov.name not in seen:
+                            seen.add(prov.name)
+                            queue.append(prov)
+                        break
+                else:
+                    missing_deps.append(dep)
+    return other, missing_deps
 
 
 def build_download_queue(alpm, args=None):
@@ -361,12 +385,12 @@ def build_download_queue(alpm, args=None):
     missing_deps = list()
     found = set()
 
-    one_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
+    repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
 
     for pkg in requested:
         other_grp = PkgSet()
         for database in handle.get_syncdbs():
-            if pkg in one_repo_pkgs and database.name != 'antergos':
+            if pkg in repo_pkgs and database.name != 'antergos':
                 # pkg should be sourced from the antergos repo only.
                 database = antdb
 
@@ -388,29 +412,14 @@ def build_download_queue(alpm, args=None):
 
     # Resolve dependencies.
     if other and not pargs.nodeps:
-        queue = deque(other)
-        local_cache = handle.get_localdb().pkgcache
-        syncdbs = handle.get_syncdbs()
-        seen = set(queue)
-        while queue:
-            pkg = queue.popleft()
-            for dep in pkg.depends:
-                if pyalpm.find_satisfier(local_cache, dep) is None or pargs.alldeps:
-                    for database in syncdbs:
-                        prov = pyalpm.find_satisfier(database.pkgcache, dep)
-                        if prov is not None:
-                            other.add(prov)
-                            if prov.name not in seen:
-                                seen.add(prov.name)
-                                queue.append(prov)
-                            break
-                    else:
-                        missing_deps.append(dep)
+        other, missing_deps = resolve_deps(handle, other, pargs.alldeps)
 
     found |= set(other.pkgs)
     not_found = requested - found
     if pargs.needed:
         other = PkgSet(list(check_cache(conf, other)))
+
+    # Build download queue
 
     download_queue = DownloadQueue()
 
