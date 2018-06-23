@@ -445,10 +445,17 @@ def build_download_queue(alpm, args=None):
         except KeyError:
             siglevel = None
         download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
-        urls = set(os.path.join(url, pkg.filename) for url in pkg.db.servers)
+
+        urls = []
+        server_urls = list(pkg.db.servers)
+        for server_url in server_urls:
+            url = os.path.join(server_url, pkg.filename)
+            urls.append(url)
+
         # Limit to MAX_URLS url
         while len(urls) > MAX_URLS:
             urls.pop()
+
         download_queue.add_sync_pkg(pkg, urls, download_sig)
 
     return download_queue, not_found, missing_deps
@@ -521,7 +528,7 @@ def test_module():
     logger.addHandler(stream_handler)
 
     import gc
-    import pprint
+    #import pprint
     import pacman.pac as pac
 
     try:
@@ -532,13 +539,14 @@ def test_module():
         print("Creating metalink...")
         meta4 = create(
             alpm=pacman,
-            package_name="gnome-desktop-settings",
+            package_name="automake",
             pacman_conf_file="/etc/pacman.conf")
         print(get_info(meta4))
+        # print(get_info(meta4)['automake']['urls'])
         meta4 = None
-        objects = gc.collect()
-        print("Unreachable objects: ", objects)
-        print("Remaining garbage: ", pprint.pprint(gc.garbage))
+        # objects = gc.collect()
+        # print("Unreachable objects: ", objects)
+        # print("Remaining garbage: ", pprint.pprint(gc.garbage))
 
         pacman.release()
         del pacman
