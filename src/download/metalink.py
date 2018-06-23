@@ -529,22 +529,21 @@ def test_module():
             conf_path="/etc/pacman.conf",
             callback_queue=None)
 
-        for index in range(1, 10000):
-            print(index, "Creating metalink...")
-            meta4 = create(
-                alpm=pacman,
-                package_name="gnome",
-                pacman_conf_file="/etc/pacman.conf")
-            print(get_info(meta4))
-            meta4 = None
-            objects = gc.collect()
-            print("Unreachable objects: ", objects)
-            print("Remaining garbage: ", pprint.pprint(gc.garbage))
+        print("Creating metalink...")
+        meta4 = create(
+            alpm=pacman,
+            package_name="gnome-desktop-settings",
+            pacman_conf_file="/etc/pacman.conf")
+        print(get_info(meta4))
+        meta4 = None
+        objects = gc.collect()
+        print("Unreachable objects: ", objects)
+        print("Remaining garbage: ", pprint.pprint(gc.garbage))
 
         pacman.release()
         del pacman
     except Exception as ex:
-        template = "Can't initialize pyalpm. An exception of type {} occured. Arguments:\n{1!r}"
+        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
         message = template.format(type(ex).__name__, ex.args)
         logging.error(message)
 
