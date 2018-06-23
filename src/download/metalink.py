@@ -321,21 +321,12 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def build_download_queue(alpm, args=None):
-    """ Function to build a download queue.
-        Needs a pkgname in args """
+def get_antergos_repo_pkgs(alpm_handle):
+    """ Returns pkgs from Antergos groups (cinnamon, mate, mate-extra) and
+        the antergos db info """
 
-    pargs = parse_args(args)
-
-    handle = alpm.get_handle()
-    conf = alpm.get_config()
-
-    requested = set(pargs.pkgs)
-    other = PkgSet()
-    missing_deps = list()
-    found = set()
-
-    antdb = [db for db in handle.get_syncdbs() if db.name == 'antergos']
+    antdb = [database for database in alpm_handle.get_syncdbs() if database.name ==
+             'antergos']
     antdb = antdb[0]
 
     one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
@@ -353,20 +344,39 @@ def build_download_queue(alpm, args=None):
         pkg for one_repo_group in one_repo_groups
         for pkg in one_repo_group[1] if one_repo_group}
 
+    return one_repo_pkgs, antdb
+
+
+def build_download_queue(alpm, args=None):
+    """ Function to build a download queue.
+        Needs a pkgname in args """
+
+    pargs = parse_args(args)
+
+    handle = alpm.get_handle()
+    conf = alpm.get_config()
+
+    requested = set(pargs.pkgs)
+    other = PkgSet()
+    missing_deps = list()
+    found = set()
+
+    one_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
+
     for pkg in requested:
         other_grp = PkgSet()
-        for db in handle.get_syncdbs():
-            if pkg in one_repo_pkgs and db.name != 'antergos':
+        for database in handle.get_syncdbs():
+            if pkg in one_repo_pkgs and database.name != 'antergos':
                 # pkg should be sourced from the antergos repo only.
-                db = antdb
+                database = antdb
 
-            syncpkg = db.get_pkg(pkg)
+            syncpkg = database.get_pkg(pkg)
 
             if syncpkg:
                 other.add(syncpkg)
                 break
             else:
-                syncgrp = db.read_grp(pkg)
+                syncgrp = database.read_grp(pkg)
                 if syncgrp:
                     found.add(pkg)
                     other_grp |= PkgSet(syncgrp[1])
@@ -386,8 +396,8 @@ def build_download_queue(alpm, args=None):
             pkg = queue.popleft()
             for dep in pkg.depends:
                 if pyalpm.find_satisfier(local_cache, dep) is None or pargs.alldeps:
-                    for db in syncdbs:
-                        prov = pyalpm.find_satisfier(db.pkgcache, dep)
+                    for database in syncdbs:
+                        prov = pyalpm.find_satisfier(database.pkgcache, dep)
                         if prov is not None:
                             other.add(prov)
                             if prov.name not in seen:
@@ -405,13 +415,13 @@ def build_download_queue(alpm, args=None):
     download_queue = DownloadQueue()
 
     if pargs.db:
-        for db in handle.get_syncdbs():
+        for database in handle.get_syncdbs():
             try:
-                siglevel = conf[db.name]['SigLevel'].split()[0]
+                siglevel = conf[database.name]['SigLevel'].split()[0]
             except KeyError:
                 siglevel = None
             download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
-            download_queue.add_db(db, download_sig)
+            download_queue.add_db(database, download_sig)
 
     for pkg in other:
         try:
