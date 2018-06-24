@@ -39,7 +39,7 @@ import hashlib
 
 import misc.tz as tz
 import misc.extra as misc
-import misc.timezonemap as timezonemap
+import widgets.timezonemap as timezonemap
 from pages.gtkbasebox import GtkBaseBox
 
 import geoip

@@ -64,8 +64,7 @@ class TimezoneMap(Gtk.Widget):
     __gsignals__ = {
         'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
-    PIN_HOT_POINT_X = 8
-    PIN_HOT_POINT_Y = 15
+    PIN_HOT_POINT = [8, 15]
     LOCATION_CHANGED = 0
 
     G_PI_4 = 0.78539816339744830961566084581987572104929234984378
@@ -78,44 +77,19 @@ class TimezoneMap(Gtk.Widget):
 
     # COLOR_CODES is (offset, red, green, blue, alpha)
     COLOR_CODES = [
-        (-11.0, 43, 0, 0, 255),
-        (-10.0, 85, 0, 0, 255),
-        (-9.5, 102, 255, 0, 255),
-        (-9.0, 128, 0, 0, 255),
-        (-8.0, 170, 0, 0, 255),
-        (-7.0, 212, 0, 0, 255),
-        (-6.0, 255, 0, 1, 255),  # north
-        (-6.0, 255, 0, 0, 255),  # south
-        (-5.0, 255, 42, 42, 255),
-        (-4.5, 192, 255, 0, 255),
-        (-4.0, 255, 85, 85, 255),
-        (-3.5, 0, 255, 0, 255),
-        (-3.0, 255, 128, 128, 255),
-        (-2.0, 255, 170, 170, 255),
-        (-1.0, 255, 213, 213, 255),
-        (0.0, 43, 17, 0, 255),
-        (1.0, 85, 34, 0, 255),  # eastern Europe
-        (2.0, 128, 51, 0, 255),
-        (3.0, 170, 68, 0, 255),
-        (3.5, 0, 255, 102, 255),
-        (4.0, 212, 85, 0, 255),
-        (4.5, 0, 204, 255, 255),
-        (5.0, 255, 102, 0, 255),
-        (5.5, 0, 102, 255, 255),
-        (5.75, 0, 238, 207, 247),
-        (6.0, 255, 127, 42, 255),
-        (6.5, 204, 0, 254, 254),
-        (7.0, 255, 153, 85, 255),
-        (8.0, 255, 179, 128, 255),
-        (9.0, 255, 204, 170, 255),
-        (9.5, 170, 0, 68, 250),
-        (10.0, 255, 230, 213, 255),
-        (10.5, 212, 124, 21, 250),
-        (11.0, 212, 170, 0, 255),
-        (11.5, 249, 25, 87, 253),
-        (12.0, 255, 204, 0, 255),
-        (12.75, 254, 74, 100, 248),
-        (13.0, 255, 85, 153, 250)]
+        (-11.0, 43, 0, 0, 255), (-10.0, 85, 0, 0, 255), (-9.5, 102, 255, 0, 255),
+        (-9.0, 128, 0, 0, 255), (-8.0, 170, 0, 0, 255), (-7.0, 212, 0, 0, 255),
+        (-6.0, 255, 0, 1, 255), (-6.0, 255, 0, 0, 255), (-5.0, 255, 42, 42, 255),
+        (-4.5, 192, 255, 0, 255), (-4.0, 255, 85, 85, 255), (-3.5, 0, 255, 0, 255),
+        (-3.0, 255, 128, 128, 255), (-2.0, 255, 170, 170, 255), (-1.0, 255, 213, 213, 255),
+        (0.0, 43, 17, 0, 255), (1.0, 85, 34, 0, 255), (2.0, 128, 51, 0, 255),
+        (3.0, 170, 68, 0, 255), (3.5, 0, 255, 102, 255), (4.0, 212, 85, 0, 255),
+        (4.5, 0, 204, 255, 255), (5.0, 255, 102, 0, 255), (5.5, 0, 102, 255, 255),
+        (5.75, 0, 238, 207, 247), (6.0, 255, 127, 42, 255), (6.5, 204, 0, 254, 254),
+        (7.0, 255, 153, 85, 255), (8.0, 255, 179, 128, 255), (9.0, 255, 204, 170, 255),
+        (9.5, 170, 0, 68, 250), (10.0, 255, 230, 213, 255), (10.5, 212, 124, 21, 250),
+        (11.0, 212, 170, 0, 255), (11.5, 249, 25, 87, 253), (12.0, 255, 204, 0, 255),
+        (12.75, 254, 74, 100, 248), (13.0, 255, 85, 153, 250)]
 
 
     def __init__(self):
@@ -162,6 +136,7 @@ class TimezoneMap(Gtk.Widget):
         self.tzdb = tz.Database()
 
     def load_olsen_map_timezones(self):
+        """ Load olson map timezones """
         try:
             tree = elementTree.parse(TimezoneMap.OLSEN_MAP_PATH)
             self.olsen_map_timezones = []
@@ -293,18 +268,18 @@ class TimezoneMap(Gtk.Widget):
         height = logical_rect.height + margin_top + margin_bottom
 
         if pointx < alloc.width / 2:
-            x = pointx + 20
+            my_x = pointx + 20
         else:
-            x = pointx - width - 20
+            my_x = pointx - width - 20
 
-        y = pointy - height / 2
+        my_y = pointy - height / 2
 
         # Make sure it fits in the visible area
-        x = self.clamp(x, 0, alloc.width - width)
-        y = self.clamp(y, 0, alloc.height - height)
+        my_x = self.clamp(my_x, 0, alloc.width - width)
+        my_y = self.clamp(my_y, 0, alloc.height - height)
 
         context.save()
-        context.translate(x, y)
+        context.translate(my_x, my_y)
 
         # Draw the bubble
         context.new_sub_path()
@@ -366,25 +341,25 @@ class TimezoneMap(Gtk.Widget):
             longitude = self._tz_location.get_property('longitude')
             latitude = self._tz_location.get_property('latitude')
 
-            pointx = self.convert_longitude_to_x(longitude, alloc.width)
-            pointy = self.convert_latitude_to_y(latitude, alloc.height)
+            point_x = self.convert_longitude_to_x(longitude, alloc.width)
+            point_y = self.convert_latitude_to_y(latitude, alloc.height)
 
-            # pointx = self.clamp(math.floor(pointx), 0, alloc.width)
-            # pointy = self.clamp(math.floor(pointy), 0, alloc.height)
+            # point_x = self.clamp(math.floor(pointx), 0, alloc.width)
+            # point_y = self.clamp(math.floor(pointy), 0, alloc.height)
 
-            if pointy > alloc.height:
-                pointy = alloc.height
+            if point_y > alloc.height:
+                point_y = alloc.height
 
             # Draw text bubble
-            self.draw_text_bubble(cr, pointx, pointy)
+            self.draw_text_bubble(cr, point_x, point_y)
 
             # Draw pin
             if self._pin is not None:
                 Gdk.cairo_set_source_pixbuf(
                     cr,
                     self._pin,
-                    pointx - TimezoneMap.PIN_HOT_POINT_X,
-                    pointy - TimezoneMap.PIN_HOT_POINT_Y)
+                    point_x - TimezoneMap.PIN_HOT_POINT[0],
+                    point_y - TimezoneMap.PIN_HOT_POINT[1])
                 cr.paint()
 
     def set_location(self, tz_location):
@@ -410,7 +385,7 @@ class TimezoneMap(Gtk.Widget):
             self._show_offset = False
             self._selected_offset = 0.0
 
-    def get_loc_for_xy(self, x, y):
+    def get_loc_for_xy(self, my_x, my_y):
         """ Get location from map position """
 
         if not self._color_map:
@@ -419,17 +394,15 @@ class TimezoneMap(Gtk.Widget):
         rowstride = self._color_map.get_rowstride()
         pixels = self._color_map.get_pixels()
 
-        my_red = pixels[int(rowstride * y + x * 4)]
-        my_green = pixels[int(rowstride * y + x * 4) + 1]
-        my_blue = pixels[int(rowstride * y + x * 4) + 2]
-        my_alpha = pixels[int(rowstride * y + x * 4) + 3]
+        position = int(rowstride * my_y + my_x * 4)
+        my_red = pixels[position]
+        my_green = pixels[position + 1]
+        my_blue = pixels[position + 2]
+        my_alpha = pixels[position + 3]
 
         for color_code in TimezoneMap.COLOR_CODES:
             (offset, red, green, blue, alpha) = color_code
-            if (red == my_red and
-                    green == my_green and
-                    blue == my_blue and
-                    alpha == my_alpha):
+            if red == my_red and green == my_green and blue == my_blue and alpha == my_alpha:
                 self._selected_offset = offset
                 break
 
@@ -449,11 +422,11 @@ class TimezoneMap(Gtk.Widget):
             longitude = tz_location.get_property('longitude')
             latitude = tz_location.get_property('latitude')
 
-            pointx = self.convert_longitude_to_x(longitude, width)
-            pointy = self.convert_latitude_to_y(latitude, height)
+            point_x = self.convert_longitude_to_x(longitude, width)
+            point_y = self.convert_latitude_to_y(latitude, height)
 
-            diff_x = pointx - x
-            diff_y = pointy - y
+            diff_x = point_x - my_x
+            diff_y = point_y - my_y
 
             dist = diff_x * diff_x + diff_y * diff_y
 
@@ -468,10 +441,10 @@ class TimezoneMap(Gtk.Widget):
 
         # Make sure it was the first button
         if event.button == 1:
-            x = int(event.x)
-            y = int(event.y)
+            my_x = int(event.x)
+            my_y = int(event.y)
 
-            nearest_tz_location = self.get_loc_for_xy(x, y)
+            nearest_tz_location = self.get_loc_for_xy(my_x, my_y)
 
             if nearest_tz_location is not None:
                 self.set_bubble_text(nearest_tz_location)
@@ -523,15 +496,15 @@ class TimezoneMap(Gtk.Widget):
 
     def get_timezone_at_coords(self, latitude, longitude):
         """ Get timezone from latitude, longitude """
-        x = int(2048.0 / 360.0 * (180.0 + longitude))
-        y = int(1024.0 / 180.0 * (90.0 - latitude))
+        my_x = int(2048.0 / 360.0 * (180.0 + longitude))
+        my_y = int(1024.0 / 180.0 * (90.0 - latitude))
 
         olsen_map_channels = self._olsen_map.get_n_channels()
         olsen_map_rowstride = self._olsen_map.get_rowstride()
         olsen_map_pixels = self._olsen_map.get_pixels()
 
         zone = -1
-        offset = olsen_map_rowstride * y + x * olsen_map_channels
+        offset = olsen_map_rowstride * my_y + my_x * olsen_map_channels
 
         if offset < len(olsen_map_pixels):
             color0 = olsen_map_pixels[offset]
@@ -541,16 +514,16 @@ class TimezoneMap(Gtk.Widget):
         if 0 <= zone < len(self.olsen_map_timezones):
             city = self.olsen_map_timezones[zone]
             return city
+
+        alloc = self.get_allocation()
+        my_x = self.convert_longitude_to_x(longitude, alloc.width)
+        my_y = self.convert_latitude_to_y(latitude, alloc.height)
+        location = self.get_loc_for_xy(my_x, my_y)
+        if location:
+            zone = location.get_property('zone')
+            return zone
         else:
-            alloc = self.get_allocation()
-            x = self.convert_longitude_to_x(longitude, alloc.width)
-            y = self.convert_latitude_to_y(latitude, alloc.height)
-            location = self.get_loc_for_xy(x, y)
-            if location:
-                zone = location.get_property('zone')
-                return zone
-            else:
-                return None
+            return None
 
     @staticmethod
     def convert_longitude_to_x(longitude, map_width):
@@ -566,17 +539,17 @@ class TimezoneMap(Gtk.Widget):
 
         top_per = top_lat / 180.0
 
-        y = 1.25 * math.log(math.tan(TimezoneMap.G_PI_4 +
-                                     0.4 * math.radians(latitude)))
+        radians = TimezoneMap.G_PI_4 + 0.4 * math.radians(latitude)
+        my_y = 1.25 * math.log(math.tan(radians))
 
         full_range = 4.6068250867599998
         top_offset = full_range * top_per
         tangent = math.tan(TimezoneMap.G_PI_4 + 0.4 * math.radians(bottom_lat))
         map_range = math.fabs(1.25 * math.log(tangent) - top_offset)
-        y = math.fabs(y - top_offset)
-        y = y / map_range
-        y = y * map_height
-        return y
+        my_y = math.fabs(my_y - top_offset)
+        my_y = my_y / map_range
+        my_y = my_y * map_height
+        return my_y
 
     @staticmethod
     def clamp(x_value, min_value, max_value):
@@ -596,10 +569,11 @@ def test_module():
     win.show_all()
 
     # Test with Europe/London
-    # timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
+    #timezone = tzmap.get_timezone_at_coords(latitude=51.3030, longitude=-0.00731)
 
     # Test with America/Montreal
-    timezone = tzmap.get_timezone_at_coords(latitude=+45.31, longitude=-73.34)
+    timezone = tzmap.get_timezone_at_coords(
+        latitude=45.5579, longitude=-73.8703)
 
     tzmap.set_timezone(timezone)
 

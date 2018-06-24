@@ -198,7 +198,8 @@ class KeyboardWidget(Gtk.DrawingArea):
         context.set_line_width(2)
         context.stroke()
 
-    def draw_ext_return(self, context, point1, width1, point2, rect_x, key_width):
+    @staticmethod
+    def draw_ext_return(context, point1, width1, point2, rect_x, key_width):
         """ this is some serious crap... but it has to be so
             maybe one day keyboards won't look like this...
             one can only hope """

@@ -306,7 +306,7 @@ class _Database(object):
         """ Get timezone's location """
         try:
             return self.tz_to_loc[timezone]
-        except IndexError:
+        except (KeyError, IndexError):
             # Sometimes we'll encounter timezones that aren't really
             # city-zones, like "US/Eastern" or "Mexico/General".  So first,
             # we check if the timezone is known.  If it isn't, we search for
