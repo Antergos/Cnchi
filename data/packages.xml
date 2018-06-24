@@ -43,7 +43,7 @@
                 <pkgname>whois</pkgname>
                 <pkgname>wireless_tools</pkgname>
                 <pkgname>wpa_actiond</pkgname>
-                <pkgname>zd1211-firmware</pkgname>
+                <!--<pkgname>zd1211-firmware</pkgname>-->
             </packages>
         </edition>
 
@@ -228,7 +228,8 @@
             <pkgname>git</pkgname>
             <pkgname>yaourt</pkgname>
         </feature>
-        <feature name="battery">
+        <feature name="energy">
+            <pkgname>thermald</pkgname>
             <pkgname>tlp</pkgname>
         </feature>
         <feature name="bluetooth">
