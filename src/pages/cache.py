@@ -92,7 +92,7 @@ class Cache(GtkBaseBox):
 
     def populate_devices_and_partitions(self):
         """ Fill list with devices' partitions """
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             device_list = parted.getAllDevices()
 
         self.part_store.remove_all()

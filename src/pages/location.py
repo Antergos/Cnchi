@@ -129,7 +129,7 @@ class Location(GtkBaseBox):
                 label = listbox_row.get_children()[0]
                 if label is not None:
                     label = label.get_text()
-                    for name in names.values():                    
+                    for name in names.values():
                         if name in label:
                             self.selected_country = label
                             self.listbox.select_row(listbox_row)

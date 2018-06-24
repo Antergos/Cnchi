@@ -287,7 +287,7 @@ class SelectPackages(object):
                     self.add_package(pkg)
 
     def maybe_add_chinese_fonts(self, xml_root):
-        # Add chinese fonts
+        """ Add chinese fonts if necessary """
         lang_code = self.settings.get("language_code")
         if lang_code in ["zh_TW", "zh_CN"]:
             logging.debug("Selecting chinese fonts.")

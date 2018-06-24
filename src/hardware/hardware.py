@@ -50,9 +50,9 @@ class Hardware(object):
 
         self.product_id = ""
 
-        if type(pci_file_or_devices) == str:
+        if isinstance(pci_file_or_devices, str):
             path = os.path.join(Hardware.PCI_FILES_PATH, pci_file_or_devices)
-            if os.path.exists(path):     
+            if os.path.exists(path):
                 self.pci_file = pci_file_or_devices
                 self.load_pci_file(path)
             else:
@@ -146,10 +146,7 @@ class Hardware(object):
 
     def is_graphic_driver(self):
         """ Tells us if this is a graphic driver or not """
-        if self.class_id == "0x03":
-            return True
-        else:
-            return False
+        return bool(self.class_id == "0x03")
 
     def get_name(self):
         """ Returns class name """

@@ -113,7 +113,7 @@ def setup(ssid=None, passphrase=None):
                 "etc/wpa_supplicant/wpa_supplicant-{0}.conf".format(link))
             try:
                 conf = subprocess.check_output(
-                    ["wpa_passphrase", ssid, passphrase])
+                    ["/usr/bin/wpa_passphrase", ssid, passphrase])
                 with open(conf_path, "w") as conf_file:
                     conf_file.write(conf)
             except subprocess.CalledProcessError as process_error:

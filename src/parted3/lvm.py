@@ -88,7 +88,7 @@ def get_logical_volumes(volume_group):
 def remove_logical_volume(logical_volume):
     """ Removes a logical volume """
     try:
-        subprocess.check_call(["lvremove", "-f", logical_volume])
+        subprocess.check_call(["/usr/bin/lvremove", "-f", logical_volume])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove logical volume {0}").format(logical_volume)
         logging.error(txt)

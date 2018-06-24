@@ -440,6 +440,7 @@ class Mirrors(GtkBaseBox):
         return True
 
     def get_next_page(self):
+        """ Returns next page """
         return self.next_page
 
 

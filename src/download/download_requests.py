@@ -329,7 +329,8 @@ class Download(object):
 
         return True
 
-    def format_progress_message(self, percent, bps):
+    @staticmethod
+    def format_progress_message(percent, bps):
         """ Formats speed message information """
         if bps >= (1024 * 1024):
             mbps = bps / (1024 * 1024)

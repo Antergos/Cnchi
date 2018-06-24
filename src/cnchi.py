@@ -486,6 +486,6 @@ if __name__ == '__main__':
     init_cnchi()
 
     # Create Gtk Application
-    app = CnchiApp()
-    exit_status = app.run(None)
-    sys.exit(exit_status)
+    my_app = CnchiApp()
+    status = my_app.run(None)
+    sys.exit(status)

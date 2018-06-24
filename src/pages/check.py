@@ -230,19 +230,19 @@ class Check(GtkBaseBox):
 
         if remote[0] < local[0]:
             return True
-        
+
         if remote[0] > local[0]:
             return False
 
         if remote[1] < local[1]:
-            return True        
-        
+            return True
+
         if remote[1] > local[1]:
             return False
-        
+
         if remote[2] >  local[2]:
             return False
-        
+
         return True
 
     def get_cnchi_version_in_repo(self):

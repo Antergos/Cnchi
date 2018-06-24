@@ -49,6 +49,13 @@ from proxy import ProxyDialog
 APP_NAME = "cnchi"
 LOCALE_DIR = "/usr/share/locale"
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 class Language(GtkBaseBox):
     """ Language page """
@@ -77,7 +84,8 @@ class Language(GtkBaseBox):
 
         self.main_window = params['main_window']
 
-    def get_lang(self):
+    @staticmethod
+    def get_lang():
         """ Returns LANG environmental variable value """
         return os.environ["LANG"].split(".")[0]
 
@@ -212,6 +220,7 @@ class Language(GtkBaseBox):
         return True
 
     def prepare(self, direction):
+        """ Prepare page to be shown """
         self.translate_ui()
         # Enable forward button
         self.forward_button.set_sensitive(True)
@@ -242,16 +251,3 @@ class Language(GtkBaseBox):
                 logging.debug("Will use these proxy settings: %s", proxies)
 
         dlg.destroy()
-
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Language')

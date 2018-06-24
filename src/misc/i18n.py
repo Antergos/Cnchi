@@ -81,7 +81,7 @@ def get_languages(language_list="data/languagelist.data.gz", current_language_in
             try:
                 return collator.getCollationKey(position).getByteArray()
             except Exception:
-                pass
+                return position
         # Else sort by unicode code point, which isn't ideal either,
         # but also has the virtue of sorting like-glyphs together
         return position

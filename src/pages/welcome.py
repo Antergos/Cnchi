@@ -156,6 +156,7 @@ class Welcome(GtkBaseBox):
         misc.gtk_refresh()
 
     def store_values(self):
+        """ Store changes (none in this page) """
         self.forward_button.show()
         return True
 

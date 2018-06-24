@@ -618,7 +618,8 @@ class InstallationZFS(GtkBaseBox):
 
         return self.change_list
 
-    def init_device(self, device_path, scheme="GPT"):
+    @staticmethod
+    def init_device(device_path, scheme="GPT"):
         """ Initialize device """
 
         logging.debug("Zapping device %s...", device_path)

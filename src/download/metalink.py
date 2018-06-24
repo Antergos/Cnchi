@@ -527,7 +527,7 @@ def test_module():
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    import gc
+    #import gc
     #import pprint
     import pacman.pac as pac
 

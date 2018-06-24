@@ -102,7 +102,7 @@ class Process(multiprocessing.Process):
 
             self.queue_event(
                 'info', _("Getting your disk(s) ready for Antergos..."))
-            with misc.raised_privileges() as __:
+            with misc.raised_privileges():
                 self.install_screen.run_format()
 
             path = "/tmp/.cnchi_partitioning_completed"
@@ -112,7 +112,7 @@ class Process(multiprocessing.Process):
                 part_file.write("# formatting their hard disk(s)\n")
 
             self.queue_event('info', _("Installation will start now!"))
-            with misc.raised_privileges() as __:
+            with misc.raised_privileges():
                 self.install_screen.run_install(
                     self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
@@ -129,13 +129,9 @@ class Process(multiprocessing.Process):
                 process_error.cmd,
                 process_error.output)
             self.queue_fatal_event(txt)
-        except (misc.InstallError,
-                pyalpm.error,
-                KeyboardInterrupt,
-                TypeError,
-                AttributeError,
-                OSError,
-                IOError) as install_error:
+        except (misc.InstallError, pyalpm.error,
+                KeyboardInterrupt, TypeError,
+                AttributeError, OSError, IOError) as install_error:
             logging.error(install_error)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(

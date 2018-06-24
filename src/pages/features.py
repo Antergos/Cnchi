@@ -294,7 +294,7 @@ class Features(GtkBaseBox):
 
         if 'bluetooth' in self.features:
             try:
-                process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+                process1 = subprocess.Popen(["/usr/bin/lsusb"], stdout=subprocess.PIPE)
                 process2 = subprocess.Popen(
                     ["/usr/bin/grep", "-i", "bluetooth"],
                     stdin=process1.stdout,
