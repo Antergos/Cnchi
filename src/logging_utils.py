@@ -152,10 +152,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         look_for = ['[WARNING]', '[ERROR]']
         log_lines = log.readlines()
 
-        # C0200:Consider using enumerate instead of iterating with range and len
-        for i in range(0, len(log_lines)):
+        for i, log_line in enumerate(log_lines):
             for pattern in look_for:
-                if pattern in log_lines[i]:
+                if pattern in log_line:
                     try:
                         if 10 < i < (len(log_lines) - 10):
                             keep_lines.extend([log_lines[l]
@@ -166,8 +165,8 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                         elif i > (len(log_lines) - 10):
                             keep_lines.extend([log_lines[l]
                                                for l in range(i, len(log_lines))])
-                    except Exception:
-                        pass
+                    except (IndexError, KeyError) as err:
+                        print(err)
 
         return keep_lines
 

@@ -124,7 +124,8 @@ def drop_all_privileges():
 def drop_privileges():
     """ Drop privileges """
     global _DROPPED_PRIVILEGES
-    assert _DROPPED_PRIVILEGES is not None
+    if _DROPPED_PRIVILEGES is None:
+        raise AssertionError()
     if _DROPPED_PRIVILEGES == 0:
         uid, gid = get_uid_gid()
         if gid:
@@ -137,7 +138,8 @@ def drop_privileges():
 def regain_privileges():
     """ Regain root privileges """
     global _DROPPED_PRIVILEGES
-    assert _DROPPED_PRIVILEGES is not None
+    if _DROPPED_PRIVILEGES is None:
+        raise AssertionError()
     _DROPPED_PRIVILEGES -= 1
     if _DROPPED_PRIVILEGES == 0:
         os.seteuid(0)
@@ -149,7 +151,9 @@ def drop_privileges_save():
     """ Drop the real UID/GID as well, and hide them in saved IDs. """
     # At the moment, we only know how to handle this when effective
     # privileges were already dropped.
-    assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    #assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    if _DROPPED_PRIVILEGES is None or _DROPPED_PRIVILEGES <= 0:
+        raise AssertionError()
     uid, gid = get_uid_gid()
     if gid:
         gid = int(gid)
@@ -160,7 +164,9 @@ def drop_privileges_save():
 
 def regain_privileges_save():
     """ Recover our real UID/GID after calling drop_privileges_save. """
-    assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    #assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    if _DROPPED_PRIVILEGES is None or _DROPPED_PRIVILEGES <= 0:
+        raise AssertionError()
     os.setresuid(0, 0, 0)
     os.setresgid(0, 0, 0)
     os.setgroups([])
