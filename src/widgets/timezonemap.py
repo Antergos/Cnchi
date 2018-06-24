@@ -298,14 +298,14 @@ class TimezoneMap(Gtk.Widget):
         PangoCairo.show_layout(context, layout)
         context.restore()
 
-    def do_draw(self, cr):
+    def do_draw(self, context):
         """ Draw widget """
         alloc = self.get_allocation()
 
         # Paint background
         if self._background is not None:
-            Gdk.cairo_set_source_pixbuf(cr, self._background, 0, 0)
-            cr.paint()
+            Gdk.cairo_set_source_pixbuf(context, self._background, 0, 0)
+            context.paint()
 
         if not self._show_offset:
             return
@@ -331,8 +331,8 @@ class TimezoneMap(Gtk.Widget):
             alloc.height,
             GdkPixbuf.InterpType.BILINEAR)
 
-        Gdk.cairo_set_source_pixbuf(cr, highlight, 0, 0)
-        cr.paint()
+        Gdk.cairo_set_source_pixbuf(context, highlight, 0, 0)
+        context.paint()
 
         del highlight
         del orig_highlight
@@ -351,16 +351,16 @@ class TimezoneMap(Gtk.Widget):
                 point_y = alloc.height
 
             # Draw text bubble
-            self.draw_text_bubble(cr, point_x, point_y)
+            self.draw_text_bubble(context, point_x, point_y)
 
             # Draw pin
             if self._pin is not None:
                 Gdk.cairo_set_source_pixbuf(
-                    cr,
+                    context,
                     self._pin,
                     point_x - TimezoneMap.PIN_HOT_POINT[0],
                     point_y - TimezoneMap.PIN_HOT_POINT[1])
-                cr.paint()
+                context.paint()
 
     def set_location(self, tz_location):
         """ Set map location """
