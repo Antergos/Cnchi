@@ -654,7 +654,7 @@ class Pac(object):
         # Log format
         formatter = logging.Formatter(
             fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S")
+            datefmt="%Y-%m-%d %H:%M:%S.%f")
 
         if not self.logger.hasHandlers():
             # File logger
@@ -675,7 +675,7 @@ def test():
 
     formatter = logging.Formatter(
         '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        "%Y-%m-%d %H:%M:%S.%f")
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
