@@ -138,7 +138,7 @@ class NetworkManagerModel:
         """ Gets Networkmanager status """
         return self.manager.state()
 
-    def is_connected(self, device, ap):
+    def is_connected(self, device, access_point):
         """ Checks if a wireless device is active (connected) """
         device_obj = self.bus.get_object(NM, device)
         connectedap = get_prop(device_obj, NM_DEVICE_WIFI, 'ActiveAccessPoint')
@@ -147,11 +147,11 @@ class NetworkManagerModel:
         connect_obj = self.bus.get_object(NM, connectedap)
         ssid = get_prop(connect_obj, NM_AP, 'Ssid')
         if ssid:
-            return ap == decode_ssid(ssid)
+            return access_point == decode_ssid(ssid)
         else:
             return False
 
-    def connect_to_ap(self, device, ap, passphrase=None):
+    def connect_to_ap(self, device, access_point, passphrase=None):
         """ Try to connect to an Access Point """
         device_obj = self.bus.get_object(NM, device)
         ap_list = device_obj.GetAccessPoints(dbus_interface=NM_DEVICE_WIFI)
@@ -162,7 +162,7 @@ class NetworkManagerModel:
             ssid = get_prop(ap_obj, NM_AP, 'Ssid')
             if ssid:
                 strength = get_prop(ap_obj, NM_AP, 'Strength')
-                if decode_ssid(ssid) == ap and saved_strength < strength:
+                if decode_ssid(ssid) == access_point and saved_strength < strength:
                     # Connect to the strongest AP.
                     saved_strength = strength
                     saved_path = ap_path
@@ -205,8 +205,8 @@ class NetworkManagerModel:
                     sec = list(sec['802-11-wireless-security'].values())[0]
                     ssid = decode_ssid(props['802-11-wireless']['ssid'])
                     self.passphrases_cache[ssid] = sec
-                except dbus.exceptions.DBusException as e:
-                    if e.get_dbus_name() != NM_ERROR_NOSECRETS:
+                except dbus.exceptions.DBusException as err:
+                    if err.get_dbus_name() != NM_ERROR_NOSECRETS:
                         raise
 
     def ssid_in_model(self, iterator, ssid, security):
@@ -313,6 +313,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         self.user_collapsed = {}
         self.icons = []
         self.password_entry = password_entry
+        self.rows_changed_id = None
         self.configure_icons()
         model = Gtk.TreeStore(str, object, object)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -334,7 +335,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         self.setup_row_expansion_handling(model)
 
     def setup_row_expansion_handling(self, model):
-        """ If the user collapses a row, save that state. 
+        """ If the user collapses a row, save that state.
             If all the APs go away and then return, such as when
             the user toggles the wifi kill switch, the UI should
             keep the row collapsed if it already was, or expand it. """
@@ -342,6 +343,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         self.rows_changed_id = None
 
         def queue_rows_changed(*args):
+            """ Called when a row is inserted or deleted """
             if self.rows_changed_id:
                 GLib.source_remove(self.rows_changed_id)
             self.rows_changed_id = GLib.idle_add(self.rows_changed)
@@ -351,7 +353,8 @@ class NetworkManagerTreeView(Gtk.TreeView):
 
         self.user_collapsed = {}
 
-        def collapsed(self, iterator, path, collapse):
+        def collapsed(self, iterator, _path, collapse):
+            """ Called when a row is collapsed or expanded """
             udi = model[iterator][0]
             self.user_collapsed[udi] = collapse
 
@@ -381,7 +384,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
         """ Disconnects from the Access Point """
         self.wifi_model.disconnect_from_ap()
 
-    def row_activated(self, unused, path, column):
+    def row_activated(self, _unused, _path, _column):
         """ An AP (row) has been selected """
         passphrase = None
         if self.password_entry:
@@ -407,7 +410,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
                 icon = default
             self.icons.append(icon)
 
-    def pixbuf_func(self, column, cell, model, iterator, data):
+    def pixbuf_func(self, _column, cell, model, iterator, _data):
         """ Set icon based on wifi signal's strength """
         if not model.iter_parent(iterator):
             cell.set_property('pixbuf', None)
@@ -429,7 +432,8 @@ class NetworkManagerTreeView(Gtk.TreeView):
         cell.set_property('pixbuf', self.icons[icon])
 
     @staticmethod
-    def data_func(column, cell, model, iterator, data):
+    def data_func(_column, cell, model, iterator, _data):
+        """ Sets ap (ssid or info) into a cell """
         ssid = model[iterator][0]
 
         if not model.iter_parent(iterator):
@@ -460,10 +464,7 @@ class NetworkManagerTreeView(Gtk.TreeView):
             return False
         ssid = model[iterator][0]
         parent = model.iter_parent(iterator)
-        if parent and self.wifi_model.is_connected(model[parent][0], ssid):
-            return True
-        else:
-            return False
+        return bool(parent and self.wifi_model.is_connected(model[parent][0], ssid))
 
     def connect_to_selection(self, passphrase):
         """ Try to connect to the Access Point referenced by current selection """
@@ -504,7 +505,7 @@ class NetworkManagerWidget(Gtk.Box):
         scrolled_window.set_shadow_type(Gtk.ShadowType.IN)
         scrolled_window.add(self.view)
         self.pack_start(scrolled_window, True, True, 0)
-        
+
         self.hbox = Gtk.Box(spacing=6)
         self.pack_start(self.hbox, False, True, 0)
         self.password_label = Gtk.Label('Password:')
@@ -517,7 +518,7 @@ class NetworkManagerWidget(Gtk.Box):
         self.hbox.pack_start(self.password_entry, True, True, 0)
         self.hbox.pack_start(self.display_password, False, True, 0)
         self.hbox.set_sensitive(False)
-        
+
         self.selection = self.view.get_selection()
         self.selection.connect('changed', self.changed)
         self.show_all()
@@ -540,9 +541,11 @@ class NetworkManagerWidget(Gtk.Box):
         return self.view.is_row_connected()
 
     def select_usable_row(self):
+        """ Selects first row """
         self.selection.select_path('0:0')
 
     def state_changed(self, state):
+        """ Emits connection signal with current state """
         self.emit('connection', state)
 
     def password_is_valid(self):
@@ -574,7 +577,7 @@ class NetworkManagerWidget(Gtk.Box):
         self.emit('pw_validated', self.password_is_valid())
 
     def display_password_toggled(self, *args):
-        """ shows/hides password """ 
+        """ shows/hides password """
         self.password_entry.set_visibility(self.display_password.get_active())
 
     def changed(self, selection):
