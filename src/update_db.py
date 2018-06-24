@@ -46,7 +46,9 @@ def sync():
 
 def update_mirrorlists():
     """ Make sure we have the latest mirrorlist files """
-    antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
+    mirrorlists = [
+        "/etc/pacman.d/mirrorlist",
+        "/etc/pacman.d/antergos-mirrorlist"]
     cmd = [
         'pacman',
         '-Syy',
@@ -61,14 +63,15 @@ def update_mirrorlists():
                 subprocess.call(cmd, stdout=fnull,
                                 stderr=subprocess.STDOUT)
             # Use the new downloaded mirrorlist (.pacnew) files (if any)
-            pacnew_path = antergos_mirrorlist + ".pacnew"
-            if os.path.exists(pacnew_path):
-                shutil.copy(pacnew_path, antergos_mirrorlist)
+            for mirrorlist in mirrorlists:
+                pacnew_path = mirrorlist + ".pacnew"
+                if os.path.exists(pacnew_path):
+                    shutil.copy(pacnew_path, mirrorlist)
             sync()
             logging.debug("Mirrorlists updated successfully")
         except subprocess.CalledProcessError as why:
             logging.warning(
-                'Cannot update antergos-mirrorlist package: %s', why)
+                'Cannot update mirrorlists files: %s', why)
         except OSError as why:
             logging.warning('Error copying new mirrorlist files: %s', why)
 
