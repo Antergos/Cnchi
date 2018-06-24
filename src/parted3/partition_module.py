@@ -33,9 +33,9 @@ import subprocess
 import os
 import logging
 
-import show_message as show
-
 import parted
+
+import show_message as show
 
 import misc.extra as misc
 
@@ -72,6 +72,13 @@ PED_PARTITION_APPLE_TV_RECOVERY = 13
 PED_PARTITION_DIAG = 14
 PED_PARTITION_LEGACY_BOOT = 15
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 @misc.raise_privileges
 def get_devices():
@@ -81,7 +88,7 @@ def get_devices():
 
     myhomepath = '/run/archiso/bootmnt'
     if os.path.exists(myhomepath):
-        myhome = subprocess.check_output(["df", "-P", myhomepath]).decode()
+        myhome = subprocess.check_output(["/usr/bin/df", "-P", myhomepath]).decode()
     else:
         myhome = ""
 

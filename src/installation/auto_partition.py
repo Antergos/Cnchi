@@ -244,6 +244,8 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 class AutoPartition(object):
     """ Class used by the automatic installation method """
 
+    LUKS_KEY_FILES = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
+
     def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm,
                  use_home, bootloader, callback_queue):
         """ Class initialization """
@@ -605,16 +607,15 @@ class AutoPartition(object):
         if self.home:
             logging.debug("Home partition size: %dMiB", part_sizes['home'])
 
-    def run(self):
-        """ Main method. Runs auto partition sequence """
-        key_files = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
-
+    def get_disk_size(self):
+        """ Gets disk size in MiB """
         # Partition sizes are expressed in MiB
         # Get just the disk size in MiB
         device = self.auto_device
         device_name = os.path.split(device)[1]
         size_path = os.path.join("/sys/block", device_name, 'size')
         base_path = os.path.split(size_path)[0]
+        disk_size = 0
         if os.path.exists(size_path):
             logical_path = os.path.join(base_path, "queue/logical_block_size")
             with open(logical_path, 'r') as logical_file:
@@ -627,224 +628,192 @@ class AutoPartition(object):
             txt = _("Setup cannot detect size of your device, please use advanced "
                     "installation routine for partitioning and mounting devices.")
             raise InstallError(txt)
+        return disk_size
 
-        start_part_sizes = 1
+    def run_gpt(self, part_sizes):
+        """ Auto partition using a GPT table """
 
-        part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
-        self.log_part_sizes(part_sizes)
-
-        # Disable swap and unmount all partitions inside dest_dir
-        unmount_all_in_directory(self.dest_dir)
-        # Disable swap and unmount all partitions of device
-        unmount_all_in_device(device)
-        # Remove lvm in destination device
-        remove_lvm(device)
-        # Close luks devices in destination device
-        close_antergos_luks_devices()
-
-        printk(False)
-
-        # WARNING:
         # Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
 
-        if self.gpt:
-            # Clean partition table to avoid issues!
-            wrapper.sgdisk("zap-all", device)
+        device = self.auto_device
 
-            # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-            wrapper.dd("/dev/zero", device, bs=512, count=2048)
-            wrapper.wipefs(device)
+        # Clean partition table to avoid issues!
+        wrapper.sgdisk("zap-all", device)
 
-            # Create fresh GPT
-            wrapper.sgdisk("clear", device)
-            wrapper.parted_mklabel(device, "gpt")
+        # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
+        wrapper.dd("/dev/zero", device, bs=512, count=2048)
+        wrapper.wipefs(device)
 
-            # Inform the kernel of the partition change.
-            # Needed if the hard disk had a MBR partition table.
-            err_msg = "Error informing the kernel of the partition change."
-            call(["partprobe", device], msg=err_msg, fatal=True)
+        # Create fresh GPT
+        wrapper.sgdisk("clear", device)
+        wrapper.parted_mklabel(device, "gpt")
 
-            part_num = 1
+        # Inform the kernel of the partition change.
+        # Needed if the hard disk had a MBR partition table.
+        err_msg = "Error informing the kernel of the partition change."
+        call(["partprobe", device], msg=err_msg, fatal=True)
 
-            if not self.uefi:
-                # We don't allow BIOS+GPT right now, so this code will be never executed
-                # We leave here just for future reference
-                # Create BIOS Boot Partition
-                # GPT GUID: 21686148-6449-6E6F-744E-656564454649
-                # This partition is not required if the system is UEFI based,
-                # as there is no such embedding of the second-stage code in that case
-                wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
-                part_num += 1
+        part_num = 1
 
-            if self.bootloader == "grub2":
-                # Create EFI System Partition (ESP)
-                # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-                wrapper.sgdisk_new(
-                    device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
-                part_num += 1
-
-            # Create Boot partition
-            if self.bootloader in ["systemd-boot", "refind"]:
-                wrapper.sgdisk_new(
-                    device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
-            else:
-                wrapper.sgdisk_new(
-                    device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+        if not self.uefi:
+            # We don't allow BIOS+GPT right now, so this code will be never executed
+            # We leave here just for future reference
+            # Create BIOS Boot Partition
+            # GPT GUID: 21686148-6449-6E6F-744E-656564454649
+            # This partition is not required if the system is UEFI based,
+            # as there is no such embedding of the second-stage code in that case
+            wrapper.sgdisk_new(device, part_num, "BIOS_BOOT", 2, "EF02")
             part_num += 1
 
-            if self.lvm:
-                # Create partition for lvm
-                # (will store root, swap and home (if desired) logical volumes)
-                wrapper.sgdisk_new(
-                    device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
-                part_num += 1
-            else:
-                wrapper.sgdisk_new(
-                    device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
-                part_num += 1
-                if self.home:
-                    wrapper.sgdisk_new(
-                        device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
-                    part_num += 1
-                wrapper.sgdisk_new(
-                    device, part_num, "ANTERGOS_SWAP", 0, "8200")
+        if self.bootloader == "grub2":
+            # Create EFI System Partition (ESP)
+            # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
+            wrapper.sgdisk_new(
+                device, part_num, "UEFI_SYSTEM", part_sizes['efi'], "EF00")
+            part_num += 1
 
-            output = call(["sgdisk", "--print", device])
-            logging.debug(output)
+        # Create Boot partition
+        if self.bootloader in ["systemd-boot", "refind"]:
+            wrapper.sgdisk_new(
+                device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "EF00")
         else:
-            # DOS MBR partition table
-            # Start at sector 1 for 4k drive compatibility and correct alignment
-            # Clean partitiontable to avoid issues!
-            wrapper.dd("/dev/zero", device, bs=512, count=2048)
-            wrapper.wipefs(device)
-
-            # Create DOS MBR
-            wrapper.parted_mklabel(device, "msdos")
-
-            # Create boot partition (all sizes are in MiB)
-            # if start is -1 wrapper.parted_mkpart assumes that our partition
-            # starts at 1 (first partition in disk)
-            start = -1
-            end = part_sizes['boot']
-            wrapper.parted_mkpart(device, "primary", start, end)
-
-            # Set boot partition as bootable
-            wrapper.parted_set(device, "1", "boot", "on")
-
-            if self.lvm:
-                # Create partition for lvm (will store root, home (if desired),
-                # and swap logical volumes)
-                start = end
-                # end = start + part_sizes['lvm_pv']
-                end = "-1s"
-                wrapper.parted_mkpart(device, "primary", start, end)
-
-                # Set lvm flag
-                wrapper.parted_set(device, "2", "lvm", "on")
-            else:
-                # Create root partition
-                start = end
-                end = start + part_sizes['root']
-                wrapper.parted_mkpart(device, "primary", start, end)
-
-                if self.home:
-                    # Create home partition
-                    start = end
-                    end = start + part_sizes['home']
-                    wrapper.parted_mkpart(device, "primary", start, end)
-
-                # Create an extended partition where we will put our swap partition
-                start = end
-                # end = start + part_sizes['swap']
-                end = "-1s"
-                wrapper.parted_mkpart(device, "extended", start, end)
-
-                # Now create a logical swap partition
-                start += 1
-                end = "-1s"
-                wrapper.parted_mkpart(
-                    device, "logical", start, end, "linux-swap")
-
-        printk(True)
-
-        # Wait until /dev initialized correct devices
-        call(["udevadm", "settle"])
-
-        devices = self.get_devices()
-
-        if self.gpt and self.bootloader == "grub2":
-            logging.debug("EFI: %s", devices['efi'])
-
-        logging.debug("Boot: %s", devices['boot'])
-        logging.debug("Root: %s", devices['root'])
-
-        if self.home:
-            logging.debug("Home: %s", devices['home'])
-
-        logging.debug("Swap: %s", devices['swap'])
-
-        if self.luks:
-            setup_luks(devices['luks_root'], "cryptAntergos",
-                       self.luks_password, key_files[0])
-            if self.home and not self.lvm:
-                setup_luks(devices['luks_home'], "cryptAntergosHome",
-                           self.luks_password, key_files[1])
+            wrapper.sgdisk_new(
+                device, part_num, "ANTERGOS_BOOT", part_sizes['boot'], "8300")
+        part_num += 1
 
         if self.lvm:
-            logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])
+            # Create partition for lvm
+            # (will store root, swap and home (if desired) logical volumes)
+            wrapper.sgdisk_new(
+                device, part_num, "ANTERGOS_LVM", part_sizes['lvm_pv'], "8E00")
+            part_num += 1
+        else:
+            wrapper.sgdisk_new(
+                device, part_num, "ANTERGOS_ROOT", part_sizes['root'], "8300")
+            part_num += 1
+            if self.home:
+                wrapper.sgdisk_new(
+                    device, part_num, "ANTERGOS_HOME", part_sizes['home'], "8302")
+                part_num += 1
+            wrapper.sgdisk_new(
+                device, part_num, "ANTERGOS_SWAP", 0, "8200")
 
-            err_msg = "Error creating LVM physical volume in device {0}"
-            err_msg = err_msg.format(devices['lvm'])
-            cmd = ["pvcreate", "-f", "-y", devices['lvm']]
+        output = call(["sgdisk", "--print", device])
+        logging.debug(output)
+
+    def run_mbr(self, part_sizes):
+        """ DOS MBR partition table """
+
+        # Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
+        # These are 'M' in sgdisk and 'MiB' in parted.
+        # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
+
+        device = self.auto_device
+
+        # Start at sector 1 for 4k drive compatibility and correct alignment
+        # Clean partitiontable to avoid issues!
+        wrapper.dd("/dev/zero", device, bs=512, count=2048)
+        wrapper.wipefs(device)
+
+        # Create DOS MBR
+        wrapper.parted_mklabel(device, "msdos")
+
+        # Create boot partition (all sizes are in MiB)
+        # if start is -1 wrapper.parted_mkpart assumes that our partition
+        # starts at 1 (first partition in disk)
+        start = -1
+        end = part_sizes['boot']
+        wrapper.parted_mkpart(device, "primary", start, end)
+
+        # Set boot partition as bootable
+        wrapper.parted_set(device, "1", "boot", "on")
+
+        if self.lvm:
+            # Create partition for lvm (will store root, home (if desired),
+            # and swap logical volumes)
+            start = end
+            # end = start + part_sizes['lvm_pv']
+            end = "-1s"
+            wrapper.parted_mkpart(device, "primary", start, end)
+
+            # Set lvm flag
+            wrapper.parted_set(device, "2", "lvm", "on")
+        else:
+            # Create root partition
+            start = end
+            end = start + part_sizes['root']
+            wrapper.parted_mkpart(device, "primary", start, end)
+
+            if self.home:
+                # Create home partition
+                start = end
+                end = start + part_sizes['home']
+                wrapper.parted_mkpart(device, "primary", start, end)
+
+            # Create an extended partition where we will put our swap partition
+            start = end
+            # end = start + part_sizes['swap']
+            end = "-1s"
+            wrapper.parted_mkpart(device, "extended", start, end)
+
+            # Now create a logical swap partition
+            start += 1
+            end = "-1s"
+            wrapper.parted_mkpart(
+                device, "logical", start, end, "linux-swap")
+
+    def run_lvm(self, devices, part_sizes, start_part_sizes, disk_size):
+        """ Create lvm volumes """
+        logging.debug("Cnchi will setup LVM on device %s", devices['lvm'])
+
+        err_msg = "Error creating LVM physical volume in device {0}"
+        err_msg = err_msg.format(devices['lvm'])
+        cmd = ["pvcreate", "-f", "-y", devices['lvm']]
+        call(cmd, msg=err_msg, fatal=True)
+
+        err_msg = "Error creating LVM volume group in device {0}"
+        err_msg = err_msg.format(devices['lvm'])
+        cmd = ["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']]
+        call(cmd, msg=err_msg, fatal=True)
+
+        # Fix issue 180
+        # Check space we have now for creating logical volumes
+        cmd = ["vgdisplay", "-c", "AntergosVG"]
+        vg_info = call(cmd, fatal=True)
+        # Get column number 12: Size of volume group in kilobytes
+        vg_size = int(vg_info.split(":")[11]) / 1024
+        if part_sizes['lvm_pv'] > vg_size:
+            logging.debug(
+                "Real AntergosVG volume group size: %d MiB", vg_size)
+            logging.debug("Reajusting logical volume sizes")
+            diff_size = part_sizes['lvm_pv'] - vg_size
+            part_sizes = self.get_part_sizes(
+                disk_size - diff_size, start_part_sizes)
+            self.log_part_sizes(part_sizes)
+
+        # Create LVM volumes
+        err_msg = "Error creating LVM logical volume"
+
+        size = str(int(part_sizes['root']))
+        cmd = ["lvcreate", "--name", "AntergosRoot", "--size", size, "AntergosVG"]
+        call(cmd, msg=err_msg, fatal=True)
+
+        if not self.home:
+            # Use the remainig space for our swap volume
+            cmd = ["lvcreate", "--name", "AntergosSwap", "--extents", "100%FREE", "AntergosVG"]
+            call(cmd, msg=err_msg, fatal=True)
+        else:
+            size = str(int(part_sizes['swap']))
+            cmd = ["lvcreate", "--name", "AntergosSwap", "--size", size, "AntergosVG"]
+            call(cmd, msg=err_msg, fatal=True)
+            # Use the remaining space for our home volume
+            cmd = ["lvcreate", "--name", "AntergosHome", "--extents", "100%FREE", "AntergosVG"]
             call(cmd, msg=err_msg, fatal=True)
 
-            err_msg = "Error creating LVM volume group in device {0}"
-            err_msg = err_msg.format(devices['lvm'])
-            cmd = ["vgcreate", "-f", "-y", "AntergosVG", devices['lvm']]
-            call(cmd, msg=err_msg, fatal=True)
-
-            # Fix issue 180
-            # Check space we have now for creating logical volumes
-            cmd = ["vgdisplay", "-c", "AntergosVG"]
-            vg_info = call(cmd, fatal=True)
-            # Get column number 12: Size of volume group in kilobytes
-            vg_size = int(vg_info.split(":")[11]) / 1024
-            if part_sizes['lvm_pv'] > vg_size:
-                logging.debug(
-                    "Real AntergosVG volume group size: %d MiB", vg_size)
-                logging.debug("Reajusting logical volume sizes")
-                diff_size = part_sizes['lvm_pv'] - vg_size
-                part_sizes = self.get_part_sizes(
-                    disk_size - diff_size, start_part_sizes)
-                self.log_part_sizes(part_sizes)
-
-            # Create LVM volumes
-            err_msg = "Error creating LVM logical volume"
-
-            size = str(int(part_sizes['root']))
-            cmd = ["lvcreate", "--name", "AntergosRoot",
-                   "--size", size, "AntergosVG"]
-            call(cmd, msg=err_msg, fatal=True)
-
-            if not self.home:
-                # Use the remainig space for our swap volume
-                cmd = ["lvcreate", "--name", "AntergosSwap",
-                       "--extents", "100%FREE", "AntergosVG"]
-                call(cmd, msg=err_msg, fatal=True)
-            else:
-                size = str(int(part_sizes['swap']))
-                cmd = ["lvcreate", "--name", "AntergosSwap",
-                       "--size", size, "AntergosVG"]
-                call(cmd, msg=err_msg, fatal=True)
-                # Use the remaining space for our home volume
-                cmd = ["lvcreate", "--name", "AntergosHome",
-                       "--extents", "100%FREE", "AntergosVG"]
-                call(cmd, msg=err_msg, fatal=True)
-
-        # We have all partitions and volumes created. Let's create its filesystems with mkfs.
-
+    def create_filesystems(self, devices):
+        """ Create filesystems in newly created partitions """
         mount_points = {
             'efi': '/boot/efi',
             'boot': '/boot',
@@ -885,29 +854,88 @@ class AutoPartition(object):
             self.mkfs(devices['home'], fs_devices[devices['home']],
                       mount_points['home'], labels['home'])
 
+    def copy_luks_keyfiles(self):
+        """ Copy root keyfile to boot partition and home keyfile to root partition
+            user will choose what to do with it
+            THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
+            User shouldn't store the keyfiles unencrypted unless the medium itself
+            is reasonably safe (boot partition is not) """
+
+        key_files = AutoPartition.LUKS_KEY_FILES
+        err_msg = "Can't copy LUKS keyfile to the installation device."
+        os.chmod(key_files[0], 0o400)
+        boot_path = os.path.join(self.dest_dir, "boot")
+        cmd = ['mv', key_files[0], boot_path]
+        call(cmd, msg=err_msg)
+        if self.home and not self.lvm:
+            os.chmod(key_files[1], 0o400)
+            luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
+            os.makedirs(luks_dir, mode=0o755, exist_ok=True)
+            cmd = ['mv', key_files[1], luks_dir]
+            call(cmd, msg=err_msg)
+
+    def run(self):
+        """ Main method. Runs auto partition sequence """
+        disk_size = self.get_disk_size()
+        device = self.auto_device
+        start_part_sizes = 1
+
+        part_sizes = self.get_part_sizes(disk_size, start_part_sizes)
+        self.log_part_sizes(part_sizes)
+
+        # Disable swap and unmount all partitions inside dest_dir
+        unmount_all_in_directory(self.dest_dir)
+        # Disable swap and unmount all partitions of device
+        unmount_all_in_device(device)
+        # Remove lvm in destination device
+        remove_lvm(device)
+        # Close luks devices in destination device
+        close_antergos_luks_devices()
+
+        printk(False)
+
+        if self.gpt:
+            self.run_gpt(part_sizes)
+        else:
+            self.run_mbr(part_sizes)
+
+        printk(True)
+
+        # Wait until /dev initialized correct devices
+        call(["udevadm", "settle"])
+
+        devices = self.get_devices()
+
+        if self.gpt and self.bootloader == "grub2":
+            logging.debug("EFI: %s", devices['efi'])
+
+        logging.debug("Boot: %s", devices['boot'])
+        logging.debug("Root: %s", devices['root'])
+
+        if self.home:
+            logging.debug("Home: %s", devices['home'])
+
+        logging.debug("Swap: %s", devices['swap'])
+
+        if self.luks:
+            k_file = AutoPartition.LUKS_KEY_FILES
+            setup_luks(devices['luks_root'], "cryptAntergos", self.luks_password, k_file[0])
+            if self.home and not self.lvm:
+                setup_luks(devices['luks_home'], "cryptAntergosHome", self.luks_password, k_file[1])
+
+        if self.lvm:
+            self.run_lvm(devices, part_sizes, start_part_sizes, disk_size)
+
+        # We have all partitions and volumes created. Let's create its filesystems with mkfs.
+        self.create_filesystems(devices)
+
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf
         # in process.py if necessary
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified
         # in process.py, too.
 
         if self.luks and self.luks_password == "":
-            # Copy root keyfile to boot partition and home keyfile to root partition
-            # user will choose what to do with it
-            # THIS IS NONSENSE (BIG SECURITY HOLE), BUT WE TRUST THE USER TO FIX THIS
-            # User shouldn't store the keyfiles unencrypted unless the medium itself
-            # is reasonably safe (boot partition is not)
-
-            err_msg = "Can't copy LUKS keyfile to the installation device."
-            os.chmod(key_files[0], 0o400)
-            boot_path = os.path.join(self.dest_dir, "boot")
-            cmd = ['mv', key_files[0], boot_path]
-            call(cmd, msg=err_msg)
-            if self.home and not self.lvm:
-                os.chmod(key_files[1], 0o400)
-                luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
-                os.makedirs(luks_dir, mode=0o755, exist_ok=True)
-                cmd = ['mv', key_files[1], luks_dir]
-                call(cmd, msg=err_msg)
+            self.copy_luks_keyfiles()
 
 
 if __name__ == '__main__':

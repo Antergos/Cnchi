@@ -239,7 +239,8 @@ class PartitionBox(StylizedFrame):
         size = misc.format_size(size)
         self.size.set_markup('<span size="x-large">{0}</span>'.format(size))
 
-    def render_dots(self):
+    @staticmethod
+    def render_dots():
         """ Draw dots """
         # FIXME: Dots are rendered over the frame.
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 2, 2)
@@ -314,8 +315,10 @@ class ResizeWidget(Gtk.Frame):
             min_size: The min size (MB) that the existing partition can be resized to.
             max_size: The max size (MB) that the existing partition can be resized to. """
 
-        assert min_size <= max_size <= part_size
-        assert part_size > 0
+        if not min_size <= max_size <= part_size:
+            raise AssertionError()
+        if part_size <= 0:
+            raise AssertionError()
 
         self.set_size_request_done = False
 
@@ -394,9 +397,9 @@ class ResizeWidget(Gtk.Frame):
 
             self.set_size_request_done = True
 
-    def do_draw(self, cr):
+    def do_draw(self, context):
         """ Draw widget """
-        Gtk.Frame.do_draw(self, cr)
+        Gtk.Frame.do_draw(self, context)
 
         s1_width = self.existing_part.get_allocation().width
         s2_width = self.new_part.get_allocation().width
@@ -516,6 +519,7 @@ class Builder(Gtk.Builder):
         super().__init__()
 
     def add_from_file(self, filename):
+        """ Add widgets from xml file """
         import xml.etree.cElementTree as eTree
         tree = eTree.parse(filename)
         root = tree.getroot()
