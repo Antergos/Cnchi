@@ -21,6 +21,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" Wireless connection page """
+
 import dbus
 
 import misc.extra as misc
@@ -30,6 +32,7 @@ from pages.gtkbasebox import GtkBaseBox
 
 
 class Wireless(GtkBaseBox):
+    """ Wireless page """
     def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
         try:
@@ -74,10 +77,10 @@ class Wireless(GtkBaseBox):
         display_password_text = _("Display password")
         self.nmwidget.translate(password_label_text, display_password_text)
 
-    def selection_changed(self, unused):
+    def selection_changed(self, _unused):
+        """ User has changed selection in nm widget """
         self.have_selection = True
         self.use_wireless.set_active(True)
-        assert self.state is not None
 
         if self.state == nm.NM_STATE_CONNECTING:
             self.next_normal = True
@@ -90,7 +93,8 @@ class Wireless(GtkBaseBox):
                 self.next_normal = False
                 print("not connected")
 
-    def wireless_toggled(self, unused):
+    def wireless_toggled(self, _unused):
+        """ Enables / disables wireless """
         print("wireless_toggled")
 
         if self.use_wireless.get_active():
@@ -127,7 +131,8 @@ class Wireless(GtkBaseBox):
             return False
     '''
 
-    def state_changed(self, unused, state):
+    def state_changed(self, _unused, state):
+        """ State has changed """
         print("state_changed")
         self.state = state
         if not self.use_wireless.get_active():
@@ -143,10 +148,13 @@ class Wireless(GtkBaseBox):
 
         self.selection_changed(None)
 
-    def pw_validated(self, unused, validated):
+    def pw_validated(self, _unused, _validated):
+        """ Validate password """
+        # TODO: Check that password is validated
         pass
 
     def prepare(self, direction):
+        """ Prepare page for showing """
         self.translate_ui()
         self.show_all()
         if not nm.wireless_hardware_present():
@@ -156,6 +164,7 @@ class Wireless(GtkBaseBox):
 
     @staticmethod
     def store_values():
+        """ Store changes """
         return True
 
 
