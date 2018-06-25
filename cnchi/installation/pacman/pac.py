@@ -266,6 +266,7 @@ class Pac:
         antdb['antergos'] = db_match[0]
         one_repo_groups = [antdb['antergos'].read_grp(one_repo_group)
                            for one_repo_group in one_repo_groups]
+        one_repo_groups[0] = ['None', []]
         one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
                          for pkg in one_repo_group[1] if one_repo_group}
 
