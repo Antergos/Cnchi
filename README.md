@@ -65,6 +65,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - python3
  - python-cairo
  - python-dbus
+ - python-feedparser
  - python-gobject
  - python-mako
  - python-requests

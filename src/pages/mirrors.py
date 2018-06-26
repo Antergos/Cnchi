@@ -45,7 +45,7 @@ except ImportError:
 
 import cairo
 from pages.gtkbasebox import GtkBaseBox
-from rank_mirrors import AutoRankmirrors
+from rank_mirrors import RankMirrors
 
 
 if __name__ == '__main__':
@@ -377,12 +377,12 @@ class Mirrors(GtkBaseBox):
     def start_rank_mirrors(self):
         """ Launch rank mirrors process to optimize Arch and Antergos mirrorlists
             As user can come and go from/to this screen, we must get sure he/she
-            has not already run the AutoRankmirrorsProcess before """
+            has not already run Rankmirrors before """
         if not self.rank_mirrors_launched:
             logging.debug("Cnchi is ranking your mirrors lists...")
             parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
             # Store parent_conn for later use in ask.py (rankmirrors dialog)
-            proc = AutoRankmirrors(self.settings, child_conn)
+            proc = RankMirrors(self.settings, child_conn)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()

@@ -56,254 +56,247 @@ except NameError as err:
     def _(message):
         return message
 
-class AutoRankmirrors(multiprocessing.Process):
+class RankMirrors(multiprocessing.Process):
     """ Process class that downloads and sorts the mirrorlist """
 
     MIRROR_OK_RSS = 'Alert Details: Successful response received'
-    ANTERGOS_MIRROR_STATUS = 'http://rss.uptimerobot.com/u600152-d6c3c10d099982e3a185c2c5ce561a7b'
-    ARCH_MIRROR_STATUS = 'http://www.archlinux.org/mirrors/status/json/'
 
-    def __init__(self, settings, fraction_pipe):
-        """ Initialize process class """
+    MIRROR_STATUS = {
+        'antergos': 'http://rss.uptimerobot.com/u600152-d6c3c10d099982e3a185c2c5ce561a7b',
+        'arch': 'http://www.archlinux.org/mirrors/status/json/' }
+    MIRRORLIST = {
+        'antergos': '/etc/pacman.d/antergos-mirrorlist',
+        'arch': '/etc/pacman.d/mirrorlist' }
+ 
+    def __init__(self, settings, fraction_pipe=None):
+        """ Initialize process class
+            fraction_pipe is a pipe used to send progress for a gtk.progress widget update
+            in another process (see start_rank_mirrors() in mirrors.py) """
         super().__init__()
         self.rankmirrors_pid = None
-        self.antergos_mirrorlist = "/etc/pacman.d/antergos-mirrorlist"
-        self.antergos_rss = None
-        self.arch_mirrorlist = "/etc/pacman.d/mirrorlist"
-        self.arch_json = None
-        self.arch_mirrorlist_ranked = []
+        # Antergos mirrors info is returned as RSS, arch's as JSON
+        self.data = {'arch': {}, 'antergos': {}}
+        self.mirrorlist_ranked = {'arch': [], 'antergos': []}
         self.settings = settings
         self.fraction = fraction_pipe
 
     @staticmethod
-    def is_good_mirror(my_mirror, method='json'):
+    def is_good_mirror(mirror):
         """ Check if mirror info is good enough """
-        if method == 'json':
-            return (my_mirror['last_sync'] and
-                    my_mirror['completion_pct'] == 1.0 and
-                    my_mirror['protocol'] == 'http' and
-                    int(my_mirror['delay']) <= 3600)
-        return bool(my_mirror['last_sync'] == AutoRankmirrors.MIRROR_OK_RSS)
+        print(mirror)
+        if 'summary' in mirror.keys():
+            return bool(mirror['summary'] == RankMirrors.MIRROR_OK_RSS)
+        return (mirror['last_sync'] and
+                mirror['completion_pct'] == 1.0 and
+                mirror['protocol'] == 'http' and
+                int(mirror['delay']) <= 3600)
 
-
-    def get_antergos_mirror_stats(self):
-        """ Retrieve current mirror status RSS data. """
-
-        mirrors = []
-        if not self.antergos_rss:
-            self.antergos_rss = feedparser.parse(
-                AutoRankmirrors.ANTERGOS_MIRROR_STATUS)
-
-        for item in self.antergos_rss['items']:
-            if self.is_good_mirror(item, 'rss'):
-                mirrors.append(item)
-        return mirrors
-
-    def get_arch_mirror_stats(self):
-        """ Retrieve the current mirror status JSON data. """
-        mirrors = []
-
-        if not self.arch_json:
+    def get_mirror_stats(self):
+        """ Retrieve all mirrors status RSS data. """
+        if not self.data['arch']:
             try:
                 req = requests.get(
-                    AutoRankmirrors.ARCH_MIRROR_STATUS,
+                    RankMirrors.MIRROR_STATUS['arch'],
                     headers={'User-Agent': 'Mozilla/5.0'}
                 )
-                self.arch_json = req.json()
+                self.data['arch'] = req.json()
             except requests.RequestException as err:
                 logging.debug(
-                    'Failed to retrieve mirror status information: %s',
-                    err)
-        try:
-            # Remove servers that have not synced, and parse the "last_sync"
-            # times for comparison later.
-            mirrors = self.arch_json['urls']
+                    'Failed to retrieve mirror status information: %s', err)
 
+        if not self.data['antergos']:
+            self.data['antergos'] = feedparser.parse(
+                RankMirrors.MIRROR_STATUS['antergos'])
+
+        mirrors = {'arch': [], 'antergos': []}
+
+        try:
             # Filter incomplete mirrors  and mirrors that haven't synced.
-            mirrors = [m for m in mirrors if self.is_good_mirror(m)]
-            self.arch_json['urls'] = mirrors
+            mirrors['arch'] = self.data['arch']['urls']
+            mirrors['arch'] = [m for m in mirrors['arch'] if self.is_good_mirror(m)]
+            #self.data['arch']['urls'] = mirrors['arch']
         except KeyError as err:
             logging.debug('Failed to parse retrieved mirror data: %s', err)
 
+        urls = []
+        for item in self.data['antergos']['items']:
+            if self.is_good_mirror(item):
+                urls.append(item['link'])
+        mirrors['antergos'] = urls
+
         return mirrors
 
-    def sort_mirrors_by_speed(self, mirrors=None, threads=5):
-        """ Sorts mirror list """
-        # Ensure that "mirrors" is a list and not a generator.
-        if not isinstance(mirrors, list):
-            mirrors = list(mirrors)
-
-        num_threads = min(threads, len(mirrors))
-        # URL input queue.Queue
-        q_in = queue.Queue()
-        # URL and rate output queue.Queue
-        q_out = queue.Queue()
-
-        rates = {}
-
-        # Check version of cryptsetup pkg (used to test mirror speed)
-        logging.debug('Checking cryptsetup version with pacman...')
+    def get_package_version(self, name):
+        """ Returns pkg_name package version """
+        logging.debug('Checking %s version with pacman...', name)
         try:
-            cmd = ["pacman", "-Ss", "cryptsetup"]
+            cmd = ["/usr/bin/pacman", "-Ss", name]
             line = subprocess.check_output(cmd).decode().split()
             version = line[1]
             logging.debug(
-                'cryptsetup version is: %s (used to test mirror speed)', version)
+                '%s version is: %s (used to test mirror speed)', name, version)
         except subprocess.CalledProcessError as err:
             logging.debug(err)
             version = False
+        return version
 
-        def worker():
-            """ worker thread. Retrieves data to test mirror speed """
-            while True:
-                if not q_in.empty():
-                    url = q_in.get()
-                    if version:
-                        db_subpath = 'core/os/x86_64/cryptsetup-{0}-x86_64.pkg.tar.xz'
-                        db_subpath = db_subpath.format(version)
-                    else:
-                        db_subpath = 'core/os/x86_64/core.db.tar.gz'
-                    db_url = url + db_subpath
-                    # Leave the rate as 0 if the connection fails.
-                    # TODO: Consider more graceful error handling.
-                    rate = 0
-                    dtime = float('NaN')
+    def sort_mirrors_by_speed(self, mirrors=None, threads=5):
+        """ Sorts mirror list """
+        test_packages = {
+            'arch': {
+                'name':'cryptsetup',
+                'version': ''},
+            'antergos': {
+                'name': 'antergos-kde-meta',
+                'version': ''}}
 
-                    req = urllib.request.Request(url=db_url)
-                    try:
-                        time0 = time.time()
-                        with urllib.request.urlopen(req, None, 5) as my_file:
-                            size = len(my_file.read())
-                            dtime = time.time() - time0
-                            rate = size / dtime
-                    except (OSError,
-                            urllib.error.HTTPError,
-                            http.client.HTTPException):
-                        pass
-                    q_out.put((url, rate, dtime))
-                    q_in.task_done()
+        rated_mirrors = {'arch': [], 'antergos': []}
 
-        # Launch threads
-        for _i in range(num_threads):
-            my_thread = threading.Thread(target=worker)
-            my_thread.start()
+        for key, value in test_packages.items():
+            test_packages[key]['version'] = self.get_package_version(value['name'])
 
-        # Load the input queue.Queue
-        url_len = 0
-        for mirror in mirrors:
-            url_len = max(url_len, len(mirror['url']))
-            logging.debug("Rating mirror '%s'", mirror['url'])
-            q_in.put(mirror['url'])
-
-        # Wait for queue to empty
+        num_mirrors = {
+            'arch': len(mirrors['arch']),
+            'antergos': len(mirrors['antergos'])}
+        total_num_mirrors = len(mirrors['arch']) + len(mirrors['antergos'])
+        mirrors_done = 0
         old_fraction = 0.0
-        while not q_in.empty():
-            fraction = 1.0 - float(q_in.qsize()) / float(len(mirrors))
-            if fraction != old_fraction:
-                self.fraction.send(fraction)
-                old_fraction = fraction
 
-        # Wait for all threads to complete
-        q_in.join()
+        repos = ['arch', 'antergos']
 
-        # Log some extra data.
-        url_len = str(url_len)
-        fmt = '%-' + url_len + 's  %14s  %9s'
-        logging.debug(fmt, _("Server"), _("Rate"), _("Time"))
+        for repo in repos:
+            num_threads = min(threads, len(mirrors))
+            # URL input queue.Queue
+            q_in = queue.Queue()
+            # URL and rate output queue.Queue
+            q_out = queue.Queue()
 
-        # Loop over the mirrors just to ensure that we get the rate for each.
-        # The value in the loop does not (necessarily) correspond to the mirror.
-        fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
-        for mirror in mirrors:
-            url, rate, dtime = q_out.get()
-            kibps = rate / 1024.0
-            logging.debug(fmt, url, kibps, dtime)
-            rates[url] = rate
-            q_out.task_done()
+            rates = {}
 
-        # Sort by rate.
-        rated_mirrors = [m for m in mirrors if rates[m['url']] > 0]
-        rated_mirrors.sort(key=lambda m: rates[m['url']], reverse=True)
+            name = test_packages[repo]['name']
+            version = test_packages[repo]['version']
+
+            def worker():
+                """ worker thread. Retrieves data to test mirror speed """
+                while True:
+                    if not q_in.empty():
+                        url = q_in.get()
+                        db_subpath = 'core/os/x86_64/{0}-{1}-x86_64.pkg.tar.xz'
+                        db_subpath = db_subpath.format(name, version)
+                        db_url = url + db_subpath
+                        # Leave the rate as 0 if the connection fails.
+                        # TODO: Consider more graceful error handling.
+                        rate = 0
+                        dtime = float('NaN')
+
+                        req = urllib.request.Request(url=db_url)
+                        try:
+                            time0 = time.time()
+                            with urllib.request.urlopen(req, None, 5) as my_file:
+                                size = len(my_file.read())
+                                dtime = time.time() - time0
+                                rate = size / dtime
+                        except (OSError, urllib.error.HTTPError,
+                                http.client.HTTPException) as err:
+                            logging.warning(err)
+                        q_out.put((url, rate, dtime))
+                        q_in.task_done()
+
+            # Launch threads
+            for _i in range(num_threads):
+                my_thread = threading.Thread(target=worker)
+                my_thread.start()
+
+            # Load the input queue.Queue
+            url_len = 0
+            for mirror in mirrors[repo]:
+                url_len = max(url_len, len(mirror['url']))
+                logging.debug("Rating mirror '%s'", mirror['url'])
+                q_in.put(mirror['url'])
+
+            # Wait for queue to empty
+            while not q_in.empty():
+                fraction = 1.0 - float(q_in.qsize()) / float(total_num_mirrors)
+                if fraction != old_fraction:
+                    print(fraction)
+                    if self.fraction:
+                        self.fraction.send(fraction)
+                    old_fraction = fraction
+
+            # Wait for all threads to complete
+            q_in.join()
+
+            # Log some extra data.
+            url_len = str(url_len)
+            fmt = '%-' + url_len + 's  %14s  %9s'
+            logging.debug(fmt, _("Server"), _("Rate"), _("Time"))
+
+            # Loop over the mirrors just to ensure that we get the rate for each.
+            # The value in the loop does not (necessarily) correspond to the mirror.
+            fmt = '%-' + url_len + 's  %8.2f KiB/s  %7.2f s'
+            for mirror in mirrors[repo]:
+                url, rate, dtime = q_out.get()
+                kibps = rate / 1024.0
+                logging.debug(fmt, url, kibps, dtime)
+                rates[url] = rate
+                q_out.task_done()
+
+            # Sort by rate.
+            # TODO: FIX THIS
+            rated_mirrors[repo] = [m for m in mirrors if rates[m['url']] > 0]
+            rated_mirrors[repo].sort(key=lambda m: rates[m['url']], reverse=True)
 
         return rated_mirrors
 
-    def uncomment_antergos_mirrors(self):
+    def uncomment_mirrors(self, repo):
         """ Uncomment Antergos mirrors and comment out auto selection so
         rankmirrors can find the best mirror. """
 
-        autoselect = "http://mirrors.antergos.com/$repo/$arch"
-        autoselect_on = True
-        autoselect_sf = True
+        comment_urls = [
+            'http://mirrors.antergos.com/$repo/$arch',
+            'sourceforge']
 
-        if os.path.exists(self.antergos_mirrorlist):
-            with open(self.antergos_mirrorlist) as mirrors:
+        if os.path.exists(RankMirrors.MIRRORLIST[repo]):
+            with open(RankMirrors.MIRRORLIST[repo]) as mirrors:
                 lines = [x.strip() for x in mirrors.readlines()]
 
             for i, line in enumerate(lines):
-                srv_comment = line.startswith("#Server")
-                srv = line.startswith("Server")
-
-                if autoselect_on and srv and autoselect in line:
-                    # Comment out auto selection
-                    lines[i] = "#" + line
-                    autoselect_on = False
-                elif autoselect_sf and srv and 'sourceforge' in line:
-                    # Comment out sourceforge auto selection url
-                    lines[i] = "#" + line
-                    autoselect_sf = False
-                elif srv_comment and autoselect not in line and 'sourceforge' not in line:
-                    # Uncomment Antergos mirror
+                if line.startswith("#Server"):
+                    # if server is commented, uncoment it.
                     lines[i] = line.lstrip("#")
+                
+                if line.startswith("Server"):
+                    # Let's see if we have to comment out this server
+                    for url in comment_urls:
+                        if url in line:
+                            lines[i] = '#' + line
 
             with misc.raised_privileges():
                 # Write new one
-                with open(self.antergos_mirrorlist, 'w') as mirrors:
+                with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors:
                     mirrors.write("\n".join(lines) + "\n")
                 update_db.sync()
 
-    def run_rankmirrors(self):
-        """ Runs rankmirrors to sort Antergos mirrors """
-        if os.path.exists("/usr/bin/rankmirrors"):
-            self.uncomment_antergos_mirrors()
-            try:
-                # Store rankmirrors output in a temporary file
-                with tempfile.TemporaryFile(mode='w+t') as temp_file:
-                    cmd = [
-                        'rankmirrors',
-                        '-n', '0',
-                        '-r', 'antergos',
-                        self.antergos_mirrorlist]
-                    subprocess.call(cmd, stdout=temp_file)
-                    temp_file.seek(0)
-                    # Copy new mirrorlist to the old one
-                    with misc.raised_privileges() as __:
-                        with open(self.antergos_mirrorlist, 'w') as antergos_mirrorlist_file:
-                            antergos_mirrorlist_file.write(temp_file.read())
-                    update_db.sync()
-            except subprocess.CalledProcessError as why:
-                logging.debug(
-                    'Cannot run rankmirrors on Antergos mirrorlist: %s',
-                    why)
-
-    def filter_and_sort_arch_mirrorlist(self):
-        """ Sort Arch mirrorlist """
-        output = '# Arch Linux mirrorlist generated by Cnchi #\n'
-        mlist = self.get_arch_mirror_stats()
-        logging.debug("Arch mirror stats downloaded.")
+    def filter_and_sort_mirrorlists(self):
+        """ Filter and sort mirrors """
+        output = '# Mirrorlist generated by Cnchi #\n'
+        mlist = self.get_mirror_stats()
+        logging.debug("Mirror stats downloaded.")
         mirrors = self.sort_mirrors_by_speed(mirrors=mlist)
 
-        for mirror in mirrors:
-            self.arch_mirrorlist_ranked.append(mirror['url'])
-            output += "Server = {0}{1}/os/{2}\n".format(
-                mirror['url'],
-                '$repo',
-                '$arch')
+        for repo in ['arch', 'antergos']:
+            for mirror in mirrors[repo]:
+                self.mirrorlist_ranked[repo].append(mirror['url'])
+                output += "Server = {0}{1}/os/{2}\n".format(
+                    mirror['url'],
+                    '$repo',
+                    '$arch')
 
-        # Write modified Arch mirrorlist
-        with misc.raised_privileges() as __:
-            with open(self.arch_mirrorlist, 'w') as arch_mirrors:
-                arch_mirrors.write(output)
-            update_db.sync()
+            # Write modified Arch mirrorlist
+            with misc.raised_privileges():
+                with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors_file:
+                    mirrors_file.write(output)
+                update_db.sync()
 
     def run(self):
         """ Run process """
@@ -313,27 +306,24 @@ class AutoRankmirrors(multiprocessing.Process):
             time.sleep(2)  # Delay, try again after 2 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
-        update_db.update_mirrorlists()
+        ###update_db.update_mirrorlists()
 
-        logging.debug("Filtering and sorting Arch mirrors...")
-        self.filter_and_sort_arch_mirrorlist()
+        logging.debug("Filtering and sorting mirrors...")
+        self.filter_and_sort_mirrorlists()
 
-        self.arch_mirrorlist_ranked = [
-            x for x in self.arch_mirrorlist_ranked if x]
-        self.settings.set('rankmirrors_result', self.arch_mirrorlist_ranked)
-
-        logging.debug(
-            "Running rankmirrors command to sort Antergos mirrors...")
-        self.run_rankmirrors()
+        ###self.mirrorlist_ranked['arch'] = [
+        ###    x for x in self.mirrorlist_ranked['arch'] if x]
+        ###self.settings.set('rankmirrors_result', self.mirrorlist_ranked['arch'])
 
         logging.debug("Auto mirror selection has been run successfully.")
 
-        self.fraction.send(1.0)
-        self.fraction.close()
+        if self.fraction:
+            self.fraction.send(1.0)
+            self.fraction.close()
 
 def test_module():
     """ Helper function to test this module """
-    proc = AutoRankmirrors({}, None)
+    proc = RankMirrors({})
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
