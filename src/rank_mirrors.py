@@ -160,7 +160,7 @@ class RankMirrors(multiprocessing.Process):
         """ Sorts mirror list """
         test_packages = {
             'arch': {'name':'cryptsetup', 'version': ''},
-            'antergos': {'name': 'antergos.db', 'version': ''}}
+            'antergos': {'name': 'ttf-myanmar3', 'version': ''}}
 
         rated_mirrors = {'arch': [], 'antergos': []}
 
@@ -184,8 +184,7 @@ class RankMirrors(multiprocessing.Process):
 
         db_subpaths = {
             'arch': 'core/os/x86_64/{0}-{1}-x86_64.pkg.tar.xz',
-            #'antergos': '/{0}-{1}-x86_64.pkg.tar.xz'}
-            'antergos': '/{0}'}
+            'antergos': '/{0}-{1}-any.pkg.tar.xz'}
 
         repos = ['arch', 'antergos']
 
@@ -202,11 +201,11 @@ class RankMirrors(multiprocessing.Process):
                 #print(repo, name, version)
                 while True:
                     if not q_in.empty():
-                        mirror_url = q_in.get()
+                        url, db_subpath = q_in.get()
                         # Leave the rate as 0 if the connection fails.
                         rate = 0
                         dtime = float('NaN')
-                        req = urllib.request.Request(url=mirror_url)
+                        req = urllib.request.Request(url=url+db_subpath)
                         try:
                             time0 = time.time()
                             with urllib.request.urlopen(req, None, 5) as my_file:
@@ -215,9 +214,9 @@ class RankMirrors(multiprocessing.Process):
                                 rate = size / dtime
                         except (OSError, urllib.error.HTTPError,
                                 http.client.HTTPException):
-                            print("Couldn't download {}".format(mirror_url))
+                            logging.warning("Couldn't download %s", url + db_subpath)
                             #logging.warning(err)
-                        q_out.put((mirror_url, rate, dtime))
+                        q_out.put((url, rate, dtime))
                         q_in.task_done()
 
             # Launch threads
@@ -232,10 +231,7 @@ class RankMirrors(multiprocessing.Process):
                 url_len = max(url_len, len(mirror['url']))
                 logging.debug("Rating mirror '%s'", mirror['url'])
                 if version:
-                    url = mirror['url'] + db_subpath.format(name, version)
-                else:
-                    url = mirror['url'] + db_subpath.format(name)
-                q_in.put(url)
+                    q_in.put((mirror['url'], db_subpath.format(name, version)))
 
             # Wait for queue to empty
             while not q_in.empty():
@@ -271,7 +267,6 @@ class RankMirrors(multiprocessing.Process):
             except KeyError as err:
                 logging.warning(err)
 
-        print(rated_mirrors)
         return rated_mirrors
 
     @staticmethod
@@ -313,20 +308,15 @@ class RankMirrors(multiprocessing.Process):
         mlist = self.get_mirror_stats()
         logging.debug("Mirror stats downloaded.")
         mirrors = self.sort_mirrors_by_speed(mirrors=mlist)
-        print('MIRRORS', mirrors)
+
         for repo in ['arch', 'antergos']:
             self.mirrorlist_ranked[repo] = []
 
         for repo in ['arch', 'antergos']:
             for mirror in mirrors[repo]:
-                print("filter_and_sort_mirrorlists: ", mirror['url'])
                 self.mirrorlist_ranked[repo].append(mirror['url'])
-                output += "Server = {0}{1}/os/{2}\n".format(
-                    mirror['url'],
-                    '$repo',
-                    '$arch')
-            # Write modified Arch mirrorlist
-            print(output)
+                output += "Server = {0}{1}/os/{2}\n".format(mirror['url'], '$repo', '$arch')
+            # Write modified mirrorlist
             with misc.raised_privileges():
                 try:
                     with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors_file:
