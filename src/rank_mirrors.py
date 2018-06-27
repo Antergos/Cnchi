@@ -235,7 +235,7 @@ class RankMirrors(multiprocessing.Process):
                 q_out.task_done()
 
             # Sort by rate.
-            rated_mirrors[repo] = [m for m in mirrors if rates[m['url']] > 0]
+            rated_mirrors[repo] = [m for m in mirrors[repo] if rates[m['url']] > 0]
             rated_mirrors[repo].sort(key=lambda m: rates[m['url']], reverse=True)
 
         return rated_mirrors
