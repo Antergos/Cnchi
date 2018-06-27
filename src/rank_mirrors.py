@@ -36,7 +36,6 @@ import multiprocessing
 import os
 import queue
 import subprocess
-import tempfile
 import threading
 import time
 import urllib.request
@@ -63,11 +62,11 @@ class RankMirrors(multiprocessing.Process):
 
     MIRROR_STATUS = {
         'antergos': 'http://rss.uptimerobot.com/u600152-d6c3c10d099982e3a185c2c5ce561a7b',
-        'arch': 'http://www.archlinux.org/mirrors/status/json/' }
+        'arch': 'http://www.archlinux.org/mirrors/status/json/'}
     MIRRORLIST = {
         'antergos': '/etc/pacman.d/antergos-mirrorlist',
-        'arch': '/etc/pacman.d/mirrorlist' }
- 
+        'arch': '/etc/pacman.d/mirrorlist'}
+
     def __init__(self, settings, fraction_pipe=None):
         """ Initialize process class
             fraction_pipe is a pipe used to send progress for a gtk.progress widget update
@@ -83,9 +82,10 @@ class RankMirrors(multiprocessing.Process):
     @staticmethod
     def is_good_mirror(mirror):
         """ Check if mirror info is good enough """
-        print(mirror)
         if 'summary' in mirror.keys():
+            # RSS antergos status mirror
             return bool(mirror['summary'] == RankMirrors.MIRROR_OK_RSS)
+        # JSON arch status mirror
         return (mirror['last_sync'] and
                 mirror['completion_pct'] == 1.0 and
                 mirror['protocol'] == 'http' and
@@ -118,15 +118,15 @@ class RankMirrors(multiprocessing.Process):
         except KeyError as err:
             logging.debug('Failed to parse retrieved mirror data: %s', err)
 
-        urls = []
-        for item in self.data['antergos']['items']:
-            if self.is_good_mirror(item):
-                urls.append(item['link'])
-        mirrors['antergos'] = urls
+        for mirror in self.data['antergos']['items']:
+            mirror['url'] = mirror['link']
+            if self.is_good_mirror(mirror):
+                mirrors['antergos'].append(mirror)
 
         return mirrors
 
-    def get_package_version(self, name):
+    @staticmethod
+    def get_package_version(name):
         """ Returns pkg_name package version """
         logging.debug('Checking %s version with pacman...', name)
         try:
@@ -140,39 +140,33 @@ class RankMirrors(multiprocessing.Process):
             version = False
         return version
 
-    def sort_mirrors_by_speed(self, mirrors=None, threads=5):
+    def sort_mirrors_by_speed(self, mirrors=None, max_threads=5):
         """ Sorts mirror list """
         test_packages = {
-            'arch': {
-                'name':'cryptsetup',
-                'version': ''},
-            'antergos': {
-                'name': 'antergos-kde-meta',
-                'version': ''}}
+            'arch': {'name':'cryptsetup', 'version': ''},
+            'antergos': {'name': 'antergos-kde-meta', 'version': ''}}
 
         rated_mirrors = {'arch': [], 'antergos': []}
 
         for key, value in test_packages.items():
             test_packages[key]['version'] = self.get_package_version(value['name'])
 
-        num_mirrors = {
-            'arch': len(mirrors['arch']),
-            'antergos': len(mirrors['antergos'])}
         total_num_mirrors = len(mirrors['arch']) + len(mirrors['antergos'])
-        mirrors_done = 0
         old_fraction = 0.0
+
+        num_threads = min(max_threads, len(mirrors))
+        # URL input queue.Queue
+        q_in = queue.Queue()
+        # URL and rate output queue.Queue
+        q_out = queue.Queue()
+
+        name = ""
+        version = ""
+        rates = {}
 
         repos = ['arch', 'antergos']
 
         for repo in repos:
-            num_threads = min(threads, len(mirrors))
-            # URL input queue.Queue
-            q_in = queue.Queue()
-            # URL and rate output queue.Queue
-            q_out = queue.Queue()
-
-            rates = {}
-
             name = test_packages[repo]['name']
             version = test_packages[repo]['version']
 
@@ -185,7 +179,6 @@ class RankMirrors(multiprocessing.Process):
                         db_subpath = db_subpath.format(name, version)
                         db_url = url + db_subpath
                         # Leave the rate as 0 if the connection fails.
-                        # TODO: Consider more graceful error handling.
                         rate = 0
                         dtime = float('NaN')
 
@@ -216,7 +209,7 @@ class RankMirrors(multiprocessing.Process):
 
             # Wait for queue to empty
             while not q_in.empty():
-                fraction = 1.0 - float(q_in.qsize()) / float(total_num_mirrors)
+                fraction = float(q_out.qsize()) / float(total_num_mirrors)
                 if fraction != old_fraction:
                     print(fraction)
                     if self.fraction:
@@ -242,7 +235,6 @@ class RankMirrors(multiprocessing.Process):
                 q_out.task_done()
 
             # Sort by rate.
-            # TODO: FIX THIS
             rated_mirrors[repo] = [m for m in mirrors if rates[m['url']] > 0]
             rated_mirrors[repo].sort(key=lambda m: rates[m['url']], reverse=True)
 
@@ -264,7 +256,7 @@ class RankMirrors(multiprocessing.Process):
                 if line.startswith("#Server"):
                     # if server is commented, uncoment it.
                     lines[i] = line.lstrip("#")
-                
+
                 if line.startswith("Server"):
                     # Let's see if we have to comment out this server
                     for url in comment_urls:
