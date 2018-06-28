@@ -381,7 +381,7 @@ class RankMirrors(multiprocessing.Process):
             with urllib.request.urlopen(req, None, 5) as my_file:
                 data = my_file.read()
             with misc.raised_privileges():
-                with open(RankMirrors.MIRRORLIST['antergos'], 'w') as mirror_file:
+                with open(RankMirrors.MIRRORLIST['antergos'], 'wb') as mirror_file:
                     mirror_file.write(data)
         except (OSError, urllib.error.HTTPError,
                 http.client.HTTPException):
