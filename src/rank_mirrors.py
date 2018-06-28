@@ -287,7 +287,7 @@ class RankMirrors(multiprocessing.Process):
 
     @staticmethod
     def uncomment_mirrors(repo):
-        """ Uncomment Antergos mirrors and comment out auto selection so
+        """ Uncomment mirrors and comment out auto selection so
         rankmirrors can find the best mirror. """
 
         comment_urls = [
@@ -309,8 +309,8 @@ class RankMirrors(multiprocessing.Process):
                         if url in line:
                             lines[i] = '#' + line
 
+            # Write new one
             with misc.raised_privileges():
-                # Write new one
                 try:
                     with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors_file:
                         mirrors_file.write("\n".join(lines) + "\n")
@@ -357,6 +357,8 @@ class RankMirrors(multiprocessing.Process):
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
         #update_db.update_mirrorlists()
         self.update_mirrorlists()
+
+        self.uncomment_mirrors()
 
         logging.debug("Filtering and sorting mirrors...")
         self.filter_and_sort_mirrorlists()
