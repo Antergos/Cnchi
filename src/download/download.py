@@ -228,8 +228,8 @@ def test():
     _ = gettext.gettext
 
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S.%f")
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()

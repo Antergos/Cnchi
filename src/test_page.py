@@ -130,8 +130,8 @@ def run(page_name):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S.%f")
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+        #"%Y-%m-%d %H:%M:%S.%f")
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 

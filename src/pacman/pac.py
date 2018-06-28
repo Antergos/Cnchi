@@ -653,8 +653,8 @@ class Pac(object):
 
         # Log format
         formatter = logging.Formatter(
-            fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S.%f")
+            fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s")
+            #datefmt="%Y-%m-%d %H:%M:%S.%f")
 
         if not self.logger.hasHandlers():
             # File logger
