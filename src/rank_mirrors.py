@@ -58,6 +58,7 @@ except NameError as err:
 class RankMirrors(multiprocessing.Process):
     """ Process class that downloads and sorts the mirrorlist """
 
+    REPOSITORIES = ['arch', 'antergos']
     MIRROR_OK_RSS = 'Alert Details: Successful response received'
 
     MIRROR_STATUS = {
@@ -190,9 +191,7 @@ class RankMirrors(multiprocessing.Process):
         version = ""
         rates = {}
 
-        repos = ['arch', 'antergos']
-
-        for repo in repos:
+        for repo in RankMirrors.REPOSITORIES:
             name = test_packages[repo]['name']
             version = test_packages[repo]['version']
 
@@ -286,7 +285,7 @@ class RankMirrors(multiprocessing.Process):
         return rated_mirrors
 
     @staticmethod
-    def uncomment_mirrors(repo):
+    def uncomment_mirrors():
         """ Uncomment mirrors and comment out auto selection so
         rankmirrors can find the best mirror. """
 
@@ -294,29 +293,30 @@ class RankMirrors(multiprocessing.Process):
             'http://mirrors.antergos.com/$repo/$arch',
             'sourceforge']
 
-        if os.path.exists(RankMirrors.MIRRORLIST[repo]):
-            with open(RankMirrors.MIRRORLIST[repo]) as mirrors:
-                lines = [x.strip() for x in mirrors.readlines()]
+        for repo in RankMirrors.REPOSITORIES:
+            if os.path.exists(RankMirrors.MIRRORLIST[repo]):
+                with open(RankMirrors.MIRRORLIST[repo]) as mirrors:
+                    lines = [x.strip() for x in mirrors.readlines()]
 
-            for i, line in enumerate(lines):
-                if line.startswith("#Server"):
-                    # if server is commented, uncoment it.
-                    lines[i] = line.lstrip("#")
+                for i, line in enumerate(lines):
+                    if line.startswith("#Server"):
+                        # if server is commented, uncoment it.
+                        lines[i] = line.lstrip("#")
 
-                if line.startswith("Server"):
-                    # Let's see if we have to comment out this server
-                    for url in comment_urls:
-                        if url in line:
-                            lines[i] = '#' + line
+                    if line.startswith("Server"):
+                        # Let's see if we have to comment out this server
+                        for url in comment_urls:
+                            if url in line:
+                                lines[i] = '#' + line
 
-            # Write new one
-            with misc.raised_privileges():
-                try:
-                    with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors_file:
-                        mirrors_file.write("\n".join(lines) + "\n")
-                except (OSError, PermissionError) as err:
-                    logging.error(err)
-                update_db.sync()
+                # Write new one
+                with misc.raised_privileges():
+                    try:
+                        with open(RankMirrors.MIRRORLIST[repo], 'w') as mirrors_file:
+                            mirrors_file.write("\n".join(lines) + "\n")
+                    except (OSError, PermissionError) as err:
+                        logging.error(err)
+        update_db.sync()
 
     def filter_and_sort_mirrorlists(self):
         """ Filter and sort mirrors """
@@ -377,8 +377,7 @@ class RankMirrors(multiprocessing.Process):
     @staticmethod
     def update_mirrorlists():
         """ Download mirror lists from archlinux and github """
-        repos = ['arch', 'antergos']
-        for repo in repos:
+        for repo in RankMirrors.REPOSITORIES:
             url = RankMirrors.MIRRORLIST_URL[repo]
             req = urllib.request.Request(url=url)
             try:
