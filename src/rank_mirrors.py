@@ -68,6 +68,7 @@ class RankMirrors(multiprocessing.Process):
         'arch': '/etc/pacman.d/mirrorlist'}
 
     MIRRORLIST_URL = {
+        'arch': "https://www.archlinux.org/mirrorlist/all/",
         'antergos': ("https://raw.githubusercontent.com/Antergos/antergos-packages/master/"
                      "antergos/antergos-mirrorlist/antergos-mirrorlist")}
 
@@ -214,9 +215,9 @@ class RankMirrors(multiprocessing.Process):
                                     dtime = time.time() - time0
                                     rate = size / dtime
                             except (OSError, urllib.error.HTTPError,
-                                    http.client.HTTPException):
+                                    http.client.HTTPException) as err:
                                 logging.warning("Couldn't download %s", full_url)
-                                #logging.warning(err)
+                                logging.warning(err)
                         q_out.put((mirror_url, rate, dtime))
                         q_in.task_done()
 
@@ -354,9 +355,8 @@ class RankMirrors(multiprocessing.Process):
             time.sleep(2)  # Delay, try again after 2 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
-        update_db.update_mirrorlists()
-
-        self.update_antergos_mirrorlist()
+        #update_db.update_mirrorlists()
+        self.update_mirrorlists()
 
         logging.debug("Filtering and sorting mirrors...")
         self.filter_and_sort_mirrorlists()
@@ -373,21 +373,21 @@ class RankMirrors(multiprocessing.Process):
             self.fraction.close()
 
     @staticmethod
-    def update_antergos_mirrorlist():
-        """ Download mirror list from github """
-        url = RankMirrors.MIRRORLIST_URL['antergos']
-        req = urllib.request.Request(url=url)
-        try:
-            with urllib.request.urlopen(req, None, 5) as my_file:
-                data = my_file.read()
-            with misc.raised_privileges():
-                with open(RankMirrors.MIRRORLIST['antergos'], 'wb') as mirror_file:
-                    mirror_file.write(data)
-        except (OSError, urllib.error.HTTPError,
-                http.client.HTTPException):
-            logging.warning(
-                "Couldn't download %s", url)
-            #logging.warning(err)
+    def update_mirrorlists():
+        """ Download mirror lists from archlinux and github """
+        repos = ['arch', 'antergos']
+        for repo in repos:
+            url = RankMirrors.MIRRORLIST_URL[repo]
+            req = urllib.request.Request(url=url)
+            try:
+                with urllib.request.urlopen(req, None, 5) as my_file:
+                    data = my_file.read()
+                with misc.raised_privileges():
+                    with open(RankMirrors.MIRRORLIST[repo], 'wb') as mirror_file:
+                        mirror_file.write(data)
+            except (OSError, urllib.error.HTTPError, http.client.HTTPException) as err:
+                logging.warning("Couldn't download %s", url)
+                logging.warning(err)
 
 def test_module():
     """ Helper function to test this module """
