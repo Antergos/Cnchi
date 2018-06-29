@@ -29,7 +29,6 @@
 
 """ Let advanced users manage mirrorlist files """
 
-
 import logging
 import multiprocessing
 import shutil
@@ -46,7 +45,6 @@ except ImportError:
 import cairo
 from pages.gtkbasebox import GtkBaseBox
 from rank_mirrors import RankMirrors
-
 
 if __name__ == '__main__':
     import sys
@@ -307,6 +305,11 @@ class MirrorListBox(Gtk.ListBox):
 
 class Mirrors(GtkBaseBox):
     """ Page that shows mirrolists so the user can arrange them manually """
+
+    MIRRORLISTS = [
+        "/etc/pacman.d/mirrorlist",
+        "/etc/pacman.d/antergos-mirrorlist"]
+
     def __init__(self, params, prev_page="cache", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
@@ -317,10 +320,7 @@ class Mirrors(GtkBaseBox):
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
 
-        mirror_files = ["/etc/pacman.d/mirrorlist",
-                        "/etc/pacman.d/antergos-mirrorlist"]
-
-        for mirror_file in mirror_files:
+        for mirror_file in Mirrors.MIRRORLISTS:
             mirror_listbox = MirrorListBox(mirror_file, self.settings)
             mirror_listbox.connect(
                 "switch-activated", self.on_switch_activated)
@@ -442,8 +442,3 @@ class Mirrors(GtkBaseBox):
     def get_next_page(self):
         """ Returns next page """
         return self.next_page
-
-
-if __name__ == '__main__':
-    from test_page import run
-    run('mirrors')

@@ -46,8 +46,6 @@ import requests
 
 import misc.extra as misc
 
-import update_db
-
 # When testing, no _() is available
 try:
     _("")
@@ -355,7 +353,6 @@ class RankMirrors(multiprocessing.Process):
             time.sleep(2)  # Delay, try again after 2 seconds
 
         logging.debug("Updating both mirrorlists (Arch and Antergos)...")
-        #update_db.update_mirrorlists()
         self.update_mirrorlists()
 
         self.uncomment_mirrors()
