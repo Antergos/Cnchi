@@ -206,18 +206,19 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
     err_msg = "Can't format and open the LUKS device {0}".format(luks_device)
 
+    #cypher = 'aes-xts-plain64'
+    cypher = 'serpent-xts-plain64'
+
     if luks_pass is None or luks_pass == "":
         # No key password given, let's create a random keyfile
         wrapper.dd("/dev/urandom", luks_key, bs=1024, count=4)
 
         # Set up luks with a keyfile
-        cmd = [
-            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
+        cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
             "-s", "512", "-h", "sha512", luks_device, luks_key]
         call(cmd, msg=err_msg, fatal=True)
 
-        cmd = [
-            "cryptsetup", "luksOpen", luks_device, luks_name, "-q",
+        cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q",
             "--key-file", luks_key]
         call(cmd, msg=err_msg, fatal=True)
     else:
@@ -225,18 +226,12 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
-        # https://code.google.com/p/cryptsetup/wiki/Cryptsetup160
-        # aes-xts-plain
-        # aes-cbc-essiv:sha256
-        cmd = [
-            "cryptsetup", "luksFormat", "-q", "-c", "aes-xts-plain64",
+        cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
             "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
-        cmd = [
-            "cryptsetup", "luksOpen", luks_device, luks_name, "-q",
-            "--key-file=-"]
+        cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
