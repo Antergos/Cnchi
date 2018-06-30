@@ -195,20 +195,20 @@ class Cache(GtkBaseBox):
                 # Use the whole device as cache.
                 partition_path = self.prepare_whole_device(device_path)
                 if not partition_path:
-                    return None
+                    return False
             if not os.path.exists(Cache.CACHE_DIRECTORY):
                 os.makedirs(Cache.CACHE_DIRECTORY)
             if self.mount_partition(partition_path, Cache.CACHE_DIRECTORY):
                 logging.debug("%s partition mounted on %s to be used as xz cache",
                               partition_path, Cache.CACHE_DIRECTORY)
-                return Cache.CACHE_DIRECTORY
+                return True
             logging.warning("Could not mount %s in %s to be used as xz cache",
                             partition_path, Cache.CACHE_DIRECTORY)
             # Maybe we could not mount it because it's already mounted?
             lost_path = os.path.join(Cache.CACHE_DIRECTORY, 'lost+found')
             if os.path.exists(lost_path):
-                return Cache.CACHE_DIRECTORY
-        return None
+                return True
+        return False
 
     @staticmethod
     def mount_partition(path, mount_dir):
@@ -235,14 +235,16 @@ class Cache(GtkBaseBox):
         if not device_path and not partition_path:
             # User does not want to use cache
             return True
-        xz_cache_dir = self.mount_cache(device_path, partition_path)
-        if xz_cache_dir:
+        logging.error("%s, %s", device_path, partition_path)
+        if self.mount_cache(device_path, partition_path):
             xz_cache = self.settings.get('xz_cache')
-            if xz_cache_dir not in xz_cache:
-                xz_cache.append(xz_cache_dir)
+            if Cache.CACHE_DIRECTORY not in xz_cache:
+                xz_cache.append(Cache.CACHE_DIRECTORY)
                 self.settings.set('xz_cache', xz_cache)
-                logging.debug("%s added to xz cache", xz_cache_dir)
-                return True
+                logging.debug("%s added to xz cache", Cache.CACHE_DIRECTORY)
+            else:
+                logging.debug("%s was already in xz cache", Cache.CACHE_DIRECTORY)
+            return True
         return False
 
 # When testing, no _() is available
