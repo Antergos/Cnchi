@@ -112,29 +112,66 @@ class PostFeatures(object):
         srv.mask_services(masked)
         srv.enable_services(services)
 
-    def read_file(self, path):
+    def read_file_from_install(self, path):
         """ Read file from new installation /install """
         lines = []
         path = os.path.join(self.dest_dir, path)
-        with open(path) as grub_cfg:
-            lines = grub_cfg.readlines()
+        try:
+            with open(path) as grub_cfg:
+                lines = grub_cfg.readlines()
+        except OSError as err:
+            logging.error("Couldn't read %s file: %s", path, err)
         return lines
 
     def set_kernel_lts(self):
+        """ Sets LTS kernel as default when booting """
+        bootloader = self.settings.get('bootloader')
+        if bootloader == 'grub':
+            self.set_kernel_lts_grub()
+        elif bootloader == 'systemd-boot':
+            self.set_kernel_lts_systemdboot()
+        elif bootloader == 'refind':
+            self.set_kernel_lts_refind()
+        else:
+            logging.warning("Unknown bootloader '%s'", bootloader)
+
+    def set_kernel_lts_grub(self):
         """ Sets LTS kernel as default in Grub """
-        pass
         # Get menu options
-        #path = 'boot/grub.cfg'
-        #lines = self.read_file(path)
+        path = 'boot/grub.cfg'
+        lines = self.read_file_from_install(path)
 
+        menu_entries = []
+        index = 0
+        for line in lines:
+            if line.startswith('menuentry'):
+                title = line.split("'")[1]
+                menu_entries.append((index, title))
 
+        new_default = ""
+        for menu_entry in menu_entries:
+            index, title = menu_entry
+            if 'linux-lts' in title and 'recovery' not in title:
+                new_default = index
+                break
 
-        #path = 'etc/default/grub'
-        #lines = self.read_file(path)
-        #for line in lines:
-        #    if "GRUB_DEFAULT" in line:
+        if new_default:
+            path = 'etc/default/grub'
+            lines = self.read_file_from_install(path)
+            path = os.path.join(self.dest_dir, path)
+            with open(path, 'wt') as grub_file:
+                for line in lines:
+                    if "GRUB_DEFAULT" in line:
+                        line = "GRUB_DEFAULT={}".format(new_default)
+                    grub_file.write(line + '\n')
 
+    def set_kernel_lts_systemdboot(self):
+        """ TODO """
+        pass
 
+    def set_kernel_lts_refind(self):
+        """ TODO """
+        pass
 
     @staticmethod
     def enable_aur_in_pamac():
