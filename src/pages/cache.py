@@ -182,7 +182,8 @@ class Cache(GtkBaseBox):
                 output = output.decode()
                 if output:
                     logging.debug(output.strip('\n'))
-            except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as msg:
+                os.rmdir(Cache.CACHE_DIRECTORY)
+            except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as msg:
                 logging.debug(msg)
 
     def mount_cache(self, device_path, partition_path):
