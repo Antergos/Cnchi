@@ -160,7 +160,6 @@ class Pac(object):
             transaction.commit()
         except pyalpm.error as err:
             logging.error("Can't finalize alpm transaction: %s", err)
-            logging.error(err)
             #traceback.print_exc()
             transaction.release()
             return False
