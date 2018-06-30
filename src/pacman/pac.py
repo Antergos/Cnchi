@@ -31,13 +31,14 @@
 
 """ Module interface to pyalpm """
 
-import sys
-import math
+from collections import OrderedDict
+import inspect
 import logging
+import math
 import os
 import queue
-import inspect
-from collections import OrderedDict
+import sys
+import traceback
 
 import pacman.alpm_events as _alpm
 import pacman.pkginfo as pkginfo
@@ -152,21 +153,20 @@ class Pac(object):
     @staticmethod
     def finalize_transaction(transaction):
         """ Commit a transaction """
-        all_ok = False
         try:
             logging.debug("Prepare alpm transaction...")
             transaction.prepare()
             logging.debug("Commit alpm transaction...")
-            res = transaction.commit()
-            all_ok = True
+            transaction.commit()
         except pyalpm.error as err:
             logging.error("Can't finalize alpm transaction: %s", err)
-            logging.error(res)
-        finally:
-            logging.debug("Releasing alpm transaction...")
+            logging.error(err)
+            #traceback.print_exc()
             transaction.release()
-            logging.debug("Alpm transaction done.")
-        return all_ok
+            return False
+        transaction.release()
+        logging.debug("Alpm transaction done.")
+        return True
 
     def init_transaction(self, options=None):
         """ Transaction initialization """
