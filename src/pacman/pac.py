@@ -37,10 +37,9 @@ import logging
 import os
 import queue
 import inspect
-import traceback
 from collections import OrderedDict
 
-import pacman.alpm_events as alpm
+import pacman.alpm_events as _alpm
 import pacman.pkginfo as pkginfo
 import pacman.pacman_conf as config
 
@@ -158,12 +157,11 @@ class Pac(object):
             logging.debug("Prepare alpm transaction...")
             transaction.prepare()
             logging.debug("Commit alpm transaction...")
-            transaction.commit()
+            res = transaction.commit()
             all_ok = True
-        except pyalpm.error as pyalpm_error:
-            msg = _("Can't finalize alpm transaction: %s")
-            logging.error(msg, pyalpm_error)
-            traceback.print_exc()
+        except pyalpm.error as err:
+            logging.error("Can't finalize alpm transaction: %s", err)
+            logging.error(res)
         finally:
             logging.debug("Releasing alpm transaction...")
             transaction.release()
@@ -277,10 +275,8 @@ class Pac(object):
         for one_repo_group_name in one_repo_groups_names:
             grp = antdb['antergos'].read_grp(one_repo_group_name)
             if not grp:
+                # Group does not exist
                 grp = ['None', []]
-                #logging.warning(
-                #    "Error reading group '%s' from the antergos repo db",
-                #    one_repo_group_name)
             one_repo_groups.append(grp)
 
         one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
@@ -510,34 +506,34 @@ class Pac(object):
     def cb_event(self, event_type, event_txt):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
 
-        if event_type is alpm.ALPM_EVENT_CHECKDEPS_START:
+        if event_type is _alpm.ALPM_EVENT_CHECKDEPS_START:
             action = _('Checking dependencies...')
-        elif event_type is alpm.ALPM_EVENT_FILECONFLICTS_START:
+        elif event_type is _alpm.ALPM_EVENT_FILECONFLICTS_START:
             action = _('Checking file conflicts...')
-        elif event_type is alpm.ALPM_EVENT_RESOLVEDEPS_START:
+        elif event_type is _alpm.ALPM_EVENT_RESOLVEDEPS_START:
             action = _('Resolving dependencies...')
-        elif event_type is alpm.ALPM_EVENT_INTERCONFLICTS_START:
+        elif event_type is _alpm.ALPM_EVENT_INTERCONFLICTS_START:
             action = _('Checking inter conflicts...')
-        elif event_type is alpm.ALPM_EVENT_PACKAGE_OPERATION_START:
+        elif event_type is _alpm.ALPM_EVENT_PACKAGE_OPERATION_START:
             # Shown in cb_progress
             action = ""
-        elif event_type is alpm.ALPM_EVENT_INTEGRITY_START:
+        elif event_type is _alpm.ALPM_EVENT_INTEGRITY_START:
             action = _('Checking integrity...')
-        elif event_type is alpm.ALPM_EVENT_LOAD_START:
+        elif event_type is _alpm.ALPM_EVENT_LOAD_START:
             action = _('Loading packages...')
-        elif event_type is alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
+        elif event_type is _alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
             action = _("Checking target delta's integrity...")
-        elif event_type is alpm.ALPM_EVENT_DELTA_PATCHES_START:
+        elif event_type is _alpm.ALPM_EVENT_DELTA_PATCHES_START:
             action = _('Applying deltas to packages...')
-        elif event_type is alpm.ALPM_EVENT_DELTA_PATCH_START:
+        elif event_type is _alpm.ALPM_EVENT_DELTA_PATCH_START:
             action = _('Applying delta patch to target package...')
-        elif event_type is alpm.ALPM_EVENT_RETRIEVE_START:
+        elif event_type is _alpm.ALPM_EVENT_RETRIEVE_START:
             action = _('Downloading files from the repository...')
-        elif event_type is alpm.ALPM_EVENT_DISKSPACE_START:
+        elif event_type is _alpm.ALPM_EVENT_DISKSPACE_START:
             action = _('Checking disk space...')
-        elif event_type is alpm.ALPM_EVENT_KEYRING_START:
+        elif event_type is _alpm.ALPM_EVENT_KEYRING_START:
             action = _('Checking keys in keyring...')
-        elif event_type is alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
+        elif event_type is _alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
             action = _('Downloading missing keys into the keyring...')
         else:
             action = ""
