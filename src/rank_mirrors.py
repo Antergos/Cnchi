@@ -353,8 +353,8 @@ class RankMirrors(multiprocessing.Process):
         while not misc.has_connection():
             time.sleep(2)  # Delay, try again after 2 seconds
 
-        #logging.debug("Updating both mirrorlists (Arch and Antergos)...")
-        #self.update_mirrorlists()
+        logging.debug("Updating both mirrorlists (Arch and Antergos)...")
+        self.update_mirrorlists()
 
         self.uncomment_mirrors()
 
