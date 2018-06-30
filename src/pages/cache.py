@@ -42,7 +42,7 @@ from gi.repository import Gtk
 import misc.extra as misc
 import show_message as show
 import parted3.fs_module as fs
-
+import update_db
 from pages.gtkbasebox import GtkBaseBox
 
 class Cache(GtkBaseBox):
@@ -139,13 +139,13 @@ class Cache(GtkBaseBox):
         """ Get screen ready """
         self.translate_ui()
         self.populate_devices_and_partitions()
-        self.show_all()
         self.umount_cache()
+        self.show_all()
 
     def prepare_whole_device(self, device_path):
         """ Function that deletes device and creates a partition
         to be used as cache for xz packages """
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             dev = parted.getDevice(device_path)
             # Create a new device's partition table
             disk = parted.freshDisk(dev, 'gpt')
@@ -154,16 +154,18 @@ class Cache(GtkBaseBox):
                 disk=disk, type=parted.PARTITION_NORMAL, geometry=geometry)
             disk.addPartition(new_partition)
 
-            txt = _("Device {} will be fully erased! Are you REALLY sure?").format(device_path)
-            response = show.question(self.get_main_window(), txt)
-            if response == Gtk.ResponseType.YES:
+        txt = _("Device {} will be fully erased! Are you REALLY sure?").format(device_path)
+        response = show.question(self.get_main_window(), txt)
+        if response == Gtk.ResponseType.YES:
+            with misc.raised_privileges():
                 disk.commit()
-                if len(disk.partitions) == 1:
-                    path = disk.partitions[0].path
+            if len(disk.partitions) == 1:
+                path = disk.partitions[0].path
+                with misc.raised_privileges():
                     error, msg = fs.create_fs(path, "ext4")
-                    if error:
-                        logging.error(msg)
-                    return path
+                if error:
+                    logging.error(msg)
+                return path
 
         return None
 
@@ -174,8 +176,7 @@ class Cache(GtkBaseBox):
             try:
                 cmd = ["umount", Cache.CACHE_DIRECTORY]
                 output = subprocess.check_output(
-                    cmd,
-                    stdin=None,
+                    cmd, stdin=None,
                     stderr=subprocess.STDOUT,
                     timeout=None)
                 output = output.decode()
@@ -218,6 +219,7 @@ class Cache(GtkBaseBox):
             output = output.decode()
             if output:
                 logging.debug(output.strip('\n'))
+            update_db.sync()
             return True
         except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as err:
             logging.error(err)
