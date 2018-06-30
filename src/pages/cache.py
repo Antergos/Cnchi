@@ -142,12 +142,6 @@ class Cache(GtkBaseBox):
         self.umount_cache()
         self.show_all()
 
-    def store_values(self):
-        """ Continue """
-        # Enable forward button
-        self.forward_button.set_sensitive(True)
-        return True
-
     def prepare_whole_device(self, device_path):
         """ Function that deletes device and creates a partition
         to be used as cache for xz packages """
@@ -202,15 +196,18 @@ class Cache(GtkBaseBox):
                 partition_path = self.prepare_whole_device(device_path)
                 if not partition_path:
                     return None
-            mount_dir = Cache.CACHE_DIRECTORY
-            if not os.path.exists(mount_dir):
-                os.makedirs(mount_dir)
-            if self.mount_partition(partition_path, mount_dir):
+            if not os.path.exists(Cache.CACHE_DIRECTORY):
+                os.makedirs(Cache.CACHE_DIRECTORY)
+            if self.mount_partition(partition_path, Cache.CACHE_DIRECTORY):
                 logging.debug("%s partition mounted on %s to be used as xz cache",
-                              partition_path, mount_dir)
-                return mount_dir
+                              partition_path, Cache.CACHE_DIRECTORY)
+                return Cache.CACHE_DIRECTORY
             logging.warning("Could not mount %s in %s to be used as xz cache",
-                            partition_path, mount_dir)
+                            partition_path, Cache.CACHE_DIRECTORY)
+            # Maybe we could not mount it because it's already mounted?
+            lost_path = os.path.join(Cache.CACHE_DIRECTORY, 'lost+found')
+            if os.path.exists(lost_path):
+                return Cache.CACHE_DIRECTORY
         return None
 
     @staticmethod
