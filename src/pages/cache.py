@@ -142,6 +142,12 @@ class Cache(GtkBaseBox):
         self.umount_cache()
         self.show_all()
 
+    def store_values(self):
+        """ Continue """
+        # Enable forward button
+        self.forward_button.set_sensitive(True)
+        return True
+
     def prepare_whole_device(self, device_path):
         """ Function that deletes device and creates a partition
         to be used as cache for xz packages """
