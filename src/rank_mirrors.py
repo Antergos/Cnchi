@@ -94,6 +94,7 @@ class RankMirrors(multiprocessing.Process):
         if 'summary' in mirror.keys():
             # RSS antergos status mirror
             return bool(mirror['summary'] == RankMirrors.MIRROR_OK_RSS)
+
         # JSON arch status mirror
         return (mirror['last_sync'] and
                 mirror['completion_pct'] == 1.0 and
@@ -102,6 +103,7 @@ class RankMirrors(multiprocessing.Process):
 
     def get_mirror_stats(self):
         """ Retrieve all mirrors status RSS data. """
+        # Load status data (JSON) for arch mirrors
         if not self.data['arch']:
             try:
                 req = requests.get(
@@ -113,6 +115,7 @@ class RankMirrors(multiprocessing.Process):
                 logging.debug(
                     'Failed to retrieve mirror status information: %s', err)
 
+        # Load status data (RSS) for antergos mirrors
         if not self.data['antergos']:
             self.data['antergos'] = feedparser.parse(
                 RankMirrors.MIRROR_STATUS['antergos'])
@@ -127,10 +130,15 @@ class RankMirrors(multiprocessing.Process):
         except KeyError as err:
             logging.debug('Failed to parse retrieved mirror data: %s', err)
 
-        for mirror in self.data['antergos']['items']:
-            mirror['url'] = mirror['link']
-            if self.is_good_mirror(mirror):
-                mirrors['antergos'].append(mirror)
+        mirror_urls = []
+        for mirror in self.data['antergos']['entries']:
+            title = mirror['title']
+            url = mirror['link']
+            if "UP" in title and "DOWN" not in title and url not in mirror_urls:
+                mirror['url'] = url
+                if self.is_good_mirror(mirror):
+                    mirror_urls.append(url)
+                    mirrors['antergos'].append(mirror)
 
         return mirrors
 
@@ -243,7 +251,7 @@ class RankMirrors(multiprocessing.Process):
                     package_url += db_subpath
                 else:
                     package_url = mirror['url']
-                print(mirror['url'], package_url)
+                # print(mirror['url'], package_url)
                 q_in.put((mirror['url'], package_url))
 
             # Wait for queue to empty
@@ -335,9 +343,11 @@ class RankMirrors(multiprocessing.Process):
                     output += "Server = {0}{1}/os/{2}\n".format(mirror['url'], '$repo', '$arch')
                 else:
                     output += "Server = {0}\n".format(mirror['url'])
-            print('*' * 60)
-            print(output)
-            print('*' * 60)
+
+            # print('*' * 60)
+            # print(output)
+            # print('*' * 60)
+
             # Write modified mirrorlist
             with misc.raised_privileges():
                 try:

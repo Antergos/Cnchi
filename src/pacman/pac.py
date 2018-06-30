@@ -38,7 +38,7 @@ import math
 import os
 import queue
 import sys
-import traceback
+#import traceback
 
 import pacman.alpm_events as _alpm
 import pacman.pkginfo as pkginfo
@@ -634,10 +634,7 @@ class Pac(object):
         names = []
         for pkg in pkgs:
             names.append(pkg.name)
-        if package_name in names:
-            return True
-        else:
-            return False
+        return bool(package_name in names)
 
     def setup_logger(self):
         """ Configure our logger """
