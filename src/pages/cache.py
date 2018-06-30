@@ -235,7 +235,6 @@ class Cache(GtkBaseBox):
         if not device_path and not partition_path:
             # User does not want to use cache
             return True
-        logging.error("%s, %s", device_path, partition_path)
         if self.mount_cache(device_path, partition_path):
             xz_cache = self.settings.get('xz_cache')
             if Cache.CACHE_DIRECTORY not in xz_cache:
