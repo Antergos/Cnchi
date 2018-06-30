@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# setup_fstab.py
+# post_fstab.py
 #
 # Copyright © 2013-2018 Antergos
 #

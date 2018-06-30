@@ -800,7 +800,7 @@ class PostInstallation(object):
 
         # Configure user features (firewall, libreoffice language pack, ...)
         #self.setup_features()
-        post_features = PostFeatures(self.settings)
+        post_features = PostFeatures(DEST_DIR, self.settings)
         post_features.setup()
 
         # Install boot loader (always after running mkinitcpio)

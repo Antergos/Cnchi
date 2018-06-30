@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# setup_features.py
+# post_features.py
 #
 # Copyright © 2013-2018 Antergos
 #
@@ -35,7 +35,8 @@ import misc.extra as misc
 
 class PostFeatures(object):
     """ Manages post installation of selected features """
-    def __init__(self, settings):
+    def __init__(self, dest_dir, settings):
+        self.dest_dir = dest_dir
         self.settings = settings
 
     def setup(self):
@@ -76,6 +77,9 @@ class PostFeatures(object):
             firewall.run(["enable"])
             services.append('ufw')
 
+        if self.settings.get('feature_lts'):
+            self.set_kernel_lts()
+
         if (self.settings.get("feature_lamp") and
                 not self.settings.get("feature_lemp")):
             try:
@@ -107,6 +111,30 @@ class PostFeatures(object):
 
         srv.mask_services(masked)
         srv.enable_services(services)
+
+    def read_file(self, path):
+        """ Read file from new installation /install """
+        lines = []
+        path = os.path.join(self.dest_dir, path)
+        with open(path) as grub_cfg:
+            lines = grub_cfg.readlines()
+        return lines
+
+    def set_kernel_lts(self):
+        """ Sets LTS kernel as default in Grub """
+        pass
+        # Get menu options
+        #path = 'boot/grub.cfg'
+        #lines = self.read_file(path)
+
+
+
+        #path = 'etc/default/grub'
+        #lines = self.read_file(path)
+        #for line in lines:
+        #    if "GRUB_DEFAULT" in line:
+
+
 
     @staticmethod
     def enable_aur_in_pamac():
