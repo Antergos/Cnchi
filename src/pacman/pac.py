@@ -543,9 +543,9 @@ class Pac(object):
         elif event == _alpm.ALPM_EVENT_SCRIPTLET_INFO:
             action = _('Configuring {}').format(self.last_target)
 
-        logging.warning("~" * 60)
-        logging.warning(event, event_data)
-        logging.warning("~" * 60)
+        #logging.warning("~" * 60)
+        #logging.warning(event, event_data)
+        #logging.warning("~" * 60)
         if action != self.last_action:
             self.last_action = action
             self.queue_event('info', action)
@@ -601,14 +601,16 @@ class Pac(object):
         else:
             action = _("Downloading {}...").format(filename.replace('.pkg.tar.xz', ''))
 
-        target = ''
+        target = self.last_target
+        percent = self.last_percent
+
         if self.total_size > 0:
             percent = round((transferred + self.already_transferred) / self.total_size, 2)
             if transferred + self.already_transferred <= self.total_size:
                 transferred_size = self.format_size(transferred + self.already_transferred)
                 total_size = self.format_size(self.total_size)
                 target = '{0}/{1}'.format(transferred_size, total_size)
-        else:
+        elif total > 0:
             percent = round(transferred / total, 2)
 
         if action != self.last_action:
