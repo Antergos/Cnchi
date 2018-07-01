@@ -601,15 +601,15 @@ class Pac(object):
         else:
             action = _("Downloading {}...").format(filename.replace('.pkg.tar.xz', ''))
 
-        target = self.last_target
+        # target = self.last_target
         percent = self.last_percent
 
         if self.total_size > 0:
             percent = round((transferred + self.already_transferred) / self.total_size, 2)
-            if transferred + self.already_transferred <= self.total_size:
-                transferred_size = self.format_size(transferred + self.already_transferred)
-                total_size = self.format_size(self.total_size)
-                target = '{0}/{1}'.format(transferred_size, total_size)
+            #if transferred + self.already_transferred <= self.total_size:
+            #    transferred_size = self.format_size(transferred + self.already_transferred)
+            #    total_size = self.format_size(self.total_size)
+            #    target = '{0}/{1}'.format(transferred_size, total_size)
         elif total > 0:
             percent = round(transferred / total, 2)
 
@@ -617,9 +617,9 @@ class Pac(object):
             self.last_action = action
             self.queue_event('info', action)
 
-        if target != self.last_target:
-            self.last_target = target
-            self.queue_event('info', target)
+        #if target != self.last_target:
+        #    self.last_target = target
+        #    self.queue_event('info', target)
 
         if percent != self.last_percent:
             self.last_percent = percent
