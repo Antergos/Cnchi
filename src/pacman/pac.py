@@ -160,8 +160,7 @@ class Pac(object):
             del self.handle
             self.handle = None
 
-    @staticmethod
-    def finalize_transaction(transaction):
+    def finalize_transaction(self, transaction):
         """ Commit a transaction """
         try:
             logging.debug("Prepare alpm transaction...")
@@ -170,6 +169,7 @@ class Pac(object):
             transaction.commit()
         except pyalpm.error as err:
             logging.error("Can't finalize alpm transaction: %s", err)
+            logging.error("******* Last target: %s", self.last_target)
             #traceback.print_exc()
             transaction.release()
             return False
@@ -543,9 +543,6 @@ class Pac(object):
         elif event == _alpm.ALPM_EVENT_SCRIPTLET_INFO:
             action = _('Configuring {}').format(self.last_target)
 
-        #logging.warning("~" * 60)
-        #logging.warning(event, event_data)
-        #logging.warning("~" * 60)
         if action != self.last_action:
             self.last_action = action
             self.queue_event('info', action)
@@ -606,20 +603,12 @@ class Pac(object):
 
         if self.total_size > 0:
             percent = round((transferred + self.already_transferred) / self.total_size, 2)
-            #if transferred + self.already_transferred <= self.total_size:
-            #    transferred_size = self.format_size(transferred + self.already_transferred)
-            #    total_size = self.format_size(self.total_size)
-            #    target = '{0}/{1}'.format(transferred_size, total_size)
         elif total > 0:
             percent = round(transferred / total, 2)
 
         if action != self.last_action:
             self.last_action = action
             self.queue_event('info', action)
-
-        #if target != self.last_target:
-        #    self.last_target = target
-        #    self.queue_event('info', target)
 
         if percent != self.last_percent:
             self.last_percent = percent
@@ -648,7 +637,6 @@ class Pac(object):
         # Log format
         formatter = logging.Formatter(
             fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s")
-            #datefmt="%Y-%m-%d %H:%M:%S.%f")
 
         if not self.logger.hasHandlers():
             # File logger
