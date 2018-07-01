@@ -286,8 +286,6 @@ class Pac(object):
             repos[syncdb.name] = syncdb
 
         targets = []
-        logging.debug('REPO DB ORDER IS: %s', repo_order)
-
         for name in pkgs:
             _repos = repos
 
@@ -505,38 +503,27 @@ class Pac(object):
     def cb_event(self, event_type, event_txt):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
 
-        if event_type is _alpm.ALPM_EVENT_CHECKDEPS_START:
-            action = _('Checking dependencies...')
-        elif event_type is _alpm.ALPM_EVENT_FILECONFLICTS_START:
-            action = _('Checking file conflicts...')
-        elif event_type is _alpm.ALPM_EVENT_RESOLVEDEPS_START:
-            action = _('Resolving dependencies...')
-        elif event_type is _alpm.ALPM_EVENT_INTERCONFLICTS_START:
-            action = _('Checking inter conflicts...')
-        elif event_type is _alpm.ALPM_EVENT_PACKAGE_OPERATION_START:
+        events = {
+            _alpm.ALPM_EVENT_CHECKDEPS_START: _('Checking dependencies...'),
+            _alpm.ALPM_EVENT_FILECONFLICTS_START: _('Checking file conflicts...'),
+            _alpm.ALPM_EVENT_RESOLVEDEPS_START: _('Resolving dependencies...'),
+            _alpm.ALPM_EVENT_INTERCONFLICTS_START:  _('Checking inter conflicts...'),
             # Shown in cb_progress
-            action = ""
-        elif event_type is _alpm.ALPM_EVENT_INTEGRITY_START:
-            action = _('Checking integrity...')
-        elif event_type is _alpm.ALPM_EVENT_LOAD_START:
-            action = _('Loading packages...')
-        elif event_type is _alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
-            action = _("Checking target delta's integrity...")
-        elif event_type is _alpm.ALPM_EVENT_DELTA_PATCHES_START:
-            action = _('Applying deltas to packages...')
-        elif event_type is _alpm.ALPM_EVENT_DELTA_PATCH_START:
-            action = _('Applying delta patch to target package...')
-        elif event_type is _alpm.ALPM_EVENT_RETRIEVE_START:
-            action = _('Downloading files from the repository...')
-        elif event_type is _alpm.ALPM_EVENT_DISKSPACE_START:
-            action = _('Checking disk space...')
-        elif event_type is _alpm.ALPM_EVENT_KEYRING_START:
-            action = _('Checking keys in keyring...')
-        elif event_type is _alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
-            action = _('Downloading missing keys into the keyring...')
-        else:
-            action = ""
+            _alpm.ALPM_EVENT_PACKAGE_OPERATION_START: '',
+            _alpm.ALPM_EVENT_INTEGRITY_START: _('Checking integrity...'),
+            _alpm.ALPM_EVENT_LOAD_START: _('Loading packages...'),
+            _alpm.ALPM_EVENT_DELTA_INTEGRITY_START: _("Checking target delta's integrity..."),
+            _alpm.ALPM_EVENT_DELTA_PATCHES_START: _('Applying deltas to packages...'),
+            _alpm.ALPM_EVENT_DELTA_PATCH_START: _('Applying delta patch to target package...'),
+            _alpm.ALPM_EVENT_RETRIEVE_START: _('Downloading files from the repository...'),
+            _alpm.ALPM_EVENT_DISKSPACE_START: _('Checking disk space...'),
+            _alpm.ALPM_EVENT_KEYRING_START: _('Checking keys in keyring...'),
+            _alpm.ALPM_EVENT_KEY_DOWNLOAD_START: _('Downloading missing keys into the keyring...')}
 
+        logging.warning("~" * 60)
+        logging.warning(event_txt)
+        logging.warning("~" * 60)
+        action = events.get(event_type, '')
         if action:
             self.queue_event('info', action)
 
@@ -587,7 +574,7 @@ class Pac(object):
             percent /= 100
             self.queue_event('percent', percent)
 
-    def cb_dl(self, filename, tx, total):
+    def cb_dl(self, filename, transfer, total):
         """ Shows downloading progress """
         # Check if a new file is coming
         if filename != self.last_dl_filename or self.last_dl_total_size != total:
@@ -616,10 +603,10 @@ class Pac(object):
         else:
             # Compute a progress indicator
             if self.last_dl_total_size > 0:
-                progress = tx / self.last_dl_total_size
+                progress = transfer / self.last_dl_total_size
             else:
                 # If total is unknown, use log(kBytes)²/2
-                progress = (math.log(1 + tx / 1024) ** 2 / 2) / 100
+                progress = (math.log(1 + transfer / 1024) ** 2 / 2) / 100
 
             # Update progress only if it has grown
             if progress > self.last_dl_progress:
