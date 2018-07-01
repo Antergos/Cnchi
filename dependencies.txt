@@ -21,7 +21,7 @@ gocryptfs
 iso-codes
 clutter-gtk
 clutter-gst
-gsteamer
+gstreamer
 python-mock
 ttf-aboriginal-sans
 ttf-indic-otf
