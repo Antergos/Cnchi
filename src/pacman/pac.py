@@ -508,7 +508,7 @@ class Pac(object):
             _alpm.ALPM_EVENT_FILECONFLICTS_START: _('Checking file conflicts...'),
             _alpm.ALPM_EVENT_RESOLVEDEPS_START: _('Resolving dependencies...'),
             _alpm.ALPM_EVENT_INTERCONFLICTS_START:  _('Checking inter conflicts...'),
-            # Shown in cb_progress
+            # ALPM_EVENT_PACKAGE_OPERATION_START is shown in cb_progress
             _alpm.ALPM_EVENT_PACKAGE_OPERATION_START: '',
             _alpm.ALPM_EVENT_INTEGRITY_START: _('Checking integrity...'),
             _alpm.ALPM_EVENT_LOAD_START: _('Loading packages...'),
