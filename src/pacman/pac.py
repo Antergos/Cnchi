@@ -40,7 +40,7 @@ import queue
 import sys
 #import traceback
 
-import pacman.alpm_events as _alpm
+import pacman.alpm_include as _alpm
 import pacman.pkginfo as pkginfo
 import pacman.pacman_conf as config
 
@@ -521,7 +521,7 @@ class Pac(object):
             _alpm.ALPM_EVENT_KEY_DOWNLOAD_START: _('Downloading missing keys into the keyring...')}
 
         logging.warning("~" * 60)
-        logging.warning(event_txt)
+        logging.warning(event_type, event_txt)
         logging.warning("~" * 60)
         action = events.get(event_type, '')
         if action:
