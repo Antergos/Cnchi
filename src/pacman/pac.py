@@ -34,7 +34,6 @@
 from collections import OrderedDict
 import inspect
 import logging
-import math
 import os
 import queue
 import sys
@@ -76,16 +75,17 @@ class Pac(object):
         self.setup_logger()
 
         # Some download indicators (used in cb_dl callback)
-        self.last_dl_filename = None
-        self.last_dl_progress = 0
-        self.last_dl_total_size = 0
+        self.last_target = ""
+        self.last_percent = 0
+        self.already_transferred = 0
+        # Store package total download size
+        self.total_size = 0
+        # Store last action
+        self.last_action = ""
 
         # Total packages to download
         self.total_packages_to_download = 0
         self.downloaded_packages = 0
-
-        # Store package total download size
-        self.total_download_size = 0
 
         self.last_event = {}
 
@@ -99,6 +99,16 @@ class Pac(object):
                           self.config.repo_order)
         else:
             raise pyalpm.error
+
+    @staticmethod
+    def format_size(size):
+        """ Formats downloaded size into a string """
+        kib_size = size / 1024
+        if kib_size < 1000:
+            size_string = _('%.1f KiB') % (kib_size)
+            return size_string
+        size_string = _('%.2f MiB') % (kib_size / 1024)
+        return size_string
 
     def get_handle(self):
         """ Return alpm handle """
@@ -173,7 +183,6 @@ class Pac(object):
             options = {}
 
         transaction = None
-
         try:
             transaction = self.handle.init_transaction(
                 nodeps=options.get('nodeps', False),
@@ -496,35 +505,49 @@ class Pac(object):
         """ Called to get user input """
         pass
 
-    def cb_totaldl(self, total_size):
-        """ Stores total download size for use in cb_progress """
-        self.total_download_size = total_size
-
-    def cb_event(self, event_type, event_txt):
+    def cb_event(self, event, event_data):
         """ Converts action ID to descriptive text and enqueues it to the events queue """
+        action = self.last_action
 
-        events = {
-            _alpm.ALPM_EVENT_CHECKDEPS_START: _('Checking dependencies...'),
-            _alpm.ALPM_EVENT_FILECONFLICTS_START: _('Checking file conflicts...'),
-            _alpm.ALPM_EVENT_RESOLVEDEPS_START: _('Resolving dependencies...'),
-            _alpm.ALPM_EVENT_INTERCONFLICTS_START:  _('Checking inter conflicts...'),
-            # ALPM_EVENT_PACKAGE_OPERATION_START is shown in cb_progress
-            _alpm.ALPM_EVENT_PACKAGE_OPERATION_START: '',
-            _alpm.ALPM_EVENT_INTEGRITY_START: _('Checking integrity...'),
-            _alpm.ALPM_EVENT_LOAD_START: _('Loading packages...'),
-            _alpm.ALPM_EVENT_DELTA_INTEGRITY_START: _("Checking target delta's integrity..."),
-            _alpm.ALPM_EVENT_DELTA_PATCHES_START: _('Applying deltas to packages...'),
-            _alpm.ALPM_EVENT_DELTA_PATCH_START: _('Applying delta patch to target package...'),
-            _alpm.ALPM_EVENT_RETRIEVE_START: _('Downloading files from the repository...'),
-            _alpm.ALPM_EVENT_DISKSPACE_START: _('Checking disk space...'),
-            _alpm.ALPM_EVENT_KEYRING_START: _('Checking keys in keyring...'),
-            _alpm.ALPM_EVENT_KEY_DOWNLOAD_START: _('Downloading missing keys into the keyring...')}
+        if event == _alpm.ALPM_EVENT_CHECKDEPS_START:
+            action = _('Checking dependencies...')
+        elif event == _alpm.ALPM_EVENT_FILECONFLICTS_START:
+            action = _('Checking file conflicts...')
+        elif event == _alpm.ALPM_EVENT_RESOLVEDEPS_START:
+            action = _('Resolving dependencies...')
+        elif _alpm.ALPM_EVENT_INTERCONFLICTS_START:
+            action = _('Checking inter conflicts...')
+        elif event == _alpm.ALPM_EVENT_PACKAGE_OPERATION_START:
+             # ALPM_EVENT_PACKAGE_OPERATION_START is shown in cb_progress
+            action = ''
+        elif event == _alpm.ALPM_EVENT_INTEGRITY_START:
+            action = _('Checking integrity...')
+            self.already_transferred = 0
+        elif event == _alpm.ALPM_EVENT_LOAD_START:
+            action = _('Loading packages files...')
+        elif event == _alpm.ALPM_EVENT_DELTA_INTEGRITY_START:
+            action = _("Checking target delta integrity...")
+        elif event == _alpm.ALPM_EVENT_DELTA_PATCHES_START:
+            action = _('Applying deltas to packages...')
+        elif event == _alpm.ALPM_EVENT_DELTA_PATCH_START:
+            action = _('Generating {} with {}...')
+            action = action.format(event_data[0], event_data[1])
+        elif event == _alpm.ALPM_EVENT_RETRIEVE_START:
+            action = _('Downloading files from the repositories...')
+        elif event == _alpm.ALPM_EVENT_DISKSPACE_START:
+            action = _('Checking available disk space...')
+        elif event == _alpm.ALPM_EVENT_KEYRING_START:
+            action = _('Checking keys in keyring...')
+        elif event == _alpm.ALPM_EVENT_KEY_DOWNLOAD_START:
+            action = _('Downloading missing keys into the keyring...')
+        elif event == _alpm.ALPM_EVENT_SCRIPTLET_INFO:
+            action = _('Configuring {}').format(self.last_target)
 
         logging.warning("~" * 60)
-        logging.warning(event_type, event_txt)
+        logging.warning(event, event_data)
         logging.warning("~" * 60)
-        action = events.get(event_type, '')
-        if action:
+        if action != self.last_action:
+            self.last_action = action
             self.queue_event('info', action)
 
     def cb_log(self, level, line):
@@ -538,80 +561,70 @@ class Pac(object):
         # Log everything to cnchi-alpm.log
         self.logger.debug(line)
 
-        ignore = False
-        partials = ['error 0',
-                    'error 32',
-                    'extracting',
-                    'error 31 from alpm_db_get_pkg',
-                    'command failed to execute correctly',
-                    'extract: skipping dir extraction',
-                    'loading package data for']
+        logmask = pyalpm.LOG_ERROR | pyalpm.LOG_WARNING
 
-        for partial in partials:
-            if partial in line:
-                ignore = True
-                break
-
-        if ignore or not level:
+        if not level & logmask:
+            # Only log errors and warnings
             return
 
-        if level == pyalpm.LOG_ERROR:
+        if level & pyalpm.LOG_ERROR:
             logging.error(line)
-        elif level == pyalpm.LOG_WARNING:
-            # Alpm outputs non-english log messages so we can't target certain
-            # useless warnings. I think most of the warnings are useless anyway.
-            # We can revisit this later if need be.
+        elif level & pyalpm.LOG_WARNING:
+            logging.warning(line)
+        elif level & pyalpm.LOG_DEBUG or level & pyalpm.LOG_FUNCTION:
             logging.debug(line)
 
     def cb_progress(self, target, percent, total, current):
         """ Shows install progress """
         if target:
-            msg = _("Installing {0} ({1}/{2})").format(target, current, total)
-            self.queue_event('info', msg)
+            action = _("Installing {0} ({1}/{2})").format(target, current, total)
             percent = current / total
-            self.queue_event('percent', percent)
+            self.queue_event('info', action)
         else:
-            percent /= 100
+            percent = round(percent / 100, 2)
+
+        if target != self.last_target:
+            self.last_target = target
+
+        if percent != self.last_percent:
+            self.last_percent = percent
             self.queue_event('percent', percent)
 
-    def cb_dl(self, filename, transfer, total):
+    def cb_totaldl(self, total_size):
+        """ Stores total download size for use in cb_dl and cb_progress """
+        self.total_size = total_size
+
+    def cb_dl(self, filename, transferred, total):
         """ Shows downloading progress """
-        # Check if a new file is coming
-        if filename != self.last_dl_filename or self.last_dl_total_size != total:
-            self.last_dl_filename = filename
-            self.last_dl_total_size = total
-            self.last_dl_progress = 0
-
-            # If pacman is just updating databases total_download_size will be zero
-            if self.total_download_size == 0:
-                ext = ".db"
-                if filename.endswith(ext):
-                    filename = filename[:-len(ext)]
-                text = _("Updating {0} database").format(filename)
-            else:
-                ext = ".pkg.tar.xz"
-                if filename.endswith(ext):
-                    filename = filename[:-len(ext)]
-                self.downloaded_packages += 1
-                # i = self.downloaded_packages
-                # n = self.total_packages_to_download
-                # text = _("Downloading {0}... ({1}/{2})").format(filename, i, n)
-                text = _("Downloading {0}...").format(filename)
-
-            self.queue_event('info', text)
-            self.queue_event('percent', 0)
+        if filename.endswith('.db'):
+            action = _("Updating {0} database").format(filename.replace('.db', ''))
         else:
-            # Compute a progress indicator
-            if self.last_dl_total_size > 0:
-                progress = transfer / self.last_dl_total_size
-            else:
-                # If total is unknown, use log(kBytes)²/2
-                progress = (math.log(1 + transfer / 1024) ** 2 / 2) / 100
+            action = _("Downloading {}...").format(filename.replace('.pkg.tar.xz', ''))
 
-            # Update progress only if it has grown
-            if progress > self.last_dl_progress:
-                self.last_dl_progress = progress
-                self.queue_event('percent', progress)
+        target = ''
+        if self.total_size > 0:
+            percent = round((transferred + self.already_transferred) / self.total_size, 2)
+            if transferred + self.already_transferred <= self.total_size:
+                transferred_size = self.format_size(transferred + self.already_transferred)
+                total_size = self.format_size(self.total_size)
+                target = '{0}/{1}'.format(transferred_size, total_size)
+        else:
+            percent = round(transferred / total, 2)
+
+        if action != self.last_action:
+            self.last_action = action
+            self.queue_event('info', action)
+
+        if target != self.last_target:
+            self.last_target = target
+            self.queue_event('info', target)
+
+        if percent != self.last_percent:
+            self.last_percent = percent
+            self.queue_event('percent', percent)
+        elif transferred == total:
+            self.already_transferred += total
+            self.downloaded_packages += 1
 
     def is_package_installed(self, package_name):
         """ Check if package is already installed """
@@ -664,7 +677,7 @@ def test():
 
     try:
         pacman = Pac("/etc/pacman.conf")
-    except Exception as ex:
+    except pyalpm.error as ex:
         print("Can't initialize pyalpm: ", ex)
         sys.exit(1)
 
