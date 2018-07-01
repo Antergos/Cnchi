@@ -1,4 +1,4 @@
-pyalpm>=0.7
+#pyalpm>=0.7
 pygobject>=3.16.0
 pydbus
 pycairo
