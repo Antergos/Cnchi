@@ -49,16 +49,16 @@ def wipefs(device, fatal=True):
     call(cmd, msg=err_msg, fatal=fatal)
 
 
-def dd(input_device, output_device, bs=512, count=2048, seek=0):
+def run_dd(input_device, output_device, bytes_block=512, count=2048, seek=0):
     """ Helper function to call dd
         Copy a file, converting and formatting according to the operands."""
     cmd = [
         'dd',
-        'if={0}'.format(input_device),
-        'of={0}'.format(output_device),
-        'bs={0}'.format(bs),
-        'count={0}'.format(count),
-        'seek={0}'.format(seek),
+        'if={}'.format(input_device),
+        'of={}'.format(output_device),
+        'bs={}'.format(bytes_block),
+        'count={}'.format(count),
+        'seek={}'.format(seek),
         'status=noxfer']
     try:
         subprocess.check_output(cmd, stderr=subprocess.STDOUT)

@@ -202,7 +202,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
     # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
     # For 512 bit key length the header is 2MiB
     # If in doubt, just be generous and overwrite the first 10MiB or so
-    wrapper.dd("/dev/zero", luks_device, bs=512, count=20480)
+    wrapper.run_dd("/dev/zero", luks_device, bytes_block=512, count=20480)
 
     err_msg = "Can't format and open the LUKS device {0}".format(luks_device)
 
@@ -211,15 +211,15 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
     if luks_pass is None or luks_pass == "":
         # No key password given, let's create a random keyfile
-        wrapper.dd("/dev/urandom", luks_key, bs=1024, count=4)
+        wrapper.run_dd("/dev/urandom", luks_key, bytes_block=1024, count=4)
 
         # Set up luks with a keyfile
         cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
-            "-s", "512", "-h", "sha512", luks_device, luks_key]
+               "-s", "512", "-h", "sha512", luks_device, luks_key]
         call(cmd, msg=err_msg, fatal=True)
 
         cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q",
-            "--key-file", luks_key]
+               "--key-file", luks_key]
         call(cmd, msg=err_msg, fatal=True)
     else:
         # Set up luks with a password key
@@ -227,7 +227,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
         cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
-            "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
+               "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
@@ -638,7 +638,7 @@ class AutoPartition(object):
         wrapper.sgdisk("zap-all", device)
 
         # Clear all magic strings/signatures - mdadm, lvm, partition tables etc.
-        wrapper.dd("/dev/zero", device, bs=512, count=2048)
+        wrapper.run_dd("/dev/zero", device)
         wrapper.wipefs(device)
 
         # Create fresh GPT
@@ -709,7 +709,7 @@ class AutoPartition(object):
 
         # Start at sector 1 for 4k drive compatibility and correct alignment
         # Clean partitiontable to avoid issues!
-        wrapper.dd("/dev/zero", device, bs=512, count=2048)
+        wrapper.run_dd("/dev/zero", device)
         wrapper.wipefs(device)
 
         # Create DOS MBR

@@ -631,13 +631,12 @@ class InstallationZFS(GtkBaseBox):
 
         # Clear all magic strings/signatures
         # Wipe out first "offset" sectors
-        wrapper.dd("/dev/zero", device_path, bs=512, count=offset)
+        wrapper.run_dd("/dev/zero", device_path, bytes_block=512, count=offset)
 
         # Clear the end "offset" sectors of the disk, too.
         try:
             seek = int(call(["blockdev", "--getsz", device_path])) - offset
-            wrapper.dd("/dev/zero", device_path,
-                       bs=512, count=offset, seek=seek)
+            wrapper.run_dd("/dev/zero", device_path, bytes_block=512, count=offset, seek=seek)
         except ValueError as ex:
             logging.warning(ex)
 
