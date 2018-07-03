@@ -161,6 +161,7 @@ class Welcome(GtkBaseBox):
         return True
 
     def prepare(self, direction):
+        """ Prepare page before showing it """
         self.translate_ui()
         self.show_all()
         self.forward_button.hide()

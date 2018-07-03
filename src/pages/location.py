@@ -150,6 +150,7 @@ class Location(GtkBaseBox):
                 control.hide()
 
     def prepare(self, direction):
+        """ Prepare dialog for showing """
         self.hide_all()
 
         self.fill_listbox()
@@ -295,6 +296,7 @@ class Location(GtkBaseBox):
                     logging.warning("Cannot change to locale '%s'", mylocale)
 
     def store_values(self):
+        """ Store user choices """
         location = self.selected_country
         logging.debug("Selected location: %s", location)
         self.settings.set('location', location)

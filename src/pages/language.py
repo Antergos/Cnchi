@@ -201,6 +201,7 @@ class Language(GtkBaseBox):
                     return
 
     def store_values(self):
+        """ Store user choices """
         lang = ""
         listbox_row = self.listbox.get_selected_row()
         if listbox_row is not None:

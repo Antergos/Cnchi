@@ -63,6 +63,7 @@ class Wireless(GtkBaseBox):
         self.skip = False
 
     def translate_ui(self):
+        """ Translate labels """
         lbl = self.ui.get_object('wireless_section_label')
         lbl.set_markup(_("Connecting this computer to a wi-fi network"))
 

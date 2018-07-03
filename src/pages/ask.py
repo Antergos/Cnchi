@@ -468,6 +468,7 @@ class InstallationAsk(GtkBaseBox):
         return True
 
     def get_next_page(self):
+        """ Returns which page should be the next one """
         return self.next_page
 
     def automatic_radiobutton_toggled(self, widget):

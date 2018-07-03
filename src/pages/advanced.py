@@ -1191,8 +1191,7 @@ class InstallationAdvanced(GtkBaseBox):
             btn.set_label(lbl)
 
     def prepare(self, direction):
-        """ Prepare our dialog to show/hide/activate/deactivate
-            what's necessary """
+        """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
 
         self.translate_ui()
         self.update_view()
@@ -1659,7 +1658,7 @@ class InstallationAdvanced(GtkBaseBox):
                 gdk_window.set_cursor(Gdk.Cursor(cursor_type))
 
     def store_values(self):
-        """ The user clicks 'Install now!' """
+        """ Store user choices """
         self.set_bootloader()
         return True
 

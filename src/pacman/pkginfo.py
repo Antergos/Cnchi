@@ -24,7 +24,7 @@
 """
 Package information formatting
 
-This module defines utility function to format package information
+This module defines utility functions to format package information
 for terminal output.
 """
 
@@ -50,6 +50,7 @@ ATTR_INDENT = 17 * ' '
 
 
 def get_term_size():
+    """ Gets terminal width in chars """
     if sys.stdout.isatty():
         _height, width = struct.unpack(
             "HH", fcntl.ioctl(1, termios.TIOCGWINSZ, 4 * b"\x00"))
@@ -59,6 +60,7 @@ def get_term_size():
 
 
 def format_attr(attrname, value, attrformat=None):
+    """ Formats string from value """
     if isinstance(value, list):
         if not value:
             valuestring = 'None'
@@ -79,6 +81,7 @@ def format_attr(attrname, value, attrformat=None):
 
 
 def format_attr_oneperline(attrname, value):
+    """ Formats string from value (one value per line) """
     if not value:
         value = ['None']
     my_string = ATTRNAME_FORMAT % attrname

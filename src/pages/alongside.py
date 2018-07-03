@@ -237,6 +237,7 @@ class InstallationAlongside(GtkBaseBox):
         self.set_resize_widget(device)
 
     def prepare(self, direction):
+        """ Prepare our dialog to show/hide/activate/deactivate what's necessary """
         self.translate_ui()
         self.show_all()
         self.fill_choose_partition_combo()
@@ -277,6 +278,7 @@ class InstallationAlongside(GtkBaseBox):
             logging.warning("Can't find any installed OS")
 
     def store_values(self):
+        """ Store user choices """
         self.start_installation()
         return True
 
