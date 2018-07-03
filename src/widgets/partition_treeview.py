@@ -42,6 +42,9 @@ except NameError as err:
 
 class PartitionTreeview(Gtk.TreeView):
     """ Partition Treeview Class """
+
+    __gtype_name__ = 'PartitionTreeview'
+
     COL_PATH = 0
     COL_FS = 1
     COL_MOUNT_POINT = 2
