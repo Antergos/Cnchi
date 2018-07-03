@@ -44,12 +44,12 @@ from pages.gtkbasebox import GtkBaseBox
 import misc.extra as misc
 import misc.gtkwidgets as gtkwidgets
 
-if __debug__:
-    def _(x): return x
-
-
-# Leave at least 6.5GB for Antergos when shrinking
-MIN_ROOT_SIZE = 6500
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 def get_partition_size_info(partition_path, human=False):
@@ -70,12 +70,12 @@ def get_partition_size_info(partition_path, human=False):
         cmd = []
         if not already_mounted:
             tmp_dir = tempfile.mkdtemp()
-            cmd = ["mount", partition_path, tmp_dir]
+            cmd = ['/usr/bin/mount', partition_path, tmp_dir]
             subprocess.check_output(cmd)
         if human:
-            cmd = ['df', '-h', partition_path]
+            cmd = ['/usr/bin/df', '-h', partition_path]
         else:
-            cmd = ['df', partition_path]
+            cmd = ['/usr/bin/df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
         if not already_mounted:
             subprocess.check_output(['umount', '-l', tmp_dir])
@@ -86,7 +86,7 @@ def get_partition_size_info(partition_path, human=False):
     if os.path.exists(tmp_dir):
         os.rmdir(tmp_dir)
 
-    if len(df_out) > 0:
+    if df_out:
         df_out = df_out.split('\n')
         df_out = df_out[1].split()
         if human:
@@ -101,6 +101,9 @@ def get_partition_size_info(partition_path, human=False):
 
 class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
+
+    # Leave at least 6.5GB for Antergos when shrinking
+    MIN_ROOT_SIZE = 6500
 
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
@@ -138,6 +141,7 @@ class InstallationAlongside(GtkBaseBox):
         return new_device
 
     def set_resize_widget(self, device_to_shrink):
+        """ Get resize widget ready """
         new_device = self.get_new_device(device_to_shrink)
 
         if new_device is None:
@@ -150,15 +154,16 @@ class InstallationAlongside(GtkBaseBox):
         logging.debug(txt)
 
         (min_size, part_size) = get_partition_size_info(device_to_shrink)
-        max_size = part_size - (MIN_ROOT_SIZE * 1000.0)
+        max_size = part_size - (InstallationAlongside.MIN_ROOT_SIZE * 1000.0)
         if max_size < 0:
             # Full Antergos does not fit but maybe base fits... ask user.
-            txt = _(
-                "Cnchi recommends at least 6.5GB free to install Antergos.") + "\n\n"
-            txt += _("New partition {0} resulting of shrinking {1} will not have enough free space for a full installation.").format(
-                new_device, device_to_shrink) + "\n\n"
-            txt += _("You can still install Antergos, but be carefull on which DE you choose as it might not fit in.") + "\n\n"
-            txt += _("Install at your own risk!")
+            txt = _("Cnchi recommends at least 6.5GB free to install Antergos. \n\n"
+                    "New partition {0} resulting of shrinking {1} will not have enough\n"
+                    "free space for a full installation.\n"
+                    "You can still install Antergos, but be carefull on which DE you\n"
+                    "choose as it might not fit in.\n\n"
+                    "Install at your own risk!\n\n")
+            txt = txt.format(new_device, device_to_shrink)
             show.warning(self.get_main_window(), txt)
             max_size = part_size
 
@@ -225,17 +230,19 @@ class InstallationAlongside(GtkBaseBox):
         self.header.set_subtitle(_("Antergos Alongside Installation"))
 
     def on_choose_partition_combo_changed(self, combobox):
+        """ The user has chosen a device from the combobox """
         txt = combobox.get_active_text()
         device = txt.split("(")[1][:-1]
         # print(device)
         self.set_resize_widget(device)
-    
+
     def prepare(self, direction):
         self.translate_ui()
         self.show_all()
         self.fill_choose_partition_combo()
 
     def fill_choose_partition_combo(self):
+        """ Fill widget with partitions info """
         self.choose_partition_combo.remove_all()
 
         devices = []
@@ -255,8 +262,8 @@ class InstallationAlongside(GtkBaseBox):
             misc.select_first_combobox_item(self.choose_partition_combo)
             self.show_all()
             if not new_device_found:
-                txt = _(
-                    "Can't find any spare partition number.\nAlongside installation can't continue.")
+                txt = _("Can't find any spare partition number.\n"
+                        "Alongside installation can't continue.")
                 self.choose_partition_label.hide()
                 self.choose_partition_combo.hide()
                 self.label.set_markup(txt)
@@ -273,7 +280,7 @@ class InstallationAlongside(GtkBaseBox):
         self.start_installation()
         return True
 
-    # ######################################################################################################
+    # #################################################################################
 
     def start_installation(self):
         """ Alongside method shrinks selected partition
@@ -281,7 +288,7 @@ class InstallationAlongside(GtkBaseBox):
 
         (existing_os, existing_device) = self.resize_widget.get_part_title_and_subtitle(
             'existing')
-        (new_os, new_device) = self.resize_widget.get_part_title_and_subtitle('new')
+        new_os, new_device = self.resize_widget.get_part_title_and_subtitle('new')
 
         print("existing", existing_os, existing_device)
         print("new", new_os, new_device)
@@ -300,8 +307,9 @@ class InstallationAlongside(GtkBaseBox):
         res = fs.resize(partition_path, fs_type, new_size)
         if res:
             txt = "Filesystem on {0} shrunk.".format(partition_path)
-            txt = txt + "\n"
-            txt = txt + "Will recreate partition now on device {0} partition {1}".format(device_path, partition_path)
+            logging.debug(txt)
+            txt = "Will recreate partition now on device {0} partition {1}"
+            txt = txt.format(device_path, partition_path)
             logging.debug(txt)
             # Destroy original partition and create a new resized one
             res = pm.split_partition(device_path, partition_path, new_size)
@@ -334,9 +342,10 @@ class InstallationAlongside(GtkBaseBox):
         mem_total = int(mem_total.split()[1])
         mem = mem_total / 1024
 
-        # If geometry gives us at least 7.5GB (MIN_ROOT_SIZE + 1GB) we'll create ROOT and SWAP
+        # If geometry gives us at least 7.5GB (InstallationAlongside.MIN_ROOT_SIZE + 1GB)
+        # we'll create ROOT and SWAP
         no_swap = False
-        if res.getLength('MB') < MIN_ROOT_SIZE + 1:
+        if res.getLength('MB') < InstallationAlongside.MIN_ROOT_SIZE + 1:
             if mem < 2048:
                 # Less than 2GB RAM and no swap? No way.
                 logging.error("Cannot create new swap partition. Not enough free space")
@@ -358,8 +367,9 @@ class InstallationAlongside(GtkBaseBox):
             fs_devices[npart.path] = "ext4"
             fs.create_fs(npart.path, 'ext4', label='ROOT')
         else:
-            # We know for a fact we have at least MIN_ROOT_SIZE + 1GB of space,
-            # and at least MIN_ROOT_SIZE of those must go to ROOT.
+            # We know for a fact we have at least
+            # InstallationAlongside.MIN_ROOT_SIZE + 1GB of space,
+            # and at least InstallationAlongside.MIN_ROOT_SIZE of those must go to ROOT.
 
             # Suggested sizes from Anaconda installer
             if mem < 2048:
@@ -432,8 +442,3 @@ class InstallationAlongside(GtkBaseBox):
             fs_devices)
         self.process.start()
         '''
-
-
-if __name__ == '__main__':
-    from test_screen import _, run
-    run('InstallationAlongside')
