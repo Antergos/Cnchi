@@ -28,14 +28,15 @@
 
 """ Timezone screen """
 
-import os
+import hashlib
+import http.client
+import logging
 import multiprocessing
+import os
 import queue
+import time
 import urllib.request
 import urllib.error
-import time
-import logging
-import hashlib
 
 import misc.tz as tz
 import misc.extra as misc
@@ -66,7 +67,7 @@ class Timezone(GtkBaseBox):
         # Show regions in three columns
         self.combobox_region.set_wrap_width(3)
 
-        self.tzdb = tz.Database()
+        self.tzdb = tz.get_database()
         self.timezone = None
 
         # This is for populate_cities
@@ -368,10 +369,10 @@ class AutoTimezoneProcess(multiprocessing.Process):
                 coords = None
             else:
                 coords = coords.split()
-        except Exception as ex:
+        except (OSError, urllib.error.HTTPError, http.client.HTTPException) as err:
             template = "Error getting timezone coordinates. " \
                 "An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
+            message = template.format(type(err).__name__, err.args)
             logging.error(message)
             coords = None
         return coords

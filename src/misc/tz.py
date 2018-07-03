@@ -333,12 +333,11 @@ class _Database(object):
         return self.locations
 
 
-_database = None
+_DATABASE = None
 
-
-def Database():
-    """ Class to store a timezone/location database globaly """
-    global _database
-    if not _database:
-        _database = _Database()
-    return _database
+def get_database():
+    """ Function that simulates a class that stores a timezone/location database globaly """
+    global _DATABASE
+    if not _DATABASE:
+        _DATABASE = _Database()
+    return _DATABASE

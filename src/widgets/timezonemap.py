@@ -133,7 +133,7 @@ class TimezoneMap(Gtk.Widget):
             print(message)
             sys.exit(1)
 
-        self.tzdb = tz.Database()
+        self.tzdb = tz.get_database()
 
     def load_olsen_map_timezones(self):
         """ Load olson map timezones """
@@ -170,7 +170,7 @@ class TimezoneMap(Gtk.Widget):
         return height, height
 
     def do_size_allocate(self, allocation):
-        """ The do_size_allocate is called by when the actual size is known
+        """ The do_size_allocate is called when the actual size is known
          and the widget is told how much space could actually be allocated """
         self.set_allocation(allocation)
 
