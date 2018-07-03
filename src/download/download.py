@@ -32,6 +32,8 @@ import os
 import logging
 import queue
 
+import pyalpm
+
 import pacman.pac as pac
 import download.metalink as ml
 import download.download_requests as download_requests
@@ -118,6 +120,25 @@ class DownloadPackages(object):
         position = [i for i, s in enumerate(ranked) if partial in s] or [9999]
         return position[0]
 
+    def add_metalink_info(self, metalink):
+        """ Adds metalink info to metalinks list """
+        # Get metalink info
+        metalink_info = ml.get_info(metalink)
+
+        # Update downloads list with the new info from
+        # the processed metalink
+        for key in metalink_info:
+            if key not in self.metalinks:
+                self.metalinks[key] = metalink_info[key]
+                urls = metalink_info[key]['urls']
+                if self.settings:
+                    # Sort urls based on the rankmirrors mirrorlist
+                    sorted_urls = sorted(urls, key=self.url_sort_helper)
+                    self.metalinks[key]['urls'] = sorted_urls
+                else:
+                    # When testing, settings is not available
+                    self.metalinks[key]['urls'] = urls
+
     @misc.raise_privileges
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
@@ -135,14 +156,14 @@ class DownloadPackages(object):
                 conf_path=self.pacman_conf_file,
                 callback_queue=self.callback_queue)
             if pacman is None:
-                return None
-        except Exception as ex:
+                return False
+        except pyalpm.error as ex:
             self.metalinks = None
             template = "Can't initialize pyalpm. " \
                 "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
-            return None
+            return False
 
         try:
             for package_name in self.package_names:
@@ -151,53 +172,30 @@ class DownloadPackages(object):
                 if metalink is None:
                     txt = "Error creating metalink for package %s. Installation will stop"
                     logging.error(txt, package_name)
-                    txt = _("Error creating metalink for package {0}. "
+                    txt = _("Error creating metalink for package {}. "
                             "Installation will stop").format(package_name)
                     raise misc.InstallError(txt)
 
-                # Get metalink info
-                metalink_info = ml.get_info(metalink)
-
-                # Update downloads list with the new info from
-                # the processed metalink
-                for key in metalink_info:
-                    if key not in self.metalinks:
-                        self.metalinks[key] = metalink_info[key]
-                        urls = metalink_info[key]['urls']
-                        if self.settings:
-                            # Sort urls based on the rankmirrors mirrorlist
-                            sorted_urls = sorted(
-                                urls,
-                                key=self.url_sort_helper)
-                            self.metalinks[key]['urls'] = sorted_urls
-                        else:
-                            # When testing, settings is not available
-                            self.metalinks[key]['urls'] = urls
+                self.add_metalink_info(metalink)
 
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
-        except Exception as ex:
+
+            pacman.release()
+            del pacman
+        except (KeyError, pyalpm.error) as ex:
             template = "Can't create download set. " \
                 "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             self.metalinks = None
-            return None
-
-        try:
-            pacman.release()
-            del pacman
-        except Exception as ex:
-            self.metalinks = None
-            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            logging.error(message)
-            return None
+            return False
 
         # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")
+        return True
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
