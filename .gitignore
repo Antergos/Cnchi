@@ -49,3 +49,4 @@ nosetests.xml
 # Documentation
 *.rst
 *.doctree
+site/
