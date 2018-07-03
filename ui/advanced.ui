@@ -14,18 +14,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
-                <!--
-                <child>
-                    <object class="GtkTreeView" id="partition_treeview">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <signal name="row-activated" handler="partition_treeview_row_activated" swapped="no"/>
-                        <child internal-child="selection">
-                            <object class="GtkTreeSelection" id="treeview-selection"/>
-                        </child>
-                    </object>
-                </child>
-                -->
+                <!-- Here goes the partition treeview (see advanced.py) -->
             </object>
             <packing>
                 <property name="expand">True</property>
@@ -45,7 +34,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_new_activated" swapped="no"/>
+                        <signal name="clicked" handler="new_partition" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -60,7 +49,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_delete_activated" swapped="no"/>
+                        <signal name="clicked" handler="delete_partition" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -75,7 +64,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_edit_activated" swapped="no"/>
+                        <signal name="clicked" handler="edit_partition" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -104,7 +93,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_new_label_activated" swapped="no"/>
+                        <signal name="clicked" handler="new_partition_table" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -119,7 +108,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_lvm_activated" swapped="no"/>
+                        <signal name="clicked" handler="partition_lvm_activated" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -134,7 +123,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="partition_treeview_undo_activated" swapped="no"/>
+                        <signal name="clicked" handler="undo_changes" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>

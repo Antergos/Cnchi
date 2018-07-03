@@ -97,7 +97,7 @@ class InstallationAdvanced(GtkBaseBox):
         # uses partition uid as index
         self.luks_options = {}
 
-        self.first_time_in_fill_partition_treeview = True
+        self.first_time_fill_partition = True
 
         self.orig_label_dic = {}
         self.orig_part_dic = {}
@@ -157,11 +157,11 @@ class InstallationAdvanced(GtkBaseBox):
         self.partition_treeview.connect_format_cell(self.format_cell_toggled)
         self.partition_treeview.connect_ssd_cell(self.ssd_cell_toggled)
 
-        self.partition_treeview.connect('row-activated', self.partition_treeview_row_activated)
+        self.partition_treeview.connect('row-activated', self.partition_row_activated)
 
         # Connect changing selection in the partition list treeview
         select = self.partition_treeview.get_selection()
-        select.connect('changed', self.partition_treeview_selection_changed)
+        select.connect('changed', self.partition_selection_changed)
 
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
@@ -452,7 +452,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                     self.partition_treeview.append(lvparent, row)
 
-                    if self.first_time_in_fill_partition_treeview:
+                    if self.first_time_fill_partition:
                         self.orig_part_dic[partition_path] = uid
                         self.orig_label_dic[partition_path] = label
 
@@ -560,7 +560,7 @@ class InstallationAdvanced(GtkBaseBox):
                     else:
                         fmt_enable = True
                         if _("free space") not in path:
-                            if self.first_time_in_fill_partition_treeview:
+                            if self.first_time_fill_partition:
                                 if mount_point:
                                     used = pm.get_used_space(partition)
                                 else:
@@ -611,12 +611,12 @@ class InstallationAdvanced(GtkBaseBox):
                     if partition.type == pm.PARTITION_EXTENDED:
                         extended_parent = tree_iter
 
-                    if self.first_time_in_fill_partition_treeview:
+                    if self.first_time_fill_partition:
                         uid = self.gen_partition_uid(partition=partition)
                         self.orig_part_dic[partition.path] = uid
                         self.orig_label_dic[partition.path] = label
 
-        self.first_time_in_fill_partition_treeview = False
+        self.first_time_fill_partition = False
 
         # Assign our new model to our treeview
         self.partition_treeview.load_model()
@@ -636,7 +636,7 @@ class InstallationAdvanced(GtkBaseBox):
         main_window = self.get_main_window()
         show.warning(main_window, errors[error])
 
-    def partition_treeview_edit_activated(self, _button):
+    def edit_partition(self, _button):
         """ The user wants to edit a partition """
         selection = self.partition_treeview.get_selection()
         if not selection:
@@ -781,7 +781,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     # ---------------------------------------------------------------------
 
-    def partition_treeview_delete_activated(self, _button):
+    def delete_partition(self, _button):
         """ Delete partition """
         selection = self.partition_treeview.get_selection()
         if not selection:
@@ -885,7 +885,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     # ---------------------------------------------------------------------
 
-    def partition_treeview_new_activated(self, _button):
+    def new_partition(self, _button):
         """ Create a new partition """
         selection = self.partition_treeview.get_selection()
 
@@ -1074,8 +1074,8 @@ class InstallationAdvanced(GtkBaseBox):
 
     # ---------------------------------------------------------------------
 
-    def partition_treeview_undo_activated(self, _button):
-        """ Undo all user changes """
+    def undo_changes(self, _button):
+        """ Undo all user changes in partitions and devices """
         # To undo user changes, we simply reload all devices
         self.disks = pm.get_devices()
         self.disks_changed = []
@@ -1090,41 +1090,41 @@ class InstallationAdvanced(GtkBaseBox):
         # Refresh our partition treeview
         self.update_view()
 
-    def partition_treeview_selection_changed(self, selection):
+    def partition_selection_changed(self, selection):
         """ Selection in treeview changed, call check_buttons to update them """
         self.check_buttons(selection)
         return False
 
-    @staticmethod
-    def partition_treeview_button_press_event(_widget, _event):
-        """ Called when clicked on the partition list treeview. """
-        # Not doing anything here atm (just return false to not stop the
-        # chain of events)
-        return False
+    #@staticmethod
+    #def partition_button_pressed(_widget, _event):
+    #    """ Called when clicked on the partition list treeview. """
+    #    # Not doing anything here atm (just return false to not stop the
+    #    # chain of events)
+    #    return False
 
-    @staticmethod
-    def partition_treeview_key_press_event(_widget, _event):
-        """ Called when a key is pressed when the partition list treeview
-            has focus. """
-        # Not doing anything here atm (just return false to not stop the
-        # chain of events)
-        return False
+    #@staticmethod
+    #def partition_keypressed(_widget, _event):
+    #    """ Called when a key is pressed when the partition list treeview
+    #        has focus. """
+    #    # Not doing anything here atm (just return false to not stop the
+    #    # chain of events)
+    #    return False
 
-    def partition_treeview_row_activated(self, _path, _column, _user_data):
+    def partition_row_activated(self, _path, _column, _user_data):
         """ Simulate a click in new or edit if a partition or free space
             is double clicked """
         button_edit = self.ui.get_object('partition_button_edit')
         button_new = self.ui.get_object('partition_button_new')
 
         if button_edit.get_sensitive():
-            self.partition_treeview_edit_activated(None)
+            self.edit_partition(None)
         elif button_new.get_sensitive():
-            self.partition_treeview_new_activated(None)
+            self.new_partition(None)
 
         return False
 
     @staticmethod
-    def partition_treeview_popup_menu(_widget):
+    def partition_popup_menu(_widget):
         """ Show right click popup menu """
         # Not doing anything here (return false to not stop the chain of events)
         return False
@@ -1222,7 +1222,7 @@ class InstallationAdvanced(GtkBaseBox):
             button = self.ui.get_object(widget_id)
             button.set_sensitive(False)
 
-    def partition_treeview_new_label_activated(self, _button):
+    def new_partition_table(self, _button):
         """ Create a new partition table """
         # TODO: We should check first if there's any mounted partition
         # (including swap)
@@ -1351,7 +1351,7 @@ class InstallationAdvanced(GtkBaseBox):
         # Update partition list treeview
         self.update_view()
 
-    def partition_treeview_lvm_activated(self, button):
+    def partition_lvm_activated(self, button):
         """ Not done """
         pass
 
@@ -1856,13 +1856,11 @@ class InstallationAdvanced(GtkBaseBox):
         """ Save changes to disk """
         try:
             pm.finalize_changes(disk)
-            logging.info("Saved changes to disk")
+            logging.info("Saved partition changes to disk!")
         except IOError as io_error:
-            msg = "Cannot commit your changes to disk: {0}".format(
-                str(io_error))
+            msg = "Cannot commit your changes to disk: {0}".format(str(io_error))
             logging.error(msg)
-            msg = _("Cannot commit your changes to disk: {0}").format(
-                str(io_error))
+            msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
             show.error(self.get_main_window(), msg)
 
     def run_install(self, packages, metalinks):
@@ -1873,7 +1871,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.fs_devices = {}
         self.mount_devices = {}
         for disk_path in self.disks:
-            (disk, _result) = self.disks[disk_path]
+            disk, _result = self.disks[disk_path]
             partitions = pm.get_partitions(disk)
             self.all_partitions.append(partitions)
             partition_list = pm.order_partitions(partitions)
@@ -1881,7 +1879,7 @@ class InstallationAdvanced(GtkBaseBox):
             for ppath in self.lv_partitions:
                 uid = self.gen_partition_uid(path=ppath)
                 if uid in self.stage_opts:
-                    (_is_new, _label, mount_point, fs_type, _fmt_active) = self.stage_opts[uid]
+                    _is_new, _label, mount_point, fs_type, _fmt_active = self.stage_opts[uid]
                     self.mount_devices[mount_point] = ppath
                     self.fs_devices[ppath] = fs_type
                 if uid in self.luks_options:
@@ -1892,7 +1890,7 @@ class InstallationAdvanced(GtkBaseBox):
                 uid = self.gen_partition_uid(
                     partition=partitions[partition_path])
                 if uid in self.stage_opts:
-                    (_is_new, _label, mount_point, fs_type, _fmt_active) = self.stage_opts[uid]
+                    _is_new, _label, mount_point, fs_type, _fmt_active = self.stage_opts[uid]
                     if fs_type == "extended" or fs_type == "bios-gpt-boot":
                         # Do not mount extended or bios-gpt-boot partitions
                         continue
@@ -1900,7 +1898,7 @@ class InstallationAdvanced(GtkBaseBox):
                     self.fs_devices[partition_path] = fs_type
 
                 if uid in self.luks_options:
-                    (use_luks, vol_name, _password) = self.luks_options[uid]
+                    use_luks, vol_name, _password = self.luks_options[uid]
                     if use_luks and vol_name:
                         luks_device = "/dev/mapper/" + vol_name
                         self.mount_devices[mount_point] = luks_device
@@ -1908,12 +1906,6 @@ class InstallationAdvanced(GtkBaseBox):
                         self.fs_devices[luks_device] = fs_type
 
         self.installation = install.Installation(
-            self.settings,
-            self.callback_queue,
-            packages,
-            metalinks,
-            self.mount_devices,
-            self.fs_devices,
-            self.ssd,
-            self.blvm)
+            self.settings, self.callback_queue, packages, metalinks, self.mount_devices,
+            self.fs_devices, self.ssd, self.blvm)
         self.installation.start()
