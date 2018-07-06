@@ -127,6 +127,8 @@ If your tests are OK, you can then create your PR and push it here (against deve
 
 When creating a Pull Request (PR), please check that you follow the [PEP8](https://www.python.org/dev/peps/pep-0008/) style guide (you have a stylized presentation at [pep8.org](http://pep8.org)). You can use [pycodestyle](https://github.com/pycqa/pycodestyle) (former pep8) or [pylint.org](https://www.pylint.org) or whatever you prefer to check your python3 files.
 
+#### Spaces are the preferred indentation method.
+
 ### Documented classes
 
 To start tinkering, we would recommend to check all open #issues and find one you find you will be able to start with (choose something that seems easy to do), so you feel familiar with cnchi's structure. You can find info about it at [readthedocs](https://cnchi.readthedocs.io/en/latest/)
