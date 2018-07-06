@@ -129,4 +129,4 @@ When creating a Pull Request (PR), please check that you follow the [PEP8](https
 
 ### Documented classes
 
-To start tinkering, we would recommend to check all open #issues and find one you find you will be able to start with (choose something that seems easy to do), so you feel familiar with cnchi's structure. You can find info about it at [readthedocs](https://cnchi.readthedocs.io/en/latest)
+To start tinkering, we would recommend to check all open #issues and find one you find you will be able to start with (choose something that seems easy to do), so you feel familiar with cnchi's structure. You can find info about it at [readthedocs](https://cnchi.readthedocs.io/en/latest/)
