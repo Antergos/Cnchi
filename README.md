@@ -59,7 +59,7 @@ Please report any issues with Cnchi in the issue tracker. Provide all log files 
 
 We manage our translations via [Transifex](https://www.transifex.com/projects/p/antergos)
 
-## Dependencies
+<a name="dependencies">Dependencies</a>
 
  - gtk3
  - python3
@@ -90,3 +90,22 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - ttf-myanmar3
  - ttf-thaana-fonts
  - ttf-tlwg
+
+## Building Cnchi
+
+[PKGBUILD](https://raw.githubusercontent.com/Antergos/antergos-packages/master/antergos/cnchi-dev/PKGBUILD)
+
+## Development
+
+### Getting started
+
+You will need to install all [dependencies](#dependencies).
+You can use the run script to test Cnchi. As this is a Installer, you will need to use a Virtual Machine or an additional harddisk to test it.
+
+### Development Tips
+
+When creating a Pull Request (PR), please check that you follow the [PEP8](https://www.python.org/dev/peps/pep-0008/) style guide (you have a stylized presentation at [pep8.org](http://pep8.org)). You can use [pycodestyle](https://github.com/pycqa/pycodestyle) (former pep8) or [pylint.org](https://www.pylint.org) or whatever you prefer to check your python3 files.
+
+### Documented classes
+
+To start tinkering, we would recommend to check all open #issues and find one you find you will be able to start with (choose something that seems easy to do), so you feel familiar with cnchi's structure. You can find info about it at [readthedocs](https://cnchi.readthedocs.io/en/latest)
