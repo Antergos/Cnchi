@@ -220,25 +220,12 @@ pages:
 
 # These options all show off their default values. You don't have to add
 # them to your configuration if you're fine with the default.
-docs_dir: docs/_build/pydocmd
-gens_dir: docs/_build/pydocmd     # This will end up as the MkDocs 'docs_dir'
+#docs_dir: docs/_build/pydocmd
+#gens_dir: docs/_build/pydocmd     # This will end up as the MkDocs 'docs_dir'
+repo_url: https://github.com/antergos/cnchi
+repo_name: 'GitHub'
 #site_dir: docs/_build/site
 theme:    readthedocs
 loader:   pydocmd.loader.PythonLoader
 preprocessor: pydocmd.preprocessor.Preprocessor
-
-  # Additional search path for your Python module. If you use Pydocmd from a
-  # subdirectory of your project (eg. docs/), you may want to add the parent
-  # directory here.
-additional_search_paths:
-    - docs
-    - src
-    - src/download
-    - src/hardware
-    - src/hardware/modules
-    - src/installation/
-    - src/misc
-    - src/pages
-    - src/parted3
-    - src/widgets
 
