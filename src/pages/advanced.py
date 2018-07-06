@@ -42,6 +42,7 @@ import parted
 
 import misc.extra as misc
 from misc.gtkwidgets import StateBox
+
 from misc.run_cmd import call
 
 import parted3.partition_module as pm

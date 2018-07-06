@@ -68,7 +68,7 @@ def gtk_to_cairo_color(gtk_color):
 
 class StylizedFrame(Gtk.Bin):
     """ Frame with rounded corners """
-    __gtype_name__ = 'StylizedFrame'
+    #__gtype_name__ = 'StylizedFrame'
     __gproperties__ = {
         'radius': (
             GObject.TYPE_INT, 'Radius', 'The radius of the rounded corners.',
@@ -79,7 +79,6 @@ class StylizedFrame(Gtk.Bin):
     }
 
     def __init__(self):
-        # Gtk.Alignment.__init__(self)
         Gtk.Bin.__init__(self)
         self.radius = 10
         self.width = 1
@@ -89,7 +88,6 @@ class StylizedFrame(Gtk.Bin):
         if prop.name in ('radius', 'width'):
             return getattr(self, prop.name)
         else:
-            # return Gtk.Alignment.do_get_property(self, prop)
             return Gtk.Bin.get_property(self, prop)
 
     def do_set_property(self, prop, value):
@@ -98,7 +96,6 @@ class StylizedFrame(Gtk.Bin):
             setattr(self, prop.name, value)
             self.queue_draw()
         else:
-            # Gtk.Alignment.do_set_property(self, prop, value)
             Gtk.Bin.set_property(self, prop, value)
 
     def paint_background(self, context):
@@ -124,14 +121,12 @@ class StylizedFrame(Gtk.Bin):
             top = self.get_margin_top()
             context.translate(left, top)
             self.get_child().draw(context)
-
-
 GObject.type_register(StylizedFrame)
 
 
 class DiskBox(Gtk.Box):
     """ Disk Box widget """
-    __gtype_name__ = 'DiskBox'
+    #__gtype_name__ = 'DiskBox'
 
     def add(self, partition, size):
         """ Add a partition """
@@ -141,14 +136,12 @@ class DiskBox(Gtk.Box):
     def clear(self):
         """ Remove all partitions """
         self.forall(lambda x: self.remove(x))
-
-
 GObject.type_register(DiskBox)
 
 
 class PartitionBox(StylizedFrame):
     """ Widget to contain partition info """
-    __gtype_name__ = 'PartitionBox'
+    #__gtype_name__ = 'PartitionBox'
     __gproperties__ = {
         'title': (
             GObject.TYPE_STRING, 'Title', None, 'Title',
@@ -269,14 +262,12 @@ class PartitionBox(StylizedFrame):
         gradient.add_color_stop_rgba(0.40, 1, 1, 1, 0.00)
         context.set_source(gradient)
         context.fill_preserve()
-
-
 GObject.type_register(PartitionBox)
 
 
 class ResizeWidget(Gtk.Frame):
     """ Widget used to resize partitions """
-    __gtype_name__ = 'ResizeWidget'
+    #__gtype_name__ = 'ResizeWidget'
     __gproperties__ = {
         'part-size': (
             GObject.TYPE_UINT64, 'Partition size',
@@ -436,14 +427,12 @@ class ResizeWidget(Gtk.Frame):
             return self.max_size
         else:
             return size
-
-
 GObject.type_register(ResizeWidget)
 
 
 class StateBox(StylizedFrame):
     """ Widget used to show any kind of information """
-    __gtype_name__ = 'StateBox'
+    #__gtype_name__ = 'StateBox'
     __gproperties__ = {
         'label': (
             GObject.TYPE_STRING, 'Label', None, 'label',
@@ -506,8 +495,6 @@ class StateBox(StylizedFrame):
     def hide(self):
         """ Hides widget """
         super().hide()
-
-
 GObject.type_register(StateBox)
 
 

@@ -59,7 +59,7 @@ except ImportError:
 
 class TimezoneMap(Gtk.Widget):
     """ Widget that allows to select user's timezone """
-    __gtype_name__ = 'TimezoneMap'
+    #__gtype_name__ = 'TimezoneMap'
 
     __gsignals__ = {
         'location-changed': (GObject.SignalFlags.RUN_LAST, None, (object,))}
@@ -559,6 +559,8 @@ class TimezoneMap(Gtk.Widget):
         elif x_value > max_value:
             x_value = max_value
         return x_value
+
+GObject.type_register(TimezoneMap)
 
 
 def test_module():

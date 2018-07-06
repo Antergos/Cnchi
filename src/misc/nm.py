@@ -305,7 +305,7 @@ class NetworkManagerModel:
 class NetworkManagerTreeView(Gtk.TreeView):
     """ Treeview that will show all Access Points """
 
-    __gtype_name__ = 'NetworkManagerTreeView'
+    #__gtype_name__ = 'NetworkManagerTreeView'
 
     def __init__(self, password_entry=None, state_changed=None):
         """ Init treeview and its model """
@@ -474,13 +474,12 @@ class NetworkManagerTreeView(Gtk.TreeView):
         if parent:
             self.wifi_model.connect_to_ap(model[parent][0], ssid, passphrase)
 
-
 GObject.type_register(NetworkManagerTreeView)
 
 
 class NetworkManagerWidget(Gtk.Box):
     """ Widget that will contain the NetworkManagerTreeView """
-    __gtype_name__ = 'NetworkManagerWidget'
+    #__gtype_name__ = 'NetworkManagerWidget'
     __gsignals__ = {
         'connection': (
             GObject.SignalFlags.RUN_FIRST, GObject.TYPE_NONE,

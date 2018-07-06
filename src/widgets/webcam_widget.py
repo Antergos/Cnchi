@@ -43,7 +43,8 @@ from gi.repository import GdkX11, GstVideo
 
 class WebcamWidget(Gtk.DrawingArea):
     """ Webcam widget """
-    __gtype_name__ = 'WebcamWidget'
+    #__gtype_name__ = 'WebcamWidget'
+
     def __init__(self, width=160, height=90):
 
         Gtk.DrawingArea.__init__(self)

@@ -43,7 +43,7 @@ except NameError as err:
 class PartitionTreeview(Gtk.TreeView):
     """ Partition Treeview Class """
 
-    __gtype_name__ = 'PartitionTreeview'
+    #__gtype_name__ = 'PartitionTreeview'
 
     COL_PATH = 0
     COL_FS = 1
@@ -162,6 +162,5 @@ class PartitionTreeview(Gtk.TreeView):
         """ Sets our self.store model
         (this needs to be called after modifying our model) """
         self.set_model(self.store)
-
 
 GObject.type_register(PartitionTreeview)

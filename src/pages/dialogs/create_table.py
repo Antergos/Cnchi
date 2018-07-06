@@ -33,7 +33,7 @@ import os
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 import misc.extra as misc
 
@@ -47,7 +47,7 @@ except NameError as err:
 class CreateTableDialog(Gtk.Dialog):
     """ Shows creation table disk dialog """
 
-    __gtype_name__ = "CreateTableDialog"
+    #__gtype_name__ = "CreateTableDialog"
 
     UI_FILE = "create_table.ui"
 
@@ -91,3 +91,6 @@ class CreateTableDialog(Gtk.Dialog):
         combo.append_text("GUID Partition Table (GPT)")
         # Automatically select first entry
         misc.select_first_combobox_item(combo)
+
+
+GObject.type_register(CreateTableDialog)

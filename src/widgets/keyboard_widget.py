@@ -54,9 +54,9 @@ def unicode_to_string(raw):
 
 class KeyboardWidget(Gtk.DrawingArea):
     """ Draws a keyboard widget """
-    __gtype_name__ = 'KeyboardWidget'
+    #__gtype_name__ = 'KeyboardWidget'
 
-    kb_104 = {
+    KB_104 = {
         "extended_return": False,
         "keys": [
             (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
@@ -66,7 +66,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             ()]
     }
 
-    kb_105 = {
+    KB_105 = {
         "extended_return": True,
         "keys": [
             (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
@@ -76,7 +76,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             ()]
     }
 
-    kb_106 = {
+    KB_106 = {
         "extended_return": True,
         "keys": [
             (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe),
@@ -156,16 +156,13 @@ class KeyboardWidget(Gtk.DrawingArea):
 
     def load_info(self):
         """ Get keyboard keys based on keymap layout """
-        kbl_104 = ["us", "th"]
-        kbl_106 = ["jp"]
-
         # Most keyboards are 105 key so default to that
-        if self.layout in kbl_104:
-            self.keyboard = self.kb_104
-        elif self.layout in kbl_106:
-            self.keyboard = self.kb_106
-        elif self.keyboard != self.kb_105:
-            self.keyboard = self.kb_105
+        if self.layout in ['us', 'th']:
+            self.keyboard = self.KB_104
+        elif self.layout in ['jp']:
+            self.keyboard = self.KB_106
+        elif self.keyboard != self.KB_105:
+            self.keyboard = self.KB_105
 
     @staticmethod
     def rounded_rectangle(context, start_x, start_y, width, height, aspect=1.0):
