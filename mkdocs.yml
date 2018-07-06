@@ -1,0 +1,244 @@
+site_name: Cnchi
+
+pages:
+    - src.download.download:
+        src.download.download.md
+    - src.download.download_requests:
+        src.download.download_requests.md
+    - src.download.metalink:
+        src.download.metalink.md
+    - src.hardware.modules.amdgpu:
+        src.hardware.modules.amdgpu.md
+    - src.hardware.modules.amdgpu_exp:
+        src.hardware.modules.amdgpu_exp.md
+    - src.hardware.modules.broadcom_b43:
+        src.hardware.modules.broadcom_b43.md
+    - src.hardware.modules.broadcom_b43_legacy:
+        src.hardware.modules.broadcom_b43_legacy.md
+    - src.hardware.modules.broadcom_wl:
+        src.hardware.modules.broadcom_wl.md
+    - src.hardware.modules.catalyst:
+        src.hardware.modules.catalyst.md
+    - src.hardware.modules.etouchscreen:
+        src.hardware.modules.etouchscreen.md
+    - src.hardware.modules.fingerprint:
+        src.hardware.modules.fingerprint.md
+    - src.hardware.modules.firewire:
+        src.hardware.modules.firewire.md
+    - src.hardware.modules.i915:
+        src.hardware.modules.i915.md
+    - src.hardware.modules.nouveau:
+        src.hardware.modules.nouveau.md
+    - src.hardware.modules.nvidia:
+        src.hardware.modules.nvidia.md
+    - src.hardware.modules.nvidia_304xx:
+        src.hardware.modules.nvidia_304xx.md
+    - src.hardware.modules.nvidia_340xx:
+        src.hardware.modules.nvidia_340xx.md
+    - src.hardware.modules.nvidia_390xx:
+        src.hardware.modules.nvidia_390xx.md
+    - src.hardware.modules.radeon:
+        src.hardware.modules.radeon.md
+    - src.hardware.modules.uvesafb:
+        src.hardware.modules.uvesafb.md
+    - src.hardware.modules.via:
+        src.hardware.modules.via.md
+    - src.hardware.modules.virtualbox:
+        src.hardware.modules.virtualbox.md
+    - src.hardware.modules.vmware:
+        src.hardware.modules.vmware.md
+    - src.hardware.hardware:
+        src.hardware.hardware.md
+    - src.installation.boot.grub2:
+        src.installation.boot.grub2.md
+    - src.installation.boot.loader:
+        src.installation.boot.loader.md
+    - src.installation.boot.refind:
+        src.installation.boot.refind.md
+    - src.installation.boot.systemd_boot:
+        src.installation.boot.systemd_boot.md
+    - src.installation.action:
+        src.installation.action.md
+    - src.installation.auto_partition:
+        src.installation.auto_partition.md
+    - src.installation.firewall:
+        src.installation.firewall.md
+    - src.installation.install:
+        src.installation.install.md
+    - src.installation.lamp:
+        src.installation.lamp.md
+    - src.installation.lemp:
+        src.installation.lemp.md
+    - src.installation.mkinitcpio:
+        src.installation.mkinitcpio.md
+    - src.installation.post_features:
+        src.installation.post_features.md
+    - src.installation.post_fstab:
+        src.installation.post_fstab.md
+    - src.installation.post_install:
+        src.installation.post_install.md
+    - src.installation.process:
+        src.installation.process.md
+    - src.installation.select_packages:
+        src.installation.select_packages.md
+    - src.installation.services:
+        src.installation.services.md
+    - src.installation.special_dirs:
+        src.installation.special_dirs.md
+    - src.installation.systemd_networkd:
+        src.installation.systemd_networkd.md
+    - src.installation.wrapper:
+        src.installation.wrapper.md
+    - src.misc.avatars:
+        src.misc.avatars.md
+    - src.misc.extra:
+        src.misc.extra.md
+    - src.misc.gocryptfs:
+        src.misc.gocryptfs.md
+    - src.misc.gtkwidgets:
+        src.misc.gtkwidgets.md
+    - src.misc.i18n:
+        src.misc.i18n.md
+    - src.misc.keyboard_names:
+        src.misc.keyboard_names.md
+    - src.misc.nm:
+        src.misc.nm.md
+    - src.misc.osextras:
+        src.misc.osextras.md
+    - src.misc.run_cmd:
+        src.misc.run_cmd.md
+    - src.misc.tz:
+        src.misc.tz.md
+    - src.misc.validation:
+        src.misc.validation.md
+    - src.pacman.pac:
+        src.pacman.pac.md
+    - src.pacman.pacman_conf:
+        src.pacman.pacman_conf.md
+    - src.pacman.pkginfo:
+        src.pacman.pkginfo.md
+    - src.pacman.alpm_include:
+        src.pacman.alpm_include.md
+    - src.pages.dialogs.changelist:
+        src.pages.dialogs.changelist.md
+    - src.pages.dialogs.create_partition:
+        src.pages.dialogs.create_partition.md
+    - src.pages.dialogs.create_table:
+        src.pages.dialogs.create_table.md
+    - src.pages.dialogs.edit_partition:
+        src.pages.dialogs.edit_partition.md
+    - src.pages.dialogs.luks_settings:
+        src.pages.dialogs.luks_settings.md
+    - src.pages.dialogs.partition_base:
+        src.pages.dialogs.partition_base.md
+    - src.pages.advanced:
+        src.pages.advanced.md
+    - src.pages.alongside:
+        src.pages.alongside.md
+    - src.pages.ask:
+        src.pages.ask.md
+    - src.pages.automatic:
+        src.pages.automatic.md
+    - src.pages.cache:
+        src.pages.cache.md
+    - src.pages.check:
+        src.pages.check.md
+    - src.pages.desktop:
+        src.pages.desktop.md
+    - src.pages.features:
+        src.pages.features.md
+    - src.pages.gtkbasebox:
+        src.pages.gtkbasebox.md
+    - src.pages.keymap:
+        src.pages.keymap.md
+    - src.pages.language:
+        src.pages.language.md
+    - src.pages.location:
+        src.pages.location.md
+    - src.pages.mirrors:
+        src.pages.mirrors.md
+    - src.pages.slides:
+        src.pages.slides.md
+    - src.pages.summary:
+        src.pages.summary.md
+    - src.pages.timezone:
+        src.pages.timezone.md
+    - src.pages.user_info:
+        src.pages.user_info.md
+    - src.pages.welcome:
+        src.pages.welcome.md
+    - src.pages.wireless:
+        src.pages.wireless.md
+    - src.pages.zfs:
+        src.pages.zfs.md
+    - src.parted3.fs_module:
+        src.parted3.fs_module.md
+    - src.parted3.lvm:
+        src.parted3.lvm.md
+    - src.parted3.partition_module:
+        src.parted3.partition_module.md
+    - src.parted3.used_space:
+        src.parted3.used_space.md
+    - src.widgets.keyboard_widget:
+        src.widgets.keyboard_widget.md
+    - src.widgets.partition_treeview:
+        src.widgets.partition_treeview.md
+    - src.widgets.timezonemap:
+        src.widgets.timezonemap.md
+    - src.widgets.webcam_widget:
+        src.widgets.webcam_widget.md
+    - src.bootinfo:
+        src.bootinfo.md
+    - src.browser_window:
+        src.browser_window.md
+    - index:
+        src.cnchi.md
+    - src.config:
+        src.config.md
+    - src.desktop_info:
+        src.desktop_info.md
+    - src.features_info:
+        src.features_info.md
+    - src.geoip:
+        src.geoip.md
+    - src.logging_utils:
+        src.logging_utils.md
+    - src.main_window:
+        src.main_window.md
+    - src.proxy:
+        src.proxy.md
+    - src.rank_mirrors:
+        src.rank_mirrors.md
+    - src.show_message:
+        src.show_message.md
+    - src.test_page:
+        src.test_page.md
+    - src.update_db:
+        src.update_db.md
+    - src.info:
+        src.info.md
+
+# These options all show off their default values. You don't have to add
+# them to your configuration if you're fine with the default.
+docs_dir: docs/_build/pydocmd
+gens_dir: docs/_build/pydocmd     # This will end up as the MkDocs 'docs_dir'
+#site_dir: docs/_build/site
+theme:    readthedocs
+loader:   pydocmd.loader.PythonLoader
+preprocessor: pydocmd.preprocessor.Preprocessor
+
+  # Additional search path for your Python module. If you use Pydocmd from a
+  # subdirectory of your project (eg. docs/), you may want to add the parent
+  # directory here.
+additional_search_paths:
+    - docs
+    - src
+    - src/download
+    - src/hardware
+    - src/hardware/modules
+    - src/installation/
+    - src/misc
+    - src/pages
+    - src/parted3
+    - src/widgets
+
