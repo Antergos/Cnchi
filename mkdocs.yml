@@ -191,7 +191,7 @@ pages:
         src.bootinfo.md
     - src.browser_window:
         src.browser_window.md
-    - index:
+    - Home:
         src.cnchi.md
     - src.config:
         src.config.md
