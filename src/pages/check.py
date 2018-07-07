@@ -38,6 +38,7 @@ from gi.repository import GLib
 
 import info
 
+from misc.gtkwidgets import StateBox
 import misc.extra as misc
 from misc.run_cmd import call
 from pages.gtkbasebox import GtkBaseBox

@@ -47,7 +47,7 @@ except NameError as err:
 class CreateTableDialog(Gtk.Dialog):
     """ Shows creation table disk dialog """
 
-    #__gtype_name__ = "CreateTableDialog"
+    __gtype_name__ = "CreateTableDialog"
 
     UI_FILE = "create_table.ui"
 

@@ -68,7 +68,7 @@ def gtk_to_cairo_color(gtk_color):
 
 class StylizedFrame(Gtk.Bin):
     """ Frame with rounded corners """
-    #__gtype_name__ = 'StylizedFrame'
+    __gtype_name__ = 'StylizedFrame'
     __gproperties__ = {
         'radius': (
             GObject.TYPE_INT, 'Radius', 'The radius of the rounded corners.',
@@ -126,7 +126,7 @@ GObject.type_register(StylizedFrame)
 
 class DiskBox(Gtk.Box):
     """ Disk Box widget """
-    #__gtype_name__ = 'DiskBox'
+    __gtype_name__ = 'DiskBox'
 
     def add(self, partition, size):
         """ Add a partition """
@@ -141,7 +141,7 @@ GObject.type_register(DiskBox)
 
 class PartitionBox(StylizedFrame):
     """ Widget to contain partition info """
-    #__gtype_name__ = 'PartitionBox'
+    __gtype_name__ = 'PartitionBox'
     __gproperties__ = {
         'title': (
             GObject.TYPE_STRING, 'Title', None, 'Title',
@@ -267,7 +267,7 @@ GObject.type_register(PartitionBox)
 
 class ResizeWidget(Gtk.Frame):
     """ Widget used to resize partitions """
-    #__gtype_name__ = 'ResizeWidget'
+    __gtype_name__ = 'ResizeWidget'
     __gproperties__ = {
         'part-size': (
             GObject.TYPE_UINT64, 'Partition size',
@@ -432,7 +432,7 @@ GObject.type_register(ResizeWidget)
 
 class StateBox(StylizedFrame):
     """ Widget used to show any kind of information """
-    #__gtype_name__ = 'StateBox'
+    __gtype_name__ = 'StateBox'
     __gproperties__ = {
         'label': (
             GObject.TYPE_STRING, 'Label', None, 'label',

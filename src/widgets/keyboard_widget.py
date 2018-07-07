@@ -54,7 +54,7 @@ def unicode_to_string(raw):
 
 class KeyboardWidget(Gtk.DrawingArea):
     """ Draws a keyboard widget """
-    #__gtype_name__ = 'KeyboardWidget'
+    __gtype_name__ = 'KeyboardWidget'
 
     KB_104 = {
         "extended_return": False,
