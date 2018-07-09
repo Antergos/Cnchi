@@ -1,0 +1,5 @@
+Info
+=====
+
+.. automodule:: info
+   :members:

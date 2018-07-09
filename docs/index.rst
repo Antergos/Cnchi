@@ -10,8 +10,22 @@ Welcome to Cnchi's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: cnchi
-   :members:
+   bootinfo
+   browser_window
+   cnchi
+   config
+   desktop_info
+   features_info
+   geoip
+   info
+   logging_utils
+   main_window
+   proxy
+   rank_mirrors
+   show_message
+   test_page
+   update_db
+
 
 Indices and tables
 ==================
