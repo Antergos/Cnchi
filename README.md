@@ -2,7 +2,7 @@
 
 **Graphical Installer for Antergos Linux**
 
-[![GitHub version](https://badge.fury.io/gh/antergos%2Fcnchi.svg)](https://badge.fury.io/gh/antergos%2Fcnchi) ![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) ![Codacy Badge](https://api.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660) [![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
+![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) ![Codacy Badge](https://api.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660) [![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
 
 You are viewing the `0.16.x` branch.
 
