@@ -50,3 +50,4 @@ nosetests.xml
 #*.rst
 #*.doctree
 site/
+docs/_build
