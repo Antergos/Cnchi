@@ -28,10 +28,7 @@
 
 """ Create partition dialog (advanced mode) """
 
-try:
-    from dialogs.partition_base import PartitionBaseDialog
-except ImportError:
-    from partition_base import PartitionBaseDialog
+from pages.dialogs.partition_base import PartitionBaseDialog
 
 # When testing, no _() is available
 try:

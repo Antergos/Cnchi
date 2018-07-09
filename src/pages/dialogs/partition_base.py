@@ -38,10 +38,7 @@ from gi.repository import Gtk
 
 import parted3.fs_module as fs
 
-try:
-    from dialogs.luks_settings import LuksSettingsDialog
-except ImportError:
-    from luks_settings import LuksSettingsDialog
+from pages.dialogs.luks_settings import LuksSettingsDialog
 
 # When testing, no _() is available
 try:
