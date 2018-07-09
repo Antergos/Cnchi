@@ -23,6 +23,7 @@ Welcome to Cnchi's documentation!
    installation
    logging_utils
    main_window
+   misc
    proxy
    rank_mirrors
    show_message
