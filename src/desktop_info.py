@@ -33,23 +33,17 @@
 
 DESKTOPS = ["base", "cinnamon", "deepin",
             "gnome", "kde", "mate", "openbox", "xfce"]
+""" List: available destkops to install. """
 
 DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
+""" List: availabel desktops to install in development mode. """
 
 DESKTOPS_A11Y = ["gnome", "mate"]
+""" List: desktops that have the accessibility feature. """
 
 DESKTOP_ICONS_PATH = "/usr/share/cnchi/data/icons"
+""" Str: Path with the Cnchi icons """
 
-'''
-MENU - Size appropriate for menus (16px).
-SMALL_TOOLBAR - Size appropriate for small toolbars (16px).
-LARGE_TOOLBAR - Size appropriate for large toolbars (24px)
-BUTTON - Size appropriate for buttons (16px)
-DND - Size appropriate for drag and drop (32px)
-DIALOG - Size appropriate for dialogs (48px)
-'''
-
-# Descriptive names
 NAMES = {
     'base': "Base",
     'cinnamon': "Cinnamon",
@@ -64,6 +58,7 @@ NAMES = {
     'i3': "i3",
     'lxqt': "LXQt"
 }
+""" Dict: Descriptive desktop names """
 
 LIBS = {
     'gtk': [
@@ -71,12 +66,14 @@ LIBS = {
     'qt': [
         "kde", "lxqt"]
 }
+""" Dict: Which libraries need to be installed depending on the desktop choosed. """
 
 ALL_FEATURES = [
     "a11y", "aur", "bluetooth", "cups", "chromium", "energy", "firefox", "firewall", "flash",
     "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual", "vivaldi"]
+""" List: All features """
 
-# Not all desktops have all features
+
 EXCLUDED_FEATURES = {
     'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
              "graphic_drivers", "office", "visual", "vivaldi"],
@@ -92,8 +89,8 @@ EXCLUDED_FEATURES = {
     'i3': ["lamp"],
     'lxqt': ["lamp", "visual"]
 }
+""" Dict: Not all desktops have all features """
 
-# Session names for lightDM setup (/usr/share/xsessions)
 SESSIONS = {
     'cinnamon': 'cinnamon',
     'deepin': 'deepin',
@@ -107,10 +104,11 @@ SESSIONS = {
     'i3': 'i3',
     'lxqt': 'lxsession'
 }
+""" Dict: Session names for lightDM setup (/usr/share/xsessions) """
 
 
-# See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message):
+    """ See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations" """
     return message
 
 
@@ -172,6 +170,7 @@ DESCRIPTIONS = {
                   "Environment. It is lightweight, modular, blazing-fast, and "
                   "user-friendly.")
 }
+""" dict: A description for each desktop enviroment to show to the user """
 
 # Delete previous _() dummy declaration
 del _

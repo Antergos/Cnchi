@@ -29,9 +29,6 @@
 
 """ Features information """
 
-# Note: As each desktop has its own features, these are listed
-# in desktop_info file instead of here.
-
 ICON_NAMES = {
     'a11y': 'a11y',
     'aur': 'system-software-install',
@@ -50,16 +47,20 @@ ICON_NAMES = {
     'office': 'accessories-text-editor',
     'sshd': 'network-connect',
     'visual': 'video-display'}
+""" dict: Icon names for each feature.
+
+As each desktop has its own features, these are listed
+in desktop_info module instead of here. """
 
 
-# These features are considered 'advanced' so it won't be shown by default
 ADVANCED = [
     'aur', 'firefox', 'vivaldi', 'firewall', 'flash', 'graphic_drivers',
     'lamp', 'lts', 'sshd', 'visual']
+""" list: These features are considered 'advanced' so it won't be shown by default """
 
 
-# See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message):
+    """ See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations" """
     return message
 
 
@@ -81,6 +82,7 @@ TITLES = {
     'office': _("LibreOffice"),
     'sshd': _("SSH Service"),
     'visual': _("Visual Effects")}
+""" dict: Feature titles """
 
 DESCRIPTIONS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
@@ -100,6 +102,7 @@ DESCRIPTIONS = {
     'firewall': _("Control the incoming and outgoing network traffic."),
     'sshd': _("Enables Secure SHell service."),
     'lts': _("Long term support (LTS) Linux kernel and modules.")}
+""" dict: Feature descriptions """
 
 TOOLTIPS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
@@ -169,6 +172,7 @@ TOOLTIPS = {
                 "provide compositing functionality. Compton itself is a fork\n"
                 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
                 "See the compton github page for further information.")}
+""" dict: Feature tooltips """
 
 # Delete previous _() dummy declaration
 del _

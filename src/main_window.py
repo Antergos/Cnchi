@@ -421,7 +421,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_geometry_hints(None, geom, hints)
 
     def on_key_release(self, _widget, event, _data=None):
-        """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
+        """ Callback called when a key is released """
         if event.keyval == Gdk.keyval_from_name('Escape'):
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:

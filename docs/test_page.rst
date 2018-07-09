@@ -1,4 +1,4 @@
-Tesst page
+Test page
 ==========
 
 .. automodule:: test_page
