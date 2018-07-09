@@ -1,5 +1,5 @@
-Download module
-===============
+download (module)
+=================
 
 .. toctree::
    :maxdepth: 2

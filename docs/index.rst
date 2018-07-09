@@ -7,7 +7,7 @@ Welcome to Cnchi's documentation!
 =================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    bootinfo
@@ -15,9 +15,12 @@ Welcome to Cnchi's documentation!
    cnchi
    config
    desktop_info
+   download
    features_info
    geoip
+   hardware
    info
+   installation
    logging_utils
    main_window
    proxy
@@ -25,10 +28,6 @@ Welcome to Cnchi's documentation!
    show_message
    test_page
    update_db
-
-   download
-   hardware
-   installation
 
 Indices and tables
 ==================

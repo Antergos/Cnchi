@@ -1,5 +1,5 @@
-Hardware Module
-===============
+hardware (module)
+=================
 
 .. toctree::
    :maxdepth: 2

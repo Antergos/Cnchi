@@ -1,5 +1,5 @@
-Installation module
-===================
+installation (module)
+=====================
 
 .. toctree::
    :maxdepth: 2
@@ -7,6 +7,7 @@ Installation module
 
    installation_action
    installation_auto_partition
+   installation_boot
    installation_firewall
    installation_install
    installation_lamp
@@ -21,3 +22,4 @@ Installation module
    installation_special_dirs
    installation_systemd_networkd
    installation_wrapper
+
