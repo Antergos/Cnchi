@@ -37,7 +37,7 @@ copyright = '2018, karasu lots0logs'
 author = 'karasu lots0logs'
 
 # The short X.Y version
-version = ''
+version = '0.16'
 # The full version, including alpha/beta/rc tags
 release = '0.16.x'
 

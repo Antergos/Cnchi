@@ -10,7 +10,8 @@ Welcome to Cnchi's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+.. automodule:: cnchi
+   :members:
 
 Indices and tables
 ==================
