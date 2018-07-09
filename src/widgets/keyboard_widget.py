@@ -324,7 +324,7 @@ class KeyboardWidget(Gtk.DrawingArea):
             if first_key_w > 0:
                 first_key_w *= 1.375
 
-                if self.keyboard == self.kb_105 and i == 3:
+                if self.keyboard == self.KB_105 and i == 3:
                     first_key_w = key_width * 1.275
 
                 self.rounded_rectangle(context, 6, my_y, first_key_w, key_width)
