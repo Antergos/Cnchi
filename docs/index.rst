@@ -28,6 +28,7 @@ Welcome to Cnchi's documentation!
 
    download
    hardware
+   installation
 
 Indices and tables
 ==================
