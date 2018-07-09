@@ -1,4 +1,4 @@
-Main Window
+main_window
 ===========
 
 .. automodule:: main_window

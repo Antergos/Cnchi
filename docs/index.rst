@@ -26,6 +26,8 @@ Welcome to Cnchi's documentation!
    test_page
    update_db
 
+   download
+   hardware
 
 Indices and tables
 ==================

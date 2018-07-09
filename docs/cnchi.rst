@@ -1,4 +1,4 @@
-Cnchi
+cnchi
 =====
 
 .. automodule:: cnchi

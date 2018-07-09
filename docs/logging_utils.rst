@@ -1,4 +1,4 @@
-Logging utils
+logging_utils
 =============
 
 .. automodule:: logging_utils

@@ -1,4 +1,4 @@
-Desktop Info
+desktop_info
 ============
 
 .. automodule:: desktop_info

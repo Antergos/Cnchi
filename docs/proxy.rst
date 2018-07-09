@@ -1,4 +1,4 @@
-Proxy
+proxy
 =====
 
 .. automodule:: proxy

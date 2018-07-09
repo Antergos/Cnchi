@@ -1,4 +1,4 @@
-Browser Window
+browser_window
 ==============
 
 .. automodule:: browser_window

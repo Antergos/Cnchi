@@ -1,4 +1,4 @@
-Show message
+show_message
 ============
 
 .. automodule:: show_message

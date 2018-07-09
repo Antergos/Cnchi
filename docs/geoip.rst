@@ -1,4 +1,4 @@
-GeoIP
+geoip
 =====
 
 .. automodule:: geoip

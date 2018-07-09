@@ -1,5 +1,5 @@
-Boot Info
-=========
+bootinfo
+========
 
 .. automodule:: bootinfo
    :members:

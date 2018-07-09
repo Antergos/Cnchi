@@ -1,4 +1,4 @@
-Update DB
+update_db
 =========
 
 .. automodule:: update_db
