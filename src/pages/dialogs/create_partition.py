@@ -33,7 +33,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 try:
-    from dialogs.partition_base import PartitionBaseDialog
+    from pages.dialogs.partition_base import PartitionBaseDialog
 except ImportError:
     from partition_base import PartitionBaseDialog
 

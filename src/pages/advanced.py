@@ -60,9 +60,9 @@ from pages.gtkbasebox import GtkBaseBox
 from widgets.partition_treeview import PartitionTreeview
 
 # Dialogs
-from dialogs.create_partition import CreatePartitionDialog
-from dialogs.edit_partition import EditPartitionDialog
-from dialogs.create_table import CreateTableDialog
+from pages.dialogs.create_partition import CreatePartitionDialog
+from pages.dialogs.edit_partition import EditPartitionDialog
+from pages.dialogs.create_table import CreateTableDialog
 
 # When testing, no _() is available
 try:

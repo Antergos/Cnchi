@@ -38,7 +38,7 @@ from download import download
 from installation import auto_partition
 from installation import special_dirs
 
-import post_install
+from installation import post_install
 
 import misc.extra as misc
 from misc.extra import InstallError
