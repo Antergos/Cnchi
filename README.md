@@ -98,26 +98,28 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
 ### Getting started
 
 You will need to install all [dependencies](#dependencies).
-You can use the run script to test Cnchi. As this is a Installer, you will need to use a [Virtual Machine](http://virtualbox.org) or an additional harddisk to test it.
 
-What we would recommend to test your changes:
 - Fork Cnchi
 - Do your changes (use 0.16.x branch as base!)
-- Download Antergos ISO
-- Create a new VM in Virtualbox, add the live iso and two virtual harddisks
-- Run the VM
-- Close Cnchi when opens
-- Remove it: `sudo rm -rf /usr/share/cnchi`
-- Install git: `sudo pacman -S git`
-- Install your Cnchi version from your own repository:
+
+Then, you can use the run script to test Cnchi. As this is a Installer, you will need to use a [Virtual Machine](http://virtualbox.org) or an additional harddisk to test it.
+
+How to easy prepare a sane testing environment:
+1. Download Antergos ISO
+2. Create a new VM in Virtualbox, add the live iso and two virtual harddisks
+3. Run the VM
+4. Cnchi will open, close it.
+5. Remove Cnchi ISO version: `sudo rm -rf /usr/share/cnchi`
+6. Install git: `sudo pacman -S git`
+7. Install - Install your Cnchi version from your own repository:
 ```
 cd /home/antergos
 git clone https://github.com/<username>/cnchi
 cd cnchi
 sudo ln -s /home/antergos/cnchi /usr/share/cnchi
 ```
-- Create a screenshot of the VM (so you don't have to redo all this each time you test your changes).
-- Run Cnchi and start testing!
+8. Create a screenshot of the VM (so you don't have to redo all this each time you want to test your changes).
+9. Run Cnchi and start testing!
 
 If your tests are OK, you can then create your PR and push it here (against development branch, which now it's 0.16.x)
 
