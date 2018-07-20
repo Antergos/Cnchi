@@ -49,6 +49,7 @@
 
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
+                <pkgname>antergos-alpm-hooks</pkgname>
                 <pkgname>antergos-common-meta</pkgname>
                 <pkgname>antergos-desktop-settings</pkgname>
             </packages>
@@ -226,7 +227,6 @@
             <pkgname>bzr</pkgname>
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
-            <pkgname>yaourt</pkgname>
         </feature>
         <feature name="energy">
             <pkgname>thermald</pkgname>
