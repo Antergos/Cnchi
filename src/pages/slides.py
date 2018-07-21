@@ -304,10 +304,14 @@ class Slides(GtkBaseBox):
             except queue.Empty:
                 return
 
-    @misc.raise_privileges
-    def reboot(self):
+    @staticmethod
+    def reboot():
         """ Reboots the system, used when installation is finished """
-        cmd = ["sync"]
-        subprocess.call(cmd)
-        cmd = ["/usr/bin/systemctl", "reboot", "--force", "--no-wall"]
-        subprocess.call(cmd)
+        with misc.raised_privileges():
+            try:
+                cmd = ["sync"]
+                subprocess.call(cmd)
+                cmd = ["/usr/bin/systemctl", "reboot", "--force", "--no-wall"]
+                subprocess.call(cmd)
+            except subprocess.CalledProcessError as error:
+                logging.error(error)
