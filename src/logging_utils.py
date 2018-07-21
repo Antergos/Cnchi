@@ -46,8 +46,8 @@ class Singleton(type):
             cls._instance = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instance
 
-    def __new__(mcs, *args, **kwargs):
-        obj = super().__new__(mcs, *args, **kwargs)
+    def __new__(cls, *args, **kwargs):
+        obj = super().__new__(cls, *args, **kwargs)
         obj.ip_addr = None
         obj.install_id = None
         obj.api_key = None
@@ -208,8 +208,10 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         return False
 
     def send_install_result(self, result):
-        """ Sends install result to bugsnag server """
+        """ Sends install result to bugsnag server (result: str) """
         try:
+            if self.after_location_screen and not self.have_install_id:
+                self.get_and_save_install_id()
             build_server = self.get_url_for_id_request()
             if build_server and self.install_id:
                 url = "{0}&install_id={1}&result={2}"

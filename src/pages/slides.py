@@ -263,19 +263,21 @@ class Slides(GtkBaseBox):
                     sys.exit(0)
                 return False
             elif event[0] == 'error':
-                log_util = ContextFilter()
-                log_util.send_install_result("False")
                 self.callback_queue.task_done()
                 # A fatal error has been issued. We empty the queue
                 self.empty_queue()
 
-                # Add install id to error message (we can lookup logs on bugsnag by the install id)
-                tpl = _(
-                    'Please reference the following number when reporting this error: ')
-                error_message = '{0}\n{1}{2}'.format(
-                    event[1], tpl, log_util.install_id)
-
-                # Show the error
+                log_util = ContextFilter()
+                log_util.send_install_result("False")
+                if log_util.have_install_id:
+                    # Add install id to error message
+                    # (we can lookup logs on bugsnag by the install id)
+                    tpl = _(
+                        'Please reference the following number when reporting this error: ')
+                    error_message = '{0}\n{1}{2}'.format(
+                        event[1], tpl, log_util.install_id)
+                else:
+                    error_message = event[1]
                 show.fatal_error(self.get_main_window(), error_message)
             elif event[0] == 'info':
                 logging.info(event[1])
@@ -283,7 +285,6 @@ class Slides(GtkBaseBox):
                     self.progress_bar.set_text(event[1])
                 else:
                     self.set_message(event[1])
-
             elif event[0] == 'cache_pkgs_md5_check_failed':
                 logging.debug(
                     'Adding %s to cache_pkgs_md5_check_failed list',
