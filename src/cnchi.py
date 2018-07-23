@@ -28,7 +28,6 @@
 
 """ Main Cnchi (Antergos Installer) module """
 
-
 import os
 import sys
 import shutil
@@ -60,6 +59,7 @@ import show_message as show
 import info
 
 from logging_utils import ContextFilter
+import logging_color
 
 try:
     from bugsnag.handlers import BugsnagHandler
@@ -238,9 +238,8 @@ class CnchiInit(object):
         logger.addFilter(context_filter.filter)
 
         # Log format
-        formatter = logging.Formatter(
-            fmt="%(asctime)s [%(levelname)s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s")
-            #datefmt="%Y-%m-%d %H:%M:%S")
+        format_msg = "%(asctime)s [%(levelname)s] ($BOLD%(filename)s$RESET:%(lineno)d) %(message)s"
+        formatter = logging_color.ColoredFormatter(format_msg)
 
         # File logger
         try:
@@ -478,7 +477,7 @@ class CnchiInit(object):
 
         for cmd in cmds:
             try:
-                subprocess.check_call(cmd)
+                subprocess.call(cmd)
             except subprocess.CalledProcessError as err:
                 print(err)
 
