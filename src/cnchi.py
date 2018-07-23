@@ -238,7 +238,8 @@ class CnchiInit(object):
         logger.addFilter(context_filter.filter)
 
         # Log format
-        format_msg = "%(asctime)s [%(levelname)s] ($BOLD%(filename)s$RESET:%(lineno)d) %(message)s"
+        format_msg = ("%(asctime)s [%(levelname)-18s]  %(message)s  "
+                      "($BOLD%(filename)s$RESET:%(lineno)d)")
         formatter = logging_color.ColoredFormatter(format_msg)
 
         # File logger

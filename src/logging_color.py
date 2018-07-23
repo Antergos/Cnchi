@@ -43,12 +43,7 @@ class ColoredFormatter(logging.Formatter):
     BOLD_SEQ = "\033[1m"
 
     COLORS = {
-        'WARNING': YELLOW,
-        'INFO': WHITE,
-        'DEBUG': BLUE,
-        'CRITICAL': YELLOW,
-        'ERROR': RED
-    }
+        'WARNING': YELLOW, 'INFO': WHITE, 'DEBUG': BLUE, 'CRITICAL': YELLOW, 'ERROR': RED}
 
     def __init__(self, msg, use_color=True):
         msg = self.formatter_message(msg)
@@ -59,8 +54,8 @@ class ColoredFormatter(logging.Formatter):
     def formatter_message(message, use_color=True):
         """ Formats message adding colors """
         if use_color:
-            message = message.replace(
-                "$RESET", ColoredFormatter.RESET_SEQ).replace("$BOLD", ColoredFormatter.BOLD_SEQ)
+            message = message.replace("$RESET", ColoredFormatter.RESET_SEQ)
+            message = message.replace("$BOLD", ColoredFormatter.BOLD_SEQ)
         else:
             message = message.replace("$RESET", "").replace("$BOLD", "")
         return message
