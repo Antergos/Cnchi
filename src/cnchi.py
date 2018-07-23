@@ -215,6 +215,9 @@ class CnchiInit(object):
         if not self.check_iso_version():
             sys.exit(1)
 
+        # Disable suspend to RAM
+        self.disable_suspend()
+
         # Init PyObject Threads
         self.threads_init()
 
@@ -463,24 +466,21 @@ class CnchiInit(object):
                 return False
 
         return True
-    
+
     @staticmethod
     def disable_suspend():
         """ Disable suspend to RAM (just in case) """
-        # gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
-        # gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
         cmds = [
             ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
-                'sleep-inactive-ac-type', 'nothing'],
+             'sleep-inactive-ac-type', 'nothing'],
             ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
-                'sleep-inactive-battery-type', 'nothing']]
+             'sleep-inactive-battery-type', 'nothing']]
 
         for cmd in cmds:
             try:
                 subprocess.check_call(cmd)
             except subprocess.CalledProcessError as err:
                 print(err)
-
 
 
 def main():

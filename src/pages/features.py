@@ -90,6 +90,9 @@ class Features(GtkBaseBox):
 
     def __init__(self, params, prev_page="desktop", next_page="cache"):
         """ Initializes features ui """
+        # This is initialized each time this screen is shown in prepare()
+        self.features = None
+
         super().__init__(self, params, "features", prev_page, next_page)
 
         self.graphics = Graphics()
@@ -106,9 +109,6 @@ class Features(GtkBaseBox):
         self.listbox = self.ui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
-
-        # This is initialized each time this screen is shown in prepare()
-        self.features = None
 
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = {"ufw": False, "aur": False}
