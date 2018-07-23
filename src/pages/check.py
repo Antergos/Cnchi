@@ -257,12 +257,10 @@ class Check(GtkBaseBox):
                     version = version.split('-')[0]
                 logging.debug(
                     'Cnchi version in the repository is: %s', version)
+                self.remote_version = version
             except subprocess.CalledProcessError as err:
                 logging.debug(err)
-                version = None
-            return version
-        else:
-            return self.remote_version
+        return self.remote_version
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """
