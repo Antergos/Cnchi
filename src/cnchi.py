@@ -37,7 +37,7 @@ import logging.handlers
 import gettext
 import locale
 import gi
-
+import subprocess
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -463,6 +463,24 @@ class CnchiInit(object):
                 return False
 
         return True
+    
+    @staticmethod
+    def disable_suspend():
+        """ Disable suspend to RAM (just in case) """
+        # gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+        # gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-type 'nothing'
+        cmds = [
+            ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
+                'sleep-inactive-ac-type', 'nothing'],
+            ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
+                'sleep-inactive-battery-type', 'nothing']]
+
+        for cmd in cmds:
+            try:
+                subprocess.check_call(cmd)
+            except subprocess.CalledProcessError as err:
+                print(err)
+
 
 
 def main():
