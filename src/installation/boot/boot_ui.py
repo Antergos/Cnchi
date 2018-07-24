@@ -45,11 +45,11 @@ except NameError as err:
 class BootUI(object):
     """ GUI Helper class to manage bootloaders """
     def __init__(self, page_ui):
-        self.ui = page_ui
+        self.page_ui = page_ui
         self.bootloader = "grub2"
         self.bootloader_device = ""
-        self.bootloader_entry = self.ui.get_object('bootloader_entry')
-        self.bootloader_device_entry = self.ui.get_object(
+        self.bootloader_entry = self.page_ui.get_object('bootloader_entry')
+        self.bootloader_device_entry = self.page_ui.get_object(
             'bootloader_device_entry')
         self.bootloader_devices = {}
         self.is_uefi = os.path.exists('/sys/firmware/efi')
@@ -58,15 +58,15 @@ class BootUI(object):
         """ Translate labels """
         txt = _("Use the device below for boot loader installation:")
         txt = "<span weight='bold' size='small'>{0}</span>".format(txt)
-        label = self.ui.get_object('bootloader_device_info_label')
+        label = self.page_ui.get_object('bootloader_device_info_label')
         label.set_markup(txt)
 
         txt = _("Bootloader:")
-        label = self.ui.get_object('bootloader_label')
+        label = self.page_ui.get_object('bootloader_label')
         label.set_markup(txt)
 
         txt = _("Device:")
-        label = self.ui.get_object('bootloader_device_label')
+        label = self.page_ui.get_object('bootloader_device_label')
         label.set_markup(txt)
 
     def fill_bootloader_device_entry(self):
@@ -132,7 +132,7 @@ class BootUI(object):
             self.bootloader_entry.hide()
             widget_ids = ["bootloader_label", "bootloader_device_label"]
             for widget_id in widget_ids:
-                widget = self.ui.get_object(widget_id)
+                widget = self.page_ui.get_object(widget_id)
                 widget.hide()
 
     def bootloader_device_check_toggled(self, status):
@@ -142,7 +142,7 @@ class BootUI(object):
             "bootloader_label", "bootloader_device_label"]
 
         for widget_id in widget_ids:
-            widget = self.ui.get_object(widget_id)
+            widget = self.page_ui.get_object(widget_id)
             widget.set_sensitive(status)
 
     def bootloader_device_entry_changed(self):
@@ -159,7 +159,7 @@ class BootUI(object):
 
     def set_bootloader(self, settings):
         """ Set bootloader setting from the user selection checkbox """
-        checkbox = self.ui.get_object('bootloader_device_check')
+        checkbox = self.page_ui.get_object('bootloader_device_check')
         if not checkbox.get_active():
             settings.set('bootloader_install', False)
             logging.info("Cnchi will not install any bootloader")
