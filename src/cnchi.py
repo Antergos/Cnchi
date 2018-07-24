@@ -173,6 +173,8 @@ class CnchiInit(object):
     # At least this GTK version is needed
     GTK_VERSION_NEEDED = "3.18.0"
 
+    LOG_FOLDER = '/var/log/cnchi'
+
     def __init__(self):
         """ This function initialises Cnchi """
 
@@ -223,6 +225,9 @@ class CnchiInit(object):
 
     def setup_logging(self):
         """ Configure our logger """
+
+        os.makedirs(CnchiInit.LOG_FOLDER, mode=0o755, exist_ok=True)
+
         logger = logging.getLogger()
 
         logger.handlers = []
@@ -243,13 +248,14 @@ class CnchiInit(object):
         formatter = logging_color.ColoredFormatter(format_msg)
 
         # File logger
+        log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
         try:
-            file_handler = logging.FileHandler('/tmp/cnchi.log', mode='w')
+            file_handler = logging.FileHandler(log_path, mode='w')
             file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
         except PermissionError as permission_error:
-            print("Can't open /tmp/cnchi.log : ", permission_error)
+            print("Can't open ", log_path, " : ", permission_error)
 
         # Stdout logger
         if self.cmd_line.verbose:

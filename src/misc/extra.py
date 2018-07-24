@@ -515,8 +515,7 @@ def remove_temp_files():
         ".setup-running", ".km-running",
         "setup-pacman-running",
         "setup-mkinitcpio-running",
-        ".tz-running", ".setup",
-        "cnchi.log", "cnchi-alpm.log"]
+        ".tz-running", ".setup"]
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):

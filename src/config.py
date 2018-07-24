@@ -86,7 +86,6 @@ class Settings(object):
             'location': '',
             'laptop': 'False',
             'locale': '',
-            'log_file': '/tmp/cnchi.log',
             'luks_root_password': '',
             'luks_root_volume': '',
             'luks_root_device': '',

@@ -241,7 +241,7 @@ class Check(GtkBaseBox):
         if remote[1] > local[1]:
             return False
 
-        if remote[2] >  local[2]:
+        if remote[2] > local[2]:
             return False
 
         return True

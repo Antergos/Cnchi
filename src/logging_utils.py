@@ -62,6 +62,8 @@ class Singleton(type):
 
 class ContextFilter(logging.Filter, metaclass=Singleton):
     """ Context filter for logging methods to send logs to bugsnag """
+    LOG_FOLDER = '/var/log/cnchi'
+
     def __init__(self):
         super().__init__()
         self.api_key = self.get_bugsnag_api()
@@ -185,8 +187,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                                  "name": self.install_id,
                                  "install_id": self.install_id}
 
-            logs = ['/tmp/{0}.log'.format(n)
-                    for n in ['cnchi', 'cnchi-alpm', 'pacman', 'postinstall']]
+            logs = [
+                os.path.join(ContextFilter.LOG_FOLDER, '{0}.log'.format(n))
+                for n in ['cnchi', 'cnchi-alpm', 'pacman', 'postinstall']]
             missing = [f for f in logs if not os.path.exists(f)]
             if missing:
                 for log in missing:

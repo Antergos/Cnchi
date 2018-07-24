@@ -58,15 +58,10 @@ DEST_DIR = "/install"
 class PostInstallation(object):
     """ Post-Installation process thread class """
     POSTINSTALL_SCRIPT = 'postinstall.sh'
+    LOG_FOLDER = '/var/log/cnchi'
 
     def __init__(
-            self,
-            settings,
-            callback_queue,
-            mount_devices,
-            fs_devices,
-            ssd=None,
-            blvm=False):
+        self, settings, callback_queue, mount_devices, fs_devices, ssd=None, blvm=False):
 
         """ Initialize installation class """
         self.settings = settings
@@ -113,7 +108,7 @@ class PostInstallation(object):
             'cnchi', 'cnchi-alpm', 'postinstall', 'pacman']
 
         for name in file_names:
-            src = os.path.join("/tmp", "{0}.log".format(name))
+            src = os.path.join(PostInstallation.LOG_FOLDER, "{0}.log".format(name))
             dst = os.path.join(
                 log_dest_dir, "{0}-{1}.log".format(name, datetime))
             try:

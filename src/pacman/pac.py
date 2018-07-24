@@ -63,6 +63,7 @@ _DEFAULT_DB_PATH = "/var/lib/pacman"
 
 class Pac(object):
     """ Communicates with libalpm using pyalpm """
+    LOG_FOLDER = '/var/log/cnchi'
 
     def __init__(self, conf_path="/etc/pacman.conf", callback_queue=None):
         self.callback_queue = callback_queue
@@ -640,13 +641,13 @@ class Pac(object):
         if not self.logger.hasHandlers():
             # File logger
             try:
-                file_handler = logging.FileHandler(
-                    '/tmp/cnchi-alpm.log', mode='w')
+                log_path = os.path.join(Pac.LOG_FOLDER, 'cnchi-alpm.log')
+                file_handler = logging.FileHandler(log_path, mode='w')
                 file_handler.setLevel(logging.DEBUG)
                 file_handler.setFormatter(formatter)
                 self.logger.addHandler(file_handler)
             except PermissionError as permission_error:
-                print("Can't open /tmp/cnchi-alpm.log : ", permission_error)
+                print("Can't open ", log_path, " : ", permission_error)
 
 
 def test():
