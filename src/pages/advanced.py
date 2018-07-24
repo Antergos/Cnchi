@@ -38,8 +38,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-import parted
-
 import misc.extra as misc
 from misc.gtkwidgets import StateBox
 
@@ -52,17 +50,19 @@ import parted3.used_space as used_space
 
 from installation import install
 from installation import action
+# Bootloader ui helper functions
+from installation.boot import boot_ui
 
 import show_message as show
 
 from pages.gtkbasebox import GtkBaseBox
 
-from widgets.partition_treeview import PartitionTreeview
-
 # Dialogs
 from pages.dialogs.create_partition import CreatePartitionDialog
 from pages.dialogs.edit_partition import EditPartitionDialog
 from pages.dialogs.create_table import CreateTableDialog
+
+from widgets.partition_treeview import PartitionTreeview
 
 # When testing, no _() is available
 try:
@@ -141,12 +141,7 @@ class InstallationAdvanced(GtkBaseBox):
         self.create_table_dlg = CreateTableDialog(
             self.ui_dir, main_window)
 
-        self.bootloader = "grub2"
-        self.bootloader_device = ""
-        self.bootloader_entry = self.ui.get_object('bootloader_entry')
-        self.bootloader_device_entry = self.ui.get_object(
-            'bootloader_device_entry')
-        self.bootloader_devices = {}
+        self.boot_ui = boot_ui.BootUI(self.ui)
 
         self.scrolledwindow = self.ui.get_object(
             'partition_treeview_scrolledwindow')
@@ -268,97 +263,26 @@ class InstallationAdvanced(GtkBaseBox):
     def fill_bootloader_device_entry(self):
         """ Get all devices where we can put our bootloader.
             Avoiding partitions """
-
-        self.bootloader_device_entry.remove_all()
-        self.bootloader_devices.clear()
-
-        # Just call get_devices once
-        if self.disks is None:
-            self.disks = pm.get_devices()
-
-        for path in sorted(self.disks):
-            (disk, _result) = self.disks[path]
-            if disk:
-                dev = disk.device
-                # Avoid cdrom and any raid, lvm volumes or encryptfs
-                if (not dev.path.startswith("/dev/sr") and
-                        not dev.path.startswith("/dev/mapper")):
-                    size = dev.length * dev.sectorSize
-                    size_gbytes = int(parted.formatBytes(size, 'GB'))
-                    line = '{0} [{1} GB] ({2})'.format(
-                        dev.model,
-                        size_gbytes,
-                        dev.path)
-                    self.bootloader_device_entry.append_text(line)
-                    self.bootloader_devices[line] = dev.path
-
-        if not self.select_bootdevice(self.bootloader_device_entry, self.bootloader_device):
-            # Automatically select first entry
-            misc.select_first_combobox_item(self.bootloader_device_entry)
-
-    @staticmethod
-    def select_bootdevice(combobox, value):
-        """ Update chosen boot device option """
-        model = combobox.get_model()
-        combo_iter = model.get_iter_first()
-        index = 0
-        found = False
-        while combo_iter and not found:
-            if value.lower() in model[combo_iter][0].lower():
-                combobox.set_active_iter(combo_iter)
-                combo_iter = None
-                found = True
-            else:
-                index += 1
-                combo_iter = model.iter_next(combo_iter)
-        return found
+        self.boot_ui.fill_bootloader_device_entry()
 
     def fill_bootloader_entry(self):
         """ Put the bootloaders for the user to choose """
-        self.bootloader_entry.remove_all()
-
-        if self.is_uefi:
-            self.bootloader_entry.append_text("Grub2")
-            self.bootloader_entry.append_text("Systemd-boot")
-
-            # TODO: rEFInd needs more testing
-            # self.bootloader_entry.append_text("rEFInd")
-
-            if not misc.select_combobox_value(self.bootloader_entry, self.bootloader):
-                # Automatically select first entry
-                self.bootloader_entry.set_active(0)
-            self.bootloader_entry.show()
-        else:
-            self.bootloader_entry.hide()
-            widget_ids = ["bootloader_label", "bootloader_device_label"]
-            for widget_id in widget_ids:
-                widget = self.ui.get_object(widget_id)
-                widget.hide()
+        self.boot_ui.fill_bootloader_entry()
 
     def bootloader_device_check_toggled(self, checkbox):
         """ Enable / disable bootloader installation """
         status = checkbox.get_active()
-
-        widget_ids = [
-            "bootloader_device_entry", "bootloader_entry",
-            "bootloader_label", "bootloader_device_label"]
-
-        for widget_id in widget_ids:
-            widget = self.ui.get_object(widget_id)
-            widget.set_sensitive(status)
+        self.boot_ui.bootloader_device_check_toggled(status)
+        self.settings.set('bootloader_install', status)
 
     def bootloader_device_entry_changed(self, _widget):
         """ Get new selected bootloader device """
-        line = self.bootloader_device_entry.get_active_text()
-        if line:
-            self.bootloader_device = self.bootloader_devices[line]
+        self.boot_ui.bootloader_device_entry_changed()
 
     def bootloader_entry_changed(self, _widget):
         """ Get new selected bootloader """
-        line = self.bootloader_entry.get_active_text()
-        if line:
-            self.bootloader = line.lower()
-            self.check_mount_points()
+        self.boot_ui.bootloader_entry_changed()
+        self.check_mount_points()
 
     @staticmethod
     def get_size(length, sector_size):
@@ -1136,18 +1060,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.header.set_subtitle(_("Advanced Installation Mode"))
 
-        txt = _("Use the device below for boot loader installation:")
-        txt = "<span weight='bold' size='small'>{0}</span>".format(txt)
-        label = self.ui.get_object('bootloader_device_info_label')
-        label.set_markup(txt)
-
-        txt = _("Bootloader:")
-        label = self.ui.get_object('bootloader_label')
-        label.set_markup(txt)
-
-        txt = _("Device:")
-        label = self.ui.get_object('bootloader_device_label')
-        label.set_markup(txt)
+        self.boot_ui.translate_ui()
 
         txt = _("Mount Checklist:")
         txt = "<span weight='bold'>{0}</span>".format(txt)
@@ -1224,8 +1137,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def new_partition_table(self, _button):
         """ Create a new partition table """
-        # TODO: We should check first if there's any mounted partition
-        # (including swap)
+        # TODO: We should check first if there's any mounted partition (including swap)
 
         selection = self.partition_treeview.get_selection()
         if not selection:
@@ -1417,9 +1329,9 @@ class InstallationAdvanced(GtkBaseBox):
         self.status_label('/', 'show')
 
         if self.is_uefi:
-            if self.bootloader == 'grub2':
+            if self.boot_ui.bootloader == 'grub2':
                 self.status_label('/boot/efi', 'show')
-            elif self.bootloader in ['systemd-boot', 'refind']:
+            elif self.boot_ui.bootloader in ['systemd-boot', 'refind']:
                 self.status_label('/boot', 'show')
         elif self.lv_partitions:
             # LVM in non UEFI needs a /boot partition
@@ -1449,11 +1361,11 @@ class InstallationAdvanced(GtkBaseBox):
             # Check /boot or /boot/efi
             if self.is_uefi and 'fat' in fsystem:
                 # /boot or /boot/efi need to be fat32 in UEFI systems
-                if mnt == '/boot/efi' and self.bootloader == 'grub2':
+                if mnt == '/boot/efi' and self.boot_ui.bootloader == 'grub2':
                     # Grub2 in UEFI
                     has_valid_mount_point['/boot/efi'] = True
                     self.status_label('/boot/efi', 'true')
-                elif mnt == '/boot' and self.bootloader in ['systemd-boot', 'refind']:
+                elif mnt == '/boot' and self.boot_ui.bootloader in ['systemd-boot', 'refind']:
                     # systemd-boot (Gummiboot) and rEFInd
                     has_valid_mount_point['/boot'] = True
                     self.status_label('/boot', 'true')
@@ -1476,10 +1388,10 @@ class InstallationAdvanced(GtkBaseBox):
         check_ok = has_valid_mount_point['/']
 
         if self.is_uefi:
-            if self.bootloader == 'grub2':
+            if self.boot_ui.bootloader == 'grub2':
                 # Grub2 needs a /boot/efi partition in UEFI
                 check_ok = check_ok and has_valid_mount_point['/boot/efi']
-            elif self.bootloader in ['systemd-boot', 'refind']:
+            elif self.boot_ui.bootloader in ['systemd-boot', 'refind']:
                 # systemd-boot (Gummiboot) needs a /boot partition
                 check_ok = check_ok and has_valid_mount_point['/boot']
         elif self.lv_partitions:
@@ -1634,7 +1546,7 @@ class InstallationAdvanced(GtkBaseBox):
 
     def store_values(self):
         """ Store user choices """
-        self.set_bootloader()
+        self.boot_ui.set_bootloader(self.settings)
         return True
 
     def disable_all_widgets(self):
@@ -1652,21 +1564,6 @@ class InstallationAdvanced(GtkBaseBox):
             widget.set_sensitive(status)
         while Gtk.events_pending():
             Gtk.main_iteration()
-
-    def set_bootloader(self):
-        """ Set bootloader setting from the user selection checkbox """
-        checkbox = self.ui.get_object("bootloader_device_check")
-        if checkbox.get_active() is False:
-            self.settings.set('bootloader_install', False)
-            logging.info("Cnchi will not install any bootloader")
-        else:
-            self.settings.set('bootloader_install', True)
-            self.settings.set('bootloader_device', self.bootloader_device)
-
-            self.settings.set('bootloader', self.bootloader)
-            msg = "Antergos will install the bootloader {0} in device {1}"
-            msg = msg.format(self.bootloader, self.bootloader_device)
-            logging.info(msg)
 
     def run_format(self):
         """ Create staged partitions """
@@ -1719,7 +1616,7 @@ class InstallationAdvanced(GtkBaseBox):
                         '/dev/mapper' not in partition_path):
                     partition = partitions[partition_path]
                     if (not pm.get_flag(partition, pm.PED_PARTITION_BOOT) and
-                            self.bootloader_device):
+                            self.boot_ui.bootloader_device):
                         pm.set_flag(pm.PED_PARTITION_BOOT, partition)
                         logging.debug(
                             "Set BOOT flag to partition %s", partition_path)
@@ -1748,7 +1645,7 @@ class InstallationAdvanced(GtkBaseBox):
                         if noboot or mnt == '/boot':
                             for part_path in pvs[vgname]:
                                 flag = pm.get_flag(partitions[part_path], pm.PED_PARTITION_BOOT)
-                                if (not flag and self.bootloader_device):
+                                if (not flag and self.boot_ui.bootloader_device):
                                     pm.set_flag(pm.PED_PARTITION_BOOT,
                                                 partitions[part_path])
                                     logging.debug(
