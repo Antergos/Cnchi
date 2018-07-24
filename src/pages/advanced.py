@@ -164,6 +164,8 @@ class InstallationAdvanced(GtkBaseBox):
         select = self.partition_treeview.get_selection()
         select.connect('changed', self.partition_selection_changed)
 
+        self.is_uefi = os.path.exists('/sys/firmware/efi')
+
     def ssd_cell_toggled(self, _widget, path):
         """ User confirms selected disk is a ssd disk (or not) """
         disk_path = self.partition_treeview.store[path][PartitionTreeview.COL_PATH]
@@ -315,7 +317,7 @@ class InstallationAdvanced(GtkBaseBox):
         """ Put the bootloaders for the user to choose """
         self.bootloader_entry.remove_all()
 
-        if os.path.exists('/sys/firmware/efi'):
+        if self.is_uefi:
             self.bootloader_entry.append_text("Grub2")
             self.bootloader_entry.append_text("Systemd-boot")
 
@@ -714,8 +716,7 @@ class InstallationAdvanced(GtkBaseBox):
                 if new_fs == 'swap':
                     new_mount = 'swap'
 
-                is_uefi = os.path.exists('/sys/firmware/efi')
-                if is_uefi and new_fs != "fat32":
+                if self.is_uefi and new_fs != "fat32":
                     if new_mount == "/boot":
                         # search for /boot/efi
                         boot_efi_exists = False
@@ -1035,8 +1036,7 @@ class InstallationAdvanced(GtkBaseBox):
                         pm.create_partition(
                             disk, pm.PARTITION_LOGICAL, geometry)
 
-                if (os.path.exists('/sys/firmware/efi') and
-                        (mymount == "/boot" or mymount == "/boot/efi")):
+                if self.is_uefi and (mymount == "/boot" or mymount == "/boot/efi"):
                     logging.info(
                         "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
                     myfs = "fat32"
@@ -1265,9 +1265,7 @@ class InstallationAdvanced(GtkBaseBox):
 
                 self.update_view()
 
-                is_uefi = os.path.exists('/sys/firmware/efi')
-
-                if ptype == 'gpt' and not is_uefi:
+                if ptype == 'gpt' and not self.is_uefi:
                     # Show warning (https://github.com/Antergos/Cnchi/issues/63)
                     msg = _(
                         "GRUB requires a BIOS Boot Partition in BIOS systems "
@@ -1377,109 +1375,116 @@ class InstallationAdvanced(GtkBaseBox):
             return True
         return False
 
+    def status_label(self, mount_point, status):
+        """ Change "check status label" object
+            status can be either 'show','hide' or 'true' """
+
+        label_names = {
+            '/': 'root_part',
+            '/boot': 'boot_part',
+            '/boot/efi': 'boot_efi_part',
+            'swap': 'swap_part'}
+        label = None
+
+        if mount_point in label_names:
+            label_name = label_names[mount_point]
+            label = self.ui.get_object(label_name)
+        if label:
+            if status == 'show':
+                label.show()
+            if status == 'hide':
+                label.set_state(False)
+                label.hide()
+            if status == 'true':
+                label.show()
+                label.set_state(True)
+
+    def update_check_labels(self):
+        """ Check mount points and update check labels """
+
+        # Be sure to just call get_devices once
+        if self.disks is None:
+            self.disks = pm.get_devices()
+
+        mount_points = ['/', '/boot', '/boot/efi', 'swap']
+
+        has_valid_mount_point = {}
+        for mount_point in mount_points:
+            has_valid_mount_point[mount_point] = False
+            self.status_label(mount_point, 'hide')
+
+        # Root is always necessary
+        self.status_label('/', 'show')
+
+        if self.is_uefi:
+            if self.bootloader == 'grub2':
+                self.status_label('/boot/efi', 'show')
+            elif self.bootloader in ['systemd-boot', 'refind']:
+                self.status_label('/boot', 'show')
+        elif self.lv_partitions:
+            # LVM in non UEFI needs a /boot partition
+            self.status_label('/boot', 'show')
+
+        if self.need_swap():
+            # Low mem systems need a swap partition
+            self.status_label('swap', 'show')
+
+        # Check mount points and filesystems
+        for part_path in self.stage_opts:
+            (_is_new, _lbl, mnt, fsystem, _fmt) = self.stage_opts[part_path]
+
+            # Check root
+            if mnt == '/' and fsystem not in ['fat32', 'ntfs', 'swap']:
+                has_valid_mount_point['/'] = True
+                self.status_label('/', 'true')
+                if fsystem == "f2fs":
+                    # Special case. We need a /boot partition
+                    self.status_label('/boot', 'show')
+
+            # Check swap
+            if mnt == 'swap':
+                has_valid_mount_point['swap'] = True
+                self.status_label('swap', 'true')
+
+            # Check /boot or /boot/efi
+            if self.is_uefi and 'fat' in fsystem:
+                # /boot or /boot/efi need to be fat32 in UEFI systems
+                if mnt == '/boot/efi' and self.bootloader == 'grub2':
+                    # Grub2 in UEFI
+                    has_valid_mount_point['/boot/efi'] = True
+                    self.status_label('/boot/efi', 'true')
+                elif mnt == '/boot' and self.bootloader in ['systemd-boot', 'refind']:
+                    # systemd-boot (Gummiboot) and rEFInd
+                    has_valid_mount_point['/boot'] = True
+                    self.status_label('/boot', 'true')
+            elif not self.is_uefi and mnt == '/boot' and fsystem not in ['f2fs', 'swap']:
+                # /boot in non UEFI systems
+                has_valid_mount_point['/boot'] = True
+                self.status_label('/boot', 'true')
+
+        return has_valid_mount_point
+
     def check_mount_points(self):
         """ Check that all necessary mount points are specified.
             At least root (/) partition must be defined and in UEFI systems
             a fat32 partition mounted in /boot (Systemd-boot) or
             /boot/efi (grub2) must be defined too. """
 
-        check_parts = ["/", "/boot", "/boot/efi", "swap"]
-
-        has_part = {}
-        for check_part in check_parts:
-            has_part[check_part] = False
-
-        # Are we in a EFI system?
-        is_uefi = os.path.exists('/sys/firmware/efi')
-
-        # Be sure to just call get_devices once
-        if self.disks is None:
-            self.disks = pm.get_devices()
-
-        # Get check part labels
-        label_names = {
-            "/": "root_part",
-            "/boot": "boot_part",
-            "/boot/efi": "boot_efi_part",
-            "swap": "swap_part"}
-
-        part_label = {}
-        for check_part in check_parts:
-            part_label[check_part] = self.ui.get_object(
-                label_names[check_part])
-            part_label[check_part].set_state(False)
-            part_label[check_part].hide()
-
-        # Root is always necessary
-        part_label["/"].show()
-
-        if is_uefi:
-            if self.bootloader == "grub2":
-                part_label["/boot/efi"].show()
-            elif self.bootloader in ["systemd-boot", "refind"]:
-                part_label["/boot"].show()
-        else:
-            # LVM in non UEFI needs a /boot partition
-            if self.lv_partitions:
-                part_label["/boot"].show()
-
-        if self.need_swap():
-            # Low mem systems need a swap partition
-            part_label["swap"].show()
-
-        # Check mount points and filesystems
-        for part_path in self.stage_opts:
-            (_is_new, _lbl, mnt, fsystem, _fmt) = self.stage_opts[part_path]
-
-            if mnt == "/" and fsystem not in ["fat32", "ntfs", "swap"]:
-                has_part["/"] = True
-                part_label["/"].show()
-                part_label["/"].set_state(True)
-                if fsystem == "f2fs":
-                    # Special case. We need a /boot partition
-                    part_label["/boot"].show()
-
-            if mnt == "swap":
-                has_part["swap"] = True
-                part_label["swap"].show()
-                part_label["swap"].set_state(True)
-
-            if is_uefi:
-                # /boot or /boot/efi need to be fat32 in UEFI systems
-                if "fat" in fsystem:
-                    if mnt == "/boot/efi":
-                        if self.bootloader == "grub2":
-                            # Grub2 in UEFI
-                            has_part["/boot/efi"] = True
-                            part_label["/boot/efi"].show()
-                            part_label["/boot/efi"].set_state(True)
-                    elif mnt == "/boot":
-                        if self.bootloader in ["systemd-boot", "refind"]:
-                            # systemd-boot (Gummiboot) and rEFInd
-                            has_part["/boot"] = True
-                            part_label["/boot"].show()
-                            part_label["/boot"].set_state(True)
-            else:
-                if mnt == "/boot" and fsystem not in ["f2fs", "swap"]:
-                    # /boot in non UEFI systems
-                    has_part["/boot"] = True
-                    part_label["/boot"].show()
-                    part_label["/boot"].set_state(True)
+        has_valid_mount_point = self.update_check_labels()
 
         # In all cases a root partition must be defined
-        check_ok = has_part["/"]
+        check_ok = has_valid_mount_point['/']
 
-        if is_uefi:
-            if self.bootloader == "grub2":
+        if self.is_uefi:
+            if self.bootloader == 'grub2':
                 # Grub2 needs a /boot/efi partition in UEFI
-                check_ok = check_ok and has_part["/boot/efi"]
-            elif self.bootloader in ["systemd-boot", "refind"]:
+                check_ok = check_ok and has_valid_mount_point['/boot/efi']
+            elif self.bootloader in ['systemd-boot', 'refind']:
                 # systemd-boot (Gummiboot) needs a /boot partition
-                check_ok = check_ok and has_part["/boot"]
-        else:
-            if self.lv_partitions:
-                # LVM in non UEFI needs a boot partition
-                check_ok = check_ok and has_part["/boot"]
+                check_ok = check_ok and has_valid_mount_point['/boot']
+        elif self.lv_partitions:
+            # LVM in non UEFI needs a boot partition
+            check_ok = check_ok and has_valid_mount_point['/boot']
 
         self.forward_button.set_sensitive(check_ok)
 
@@ -1534,6 +1539,71 @@ class InstallationAdvanced(GtkBaseBox):
                 "%s shows as mounted (busy) but it has no mount point",
                 partition_path)
 
+    def get_partition_changes(self, uid, partition_path):
+        """ Grab partition changes for confirmation (in get_lvm_changes and get_disks_changes) """
+
+        relabel = False
+        encrypt = False
+
+        is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
+
+        # Advanced method formats root by default
+        # https://github.com/Antergos/Cnchi/issues/8
+        if mnt == '/':
+            fmt = True
+
+        if is_new:
+            action_type = 'create'
+            if lbl:
+                relabel = True
+            # Avoid extended and bios-gpt-boot partitions getting
+            # fmt flag true on new creation
+            if fsystem not in ['extended', 'bios-gpt-boot']:
+                fmt = True
+        else:
+            action_type = 'modify'
+            if partition_path in self.orig_label_dic:
+                if self.orig_label_dic[partition_path] != lbl:
+                    relabel = True
+
+        if uid in self.luks_options:
+            use_luks, _vol_name, _password = self.luks_options[uid]
+            if use_luks:
+                encrypt = True
+
+        act = action.Action(
+            action_type, partition_path, relabel, fmt, mnt, encrypt)
+        logging.debug(str(act))
+
+        return act
+
+    def get_lvm_changes(self):
+        """ Grab all lvm partition changes for confirmation (in get_changes) """
+
+        changes = []
+        for partition_path in self.lv_partitions:
+            uid = self.gen_partition_uid(path=partition_path)
+            if uid in self.stage_opts:
+                changes.append(self.get_partition_changes(uid, partition_path))
+
+        return changes
+
+    def get_disks_changes(self):
+        """ Grab all disks partition changes for confirmation (in get_changes) """
+
+        changes = []
+        for disk_path in self.disks:
+            (disk, _result) = self.disks[disk_path]
+            partitions = pm.get_partitions(disk)
+            for partition_path in partitions:
+                uid = self.gen_partition_uid(path=partition_path)
+                if uid in self.stage_opts:
+                    if disk.device.busy or pm.check_mounted(partitions[partition_path]):
+                        self.unmount_partition(partition_path)
+                    changes.append(self.get_partition_changes(uid, partition_path))
+
+        return changes
+
     def get_changes(self):
         """ Grab all changes for confirmation """
         changes = []
@@ -1546,106 +1616,10 @@ class InstallationAdvanced(GtkBaseBox):
         # Store values as
         # (path, create?, label?, format?, mount_point, encrypt?)
         if self.lv_partitions:
-            for partition_path in self.lv_partitions:
-                # Init vars
-                relabel = False
-                fmt = False
-                createme = False
-                encrypt = False
-                mnt = ''
-
-                uid = self.gen_partition_uid(path=partition_path)
-                if uid in self.stage_opts:
-                    is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
-
-                    # Advanced method formats root by default
-                    # https://github.com/Antergos/Cnchi/issues/8
-                    if mnt == "/":
-                        fmt = True
-                    if is_new:
-                        if lbl != "":
-                            relabel = True
-                        # Avoid extended and bios-gpt-boot partitions getting
-                        # fmt flag true on new creation
-                        if fsystem not in ["extended", "bios-gpt-boot"]:
-                            fmt = True
-                        createme = True
-                    else:
-                        if partition_path in self.orig_label_dic:
-                            if self.orig_label_dic[partition_path] == lbl:
-                                relabel = False
-                            else:
-                                relabel = True
-                        createme = False
-
-                    if uid in self.luks_options:
-                        (use_luks, _vol_name, _password) = self.luks_options[uid]
-                        if use_luks:
-                            encrypt = True
-
-                    if createme:
-                        action_type = "create"
-                    else:
-                        action_type = "modify"
-
-                    act = action.Action(action_type, partition_path,
-                                        relabel, fmt, mnt, encrypt)
-                    changes.append(act)
-                    logging.debug(str(act))
+            changes.extend(self.get_lvm_changes())
 
         if self.disks:
-            for disk_path in self.disks:
-                (disk, _result) = self.disks[disk_path]
-                partitions = pm.get_partitions(disk)
-                for partition_path in partitions:
-                    # Init vars
-                    relabel = False
-                    fmt = False
-                    createme = False
-                    encrypt = False
-                    mnt = ''
-                    uid = self.gen_partition_uid(path=partition_path)
-                    if uid in self.stage_opts:
-                        if disk.device.busy or pm.check_mounted(partitions[partition_path]):
-                            self.unmount_partition(partition_path)
-
-                        is_new, lbl, mnt, fsystem, fmt = self.stage_opts[uid]
-
-                        # Advanced method formats root by default
-                        # https://github.com/Antergos/Cnchi/issues/8
-                        if mnt == "/":
-                            fmt = True
-
-                        if is_new:
-                            if lbl != "":
-                                relabel = True
-                            # Avoid extended and bios-gpt-boot partitions
-                            # getting fmt flag true on new creation
-                            if fsystem not in ["extended", "bios-gpt-boot"]:
-                                fmt = True
-                            createme = True
-                        else:
-                            if partition_path in self.orig_label_dic:
-                                if self.orig_label_dic[partition_path] == lbl:
-                                    relabel = False
-                                else:
-                                    relabel = True
-                            createme = False
-
-                        if uid in self.luks_options:
-                            use_luks, _vol_name, _password = self.luks_options[uid]
-                            if use_luks:
-                                encrypt = True
-
-                        if createme:
-                            action_type = "create"
-                        else:
-                            action_type = "modify"
-
-                        act = action.Action(action_type, partition_path,
-                                            relabel, fmt, mnt, encrypt)
-                        changes.append(act)
-                        logging.debug(str(act))
+            changes.extend(self.get_disks_changes())
 
         return changes
 
