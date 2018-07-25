@@ -51,12 +51,7 @@ class DownloadPackages():
     """ Class to download packages. This class tries to previously download
         all necessary packages for  Antergos installation using requests. """
 
-    def __init__(
-            self,
-            package_names,
-            pacman_conf,
-            settings=None,
-            callback_queue=None):
+    def __init__(self, package_names, pacman_conf, settings=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         self.package_names = package_names
@@ -236,8 +231,8 @@ def test():
     logger.addHandler(stream_handler)
 
     pacman_conf = {}
-    pacman_conf['file'] = '/tmp/pacman.conf'
-    pacman_conf['cache'] = '/tmp/pkg'
+    pacman_conf['file'] = '/etc/pacman.conf'
+    pacman_conf['cache'] = '/var/cache/pacman/pkg'
 
     download_packages = DownloadPackages(
         package_names=['gedit'],

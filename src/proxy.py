@@ -70,7 +70,7 @@ class ProxyDialog(Gtk.Dialog):
 
         # Connect UI signals
         switch = self.ui.get_object("use_same_proxy_switch")
-        switch.connect("notify::active", self.on_use_same_proxy_activated)
+        switch.connect("notify::active", self.use_same_proxy_activated)
 
         if use_same_proxy:
             switch.set_active(True)
@@ -79,7 +79,7 @@ class ProxyDialog(Gtk.Dialog):
         content_area = self.get_content_area()
         content_area.add(dialog_grid)
 
-    def on_use_same_proxy_activated(self, switch, _data):
+    def use_same_proxy_activated(self, switch, _data):
         """ Use same proxy for all protocols """
         widget_names = [
             "https_proxy_label", "ftp_proxy_label", "socks_proxy_label",
@@ -155,8 +155,8 @@ class ProxyDialog(Gtk.Dialog):
                 except (IndexError, KeyError) as err:
                     logging.warning(err)
 
-    def get_use_same_proxy_for_all_protocols(self):
-        """ Use the same proxy address for all protocols """
+    def use_same_proxy(self):
+        """ Checks if user wants the same proxy address for all protocols """
         switch = self.ui.get_object("use_same_proxy_switch")
         return switch.get_active()
 

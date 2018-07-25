@@ -101,7 +101,7 @@ def setup(username, usergroup, install_dir, password):
             logging.debug("User folder (cipher): %s", paths['cipher'])
 
             # Backup home user directory
-            with misc.raised_privileges() as __:
+            with misc.raised_privileges():
                 try:
                     # Save all user files before doing anything
                     _copy_folder_contents(paths['plain'], paths['backup'])

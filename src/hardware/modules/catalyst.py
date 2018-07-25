@@ -49,6 +49,9 @@ PCI_FILE = "catalyst.ids"
 class Catalyst(Hardware):
     """ AMD ATI Catalyst graphics driver """
 
+    # Cnchi uses /tmp/pacman.conf to do the installation
+    TMP_PACMAN_CONF = "/tmp/pacman.conf"
+
     def __init__(self):
         Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY)
 
@@ -92,8 +95,8 @@ class Catalyst(Hardware):
     def pre_install(self, dest_dir):
         """ Pre install commands """
         # Catalyst needs an extra repository and a downgraded Xorg
-        # Cnchi uses /tmp/pacman.conf to do the installation
-        self.add_repositories("/tmp/pacman.conf")
+
+        self.add_repositories(Catalyst.TMP_PACMAN_CONF)
 
     def post_install(self, dest_dir):
         """ Post install commands """

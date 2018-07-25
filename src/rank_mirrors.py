@@ -228,9 +228,8 @@ class RankMirrors(multiprocessing.Process):
                         q_in.task_done()
 
             # Launch threads
-            for _i in range(num_threads):
-                my_thread = threading.Thread(
-                    target=worker)
+            for _index in range(num_threads):
+                my_thread = threading.Thread(target=worker)
                 my_thread.start()
 
             # Load the input queue.Queue

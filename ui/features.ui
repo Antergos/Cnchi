@@ -41,7 +41,7 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="margin_top">5</property>
-                <signal name="toggled" handler="on_show_advanced_features_toggled" swapped="no"/>
+                <signal name="toggled" handler="show_advanced_toggled" swapped="no"/>
                     <child>
                         <object class="GtkLabel" id="advanced_checkbutton_label">
                             <property name="visible">True</property>

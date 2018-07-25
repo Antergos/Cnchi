@@ -128,7 +128,8 @@ class WebcamWidget(Gtk.DrawingArea):
             msg.src.set_property('force-aspect-ratio', True)
             msg.src.set_window_handle(self.xid)
 
-    def on_error(self, _bus, msg):
+    @staticmethod
+    def on_error(_bus, msg):
         """ A gst error has occurred """
         logging.error(msg.parse_error())
 

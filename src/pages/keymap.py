@@ -216,18 +216,16 @@ class Keymap(GtkBaseBox):
         """ Gets selected value in treeview """
         layout = None
         variant = None
-        tree_model = treeview.get_model()
         selected = treeview.get_selection()
         if selected:
-            (ls, iterator) = selected.get_selected()
+            tree_model, iterator = selected.get_selected()
             if iterator:
-                layout = ls.get_value(iterator, 0)
+                layout = tree_model.get_value(iterator, 0)
                 iter_parent = tree_model.iter_parent(iterator)
                 if iter_parent:
                     # A variant was selected
                     variant = layout
-                    layout = tree_model[iter_parent][0]
-
+                    layout = tree_model.get_value(iter_parent, 0)
         return layout, variant
 
     def on_keymap_row_activated(self, _treeview, _iterator, _path):

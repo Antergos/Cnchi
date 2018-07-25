@@ -58,7 +58,7 @@ def ensured_executable(cmd):
         try:
             os.chmod(cmd[0], 0o777)
         except Exception:
-            with raised_privileges() as __:
+            with raised_privileges():
                 os.chmod(cmd[0], 0o777)
 
     return shutil.which(cmd[0]) is not None

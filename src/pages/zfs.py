@@ -234,7 +234,7 @@ class InstallationZFS(GtkBaseBox):
         self.device_list_store = Gtk.TreeStore(
             bool, bool, bool, str, int, str, str)
 
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             devices = parted.getAllDevices()
 
         self.get_ids()

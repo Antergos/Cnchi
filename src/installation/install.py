@@ -60,6 +60,8 @@ except NameError as err:
 class Installation():
     """ Installation process thread class """
 
+    TMP_PACMAN_CONF = "/tmp/pacman.conf"
+
     def __init__(self, settings, callback_queue, packages, metalinks,
                  mount_devices, fs_devices, ssd=None, blvm=False):
         """ Initialize installation class """
@@ -349,7 +351,7 @@ class Installation():
         self.pacman_cache_dir = os.path.join(DEST_DIR, 'var/cache/pacman/pkg')
 
         pacman_conf = {}
-        pacman_conf['file'] = '/tmp/pacman.conf'
+        pacman_conf['file'] = Installation.TMP_PACMAN_CONF
         pacman_conf['cache'] = self.pacman_cache_dir
 
         download_packages = download.DownloadPackages(
@@ -378,11 +380,11 @@ class Installation():
             destDir=DEST_DIR,
             arch=myarch,
             desktop=self.desktop)
-        filename = os.path.join("/tmp", "pacman.conf")
-        os.makedirs(os.path.dirname(filename), mode=0o755, exist_ok=True)
+        filename = Installation.TMP_PACMAN_CONF
+        dirname = os.path.dirname(filename)
+        os.makedirs(dirname, mode=0o755, exist_ok=True)
         with open(filename, "w") as my_file:
             my_file.write(file_rendered)
-
 
     def prepare_pacman(self):
         """ Configures pacman and syncs db on destination system """
@@ -395,7 +397,8 @@ class Installation():
 
         # Init pyalpm
         try:
-            self.pacman = pac.Pac("/tmp/pacman.conf", self.callback_queue)
+            self.pacman = pac.Pac(
+                Installation.TMP_PACMAN_CONF, self.callback_queue)
         except Exception as ex:
             self.pacman = None
             template = ("Can't initialize pyalpm. "
@@ -452,6 +455,29 @@ class Installation():
         # cmd = ["pacman-key", "--refresh-keys", "--gpgdir", dest_path]
         # call(cmd)
 
+    def delete_stale_pkgs(self, stale_pkgs):
+        """ Failure might be due to stale cached packages. Delete them. """
+        for stale_pkg in stale_pkgs:
+            filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
+            to_delete = glob.glob(filepath + '***') if filepath else []
+            if to_delete and len(to_delete) <= 20:
+                for fpath in to_delete:
+                    try:
+                        os.remove(fpath)
+                    except Exception as err:
+                        logging.error(err)
+
+    @staticmethod
+    def use_build_server_repo():
+        """ Setup pacman.conf to use build server repository """
+        with open('/etc/pacman.conf', 'r') as pacman_conf:
+            contents = pacman_conf.readlines()
+        with open('/etc/pacman.conf', 'w') as new_pacman_conf:
+            for line in contents:
+                if 'antergos-mirrorlist' in line:
+                    line = 'Server = http://repo.antergos.info/$repo/$arch'
+                new_pacman_conf.write(line)
+
     def install_packages(self):
         """ Start pacman installation of packages """
         result = False
@@ -463,44 +489,33 @@ class Installation():
         logging.debug("Installing packages...")
 
         try:
-            result = self.pacman.install(
-                pkgs=self.packages, conflicts=None, options=None)
+            result = self.pacman.install(pkgs=self.packages)
         except pac.pyalpm.error:
             pass
 
         stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
 
-        if not result and stale_pkgs:
+        if not result and stale_pkgs and os.path.exists(self.pacman_cache_dir):
             # Failure might be due to stale cached packages. Delete them and try again.
-            if os.path.exists(self.pacman_cache_dir):
-                for stale_pkg in stale_pkgs:
-                    filepath = os.path.join(self.pacman_cache_dir, stale_pkg)
-                    to_delete = glob.glob(filepath + '***') if filepath else []
-                    if to_delete and len(to_delete) <= 20:
-                        for fpath in to_delete:
-                            try:
-                                os.remove(fpath)
-                            except Exception as err:
-                                logging.error(err)
-
-                self.pacman.refresh()
-
-                result = self.pacman.install(pkgs=self.packages)
-
-        elif not result and self.settings.get('desktop').lower() in ['cinnamon', 'mate']:
-            # Failure might be due to antergos mirror issues. Try using build server repo.
-            with open('/etc/pacman.conf', 'r') as pacman_conf:
-                contents = pacman_conf.readlines()
-
-            with open('/etc/pacman.conf', 'w') as new_pacman_conf:
-                for line in contents:
-                    if 'antergos-mirrorlist' in line:
-                        line = 'Server = http://repo.antergos.info/$repo/$arch'
-                    new_pacman_conf.write(line)
-
+            logging.warning(
+                "Can't install necessary packages. Let's try again deleting stale packages first.")
+            self.delete_stale_pkgs(stale_pkgs)
             self.pacman.refresh()
+            try:
+                result = self.pacman.install(pkgs=self.packages)
+            except pac.pyalpm.error:
+                pass
 
-            result = self.pacman.install(pkgs=self.packages)
+        if not result:
+            # Failure might be due to antergos mirror issues. Try using build server repo.
+            logging.warning(
+                "Can't install necessary packages. Let's try again using a tier 1 mirror.")
+            self.use_build_server_repo()
+            self.pacman.refresh()
+            try:
+                result = self.pacman.install(pkgs=self.packages)
+            except pac.pyalpm.error:
+                pass
 
         if not result:
             txt = _("Can't install necessary packages. Cnchi can't continue.")

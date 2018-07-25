@@ -116,7 +116,7 @@ class Features(GtkBaseBox):
         # Only load defaults for each DE the first time this screen is shown
         self.defaults_loaded = False
 
-    def on_show_advanced_features_toggled(self, _widget):
+    def show_advanced_toggled(self, _widget):
         """ Display or hide advanced features """
         self.show_advanced = self.advanced_checkbutton.get_active()
         self.update_advanced_features()

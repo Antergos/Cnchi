@@ -245,7 +245,7 @@ class Language(GtkBaseBox):
         if response == Gtk.ResponseType.APPLY:
             self.settings.set(
                 'use_same_proxy_for_all_protocols',
-                dlg.get_use_same_proxy_for_all_protocols())
+                dlg.use_same_proxy())
             proxies = dlg.get_proxies()
             if proxies:
                 self.settings.set('proxies', proxies)

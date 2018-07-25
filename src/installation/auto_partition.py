@@ -935,8 +935,9 @@ if __name__ == '__main__':
 
     _ = gettext.gettext
 
+    os.makedirs("/var/log/cnchi")
     logging.basicConfig(
-        filename="/tmp/cnchi-autopartition.log", level=logging.DEBUG)
+        filename="/var/log/cnchi/cnchi-autopartition.log", level=logging.DEBUG)
 
     AutoPartition(
         dest_dir="/install",

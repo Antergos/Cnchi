@@ -107,30 +107,28 @@ class Wireless(GtkBaseBox):
             # TODO: hide and stop spinner
             self.nmwidget.hbox.set_sensitive(False)
 
-    '''
-    def plugin_on_back_clicked(self):
-        frontend = self.controller._wizard
-        if frontend.back.get_label() == self.stop_text:
-            self.nmwidget.disconnect_from_ap()
-            return True
-        else:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            self.no_wireless.set_active(True)
-            return False
+    #def plugin_on_back_clicked(self):
+    #    frontend = self.controller._wizard
+    #    if frontend.back.get_label() == self.stop_text:
+    #        self.nmwidget.disconnect_from_ap()
+    #        return True
+    #    else:
+    #        frontend.connecting_spinner.hide()
+    #        frontend.connecting_spinner.stop()
+    #        frontend.connecting_label.hide()
+    #        self.no_wireless.set_active(True)
+    #        return False
 
-    def plugin_on_next_clicked(self):
-        frontend = self.controller._wizard
-        if frontend.next.get_label() == self.connect_text:
-            self.nmwidget.connect_to_ap()
-            return True
-        else:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            return False
-    '''
+    #def plugin_on_next_clicked(self):
+    #    frontend = self.controller._wizard
+    #    if frontend.next.get_label() == self.connect_text:
+    #        self.nmwidget.connect_to_ap()
+    #        return True
+    #    else:
+    #        frontend.connecting_spinner.hide()
+    #        frontend.connecting_spinner.stop()
+    #        frontend.connecting_label.hide()
+    #        return False
 
     def state_changed(self, _unused, state):
         """ State has changed """
