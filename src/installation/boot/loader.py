@@ -36,7 +36,7 @@ import parted3.fs_module as fs
 import logging
 
 
-class Bootloader(object):
+class Bootloader():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, mount_devices):

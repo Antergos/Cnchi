@@ -53,7 +53,7 @@ except NameError as err:
         return message
 
 
-class SelectPackages(object):
+class SelectPackages():
     """ Package list creation class """
 
     PKGLIST_URL = 'https://raw.githubusercontent.com/Antergos/Cnchi/master/data/packages.xml'

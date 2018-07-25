@@ -33,7 +33,7 @@ from installation import firewall
 from installation import services as srv
 import misc.extra as misc
 
-class PostFeatures(object):
+class PostFeatures():
     """ Manages post installation of selected features """
     def __init__(self, dest_dir, settings):
         self.dest_dir = dest_dir

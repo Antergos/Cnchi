@@ -81,7 +81,7 @@ class CopyToCache(threading.Thread):
                     pass
 
 
-class Download(object):
+class Download():
     """ Class to download packages using requests
         This class tries to previously download all necessary packages for
         Antergos installation using requests """

@@ -42,7 +42,7 @@ except NameError as err:
     def _(message):
         return message
 
-class BootUI(object):
+class BootUI():
     """ GUI Helper class to manage bootloaders """
     def __init__(self, page_ui):
         self.page_ui = page_ui

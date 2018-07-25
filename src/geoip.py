@@ -39,7 +39,7 @@ import maxminddb
 import geoip2.database
 import misc.extra as misc
 
-class GeoIP(object):
+class GeoIP():
     """ Store GeoIP information """
 
     REPO_CITY_DATABASE = '/usr/share/GeoIP/GeoLite2-City.mmdb'

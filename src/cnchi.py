@@ -163,7 +163,7 @@ class CnchiApp(Gtk.Application):
                 os.remove(self.tmp_running)
         return False
 
-class CnchiInit(object):
+class CnchiInit():
     """ Initializes Cnchi """
 
     # Useful vars for gettext (translations)

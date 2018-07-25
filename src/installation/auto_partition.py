@@ -236,7 +236,7 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         proc.communicate(input=luks_pass_bytes)
 
 
-class AutoPartition(object):
+class AutoPartition():
     """ Class used by the automatic installation method """
 
     LUKS_KEY_FILES = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]

@@ -31,7 +31,7 @@ except NameError as err:
     def _(message):
         return message
 
-class Action(object):
+class Action():
     """ Store actions on devices for the user to confirm """
 
     def __init__(self, action_type, path_or_info, relabel=False,

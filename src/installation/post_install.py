@@ -55,7 +55,7 @@ except NameError as err:
 
 DEST_DIR = "/install"
 
-class PostInstallation(object):
+class PostInstallation():
     """ Post-Installation process thread class """
     POSTINSTALL_SCRIPT = 'postinstall.sh'
     LOG_FOLDER = '/var/log/cnchi'

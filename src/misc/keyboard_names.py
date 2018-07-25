@@ -88,7 +88,7 @@ class Layout(GObject.GObject):
             sorted(self.variants.items(), key=lambda t: str(t[1])))
 
 
-class KeyboardNames(object):
+class KeyboardNames():
     """ Read all keyboard info (models, layouts and variants) """
 
     def __init__(self, filename):

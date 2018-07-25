@@ -32,7 +32,7 @@
 import multiprocessing
 
 
-class Settings(object):
+class Settings():
     """ Store all Cnchi setup options here """
 
     def __init__(self):

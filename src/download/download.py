@@ -47,7 +47,7 @@ except NameError as err:
     def _(message):
         return message
 
-class DownloadPackages(object):
+class DownloadPackages():
     """ Class to download packages. This class tries to previously download
         all necessary packages for  Antergos installation using requests. """
 

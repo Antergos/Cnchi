@@ -30,7 +30,7 @@ import re
 
 import parted3.fs_module as fs
 
-class PostFstab(object):
+class PostFstab():
     """ Setup /etc/fstab """
 
     DEST_DIR = '/install'

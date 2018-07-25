@@ -61,7 +61,7 @@ _DEFAULT_ROOT_DIR = "/"
 _DEFAULT_DB_PATH = "/var/lib/pacman"
 
 
-class Pac(object):
+class Pac():
     """ Communicates with libalpm using pyalpm """
     LOG_FOLDER = '/var/log/cnchi'
 

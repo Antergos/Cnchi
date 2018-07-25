@@ -34,7 +34,7 @@ import logging
 from misc.run_cmd import chroot_call
 
 
-class REFInd(object):
+class REFInd():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, uuids):

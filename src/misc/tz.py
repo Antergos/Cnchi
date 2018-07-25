@@ -144,7 +144,7 @@ class SystemTzInfo(datetime.tzinfo):
             self._restore_tz(tzbackup)
 
 
-class Iso3166(object):
+class Iso3166():
     """ Read Iso 3166 xml file """
 
     def __init__(self):
@@ -188,7 +188,7 @@ def _parse_position(position, wholedigits):
         return whole - fraction / pow(10.0, len(fractionstr))
 
 
-class Location(object):
+class Location():
     """ Class to store a location """
     __gtype_name__ = "Location"
     __gproperties__ = {
@@ -279,7 +279,7 @@ class Location(object):
         setattr(self, prop, value)
 
 
-class _Database(object):
+class _Database():
     """ Store all ISO 3166 information """
 
     def __init__(self):

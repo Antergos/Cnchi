@@ -33,10 +33,9 @@ import logging
 import os
 import subprocess
 
-class Hardware(object):
+class Hardware():
     """ This is an abstract class. You need to use this as base """
 
-    # FIXME: Do not use a fixed path
     PCI_FILES_PATH = '/usr/share/cnchi/data/pci'
 
     def __init__(self, class_name, class_id, vendor_id, pci_file_or_devices,
@@ -205,7 +204,7 @@ class Hardware(object):
                 logging.error(timeout_error)
 
 
-class HardwareInstall(object):
+class HardwareInstall():
     """ This class checks user's hardware """
 
     def __init__(self, cnchi_path, use_proprietary_graphic_drivers=False):

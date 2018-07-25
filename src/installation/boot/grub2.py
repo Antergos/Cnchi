@@ -54,7 +54,7 @@ except NameError as err:
         return message
 
 
-class Grub2(object):
+class Grub2():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, uuids):

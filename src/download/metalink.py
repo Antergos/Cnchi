@@ -153,7 +153,7 @@ def download_queue_to_metalink(download_queue):
     return metalink
 
 
-class Metalink(object):
+class Metalink():
     """ Metalink class """
 
     def __init__(self):
@@ -224,7 +224,7 @@ class Metalink(object):
             self.add_file(name + '.sig', (u + '.sig' for u in urls))
 
 
-class PkgSet(object):
+class PkgSet():
     """ Represents a set of packages """
 
     def __init__(self, pkgs=None):
@@ -269,7 +269,7 @@ class PkgSet(object):
         return len(self.pkgs)
 
 
-class DownloadQueue(object):
+class DownloadQueue():
     """ Represents a download queue """
 
     def __init__(self):

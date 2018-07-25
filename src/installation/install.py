@@ -57,7 +57,7 @@ except NameError as err:
     def _(message):
         return message
 
-class Installation(object):
+class Installation():
     """ Installation process thread class """
 
     def __init__(self, settings, callback_queue, packages, metalinks,

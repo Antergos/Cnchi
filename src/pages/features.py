@@ -51,7 +51,7 @@ from hardware.modules.amdgpu import AMDGpu
 from hardware.modules.amdgpu_exp import AMDGpuExp
 from hardware.modules.i915 import Intel915
 
-class Graphics(object):
+class Graphics():
     """ Gets graphic device info using the hardware module """
 
     @staticmethod
