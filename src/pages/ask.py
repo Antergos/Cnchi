@@ -84,7 +84,7 @@ def load_zfs():
     """ Load ZFS kernel module """
     cmd = ["modprobe", "zfs"]
     try:
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug("ZFS kernel module loaded successfully.")
     except subprocess.CalledProcessError as err:
@@ -482,7 +482,7 @@ class InstallationAsk(GtkBaseBox):
             # Enable all options
             self.enable_automatic_options(True)
 
-    def automatic_lvm_checkbutton_toggled(self, widget):
+    def automatic_lvm_toggled(self, widget):
         """ Enables / disables LVM installation """
         if widget.get_active():
             self.next_page = "installation_automatic"
@@ -491,7 +491,7 @@ class InstallationAsk(GtkBaseBox):
             if check.get_active():
                 check.set_active(False)
 
-    def automatic_zfs_checkbutton_toggled(self, widget):
+    def automatic_zfs_toggled(self, widget):
         """ Enables / disables ZFS installation """
         if widget.get_active():
             self.next_page = "installation_zfs"

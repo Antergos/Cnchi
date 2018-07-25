@@ -161,7 +161,8 @@ class Pac():
             del self.handle
             self.handle = None
 
-    def finalize_transaction(self, transaction):
+    @staticmethod
+    def finalize_transaction(transaction):
         """ Commit a transaction """
         try:
             logging.debug("Prepare alpm transaction...")

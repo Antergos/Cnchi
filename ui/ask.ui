@@ -131,7 +131,7 @@
                 <property name="margin_top">5</property>
                 <property name="halign">start</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="automatic_lvm_checkbutton_toggled" swapped="no"/>
+                <signal name="toggled" handler="automatic_lvm_toggled" swapped="no"/>
             </object>
             <packing>
                 <property name="expand">False</property>
@@ -165,7 +165,7 @@
                 <property name="margin_top">5</property>
                 <property name="halign">start</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="automatic_zfs_checkbutton_toggled" swapped="no"/>
+                <signal name="toggled" handler="automatic_zfs_toggled" swapped="no"/>
             </object>
             <packing>
                 <property name="expand">False</property>
