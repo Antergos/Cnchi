@@ -1660,7 +1660,7 @@ class InstallationAdvanced(GtkBaseBox):
                         txt = txt.format(partition_path, vol_name)
                         logging.info(txt)
 
-                        with misc.raised_privileges() as __:
+                        with misc.raised_privileges():
                             ap.setup_luks(
                                 luks_device=partition_path,
                                 luks_name=vol_name,

@@ -482,17 +482,17 @@ class InstallationZFS(GtkBaseBox):
         """ Force 4k sector size """
         self.zfs_options["force_4k"] = not self.zfs_options["force_4k"]
 
-    def on_partition_scheme_combo_changed(self, widget):
-        """ Select MBR or GPT """
+    def partition_scheme_changed(self, widget):
+        """ User changes scheme to MBR or GPT """
         tree_iter = widget.get_active_iter()
-        if tree_iter is not None:
+        if tree_iter:
             model = widget.get_model()
             self.zfs_options["scheme"] = model[tree_iter][0]
 
     def on_pool_type_combo_changed(self, widget):
         """ Choose zfs pool type """
         tree_iter = widget.get_active_iter()
-        if tree_iter is not None:
+        if tree_iter:
             model = widget.get_model()
             self.zfs_options["pool_type"] = model[tree_iter][0]
             # self.show_pool_type_help(model[tree_iter][0])

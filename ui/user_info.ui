@@ -415,7 +415,7 @@
             <property name="halign">start</property>
             <property name="valign">start</property>
             <property name="draw_indicator">True</property>
-            <signal name="toggled" handler="checkbutton_show_password_toggled" swapped="no"/>
+            <signal name="toggled" handler="show_password_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>

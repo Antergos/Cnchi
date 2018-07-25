@@ -78,7 +78,7 @@ def get_partition_size_info(partition_path, human=False):
             cmd = ['/usr/bin/df', partition_path]
         df_out = subprocess.check_output(cmd).decode()
         if not already_mounted:
-            subprocess.check_output(['umount', '-l', tmp_dir])
+            subprocess.check_output(['/usr/bin/umount', '-l', tmp_dir])
     except subprocess.CalledProcessError as err:
         logging.error("Error running command %s: %s", err.cmd, err.output)
         return
@@ -229,7 +229,7 @@ class InstallationAlongside(GtkBaseBox):
 
         self.header.set_subtitle(_("Antergos Alongside Installation"))
 
-    def on_choose_partition_combo_changed(self, combobox):
+    def choose_partition_changed(self, combobox):
         """ The user has chosen a device from the combobox """
         txt = combobox.get_active_text()
         device = txt.split("(")[1][:-1]

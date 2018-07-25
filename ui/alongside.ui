@@ -56,7 +56,7 @@
                         <property name="halign">center</property>
                         <property name="margin_start">20</property>
                         <property name="margin_end">20</property>
-                        <signal name="changed" handler="on_choose_partition_combo_changed" swapped="no"/>
+                        <signal name="changed" handler="choose_partition_changed" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>

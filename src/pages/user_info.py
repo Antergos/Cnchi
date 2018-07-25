@@ -289,7 +289,7 @@ class UserInfo(GtkBaseBox):
         # Disable forward button until user data is filled correctly
         self.forward_button.set_sensitive(False)
 
-    def checkbutton_show_password_toggled(self, _widget):
+    def show_password_toggled(self, _widget):
         """ show/hide user password """
         btn = self.ui.get_object('checkbutton_show_password')
         shown = btn.get_active()
@@ -298,18 +298,11 @@ class UserInfo(GtkBaseBox):
 
     def authentication_toggled(self, widget):
         """ User has changed autologin or home encrypting """
-
         if widget == self.login['auto']:
-            if self.login['auto'].get_active():
-                self.require_password = False
-            else:
-                self.require_password = True
+            self.require_password = not bool(self.login['auto'].get_active())
 
         if widget == self.login['encrypt']:
-            if self.login['encrypt'].get_active():
-                self.encrypt_home = True
-            else:
-                self.encrypt_home = False
+            self.encrypt_home = bool(self.login['encrypt'].get_active())
 
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
