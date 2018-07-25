@@ -60,7 +60,8 @@ class BrowserWindow(Gtk.Window):
         """ Destroys window """
         self.destroy()
 
-    def decide_policy_cb(self, decision, _type, data):
+    @staticmethod
+    def decide_policy_cb(decision, _type, data):
         """ Allows all (security flaw, but we do not care when installing) """
         return True
 

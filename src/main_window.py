@@ -152,11 +152,11 @@ class MainWindow(Gtk.ApplicationWindow):
                     "Cnchi will install the %s desktop environment",
                     my_desktop)
 
-        self.ui = Gtk.Builder()
+        self.cnchi_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
-        self.ui.add_from_file(path)
+        self.cnchi_ui.add_from_file(path)
 
-        main = self.ui.get_object("main")
+        main = self.cnchi_ui.get_object("main")
         # main.set_property("halign", Gtk.Align.CENTER)
         self.add(main)
 
@@ -177,12 +177,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_name("header")
         self.logo.set_name("logo")
 
-        self.main_box = self.ui.get_object("main_box")
+        self.main_box = self.cnchi_ui.get_object("main_box")
         # self.main_box.set_property("halign", Gtk.Align.CENTER)
 
         ##self.main_box.set_property('width_request', 800)
 
-        self.progressbar = self.ui.get_object("main_progressbar")
+        self.progressbar = self.cnchi_ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
         # a11y
         self.progressbar.set_can_focus(False)
@@ -254,7 +254,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.on_key_release)
 
-        self.ui.connect_signals(self)
+        self.cnchi_ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
         nil, major, minor = info.CNCHI_VERSION.split('.')
