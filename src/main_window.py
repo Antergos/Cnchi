@@ -325,11 +325,10 @@ class MainWindow(Gtk.ApplicationWindow):
         misc.gtk_refresh()
 
     def header_for_all_callback(self, widget, _data):
+        """ Show tooltip in header """
         if isinstance(widget, Gtk.Box):
             widget.forall(self.header_for_all_callback, self.tooltip_string)
-            return
-        if widget.get_style_context().has_class('title'):
-            logging.info('fired!')
+        elif widget.get_style_context().has_class('title'):
             widget.set_tooltip_text(self.tooltip_string)
 
     def load_pages(self):
