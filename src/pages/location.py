@@ -74,14 +74,11 @@ class Location(GtkBaseBox):
 
         button = self.ui.get_object("show_all_locations_checkbutton")
         button.set_name("location-checkbutton-show-all-locations")
-        button.connect(
-            "toggled",
-            self.on_show_all_locations_checkbox_toggled,
-            "")
+        button.connect("toggled", self.all_locations_toggled, "")
 
         self.scrolledwindow = self.ui.get_object("scrolledwindow1")
 
-    def on_show_all_locations_checkbox_toggled(self, button, _name):
+    def all_locations_toggled(self, button, _name):
         """ Force to show all locations """
         self.show_all_locations = button.get_active()
         self.fill_listbox()
