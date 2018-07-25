@@ -63,7 +63,7 @@ start_cnchi () {
 if [[ ${arg} = "development" ]]; then
 	development=True
 else
-	stable=True
+	development=False
 fi
 # Check if this is the first time we are executed.
 if ! [ -f "${previous}" ]; then
