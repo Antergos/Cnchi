@@ -27,10 +27,7 @@ def check_grub_device(device):
         return True
     # (device[,part-num])
     regex = re.compile(r'^\((hd|fd)[0-9]+(,[0-9]+)*\)$')
-    if regex.search(device):
-        return True
-    else:
-        return False
+    return bool(regex.search(device))
 
 
 NAME_LENGTH = 1
