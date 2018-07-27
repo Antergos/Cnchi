@@ -34,12 +34,13 @@ import logging
 import queue
 import shutil
 import time
-import hashlib
 import socket
 import io
 import threading
 
 import requests
+
+import download.download_hash as dhash
 
 # When testing, no _() is available
 try:
@@ -47,15 +48,6 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-def get_md5(file_name):
-    """ Gets md5 hash from a file """
-    md5_hash = hashlib.md5()
-    with open(file_name, "rb") as myfile:
-        for line in myfile:
-            md5_hash.update(line)
-    return md5_hash.hexdigest()
-
 
 class CopyToCache(threading.Thread):
     ''' Class thread to copy a xz file to the user's
@@ -104,31 +96,6 @@ class Download():
 
         self.copy_to_cache_threads = []
 
-    def is_hash_ok(self, path, element=None, md5hash=None):
-        """ Checks file md5 hash """
-        # Note: path must exist!
-
-        if element:
-            # element['hash'] is not always available
-            md5hash = element.get('hash', False)
-            identity = element['identity']
-            filename = element['filename']
-        elif md5hash:
-            identity = path
-            filename = path
-
-        if not md5hash:
-            logging.debug('Checksum unavailable for package: %s', identity)
-            self.queue_event('cache_pkgs_md5_check_failed', identity)
-            # We cannot check md5, let's assume it's ok
-            return True
-
-        if md5hash != get_md5(path):
-            logging.warning("MD5 hash of file %s does not match!", filename)
-            return False
-
-        # If we reach this point, md5 hash is ok
-        return True
 
     def start(self, downloads):
         """ Downloads using requests """
@@ -163,8 +130,8 @@ class Download():
 
             if os.path.exists(dst_path):
                 # File already exists in destination pacman's cache
-                # (previous install?). We check the file md5 hash.
-                if not self.is_hash_ok(path=dst_path, element=element):
+                # (previous install?). We check the file hash.
+                if not dhash.check_hash(dst_path, element):
                     # We're sure it's a wrong hash. Force to download it
                     needs_to_download = True
                 else:
@@ -182,10 +149,10 @@ class Download():
                         element['filename'])
 
                     if (os.path.exists(dst_xz_cache_path) and
-                            self.is_hash_ok(path=dst_xz_cache_path, element=element)):
+                            dhash.check_hash(dst_xz_cache_path, element)):
                         # We're lucky, the package is already downloaded
                         # in the cache the user has given us
-                        # and its md5 checks out (if there is a md5)
+                        # and its hash checks out
                         try:
                             shutil.copy(dst_xz_cache_path, dst_path)
                             needs_to_download = False
@@ -212,8 +179,8 @@ class Download():
                     "Can't download %s, even after trying all available mirrors",
                     element['filename'])
                 return False
-            else:
-                downloaded += 1
+
+            downloaded += 1
 
             self.queue_event('progress_bar_show_text', '')
 
@@ -249,7 +216,7 @@ class Download():
                     element['identity'],
                     element['version'])
             else:
-                download_ok = self.download_url(url, dst_path)
+                download_ok = self.download_url(url, dst_path, element)
 
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
@@ -269,7 +236,7 @@ class Download():
 
         return download_ok
 
-    def download_url(self, url, dst_path, md5hash=""):
+    def download_url(self, url, dst_path, element=None):
         """ Downloads file from url to dst_path and checks its md5 hash """
         percent = 0
         completed_length = 0
@@ -317,8 +284,8 @@ class Download():
                         self.queue_event('progress_bar_show_text', msg)
 
                 # Check hash of downloaded package
-                if md5hash and not self.is_hash_ok(path=dst_path, md5hash=md5hash):
-                    # Wrong md5! Force to download it again
+                if element and not dhash.check_hash(dst_path, element):
+                    # Wrong hash! Force to download the file again
                     return False
         except (socket.timeout,
                 requests.exceptions.Timeout,

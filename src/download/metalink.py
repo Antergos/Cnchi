@@ -65,25 +65,29 @@ def get_info(metalink):
 
     for event, elem in eTree.iterparse(temp_file.name, events=('start', 'end')):
         if event == "start":
-            if elem.tag.endswith("file"):
+            if elem.tag.endswith('file'):
                 element['filename'] = elem.attrib['name']
-            elif elem.tag.endswith("identity"):
+            elif elem.tag.endswith('identity'):
                 element['identity'] = elem.text
-            elif elem.tag.endswith("size"):
+            elif elem.tag.endswith('size'):
                 element['size'] = elem.text
-            elif elem.tag.endswith("version"):
+            elif elem.tag.endswith('version'):
                 element['version'] = elem.text
-            elif elem.tag.endswith("description"):
+            elif elem.tag.endswith('description'):
                 element['description'] = elem.text
-            elif elem.tag.endswith("hash"):
-                element['hash'] = elem.text
+            elif elem.tag.endswith('hash'):
+                hash_type = elem.attrib['type']
+                try:
+                    element['hash'][hash_type] = elem.text
+                except KeyError:
+                    element['hash'] = {hash_type: elem.text}
             elif elem.tag.endswith("url"):
                 try:
                     element['urls'].append(elem.text)
                 except KeyError:
                     element['urls'] = [elem.text]
         if event == "end":
-            if elem.tag.endswith("file"):
+            if elem.tag.endswith('file'):
                 # Limit to MAX_URLS for file
                 if len(element['urls']) > MAX_URLS:
                     element['urls'] = element['urls'][:MAX_URLS]
@@ -527,6 +531,10 @@ def test_module():
 
     #import gc
     #import pprint
+    import sys
+    cnchi_path = "/usr/share/cnchi"
+    sys.path.append(cnchi_path)
+    sys.path.append(os.path.join(cnchi_path, "src"))
     import pacman.pac as pac
 
     try:
@@ -539,12 +547,10 @@ def test_module():
             alpm=pacman,
             package_name="automake",
             pacman_conf_file="/etc/pacman.conf")
+        #print(meta4)
+        #print('=' * 20)
         print(get_info(meta4))
         # print(get_info(meta4)['automake']['urls'])
-        meta4 = None
-        # objects = gc.collect()
-        # print("Unreachable objects: ", objects)
-        # print("Remaining garbage: ", pprint.pprint(gc.garbage))
 
         pacman.release()
         del pacman
