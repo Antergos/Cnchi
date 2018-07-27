@@ -50,7 +50,6 @@ sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/pages/dialogs"))
 sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
 
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
@@ -216,9 +215,6 @@ class CnchiInit():
         # Check ISO version where Cnchi is running from
         if not self.check_iso_version():
             sys.exit(1)
-
-        # Disable suspend to RAM
-        self.disable_suspend()
 
         # Init PyObject Threads
         self.threads_init()
@@ -472,21 +468,6 @@ class CnchiInit():
                 return False
 
         return True
-
-    @staticmethod
-    def disable_suspend():
-        """ Disable suspend to RAM (just in case) """
-        cmds = [
-            ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
-             'sleep-inactive-ac-type', 'nothing'],
-            ['gsettings', 'set', 'org.gnome.settings-daemon.plugins.power',
-             'sleep-inactive-battery-type', 'nothing']]
-
-        for cmd in cmds:
-            try:
-                subprocess.call(cmd)
-            except subprocess.CalledProcessError as err:
-                print(err)
 
 
 def main():
