@@ -545,12 +545,12 @@ def test_module():
         print("Creating metalink...")
         meta4 = create(
             alpm=pacman,
-            package_name="automake",
+            package_name="ipw2200-fw",
             pacman_conf_file="/etc/pacman.conf")
         #print(meta4)
         #print('=' * 20)
         print(get_info(meta4))
-        # print(get_info(meta4)['automake']['urls'])
+        # print(get_info(meta4)['ipw2200-fw']['urls'])
 
         pacman.release()
         del pacman

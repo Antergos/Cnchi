@@ -40,7 +40,10 @@ import threading
 
 import requests
 
-import download.download_hash as dhash
+try:
+    import download.download_hash as dhash
+except ModuleNotFoundError:
+    import download_hash as dhash
 
 # When testing, no _() is available
 try:

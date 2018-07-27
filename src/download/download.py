@@ -34,9 +34,18 @@ import queue
 
 import pyalpm
 
-import pacman.pac as pac
-import download.metalink as ml
-import download.download_requests as download_requests
+try:
+    import pacman.pac as pac
+    import download.metalink as ml
+    import download.download_requests as download_requests
+except ModuleNotFoundError:
+    import sys
+    cnchi_path = "/usr/share/cnchi"
+    sys.path.append(cnchi_path)
+    sys.path.append(os.path.join(cnchi_path, "src"))
+    import pacman.pac as pac
+    import metalink as ml
+    import download_requests as download_requests
 
 import misc.extra as misc
 
@@ -235,9 +244,9 @@ def test():
     pacman_conf['cache'] = '/var/cache/pacman/pkg'
 
     download_packages = DownloadPackages(
-        package_names=['gedit'],
+        package_names=['ipw2200-fw'],
         pacman_conf=pacman_conf,
-        settings=None,
+        settings={},
         callback_queue=None)
     download_packages.start()
 

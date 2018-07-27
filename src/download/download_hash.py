@@ -67,7 +67,7 @@ def check_hash(path, element, queue_event=None):
         'Checksum unavailable for package: %s (%s)', identity, filename)
     if queue_event:
         queue_event('cache_pkgs_md5_check_failed', identity)
-    return False
+    return True
 
 def get_file_hash(path, hash_type):
     """ Gets md5 or sha256 hash from a file """
