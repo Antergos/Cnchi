@@ -241,7 +241,7 @@ def test():
 
     pacman_conf = {}
     pacman_conf['file'] = '/etc/pacman.conf'
-    pacman_conf['cache'] = '/var/cache/pacman/pkg'
+    pacman_conf['cache'] = '/tmp'
 
     download_packages = DownloadPackages(
         package_names=['ipw2200-fw'],

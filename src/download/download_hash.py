@@ -42,26 +42,28 @@ def check_hash(path, element, queue_event=None):
 
     sha256 = get_element_hash(element, 'sha256')
     md5 = get_element_hash(element, 'md5')
-
+  
     # Check sha256 if available
     if sha256:
         if sha256 != get_file_hash(path, 'sha256'):
-            logging.warning("MD5 hash of file %s does not match!", filename)
+            logging.warning("SHA256 hash of file %s does not match!", filename)
             return False
+        logging.debug("SHA256 hash of %s is OK.", path)
         return True
 
     logging.warning(
-        "Element %s (%s) has no sha256 hash info in its metalink", identity, filename)
+        "Element %s (%s) has no SHA256 hash info in its metalink", identity, filename)
 
     # sha256 not available let's check md5
     if md5:
         if md5 != get_file_hash(path, 'md5'):
             logging.warning("MD5 hash of file %s does not match!", filename)
             return False
+        logging.debug("MD5 hash of %s is OK.", path)
         return True
 
     logging.warning(
-        "Element %s (%s) has no md5 hash info in its metalink", identity, filename)
+        "Element %s (%s) has no MD5 hash info in its metalink", identity, filename)
 
     logging.debug(
         'Checksum unavailable for package: %s (%s)', identity, filename)
@@ -89,7 +91,7 @@ def get_file_hash(path, hash_type):
 def get_element_hash(element, hash_type):
     """ Get hash from one metalink element """
     hash_value = None
-    hashes = element.get('hashes', None)
+    hashes = element.get('hash', None)
     if hashes:
         hash_value = hashes.get(hash_type, None)
     return hash_value
