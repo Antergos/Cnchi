@@ -92,8 +92,8 @@ class Cache(GtkBaseBox):
         self.header.set_subtitle(_("Cache selection (optional)"))
 
     def populate_devices_and_partitions(self):
-        """ Fill list with devices' partitions """
-        self.devices_and_partitions = populate_devices(do_partitions=True)
+        """ Fill list with devices' partitions (5GB or more) """
+        self.devices_and_partitions = populate_devices(do_partitions=True, min_size_gb=5)
 
         self.part_store.remove_all()
         for key in self.devices_and_partitions:

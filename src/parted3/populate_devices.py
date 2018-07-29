@@ -34,8 +34,9 @@ import parted
 import misc.extra as misc
 
 @misc.raise_privileges
-def populate_devices(do_partitions=False):
-    """ Fill str list with all devices (and partitions if desired) """
+def populate_devices(do_partitions=False, min_size_gb=0):
+    """ Fill str list with all devices (and partitions if desired)
+        that are at least min_size_gb in size """
     try:
         device_list = parted.getAllDevices()
     except parted._ped.DiskException as warn:
@@ -52,31 +53,41 @@ def populate_devices(do_partitions=False):
             continue
         # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
         size = dev.length * dev.sectorSize
-        size_gbytes = int(parted.formatBytes(size, 'GB'))
-        line = "{0} [{1} GB] ({2})"
-        line = line.format(dev.model, size_gbytes, dev.path)
-        logging.debug(line)
-        if do_partitions:
-            devices[line] = (dev.path, None)
-            devices.update(populate_partitions(dev))
-        else:
-            devices[line] = dev.path
+        size = int(parted.formatBytes(size, 'GB'))
+        if size >= min_size_gb:
+            if size >= 1000:
+                size = float(size / 1000)
+                line = "{0} [{1} TB] ({2})"
+            else:
+                line = "{0} [{1} GB] ({2})"
+            line = line.format(dev.model, size, dev.path)
+            logging.debug(line)
+            if do_partitions:
+                devices[line] = (dev.path, None)
+                devices.update(populate_partitions(dev, min_size_gb))
+            else:
+                devices[line] = dev.path
     return devices
 
 
 @misc.raise_privileges
-def populate_partitions(dev):
-    """ Fill str list with all device's partitions """
+def populate_partitions(dev, min_size_gb):
+    """ Fill str list with all device's partitions
+        that are at least min_size_gb in size """
     partitions = {}
     try:
         disk = parted.newDisk(dev)
         for partition in disk.partitions:
             if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
                 size = partition.geometry.length * dev.sectorSize
-                size_gbytes = int(parted.formatBytes(size, 'GB'))
-                if size_gbytes > 0:
-                    line = "\t{0} [{1} GB]"
-                    line = line.format(partition.path, size_gbytes)
+                size = int(parted.formatBytes(size, 'GB'))
+                if size >= min_size_gb:
+                    if size >= 1000:
+                        size = float(size / 1000)
+                        line = "\t{0} [{1} TB]"
+                    else:
+                        line = "\t{0} [{1} GB]"
+                    line = line.format(partition.path, size)
                     partitions[line] = (dev.path, partition.path)
                     logging.debug(line)
     except parted._ped.DiskException as warn:
