@@ -153,10 +153,7 @@ class Grub2():
             cmd_linux += " zfs={0}".format(zfs_pool_name)
 
         if self.settings.get('use_luks'):
-            # When using separate boot partition,
-            # add GRUB_ENABLE_CRYPTODISK to grub.cfg
-            if self.uuids["/"] != self.uuids["/boot"]:
-                self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
+            self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
 
             # Let GRUB automatically add the kernel parameters for
             # root encryption
