@@ -132,23 +132,7 @@
 
         <edition name="Enlightenment" description="Enlightenment Desktop">
             <packages>
-                <pkgname>ark</pkgname>
-                <!--<pkgname>emotion_generic_players</pkgname>-->
-                <pkgname>enlightenment</pkgname>
-                <pkgname nm='true' name='connman'>connman</pkgname>
-                <pkgname>econnman</pkgname>
-                <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
-                <pkgname>kalu</pkgname>
-                <pkgname>qt5ct</pkgname>
-                <!-- video player -->
-                <pkgname>rage</pkgname>
-                <!-- terminal emulator -->
-                <pkgname>terminology</pkgname>
-                <pkgname>ttf-dejavu</pkgname>
-                <pkgname>ttf-bitstream-vera</pkgname>
-                <pkgname>udisks2</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>vlc</pkgname>
+                <pkgname>antergos-enlightenment-meta</pkgname>
             </packages>
         </edition>
 
@@ -160,39 +144,7 @@
 
         <edition name="i3" description="Tiling window manager">
             <packages>
-                <pkgname>arandr</pkgname>
-                <pkgname>awesome-terminal-fonts</pkgname>
-                <pkgname>dmenu</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>galculator</pkgname>
-                <pkgname>gpicview</pkgname>
-                <pkgname>gvfs-google</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>gvfs-smb</pkgname>
-                <pkgname>i3-wm</pkgname>
-                <pkgname>i3lock</pkgname>
-                <pkgname>i3status</pkgname>
-                <pkgname>kalu</pkgname>
-                <pkgname>lxappearance-gtk3</pkgname>
-                <pkgname>lxinput-gtk3</pkgname>
-                <pkgname>moc</pkgname>
-                <pkgname>mpv</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>nitrogen</pkgname>
-                <pkgname>notify-osd</pkgname>
-                <pkgname>pcmanfm</pkgname>
-                <pkgname>polkit-gnome</pkgname>
-                <!-- needed by python smb clients -->
-                <pkgname>python-pysmbc</pkgname>
-                <pkgname>scrot</pkgname>
-                <pkgname>termite</pkgname>
-                <pkgname>udiskie</pkgname>
-                <pkgname>volumeicon</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xfburn</pkgname>
-                <pkgname>xscreensaver</pkgname>
+                <pkgname>antergos-i3-meta</pkgname>
             </packages>
         </edition>
     </editions>
