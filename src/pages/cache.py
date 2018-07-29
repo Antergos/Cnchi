@@ -42,8 +42,9 @@ from gi.repository import Gtk
 import misc.extra as misc
 import show_message as show
 import parted3.fs_module as fs
-import update_db
+from parted3.populate_devices import populate_devices
 from pages.gtkbasebox import GtkBaseBox
+import update_db
 
 class Cache(GtkBaseBox):
     """ Cache selection screen"""
@@ -92,39 +93,12 @@ class Cache(GtkBaseBox):
 
     def populate_devices_and_partitions(self):
         """ Fill list with devices' partitions """
-        with misc.raised_privileges():
-            device_list = parted.getAllDevices()
+        self.devices_and_partitions = populate_devices(do_partitions=True)
 
         self.part_store.remove_all()
-        self.devices_and_partitions = {}
-
-        self.part_store.append_text("None")
-        self.devices_and_partitions["None"] = (None, None)
-
-        for dev in device_list:
-            # avoid cdrom and any raid, lvm volumes or encryptfs
-            if not dev.path.startswith("/dev/sr") and \
-               not dev.path.startswith("/dev/mapper"):
-                size = dev.length * dev.sectorSize
-                size_gbytes = int(parted.formatBytes(size, 'GB'))
-                line = '{0} [{1} GB] ({2})'.format(dev.model, size_gbytes, dev.path)
-                self.part_store.append_text(line)
-                self.devices_and_partitions[line] = (dev.path, None)
-                # Now check device partitions
-                try:
-                    disk = parted.newDisk(dev)
-                    for partition in disk.partitions:
-                        if partition.type in [parted.PARTITION_NORMAL, parted.PARTITION_LOGICAL]:
-                            size = partition.geometry.length * dev.sectorSize
-                            size_gbytes = int(parted.formatBytes(size, 'GB'))
-                            if size_gbytes > 0:
-                                line = '\t{0} [{1} GB]'.format(
-                                    partition.path, size_gbytes)
-                                self.part_store.append_text(line)
-                                self.devices_and_partitions[line] = (dev.path, partition.path)
-                except parted._ped.DiskException as warn:
-                    # It could be that the device has no partition table
-                    logging.warning(warn)
+        for key in self.devices_and_partitions:
+            self.part_store.append_text(key)
+            logging.debug(key)
 
         misc.select_first_combobox_item(self.part_store)
 

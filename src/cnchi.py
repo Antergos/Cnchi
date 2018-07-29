@@ -36,7 +36,6 @@ import logging.handlers
 import gettext
 import locale
 import gi
-import subprocess
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)

@@ -47,6 +47,7 @@ from installation.boot import boot_ui
 
 import misc.extra as misc
 import parted3.fs_module as fs
+from parted3.populate_devices import populate_devices
 
 DEST_DIR = "/install"
 
@@ -127,31 +128,19 @@ class InstallationAutomatic(GtkBaseBox):
 
     def populate_devices(self):
         """ Fill list with devices """
-        with misc.raised_privileges():
-            device_list = parted.getAllDevices()
+        self.devices = populate_devices()
 
         self.device_store.remove_all()
-        self.devices = {}
-
-        for dev in device_list:
-            # avoid cdrom and any raid, lvm volumes or encryptfs
-            if (not dev.path.startswith("/dev/sr") and
-                    not dev.path.startswith("/dev/mapper")):
-                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size = dev.length * dev.sectorSize
-                size_gbytes = int(parted.formatBytes(size, 'GB'))
-                line = '{0} [{1} GB] ({2})'
-                line = line.format(dev.model, size_gbytes, dev.path)
-                self.device_store.append_text(line)
-                self.devices[line] = dev.path
-                logging.debug(line)
+        for key in self.devices:
+            self.device_store.append_text(key)
+            logging.debug(key)
 
         misc.select_first_combobox_item(self.device_store)
 
     def select_drive_changed(self, _widget):
         """ User selected another drive """
         line = self.device_store.get_active_text()
-        if line is not None:
+        if line:
             self.auto_device = self.devices[line]
         self.forward_button.set_sensitive(True)
 

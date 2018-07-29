@@ -31,9 +31,8 @@
 
 import logging
 import os
-import parted
-
 import misc.extra as misc
+from parted3.populate_devices import populate_devices
 
 # When testing, no _() is available
 try:
@@ -71,25 +70,12 @@ class BootUI():
 
     def fill_bootloader_device_entry(self):
         """ Get all devices where we can put our bootloader """
-
-        with misc.raised_privileges():
-            device_list = parted.getAllDevices()
+        self.bootloader_devices = populate_devices()
 
         self.bootloader_device_entry.remove_all()
-        self.bootloader_devices.clear()
-
-        for dev in device_list:
-            # avoid cdrom and any raid, lvm volumes or encryptfs
-            if (not dev.path.startswith("/dev/sr") and
-                    not dev.path.startswith("/dev/mapper")):
-                # hard drives measure themselves assuming kilo=1000, mega=1mil, etc
-                size = dev.length * dev.sectorSize
-                size_gbytes = int(parted.formatBytes(size, 'GB'))
-                line = '{0} [{1} GB] ({2})'
-                line = line.format(dev.model, size_gbytes, dev.path)
-                self.bootloader_device_entry.append_text(line)
-                self.bootloader_devices[line] = dev.path
-                logging.debug(line)
+        for key in self.bootloader_devices:
+            self.bootloader_device_entry.append_text(key)
+            logging.debug(key)
 
         if not self.select_bootdevice(self.bootloader_device_entry, self.bootloader_device):
             # Automatically select first entry
