@@ -114,19 +114,7 @@
 
         <edition name="lxqt" description="LXQT Desktop">
             <packages>
-                <pkgname>kalu</pkgname>
-                <pkgname>lxqt-about</pkgname>
-                <pkgname>lxqt-config</pkgname>
-                <pkgname>lxqt-notificationd</pkgname>
-                <pkgname>lxqt-openssh-askpass</pkgname>
-                <pkgname>lxqt-panel</pkgname>
-                <pkgname>lxqt-policykit</pkgname>
-                <pkgname>lxqt-powermanagement</pkgname>
-                <pkgname>lxqt-qtplugin</pkgname>
-                <pkgname>lxqt-runner</pkgname>
-                <pkgname>lxqt-session</pkgname>
-                <pkgname>openbox</pkgname>
-                <pkgname>pcmanfm-qt</pkgname>
+                <pkgname>antergos-lxqt-meta</pkgname>
             </packages>
         </edition>
 
