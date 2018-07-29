@@ -75,7 +75,6 @@ class BootUI():
         self.bootloader_device_entry.remove_all()
         for key in self.bootloader_devices:
             self.bootloader_device_entry.append_text(key)
-            logging.debug(key)
 
         if not self.select_bootdevice(self.bootloader_device_entry, self.bootloader_device):
             # Automatically select first entry

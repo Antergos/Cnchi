@@ -133,7 +133,6 @@ class InstallationAutomatic(GtkBaseBox):
         self.device_store.remove_all()
         for key in self.devices:
             self.device_store.append_text(key)
-            logging.debug(key)
 
         misc.select_first_combobox_item(self.device_store)
 

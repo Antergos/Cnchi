@@ -98,7 +98,6 @@ class Cache(GtkBaseBox):
         self.part_store.remove_all()
         for key in self.devices_and_partitions:
             self.part_store.append_text(key)
-            logging.debug(key)
 
         misc.select_first_combobox_item(self.part_store)
 

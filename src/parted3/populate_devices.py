@@ -55,12 +55,12 @@ def populate_devices(do_partitions=False):
         size_gbytes = int(parted.formatBytes(size, 'GB'))
         line = "{0} [{1} GB] ({2})"
         line = line.format(dev.model, size_gbytes, dev.path)
+        logging.debug(line)
         if do_partitions:
             devices[line] = (dev.path, None)
             devices.update(populate_partitions(dev))
         else:
             devices[line] = dev.path
-        logging.debug(line)
     return devices
 
 
@@ -78,6 +78,7 @@ def populate_partitions(dev):
                     line = "\t{0} [{1} GB]"
                     line = line.format(partition.path, size_gbytes)
                     partitions[line] = (dev.path, partition.path)
+                    logging.debug(line)
     except parted._ped.DiskException as warn:
         # It could be that the device has no partition table
         logging.warning(warn)
