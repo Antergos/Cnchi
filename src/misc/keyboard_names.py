@@ -131,8 +131,8 @@ class KeyboardNames():
 
         return layout['name']
 
-    def _load_variant_item(self, layout_item, layout_name):
-        """ Load a layout's variant item """
+    def _load_variant_items(self, layout_item, layout_name):
+        """ Load a layout's variant items """
         for variant_node in layout_item:
             for config_item in variant_node:
                 variant = {
@@ -141,8 +141,7 @@ class KeyboardNames():
                 for item in config_item:
                     if item.tag == "languageList":
                         for lang in item:
-                            variant['language_list'].append(
-                                lang.text)
+                            variant['language_list'].append(lang.text)
                     else:
                         variant[item.tag] = item.text
 
@@ -160,7 +159,7 @@ class KeyboardNames():
                 if layout_item.tag == "configItem":
                     layout_name = self._load_layout_item(layout_item)
                 if layout_item.tag == "variantList":
-                    self._load_variant_item(layout_item, layout_name)
+                    self._load_variant_items(layout_item, layout_name)
 
     def _load_xml(self):
         """ Load info from xml file """
