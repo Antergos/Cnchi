@@ -78,17 +78,17 @@ class Slides(GtkBaseBox):
         self.fatal_error = False
         self.should_pulse = False
 
-        self.web_view = None
-        self.web_view_settings = None
-
-        self.web_view_box = self.ui.get_object("scrolledwindow")
+        self.webkit = {}
+        self.webkit['view'] = None
+        self.webkit['settings'] = None
+        self.webkit['box'] = self.ui.get_object("scrolledwindow")
 
         GLib.timeout_add(1000, self.manage_events_from_cb_queue)
 
     def translate_ui(self):
         """ Translates all ui elements """
-        if len(self.info_label.get_label()) <= 0:
-            self.set_message(_("Please wait..."))
+        if not self.info_label.get_label():
+            self.info_label.set_markup(_("Please wait..."))
 
         self.header.set_subtitle(_("Installing Antergos..."))
 
@@ -102,33 +102,33 @@ class Slides(GtkBaseBox):
         }
 
     def _apply_webkit_settings(self):
-        self.web_view_settings = WebKit2.Settings()
+        self.webkit['settings'] = WebKit2.Settings()
         all_settings = self._get_settings_for_webkit()
 
         for setting_name, value in all_settings.items():
             setting_name = 'set_{}'.format(setting_name)
-            set_setting = getattr(self.web_view_settings, setting_name)
+            set_setting = getattr(self.webkit['settings'], setting_name)
 
             set_setting(value)
 
     def prepare(self, direction):
         """ Prepare slides screen """
         # We don't load webkit until we reach this screen
-        if self.web_view is None:
+        if self.webkit['view'] is None:
             # Add a webkit view and load our html file to show the slides
             try:
                 self._apply_webkit_settings()
-                self.web_view = WebKit2.WebView.new_with_settings(
-                    self.web_view_settings)
-                self.web_view.connect(
+                self.webkit['view'] = WebKit2.WebView.new_with_settings(
+                    self.webkit['settings'])
+                self.webkit['view'].connect(
                     'context-menu', lambda _a, _b, _c, _d: True)
-                self.web_view.set_hexpand(True)
-                self.web_view.load_uri(Slides.URI)
+                self.webkit['view'].set_hexpand(True)
+                self.webkit['view'].load_uri(Slides.URI)
             except IOError as io_error:
                 logging.warning(io_error)
 
-            self.web_view_box.add(self.web_view)
-            self.web_view_box.set_size_request(800, 335)
+            self.webkit['box'].add(self.webkit['view'])
+            self.webkit['box'].set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
@@ -146,14 +146,9 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-    @staticmethod
-    def store_values(**_kwargs):
+    def store_values(self):
         """ Nothing to be done here """
         return False
-
-    def set_message(self, txt):
-        """ Show information message """
-        self.info_label.set_markup(txt)
 
     def stop_pulse(self):
         """ Stop pulsing progressbar """
@@ -230,65 +225,19 @@ class Slides(GtkBaseBox):
                     self.start_pulse()
             elif event[0] == 'finished':
                 logging.info(event[1])
-                log_util = ContextFilter()
-                log_util.send_install_result("True")
-                if (self.settings.get('bootloader_install') and
-                        not self.settings.get('bootloader_installation_successful')):
-                    # Warn user about GRUB and ask if we should open wiki page.
-                    boot_warn = _("IMPORTANT: There may have been a problem "
-                                  "with the bootloader installation which "
-                                  "could prevent your system from booting "
-                                  "properly. Before rebooting, you may want "
-                                  "to verify whether or not the bootloader is "
-                                  "installed and configured.\n\n"
-                                  "The Arch Linux Wiki contains "
-                                  "troubleshooting information:\n"
-                                  "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
-                                  "Would you like to view the wiki page now?")
-                    response = show.question(self.get_main_window(), boot_warn)
-                    if response == Gtk.ResponseType.YES:
-                        import webbrowser
-                        misc.drop_privileges()
-                        wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
-                        webbrowser.open(wiki_url)
-
-                install_ok = _("Installation Complete!\n"
-                               "Do you want to restart your system now?")
-                response = show.question(self.get_main_window(), install_ok)
-                misc.remove_temp_files()
-                logging.shutdown()
-                if response == Gtk.ResponseType.YES:
-                    self.reboot()
-                else:
-                    sys.exit(0)
-                return False
+                self.installation_finished()
             elif event[0] == 'error':
                 self.callback_queue.task_done()
-                # A fatal error has been issued. We empty the queue
-                self.empty_queue()
-
-                log_util = ContextFilter()
-                log_util.send_install_result("False")
-                if log_util.have_install_id:
-                    # Add install id to error message
-                    # (we can lookup logs on bugsnag by the install id)
-                    tpl = _(
-                        'Please reference the following number when reporting this error: ')
-                    error_message = '{0}\n{1}{2}'.format(
-                        event[1], tpl, log_util.install_id)
-                else:
-                    error_message = event[1]
-                show.fatal_error(self.get_main_window(), error_message)
+                self.install_error(event[1])
             elif event[0] == 'info':
                 logging.info(event[1])
                 if self.should_pulse:
                     self.progress_bar.set_text(event[1])
                 else:
-                    self.set_message(event[1])
+                    self.info_label.set_markup(event[1])
             elif event[0] == 'cache_pkgs_md5_check_failed':
                 logging.debug(
-                    'Adding %s to cache_pkgs_md5_check_failed list',
-                    event[1])
+                    'Adding %s to cache_pkgs_md5_check_failed list', event[1])
                 self.settings.set('cache_pkgs_md5_check_failed', event[1])
 
             self.callback_queue.task_done()
@@ -315,3 +264,56 @@ class Slides(GtkBaseBox):
                 subprocess.call(cmd)
             except subprocess.CalledProcessError as error:
                 logging.error(error)
+
+    def installation_finished(self):
+        """ Installation finished """
+        log_util = ContextFilter()
+        log_util.send_install_result("True")
+
+        if (self.settings.get('bootloader_install') and
+                not self.settings.get('bootloader_installation_successful')):
+            # Warn user about GRUB and ask if we should open wiki page.
+            boot_warn = _(
+                "IMPORTANT: There may have been a problem with the bootloader installation which "
+                "could prevent your system from booting properly. Before rebooting, you may want "
+                "to verify whether or not the bootloader is installed and configured.\n\n"
+                "The Arch Linux Wiki contains troubleshooting information:\n"
+                "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
+                "Would you like to view the wiki page now?")
+            response = show.question(self.get_main_window(), boot_warn)
+            if response == Gtk.ResponseType.YES:
+                import webbrowser
+                misc.drop_privileges()
+                wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
+                webbrowser.open(wiki_url)
+
+        install_ok = _(
+            "Installation Complete!\n"
+            "Do you want to restart your system now?")
+        response = show.question(self.get_main_window(), install_ok)
+        misc.remove_temp_files()
+        logging.shutdown()
+        if response == Gtk.ResponseType.YES:
+            self.reboot()
+        else:
+            sys.exit(0)
+
+    def install_error(self, error):
+        """ A fatal error has been issued """
+
+        # Empty the events queue
+        self.empty_queue()
+
+        log_util = ContextFilter()
+        log_util.send_install_result("False")
+        if log_util.have_install_id:
+            # Add install id to error message
+            # (we can lookup logs on bugsnag by the install id)
+            tpl = _(
+                'Please reference the following number when reporting this error: ')
+            error_message = '{0}\n{1}{2}'.format(
+                error, tpl, log_util.install_id)
+        else:
+            error_message = error
+
+        show.fatal_error(self.get_main_window(), error_message)
