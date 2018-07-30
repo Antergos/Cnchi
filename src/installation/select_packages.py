@@ -77,6 +77,8 @@ class SelectPackages():
         self.vbox = False
         self.my_arch = os.uname()[-1]
 
+        self.xml_root = None
+
     def queue_fatal_event(self, txt):
         """ Enqueues a fatal event and quits """
         self.queue_event('error', txt)
@@ -122,8 +124,8 @@ class SelectPackages():
         try:
             pacman = pac.Pac("/etc/pacman.conf", self.callback_queue)
         except Exception as ex:
-            template = "Can't initialize pyalpm. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
+            template = (
+                "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}")
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
@@ -138,8 +140,8 @@ class SelectPackages():
             pacman.release()
             del pacman
         except Exception as ex:
-            template = "Can't release pyalpm. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
+            template = (
+                "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}")
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
             raise InstallError(message)
@@ -182,10 +184,11 @@ class SelectPackages():
         self.packages.append(pkg.text)
         return True
 
-    def get_xml_root_node(self):
-        """ Loads xml data and returns the root node """
+    def load_xml_root_node(self):
+        """ Loads xml data, storing the root node """
         xml_data = None
         xml_filename = None
+        self.xml_root = None
 
         if self.alternate_package_list:
             # Use file passed by parameter (overrides server one)
@@ -215,31 +218,33 @@ class SelectPackages():
 
         if xml_data is not None:
             logging.debug("Loading xml data from server...")
-            xml_root = eTree.fromstring(xml_data)
+            self.xml_root = eTree.fromstring(xml_data)
         else:
             logging.debug("Loading %s", xml_filename)
             xml_tree = eTree.parse(xml_filename)
-            xml_root = xml_tree.getroot()
-        return xml_root
+            self.xml_root = xml_tree.getroot()
 
-    def set_kde_language_pack(self):
-        """ Adds kde language packages """
-        pkg_text = ""
-        base_name = 'kde-l10n-'
-        lang_name = self.settings.get("language_name").lower()
-        if lang_name == "english":
-            # There're some English variants available but not all of them.
-            lang_packs = ['en_gb']
-            locale = self.settings.get('locale').split('.')[0].lower()
-            if locale in lang_packs:
-                pkg_text = base_name + locale
-        else:
-            # All the other language packs use their language code
-            lang_code = self.settings.get('language_code').lower()
-            pkg_text = base_name + lang_code
-        if pkg_text:
-            logging.debug("Selected kde language pack: %s", pkg_text)
-            self.packages.append(pkg_text)
+    def maybe_add_kde_languagepack(self):
+        """ Adds KDE language packages if KDE is selected """
+        if self.desktop == 'kde':
+            pkg_text = ""
+            base_name = 'kde-l10n-'
+            lang_name = self.settings.get("language_name").lower()
+
+            if lang_name == "english":
+                # There're some English variants available but not all of them.
+                lang_packs = ['en_gb']
+                locale = self.settings.get('locale').split('.')[0].lower()
+                if locale in lang_packs:
+                    pkg_text = base_name + locale
+            else:
+                # All the other language packs use their language code
+                lang_code = self.settings.get('language_code').lower()
+                pkg_text = base_name + lang_code
+
+            if pkg_text:
+                logging.debug("Selected kde language pack: %s", pkg_text)
+                self.packages.append(pkg_text)
 
     def add_drivers(self):
         """ Add package drivers """
@@ -267,51 +272,63 @@ class SelectPackages():
             # Add conflicting hardware packages to our conflicts list
             self.conflicts.extend(hardware_install.get_conflicts())
         except Exception as ex:
-            template = "Error in hardware module. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
+            template = (
+                "Error in hardware module. An exception of type {0} occured. Arguments:\n{1!r}")
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
-    def add_filesystems(self, xml_root):
+    def add_filesystems(self):
         """ Add filesystem packages """
         logging.debug("Adding filesystem packages")
-        for child in xml_root.iter("filesystems"):
+        for child in self.xml_root.iter("filesystems"):
             for pkg in child.iter('pkgname'):
                 self.add_package(pkg)
 
         # Add ZFS filesystem
         if self.zfs:
             logging.debug("Adding zfs packages")
-            for child in xml_root.iter("zfs"):
+            for child in self.xml_root.iter("zfs"):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
-    def maybe_add_chinese_fonts(self, xml_root):
+    def maybe_add_chinese_fonts(self):
         """ Add chinese fonts if necessary """
         lang_code = self.settings.get("language_code")
         if lang_code in ["zh_TW", "zh_CN"]:
             logging.debug("Selecting chinese fonts.")
-            for child in xml_root.iter('chinese'):
+            for child in self.xml_root.iter('chinese'):
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
-    def select_packages(self):
-        """ Get package list from the Internet """
-        self.packages = []
+    def maybe_add_bootloader(self):
+        """ Add bootloader packages if needed """
+        if self.settings.get('bootloader_install'):
+            boot_loader = self.settings.get('bootloader')
+            bootloader_found = False
+            for child in self.xml_root.iter('bootloader'):
+                if child.attrib.get('name') == boot_loader:
+                    txt = _("Adding '%s' bootloader packages")
+                    logging.debug(txt, boot_loader)
+                    bootloader_found = True
+                    for pkg in child.iter('pkgname'):
+                        self.add_package(pkg)
+            if not bootloader_found:
+                logging.warning(
+                    "Couldn't find %s bootloader packages!", boot_loader)
 
-        xml_root = self.get_xml_root_node()
-
-        for editions in xml_root.iter('editions'):
+    def add_edition_packages(self):
+        """ Add common and specific edition packages """
+        for editions in self.xml_root.iter('editions'):
             for edition in editions.iter('edition'):
-                name = edition.attrib.get("name").lower()
+                name = edition.attrib.get('name').lower()
 
                 # Add common packages to all desktops (including base)
-                if name == "common":
+                if name == 'common':
                     for pkg in edition.iter('pkgname'):
                         self.add_package(pkg)
 
-                # Add common graphical packages
-                if name == "graphic" and self.desktop != "base":
+                # Add common graphical packages (not if installing 'base')
+                if name == 'graphic' and self.desktop != 'base':
                     for pkg in edition.iter('pkgname'):
                         self.add_package(pkg)
 
@@ -321,50 +338,54 @@ class SelectPackages():
                     for pkg in edition.iter('pkgname'):
                         self.add_package(pkg)
 
-        # Set KDE language pack
-        if self.desktop == 'kde':
-            self.set_kde_language_pack()
+    def maybe_add_vbox_packages(self):
+        """ Adds specific virtualbox packages if running inside a VM """
+        if self.vbox:
+            # Add virtualbox-guest-utils-nox package if 'base' is installed in a vbox vm
+            if self.desktop == 'base':
+                self.packages.append('virtualbox-guest-utils-nox')
+
+            # Add linux-lts-headers if LTS kernel is installed in a vbox vm
+            if self.settings.get('feature_lts'):
+                self.packages.append('linux-lts-headers')
+
+    def select_packages(self):
+        """ Get package list from the Internet and add specific packages to it """
+        self.packages = []
+
+        # Load package list
+        self.load_xml_root_node()
+
+        # Add common and desktop specific packages
+        self.add_edition_packages()
+
+        # Add KDE language pack
+        self.maybe_add_kde_languagepack()
 
         # Add drivers' packages
         self.add_drivers()
 
-        # Add virtualbox-guest-utils-nox if "base" is installed in a vbox vm
-        if self.vbox and self.desktop == 'base':
-            self.packages.append("virtualbox-guest-utils-nox")
+        # Add file system packages
+        self.add_filesystems()
 
-        # Add linux-lts-headers if LTS kernel is installed in a vbox vm
-        if self.vbox and self.settings.get('feature_lts'):
-            if 'linux-lts-headers' not in self.packages:
-                self.packages.append('linux-lts-headers')
+        # Add chinese fonts (if necessary)
+        self.maybe_add_chinese_fonts()
 
-        self.add_filesystems(xml_root)
+        # Add bootloader (if user chose it)
+        self.maybe_add_bootloader()
 
-        self.maybe_add_chinese_fonts(xml_root)
-
-        # Add bootloader packages if needed
-        if self.settings.get('bootloader_install'):
-            boot_loader = self.settings.get('bootloader')
-            # Search boot_loader in packages.xml
-            bootloader_found = False
-            for child in xml_root.iter('bootloader'):
-                if child.attrib.get('name') == boot_loader:
-                    txt = _("Adding '%s' bootloader packages")
-                    logging.debug(txt, boot_loader)
-                    bootloader_found = True
-                    for pkg in child.iter('pkgname'):
-                        self.add_package(pkg)
-            if not bootloader_found and boot_loader != 'gummiboot':
-                txt = _("Couldn't find %s bootloader packages!")
-                logging.warning(txt, boot_loader)
+        # Add extra virtualbox packages (if needed)
+        self.maybe_add_vbox_packages()
 
         # Check for user desired features and add them to our installation
         logging.debug(
             "Check for user desired features and add them to our installation")
-        self.add_features(xml_root)
+        self.add_features()
         logging.debug("All features needed packages have been added")
 
+        # Remove duplicates and conflicting packages
         self.cleanup_packages_list()
-        logging.debug("Packages list: %s", ",".join(self.packages))
+        logging.debug("Packages list: %s", ','.join(self.packages))
 
     def cleanup_packages_list(self):
         """ Cleans up a bit our packages list """
@@ -394,11 +415,49 @@ class SelectPackages():
             else:
                 self.conflicts.append(conflicts)
 
-    def add_features(self, xml_root):
-        """ Selects packages based on user selected features """
+    def add_hunspell(self, language_code):
+        """ Adds hunspell dictionary """
+        available_codes = [
+            'de-frami', 'de',
+            'en', 'en_AU', 'en_CA', 'en_GB', 'en_US',
+            'es_any', 'es_ar', 'es_bo', 'es_cl', 'es_co', 'es_cr', 'es_cu', 'es_do', 'es_ec',
+            'es_es', 'es_gt', 'es_hn', 'es_mx', 'es_ni', 'es_pa', 'es_pe', 'es_pr', 'es_py',
+            'es_sv', 'es_uy', 'es_ve',
+            'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
 
-        # Add necessary packages for user desired features to our install list
-        for xml_features in xml_root.iter('features'):
+        if language_code in available_codes:
+            pkg_text = "hunspell-{0}".format(language_code)
+            logging.debug(
+                "Adding hunspell dictionary for %s language", pkg_text)
+            self.packages.append(pkg_text)
+        else:
+            logging.debug(
+                "No hunspell language dictionary found for %s language code", language_code)
+
+    def add_libreoffice_language(self):
+        """ Adds libreoffice language package """
+        lang_name = self.settings.get("language_name").lower()
+        code = None
+        if lang_name == "english":
+            locale = self.settings.get("locale").split('.')[0]
+            if locale in ['en_GB', 'en_ZA']:
+                # There're some English variants available but not all of them.
+                code = locale
+        else:
+            # All the other language packs use their language code
+            code = self.settings.get('language_code')
+
+        if code:
+            code = code.replace('_', '-')
+            pkg_text = "libreoffice-fresh-{0}".format(code)
+            logging.debug(
+                "Adding libreoffice language package (%s)", pkg_text)
+            self.packages.append(pkg_text)
+            self.add_hunspell(code)
+
+    def add_features(self):
+        """ Selects packages based on user selected features """
+        for xml_features in self.xml_root.iter('features'):
             for xml_feature in xml_features.iter('feature'):
                 feature = xml_feature.attrib.get("name")
 
@@ -418,32 +477,7 @@ class SelectPackages():
 
         # Add libreoffice language package
         if self.settings.get('feature_office'):
-            lang_name = self.settings.get("language_name").lower()
-            code = None
-            if lang_name == "english":
-                locale = self.settings.get("locale").split('.')[0]
-                if locale in ['en_GB', 'en_ZA']:
-                    # There're some English variants available but not all of them.
-                    code = locale
-            else:
-                # All the other language packs use their language code
-                code = self.settings.get('language_code')
-
-            if code:
-                code = code.replace('_', '-')
-                pkg_text = "libreoffice-fresh-{0}".format(code)
-                logging.debug(
-                    "Adding libreoffice language package (%s)", pkg_text)
-                self.packages.append(pkg_text)
-                # hunspell
-                code = code[:2]
-                codes = ['de', 'es', 'fr', 'he', 'it',
-                         'ro', 'el', 'hu', 'nl', 'pl']
-                if code in codes:
-                    pkg_text = "hunspell-{0}".format(code)
-                    logging.debug(
-                        "Adding hunspell dictionaries for %s language", pkg_text)
-                    self.packages.append(pkg_text)
+            self.add_libreoffice_language()
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
