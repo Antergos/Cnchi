@@ -128,7 +128,7 @@ class KeyboardNames():
         self.layouts[layout['name']] = Layout(
             layout['name'], layout['short_description'],
             layout['description'], layout['language_list'])
-        
+
         return layout['name']
 
     def _load_variant_item(self, layout_item, layout_name):
