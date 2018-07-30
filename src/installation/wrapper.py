@@ -91,24 +91,14 @@ def sgdisk_new(device, part_num, label, size, hex_code):
     # --change-name: Change the name of the specified partition.
     # Parameters: partnum:name
 
-    # logging.debug(" ".join(cmd))
-
     cmd = [
         'sgdisk',
         '--new={0}:0:+{1}M'.format(part_num, size),
         '--typecode={0}:{1}'.format(part_num, hex_code),
         '--change-name={0}:{1}'.format(part_num, label),
         device]
-    try:
-        subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as err:
-        txt = "Cannot create a new partition on device {0}. Command {1} has failed: {2}"
-        txt = txt.format(device, err.cmd, err.output.decode())
-        logging.error(txt)
-        txt = _(
-            "Cannot create a new partition on device {0}. Command {1} has failed: {2}")
-        txt = txt.format(device, err.cmd, err.output.decode())
-        raise InstallError(txt)
+
+    _create_partition_cmd(device, cmd)
 
 
 def parted_set(device, number, flag, state):
@@ -126,6 +116,7 @@ def parted_set(device, number, flag, state):
 
 def parted_mkpart(device, ptype, start, end, filesystem=""):
     """ Helper function to call mkpart parted command """
+
     # If start is < 0 we assume we want to mkpart at the start of the disk
     if start < 0:
         start_str = "1"
@@ -143,6 +134,11 @@ def parted_mkpart(device, ptype, start, end, filesystem=""):
         '--',
         'mkpart', ptype, filesystem, start_str, end_str]
 
+    _create_partition_cmd(device, cmd)
+
+
+def _create_partition_cmd(device, cmd):
+    """ Runs cmd command that tries to create a new partition in device """
     try:
         subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
