@@ -146,7 +146,8 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-    def store_values(self):
+    @staticmethod
+    def store_values():
         """ Nothing to be done here """
         return False
 
