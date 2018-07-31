@@ -323,20 +323,20 @@ def get_antergos_repo_pkgs(alpm_handle):
 
     if not antdb:
         logging.error("Cannot sync Antergos repository database!")
-        return None, None
+        return {}, None
 
     group_names = ['mate', 'mate-extra']
-    repo_groups = []
+    groups = []
     for group_name in group_names:
         group = antdb.read_grp(group_name)
         if not group:
             # Group does not exist
             group = ['None', []]
-        repo_groups.append(group)
+        groups.append(group)
 
     repo_pkgs = {
-        pkg for repo_group in repo_groups
-        for pkg in repo_group[1] if repo_group}
+        pkg for group in groups
+        for pkg in group[1] if group}
 
     return repo_pkgs, antdb
 
@@ -365,16 +365,17 @@ def resolve_deps(alpm_handle, other, alldeps):
     return other, missing_deps
 
 
-def create_package_set(requested, repo_pkgs, antdb, alpm_handle):
+def create_package_set(requested, ant_repo_pkgs, antdb, alpm_handle):
     """ Create package set from requested set """
-    other = PkgSet()
+
     found = set()
+    other = PkgSet()
 
     for pkg in requested:
-        other_grp = PkgSet()
         for database in alpm_handle.get_syncdbs():
-            if pkg in repo_pkgs and database.name != 'antergos':
-                # pkg should be sourced from the antergos repo only.
+            # if pkg is in antergos repo, fetch it from it (instead of another repo)
+            # pkg should be sourced from the antergos repo only.
+            if antdb and pkg in ant_repo_pkgs and database.name != 'antergos':
                 database = antdb
 
             syncpkg = database.get_pkg(pkg)
@@ -386,10 +387,10 @@ def create_package_set(requested, repo_pkgs, antdb, alpm_handle):
                 syncgrp = database.read_grp(pkg)
                 if syncgrp:
                     found.add(pkg)
-                    other_grp |= PkgSet(syncgrp[1])
+                    #other_grp |= PkgSet(syncgrp[1])
+                    other |= PkgSet(syncgrp[1])
                     break
-        else:
-            other |= other_grp
+
     return found, other
 
 def build_download_queue(alpm, args=None):
@@ -408,7 +409,7 @@ def build_download_queue(alpm, args=None):
     ant_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
 
     if not antdb:
-        # Cannot read antergos repository database
+        logging.error("Cannot load antergos repository database")
         return None, None, None
 
     found, other = create_package_set(requested, ant_repo_pkgs, antdb, handle)
@@ -541,11 +542,13 @@ def test_module():
     print("Creating metalink...")
     meta4 = create(
         alpm=pacman,
-        package_name="ipw2200-fw",
+        #package_name="ipw2200-fw",
+        package_name="base-devel",
         pacman_conf_file="/etc/pacman.conf")
     #print(meta4)
     #print('=' * 20)
-    print(get_info(meta4))
+    if meta4:
+        print(get_info(meta4))
     # print(get_info(meta4)['ipw2200-fw']['urls'])
 
     pacman.release()
