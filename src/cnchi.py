@@ -237,10 +237,15 @@ class CnchiInit():
         context_filter = ContextFilter()
         logger.addFilter(context_filter.filter)
 
-        formatter = logging.Formatter(
-            fmt="%(asctime)s [%(levelname)-7s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S")
+        datefmt = "%Y-%m-%d %H:%M:%S"
 
+        fmt = "%(asctime)s [%(levelname)-7s] %(message)s  (%(filename)s:%(lineno)d)"
+        formatter = logging.Formatter(fmt, datefmt)
+
+        color_fmt = (
+            "%(asctime)s [%(levelname)-18s] %(message)s  "
+            "($BOLD%(filename)s$RESET:%(lineno)d)")
+        color_formatter = logging_color.ColoredFormatter(color_fmt, datefmt)
 
         # File logger
         log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
@@ -254,17 +259,11 @@ class CnchiInit():
 
         # Stdout logger
         if self.cmd_line.verbose:
-            # Show log messages to stdout in color
-            # Log format
-            format_msg = ("%(asctime)s [%(levelname)-18s]  %(message)s  "
-                          "($BOLD%(filename)s$RESET:%(lineno)d)")
-            datefmt = "%Y-%m-%d %H:%M:%S"
-            color_formatter = logging_color.ColoredFormatter(format_msg, datefmt)
+            # Show log messages to stdout in color (color_formatter)
             stream_handler = logging.StreamHandler()
             stream_handler.setLevel(log_level)
             stream_handler.setFormatter(color_formatter)
             logger.addHandler(stream_handler)
-
 
         if not BUGSNAG_ERROR:
             # Bugsnag logger
