@@ -29,13 +29,13 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.16.196"
+CNCHI_VERSION = "0.16.197"
 """ Cnchi version """
 
 CNCHI_WEBSITE = "http://www.antergos.com"
 """ Cnchi website """
 
-CNCHI_RELEASE_STAGE = "development"
+CNCHI_RELEASE_STAGE = "production"
 """ Cnchi release stage (production or development) """
 
 if __name__ == '__main__':
