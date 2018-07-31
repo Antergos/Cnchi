@@ -45,9 +45,9 @@ class ColoredFormatter(logging.Formatter):
     COLORS = {
         'WARNING': YELLOW, 'INFO': WHITE, 'DEBUG': BLUE, 'CRITICAL': YELLOW, 'ERROR': RED}
 
-    def __init__(self, msg, use_color=True):
-        msg = self.formatter_message(msg)
-        logging.Formatter.__init__(self, msg)
+    def __init__(self, fmt, datefmt, use_color=True):
+        msg = self.formatter_message(fmt)
+        logging.Formatter.__init__(self, fmt=msg, datefmt=datefmt)
         self.use_color = use_color
 
     @staticmethod

@@ -237,10 +237,10 @@ class CnchiInit():
         context_filter = ContextFilter()
         logger.addFilter(context_filter.filter)
 
-        # Log format
-        format_msg = ("%(asctime)s [%(levelname)-18s]  %(message)s  "
-                      "($BOLD%(filename)s$RESET:%(lineno)d)")
-        formatter = logging_color.ColoredFormatter(format_msg)
+        formatter = logging.Formatter(
+            fmt="%(asctime)s [%(levelname)-7s] %(filename)s(%(lineno)d) %(funcName)s(): %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+
 
         # File logger
         log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
@@ -254,10 +254,15 @@ class CnchiInit():
 
         # Stdout logger
         if self.cmd_line.verbose:
-            # Show log messages to stdout
+            # Show log messages to stdout in color
+            # Log format
+            format_msg = ("%(asctime)s [%(levelname)-18s]  %(message)s  "
+                          "($BOLD%(filename)s$RESET:%(lineno)d)")
+            datefmt = "%Y-%m-%d %H:%M:%S"
+            color_formatter = logging_color.ColoredFormatter(format_msg, datefmt)
             stream_handler = logging.StreamHandler()
             stream_handler.setLevel(log_level)
-            stream_handler.setFormatter(formatter)
+            stream_handler.setFormatter(color_formatter)
             logger.addHandler(stream_handler)
 
 
