@@ -40,12 +40,12 @@ try:
     import download.download_requests as download_requests
 except ModuleNotFoundError:
     import sys
-    cnchi_path = "/usr/share/cnchi"
-    sys.path.append(cnchi_path)
-    sys.path.append(os.path.join(cnchi_path, "src"))
+    CNCHI_PATH = "/usr/share/cnchi"
+    sys.path.append(CNCHI_PATH)
+    sys.path.append(os.path.join(CNCHI_PATH, "src"))
     import pacman.pac as pac
     import metalink as ml
-    import download_requests as download_requests
+    import download_requests
 
 import misc.extra as misc
 

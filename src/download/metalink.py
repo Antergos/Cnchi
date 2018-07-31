@@ -40,7 +40,7 @@ import argparse
 
 from collections import deque
 
-import xml.dom.minidom as minidom
+import xml.dom.minidom
 try:
     import xml.etree.cElementTree as eTree
 except ImportError:
@@ -64,37 +64,31 @@ def get_info(metalink):
     element = {}
 
     for event, elem in eTree.iterparse(temp_file.name, events=('start', 'end')):
-        if event == "start":
-            if elem.tag.endswith('file'):
+        if event == 'start':
+            tag = elem.tag.split('}')[1]
+            if tag == 'file':
                 element['filename'] = elem.attrib['name']
-            elif elem.tag.endswith('identity'):
-                element['identity'] = elem.text
-            elif elem.tag.endswith('size'):
-                element['size'] = elem.text
-            elif elem.tag.endswith('version'):
-                element['version'] = elem.text
-            elif elem.tag.endswith('description'):
-                element['description'] = elem.text
-            elif elem.tag.endswith('hash'):
+            elif tag == 'hash':
                 hash_type = elem.attrib['type']
                 try:
                     element['hash'][hash_type] = elem.text
                 except KeyError:
                     element['hash'] = {hash_type: elem.text}
-            elif elem.tag.endswith("url"):
+            elif tag == 'url':
                 try:
                     element['urls'].append(elem.text)
                 except KeyError:
                     element['urls'] = [elem.text]
-        if event == "end":
-            if elem.tag.endswith('file'):
-                # Limit to MAX_URLS for file
-                if len(element['urls']) > MAX_URLS:
-                    element['urls'] = element['urls'][:MAX_URLS]
-                key = element['identity']
-                metalink_info[key] = element.copy()
-                element.clear()
-                elem.clear()
+            else:
+                element[tag] = elem.text
+        if event == 'end' and elem.tag.endswith('file'):
+            # Limit to MAX_URLS for each file
+            if len(element['urls']) > MAX_URLS:
+                element['urls'] = element['urls'][:MAX_URLS]
+            key = element['identity']
+            metalink_info[key] = element.copy()
+            element.clear()
+            elem.clear()
 
     if os.path.exists(temp_file.name):
         os.remove(temp_file.name)
@@ -112,33 +106,27 @@ def create(alpm, package_name, pacman_conf_file):
     else:
         options.append(package_name)
 
-    try:
-        download_queue, not_found, missing_deps = build_download_queue(
-            alpm, args=options)
-    except Exception as ex:
-        template = "Unable to create download queue for package {0}. " \
-            "An exception of type {1} occured. Arguments:\n{2!r}"
-        message = template.format(package_name, type(ex).__name__, ex.args)
-        logging.error(message)
-        return None
+    download_queue, not_found, missing_deps = build_download_queue(
+        alpm, args=options)
 
     if not_found:
-        msg = "Can't find these packages: "
-        for pkg_not_found in sorted(not_found):
-            msg = msg + pkg_not_found + " "
+        not_found = sorted(not_found)
+        msg = "Can't find these packages: " + ' '.join(not_found)
         logging.error(msg)
         return None
 
     if missing_deps:
-        msg = "Can't resolve these dependencies: "
-        for missing in sorted(missing_deps):
-            msg = msg + missing + " "
+        missing_deps = sorted(missing_deps)
+        msg = "Can't resolve these dependencies: " + ' '.join(missing_deps)
         logging.error(msg)
         return None
 
-    metalink = download_queue_to_metalink(download_queue)
+    if download_queue:
+        metalink = download_queue_to_metalink(download_queue)
+        return metalink
 
-    return metalink
+    logging.error("Unable to create download queue for package %s", package_name)
+    return None
 
 # From here comes modified code from pm2ml
 # pm2ml is Copyright (C) 2012-2013 Xyne
@@ -161,7 +149,8 @@ class Metalink():
     """ Metalink class """
 
     def __init__(self):
-        self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
+        self.doc = xml.dom.minidom.getDOMImplementation().createDocument(
+            None, "metalink", None)
         self.doc.documentElement.setAttribute(
             'xmlns', "urn:ietf:params:xml:ns:metalink")
         self.files = self.doc.documentElement
@@ -323,7 +312,7 @@ def parse_args(args):
 
 
 def get_antergos_repo_pkgs(alpm_handle):
-    """ Returns pkgs from Antergos groups (cinnamon, mate, mate-extra) and
+    """ Returns pkgs from Antergos groups (mate, mate-extra) and
         the antergos db info """
 
     antdb = None
@@ -332,7 +321,11 @@ def get_antergos_repo_pkgs(alpm_handle):
             antdb = database
             break
 
-    group_names = ['cinnamon', 'mate', 'mate-extra']
+    if not antdb:
+        logging.error("Cannot sync Antergos repository database!")
+        return None, None
+
+    group_names = ['mate', 'mate-extra']
     repo_groups = []
     for group_name in group_names:
         group = antdb.read_grp(group_name)
@@ -414,6 +407,10 @@ def build_download_queue(alpm, args=None):
 
     ant_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
 
+    if not antdb:
+        # Cannot read antergos repository database
+        return None, None, None
+
     found, other = create_package_set(requested, ant_repo_pkgs, antdb, handle)
 
     # foreign_names = requested - set(x.name for x in other)
@@ -427,7 +424,7 @@ def build_download_queue(alpm, args=None):
     if pargs.needed:
         other = PkgSet(list(check_cache(conf, other)))
 
-    # Build download queue
+    # Create download queue
     download_queue = DownloadQueue()
 
     # Add databases (and their signature)
@@ -537,27 +534,22 @@ def test_module():
     sys.path.append(os.path.join(cnchi_path, "src"))
     import pacman.pac as pac
 
-    try:
-        pacman = pac.Pac(
-            conf_path="/etc/pacman.conf",
-            callback_queue=None)
+    pacman = pac.Pac(
+        conf_path="/etc/pacman.conf",
+        callback_queue=None)
 
-        print("Creating metalink...")
-        meta4 = create(
-            alpm=pacman,
-            package_name="ipw2200-fw",
-            pacman_conf_file="/etc/pacman.conf")
-        #print(meta4)
-        #print('=' * 20)
-        print(get_info(meta4))
-        # print(get_info(meta4)['ipw2200-fw']['urls'])
+    print("Creating metalink...")
+    meta4 = create(
+        alpm=pacman,
+        package_name="ipw2200-fw",
+        pacman_conf_file="/etc/pacman.conf")
+    #print(meta4)
+    #print('=' * 20)
+    print(get_info(meta4))
+    # print(get_info(meta4)['ipw2200-fw']['urls'])
 
-        pacman.release()
-        del pacman
-    except Exception as ex:
-        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        logging.error(message)
+    pacman.release()
+    del pacman
 
 
 # Test case
