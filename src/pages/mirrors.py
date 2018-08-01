@@ -265,10 +265,10 @@ class MirrorListBox(Gtk.ListBox):
             logging.warning(err)
 
     @staticmethod
-    def trim_mirror_url(url):
+    def strip_mirror_url(url):
         """ Get url from full mirrorlist line """
-        url = url.ltrim("Server = ")
-        url = url.rtrim("/$repo/os/$arch")
+        url = url.lstrip("Server = ")
+        url = url.rstrip("/$repo/os/$arch")
         return url
 
     def save_changes(self, use_rankmirrors=False):
@@ -298,7 +298,7 @@ class MirrorListBox(Gtk.ListBox):
         if not use_rankmirrors and self.mirrors_file_path == "/etc/pacman.d/mirrorlist":
             for (url, active) in self.mirrors:
                 if active:
-                    arch_mirrors.append(self.trim_mirror_url(url))
+                    arch_mirrors.append(self.strip_mirror_url(url))
             self.settings.set('rankmirrors_result', arch_mirrors)
 
 
