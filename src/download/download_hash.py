@@ -42,7 +42,7 @@ def check_hash(path, element, queue_event=None):
 
     sha256 = get_element_hash(element, 'sha256')
     md5 = get_element_hash(element, 'md5')
-  
+
     # Check sha256 if available
     if sha256:
         if sha256 != get_file_hash(path, 'sha256'):
