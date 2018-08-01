@@ -507,8 +507,8 @@ class Builder(Gtk.Builder):
 
     def add_from_file(self, filename):
         """ Add widgets from xml file """
-        import xml.etree.cElementTree as eTree
-        tree = eTree.parse(filename)
+        import defusedxml.cElementTree as elementTree
+        tree = elementTree.parse(filename)
         root = tree.getroot()
         for widgets in root.iter('object'):
             self._widget_ids.add(widgets.attrib['id'])

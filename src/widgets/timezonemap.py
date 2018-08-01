@@ -51,10 +51,7 @@ try:
 except ImportError:
     import tz
 
-try:
-    import xml.etree.cElementTree as elementTree
-except ImportError:
-    import xml.etree.ElementTree as elementTree
+import defusedxml.cElementTree as elementTree
 
 
 class TimezoneMap(Gtk.Widget):

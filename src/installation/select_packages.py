@@ -31,10 +31,7 @@ import sys
 import requests
 from requests.exceptions import RequestException
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError as err:
-    import xml.etree.ElementTree as eTree
+import defusedxml.cElementTree as elementTree
 
 import desktop_info
 import info
@@ -218,10 +215,10 @@ class SelectPackages():
 
         if xml_data is not None:
             logging.debug("Loading xml data from server...")
-            self.xml_root = eTree.fromstring(xml_data)
+            self.xml_root = elementTree.fromstring(xml_data)
         else:
             logging.debug("Loading %s", xml_filename)
-            xml_tree = eTree.parse(xml_filename)
+            xml_tree = elementTree.parse(xml_filename)
             self.xml_root = xml_tree.getroot()
 
     def maybe_add_kde_languagepack(self):

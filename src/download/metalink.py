@@ -41,10 +41,8 @@ import argparse
 from collections import deque
 
 import xml.dom.minidom
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError:
-    import xml.etree.ElementTree as eTree
+
+import defusedxml.cElementTree as elementTree
 
 import pyalpm
 
@@ -63,7 +61,7 @@ def get_info(metalink):
     metalink_info = {}
     element = {}
 
-    for event, elem in eTree.iterparse(temp_file.name, events=('start', 'end')):
+    for event, elem in elementTree.iterparse(temp_file.name, events=('start', 'end')):
         if event == 'start':
             tag = elem.tag.split('}')[1]
             if tag == 'file':

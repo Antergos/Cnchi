@@ -35,10 +35,7 @@ import sys
 import locale
 import re
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError:
-    import xml.etree.ElementTree as eTree
+import defusedxml.cElementTree as elementTree
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -167,7 +164,7 @@ class Location(GtkBaseBox):
         self.locales = {}
 
         try:
-            tree = eTree.parse(xml_path)
+            tree = elementTree.parse(xml_path)
         except FileNotFoundError as file_error:
             logging.error(file_error)
             sys.exit(1)
@@ -189,7 +186,7 @@ class Location(GtkBaseBox):
         countries = {}
 
         try:
-            tree = eTree.parse(xml_path)
+            tree = elementTree.parse(xml_path)
         except FileNotFoundError as file_error:
             logging.error(file_error)
             sys.exit(1)

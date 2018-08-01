@@ -27,11 +27,7 @@ from collections import OrderedDict
 
 from gi.repository import GObject
 
-
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError as err:
-    import xml.etree.ElementTree as eTree
+import defusedxml.cElementTree as elementTree
 
 
 class Model(GObject.GObject):
@@ -169,7 +165,7 @@ class KeyboardNames():
 
         self._clear()
 
-        xml_tree = eTree.parse(self._filename)
+        xml_tree = elementTree.parse(self._filename)
         xml_root = xml_tree.getroot()
 
         self._load_models(xml_root)
