@@ -67,23 +67,26 @@ def printk(enable):
 def unmount(directory):
     """ Unmount """
     logging.debug("Unmounting %s", directory)
-    call(["umount", "-l", directory])
+    call(["/usr/bin/umount", "-l", directory])
 
-
-def unmount_all_in_directory(dest_dir):
-    """ Unmounts all devices that are mounted inside dest_dir """
-
-    # Unmount all swap devices
-    cmd = ["swapon", "--show=NAME", "--noheadings"]
+def unmount_swap():
+    """ Unmount all swap devices """
+    cmd = ["/usr/bin/swapon", "--show=NAME", "--noheadings"]
     swaps = call(cmd)
     if swaps:
         swaps = swaps.split("\n")
         for name in filter(None, swaps):
             if "/dev/zram" not in name:
-                call(["swapoff", name])
+                call(["/usr/bin/swapoff", name])
+
+def unmount_all_in_directory(dest_dir):
+    """ Unmounts all devices that are mounted inside dest_dir """
+
+    # Unmount all swap devices
+    unmount_swap()
 
     # Get all mounted devices
-    mount_result = call(["mount"]).split("\n")
+    mount_result = call(["/usr/bin/mount"]).split("\n")
 
     # Umount all devices mounted inside dest_dir (if any)
     dirs = []
@@ -107,17 +110,11 @@ def unmount_all_in_directory(dest_dir):
 def unmount_all_in_device(device):
     """ Unmounts all partitions from device """
 
-    # Unmount all swap
-    cmd = ["swapon", "--show=NAME", "--noheadings"]
-    swaps = call(cmd)
-    swaps = swaps.split("\n")
-    for name in filter(None, swaps):
-        if "/dev/zram" not in name:
-            call(["swapoff", name])
+    # Unmount all swap devices
+    unmount_swap()
 
     # Get all mounted devices
-    mount_result = call(["mount"])
-    mount_result = mount_result.split("\n")
+    mount_result = call(["/usr/bin/mount"]).split("\n")
 
     # Umount all partitions of device
     dirs = []
@@ -139,7 +136,7 @@ def remove_lvm(device):
 
     err_msg = "Can't delete existent LVM volumes in device {0}".format(device)
 
-    cmd = ["lvs", "-o", "lv_name,vg_name,devices", "--noheadings"]
+    cmd = ["/usr/bin/lvs", "-o", "lv_name,vg_name,devices", "--noheadings"]
     lvolumes = call(cmd, msg=err_msg)
     if lvolumes:
         lvolumes = lvolumes.split("\n")
@@ -148,26 +145,26 @@ def remove_lvm(device):
                 (lvolume, vgroup, ldevice) = lvolume.split()
                 if device in ldevice:
                     lvdev = "/dev/" + vgroup + "/" + lvolume
-                    call(["wipefs", "-a", lvdev], msg=err_msg)
-                    call(["lvremove", "-f", lvdev], msg=err_msg)
+                    call(["/usr/bin/wipefs", "-a", lvdev], msg=err_msg)
+                    call(["/usr/bin/lvremove", "-f", lvdev], msg=err_msg)
 
-    cmd = ["vgs", "-o", "vg_name,devices", "--noheadings"]
+    cmd = ["/usr/bin/vgs", "-o", "vg_name,devices", "--noheadings"]
     vgnames = call(cmd, msg=err_msg)
     if vgnames:
         vgnames = vgnames.split("\n")
         for vgname in vgnames:
             (vgname, vgdevice) = vgname.split()
             if vgname and device in vgdevice:
-                call(["vgremove", "-f", vgname], msg=err_msg)
+                call(["/usr/bin/vgremove", "-f", vgname], msg=err_msg)
 
-    cmd = ["pvs", "-o", "pv_name", "--noheadings"]
+    cmd = ["/usr/bin/pvs", "-o", "pv_name", "--noheadings"]
     pvolumes = call(cmd, msg=err_msg)
     if pvolumes:
         pvolumes = pvolumes.split("\n")
         for pvolume in pvolumes:
             pvolume = pvolume.strip()
             if device in pvolume:
-                cmd = ["pvremove", "-ff", "-y", pvolume]
+                cmd = ["/usr/bin/pvremove", "-ff", "-y", pvolume]
                 call(cmd, msg=err_msg)
 
 
@@ -181,7 +178,7 @@ def close_antergos_luks_devices():
 
     for volume in volumes:
         if os.path.exists(volume):
-            cmd = ["cryptsetup", "luksClose", volume]
+            cmd = ["/usr/bin/cryptsetup", "luksClose", volume]
             call(cmd, msg=err_msg)
 
 
@@ -214,11 +211,11 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
         wrapper.run_dd("/dev/urandom", luks_key, bytes_block=1024, count=4)
 
         # Set up luks with a keyfile
-        cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
+        cmd = ["/usr/bin/cryptsetup", "luksFormat", "-q", "-c", cypher,
                "-s", "512", "-h", "sha512", luks_device, luks_key]
         call(cmd, msg=err_msg, fatal=True)
 
-        cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q",
+        cmd = ["/usr/bin/cryptsetup", "luksOpen", luks_device, luks_name, "-q",
                "--key-file", luks_key]
         call(cmd, msg=err_msg, fatal=True)
     else:
@@ -226,12 +223,12 @@ def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
 
         luks_pass_bytes = bytes(luks_pass, 'UTF-8')
 
-        cmd = ["cryptsetup", "luksFormat", "-q", "-c", cypher,
+        cmd = ["/usr/bin/cryptsetup", "luksFormat", "-q", "-c", cypher,
                "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
-        cmd = ["cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
+        cmd = ["/usr/bin/cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
         proc = popen(cmd, msg=err_msg, fatal=True)
         proc.communicate(input=luks_pass_bytes)
 
