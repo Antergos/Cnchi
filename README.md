@@ -1,8 +1,13 @@
-# Cnchi [![GitHub version](https://badge.fury.io/gh/antergos%2Fcnchi.svg)](https://badge.fury.io/gh/antergos%2Fcnchi)
+# Cnchi ![GitHub release](https://img.shields.io/github/release/antergos/cnchi.svg)
 
 **Graphical Installer for Antergos Linux**
 
-![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) ![Codacy Badge](https://api.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660) [![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
+![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg)
+
+![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
+![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
+
+![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)
 
 You are viewing the `0.16.x` branch.
 
@@ -10,8 +15,8 @@ You are viewing the `0.16.x` branch.
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|Cnchi Stable|0.14.x|![0.14.473](https://github.com/Antergos/Cnchi/releases)|Frozen|
-|Cnchi Development|0.16.x|0.16.x|Development|
+|Cnchi Stable|0.14.x|![0.14.473](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
+|Cnchi Development|0.16.x|![0.16.201](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|0.17.x|Development|
 
 
