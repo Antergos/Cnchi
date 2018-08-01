@@ -265,12 +265,20 @@ class MirrorListBox(Gtk.ListBox):
             logging.warning(err)
 
     @staticmethod
-    def trim_mirror_url(url):
+    def trim_mirror_url(server_line):
         """ Get url from full mirrorlist line """
-        if url.startswith("Server = "):
-            url = url[len("Server = "):]
-        if url.endswith("/$repo/os/$arch"):
-            url = url[:-len("/$repo/os/$arch")]
+
+        if not server_line.startswith("Server") or '=' not in server_line:
+            return server_line
+
+        # Get url part
+        url = server_line.split('=')[1].strip()
+
+        # Remove end part to get the FDQN only
+        endstr = "/$repo/os/$arch"
+        if url.endswith(endstr):
+            url = url[:-len(endstr)]
+
         return url
 
     def save_changes(self, use_rankmirrors=False):
