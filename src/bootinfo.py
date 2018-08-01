@@ -61,24 +61,19 @@ VISTA_MARKS = ["Windows Vista", "W.i.n.d.o.w.s. .V.i.s.t.a."]
 SEVEN_MARKS = ["Win7", "Windows 7", "W.i.n.7.", "W.i.n.d.o.w.s. .7."]
 
 DOS_MARKS = [
-    "MS-DOS",
-    "MS-DOS 6.22",
-    "MS-DOS 6.21",
-    "MS-DOS 6.0",
-    "MS-DOS 5.0",
-    "MS-DOS 4.01",
-    "MS-DOS 3.3",
-    "Windows 98",
-    "Windows 95"]
+    "MS-DOS", "MS-DOS 6.22", "MS-DOS 6.21", "MS-DOS 6.0", "MS-DOS 5.0",
+    "MS-DOS 4.01", "MS-DOS 3.3", "Windows 98", "Windows 95"]
 
 # Possible locations for os-release. Do not put a trailing /
 OS_RELEASE_PATHS = ["usr/lib/os-release", "etc/os-release"]
+
+UNKNOWN = "unknown"
 
 
 def _check_windows(mount_name):
     """ Checks for a Microsoft Windows installed """
 
-    detected_os = _("unknown")
+    detected_os = UNKNOWN
     paths = []
     for windows in WIN_DIRS:
         for system in SYSTEM_DIRS:
@@ -92,44 +87,42 @@ def _check_windows(mount_name):
         elif _check_winxp(path):
             detected_os = "Win XP"
         else:
-            detected_os = _("unknown")
+            detected_os = UNKNOWN
 
     return detected_os
 
 
+def _search_for_marks(path, marks):
+    """ Search for specific string (mark) in path file """
+    if os.path.exists(path):
+        with open(path, "rb") as system_file:
+            lines = system_file.readlines()
+        for line in lines:
+            for mark in marks:
+                if mark.encode('utf-8') in line:
+                    return True
+    return False
+
 def _check_vista(system_path):
     """ Searches for Windows Vista """
-
     for name in WINLOAD_NAMES:
         path = os.path.join(system_path, name)
-        if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                lines = system_file.readlines()
-            for line in lines:
-                for vista_mark in VISTA_MARKS:
-                    if vista_mark.encode('utf-8') in line:
-                        return True
+        if _search_for_marks(path, VISTA_MARKS):
+            return True
     return False
 
 
 def _check_win7(system_path):
     """ Searches for Windows 7 """
-
     for name in WINLOAD_NAMES:
         path = os.path.join(system_path, name)
-        if os.path.exists(path):
-            with open(path, "rb") as system_file:
-                lines = system_file.readlines()
-                for line in lines:
-                    for seven_mark in SEVEN_MARKS:
-                        if seven_mark.encode('utf-8') in line:
-                            return True
+        if _search_for_marks(path, SEVEN_MARKS):
+            return True
     return False
 
 
 def _check_winxp(system_path):
     """ Searches for Windows XP """
-
     for name in SECEVENT_NAMES:
         path = os.path.join(system_path, "config", name)
         if os.path.exists(path):
@@ -140,8 +133,7 @@ def _check_winxp(system_path):
 @misc.raise_privileges
 def _hexdump8081(partition):
     """ Runs hexdump on partition to try to identify the boot sector """
-    cmd = ["hexdump", "-v", "-n", "2", "-s",
-           "0x80", "-e", '2/1 "%02x"', partition]
+    cmd = ["/usr/bin/hexdump", "-v", "-n", "2", "-s", "0x80", "-e", '2/1 "%02x"', partition]
     hexdump = call(cmd)
     return hexdump
 
@@ -174,14 +166,14 @@ def _get_partition_info(partition):
 
     if bytes80_to_81 in bst.keys():
         return bst[bytes80_to_81]
-    elif bytes80_to_81:
+    if bytes80_to_81:
         logging.debug("Unknown partition id %s", bytes80_to_81)
-    return _("unknown")
+    return UNKNOWN
 
 
 def _check_reactos(mount_name):
     """ Checks for ReactOS """
-    detected_os = _("unknown")
+    detected_os = UNKNOWN
     path = os.path.join(mount_name, "ReactOS/system32/config/SecEvent.Evt")
     if os.path.exists(path):
         detected_os = "ReactOS"
@@ -190,7 +182,7 @@ def _check_reactos(mount_name):
 
 def _check_dos(mount_name):
     """ Checks for DOS and W9x """
-    detected_os = _("unknown")
+    detected_os = UNKNOWN
     paths = []
     for name in DOS_NAMES:
         path = os.path.join(mount_name, name)
@@ -207,7 +199,7 @@ def _check_dos(mount_name):
 
 def _check_linux(mount_name):
     """ Checks for linux """
-    detected_os = _("unknown")
+    detected_os = UNKNOWN
 
     paths = []
     for os_release in OS_RELEASE_PATHS:
@@ -218,10 +210,7 @@ def _check_linux(mount_name):
     for path in paths:
         with open(path, 'r') as os_release_file:
             lines = os_release_file.readlines()
-        os_info = {
-            "pretty_name": "",
-            "id": "",
-            "version": ""}
+        os_info = {'pretty_name': "", 'id': "", 'version': ""}
         for line in lines:
             if line.startswith("PRETTY_NAME"):
                 os_info["pretty_name"] = line[len("PRETTY_NAME="):]
@@ -240,7 +229,7 @@ def _check_linux(mount_name):
     detected_os = detected_os.replace('"', '').strip('\n')
 
     # If os_release was not found, try old issue file
-    if detected_os == _("unknown"):
+    if detected_os == UNKNOWN:
         paths = []
         for name in LINUX_NAMES:
             path = os.path.join(mount_name, "etc", name)
@@ -265,13 +254,13 @@ def _get_os(mount_name):
 
     detected_os = _check_windows(mount_name)
 
-    if detected_os == _("unknown"):
+    if detected_os == UNKNOWN:
         detected_os = _check_linux(mount_name)
 
-    if detected_os == _("unknown"):
+    if detected_os == UNKNOWN:
         detected_os = _check_reactos(mount_name)
 
-    if detected_os == _("unknown"):
+    if detected_os == UNKNOWN:
         detected_os = _check_dos(mount_name)
 
     return detected_os
@@ -291,14 +280,13 @@ def get_os_dict():
                 if "sd" in device and re.search(r'\d+$', device):
                     # ok, it has sd and ends with a number
                     device = "/dev/" + device
-                    call(["mount", device, tmp_dir])
+                    call(["/usr/bin/mount", device, tmp_dir])
                     oses[device] = _get_os(tmp_dir)
-                    call(["umount", "-l", tmp_dir])
-                    if oses[device] == _("unknown"):
+                    call(["/usr/bin/umount", "-l", tmp_dir])
+                    if oses[device] == UNKNOWN:
                         # As a last resort, try reading partition info
                         # with hexdump
                         oses[device] = _get_partition_info(device)
-
     try:
         os.rmdir(tmp_dir)
     except OSError:
@@ -317,8 +305,7 @@ def windows_startup_folder(mount_path):
         # Windows XP
         'Documents and Settings/All Users/Start Menu/Programs/Startup',
         # Windows NT
-        'Winnt/Profiles/All Users/Start Menu/Programs/Startup',
-    ]
+        'Winnt/Profiles/All Users/Start Menu/Programs/Startup']
     for location in locations:
         path = os.path.join(mount_path, location)
         if os.path.exists(path):
