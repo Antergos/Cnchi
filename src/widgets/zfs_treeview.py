@@ -65,18 +65,16 @@ class ZFSTreeview(Gtk.TreeView):
     COL_DEVICE_NAME = 5
     COL_DISK_ID = 6
 
-    def __init__(self, ui):
+    def __init__(self, zfs_ui):
         Gtk.TreeView.__init__(self)
 
         self.change_list = []
         self.ids = {}
 
-        self.ui = ui
-
         self.use_toggle = None
 
-        self.device_list = self.ui.get_object('treeview')
-        self.device_list_store = self.ui.get_object('liststore')
+        self.device_list = zfs_ui.get_object('treeview')
+        self.device_list_store = zfs_ui.get_object('liststore')
         self.prepare_device_list()
         self.device_list.set_hexpand(True)
 
