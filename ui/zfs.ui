@@ -52,7 +52,7 @@
                                 <items>
                                     <item translatable="yes">None</item>
                                 </items>
-                                <signal name="changed" handler="on_pool_type_combo_changed" swapped="no"/>
+                                <signal name="changed" handler="pool_type_combo_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
