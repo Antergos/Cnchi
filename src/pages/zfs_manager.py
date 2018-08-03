@@ -20,12 +20,13 @@
 
 """ ZFS helper methods """
 
-import subprocess
-import os
+import math
 import logging
-import shutil
-import time
+import os
 import re
+import shutil
+import subprocess
+import time
 
 from misc.extra import InstallError
 from misc.run_cmd import call
@@ -51,7 +52,7 @@ DEST_DIR = "/install"
 
 ZFS_POOL_TYPES = {0: "None", 1: "Stripe", 2: "Mirror", 3: "RAID-Z", 4: "RAID-Z2", 5: "RAID-Z3"}
 
-def zfs_init_device(device_path, scheme="GPT"):
+def init_device(device_path, scheme="GPT"):
     """ Initialize device """
 
     logging.debug("Zapping device %s...", device_path)
@@ -88,7 +89,7 @@ def zfs_init_device(device_path, scheme="GPT"):
     call(["sync"])
 
 
-def zfs_get_pool_size(pool_name):
+def get_pool_size(pool_name):
     """ Gets zfs pool size in GB """
     try:
         cmd_line = "zpool list -H -o size {0}".format(pool_name)
@@ -116,9 +117,9 @@ def zfs_get_pool_size(pool_name):
     return pool_size
 
 
-def zfs_get_home_size(pool_name):
+def get_home_size(pool_name):
     """ Get recommended /home zvol size in GB """
-    pool_size = zfs_get_pool_size(pool_name)
+    pool_size = get_pool_size(pool_name)
     home_size = 0
 
     if pool_size != 0:
@@ -131,7 +132,7 @@ def zfs_get_home_size(pool_name):
     return home_size
 
 
-def zfs_get_swap_size(pool_name):
+def get_swap_size(pool_name):
     """ Gets recommended swap size in GB """
 
     cmd = ["/usr/bin/grep", "MemTotal", "/proc/meminfo"]
@@ -161,7 +162,7 @@ def zfs_get_swap_size(pool_name):
     # Check pool size and adapt swap size if necessary
     # Swap size should not exceed 10% of all available pool size
 
-    pool_size = zfs_get_pool_size(pool_name)
+    pool_size = get_pool_size(pool_name)
     if pool_size > 0:
         # Max swap size is 10% of all available disk size
         max_swap = pool_size * 0.1
@@ -170,7 +171,7 @@ def zfs_get_swap_size(pool_name):
     return swap_size
 
 
-def set_zfs_mountpoint(zvol, mount_point):
+def set_mountpoint(zvol, mount_point):
     """ Sets mount point of zvol and tries to mount it.
         It does it but then ZFS tries to automount it and fails
         because we set mountpoint to / instead of /install. ZFS cannot
@@ -183,20 +184,6 @@ def set_zfs_mountpoint(zvol, mount_point):
         err_output = err.output.decode().strip("\n")
         # It's ok if it fails
         logging.debug(err_output)
-
-
-def get_partition_path(device, part_num):
-    """ Form partition path from device and partition number """
-    full_path = ""
-    # Remove /dev/
-    path = device.replace('/dev/', '')
-    partials = ['rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
-    found = [p for p in partials if path.startswith(p)]
-    if found:
-        full_path = "{0}p{1}".format(device, part_num)
-    else:
-        full_path = "{0}{1}".format(device, part_num)
-    return full_path
 
 
 def clear_dest_dir():
@@ -243,7 +230,7 @@ def load_existing_pools():
     return existing_pools
 
 
-def do_destroy_zfs_pools():
+def destroy_pools():
     """ Try to destroy existing antergos zfs pools """
     existing_pools = load_existing_pools()
 
@@ -268,7 +255,7 @@ def get_pool_id(pool_name, include_offline=False):
     return None, None
 
 
-def zfs_pool_name_is_valid(name):
+def pool_name_is_valid(name):
     """ Checks that pool name is a valid name """
     allowed = re.search(r'([a-zA-Z0-9_\-\.: ])+', name)
     reserved = re.match(r'c[0-9]([a-zA-Z0-9_\-\.: ])+', name)
@@ -287,7 +274,7 @@ def settle():
     call(["/usr/bin/sync"])
 
 
-def create_zfs_pool(pool_name, pool_type, device_paths, force_4k):
+def create_pool(pool_name, pool_type, device_paths, force_4k):
     """ Create zpool """
 
     if pool_type not in ZFS_POOL_TYPES.values():
@@ -344,3 +331,186 @@ def create_zfs_pool(pool_name, pool_type, device_paths, force_4k):
         call(cmd, fatal=True)
 
     logging.debug("Pool %s created.", pool_name)
+
+
+def create_swap(pool_name, vol_name):
+    """ mkswap on a zfs zvol """
+
+    zvol = "{0}/{1}".format(pool_name, vol_name)
+
+    cmd = ["/usr/bin/zfs", "set", "com.sun:auto-snapshot=false", zvol]
+    call(cmd)
+
+    cmd = ["/usr/bin/zfs", "set", "sync=always", zvol]
+    call(cmd)
+
+    path = "/dev/zvol/{0}/swap".format(pool_name)
+    if os.path.exists(path):
+        logging.debug("Formatting swap (%s)", path)
+        call(["mkswap", "-f", path])
+    else:
+        logging.warning("Can't find %s to create swap on it", path)
+
+def create_vol(pool_name, vol_name, swap_size=None):
+    """ Creates zfs vol inside the pool
+        if size is given, it should be in GB.
+        If vol_name is "swap" it will be setup as a swap space """
+
+    cmd = ["/usr/bin/zfs", "create"]
+
+    if swap_size:
+        # If size is given, mountpoint cannot be set (zfs)
+        # Round up
+        swap_size = math.ceil(swap_size)
+        logging.debug(
+            "Creating a zfs vol %s/%s of size %dGB",
+            pool_name, vol_name, swap_size)
+        cmd.extend(["-V", "{0}G".format(swap_size)])
+    else:
+        logging.debug("Creating a zfs vol %s/%s", pool_name, vol_name)
+        if vol_name == "swap":
+            cmd.extend(["-o", "mountpoint=none"])
+        else:
+            cmd.extend(
+                ["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
+
+    cmd.append("{0}/{1}".format(pool_name, vol_name))
+    call(cmd, fatal=True)
+
+    if vol_name == "swap":
+        create_swap(pool_name, vol_name)
+
+
+def get_partition_path(device, part_num):
+    """ Form partition path from device and partition number """
+    full_path = ""
+    # Remove /dev/
+    path = device.replace('/dev/', '')
+    partials = ['rd/', 'ida/', 'cciss/', 'sx8/',
+                'mapper/', 'mmcblk', 'md', 'nvme']
+    found = [p for p in partials if path.startswith(p)]
+    if found:
+        full_path = "{0}p{1}".format(device, part_num)
+    else:
+        full_path = "{0}{1}".format(device, part_num)
+    return full_path
+
+
+def setup(solaris_partition_number, zfs_options, use_home):
+    """ Setup ZFS system """
+
+    # Make sure the ZFS modules are loaded
+    call(["modprobe", "zfs"])
+
+    # Empty DEST_DIR or zfs pool will fail to mount on it
+    # (this will delete preexisting installing attempts, too)
+    if os.path.exists(DEST_DIR):
+        clear_dest_dir()
+
+    device_paths = zfs_options["device_paths"]
+    if not device_paths:
+        txt = _("No devices were selected for the ZFS pool")
+        raise InstallError(txt)
+
+    # Using by-id (recommended) does not work atm
+    # https://github.com/zfsonlinux/zfs/issues/3708
+
+    # Can't use the whole first disk, just the dedicated zfs partition
+    device_paths[0] = get_partition_path(device_paths[0], solaris_partition_number)
+
+    line = ", ".join(device_paths)
+    logging.debug("Cnchi will create a ZFS pool using %s devices", line)
+
+    # Just in case...
+    if os.path.exists("/etc/zfs/zpool.cache"):
+        os.remove("/etc/zfs/zpool.cache")
+
+    try:
+        os.mkdir(DEST_DIR, mode=0o755)
+    except OSError:
+        pass
+
+    pool_name = zfs_options['pool_name']
+    pool_type = zfs_options['pool_type']
+
+    if not pool_name_is_valid(pool_name):
+        txt = _(
+            "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
+            "hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' "
+            "followed by a number (c[0-9]) are not allowed. The following names are also not "
+            "allowed: 'mirror', 'raidz', 'spare', 'log'.")
+        raise InstallError(txt)
+
+    # Create zpool
+    create_pool(pool_name, pool_type, device_paths, zfs_options['force_4k'])
+
+    # Set the mount point of the root filesystem
+    set_mountpoint(pool_name, "/")
+
+    # Set the bootfs property on the descendant root filesystem so the
+    # boot loader knows where to find the operating system.
+    cmd = ["/usr/bin/zpool", "set", "bootfs={0}".format(pool_name), pool_name]
+    call(cmd, fatal=True)
+
+    # Create zpool.cache file
+    cmd = ["/usr/bin/zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
+    call(cmd, fatal=True)
+
+    if use_home:
+        # Create home zvol
+        logging.debug("Creating zfs subvolume 'home'")
+        create_vol(pool_name, "home")
+        set_mountpoint(
+            "{0}/home".format(pool_name), "/home")
+        # ZFS automounts, we have to unmount /install/home and delete the folder,
+        # otherwise we won't be able to import the zfs pool
+        home_path = "{0}/home".format(DEST_DIR)
+        call(["/usr/bin/zfs", "umount", home_path], warning=False)
+        shutil.rmtree(path=home_path, ignore_errors=True)
+
+    # Create swap zvol (it has to be named "swap")
+    swap_size = get_swap_size(pool_name)
+    create_vol(pool_name, "swap", swap_size)
+
+    settle()
+
+    # Export the pool
+    # Makes the kernel to flush all pending data to disk, writes data to
+    # the disk acknowledging that the export was done, and removes all
+    # knowledge that the storage pool existed in the system
+    logging.debug("Exporting pool %s...", pool_name)
+    cmd = ["/usr/bin/zpool", "export", "-f", pool_name]
+    call(cmd, fatal=True)
+
+    # Let's get the id of the pool (to import it)
+    pool_id, _status = get_pool_id(pool_name)
+
+    if not pool_id:
+        # Something bad has happened. Will use the pool name instead.
+        logging.warning("Can't get %s zpool id", pool_name)
+        pool_id = pool_name
+
+    # Finally, re-import the pool by-id
+    # DEST_DIR must be empty or importing will fail!
+    logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
+    cmd = ["/usr/bin/zpool", "import", "-f", "-d", "/dev/disk/by-id", "-R", DEST_DIR, pool_id]
+    call(cmd, fatal=True)
+
+    # Copy created cache file to destination
+    try:
+        dst_dir = os.path.join(DEST_DIR, "etc/zfs")
+        os.makedirs(dst_dir, mode=0o755, exist_ok=True)
+        src = "/etc/zfs/zpool.cache"
+        dst = os.path.join(dst_dir, "zpool.cache")
+        shutil.copyfile(src, dst)
+    except OSError as copy_error:
+        logging.warning(copy_error)
+
+    # Store hostid
+    hostid = call(["/usr/bin/hostid"])
+    if hostid:
+        hostid_path = os.path.join(DEST_DIR, "etc/hostid")
+        with open(hostid_path, 'w') as hostid_file:
+            hostid_file.write("{0}\n".format(hostid))
+
+    return pool_id

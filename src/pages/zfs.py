@@ -23,13 +23,11 @@
 import os
 import logging
 import math
-import shutil
 
 from pages.gtkbasebox import GtkBaseBox
 
 import misc.extra as misc
-from misc.extra import InstallError, random_generator
-from misc.run_cmd import call
+from misc.extra import random_generator
 
 import show_message as show
 from installation import action
@@ -39,7 +37,7 @@ from installation import wrapper
 import parted3.fs_module as fs
 
 from widgets.zfs_treeview import ZFSTreeview
-import zfs_manager
+import zfs_manager as zfs
 
 # When testing, no _() is available
 try:
@@ -481,7 +479,7 @@ class InstallationZFS(GtkBaseBox):
         wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
 
         # Get partition full path
-        self.devices['boot'] = zfs_manager.get_partition_path(device_path, part_num)
+        self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
         self.fs_devices[self.devices['boot']] = "ext4"
         self.mount_devices['/boot'] = self.devices['boot']
         # mkfs
@@ -499,7 +497,7 @@ class InstallationZFS(GtkBaseBox):
             wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
 
             # Get partition full path
-            self.devices['efi'] = zfs_manager.get_partition_path(
+            self.devices['efi'] = zfs.get_partition_path(
                 device_path, part_num)
             self.fs_devices[self.devices['efi']] = "vfat"
             self.mount_devices['/boot/efi'] = self.devices['efi']
@@ -512,7 +510,7 @@ class InstallationZFS(GtkBaseBox):
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
 
             # Get partition full path
-            self.devices['boot'] = zfs_manager.get_partition_path(device_path, part_num)
+            self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
             self.fs_devices[self.devices['boot']] = "ext4"
             self.mount_devices['/boot'] = self.devices['boot']
             # mkfs
@@ -527,7 +525,7 @@ class InstallationZFS(GtkBaseBox):
             wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
 
             # Get partition full path
-            self.devices['boot'] = zfs_manager.get_partition_path(
+            self.devices['boot'] = zfs.get_partition_path(
                 device_path, part_num)
             self.fs_devices[self.devices['boot']] = "vfat"
             self.mount_devices['/boot'] = self.devices['boot']
@@ -563,7 +561,7 @@ class InstallationZFS(GtkBaseBox):
             fs_boot = "ext4"
 
         # Get partition full path
-        self.devices['boot'] = zfs_manager.get_partition_path(device_path, 1)
+        self.devices['boot'] = zfs.get_partition_path(device_path, 1)
         self.fs_devices[self.devices['boot']] = fs_boot
         self.mount_devices['/boot'] = self.devices['boot']
         # mkfs
@@ -586,13 +584,13 @@ class InstallationZFS(GtkBaseBox):
         logging.debug("Configuring ZFS in %s", ",".join(device_paths))
 
         # Read all preexisting zfs pools. If there's an antergos one, delete it.
-        zfs_manager.do_destroy_zfs_pools()
+        zfs.destroy_pools()
 
         # Wipe all disks that will be part of the installation.
         # This cannot be undone!
-        zfs_manager.zfs_init_device(device_paths[0], self.zfs_options['scheme'])
+        zfs.init_device(device_paths[0], self.zfs_options['scheme'])
         for device_path in device_paths[1:]:
-            zfs_manager.zfs_init_device(device_path, 'GPT')
+            zfs.init_device(device_path, 'GPT')
 
         device_path = device_paths[0]
         solaris_partition_number = -1
@@ -614,203 +612,25 @@ class InstallationZFS(GtkBaseBox):
             part_num = 2
 
         # Get partition full path
-        self.devices['root'] = zfs_manager.get_partition_path(device_path, part_num)
+        self.devices['root'] = zfs.get_partition_path(device_path, part_num)
         # self.fs_devices[self.devices['root']] = "zfs"
         self.mount_devices['/'] = self.devices['root']
 
-        zfs_manager.settle()
+        zfs.settle()
 
-        self.create_zfs(solaris_partition_number)
-
-
-
-
-
-
-    def create_zfs_vol(self, pool_name, vol_name, swap_size=None):
-        """ Creates zfs vol inside the pool
-            if size is given, it should be in GB.
-            If vol_name is "swap" it will be setup as a swap space """
-
-        cmd = ["/usr/bin/zfs", "create"]
-
-        if swap_size:
-            # If size is given, mountpoint cannot be set (zfs)
-            # Round up
-            swap_size = math.ceil(swap_size)
-            logging.debug("Creating a zfs vol %s/%s of size %dGB",
-                          pool_name, vol_name, swap_size)
-            cmd.extend(["-V", "{0}G".format(swap_size)])
-        else:
-            logging.debug("Creating a zfs vol %s/%s", pool_name, vol_name)
-            if vol_name == "swap":
-                cmd.extend(["-o", "mountpoint=none"])
-            else:
-                cmd.extend(
-                    ["-o", "mountpoint={0}/{1}".format(DEST_DIR, vol_name)])
-
-        cmd.append("{0}/{1}".format(pool_name, vol_name))
-        call(cmd, fatal=True)
-
-        if vol_name == "swap":
-            self.create_swap(pool_name, vol_name)
-
-    def create_swap(self, pool_name, vol_name):
-        """ mkswap on a zfs zvol """
-
-        zvol = "{0}/{1}".format(pool_name, vol_name)
-
-        cmd = ["/usr/bin/zfs", "set", "com.sun:auto-snapshot=false", zvol]
-        call(cmd)
-
-        cmd = ["/usr/bin/zfs", "set", "sync=always", zvol]
-        call(cmd)
-
-        path = "/dev/zvol/{0}/swap".format(pool_name)
-        if os.path.exists(path):
-            logging.debug("Formatting swap (%s)", path)
-            cmd = ["mkswap", "-f", path]
-            if call(cmd):
-                self.devices["swap"] = path
-                self.fs_devices[path] = "swap"
-                self.mount_devices["swap"] = path
-        else:
-            logging.warning("Can't find %s to create swap on it", path)
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def create_zfs(self, solaris_partition_number):
-        """ Setup ZFS system """
-
-        # Make sure the ZFS modules are loaded
-        call(["modprobe", "zfs"])
-
-        # Empty DEST_DIR or zfs pool will fail to mount on it
-        # (this will delete preexisting installing attempts, too)
-        if os.path.exists(DEST_DIR):
-            zfs_manager.clear_dest_dir()
-
-        device_paths = self.zfs_options["device_paths"]
-        if not device_paths:
-            txt = _("No devices were selected for the ZFS pool")
-            raise InstallError(txt)
-
-        # Using by-id (recommended) does not work atm
-        # https://github.com/zfsonlinux/zfs/issues/3708
-
-        # Can't use the whole first disk, just the dedicated zfs partition
-        device_paths[0] = zfs_manager.get_partition_path(
-            device_paths[0],
-            solaris_partition_number)
-
-        line = ", ".join(device_paths)
-        logging.debug("Cnchi will create a ZFS pool using %s devices", line)
-
-        # Just in case...
-        if os.path.exists("/etc/zfs/zpool.cache"):
-            os.remove("/etc/zfs/zpool.cache")
-
-        try:
-            os.mkdir(DEST_DIR, mode=0o755)
-        except OSError:
-            pass
-
-        pool_name = self.zfs_options['pool_name']
-        pool_type = self.zfs_options['pool_type']
-
-        if not zfs_manager.zfs_pool_name_is_valid(pool_name):
-            txt = _(
-                "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
-                "hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' "
-                "followed by a number (c[0-9]) are not allowed. The following names are also not "
-                "allowed: 'mirror', 'raidz', 'spare', 'log'.")
-            raise InstallError(txt)
-
-        # Create zpool
-        zfs_manager.create_zfs_pool(
-            pool_name, pool_type, device_paths, self.zfs_options['force_4k'])
-
-        # Set the mount point of the root filesystem
-        zfs_manager.set_zfs_mountpoint(pool_name, "/")
-
-        # Set the bootfs property on the descendant root filesystem so the
-        # boot loader knows where to find the operating system.
-        cmd = ["/usr/bin/zpool", "set", "bootfs={0}".format(pool_name), pool_name]
-        call(cmd, fatal=True)
-
-        # Create zpool.cache file
-        cmd = ["/usr/bin/zpool", "set", "cachefile=/etc/zfs/zpool.cache", pool_name]
-        call(cmd, fatal=True)
-
-        if self.settings.get('use_home'):
-            # Create home zvol
-            logging.debug("Creating zfs subvolume 'home'")
-            self.create_zfs_vol(pool_name, "home")
-            zfs_manager.set_zfs_mountpoint("{0}/home".format(pool_name), "/home")
-            # ZFS automounts, we have to unmount /install/home and delete the folder,
-            # otherwise we won't be able to import the zfs pool
-            home_path = "{0}/home".format(DEST_DIR)
-            call(["/usr/bin/zfs", "umount", home_path], warning=False)
-            shutil.rmtree(path=home_path, ignore_errors=True)
-
-        # Create swap zvol (it has to be named "swap")
-        swap_size = zfs_manager.zfs_get_swap_size(pool_name)
-        self.create_zfs_vol(pool_name, "swap", swap_size)
-
-        zfs_manager.settle()
-
-        # Export the pool
-        # Makes the kernel to flush all pending data to disk, writes data to
-        # the disk acknowledging that the export was done, and removes all
-        # knowledge that the storage pool existed in the system
-        logging.debug("Exporting pool %s...", pool_name)
-        cmd = ["/usr/bin/zpool", "export", "-f", pool_name]
-        call(cmd, fatal=True)
-
-        # Let's get the id of the pool (to import it)
-        pool_id, _status = zfs_manager.get_pool_id(pool_name)
-
-        if not pool_id:
-            # Something bad has happened. Will use the pool name instead.
-            logging.warning("Can't get %s zpool id", pool_name)
-            pool_id = pool_name
+        use_home = self.settings.get('use_home')
+        pool_id = zfs.setup(
+            solaris_partition_number, self.zfs_options, use_home)
 
         # Save pool id
         self.settings.set("zfs_pool_id", pool_id)
 
-        # Finally, re-import the pool by-id
-        # DEST_DIR must be empty or importing will fail!
-        logging.debug("Importing pool %s (%s)...", pool_name, pool_id)
-        cmd = [
-            "/usr/bin/zpool", "import", "-f", "-d", "/dev/disk/by-id", "-R", DEST_DIR, pool_id]
-        call(cmd, fatal=True)
-
-        # Copy created cache file to destination
-        try:
-            dst_dir = os.path.join(DEST_DIR, "etc/zfs")
-            os.makedirs(dst_dir, mode=0o755, exist_ok=True)
-            src = "/etc/zfs/zpool.cache"
-            dst = os.path.join(dst_dir, "zpool.cache")
-            shutil.copyfile(src, dst)
-        except OSError as copy_error:
-            logging.warning(copy_error)
-
-        # Store hostid
-        hostid = call(["hostid"])
-        if hostid:
-            hostid_path = os.path.join(DEST_DIR, "etc/hostid")
-            with open(hostid_path, "w") as hostid_file:
-                hostid_file.write("{0}\n".format(hostid))
+        # Store swap info
+        pool_name = self.zfs_options['pool_name']
+        swap_path = "/dev/zvol/{0}/swap".format(pool_name)
+        self.devices['swap'] = swap_path
+        self.fs_devices[swap_path] = 'swap'
+        self.mount_devices['swap'] = swap_path
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
