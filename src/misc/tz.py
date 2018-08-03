@@ -248,13 +248,13 @@ class Location():
         self.latitude = _parse_position(latitude, 2)
         self.longitude = _parse_position(longitude, 3)
 
-        # Grab md5sum of the timezone file for later comparison
+        # Calculate the sha256 sum of the timezone file for later comparison
         try:
             zone_path = os.path.join('/usr/share/zoneinfo', self.zone)
             with open(zone_path, 'rb') as tz_file:
-                self.md5sum = hashlib.md5(tz_file.read()).digest()
+                self.sha256sum = hashlib.sha256(tz_file.read()).digest()
         except IOError:
-            self.md5sum = None
+            self.sha256sum = None
 
         try:
             today = datetime.datetime.today()
@@ -311,14 +311,14 @@ class _Database():
             # Sometimes we'll encounter timezones that aren't really
             # city-zones, like "US/Eastern" or "Mexico/General".  So first,
             # we check if the timezone is known.  If it isn't, we search for
-            # one with the same md5sum and make a reference to it
+            # one with the same sha256 sum and make a reference to it
             try:
                 zone_path = os.path.join('/usr/share/zoneinfo', timezone)
                 with open(zone_path, 'rb') as tz_file:
-                    md5sum = hashlib.md5(tz_file.read()).digest()
+                    sha256sum = hashlib.sha256(tz_file.read()).digest()
 
                 for loc in self.locations:
-                    if md5sum == loc.md5sum:
+                    if sha256sum == loc.sha256sum:
                         self.tz_to_loc[timezone] = loc
                         return loc
             except IOError:

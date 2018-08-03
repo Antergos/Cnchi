@@ -40,9 +40,8 @@ import argparse
 
 from collections import deque
 
-import xml.dom.minidom
-
 import defusedxml.cElementTree as elementTree
+import defusedxml.minidom as minidom
 
 import pyalpm
 
@@ -147,7 +146,7 @@ class Metalink():
     """ Metalink class """
 
     def __init__(self):
-        self.doc = xml.dom.minidom.getDOMImplementation().createDocument(
+        self.doc = minidom.getDOMImplementation().createDocument(
             None, "metalink", None)
         self.doc.documentElement.setAttribute(
             'xmlns', "urn:ietf:params:xml:ns:metalink")
