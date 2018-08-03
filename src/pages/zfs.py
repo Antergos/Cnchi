@@ -464,6 +464,22 @@ class InstallationZFS(GtkBaseBox):
 
     # ZFS Creation starts here -------------------------------------------------
 
+    # BIOS/MBR (Grub)
+    # 1 Solaris (bf00)
+
+    # BIOS/GPT (Grub)
+    # 1 2M BIOS boot partition (ef02)
+    # 2 Solaris (bf00)
+
+    # UEFI/GPT (rEFInd / systemd-boot)
+    # 1 512M EFI boot partition (ef00) (/boot) (vfat)
+    # 2 Solaris (bf00)
+
+    # UEFI/GPT (Grub)
+    # 1 512M EFI boot partition (ef00) (/boot/efi) (vfat)
+    # 2 512M boot partition (/boot) (ext4)
+    # 3 Solaris (bf00)
+
     def gpt_boot_partition(self, device_path, part_num, ptype='8300', as_efi=False):
         """ Create and format BOOT or EFI partitions (512MB) in /boot or in /boot/efi """
         if ptype == 'EF00':
