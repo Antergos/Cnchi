@@ -405,8 +405,6 @@ class InstallationZFS(GtkBaseBox):
 
         return True
 
-    # ZFS Creation starts here -------------------------------------------------
-
     def append_change(self, action_type, device, info=""):
         """ Add change for summary screen """
         if action_type == "create":
@@ -464,23 +462,35 @@ class InstallationZFS(GtkBaseBox):
 
         return self.change_list
 
-    def create_boot_partition(self, device_path, part_num, filesystem, ptype):
-        """ Create and format BOOT partition (512MB) in /boot """
-        wrapper.sgdisk_new(device_path, part_num, 'ANTERGOS_BOOT', 512, ptype)
-        self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
-        self.fs_devices[self.devices['boot']] = filesystem
-        self.mount_devices['/boot'] = self.devices['boot']
-        fs.create_fs(self.devices['boot'], filesystem, 'ANTERGOS_BOOT')
+    # ZFS Creation starts here -------------------------------------------------
 
-    def create_efi_partition(self, device_path, part_num):
-        """ Create EFI System Partition (ESP) (vfat) in /boot/EFI
-            GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B """
-        wrapper.sgdisk_new(device_path, part_num, 'EFI', 512, 'EF00')
-        filesystem = 'vfat'
-        self.devices['efi'] = zfs.get_partition_path(device_path, part_num)
-        self.fs_devices[self.devices['efi']] = filesystem
-        self.mount_devices['/boot/efi'] = self.devices['efi']
-        fs.create_fs(self.devices['efi'], filesystem, 'EFI')
+    def gpt_boot_partition(self, device_path, part_num, ptype='8300', as_efi=False):
+        """ Create and format BOOT or EFI partitions (512MB) in /boot or in /boot/efi """
+        if ptype == 'EF00':
+            # EFI (/boot or /boot/efi) always uses vfat
+            filesystem = 'vfat'
+        else:
+            # "Normal" /boot uses ext4
+            # (in this case, an EFI partition will be mounted in /boot/efi later)
+            filesystem = 'ext4'
+
+        if as_efi:
+            # An EFI partition in /boot/efi (a ext4 /boot partition will be created later)
+            label = 'EFI'
+            tag = 'efi'
+            mpoint = '/boot/efi'
+            ptype = 'EF00'
+        else:
+            # Boot partition (either ext4 or vfat, depending on partition type above)
+            label = 'ANTERGOS_BOOT'
+            tag = 'boot'
+            mpoint = '/boot'
+
+        wrapper.sgdisk_new(device_path, part_num, label, 512, ptype)
+        self.devices[tag] = zfs.get_partition_path(device_path, part_num)
+        self.fs_devices[self.devices[tag]] = filesystem
+        self.mount_devices[mpoint] = self.devices[tag]
+        fs.create_fs(self.devices[tag], filesystem, label)
 
     def run_format_bios_gpt(self, device_path):
         """ Create partitions and filesystems in a BIOS system using a GPT partition table"""
@@ -492,25 +502,25 @@ class InstallationZFS(GtkBaseBox):
         wrapper.sgdisk_new(device_path, part_num, 'BIOS_BOOT', 2, 'EF02')
         part_num += 1
         # Create Boot Partition /boot (ext4)
-        self.create_boot_partition(device_path, part_num, 'ext4', '8300')
+        self.gpt_boot_partition(device_path, part_num, ptype='8300', as_efi=False)
         part_num += 1
         return part_num
 
     def run_format_uefi_gpt(self, device_path):
         """ Create partitions and filesystems in an UEFI system using a GPT partition table"""
         part_num = 1
+        # Partition type (EFI is EF00)
+        ptype = 'EF00'
         if self.bootloader == 'grub2':
-            # Create /boot/efi (vfat) and /boot (ext4)
-            self.create_efi_partition(device_path, part_num)
+            # First, create an EFI partition /boot/efi (vfat)
+            self.gpt_boot_partition(device_path, part_num, ptype='EF00', as_efi=True)
             part_num += 1
-            # Create boot partition (ext4) /boot
-            self.create_boot_partition(device_path, part_num, 'ext4', '8300')
-            part_num += 1
-        else:
-            # systemd-boot, refind
-            # Create /boot (vfat)
-            self.create_boot_partition(device_path, part_num, 'vfat', 'EF00')
-            part_num += 1
+            ptype = '8300'
+
+        # Create boot partition (ext4) /boot
+        self.gpt_boot_partition(device_path, part_num, ptype)
+        part_num += 1
+
         return part_num
 
     def run_format_mbr(self, device_path):
