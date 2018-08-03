@@ -460,10 +460,9 @@ def setup(solaris_partition_number, zfs_options, use_home):
         # Create home zvol
         logging.debug("Creating zfs subvolume 'home'")
         create_vol(pool_name, "home")
-        set_mountpoint(
-            "{0}/home".format(pool_name), "/home")
+        set_mountpoint("{0}/home".format(pool_name), "/home")
         # ZFS automounts, we have to unmount /install/home and delete the folder,
-        # otherwise we won't be able to import the zfs pool
+        # otherwise we won't be able to import the zfs pool later
         home_path = "{0}/home".format(DEST_DIR)
         call(["/usr/bin/zfs", "umount", home_path], warning=False)
         shutil.rmtree(path=home_path, ignore_errors=True)

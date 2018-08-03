@@ -464,76 +464,52 @@ class InstallationZFS(GtkBaseBox):
 
         return self.change_list
 
+    def create_boot_partition(self, device_path, part_num, filesystem, ptype):
+        """ Create and format BOOT partition (512MB) in /boot """
+        wrapper.sgdisk_new(device_path, part_num, 'ANTERGOS_BOOT', 512, ptype)
+        self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
+        self.fs_devices[self.devices['boot']] = filesystem
+        self.mount_devices['/boot'] = self.devices['boot']
+        fs.create_fs(self.devices['boot'], filesystem, 'ANTERGOS_BOOT')
+
+    def create_efi_partition(self, device_path, part_num):
+        """ Create EFI System Partition (ESP) (vfat) in /boot/EFI
+            GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B """
+        wrapper.sgdisk_new(device_path, part_num, 'EFI', 512, 'EF00')
+        filesystem = 'vfat'
+        self.devices['efi'] = zfs.get_partition_path(device_path, part_num)
+        self.fs_devices[self.devices['efi']] = filesystem
+        self.mount_devices['/boot/efi'] = self.devices['efi']
+        fs.create_fs(self.devices['efi'], filesystem, 'EFI')
+
     def run_format_bios_gpt(self, device_path):
         """ Create partitions and filesystems in a BIOS system using a GPT partition table"""
-        # BIOS and GPT
         # Create BIOS Boot Partition
         # GPT GUID: 21686148-6449-6E6F-744E-656564454649
         # This partition is not required if the system is UEFI based,
         # as there is no such embedding of the second-stage code in that case
         part_num = 1
-        wrapper.sgdisk_new(device_path, part_num, "BIOS_BOOT", 2, "EF02")
+        wrapper.sgdisk_new(device_path, part_num, 'BIOS_BOOT', 2, 'EF02')
         part_num += 1
-
-        # Create BOOT partition
-        wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
-
-        # Get partition full path
-        self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
-        self.fs_devices[self.devices['boot']] = "ext4"
-        self.mount_devices['/boot'] = self.devices['boot']
-        # mkfs
-        fs.create_fs(
-            self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+        # Create Boot Partition /boot (ext4)
+        self.create_boot_partition(device_path, part_num, 'ext4', '8300')
         part_num += 1
         return part_num
 
     def run_format_uefi_gpt(self, device_path):
         """ Create partitions and filesystems in an UEFI system using a GPT partition table"""
         part_num = 1
-        if self.bootloader == "grub2":
-            # Create EFI System Partition (ESP)
-            # GPT GUID: C12A7328-F81F-11D2-BA4B-00A0C93EC93B
-            wrapper.sgdisk_new(device_path, part_num, "UEFI_SYSTEM", 200, "EF00")
-
-            # Get partition full path
-            self.devices['efi'] = zfs.get_partition_path(
-                device_path, part_num)
-            self.fs_devices[self.devices['efi']] = "vfat"
-            self.mount_devices['/boot/efi'] = self.devices['efi']
-            # mkfs
-            fs.create_fs(
-                self.devices['efi'], self.fs_devices[self.devices['efi']], "EFI")
+        if self.bootloader == 'grub2':
+            # Create /boot/efi (vfat) and /boot (ext4)
+            self.create_efi_partition(device_path, part_num)
             part_num += 1
-
-            # Create BOOT partition
-            wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "8300")
-
-            # Get partition full path
-            self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
-            self.fs_devices[self.devices['boot']] = "ext4"
-            self.mount_devices['/boot'] = self.devices['boot']
-            # mkfs
-            fs.create_fs(
-                self.devices['boot'],
-                self.fs_devices[self.devices['boot']],
-                "ANTERGOS_BOOT")
+            # Create boot partition (ext4) /boot
+            self.create_boot_partition(device_path, part_num, 'ext4', '8300')
             part_num += 1
         else:
             # systemd-boot, refind
-            # Create BOOT partition
-            wrapper.sgdisk_new(device_path, part_num, "ANTERGOS_BOOT", 512, "EF00")
-
-            # Get partition full path
-            self.devices['boot'] = zfs.get_partition_path(
-                device_path, part_num)
-            self.fs_devices[self.devices['boot']] = "vfat"
-            self.mount_devices['/boot'] = self.devices['boot']
-            # mkfs
-            fs.create_fs(
-                self.devices['boot'],
-                self.fs_devices[self.devices['boot']],
-                "ANTERGOS_BOOT")
+            # Create /boot (vfat)
+            self.create_boot_partition(device_path, part_num, 'vfat', 'EF00')
             part_num += 1
         return part_num
 
@@ -556,17 +532,15 @@ class InstallationZFS(GtkBaseBox):
         # second.
 
         if self.uefi:
-            fs_boot = "vfat"
+            fs_boot = 'vfat'
         else:
-            fs_boot = "ext4"
+            fs_boot = 'ext4'
 
         # Get partition full path
         self.devices['boot'] = zfs.get_partition_path(device_path, 1)
         self.fs_devices[self.devices['boot']] = fs_boot
         self.mount_devices['/boot'] = self.devices['boot']
-        # mkfs
-        fs.create_fs(
-            self.devices['boot'], self.fs_devices[self.devices['boot']], "ANTERGOS_BOOT")
+        fs.create_fs(self.devices['boot'], fs_boot, "ANTERGOS_BOOT")
 
         # The rest of the disk will be of solaris type
         start = end
