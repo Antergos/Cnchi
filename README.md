@@ -9,7 +9,7 @@
 
 ![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)
 
-You are viewing the `0.16.x` branch.
+You are viewing the `0.16.x` branch (development).
 
 ## Current Status
 
@@ -68,6 +68,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - python3
  - python-cairo
  - python-dbus
+ - python-defusedxml
  - python-feedparser
  - python-gobject
  - python-mako
