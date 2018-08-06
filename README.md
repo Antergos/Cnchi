@@ -112,7 +112,7 @@ Then, you can use the run script to test Cnchi. As this is a Installer, you will
 
 How to easy prepare a sane testing environment:
 1. Download Antergos ISO
-2. Create a new VM in Virtualbox, add the live iso and two virtual harddisks
+2. Create a new VM in Virtualbox, add the live iso and a virtual harddisk (two harddisks if you want to cache the downloaded packages)
 3. Run the VM
 4. Cnchi will open, close it.
 5. Remove Cnchi ISO version: `sudo rm -rf /usr/share/cnchi`
