@@ -3,7 +3,7 @@
 #
 #  desktop.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,15 +29,15 @@
 
 """ Desktop screen """
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GdkPixbuf
 import os
 import logging
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GdkPixbuf
+
 import desktop_info
 from pages.gtkbasebox import GtkBaseBox
-
 import misc.extra as misc
 
 CLASS_NAME = "DesktopAsk"
@@ -173,7 +173,7 @@ class DesktopAsk(GtkBaseBox):
         self.select_default_row(desktop_info.NAMES["gnome"])
 
     @staticmethod
-    def listbox_sort_by_name(row1, row2, user_data):
+    def listbox_sort_by_name(row1, row2, _user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
             WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE
@@ -208,13 +208,13 @@ class DesktopAsk(GtkBaseBox):
 
     def set_desktop(self, desktop):
         """ Show desktop info """
-        for key in desktop_info.NAMES.keys():
+        for key in desktop_info.NAMES:
             if desktop_info.NAMES[key] == desktop:
                 self.desktop_choice = key
                 self.translate_ui(self.desktop_choice, set_header=False)
                 return
 
-    def on_listbox_row_selected(self, listbox, listbox_row):
+    def on_listbox_row_selected(self, _listbox, listbox_row):
         """ Someone selected a different row of the listbox
             WARNING: IF LAYOUT IS CHANGED IN desktop.ui THEN THIS SHOULD BE
             CHANGED ACCORDINGLY. """
@@ -248,5 +248,4 @@ except NameError as err:
 
 if __name__ == '__main__':
     from test_screen import _, run
-
     run('DesktopAsk')

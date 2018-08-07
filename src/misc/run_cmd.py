@@ -3,7 +3,7 @@
 #
 # run_cmd.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -36,8 +36,6 @@ import traceback
 import os
 import shutil
 
-from functools import wraps
-
 from misc.extra import InstallError, raised_privileges
 
 DEST_DIR = "/install"
@@ -60,7 +58,7 @@ def ensured_executable(cmd):
         try:
             os.chmod(cmd[0], 0o777)
         except Exception:
-            with raised_privileges() as __:
+            with raised_privileges():
                 os.chmod(cmd[0], 0o777)
 
     return shutil.which(cmd[0]) is not None
@@ -141,7 +139,7 @@ def chroot_call(cmd, chroot_dir=DEST_DIR, fatal=False, msg=None, timeout=None,
             stdin=stdin,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
-        stdout_data, stderr_data = proc.communicate(timeout=timeout)
+        stdout_data, _stderr_data = proc.communicate(timeout=timeout)
         stdout_data = stdout_data.decode().strip()
         if stdout_data:
             logging.debug(stdout_data)

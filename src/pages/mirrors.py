@@ -3,7 +3,7 @@
 #
 # mirrors.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -29,8 +29,8 @@
 
 """ Let advanced users manage mirrorlist files """
 
-
 import logging
+import multiprocessing
 import shutil
 
 import gi
@@ -43,28 +43,23 @@ except ImportError:
     print("No pycairo integration")
 
 import cairo
-
+from pages.gtkbasebox import GtkBaseBox
+from rank_mirrors import RankMirrors
 
 if __name__ == '__main__':
     import sys
     sys.path.append('/usr/share/cnchi/src')
 
-
-from pages.gtkbasebox import GtkBaseBox
-
-
-from rank_mirrors import AutoRankmirrorsProcess
-
-# 6 mirrors for Arch repos and 6 for Antergos repos
-MAX_MIRRORS = 6
-
-DND_ID_LISTBOX_ROW = 6791
-
-if __debug__:
-    def _(message): return message
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class MirrorListBoxRow(Gtk.ListBoxRow):
+    """ Represents a mirror """
     def __init__(self, url, active, switch_cb, drag_cbs):
         super(Gtk.ListBoxRow, self).__init__()
         #self.data = data
@@ -110,32 +105,40 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
         self.handle.drag_source_add_text_targets()
         self.handle.connect("drag-begin", drag_cbs['drag-begin'])
         self.handle.connect("drag-data-get", drag_cbs['drag-data-get'])
-        #self.handle.connect("drag-data-delete", self.on_drag_data_delete)
-        #self.handle.connect("drag-end", self.on_drag_end)
+        #self.handle.connect("drag-data-delete", self.drag_data_delete)
+        #self.handle.connect("drag-end", self.drag_end)
 
         # Destination
         self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect("drag-data-received", drag_cbs['drag-data-received'])
-        #self.connect("drag-motion", self.on_drag_motion);
-        #self.connect("drag-crop", self.on_drag_crop);
+        #self.connect("drag-motion", self.drag_motion);
+        #self.connect("drag-crop", self.drag_crop);
 
     def is_active(self):
+        """ Returns if the mirror is active """
         return self.switch.get_active()
 
 
 class MirrorListBox(Gtk.ListBox):
+    """ List that stores all mirrors """
     __gsignals__ = {
         'switch-activated': (GObject.SIGNAL_RUN_FIRST, None, ())
     }
 
-    def __init__(self, mirrors_file_path):
+    # 6 mirrors for Arch repos and 6 for Antergos repos
+    MAX_MIRRORS = 6
+    # DND_ID_LISTBOX_ROW = 6791
+
+    def __init__(self, mirrors_file_path, settings):
         super(Gtk.ListBox, self).__init__()
         self.mirrors_file_path = mirrors_file_path
         self.set_selection_mode(Gtk.SelectionMode.NONE)
         # self.set_selection_mode(Gtk.SelectionMode.BROWSE)
         # self.connect("row-selected", self.on_listbox_row_selected)
         # self.sort_func(self.listbox_sort_by_name, None)
+
+        self.settings = settings
 
         # List. Each element is a tuple (url, active)
         self.mirrors = []
@@ -161,8 +164,8 @@ class MirrorListBox(Gtk.ListBox):
         tmp_lines = []
 
         # Use MAX_MIRRORS at max
-        if len(lines) > MAX_MIRRORS:
-            lines = lines[0:MAX_MIRRORS]
+        if len(lines) > MirrorListBox.MAX_MIRRORS:
+            lines = lines[0:MirrorListBox.MAX_MIRRORS]
 
         # Read mirror info and create mirrors list
         for line in lines:
@@ -185,22 +188,21 @@ class MirrorListBox(Gtk.ListBox):
             listboxrow.destroy()
 
         drag_cbs = {
-            'drag-begin': self.on_drag_begin,
-            'drag-data-get': self.on_drag_data_get,
-            'drag-data-received': self.on_drag_data_received
+            'drag-begin': self.drag_begin,
+            'drag-data-get': self.drag_data_get,
+            'drag-data-received': self.drag_data_received
         }
 
         for (url, active) in self.mirrors:
             box = Gtk.Box(spacing=20)
             box.set_name(url)
-            row = MirrorListBoxRow(
-                url, active, self.on_switch_activated, drag_cbs)
+            row = MirrorListBoxRow(url, active, self.switch_activated, drag_cbs)
             self.add(row)
 
     def set_mirror_active(self, url, active):
         """ Changes the active status in our mirrors list """
         for index, item in enumerate(self.mirrors):
-            murl, mact = item
+            murl, _mact = item
             if url == murl:
                 self.mirrors[index] = (url, active)
 
@@ -212,13 +214,14 @@ class MirrorListBox(Gtk.ListBox):
                 active_mirrors.append(url)
         return active_mirrors
 
-    def on_switch_activated(self, switch, gparam):
+    def switch_activated(self, switch, _gparam):
+        """ Mirror activated """
         row = switch.get_ancestor(Gtk.ListBoxRow)
         if row:
             self.set_mirror_active(row.data, switch.get_active())
             self.emit("switch-activated")
 
-    def on_drag_begin(self, widget, drag_context):
+    def drag_begin(self, widget, drag_context):
         """ User starts a drag """
         row = widget.get_ancestor(Gtk.ListBoxRow)
         alloc = row.get_allocation()
@@ -238,7 +241,7 @@ class MirrorListBox(Gtk.ListBox):
         hand_cursor = Gdk.Cursor(Gdk.CursorType.HAND1)
         self.get_window().set_cursor(hand_cursor)
 
-    def on_drag_data_get(self, widget, drag_context, selection_data, info, time):
+    def drag_data_get(self, widget, _drag_context, selection_data, _info, _time):
         """ When drag data is requested by the destination """
         row = widget.get_ancestor(Gtk.ListBoxRow)
         listbox_str = str(self)
@@ -247,7 +250,7 @@ class MirrorListBox(Gtk.ListBox):
         selection_data.set_text(data, len(data))
         self.get_window().set_cursor(None)
 
-    def on_drag_data_received(self, widget, drag_context, x, y, selection_data, info, time):
+    def drag_data_received(self, widget, _drag_context, _pos_x, _pos_y, selection_data, _info, _time):
         """ When drag data is received by the destination """
         data = selection_data.get_text()
         try:
@@ -261,7 +264,24 @@ class MirrorListBox(Gtk.ListBox):
         except (KeyError, ValueError) as err:
             logging.warning(err)
 
-    def save_changes(self):
+    @staticmethod
+    def trim_mirror_url(server_line):
+        """ Get url from full mirrorlist line """
+
+        if not server_line.startswith("Server") or '=' not in server_line:
+            return server_line
+
+        # Get url part
+        url = server_line.split('=')[1].strip()
+
+        # Remove end part to get the FDQN only
+        endstr = "/$repo/os/$arch"
+        if url.endswith(endstr):
+            url = url[:-len(endstr)]
+
+        return url
+
+    def save_changes(self, use_rankmirrors=False):
         """ Save mirrors in mirrors list file """
         # Save a backup if possible
         src = self.mirrors_file_path
@@ -282,10 +302,24 @@ class MirrorListBox(Gtk.ListBox):
                     line = "#" + line
                 mfile.write(line)
 
+        # If this is the Arch mirrorlist and we are not using rankmirrors,
+        # we need to save it to rankmirrors_result in settings
+        arch_mirrors = []
+        if not use_rankmirrors and self.mirrors_file_path == "/etc/pacman.d/mirrorlist":
+            for (url, active) in self.mirrors:
+                if active:
+                    arch_mirrors.append(self.trim_mirror_url(url))
+            self.settings.set('rankmirrors_result', arch_mirrors)
+
 
 class Mirrors(GtkBaseBox):
     """ Page that shows mirrolists so the user can arrange them manually """
-    def __init__(self, params, prev_page="features", next_page="installation_ask"):
+
+    MIRRORLISTS = [
+        "/etc/pacman.d/mirrorlist",
+        "/etc/pacman.d/antergos-mirrorlist"]
+
+    def __init__(self, params, prev_page="cache", next_page="installation_ask"):
         super().__init__(self, params, "mirrors", prev_page, next_page)
 
         # Set up lists
@@ -295,17 +329,13 @@ class Mirrors(GtkBaseBox):
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
         self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
 
-        mirror_files = ["/etc/pacman.d/mirrorlist",
-                        "/etc/pacman.d/antergos-mirrorlist"]
-
-        for mirror_file in mirror_files:
-            mirror_listbox = MirrorListBox(mirror_file)
-            mirror_listbox.connect(
-                "switch-activated", self.on_switch_activated)
+        for mirror_file in Mirrors.MIRRORLISTS:
+            mirror_listbox = MirrorListBox(mirror_file, self.settings)
+            mirror_listbox.connect("switch-activated", self.switch_activated)
             self.listboxes.append(mirror_listbox)
 
-        for index, sw in enumerate(self.scrolledwindows):
-            sw.add(self.listboxes[index])
+        for index, scrolled_window in enumerate(self.scrolledwindows):
+            scrolled_window.add(self.listboxes[index])
 
         self.listboxes_box = self.ui.get_object("listboxes_box")
 
@@ -315,34 +345,37 @@ class Mirrors(GtkBaseBox):
         # Boolean variable to check if rank_mirrors has already been run
         self.rank_mirrors_launched = False
 
-    def on_switch_activated(self, widget):
+    def switch_activated(self, _widget):
         """ A mirror has been activated/deactivated. We must check if
         at least there is one mirror active for each list """
         self.check_active_mirrors()
 
     def check_active_mirrors(self):
         """ Checks if at least there is one mirror active for each list """
-        ok = True
+        ok_to_proceed = True
         for listbox in self.listboxes:
-            if len(listbox.get_active_mirrors()) == 0:
-                ok = False
-        self.forward_button.set_sensitive(ok)
+            if not listbox.get_active_mirrors():
+                ok_to_proceed = False
+        self.forward_button.set_sensitive(ok_to_proceed)
 
-    def on_rank_radiobutton_toggled(self, widget):
+    def on_rank_radiobutton_toggled(self, _widget):
+        """ Use rankmirrors """
         self.use_rankmirrors = True
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_leave_radiobutton_toggled(self, widget):
+    def on_leave_radiobutton_toggled(self, _widget):
+        """ Do not modify mirror lists """
         self.use_rankmirrors = False
         self.use_listboxes = False
         self.forward_button.set_sensitive(True)
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_user_radiobutton_toggled(self, widget):
+    def on_user_radiobutton_toggled(self, _widget):
+        """ Let user choose mirrorlist ordering """
         self.use_rankmirrors = False
         self.use_listboxes = True
         self.show_all()
@@ -350,16 +383,18 @@ class Mirrors(GtkBaseBox):
         self.listboxes_box.set_sensitive(True)
 
     def start_rank_mirrors(self):
-        # Launch rank mirrors process to optimize Arch and Antergos mirrorlists
-        # As user can come and go from/to this screen, we must get sure he/she
-        # has not already run the AutoRankmirrorsProcess before
+        """ Launch rank mirrors process to optimize Arch and Antergos mirrorlists
+            As user can come and go from/to this screen, we must get sure he/she
+            has not already run Rankmirrors before """
         if not self.rank_mirrors_launched:
             logging.debug("Cnchi is ranking your mirrors lists...")
-            proc = AutoRankmirrorsProcess(self.settings)
+            parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
+            # Store parent_conn for later use in ask.py (rankmirrors dialog)
+            proc = RankMirrors(self.settings, child_conn)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()
-            self.process_list.append(proc)
+            self.process_list.append((proc, parent_conn))
             self.rank_mirrors_launched = True
 
     def prepare(self, direction):
@@ -409,13 +444,9 @@ class Mirrors(GtkBaseBox):
             self.start_rank_mirrors()
         if self.use_listboxes:
             for listbox in self.listboxes:
-                listbox.save_changes()
+                listbox.save_changes(self.use_rankmirrors)
         return True
 
     def get_next_page(self):
+        """ Returns next page """
         return self.next_page
-
-
-if __name__ == '__main__':
-    from test_page import run
-    run('mirrors')

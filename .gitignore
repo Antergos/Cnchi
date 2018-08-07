@@ -47,5 +47,7 @@ nosetests.xml
 .idea/*.xml
 
 # Documentation
-*.rst
-*.doctree
+#*.rst
+#*.doctree
+site/
+docs/_build

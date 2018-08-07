@@ -3,8 +3,8 @@
 #
 #  metalink.py
 #
-#  Code from pm2ml Copyright (C) 2012-2013 Xyne
-#  Copyright © 2013-2017 Antergos
+#  Parts of code from pm2ml Copyright (C) 2012-2013 Xyne
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -34,19 +34,16 @@ import logging
 import tempfile
 import os
 
-import xml.dom.minidom as minidom
 import hashlib
 import re
 import argparse
 
 from collections import deque
 
-import pyalpm
+import defusedxml.cElementTree as elementTree
+import defusedxml.minidom as minidom
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError:
-    import xml.etree.ElementTree as eTree
+import pyalpm
 
 MAX_URLS = 15
 
@@ -63,34 +60,32 @@ def get_info(metalink):
     metalink_info = {}
     element = {}
 
-    for event, elem in eTree.iterparse(temp_file.name, events=('start', 'end')):
-        if event == "start":
-            if elem.tag.endswith("file"):
+    for event, elem in elementTree.iterparse(temp_file.name, events=('start', 'end')):
+        if event == 'start':
+            tag = elem.tag.split('}')[1]
+            if tag == 'file':
                 element['filename'] = elem.attrib['name']
-            elif elem.tag.endswith("identity"):
-                element['identity'] = elem.text
-            elif elem.tag.endswith("size"):
-                element['size'] = elem.text
-            elif elem.tag.endswith("version"):
-                element['version'] = elem.text
-            elif elem.tag.endswith("description"):
-                element['description'] = elem.text
-            elif elem.tag.endswith("hash"):
-                element['hash'] = elem.text
-            elif elem.tag.endswith("url"):
+            elif tag == 'hash':
+                hash_type = elem.attrib['type']
+                try:
+                    element['hash'][hash_type] = elem.text
+                except KeyError:
+                    element['hash'] = {hash_type: elem.text}
+            elif tag == 'url':
                 try:
                     element['urls'].append(elem.text)
                 except KeyError:
                     element['urls'] = [elem.text]
-        if event == "end":
-            if elem.tag.endswith("file"):
-                # Limit to MAX_URLS for file
-                if len(element['urls']) > MAX_URLS:
-                    element['urls'] = element['urls'][:MAX_URLS]
-                key = element['identity']
-                metalink_info[key] = element.copy()
-                element.clear()
-                elem.clear()
+            else:
+                element[tag] = elem.text
+        if event == 'end' and elem.tag.endswith('file'):
+            # Limit to MAX_URLS for each file
+            if len(element['urls']) > MAX_URLS:
+                element['urls'] = element['urls'][:MAX_URLS]
+            key = element['identity']
+            metalink_info[key] = element.copy()
+            element.clear()
+            elem.clear()
 
     if os.path.exists(temp_file.name):
         os.remove(temp_file.name)
@@ -101,46 +96,38 @@ def get_info(metalink):
 def create(alpm, package_name, pacman_conf_file):
     """ Creates a metalink to download package_name and its dependencies """
 
-    # options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps", "--needed"]
     options = ["--conf", pacman_conf_file, "--noconfirm", "--all-deps"]
 
-    if package_name is "databases":
+    if package_name == "databases":
         options.append("--refresh")
     else:
         options.append(package_name)
 
-    try:
-        download_queue, not_found, missing_deps = build_download_queue(
-            alpm, args=options)
-    except Exception as ex:
-        template = "Unable to create download queue for package {0}. An exception of type {1} occured. Arguments:\n{2!r}"
-        message = template.format(package_name, type(ex).__name__, ex.args)
-        logging.error(message)
-        return None
+    download_queue, not_found, missing_deps = build_download_queue(
+        alpm, args=options)
 
     if not_found:
-        msg = "Can't find these packages: "
-        for pkg_not_found in sorted(not_found):
-            msg = msg + pkg_not_found + " "
+        not_found = sorted(not_found)
+        msg = "Can't find these packages: " + ' '.join(not_found)
         logging.error(msg)
         return None
 
     if missing_deps:
-        msg = "Can't resolve these dependencies: "
-        for missing in sorted(missing_deps):
-            msg = msg + missing + " "
+        missing_deps = sorted(missing_deps)
+        msg = "Can't resolve these dependencies: " + ' '.join(missing_deps)
         logging.error(msg)
         return None
 
-    metalink = download_queue_to_metalink(download_queue)
+    if download_queue:
+        metalink = download_queue_to_metalink(download_queue)
+        return metalink
 
-    return metalink
+    logging.error("Unable to create download queue for package %s", package_name)
+    return None
 
-
-""" From here comes modified code from pm2ml
-    pm2ml is Copyright (C) 2012-2013 Xyne
-    More info: http://xyne.archlinux.ca/projects/pm2ml """
-
+# From here comes modified code from pm2ml
+# pm2ml is Copyright (C) 2012-2013 Xyne
+# More info: http://xyne.archlinux.ca/projects/pm2ml
 
 def download_queue_to_metalink(download_queue):
     """ Converts a download_queue object to a metalink """
@@ -155,11 +142,12 @@ def download_queue_to_metalink(download_queue):
     return metalink
 
 
-class Metalink(object):
+class Metalink():
     """ Metalink class """
 
     def __init__(self):
-        self.doc = minidom.getDOMImplementation().createDocument(None, "metalink", None)
+        self.doc = minidom.getDOMImplementation().createDocument(
+            None, "metalink", None)
         self.doc.documentElement.setAttribute(
             'xmlns', "urn:ietf:params:xml:ns:metalink")
         self.files = self.doc.documentElement
@@ -213,19 +201,20 @@ class Metalink(object):
         self.files.appendChild(file_)
         self.add_urls(file_, urls)
 
-    def add_db(self, db, sigs=False):
+    def add_db(self, database, sigs=False):
         """Add a sync db."""
         file_ = self.doc.createElement("file")
-        name = db.name + '.db'
+        name = database.name + '.db'
         file_.setAttribute("name", name)
         self.files.appendChild(file_)
-        urls = list(os.path.join(url, db.name + '.db') for url in db.servers)
+        urls = list(os.path.join(url, database.name + '.db')
+                    for url in database.servers)
         self.add_urls(file_, urls)
         if sigs:
             self.add_file(name + '.sig', (u + '.sig' for u in urls))
 
 
-class PkgSet(object):
+class PkgSet():
     """ Represents a set of packages """
 
     def __init__(self, pkgs=None):
@@ -240,6 +229,7 @@ class PkgSet(object):
         return 'PkgSet({0})'.format(repr(self.pkgs))
 
     def add(self, pkg):
+        """ Adds package info to the set """
         self.pkgs[pkg.name] = pkg
 
     def __and__(self, other):
@@ -262,14 +252,14 @@ class PkgSet(object):
         return pkg.name in self.pkgs
 
     def __iter__(self):
-        for v in self.pkgs.values():
-            yield v
+        for value in self.pkgs.values():
+            yield value
 
     def __len__(self):
         return len(self.pkgs)
 
 
-class DownloadQueue(object):
+class DownloadQueue():
     """ Represents a download queue """
 
     def __init__(self):
@@ -282,14 +272,18 @@ class DownloadQueue(object):
     def __nonzero__(self):
         return self.dbs or self.sync_pkgs
 
-    def add_db(self, db, sigs=False):
-        self.dbs.append((db, sigs))
+    def add_db(self, database, sigs=False):
+        """ Adds db info and signatures to the queue """
+        self.dbs.append((database, sigs))
 
     def add_sync_pkg(self, pkg, urls, sigs=False):
+        """ Adds package and its urls to the queue """
         self.sync_pkgs.append((pkg, urls, sigs))
 
 
 def parse_args(args):
+    """ Parse arguments to build_download_queue function
+        These arguments mimic pacman ones """
     parser = argparse.ArgumentParser()
 
     parser.add_argument('pkgs', nargs='*', default=[], metavar='<pkgname>',
@@ -314,107 +308,151 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
+def get_antergos_repo_pkgs(alpm_handle):
+    """ Returns pkgs from Antergos groups (mate, mate-extra) and
+        the antergos db info """
+
+    antdb = None
+    for database in alpm_handle.get_syncdbs():
+        if database.name == 'antergos':
+            antdb = database
+            break
+
+    if not antdb:
+        logging.error("Cannot sync Antergos repository database!")
+        return {}, None
+
+    group_names = ['mate', 'mate-extra']
+    groups = []
+    for group_name in group_names:
+        group = antdb.read_grp(group_name)
+        if not group:
+            # Group does not exist
+            group = ['None', []]
+        groups.append(group)
+
+    repo_pkgs = {
+        pkg for group in groups
+        for pkg in group[1] if group}
+
+    return repo_pkgs, antdb
+
+
+def resolve_deps(alpm_handle, other, alldeps):
+    """ Resolve dependencies """
+    missing_deps = []
+    queue = deque(other)
+    local_cache = alpm_handle.get_localdb().pkgcache
+    syncdbs = alpm_handle.get_syncdbs()
+    seen = set(queue)
+    while queue:
+        pkg = queue.popleft()
+        for dep in pkg.depends:
+            if pyalpm.find_satisfier(local_cache, dep) is None or alldeps:
+                for database in syncdbs:
+                    prov = pyalpm.find_satisfier(database.pkgcache, dep)
+                    if prov:
+                        other.add(prov)
+                        if prov.name not in seen:
+                            seen.add(prov.name)
+                            queue.append(prov)
+                        break
+                else:
+                    missing_deps.append(dep)
+    return other, missing_deps
+
+
+def create_package_set(requested, ant_repo_pkgs, antdb, alpm_handle):
+    """ Create package set from requested set """
+
+    found = set()
+    other = PkgSet()
+
+    for pkg in requested:
+        for database in alpm_handle.get_syncdbs():
+            # if pkg is in antergos repo, fetch it from it (instead of another repo)
+            # pkg should be sourced from the antergos repo only.
+            if antdb and pkg in ant_repo_pkgs and database.name != 'antergos':
+                database = antdb
+
+            syncpkg = database.get_pkg(pkg)
+
+            if syncpkg:
+                other.add(syncpkg)
+                break
+            else:
+                syncgrp = database.read_grp(pkg)
+                if syncgrp:
+                    found.add(pkg)
+                    #other_grp |= PkgSet(syncgrp[1])
+                    other |= PkgSet(syncgrp[1])
+                    break
+
+    return found, other
+
 def build_download_queue(alpm, args=None):
     """ Function to build a download queue.
         Needs a pkgname in args """
 
     pargs = parse_args(args)
 
+    requested = set(pargs.pkgs)
+
     handle = alpm.get_handle()
     conf = alpm.get_config()
 
-    requested = set(pargs.pkgs)
-    other = PkgSet()
     missing_deps = list()
-    found = set()
 
-    antdb = [db for db in handle.get_syncdbs() if 'antergos' == db.name]
-    antdb = antdb[0]
+    ant_repo_pkgs, antdb = get_antergos_repo_pkgs(handle)
 
-    one_repo_groups_names = ['cinnamon', 'mate', 'mate-extra']
-    one_repo_groups = []
-    for one_repo_group_name in one_repo_groups_names:
-        grp = antdb.read_grp(one_repo_group_name)
-        if not grp:
-            grp = ['None', []]
-            logging.warning(
-                "Error reading group '%s' from the antergos repo db",
-                one_repo_group_name)
-        one_repo_groups.append(grp)
+    if not antdb:
+        logging.error("Cannot load antergos repository database")
+        return None, None, None
 
-    one_repo_pkgs = {pkg for one_repo_group in one_repo_groups
-                    for pkg in one_repo_group[1] if one_repo_group}
-        
-    for pkg in requested:
-        other_grp = PkgSet()
-        for db in handle.get_syncdbs():
-            if pkg in one_repo_pkgs and 'antergos' != db.name:
-                # pkg should be sourced from the antergos repo only.
-                db = antdb
-
-            syncpkg = db.get_pkg(pkg)
-
-            if syncpkg:
-                other.add(syncpkg)
-                break
-            else:
-                syncgrp = db.read_grp(pkg)
-                if syncgrp:
-                    found.add(pkg)
-                    other_grp |= PkgSet(syncgrp[1])
-                    break
-        else:
-            other |= other_grp
+    found, other = create_package_set(requested, ant_repo_pkgs, antdb, handle)
 
     # foreign_names = requested - set(x.name for x in other)
 
     # Resolve dependencies.
     if other and not pargs.nodeps:
-        queue = deque(other)
-        local_cache = handle.get_localdb().pkgcache
-        syncdbs = handle.get_syncdbs()
-        seen = set(queue)
-        while queue:
-            pkg = queue.popleft()
-            for dep in pkg.depends:
-                if pyalpm.find_satisfier(local_cache, dep) is None or pargs.alldeps:
-                    for db in syncdbs:
-                        prov = pyalpm.find_satisfier(db.pkgcache, dep)
-                        if prov is not None:
-                            other.add(prov)
-                            if prov.name not in seen:
-                                seen.add(prov.name)
-                                queue.append(prov)
-                            break
-                    else:
-                        missing_deps.append(dep)
+        other, missing_deps = resolve_deps(handle, other, pargs.alldeps)
 
     found |= set(other.pkgs)
     not_found = requested - found
     if pargs.needed:
         other = PkgSet(list(check_cache(conf, other)))
 
+    # Create download queue
     download_queue = DownloadQueue()
 
+    # Add databases (and their signature)
     if pargs.db:
-        for db in handle.get_syncdbs():
+        for database in handle.get_syncdbs():
             try:
-                siglevel = conf[db.name]['SigLevel'].split()[0]
+                siglevel = conf[database.name]['SigLevel'].split()[0]
             except KeyError:
                 siglevel = None
             download_sig = needs_sig(siglevel, pargs.sigs, 'Database')
-            download_queue.add_db(db, download_sig)
+            download_queue.add_db(database, download_sig)
 
+    # Add packages (pkg, url, signature)
     for pkg in other:
         try:
             siglevel = conf[pkg.db.name]['SigLevel'].split()[0]
         except KeyError:
             siglevel = None
         download_sig = needs_sig(siglevel, pargs.sigs, 'Package')
-        urls = set(os.path.join(url, pkg.filename) for url in pkg.db.servers)
+
+        urls = []
+        server_urls = list(pkg.db.servers)
+        for server_url in server_urls:
+            url = os.path.join(server_url, pkg.filename)
+            urls.append(url)
+
         # Limit to MAX_URLS url
         while len(urls) > MAX_URLS:
             urls.pop()
+
         download_queue.add_sync_pkg(pkg, urls, download_sig)
 
     return download_queue, not_found, missing_deps
@@ -425,11 +463,11 @@ def get_checksum(path, typ):
     new_hash = hashlib.new(typ)
     block_size = new_hash.block_size
     try:
-        with open(path, 'rb') as f:
-            buf = f.read(block_size)
+        with open(path, 'rb') as myfile:
+            buf = myfile.read(block_size)
             while buf:
                 new_hash.update(buf)
-                buf = f.read(block_size)
+                buf = myfile.read(block_size)
         return new_hash.hexdigest()
     except FileNotFoundError:
         return -1
@@ -470,14 +508,15 @@ def needs_sig(siglevel, insistence, prefix):
     return False
 
 
-def test():
+def test_module():
+    """ Module test function """
     import gettext
 
     _ = gettext.gettext
 
     formatter = logging.Formatter(
         '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        "%Y-%m-%d %H:%M:%S.%f")
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
@@ -485,35 +524,34 @@ def test():
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
-    import gc
-    import pprint
-    import cnchi.pacman.pac as pac
+    #import gc
+    #import pprint
+    import sys
+    cnchi_path = "/usr/share/cnchi"
+    sys.path.append(cnchi_path)
+    sys.path.append(os.path.join(cnchi_path, "src"))
+    import pacman.pac as pac
 
-    try:
-        pacman = pac.Pac(
-            conf_path="/etc/pacman.conf",
-            callback_queue=None)
+    pacman = pac.Pac(
+        conf_path="/etc/pacman.conf",
+        callback_queue=None)
 
-        for index in range(1, 10000):
-            print("Creating metalink...")
-            meta4 = create(
-                alpm=pacman,
-                package_name="gnome",
-                pacman_conf_file="/etc/pacman.conf")
-            print(get_info(meta4))
-            meta4 = None
-            objects = gc.collect()
-            print("Unreachable objects: ", objects)
-            print("Remaining garbage: ", pprint.pprint(gc.garbage))
+    print("Creating metalink...")
+    meta4 = create(
+        alpm=pacman,
+        #package_name="ipw2200-fw",
+        package_name="base-devel",
+        pacman_conf_file="/etc/pacman.conf")
+    #print(meta4)
+    #print('=' * 20)
+    if meta4:
+        print(get_info(meta4))
+    # print(get_info(meta4)['ipw2200-fw']['urls'])
 
-        pacman.release()
-        del pacman
-    except Exception as ex:
-        template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
-        message = template.format(type(ex).__name__, ex.args)
-        logging.error(message)
+    pacman.release()
+    del pacman
 
 
-''' Test case '''
+# Test case
 if __name__ == '__main__':
-    test()
+    test_module()

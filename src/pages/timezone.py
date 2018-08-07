@@ -3,7 +3,7 @@
 #
 # timezone.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -28,25 +28,29 @@
 
 """ Timezone screen """
 
-import os
+import hashlib
+import http.client
+import logging
 import multiprocessing
+import os
 import queue
+import time
 import urllib.request
 import urllib.error
-import time
-import logging
-import hashlib
 
 import misc.tz as tz
 import misc.extra as misc
-import misc.timezonemap as timezonemap
+import widgets.timezonemap as timezonemap
 from pages.gtkbasebox import GtkBaseBox
 
-if __debug__:
-    def _(x): return x
+import geoip
 
-NM = 'org.freedesktop.NetworkManager'
-NM_STATE_CONNECTED_GLOBAL = 70
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class Timezone(GtkBaseBox):
@@ -63,7 +67,7 @@ class Timezone(GtkBaseBox):
         # Show regions in three columns
         self.combobox_region.set_wrap_width(3)
 
-        self.tzdb = tz.Database()
+        self.tzdb = tz.get_database()
         self.timezone = None
 
         # This is for populate_cities
@@ -101,7 +105,7 @@ class Timezone(GtkBaseBox):
 
         self.header.set_subtitle(_("Select Your Timezone"))
 
-    def on_location_changed(self, tzmap, tz_location):
+    def on_location_changed(self, _tzmap, tz_location):
         """ User changed its location """
         # loc = self.tzdb.get_loc(self.timezone)
         if not tz_location:
@@ -142,13 +146,13 @@ class Timezone(GtkBaseBox):
             # res will be False if the timezone is unrecognised
             self.forward_button.set_sensitive(res)
 
-    def on_zone_combobox_changed(self, widget):
+    def on_zone_combobox_changed(self, _widget):
         """ Zone changed """
         new_zone = self.combobox_zone.get_active_text()
         if new_zone is not None:
             self.populate_cities(new_zone)
 
-    def on_region_combobox_changed(self, widget):
+    def on_region_combobox_changed(self, _widget):
         """ Region changed """
         new_zone = self.combobox_zone.get_active_text()
         new_region = self.combobox_region.get_active_text()
@@ -221,8 +225,7 @@ class Timezone(GtkBaseBox):
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
         proc.name = "timezone"
-        self.process_list.append(proc)
-        # self.global_process_queue.put(proc)
+        self.process_list.append((proc, None))
         proc.start()
 
     @staticmethod
@@ -281,7 +284,7 @@ class Timezone(GtkBaseBox):
 
         return True
 
-    def on_switch_ntp_activate(self, ntp_switch):
+    def on_switch_ntp_activate(self, ntp_switch, _data):
         """ activated/deactivated ntp switch """
         self.settings.set('use_timesyncd', ntp_switch.get_active())
 
@@ -296,6 +299,49 @@ class AutoTimezoneProcess(multiprocessing.Process):
 
     def run(self):
         """ main thread method """
+        # Do not start looking for our timezone until we've reached the
+        # language screen (welcome.py sets timezone_start to true when
+        # next is clicked)
+        while not self.settings.get('timezone_start'):
+            time.sleep(2)
+
+        coords = self.use_geoip()
+        if not coords:
+            msg = "Could not detect your timezone using GeoIP database. Let's use another method."
+            logging.warning(msg)
+            coords = self.use_geo_antergos()
+
+        if coords:
+            logging.debug(
+                _("Timezone (latitude %s, longitude %s) detected."),
+                coords[0],
+                coords[1])
+            self.coords_queue.put(coords)
+        else:
+            logging.warning("Could not detect your timezone!")
+
+    @staticmethod
+    def use_geoip():
+        """ Determine our location using GeoIP database """
+        logging.debug("Getting your location using GeoIP database")
+        location = geoip.GeoIP().get_location()
+        if location:
+            return [location.latitude, location.longitude]
+        return None
+
+    @staticmethod
+    def maybe_wait_for_network():
+        """ Waits until there is an Internet connection available """
+        if not misc.has_connection():
+            logging.warning(
+                "Can't get network status. Cnchi will try again in a moment")
+            while not misc.has_connection():
+                time.sleep(4)  # Wait 4 seconds and try again
+        logging.debug("A working network connection has been detected.")
+
+
+    def use_geo_antergos(self):
+        """ Determine our location using geo.antergos.com """
         # Calculate logo hash
         logo = "data/images/antergos/antergos-logo-mini2.png"
         logo_path = os.path.join(self.settings.get("cnchi"), logo)
@@ -306,23 +352,11 @@ class AutoTimezoneProcess(multiprocessing.Process):
         logo_digest = logo_hasher.digest()
 
         # Wait until there is an Internet connection available
-        if not misc.has_connection():
-            logging.warning(
-                "Can't get network status. Cnchi will try again in a moment")
-            while not misc.has_connection():
-                time.sleep(4)  # Wait 4 seconds and try again
-
-        logging.debug("A working network connection has been detected.")
-
-        # Do not start looking for our timezone until we've reached the
-        # language screen (welcome.py sets timezone_start to true when
-        # next is clicked)
-        while not self.settings.get('timezone_start'):
-            time.sleep(2)
+        self.maybe_wait_for_network()
 
         # OK, now get our timezone
-
         logging.debug("We have connection. Let's get our timezone")
+
         try:
             url = urllib.request.Request(
                 url="http://geo.antergos.com",
@@ -330,20 +364,15 @@ class AutoTimezoneProcess(multiprocessing.Process):
                 headers={"User-Agent": "Antergos Installer", "Connection": "close"})
             with urllib.request.urlopen(url) as conn:
                 coords = conn.read().decode('utf-8').strip()
-
             if coords == "0 0":
                 # Sometimes server returns 0 0, we treat it as an error
                 coords = None
-        except Exception as ex:
-            template = "Error getting timezone coordinates. An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
+            else:
+                coords = coords.split()
+        except (OSError, urllib.error.HTTPError, http.client.HTTPException) as err:
+            template = "Error getting timezone coordinates. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
+            message = template.format(type(err).__name__, err.args)
             logging.error(message)
             coords = None
-
-        if coords:
-            coords = coords.split()
-            logging.debug(
-                _("Timezone (latitude %s, longitude %s) detected."),
-                coords[0],
-                coords[1])
-            self.coords_queue.put(coords)
+        return coords

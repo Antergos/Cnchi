@@ -3,7 +3,7 @@
 #
 # ask.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -30,24 +30,24 @@
 """ Asks which type of installation the user wants to perform """
 
 import os
-import sys
-import queue
-import time
 import logging
 import subprocess
-
-import bootinfo
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+import bootinfo
 from pages.gtkbasebox import GtkBaseBox
-
 import misc.extra as misc
+from browser_window import BrowserWindow
 
-if __debug__:
-    def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 def check_alongside_disk_layout():
@@ -81,20 +81,21 @@ def check_alongside_disk_layout():
 
 
 def load_zfs():
+    """ Load ZFS kernel module """
     cmd = ["modprobe", "zfs"]
     try:
-        with misc.raised_privileges() as __:
+        with misc.raised_privileges():
             subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         logging.debug("ZFS kernel module loaded successfully.")
     except subprocess.CalledProcessError as err:
-        logging.debug(
-            "Can't load ZFS kernel module: %s",
-            err.output.decode())
+        error_msg = err.output.decode().rstrip()
+        logging.warning("%s", error_msg)
         return False
     return True
 
 
 class InstallationAsk(GtkBaseBox):
+    """ Asks user which type of installation wants to perform """
     def __init__(self, params, prev_page="mirrors", next_page=None):
         super().__init__(self, params, "ask", prev_page, next_page)
 
@@ -124,13 +125,13 @@ class InstallationAsk(GtkBaseBox):
         # enable_alongside = self.check_alongside()
         enable_alongside = False
         self.settings.set('enable_alongside', enable_alongside)
-        '''
-        if enable_alongside:
-            msg = "Cnchi will enable the 'alongside' installation mode."
-        else:
-            msg = "Cnchi will NOT enable the 'alongside' installation mode."
-        logging.debug(msg)
-        '''
+
+        #if enable_alongside:
+        #    msg = "Cnchi will enable the 'alongside' installation mode."
+        #else:
+        #    msg = "Cnchi will NOT enable the 'alongside' installation mode."
+        #logging.debug(msg)
+
         # By default, select automatic installation
         self.next_page = "installation_automatic"
         self.settings.set("partition_mode", "automatic")
@@ -141,24 +142,27 @@ class InstallationAsk(GtkBaseBox):
 
         btn_label = _(
             "I need help with an Antergos / Windows(tm) dual boot setup!")
-        self.alongside_wiki_btn = Gtk.Button.new_with_label(btn_label)
-        self.alongside_wiki_btn.connect(
-            'clicked', self.on_alongside_wiki_button_clicked)
+        btn = Gtk.Button.new_with_label(btn_label)
+        btn.connect(
+            'clicked', self.alongside_wiki_button_clicked)
         ask_box = self.ui.get_object("ask")
-        ask_box.pack_start(self.alongside_wiki_btn, True, False, 0)
+        ask_box.pack_start(btn, True, False, 0)
 
-    def on_alongside_wiki_button_clicked(self, widget, data=None):
+        self.browser = None
+
+    def alongside_wiki_button_clicked(self, _widget, _data=None):
+        """ Shows dual installation wiki page in a browser window  """
         try:
-            from browser_window import BrowserWindow
             self.browser = BrowserWindow("Antergos Wiki - Dual Boot")
-            url = "https://antergos.com/wiki/install/how-to-dual-boot-antergos-windows-uefi-expanded-by-linuxhat/"
+            url = ("https://antergos.com/wiki/install/how-to-dual-boot"
+                   "-antergos-windows-uefi-expanded-by-linuxhat/")
             self.browser.load_url(url)
         except Exception as err:
-            logging.warning("Could not show Antergos wiki: ", err)
+            logging.warning("Could not show Antergos wiki: %s", err)
 
     def check_alongside(self):
         """ Check if alongside installation type must be enabled.
-        Alongside only works when Windows is installed on sda  """
+            Alongside only works when Windows is installed on sda """
 
         enable_alongside = False
 
@@ -199,12 +203,9 @@ class InstallationAsk(GtkBaseBox):
     def enable_automatic_options(self, status):
         """ Enables or disables automatic installation options """
         names = [
-            "encrypt_checkbutton",
-            "encrypt_label",
-            "lvm_checkbutton",
-            "lvm_label",
-            "home_checkbutton",
-            "home_label"]
+            "encrypt_checkbutton", "encrypt_label",
+            "lvm_checkbutton", "lvm_label",
+            "home_checkbutton", "home_label"]
 
         for name in names:
             obj = self.ui.get_object(name)
@@ -222,10 +223,10 @@ class InstallationAsk(GtkBaseBox):
             ('use_luks', 'encrypt_checkbutton'), ('use_lvm', 'lvm_checkbutton'),
             ('use_zfs', 'zfs_checkbutton'), ('use_home', 'home_checkbutton')}
 
-        for (setting, widget) in widgets_settings:
-            w = self.ui.get_object(widget)
-            s = self.settings.get(setting)
-            w.set_active(s)
+        for (setting_name, widget_id) in widgets_settings:
+            widget = self.ui.get_object(widget_id)
+            setting_value = self.settings.get(setting_name)
+            widget.set_active(setting_value)
 
         self.translate_ui()
         self.show_all()
@@ -275,8 +276,8 @@ class InstallationAsk(GtkBaseBox):
         self.forward_button.set_always_show_image(True)
         self.forward_button.set_sensitive(True)
 
-        description_style = '<span style="italic">{0}</span>'
-        bold_style = '<span weight="bold">{0}</span>'
+        # description_style = '<span style="italic">{0}</span>'
+        # bold_style = '<span weight="bold">{0}</span>'
 
         oses_str = self.get_os_list_str()
 
@@ -284,7 +285,7 @@ class InstallationAsk(GtkBaseBox):
 
         # Automatic Install
         radio = self.ui.get_object("automatic_radiobutton")
-        if len(oses_str) > 0:
+        if oses_str:
             txt = _("Replace {0} with Antergos").format(oses_str)
         else:
             txt = _("Erase disk and install Antergos")
@@ -464,78 +465,13 @@ class InstallationAsk(GtkBaseBox):
         # Get sure other modules will know if zfs is activated or not
         self.settings.set("zfs", use_zfs)
 
-        # Check if there are still processes running...
-        self.wait()
-
         return True
 
-    def wait(self):
-        """ Check if there are still processes running and
-            waits for them to finish """
-        must_wait = False
-        for proc in self.process_list:
-            if proc.is_alive():
-                must_wait = True
-                break
-
-        if not must_wait:
-            return
-
-        txt1 = _("Ranking mirrors")
-        txt1 = "<big>{0}</big>".format(txt1)
-
-        txt2 = _("Cnchi is still updating and optimizing your mirror lists.")
-        txt2 += "\n\n"
-        txt2 += _("Please be patient...")
-        txt2 = "<i>{0}</i>".format(txt2)
-
-        wait_ui = Gtk.Builder()
-        ui_file = os.path.join(self.ui_dir, "wait.ui")
-        wait_ui.add_from_file(ui_file)
-
-        lbl1 = wait_ui.get_object("label1")
-        lbl1.set_markup(txt1)
-
-        lbl2 = wait_ui.get_object("label2")
-        lbl2.set_markup(txt2)
-
-        progress_bar = wait_ui.get_object("progressbar")
-
-        wait_window = wait_ui.get_object("wait_window")
-        wait_window.set_modal(True)
-        wait_window.set_transient_for(self.get_main_window())
-        wait_window.set_default_size(320, 240)
-        wait_window.set_position(Gtk.WindowPosition.CENTER)
-        wait_window.show_all()
-
-        ask_box = self.ui.get_object("ask")
-        if ask_box:
-            ask_box.set_sensitive(False)
-
-        logging.debug("Waiting for all external processes to finish...")
-        while must_wait:
-            must_wait = False
-            for proc in self.process_list:
-                # This waits until process finishes, no matter the time.
-                if proc.is_alive():
-                    must_wait = True
-            # Just wait...
-            time.sleep(0.1)
-            # Update our progressbar dialog
-            progress_bar.pulse()
-            while Gtk.events_pending():
-                Gtk.main_iteration()
-        logging.debug(
-            "All external processes are finished. Installation can go on")
-        wait_window.hide()
-
-        if ask_box:
-            ask_box.set_sensitive(True)
-
     def get_next_page(self):
+        """ Returns which page should be the next one """
         return self.next_page
 
-    def on_automatic_radiobutton_toggled(self, widget):
+    def automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """
         if widget.get_active():
             check = self.ui.get_object("zfs_checkbutton")
@@ -546,29 +482,33 @@ class InstallationAsk(GtkBaseBox):
             # Enable all options
             self.enable_automatic_options(True)
 
-    def on_automatic_lvm_checkbutton_toggled(self, widget):
+    def automatic_lvm_toggled(self, widget):
+        """ Enables / disables LVM installation """
         if widget.get_active():
             self.next_page = "installation_automatic"
+            # Disable ZFS if using LVM
             check = self.ui.get_object("zfs_checkbutton")
             if check.get_active():
                 check.set_active(False)
 
-    def on_automatic_zfs_checkbutton_toggled(self, widget):
+    def automatic_zfs_toggled(self, widget):
+        """ Enables / disables ZFS installation """
         if widget.get_active():
             self.next_page = "installation_zfs"
+            # Disable LVM if using ZFS
             check = self.ui.get_object("lvm_checkbutton")
             if check.get_active():
                 check.set_active(False)
         else:
             self.next_page = "installation_automatic"
 
-    def on_alongside_radiobutton_toggled(self, widget):
+    def alongside_radiobutton_toggled(self, widget):
         """ Alongside selected, disable all automatic options """
         if widget.get_active():
             self.next_page = "installation_alongside"
             self.enable_automatic_options(False)
 
-    def on_advanced_radiobutton_toggled(self, widget):
+    def advanced_radiobutton_toggled(self, widget):
         """ Advanced selected, disable all automatic options """
         if widget.get_active():
             self.next_page = "installation_advanced"

@@ -3,7 +3,7 @@
 #
 #  features_info.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -29,15 +29,13 @@
 
 """ Features information """
 
-# Note: As each desktop has its own features, these are listed
-# in desktop_info file instead of here.
-
 ICON_NAMES = {
     'a11y': 'a11y',
     'aur': 'system-software-install',
     'bluetooth': 'bluetooth',
     'cups': 'printer',
     'chromium': 'chromium',
+    'energy': 'gnome-power-manager',
     'firefox': 'firefox',
     'vivaldi': 'vivaldi',
     'firewall': 'network-server',
@@ -45,22 +43,25 @@ ICON_NAMES = {
     'games': 'applications-games',
     'graphic_drivers': 'gnome-system',
     'lamp': 'applications-internet',
+    'lembrame': 'com.antergos.Lembrame',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'sshd': 'network-connect',
-    'visual': 'video-display',
-    'lembrame': 'com.antergos.Lembrame'
-}
+    'visual': 'video-display'}
+""" dict: Icon names for each feature.
+
+As each desktop has its own features, these are listed
+in desktop_info module instead of here. """
 
 
-# These features are considered 'advanced' so it won't be shown by default
 ADVANCED = [
     'aur', 'firefox', 'vivaldi', 'firewall', 'flash', 'graphic_drivers',
     'lamp', 'lts', 'sshd', 'visual']
+""" list: These features are considered 'advanced' so it won't be shown by default """
 
 
-# See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations"
 def _(message):
+    """ See http://docs.python.org/2/library/gettext.html "22.1.3.4. Deferred translations" """
     return message
 
 
@@ -70,6 +71,7 @@ TITLES = {
     'bluetooth': _("Bluetooth Support"),
     'cups': _("Printing Support"),
     'chromium': _("Chromium Web Browser"),
+    'energy': _("Advanced power management"),
     'firefox': _("Firefox Web Browser"),
     'vivaldi': _("Vivaldi Web Browser"),
     'firewall': _("Uncomplicated Firewall"),
@@ -77,32 +79,33 @@ TITLES = {
     'games': _("Steam + PlayonLinux"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
+    'lembrame': _("Lembrame"),
     'lts': _("Kernel (LTS version)"),
     'office': _("LibreOffice"),
     'sshd': _("SSH Service"),
-    'visual': _("Visual Effects"),
-    'lembrame': _("Lembrame")
-}
+    'visual': _("Visual Effects")}
+""" dict: Feature titles """
 
 DESCRIPTIONS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
     'aur': _("The AUR is a community-driven repository for Arch users."),
     'bluetooth': _("Enables your system to make wireless connections via Bluetooth."),
     'chromium': _("Open-source web browser from Google."),
+    'energy': _("Brings you the benefits of advanced power management for Linux."),
     'firefox': _("A popular open-source graphical web browser from Mozilla."),
     'vivaldi': _("Vivaldi is a free, fast web browser designed for power-users."),
     'flash': _("Freeware software normally used for multimedia."),
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
+    'lembrame': _("Sync your Gnome and system settings between installations"),
     'cups': _("Installation of printer drivers and management tools."),
     'office': _("Open source office suite. Supports editing MS Office files."),
     'visual': _("Enable transparency, shadows, and other desktop effects."),
     'firewall': _("Control the incoming and outgoing network traffic."),
     'sshd': _("Enables Secure SHell service."),
-    'lts': _("Long term support (LTS) Linux kernel and modules."),
-    'lembrame': _("Sync your Gnome and system settings between installations")
-}
+    'lts': _("Long term support (LTS) Linux kernel and modules.")}
+""" dict: Feature descriptions """
 
 TOOLTIPS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
@@ -120,6 +123,10 @@ TOOLTIPS = {
     'chromium': _("Chromium is an open-source browser project that aims to build a\n"
                   "safer, faster, and more stable way for all users to experience the web.\n"
                   "(this is the default)"),
+    'energy': _("Linux thermal daemon (thermald) monitors and controls temperature\n"
+                "in laptops, tablet PC with the latest Intel sandy bridge. Once the\n"
+                "system temperature reaches a certain threshold, the Linux daemon\n"
+                "activates various cooling methods to try to cool the system"),
     'firefox': _("Mozilla Firefox (known simply as Firefox) is a free and\n"
                  "open-source web browser developed for Windows, OS X, and Linux,\n"
                  "with a mobile version for Android, by the Mozilla Foundation and\n"
@@ -149,6 +156,9 @@ TOOLTIPS = {
     'lamp': _("This option installs a web server (you can choose\n"
               "Apache or Nginx) plus a database server (Mariadb)\n"
               "and PHP."),
+    'lembrame': _("Lembrame is a concept tool to sync your settings to the cloud\n"
+                  "and reuse them on your next install to have the same desktop settings,\n"
+                  "packages and more."),
     'lts': _("The linux-lts package is an alternative Arch kernel package.\n"
              "This particular kernel version enjoys long-term support from upstream,\n"
              "including security fixes and some feature backports. Additionally, this\n"
@@ -167,11 +177,8 @@ TOOLTIPS = {
                 "suitable for use with window managers that do not natively\n"
                 "provide compositing functionality. Compton itself is a fork\n"
                 "of xcompmgr-dana, which in turn is a fork of xcompmgr.\n"
-                "See the compton github page for further information."),
-    'lembrame': _("Lembrame is a concept tool to sync your settings to the cloud\n"
-                  "and reuse them on your next install to have the same desktop settings,\n"
-                  "packages and more.")
-}
+                "See the compton github page for further information.")}
+""" dict: Feature tooltips """
 
 # Delete previous _() dummy declaration
 del _

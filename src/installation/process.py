@@ -3,7 +3,7 @@
 #
 # process.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -44,6 +44,13 @@ from download import download
 
 from installation import select_packages as pack
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 class Process(multiprocessing.Process):
     """ Format and Installation process thread class """
@@ -67,11 +74,13 @@ class Process(multiprocessing.Process):
             txt = _("Cannot create package list.")
             raise misc.InstallError(txt)
 
-        # Won't download anything here. It's just to create the metalinks list
+        # We won't download anything here. It's just to create the metalinks list
+        pacman_conf = {}
+        pacman_conf['file'] = '/etc/pacman.conf'
+        pacman_conf['cache'] = '/var/cache/pacman/pkg'
         self.down = download.DownloadPackages(
             package_names=self.pkg.packages,
-            pacman_conf_file=self.settings.get('pacman_config_file'),
-            pacman_cache_dir='/var/cache/pacman/pkg',
+            pacman_conf=pacman_conf,
             settings=self.settings,
             callback_queue=self.callback_queue)
 
@@ -136,7 +145,7 @@ class Process(multiprocessing.Process):
 
             self.queue_event(
                 'info', _("Getting your disk(s) ready for Antergos..."))
-            with misc.raised_privileges() as __:
+            with misc.raised_privileges():
                 self.install_screen.run_format()
 
             path = "/tmp/.cnchi_partitioning_completed"
@@ -146,7 +155,7 @@ class Process(multiprocessing.Process):
                 part_file.write("# formatting their hard disk(s)\n")
 
             self.queue_event('info', _("Installation will start now!"))
-            with misc.raised_privileges() as __:
+            with misc.raised_privileges():
                 self.install_screen.run_install(
                     self.pkg.packages, self.down.metalinks)
         except subprocess.CalledProcessError as process_error:
@@ -163,13 +172,9 @@ class Process(multiprocessing.Process):
                 process_error.cmd,
                 process_error.output)
             self.queue_fatal_event(txt)
-        except (misc.InstallError,
-                pyalpm.error,
-                KeyboardInterrupt,
-                TypeError,
-                AttributeError,
-                OSError,
-                IOError) as install_error:
+        except (misc.InstallError, pyalpm.error,
+                KeyboardInterrupt, TypeError,
+                AttributeError, OSError, IOError) as install_error:
             logging.error(install_error)
             exc_type, exc_value, exc_traceback = sys.exc_info()
             trace = traceback.format_exception(

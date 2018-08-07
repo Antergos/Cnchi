@@ -33,9 +33,9 @@ import subprocess
 import os
 import logging
 
-import show_message as show
-
 import parted
+
+import show_message as show
 
 import misc.extra as misc
 
@@ -72,6 +72,13 @@ PED_PARTITION_APPLE_TV_RECOVERY = 13
 PED_PARTITION_DIAG = 14
 PED_PARTITION_LEGACY_BOOT = 15
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 
 @misc.raise_privileges
 def get_devices():
@@ -81,7 +88,7 @@ def get_devices():
 
     myhomepath = '/run/archiso/bootmnt'
     if os.path.exists(myhomepath):
-        myhome = subprocess.check_output(["df", "-P", myhomepath]).decode()
+        myhome = subprocess.check_output(["/usr/bin/df", "-P", myhomepath]).decode()
     else:
         myhome = ""
 
@@ -278,19 +285,20 @@ def geom_builder(diskob, first_sector, last_sector, size_in_mbytes,
 
     dev = diskob.device
     sec_size = dev.sectorSize
-    mb = 1000000 / sec_size
+    mbytes = 1000000 / sec_size
     length = int(size_in_mbytes * 1000000 / sec_size)
+
     if length > (last_sector - first_sector + 1):
         length = last_sector - first_sector + 1
     if beginning:
         start_sector = first_sector
         end_sector = start_sector + length - 1
-        if last_sector - end_sector < mb:
+        if last_sector - end_sector < mbytes:
             end_sector = last_sector
     else:
         end_sector = last_sector
         start_sector = end_sector - length + 1
-        if start_sector - first_sector < mb:
+        if start_sector - first_sector < mbytes:
             start_sector = first_sector
     ngeom = parted.Geometry(device=dev, start=start_sector, end=end_sector)
     return ngeom
@@ -454,7 +462,7 @@ def example():
     # In this example just using /dev/sdb as the device
     # Any useable free space is returned as a partition object, only for 'fluency'
     # sake.  It's name will always be 'free#' where # is an incrementing number.
-    (diskob, result) = disk_dic['/dev/sdb']
+    (diskob, _result) = disk_dic['/dev/sdb']
     part_dic = get_partitions(diskob)
 
     # To delete a partition, pass to delete_partition the disk and the partition

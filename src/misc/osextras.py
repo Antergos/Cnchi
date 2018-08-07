@@ -1,5 +1,8 @@
-# -*- coding: utf-8; Mode: Python; indent-tabs-mode: nil; tab-width: 4 -*-
-
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+#
+#  osextras.py
+#
 #  Copyright (C) 2007 Canonical Ltd.
 #  Written by Colin Watson <cjwatson@ubuntu.com>.
 #
@@ -19,6 +22,8 @@
 
 #  Functions that are spiritually similar to ones in the os module, but
 #  aren't there because not many people need chrooted operations like this.
+
+""" Module with some os helper functions """
 
 import os
 

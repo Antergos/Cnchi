@@ -36,6 +36,12 @@ import show_message as show
 
 import misc.extra as misc
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 @misc.raise_privileges
 def get_lvm_partitions():
@@ -82,7 +88,7 @@ def get_logical_volumes(volume_group):
 def remove_logical_volume(logical_volume):
     """ Removes a logical volume """
     try:
-        subprocess.check_call(["lvremove", "-f", logical_volume])
+        subprocess.check_call(["/usr/bin/lvremove", "-f", logical_volume])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove logical volume {0}").format(logical_volume)
         logging.error(txt)
@@ -101,7 +107,7 @@ def remove_volume_group(volume_group):
 
     # Now, remove the volume group
     try:
-        subprocess.check_call(["vgremove", "-f", volume_group])
+        subprocess.check_call(["/usr/bin/vgremove", "-f", volume_group])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove volume group {0}").format(volume_group)
         logging.error(txt)
@@ -114,7 +120,7 @@ def remove_volume_group(volume_group):
 def remove_physical_volume(physical_volume):
     """ Removes a physical volume """
     try:
-        subprocess.check_call(["pvremove", "-ff", physical_volume])
+        subprocess.check_call(["/usr/bin/pvremove", "-ff", physical_volume])
     except subprocess.CalledProcessError as err:
         txt = _("Can't remove physical volume {0}").format(physical_volume)
         logging.error(txt)

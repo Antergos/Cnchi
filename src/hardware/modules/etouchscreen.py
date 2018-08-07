@@ -3,7 +3,7 @@
 #
 #  etouchscreen.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -62,9 +62,10 @@ class ETouchScreen(Hardware):
     def post_install(dest_dir):
         """ Post install commands """
         try:
-            subprocess.check_call(["rmmod", "usbtouchscreen"])
-        except subprocess.CalledProcessError as err:
+            subprocess.check_call(["/usr/bin/rmmod", "usbtouchscreen"])
+        except subprocess.CalledProcessError:
             pass
+
         # Do not load the 'usbtouchscreen' module, as it conflicts with eGalax
         path = os.path.join(
             dest_dir, "etc/modprobe.d/blacklist-usbtouchscreen.conf")

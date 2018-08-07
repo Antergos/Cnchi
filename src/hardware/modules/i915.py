@@ -3,7 +3,7 @@
 #
 #  i915.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -40,7 +40,6 @@ CLASS_NAME = "Intel915"
 CLASS_ID = "0x03"
 VENDOR_ID = "0x8086"
 DEVICES = []
-
 
 class Intel915(Hardware):
     """ Intel i915 graphics driver """

@@ -3,7 +3,7 @@
 #
 # download_requests.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -33,26 +33,30 @@ import os
 import logging
 import queue
 import shutil
-import requests
 import time
-import hashlib
 import socket
 import io
 import threading
 
+import requests
 
-def get_md5(file_name):
-    """ Gets md5 hash from a file """
-    md5_hash = hashlib.md5()
-    with open(file_name, "rb") as myfile:
-        for line in myfile:
-            md5_hash.update(line)
-    return md5_hash.hexdigest()
+try:
+    import download.download_hash as dhash
+except ModuleNotFoundError:
+    import download_hash as dhash
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 class CopyToCache(threading.Thread):
     ''' Class thread to copy a xz file to the user's
         provided cache directory '''
+
+    PACMAN_ISO_CACHE = "/var/cache/pacman/pkg"
 
     def __init__(self, origin, xz_cache_dirs):
         threading.Thread.__init__(self)
@@ -62,15 +66,17 @@ class CopyToCache(threading.Thread):
     def run(self):
         basename = os.path.basename(self.origin)
         for xz_cache_dir in self.xz_cache_dirs:
-            dst = os.path.join(xz_cache_dir, basename)
-            # Try to copy the file, do not worry if it's not possible
-            try:
-                shutil.copy(self.origin, dst)
-            except (FileNotFoundError, FileExistsError, OSError):
-                pass
+            # Avoid using the ISO itself
+            if xz_cache_dir != CopyToCache.PACMAN_ISO_CACHE:
+                dst = os.path.join(xz_cache_dir, basename)
+                # Try to copy the file, do not worry if it's not possible
+                try:
+                    shutil.copy(self.origin, dst)
+                except (FileNotFoundError, FileExistsError, OSError):
+                    pass
 
 
-class Download(object):
+class Download():
     """ Class to download packages using requests
         This class tries to previously download all necessary packages for
         Antergos installation using requests """
@@ -93,31 +99,6 @@ class Download(object):
 
         self.copy_to_cache_threads = []
 
-    def is_hash_ok(self, path, element=None, md5hash=None):
-        """ Checks file md5 hash """
-        # Note: path must exist!
-
-        if element:
-            # element['hash'] is not always available
-            md5hash = element.get('hash', False)
-            identity = element['identity']
-            filename = element['filename']
-        elif md5hash:
-            identity = path
-            filename = path
-
-        if not md5hash:
-            logging.debug('Checksum unavailable for package: %s', identity)
-            self.queue_event('cache_pkgs_md5_check_failed', identity)
-            # We cannot check md5, let's assume it's ok
-            return True
-
-        if md5hash != get_md5(path):
-            logging.warning("MD5 hash of file %s does not match!", filename)
-            return False
-
-        # If we reach this point, md5 hash is ok
-        return True
 
     def start(self, downloads):
         """ Downloads using requests """
@@ -133,11 +114,11 @@ class Download(object):
             "Downloading packages to pacman cache dir '%s'",
             self.pacman_cache_dir)
 
-        while len(downloads) > 0:
+        while downloads:
             needs_to_download = True
 
             # Get package to download from downloads list
-            identity, element = downloads.popitem()
+            _identity, element = downloads.popitem()
 
             self.queue_event('percent', '0')
 
@@ -152,8 +133,8 @@ class Download(object):
 
             if os.path.exists(dst_path):
                 # File already exists in destination pacman's cache
-                # (previous install?). We check the file md5 hash.
-                if not self.is_hash_ok(path=dst_path, element=element):
+                # (previous install?). We check the file hash.
+                if not dhash.check_hash(dst_path, element):
                     # We're sure it's a wrong hash. Force to download it
                     needs_to_download = True
                 else:
@@ -171,10 +152,10 @@ class Download(object):
                         element['filename'])
 
                     if (os.path.exists(dst_xz_cache_path) and
-                            self.is_hash_ok(path=dst_xz_cache_path, element=element)):
+                            dhash.check_hash(dst_xz_cache_path, element)):
                         # We're lucky, the package is already downloaded
                         # in the cache the user has given us
-                        # and its md5 checks out (if there is a md5)
+                        # and its hash checks out
                         try:
                             shutil.copy(dst_xz_cache_path, dst_path)
                             needs_to_download = False
@@ -201,8 +182,8 @@ class Download(object):
                     "Can't download %s, even after trying all available mirrors",
                     element['filename'])
                 return False
-            else:
-                downloaded += 1
+
+            downloaded += 1
 
             self.queue_event('progress_bar_show_text', '')
 
@@ -238,17 +219,13 @@ class Download(object):
                     element['identity'],
                     element['version'])
             else:
-                download_ok = self.download_url(url, dst_path)
+                download_ok = self.download_url(url, dst_path, element)
 
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
-
-                # TODO : Rethink this. Providec cache can be the ISO itself, so we
-                # can leave the ISO without any space and the installation will fail.
-
-                # copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                # self.copy_to_cache_threads += [copy_to_cache_thread]
-                # copy_to_cache_thread.start()
+                copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
+                self.copy_to_cache_threads += [copy_to_cache_thread]
+                copy_to_cache_thread.start()
 
                 # Get out of the for loop, as we managed
                 # to download the package
@@ -257,12 +234,13 @@ class Download(object):
                 # requests failed to obtain the file. Wrong url?
                 msg = "Can't download %s, Cnchi will try another mirror."
                 logging.debug(msg, url)
-                # delays for 60 seconds
-                time.sleep(60)
+                # delays for 20 seconds
+                time.sleep(20)
 
         return download_ok
 
-    def download_url(self, url, dst_path, md5hash=""):
+    def download_url(self, url, dst_path, element=None):
+        """ Downloads file from url to dst_path and checks its md5 hash """
         percent = 0
         completed_length = 0
         start = time.perf_counter()
@@ -309,8 +287,8 @@ class Download(object):
                         self.queue_event('progress_bar_show_text', msg)
 
                 # Check hash of downloaded package
-                if md5hash and not self.is_hash_ok(path=dst_path, md5hash=md5hash):
-                    # Wrong md5! Force to download it again
+                if element and not dhash.check_hash(dst_path, element):
+                    # Wrong hash! Force to download the file again
                     return False
         except (socket.timeout,
                 requests.exceptions.Timeout,
@@ -321,14 +299,15 @@ class Download(object):
 
         return True
 
-    def format_progress_message(self, percent, bps):
+    @staticmethod
+    def format_progress_message(percent, bps):
         """ Formats speed message information """
         if bps >= (1024 * 1024):
-            Mbps = bps / (1024 * 1024)
-            msg = "{0}%   {1:.2f} Mbps".format(int(percent * 100), Mbps)
+            mbps = bps / (1024 * 1024)
+            msg = "{0}%   {1:.2f} Mbps".format(int(percent * 100), mbps)
         elif bps >= 1024:
-            Kbps = bps / 1024
-            msg = "{0}%   {1:.2f} Kbps".format(int(percent * 100), Kbps)
+            kbps = bps / 1024
+            msg = "{0}%   {1:.2f} Kbps".format(int(percent * 100), kbps)
         else:
             msg = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
         return msg
@@ -338,7 +317,7 @@ class Download(object):
 
         if self.callback_queue is None:
             if event_type != "percent":
-                logging.debug("{0}: {1}".format(event_type, event_text))
+                logging.debug("%s: %s", event_type, event_text)
             return
 
         if event_type in self.last_event:

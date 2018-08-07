@@ -3,7 +3,7 @@
 #
 # test_hardware_module.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -58,7 +58,7 @@ def setup_logging():
 
 def test():
     """ Main function """
-    locale_code, encoding = locale.getdefaultlocale()
+    locale_code, _encoding = locale.getdefaultlocale()
     lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
     lang.install()
 
@@ -67,7 +67,7 @@ def test():
     # Get packages needed for detected hardware
     import hardware.hardware as hardware
 
-    hardware_install = hardware.HardwareInstall()
+    hardware_install = hardware.HardwareInstall("/usr/share/cnchi/src/hardware/modules")
     hardware_pkgs = hardware_install.get_packages()
     print("Hardware module added these packages : ", hardware_pkgs)
 

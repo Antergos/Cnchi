@@ -3,7 +3,7 @@
 # pacman_conf.py
 #
 # Based on pyalpm code Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -93,17 +93,17 @@ def pacman_conf_enumerator(path):
     filestack = []
     current_section = None
     filestack.append(open(path))
-    while len(filestack) > 0:
+    while filestack:
         file_obj = filestack[-1]
         line = file_obj.readline()
-        if len(line) == 0:
+        if not line:
             # end of file
             file_obj.close()
             filestack.pop()
             continue
 
         line = line.strip()
-        if len(line) == 0:
+        if not line:
             continue
         if line[0] == '#':
             continue
@@ -187,7 +187,7 @@ class PacmanConfig(collections.OrderedDict):
 
     def load_from_options(self, options):
         """ Load options from 'options' variable """
-        global _LOGMASK
+        #global _LOGMASK
         if options.root is not None:
             self.options["RootDir"] = options.root
         if options.dbpath is not None:
@@ -200,8 +200,8 @@ class PacmanConfig(collections.OrderedDict):
             self.options["LogFile"] = options.logfile
         if options.cachedir is not None:
             self.options["CacheDir"] = [options.cachedir]
-        if options.debug:
-            _LOGMASK = 0xffff
+        #if options.debug:
+        #    _LOGMASK = 0xffff
 
     def apply(self, handle):
         """ Apply stored options to alpm handle """

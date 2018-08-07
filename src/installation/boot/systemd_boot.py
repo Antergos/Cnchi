@@ -37,7 +37,7 @@ import parted3.fs_module as fs
 from misc.run_cmd import chroot_call
 
 
-class SystemdBoot(object):
+class SystemdBoot():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, uuids):

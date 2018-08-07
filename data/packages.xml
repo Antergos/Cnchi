@@ -14,8 +14,9 @@
                 <!-- Group -->
                 <pkgname>base-devel</pkgname>
                 <pkgname>bash-completion</pkgname>
-                <pkgname>crda</pkgname>
                 <pkgname>bind-tools</pkgname>
+                <pkgname>crda</pkgname>
+                <pkgname>cryfs</pkgname>
                 <pkgname>dosfstools</pkgname>
                 <pkgname>haveged</pkgname>
                 <pkgname>htop</pkgname>
@@ -42,12 +43,13 @@
                 <pkgname>whois</pkgname>
                 <pkgname>wireless_tools</pkgname>
                 <pkgname>wpa_actiond</pkgname>
-                <pkgname>zd1211-firmware</pkgname>
+                <!--<pkgname>zd1211-firmware</pkgname>-->
             </packages>
         </edition>
 
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
+                <pkgname>antergos-alpm-hooks</pkgname>
                 <pkgname>antergos-common-meta</pkgname>
                 <pkgname>antergos-desktop-settings</pkgname>
             </packages>
@@ -112,41 +114,13 @@
 
         <edition name="lxqt" description="LXQT Desktop">
             <packages>
-                <pkgname>kalu</pkgname>
-                <pkgname>lxqt-about</pkgname>
-                <pkgname>lxqt-config</pkgname>
-                <pkgname>lxqt-notificationd</pkgname>
-                <pkgname>lxqt-openssh-askpass</pkgname>
-                <pkgname>lxqt-panel</pkgname>
-                <pkgname>lxqt-policykit</pkgname>
-                <pkgname>lxqt-powermanagement</pkgname>
-                <pkgname>lxqt-qtplugin</pkgname>
-                <pkgname>lxqt-runner</pkgname>
-                <pkgname>lxqt-session</pkgname>
-                <pkgname>openbox</pkgname>
-                <pkgname>pcmanfm-qt</pkgname>
+                <pkgname>antergos-lxqt-meta</pkgname>
             </packages>
         </edition>
 
         <edition name="Enlightenment" description="Enlightenment Desktop">
             <packages>
-                <pkgname>ark</pkgname>
-                <!--<pkgname>emotion_generic_players</pkgname>-->
-                <pkgname>enlightenment</pkgname>
-                <pkgname nm='true' name='connman'>connman</pkgname>
-                <pkgname>econnman</pkgname>
-                <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
-                <pkgname>kalu</pkgname>
-                <pkgname>qt5ct</pkgname>
-                <!-- video player -->
-                <pkgname>rage</pkgname>
-                <!-- terminal emulator -->
-                <pkgname>terminology</pkgname>
-                <pkgname>ttf-dejavu</pkgname>
-                <pkgname>ttf-bitstream-vera</pkgname>
-                <pkgname>udisks2</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>vlc</pkgname>
+                <pkgname>antergos-enlightenment-meta</pkgname>
             </packages>
         </edition>
 
@@ -158,39 +132,7 @@
 
         <edition name="i3" description="Tiling window manager">
             <packages>
-                <pkgname>arandr</pkgname>
-                <pkgname>awesome-terminal-fonts</pkgname>
-                <pkgname>dmenu</pkgname>
-                <pkgname>file-roller</pkgname>
-                <pkgname>galculator</pkgname>
-                <pkgname>gpicview</pkgname>
-                <pkgname>gvfs-google</pkgname>
-                <pkgname>gvfs-mtp</pkgname>
-                <pkgname>gvfs-smb</pkgname>
-                <pkgname>i3-wm</pkgname>
-                <pkgname>i3lock</pkgname>
-                <pkgname>i3status</pkgname>
-                <pkgname>kalu</pkgname>
-                <pkgname>lxappearance-gtk3</pkgname>
-                <pkgname>lxinput-gtk3</pkgname>
-                <pkgname>moc</pkgname>
-                <pkgname>mpv</pkgname>
-                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
-                <pkgname>networkmanager-openvpn</pkgname>
-                <pkgname>networkmanager-pptp</pkgname>
-                <pkgname>nitrogen</pkgname>
-                <pkgname>notify-osd</pkgname>
-                <pkgname>pcmanfm</pkgname>
-                <pkgname>polkit-gnome</pkgname>
-                <!-- needed by python smb clients -->
-                <pkgname>python-pysmbc</pkgname>
-                <pkgname>scrot</pkgname>
-                <pkgname>termite</pkgname>
-                <pkgname>udiskie</pkgname>
-                <pkgname>volumeicon</pkgname>
-                <pkgname>xdg-user-dirs-gtk</pkgname>
-                <pkgname>xfburn</pkgname>
-                <pkgname>xscreensaver</pkgname>
+                <pkgname>antergos-i3-meta</pkgname>
             </packages>
         </edition>
     </editions>
@@ -221,12 +163,13 @@
             <pkgname>vim</pkgname>
         </feature>
         <feature name="aur">
-            <pkgname>yaourt</pkgname>
+            <pkgname>aurman</pkgname>
+            <pkgname>bzr</pkgname>
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
-            <pkgname>bzr</pkgname>
         </feature>
-        <feature name="battery">
+        <feature name="energy">
+            <pkgname>thermald</pkgname>
             <pkgname>tlp</pkgname>
         </feature>
         <feature name="bluetooth">

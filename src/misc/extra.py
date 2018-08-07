@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 #
 #  Copyright (c) 2012 Canonical Ltd.
-#  Copyright (c) 2013-2015 Antergos
+#  Copyright (c) 2013-2018 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,28 +20,24 @@
 
 """ Extra functions """
 
-from collections import namedtuple
 import contextlib
 import grp
-import os
-import pwd
-import re
-import shutil
-import subprocess
-import syslog
-import socket
 import locale
 import logging
-import dbus
-import urllib
-from socket import timeout
+import os
+import pwd
 import random
+import re
+import shutil
+import socket
+from socket import timeout
 import string
+import subprocess
+import syslog
+import urllib
 
-try:
-    import misc.osextras as osextras
-except ImportError:
-    import osextras
+import dbus
+
 
 NM = 'org.freedesktop.NetworkManager'
 NM_STATE_CONNECTED_GLOBAL = 70
@@ -71,8 +67,8 @@ def utf8(my_string, errors="strict"):
 def is_swap(device):
     """ Check if device is a swap device """
     try:
-        with open('/proc/swaps') as fp:
-            for line in fp:
+        with open('/proc/swaps') as swaps:
+            for line in swaps:
                 if line.startswith(device + ' '):
                     return True
     except OSError as os_error:
@@ -97,20 +93,28 @@ def set_groups_for_uid(uid):
             syslog.syslog(syslog.LOG_ERR, line)
 
 
+def get_uid_gid():
+    """ Returns uid and gid from SUDO_* env vars
+        and sets groups for that uid """
+    uid = os.environ.get('SUDO_UID')
+    gid = os.environ.get('SUDO_GID')
+    if uid:
+        uid = int(uid)
+        set_groups_for_uid(uid)
+    if gid:
+        gid = int(gid)
+    return (uid, gid)
+
+
 def drop_all_privileges():
     """ Drop root privileges """
     # gconf needs both the UID and effective UID set.
     global _DROPPED_PRIVILEGES
-    uid = os.environ.get('SUDO_UID')
-    gid = os.environ.get('SUDO_GID')
-    if uid is not None:
-        uid = int(uid)
-        set_groups_for_uid(uid)
-    if gid is not None:
-        gid = int(gid)
+
+    uid, gid = get_uid_gid()
+    if gid:
         os.setregid(gid, gid)
-    if uid is not None:
-        uid = int(uid)
+    if uid:
         os.setreuid(uid, uid)
         os.environ['HOME'] = pwd.getpwuid(uid).pw_dir
         os.environ['LOGNAME'] = pwd.getpwuid(uid).pw_name
@@ -120,17 +124,13 @@ def drop_all_privileges():
 def drop_privileges():
     """ Drop privileges """
     global _DROPPED_PRIVILEGES
-    assert _DROPPED_PRIVILEGES is not None
+    if _DROPPED_PRIVILEGES is None:
+        raise AssertionError()
     if _DROPPED_PRIVILEGES == 0:
-        uid = os.environ.get('SUDO_UID')
-        gid = os.environ.get('SUDO_GID')
-        if uid is not None:
-            uid = int(uid)
-            set_groups_for_uid(uid)
-        if gid is not None:
-            gid = int(gid)
+        uid, gid = get_uid_gid()
+        if gid:
             os.setegid(gid)
-        if uid is not None:
+        if uid:
             os.seteuid(uid)
     _DROPPED_PRIVILEGES += 1
 
@@ -138,7 +138,8 @@ def drop_privileges():
 def regain_privileges():
     """ Regain root privileges """
     global _DROPPED_PRIVILEGES
-    assert _DROPPED_PRIVILEGES is not None
+    if _DROPPED_PRIVILEGES is None:
+        raise AssertionError()
     _DROPPED_PRIVILEGES -= 1
     if _DROPPED_PRIVILEGES == 0:
         os.seteuid(0)
@@ -150,22 +151,22 @@ def drop_privileges_save():
     """ Drop the real UID/GID as well, and hide them in saved IDs. """
     # At the moment, we only know how to handle this when effective
     # privileges were already dropped.
-    assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
-    uid = os.environ.get('SUDO_UID')
-    gid = os.environ.get('SUDO_GID')
-    if uid is not None:
-        uid = int(uid)
-        set_groups_for_uid(uid)
-    if gid is not None:
+    #assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    if _DROPPED_PRIVILEGES is None or _DROPPED_PRIVILEGES <= 0:
+        raise AssertionError()
+    uid, gid = get_uid_gid()
+    if gid:
         gid = int(gid)
         os.setresgid(gid, gid, 0)
-    if uid is not None:
+    if uid:
         os.setresuid(uid, uid, 0)
 
 
 def regain_privileges_save():
     """ Recover our real UID/GID after calling drop_privileges_save. """
-    assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    #assert _DROPPED_PRIVILEGES is not None and _DROPPED_PRIVILEGES > 0
+    if _DROPPED_PRIVILEGES is None or _DROPPED_PRIVILEGES <= 0:
+        raise AssertionError()
     os.setresuid(0, 0, 0)
     os.setresgid(0, 0, 0)
     os.setgroups([])
@@ -187,7 +188,8 @@ def raise_privileges(func):
 
     @wraps(func)
     def helper(*args, **kwargs):
-        with raised_privileges() as privileged:
+        """ Function that runs func function with raised privileges """
+        with raised_privileges():
             return func(*args, **kwargs)
 
     return helper
@@ -203,7 +205,7 @@ def is_removable(device):
     devpath = None
     is_partition = False
     removable_bus = False
-    cmd = ['udevadm', 'info', '-q', 'property', '-n', device]
+    cmd = ['/usr/bin/udevadm', 'info', '-q', 'property', '-n', device]
     subp = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -226,18 +228,18 @@ def is_removable(device):
             with open(removable_path) as removable:
                 if removable.readline().strip() != '0':
                     is_device_removable = True
-        except IOError:
-            pass
+        except IOError as err:
+            logging.warning(err)
         if is_device_removable:
             try:
-                cmd = ['udevadm', 'info', '-q', 'name', '-p', devpath]
+                cmd = ['/usr/bin/udevadm', 'info', '-q', 'name', '-p', devpath]
                 subp = subprocess.Popen(cmd,
                                         stdout=subprocess.PIPE,
                                         universal_newlines=True)
                 part = subp.communicate()[0].splitlines()[0].strip()
                 return os.path.join('/dev', part)
-            except Exception:
-                pass
+            except subprocess.CalledProcessError as err:
+                logging.warning(err)
     return None
 
 
@@ -246,8 +248,8 @@ def mount_info(path):
     fsname = ''
     fstype = ''
     writable = ''
-    with open('/proc/mounts') as fp:
-        for line in fp:
+    with open('/proc/mounts') as mounts:
+        for line in mounts:
             line = line.split()
             if line[1] == path:
                 fsname = line[0]
@@ -258,7 +260,7 @@ def mount_info(path):
 
 def udevadm_info(args):
     """ Helper function to run udevadm """
-    fullargs = ['udevadm', 'info', '-q', 'property']
+    fullargs = ['/usr/bin/udevadm', 'info', '-q', 'property']
     fullargs.extend(args)
     udevadm = {}
     subp = subprocess.Popen(
@@ -344,18 +346,16 @@ def dmimodel():
         # Silence annoying warnings during the test suite.
         kwargs['stderr'] = open('/dev/null', 'w')
     try:
+        cmd = ['/usr/bin/dmidecode', '--string', 'system-manufacturer']
         proc = subprocess.Popen(
-            ['dmidecode', '--string', 'system-manufacturer'],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-            **kwargs)
+            cmd, stdout=subprocess.PIPE, universal_newlines=True, **kwargs)
         manufacturer = proc.communicate()[0]
         if not manufacturer:
-            return
+            return ""
         manufacturer = manufacturer.lower()
         if 'to be filled' in manufacturer:
             # Don't bother with products in development.
-            return
+            return ""
         if 'bochs' in manufacturer or 'vmware' in manufacturer:
             model = 'virtual machine'
             # VirtualBox sets an appropriate system-product-name.
@@ -365,7 +365,7 @@ def dmimodel():
             else:
                 key = 'system-product-name'
             proc = subprocess.Popen(
-                ['dmidecode', '--string', key],
+                ['/usr/bin/dmidecode', '--string', key],
                 stdout=subprocess.PIPE,
                 universal_newlines=True)
             model = proc.communicate()[0]
@@ -376,8 +376,8 @@ def dmimodel():
         # Ensure the resulting string does not begin or end with a dash.
         model = re.sub('[^a-zA-Z0-9]+', '-', model).rstrip('-').lstrip('-')
         if model.lower() == 'not-available':
-            return
-    except Exception:
+            return ""
+    except subprocess.CalledProcessError:
         syslog.syslog(syslog.LOG_ERR, 'Unable to determine the model from DMI')
     finally:
         if 'stderr' in kwargs:
@@ -410,9 +410,7 @@ def get_nm_state():
         state = get_prop(manager, NM, 'State')
     except (dbus.DBusException, dbus.exceptions.DBusException) as dbus_err:
         logging.warning(dbus_err)
-        state = False
-    finally:
-        return state
+    return state
 
 
 def has_connection():
@@ -457,47 +455,17 @@ def add_connection_watch(func):
         func(True)
 
 
-def install_size():
-    if min_install_size:
-        return min_install_size
-
-    # Fallback size to 5 GB
-    size = 5 * 1024 * 1024 * 1024
-
-    # Maximal size to 8 GB
-    max_size = 8 * 1024 * 1024 * 1024
-
-    try:
-        with open('/cdrom/casper/filesystem.size') as fp:
-            size = int(fp.readline())
-    except IOError:
-        pass
-
-    # TODO substitute into the template for the state box.
-    min_disk_size = size * 2  # fudge factor
-
-    # Set minimum size to 8GB if current minimum size is larger
-    # than 8GB and we still have an extra 20% of free space
-    if min_disk_size > max_size > 1.2 * size:
-        min_disk_size = max_size
-
-    return min_disk_size
-
-
-min_install_size = None
-
-
 def get_network():
     """ Get our own network ip """
     # Open a connection to our server
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    mysocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        s.connect(("antergos.com", 1234))
+        mysocket.connect(("antergos.com", 1234))
     except OSError as err:
         logging.error(err)
         return ""
-    myip = s.getsockname()[0]
-    s.close()
+    myip = mysocket.getsockname()[0]
+    mysocket.close()
 
     # Parse our ip
     intip = False
@@ -544,18 +512,14 @@ def gtk_refresh():
 def remove_temp_files():
     """ Remove Cnchi temporary files """
     temp_files = [
-        ".setup-running",
-        ".km-running",
+        ".setup-running", ".km-running",
         "setup-pacman-running",
         "setup-mkinitcpio-running",
-        ".tz-running",
-        ".setup",
-        "Cnchi.log"]
+        ".tz-running", ".setup"]
     for temp in temp_files:
         path = os.path.join("/tmp", temp)
         if os.path.exists(path):
-            # FIXME: Some of these tmp files are created with sudo privileges
-            with raised_privileges() as privileged:
+            with raised_privileges():
                 os.remove(path)
 
 
@@ -607,7 +571,7 @@ def is_partition_extended(partition):
     for line in lines:
         if "major" not in line:
             info = line.split()
-            if len(info) > 0 and info[2] == '1' and info[3] == partition:
+            if len(info) > 3 and info[2] == '1' and info[3] == partition:
                 return True
 
     return False
@@ -621,9 +585,8 @@ def get_partitions():
     for line in lines:
         if "major" not in line:
             info = line.split()
-            if len(info) > 0:
-                if len(info[3]) > len("sdX") and "loop" not in info[3]:
-                    partitions_list.append("/dev/" + info[3])
+            if info and len(info[3]) > len("sdX") and "loop" not in info[3]:
+                partitions_list.append("/dev/" + info[3])
     return partitions_list
 
 
@@ -640,6 +603,30 @@ def check_pid(pid):
 def random_generator(size=4, chars=string.ascii_lowercase + string.digits):
     """ Generates a random string. """
     return ''.join(random.choice(chars) for x in range(size))
+
+
+def select_combobox_value(combobox, value):
+    """ Force combobox to select a specific value """
+    model = combobox.get_model()
+    combo_iter = model.get_iter(0)
+    index = 0
+    found = False
+    while combo_iter is not None and not found:
+        if value.lower() == model[combo_iter][0].lower():
+            combobox.set_active_iter(combo_iter)
+            combo_iter = None
+            found = True
+        else:
+            index += 1
+            combo_iter = model.iter_next(combo_iter)
+    return found
+
+
+def select_first_combobox_item(combobox):
+    """ Automatically select the first entry """
+    tree_model = combobox.get_model()
+    tree_iter = tree_model.get_iter_first()
+    combobox.set_active_iter(tree_iter)
 
 
 class InstallError(Exception):

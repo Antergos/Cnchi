@@ -1,19 +1,23 @@
-# Cnchi
+# Cnchi ![GitHub release](https://img.shields.io/github/release/antergos/cnchi.svg)
+
 **Graphical Installer for Antergos Linux**
 
-<a href="https://www.codacy.com/app/Antergos/Cnchi"><img src="https://www.codacy.com/project/badge/04b4ac624a0149efb8b4e9d143167660"/></a> &nbsp;&nbsp;&nbsp;[![Issues in Ready](https://badge.waffle.io/antergos/cnchi.png?label=ready&title=Ready)](https://waffle.io/antergos/cnchi)
+![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg)
 
-You are viewing the `0.14.x` branch.
+![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
+![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
+
+![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)
+
+You are viewing the `0.16.x` branch (development).
 
 ## Current Status
 
-This is the latest, officially released version of Cnchi, AKA: **Cnchi Stable**.
-
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|*Cnchi Legacy*|*0.12.x*|*v0.12.46*|*Frozen*|
-|**Cnchi Stable**|**0.14.x**|**v0.14.344**|**Bug Fixes Only**|
-|Cnchi Next|master|v0.15.219|Development|
+|Cnchi Stable|0.14.x|![0.14.473](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
+|Cnchi Development|0.16.x|![0.16.201](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
+|Cnchi Next (UI agnostic)|master|0.17.x|Development|
 
 
 ## Usage:
@@ -58,20 +62,23 @@ Please report any issues with Cnchi in the issue tracker. Provide all log files 
 
 We manage our translations via [Transifex](https://www.transifex.com/projects/p/antergos)
 
-## Dependencies
+<a name="dependencies">Dependencies</a>
 
  - gtk3
  - python3
  - python-cairo
  - python-dbus
+ - python-defusedxml
+ - python-feedparser
  - python-gobject
  - python-mako
  - python-requests
+ - geoip (python-geoip2, python-maxminddb, geoip2-database)
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
  - webkit2gtk
  - upower
- - encfs, pam_encfs
+ - gocryptfs
  - iso-codes
  - clutter, clutter-gtk, clutter-gst
  - gsteamer1.0
@@ -88,3 +95,47 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - ttf-myanmar3
  - ttf-thaana-fonts
  - ttf-tlwg
+
+## Building Cnchi
+
+[PKGBUILD](https://raw.githubusercontent.com/Antergos/antergos-packages/master/antergos/cnchi-dev/PKGBUILD)
+
+## Development
+
+### Getting started
+
+You will need to install all [dependencies](#dependencies).
+
+- Fork Cnchi
+- Do your changes (use 0.16.x branch as base!)
+
+Then, you can use the run script to test Cnchi. As this is a Installer, you will need to use a [Virtual Machine](http://virtualbox.org) or an additional harddisk to test it.
+
+How to easy prepare a sane testing environment:
+1. Download Antergos ISO
+2. Create a new VM in Virtualbox, add the live iso and a virtual harddisk (two harddisks if you want to cache the downloaded packages)
+3. Run the VM
+4. Cnchi will open, close it.
+5. Remove Cnchi ISO version: `sudo rm -rf /usr/share/cnchi`
+6. Install git: `sudo pacman -S git`
+7. Install - Install your Cnchi version from your own repository:
+```
+cd /home/antergos
+git clone https://github.com/<username>/cnchi
+cd cnchi
+sudo ln -s /home/antergos/cnchi /usr/share/cnchi
+```
+8. Create a screenshot of the VM (so you don't have to redo all this each time you want to test your changes).
+9. Run Cnchi and start testing!
+
+If your tests are OK, you can then create your PR and push it here (against development branch, which now it's 0.16.x)
+
+### Development Tips
+
+When creating a Pull Request (PR), please check that you follow the [PEP8](https://www.python.org/dev/peps/pep-0008/) style guide (you have a stylized presentation at [pep8.org](http://pep8.org)). You can use [pycodestyle](https://github.com/pycqa/pycodestyle) (former pep8) or [pylint.org](https://www.pylint.org) or whatever you prefer to check your python3 files.
+
+#### Spaces are the preferred indentation method.
+
+### Documented classes
+
+To start tinkering, we would recommend to check all open [#issues](https://github.com/Antergos/Cnchi/issues) and find one you find you will be able to start with (choose something that seems easy to do), so you feel familiar with cnchi's structure. You can find info about it at [readthedocs](https://cnchi.readthedocs.io/en/latest/)

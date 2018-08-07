@@ -3,7 +3,7 @@
 #
 # keyboard_names.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,17 +19,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-""" Parse base.xml """
+""" Parse base.xml that contains keyboards info """
 
 import logging
 import os
-from gi.repository import GObject
 from collections import OrderedDict
 
-try:
-    import xml.etree.cElementTree as eTree
-except ImportError as err:
-    import xml.etree.ElementTree as eTree
+from gi.repository import GObject
+
+import defusedxml.cElementTree as elementTree
 
 
 class Model(GObject.GObject):
@@ -86,21 +84,80 @@ class Layout(GObject.GObject):
             sorted(self.variants.items(), key=lambda t: str(t[1])))
 
 
-class KeyboardNames(object):
+class KeyboardNames():
     """ Read all keyboard info (models, layouts and variants) """
 
     def __init__(self, filename):
         self.models = None
         self.layouts = None
         self._filename = filename
-        self._load_file()
+        self._load_xml()
 
     def _clear(self):
         """ Clear all data """
         self.models = {}
         self.layouts = {}
 
-    def _load_file(self):
+    def _load_models(self, xml_root):
+        """ Load keyboard models from xml root node """
+        for model_node in xml_root.iter('model'):
+            for config_item in model_node.iter('configItem'):
+                model = {'name': "", 'description': "", 'vendor': ""}
+                for item in config_item:
+                    model[item.tag] = item.text
+                # Store model
+                self.models[model['name']] = Model(
+                    model['name'], model['description'], model['vendor'])
+
+    def _load_layout_item(self, layout_item):
+        """ Loads a layout item from xml and returns its name """
+        layout = {
+            'name': "", 'short_description': "", 'description': "", 'language_list': []}
+
+        for item in layout_item:
+            if item.tag == "languageList":
+                for lang in item:
+                    layout['language_list'].append(lang.text)
+            else:
+                layout[item.tag] = item.text
+
+        self.layouts[layout['name']] = Layout(
+            layout['name'], layout['short_description'],
+            layout['description'], layout['language_list'])
+
+        return layout['name']
+
+    def _load_variant_items(self, layout_item, layout_name):
+        """ Load a layout's variant items """
+        for variant_node in layout_item:
+            for config_item in variant_node:
+                variant = {
+                    'name': "", 'short_description': "",
+                    'description': "", 'language_list': []}
+                for item in config_item:
+                    if item.tag == "languageList":
+                        for lang in item:
+                            variant['language_list'].append(lang.text)
+                    else:
+                        variant[item.tag] = item.text
+
+                self.layouts[layout_name].add_variant(
+                    Variant(
+                        variant['name'],
+                        variant['short_description'],
+                        variant['description'],
+                        variant['language_list']))
+
+    def _load_layouts(self, xml_root):
+        """ Load keyboard layouts and variants from xml root node """
+        for layout_node in xml_root.iter('layout'):
+            for layout_item in layout_node:
+                if layout_item.tag == "configItem":
+                    layout_name = self._load_layout_item(layout_item)
+                if layout_item.tag == "variantList":
+                    self._load_variant_items(layout_item, layout_name)
+
+    def _load_xml(self):
         """ Load info from xml file """
         if not os.path.exists(self._filename):
             logging.error("Can't find %s file!", self._filename)
@@ -108,69 +165,11 @@ class KeyboardNames(object):
 
         self._clear()
 
-        xml_tree = eTree.parse(self._filename)
+        xml_tree = elementTree.parse(self._filename)
         xml_root = xml_tree.getroot()
 
-        for model in xml_root.iter('model'):
-            for config_item in model.iter('configItem'):
-                model_name = ""
-                model_description = ""
-                model_vendor = ""
-                for item in config_item:
-                    if item.tag == "name":
-                        model_name = item.text
-                    elif item.tag == "description":
-                        model_description = item.text
-                    elif item.tag == "vendor":
-                        model_vendor = item.text
-                # Store model
-                self.models[model_name] = Model(
-                    model_name,
-                    model_description,
-                    model_vendor)
-
-        for layout in xml_root.iter('layout'):
-            for layout_item in layout:
-                layout_language_list = []
-                if layout_item.tag == "configItem":
-                    for item in layout_item:
-                        if item.tag == "name":
-                            layout_name = item.text
-                        elif item.tag == "shortDescription":
-                            layout_short_description = item.text
-                        elif item.tag == "description":
-                            layout_description = item.text
-                        elif item.tag == "languageList":
-                            for lang in item:
-                                layout_language_list.append(lang.text)
-                    self.layouts[layout_name] = Layout(
-                        layout_name,
-                        layout_short_description,
-                        layout_description,
-                        layout_language_list)
-
-                if layout_item.tag == "variantList":
-                    for variant in layout_item:
-                        variant_language_list = []
-                        for config_item in variant:
-                            for item in config_item:
-                                if item.tag == "name":
-                                    variant_name = item.text
-                                elif item.tag == "shortDescription":
-                                    variant_short_description = item.text
-                                elif item.tag == "description":
-                                    variant_description = item.text
-                                elif item.tag == "languageList":
-                                    for lang in item:
-                                        variant_language_list.append(lang.text)
-
-                            self.layouts[layout_name].add_variant(
-                                Variant(
-                                    variant_name,
-                                    variant_short_description,
-                                    variant_description,
-                                    variant_language_list))
-
+        self._load_models(xml_root)
+        self._load_layouts(xml_root)
         self.sort_layouts()
 
     def sort_layouts(self):
@@ -184,8 +183,7 @@ class KeyboardNames(object):
         """ Get layout by its name """
         if name in self.layouts:
             return self.layouts[name]
-        else:
-            return None
+        return None
 
     def get_layouts(self):
         """ Return all layouts """
@@ -195,8 +193,7 @@ class KeyboardNames(object):
         """ Get layout description by its name """
         if name in self.layouts:
             return str(self.layouts[name])
-        else:
-            return None
+        return None
 
     def get_layout_by_description(self, description):
         """ Get layout by its description """
@@ -224,7 +221,7 @@ class KeyboardNames(object):
         """ Get variant description by its name (and layout name)"""
         try:
             return str(self.layouts[name].variants[variant_name])
-        except KeyError as key_error:
+        except KeyError as _key_error:
             return None
 
     def get_variant_descriptions(self, name):

@@ -5,7 +5,7 @@
 #  Copyright (C) 2010 Canonical Ltd.
 #  Written by Evan Dandrea <evan.dandrea@canonical.com>
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #  along with this program; if not, write to the Free Software
 #  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+""" Wireless connection page """
+
 import dbus
 
 import misc.extra as misc
@@ -30,6 +32,7 @@ from pages.gtkbasebox import GtkBaseBox
 
 
 class Wireless(GtkBaseBox):
+    """ Wireless page """
     def __init__(self, params, prev_page="check", next_page="desktop"):
         # Check whether we can talk to NM at all
         try:
@@ -60,6 +63,7 @@ class Wireless(GtkBaseBox):
         self.skip = False
 
     def translate_ui(self):
+        """ Translate labels """
         lbl = self.ui.get_object('wireless_section_label')
         lbl.set_markup(_("Connecting this computer to a wi-fi network"))
 
@@ -74,10 +78,10 @@ class Wireless(GtkBaseBox):
         display_password_text = _("Display password")
         self.nmwidget.translate(password_label_text, display_password_text)
 
-    def selection_changed(self, unused):
+    def selection_changed(self, _unused):
+        """ User has changed selection in nm widget """
         self.have_selection = True
         self.use_wireless.set_active(True)
-        assert self.state is not None
 
         if self.state == nm.NM_STATE_CONNECTING:
             self.next_normal = True
@@ -90,7 +94,8 @@ class Wireless(GtkBaseBox):
                 self.next_normal = False
                 print("not connected")
 
-    def wireless_toggled(self, unused):
+    def wireless_toggled(self, _unused):
+        """ Enables / disables wireless """
         print("wireless_toggled")
 
         if self.use_wireless.get_active():
@@ -102,32 +107,31 @@ class Wireless(GtkBaseBox):
             # TODO: hide and stop spinner
             self.nmwidget.hbox.set_sensitive(False)
 
-    '''
-    def plugin_on_back_clicked(self):
-        frontend = self.controller._wizard
-        if frontend.back.get_label() == self.stop_text:
-            self.nmwidget.disconnect_from_ap()
-            return True
-        else:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            self.no_wireless.set_active(True)
-            return False
+    #def plugin_on_back_clicked(self):
+    #    frontend = self.controller._wizard
+    #    if frontend.back.get_label() == self.stop_text:
+    #        self.nmwidget.disconnect_from_ap()
+    #        return True
+    #    else:
+    #        frontend.connecting_spinner.hide()
+    #        frontend.connecting_spinner.stop()
+    #        frontend.connecting_label.hide()
+    #        self.no_wireless.set_active(True)
+    #        return False
 
-    def plugin_on_next_clicked(self):
-        frontend = self.controller._wizard
-        if frontend.next.get_label() == self.connect_text:
-            self.nmwidget.connect_to_ap()
-            return True
-        else:
-            frontend.connecting_spinner.hide()
-            frontend.connecting_spinner.stop()
-            frontend.connecting_label.hide()
-            return False
-    '''
+    #def plugin_on_next_clicked(self):
+    #    frontend = self.controller._wizard
+    #    if frontend.next.get_label() == self.connect_text:
+    #        self.nmwidget.connect_to_ap()
+    #        return True
+    #    else:
+    #        frontend.connecting_spinner.hide()
+    #        frontend.connecting_spinner.stop()
+    #        frontend.connecting_label.hide()
+    #        return False
 
-    def state_changed(self, unused, state):
+    def state_changed(self, _unused, state):
+        """ State has changed """
         print("state_changed")
         self.state = state
         if not self.use_wireless.get_active():
@@ -143,10 +147,13 @@ class Wireless(GtkBaseBox):
 
         self.selection_changed(None)
 
-    def pw_validated(self, unused, validated):
+    def pw_validated(self, _unused, _validated):
+        """ Validate password """
+        # TODO: Check that password is validated
         pass
 
     def prepare(self, direction):
+        """ Prepare page for showing """
         self.translate_ui()
         self.show_all()
         if not nm.wireless_hardware_present():
@@ -154,7 +161,9 @@ class Wireless(GtkBaseBox):
             btn = self.ui.get_object('use_wireless')
             btn.set_sensitive(False)
 
+    @staticmethod
     def store_values():
+        """ Store changes """
         return True
 
 

@@ -3,7 +3,7 @@
 #
 # action.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -24,8 +24,14 @@
 
 """ Store actions on devices for the user to confirm """
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
-class Action(object):
+class Action():
     """ Store actions on devices for the user to confirm """
 
     def __init__(self, action_type, path_or_info, relabel=False,

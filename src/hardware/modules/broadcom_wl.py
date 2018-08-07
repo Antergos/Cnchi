@@ -3,7 +3,7 @@
 #
 #  broadcom_wl.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -27,7 +27,9 @@
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
 
-""" Broadcom-wl driver installation """
+""" Broadcom-wl driver installation
+    BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-,
+    BCM43227- and BCM43228-based hardware. """
 
 import os
 
@@ -40,24 +42,17 @@ CLASS_NAME = "BroadcomWl"
 CLASS_ID = "0x02"
 VENDOR_ID = "0x14e4"
 
-# Broadcom's driver for:
-# BCM4311-, BCM4312-, BCM4313-, BCM4321-, BCM4322-, BCM43224- and BCM43225-,
-# BCM43227- and BCM43228-based hardware.
-
-DEVICES = ['0x4311', '0x04b5', '0x4727',
-           '0x1361', '0x4328', '0x432b', '0x43b1']
-
 # Give this driver more priority so it is chosen instead of
 # broadcom_b43 or Broadcom_b43_legacy
 PRIORITY = 2
 
+PCI_FILE = "broadcom_wl.ids"
 
 class BroadcomWl(Hardware):
     """ Broadcom wl proprietary driver """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY)
 
     @staticmethod
     def get_packages():

@@ -3,7 +3,7 @@
 #
 # main_window.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -30,38 +30,44 @@
 """ Main Cnchi Window """
 
 import os
-import sys
 import multiprocessing
 import logging
+
 import config
+import desktop_info
+import info
+import misc.extra as misc
+
 import pages.welcome
 import pages.language
 import pages.location
+import pages.cache
 import pages.check
 import pages.desktop
-import desktop_info
 import pages.features
 import pages.keymap
 import pages.timezone
 import pages.user_info
 import pages.slides
 import pages.summary
-import info
 import pages.mirrors
-
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, Atk
-
-import show_message as show
-import misc.extra as misc
-
 import pages.ask
 import pages.automatic
 import pages.alongside
 import pages.advanced
 import pages.zfs
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk
+
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 def atk_set_image_description(widget, description):
     """ Sets the textual description for a widget that displays image/pixmap
@@ -113,10 +119,10 @@ class MainWindow(Gtk.ApplicationWindow):
             xz_cache.append(cmd_line.cache)
 
         # Log cache dirs
-        for xz in xz_cache:
+        for xz_path in xz_cache:
             logging.debug(
                 "Cnchi will use '%s' as a source for cached xz packages",
-                xz)
+                xz_path)
 
         # Store cache dirs in config
         self.settings.set('xz_cache', xz_cache)
@@ -146,11 +152,11 @@ class MainWindow(Gtk.ApplicationWindow):
                     "Cnchi will install the %s desktop environment",
                     my_desktop)
 
-        self.ui = Gtk.Builder()
+        self.cnchi_ui = Gtk.Builder()
         path = os.path.join(self.ui_dir, "cnchi.ui")
-        self.ui.add_from_file(path)
+        self.cnchi_ui.add_from_file(path)
 
-        main = self.ui.get_object("main")
+        main = self.cnchi_ui.get_object("main")
         # main.set_property("halign", Gtk.Align.CENTER)
         self.add(main)
 
@@ -171,12 +177,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.header.set_name("header")
         self.logo.set_name("logo")
 
-        self.main_box = self.ui.get_object("main_box")
+        self.main_box = self.cnchi_ui.get_object("main_box")
         # self.main_box.set_property("halign", Gtk.Align.CENTER)
 
         ##self.main_box.set_property('width_request', 800)
 
-        self.progressbar = self.ui.get_object("main_progressbar")
+        self.progressbar = self.cnchi_ui.get_object("main_progressbar")
         self.progressbar.set_name('process_progressbar')
         # a11y
         self.progressbar.set_can_focus(False)
@@ -248,7 +254,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect('delete-event', self.on_exit_button_clicked)
         self.connect('key-release-event', self.on_key_release)
 
-        self.ui.connect_signals(self)
+        self.cnchi_ui.connect_signals(self)
         self.header_ui.connect_signals(self)
 
         nil, major, minor = info.CNCHI_VERSION.split('.')
@@ -318,22 +324,20 @@ class MainWindow(Gtk.ApplicationWindow):
 
         misc.gtk_refresh()
 
-    def header_for_all_callback(self, widget, data):
+    def header_for_all_callback(self, widget, _data):
+        """ Show tooltip in header """
         if isinstance(widget, Gtk.Box):
             widget.forall(self.header_for_all_callback, self.tooltip_string)
-            return
-        if widget.get_style_context().has_class('title'):
-            logging.info('fired!')
+        elif widget.get_style_context().has_class('title'):
             widget.set_tooltip_text(self.tooltip_string)
 
     def load_pages(self):
+        """ Preload all installer pages """
         if not os.path.exists('/home/antergos/.config/openbox'):
             self.pages["language"] = pages.language.Language(self.params)
 
         self.pages["check"] = pages.check.Check(self.params)
         self.pages["location"] = pages.location.Location(self.params)
-
-        self.pages["mirrors"] = pages.mirrors.Mirrors(self.params)
 
         self.pages["timezone"] = pages.timezone.Timezone(self.params)
 
@@ -348,6 +352,9 @@ class MainWindow(Gtk.ApplicationWindow):
             self.pages["features"] = pages.features.Features(
                 self.params,
                 prev_page='keymap')
+
+        self.pages["cache"] = pages.cache.Cache(self.params)
+        self.pages["mirrors"] = pages.mirrors.Mirrors(self.params)
 
         self.pages["installation_ask"] = pages.ask.InstallationAsk(
             self.params)
@@ -364,8 +371,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.params)
         self.pages["installation_zfs"] = pages.zfs.InstallationZFS(
             self.params)
-        self.pages["summary"] = pages.summary.Summary(self.params)
         self.pages["user_info"] = pages.user_info.UserInfo(self.params)
+        self.pages["summary"] = pages.summary.Summary(self.params)
         self.pages["slides"] = pages.slides.Slides(self.params)
 
         diff = 2
@@ -382,6 +389,14 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Sets Cnchi window geometry """
         self.set_position(Gtk.WindowPosition.CENTER)
         self.set_resizable(False)
+
+        (min_width, natural_width) = self.get_preferred_width()
+        (min_height, natural_height) = self.get_preferred_width()
+        logging.debug("Main window minimal size: %dx%d", min_width, min_height)
+        logging.debug("Main window natural size: %dx%d", natural_width, natural_height)
+        logging.debug("Setting main window size to %dx%d",
+                      self._main_window_width, self._main_window_height)
+
         self.set_size_request(self._main_window_width,
                               self._main_window_height)
         self.set_default_size(self._main_window_width,
@@ -404,8 +419,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_geometry_hints(None, geom, hints)
 
-    def on_key_release(self, widget, event, data=None):
-        """ Params: GtkWidget *widget, GdkEventKey *event, gpointer data """
+    def on_key_release(self, _widget, event, _data=None):
+        """ Callback called when a key is released """
         if event.keyval == Gdk.keyval_from_name('Escape'):
             response = self.confirm_quitting()
             if response == Gtk.ResponseType.YES:
@@ -413,6 +428,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.destroy()
 
     def confirm_quitting(self):
+        """ Shows confirmation message before quitting """
         message = Gtk.MessageDialog(
             transient_for=self,
             modal=True,
@@ -424,12 +440,12 @@ class MainWindow(Gtk.ApplicationWindow):
         message.destroy()
         return response
 
-    def on_exit_button_clicked(self, widget, data=None):
+    def on_exit_button_clicked(self, _widget, _data=None):
         """ Quit Cnchi """
         try:
             misc.remove_temp_files()
             logging.info("Quiting installer...")
-            for proc in self.process_list:
+            for (proc, _pipe) in self.process_list:
                 if proc.is_alive():
                     proc.terminate()
                     proc.join()
@@ -438,6 +454,7 @@ class MainWindow(Gtk.ApplicationWindow):
             pass
 
     def set_progressbar_step(self, add_value):
+        """ Update progress bar """
         new_value = self.progressbar.get_fraction() + add_value
         if new_value > 1:
             new_value = 1
@@ -449,7 +466,7 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.progressbar.hide()
 
-    def on_forward_button_clicked(self, widget, data=None):
+    def on_forward_button_clicked(self, _widget, _data=None):
         """ Show next screen """
         next_page = self.current_page.get_next_page()
 
@@ -482,7 +499,7 @@ class MainWindow(Gtk.ApplicationWindow):
                             # Show logo in slides screen
                             self.logo.show_all()
 
-    def on_backwards_button_clicked(self, widget, data=None):
+    def on_backwards_button_clicked(self, _widget, _data=None):
         """ Show previous screen """
         prev_page = self.current_page.get_prev_page()
 

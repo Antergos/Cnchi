@@ -32,7 +32,7 @@
 import multiprocessing
 
 
-class Settings(object):
+class Settings():
     """ Store all Cnchi setup options here """
 
     def __init__(self):
@@ -88,14 +88,12 @@ class Settings(object):
             'location': '',
             'laptop': 'False',
             'locale': '',
-            'log_file': '/tmp/cnchi.log',
             'luks_root_password': '',
             'luks_root_volume': '',
             'luks_root_device': '',
             'network_manager': 'NetworkManager',
             'pacman_config_file': '/etc/pacman.conf',
             'partition_mode': 'automatic',
-            'password': '',
             'proxies': None,
             'rankmirrors_done': False,
             'rankmirrors_result': '',
@@ -121,8 +119,10 @@ class Settings(object):
             'use_timesyncd': True,
             'use_zfs': False,
             'use_same_proxy_for_all_protocols': False,
-            'user_info_done': False,
-            'username': '',
+            'user_avatar': '',
+            'user_fullname': '',
+            'user_name': '',
+            'user_password': '',
             'xz_cache': [],
             'z_hidden': False,
             'zfs': False,
@@ -153,7 +153,7 @@ class Settings(object):
         """ Set one setting's value """
         settings = self._get_settings()
         current = settings.get(key, 'keyerror')
-        exists = 'keyerror' != current
+        exists = current != 'keyerror'
 
         if exists and current and isinstance(current, list) and not isinstance(value, list):
             settings[key].append(value)

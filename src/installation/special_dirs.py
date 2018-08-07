@@ -3,7 +3,7 @@
 #
 # special_dirs.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -110,16 +110,16 @@ def umount(dest_dir):
 
     mounts = _get_mounts()
 
-    for (mount_type, mount_point, mount_fs_type, mount_options) in reversed(mounts):
+    for (_mount_type, mount_point, _mount_fs_type, _mount_options) in reversed(mounts):
         mount_point = dest_dir + mount_point
         logging.debug("Unmounting %s", format(mount_point))
         try:
-            subprocess.check_call(["umount", mount_point])
+            subprocess.check_call(["/usr/bin/umount", mount_point])
         except subprocess.CalledProcessError:
             logging.debug(
                 "Can't unmount %s. Trying -l to force it.", mount_point)
             try:
-                subprocess.check_call(["umount", "-l", mount_point])
+                subprocess.check_call(["/usr/bin/umount", "-l", mount_point])
             except subprocess.CalledProcessError as process_error:
                 logging.warning(
                     "Unable to unmount %s, command %s failed: %s",

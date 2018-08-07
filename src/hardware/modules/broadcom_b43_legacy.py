@@ -3,7 +3,7 @@
 #
 #  Broadcom_b43_legacy.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -39,14 +39,14 @@ except ImportError:
 CLASS_NAME = "BroadcomB43Legacy"
 CLASS_ID = "0x02"
 VENDOR_ID = "0x14e4"
-DEVICES = ['0x4301', '0x4306', '0x4320', '0x4324', '0x4325']
 
+PCI_FILE = "broadcom_b43_legacy.ids"
 
 class BroadcomB43Legacy(Hardware):
     """ Broadcom b43 legacy """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, DEVICES)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE)
 
     @staticmethod
     def get_packages():

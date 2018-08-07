@@ -3,7 +3,7 @@
 #
 #  gtkbasebox.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -28,12 +28,12 @@
 
 """ Cnchi's base class for screens """
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
-
 import os
 import logging
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 
 class GtkBaseBox(Gtk.Box):

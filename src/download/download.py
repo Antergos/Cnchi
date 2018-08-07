@@ -3,7 +3,7 @@
 #
 # download.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -32,33 +32,41 @@ import os
 import logging
 import queue
 
-import pacman.pac as pac
-import download.metalink as ml
-import download.download_requests as download_requests
+import pyalpm
+
+try:
+    import pacman.pac as pac
+    import download.metalink as ml
+    import download.download_requests as download_requests
+except ModuleNotFoundError:
+    import sys
+    CNCHI_PATH = "/usr/share/cnchi"
+    sys.path.append(CNCHI_PATH)
+    sys.path.append(os.path.join(CNCHI_PATH, "src"))
+    import pacman.pac as pac
+    import metalink as ml
+    import download_requests
 
 import misc.extra as misc
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
-class DownloadPackages(object):
-    """ Class to download packages using Aria2, requests (default) or urllib
-        This class tries to previously download all necessary packages for
-        Antergos installation using aria2, requests or urllib
-        Aria2 is known to use too much memory (not Aria2's fault but ours)
-        so until it's fixed it it's not advised to use it """
+class DownloadPackages():
+    """ Class to download packages. This class tries to previously download
+        all necessary packages for  Antergos installation using requests. """
 
-    def __init__(
-            self,
-            package_names,
-            pacman_conf_file,
-            pacman_cache_dir,
-            settings=None,
-            callback_queue=None):
+    def __init__(self, package_names, pacman_conf, settings=None, callback_queue=None):
         """ Initialize DownloadPackages class. Gets default configuration """
 
         self.package_names = package_names
 
-        self.pacman_conf_file = pacman_conf_file
-        self.pacman_cache_dir = pacman_cache_dir
+        self.pacman_conf_file = pacman_conf['file']
+        self.pacman_cache_dir = pacman_conf['cache']
 
         self.settings = settings
         if self.settings:
@@ -116,6 +124,25 @@ class DownloadPackages(object):
         position = [i for i, s in enumerate(ranked) if partial in s] or [9999]
         return position[0]
 
+    def add_metalink_info(self, metalink):
+        """ Adds metalink info to metalinks list """
+        # Get metalink info
+        metalink_info = ml.get_info(metalink)
+
+        # Update downloads list with the new info from
+        # the processed metalink
+        for key in metalink_info:
+            if key not in self.metalinks:
+                self.metalinks[key] = metalink_info[key]
+                urls = metalink_info[key]['urls']
+                if self.settings:
+                    # Sort urls based on the rankmirrors mirrorlist
+                    sorted_urls = sorted(urls, key=self.url_sort_helper)
+                    self.metalinks[key]['urls'] = sorted_urls
+                else:
+                    # When testing, settings is not available
+                    self.metalinks[key]['urls'] = urls
+
     @misc.raise_privileges
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
@@ -133,13 +160,14 @@ class DownloadPackages(object):
                 conf_path=self.pacman_conf_file,
                 callback_queue=self.callback_queue)
             if pacman is None:
-                return None
-        except Exception as ex:
+                return False
+        except pyalpm.error as ex:
             self.metalinks = None
-            template = "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+            template = "Can't initialize pyalpm. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
-            return
+            return False
 
         try:
             for package_name in self.package_names:
@@ -148,53 +176,30 @@ class DownloadPackages(object):
                 if metalink is None:
                     txt = "Error creating metalink for package %s. Installation will stop"
                     logging.error(txt, package_name)
-                    txt = _("Error creating metalink for package {0}. "
+                    txt = _("Error creating metalink for package {}. "
                             "Installation will stop").format(package_name)
                     raise misc.InstallError(txt)
 
-                # Get metalink info
-                metalink_info = ml.get_info(metalink)
-
-                # Update downloads list with the new info from
-                # the processed metalink
-                for key in metalink_info:
-                    if key not in self.metalinks:
-                        self.metalinks[key] = metalink_info[key]
-                        urls = metalink_info[key]['urls']
-                        if self.settings:
-                            # Sort urls based on the mirrorlist
-                            # we created earlier
-                            sorted_urls = sorted(
-                                urls,
-                                key=self.url_sort_helper)
-                            self.metalinks[key]['urls'] = sorted_urls
-                        else:
-                            # When testing, settings is not available
-                            self.metalinks[key]['urls'] = urls
+                self.add_metalink_info(metalink)
 
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
                 self.queue_event('percent', str(percent))
-        except Exception as ex:
-            template = "Can't create download set. An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            logging.error(message)
-            self.metalinks = None
-            return
 
-        try:
             pacman.release()
             del pacman
-        except Exception as ex:
-            self.metalinks = None
-            template = "Can't release pyalpm. An exception of type {0} occured. Arguments:\n{1!r}"
+        except (KeyError, pyalpm.error) as ex:
+            template = "Can't create download set. " \
+                "An exception of type {0} occured. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
-            return
+            self.metalinks = None
+            return False
 
         # Overwrite last event (to clean up the last message)
         self.queue_event('info', "")
+        return True
 
     def queue_event(self, event_type, event_text=""):
         """ Adds an event to Cnchi event queue """
@@ -225,8 +230,8 @@ def test():
     _ = gettext.gettext
 
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     stream_handler = logging.StreamHandler()
@@ -234,11 +239,14 @@ def test():
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
+    pacman_conf = {}
+    pacman_conf['file'] = '/etc/pacman.conf'
+    pacman_conf['cache'] = '/tmp'
+
     download_packages = DownloadPackages(
-        package_names=["gedit"],
-        pacman_conf_file="/etc/pacman.conf",
-        pacman_cache_dir="/tmp/pkg",
-        settings=None,
+        package_names=['ipw2200-fw'],
+        pacman_conf=pacman_conf,
+        settings={},
         callback_queue=None)
     download_packages.start()
 

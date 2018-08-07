@@ -4,7 +4,7 @@
 #   pycman.pkginfo - A Python implementation of Pacman
 #
 #   Copyright © 2011 Rémy Oudompheng <remy@archlinux.org>
-#   Copyright © 2013-2017 Antergos
+#   Copyright © 2013-2018 Antergos
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 """
 Package information formatting
 
-This module defines utility function to format package information
+This module defines utility functions to format package information
 for terminal output.
 """
 
@@ -38,13 +38,21 @@ import termios
 
 import pyalpm
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 ATTRNAME_FORMAT = '%-14s : '
 ATTR_INDENT = 17 * ' '
 
 
 def get_term_size():
+    """ Gets terminal width in chars """
     if sys.stdout.isatty():
-        height, width = struct.unpack(
+        _height, width = struct.unpack(
             "HH", fcntl.ioctl(1, termios.TIOCGWINSZ, 4 * b"\x00"))
         return width
     else:
@@ -52,8 +60,9 @@ def get_term_size():
 
 
 def format_attr(attrname, value, attrformat=None):
+    """ Formats string from value """
     if isinstance(value, list):
-        if len(value) == 0:
+        if not value:
             valuestring = 'None'
         else:
             valuestring = '  '.join(str(v) for v in value)
@@ -72,11 +81,12 @@ def format_attr(attrname, value, attrformat=None):
 
 
 def format_attr_oneperline(attrname, value):
-    if len(value) == 0:
+    """ Formats string from value (one value per line) """
+    if not value:
         value = ['None']
-    s = ATTRNAME_FORMAT % attrname
-    s += ('\n' + ATTR_INDENT).join(value)
-    return s
+    my_string = ATTRNAME_FORMAT % attrname
+    my_string += ('\n' + ATTR_INDENT).join(value)
+    return my_string
 
 
 def display_pkginfo(pkg, level=1, style='local'):
@@ -145,7 +155,7 @@ def display_pkginfo(pkg, level=1, style='local'):
     if level >= 2 and style == 'local':
         # print backup information
         print('Backup files:')
-        if len(pkg.backup) == 0:
+        if not pkg.backup:
             print('(none)')
         else:
             print('\n'.join(["%s %s" % (md5, filename)
@@ -154,6 +164,7 @@ def display_pkginfo(pkg, level=1, style='local'):
 
 
 def get_pkginfo(pkg, level=1, style='local'):
+    """ Stores package info into a dictonary """
     if style not in ['local', 'sync', 'file']:
         raise ValueError('Invalid style for package info formatting')
 
@@ -216,7 +227,7 @@ def get_pkginfo(pkg, level=1, style='local'):
     info['description'] = pkg.desc
 
     if level >= 2 and style == 'local':
-        if len(pkg.backup) == 0:
+        if not pkg.backup:
             info['backup files'] = None
         else:
             info['backup files'] = [(md5, filename)

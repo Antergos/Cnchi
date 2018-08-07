@@ -54,7 +54,7 @@ except NameError as err:
         return message
 
 
-class Grub2(object):
+class Grub2():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, uuids):
@@ -153,10 +153,7 @@ class Grub2(object):
             cmd_linux += " zfs={0}".format(zfs_pool_name)
 
         if self.settings.get('use_luks'):
-            # When using separate boot partition,
-            # add GRUB_ENABLE_CRYPTODISK to grub.cfg
-            if self.uuids["/"] != self.uuids["/boot"]:
-                self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
+            self.set_grub_option("GRUB_ENABLE_CRYPTODISK", "y")
 
             # Let GRUB automatically add the kernel parameters for
             # root encryption
@@ -252,14 +249,16 @@ class Grub2(object):
         else:
             logging.warning("Can't find script %s", script_path)
 
-    def grub_ripper(self):
+    @staticmethod
+    def grub_ripper():
+        """ Kills grub-mount process """
         while True:
             time.sleep(10)
             try:
                 ret = subprocess.check_output(
-                    ['pidof', 'grub-mount']).decode().strip()
+                    ['/usr/bin/pidof', 'grub-mount']).decode().strip()
                 if ret:
-                    subprocess.check_output(['kill', '-9', ret.split()[0]])
+                    subprocess.check_output(['/usr/bin/kill', '-9', ret.split()[0]])
                 else:
                     break
             except subprocess.CalledProcessError as err:
@@ -456,8 +455,8 @@ class Grub2(object):
             # Ignore if already exists
             pass
 
-
-if __name__ == '__main__':
+def test_module():
+    """ Test this module """
     os.makedirs("/install/etc/default", mode=0o755, exist_ok=True)
     shutil.copy2("/etc/default/grub", "/install/etc/default/grub")
     dest_dir = "/install"
@@ -470,3 +469,6 @@ if __name__ == '__main__':
     uuids["/boot"] = "ZXCV"
     grub2 = Grub2(dest_dir, settings, uuids)
     grub2.modify_grub_default()
+
+if __name__ == '__main__':
+    test_module()

@@ -11,7 +11,8 @@
 """  Validation module """
 
 if __debug__:
-    def _(x): return x
+    def _(message):
+        return message
 
 
 def check_grub_device(device):
@@ -26,10 +27,7 @@ def check_grub_device(device):
         return True
     # (device[,part-num])
     regex = re.compile(r'^\((hd|fd)[0-9]+(,[0-9]+)*\)$')
-    if regex.search(device):
-        return True
-    else:
-        return False
+    return bool(regex.search(device))
 
 
 NAME_LENGTH = 1
@@ -102,6 +100,7 @@ def check_hostname(name):
 
 
 def password_strength(password):
+    """ Checks password strength """
     upper = lower = digit = symbol = 0
     for char in password:
         if char.isdigit():
@@ -133,6 +132,7 @@ def password_strength(password):
 
 
 def human_password_strength(password):
+    """ Converts password strength to a human message """
     strength = password_strength(password)
     length = len(password)
     if length == 0:

@@ -3,7 +3,7 @@
 #
 #  radeon.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -39,18 +39,17 @@ import os
 CLASS_NAME = "Radeon"
 CLASS_ID = "0x03"
 VENDOR_ID = "0x1002"
-DEVICES = []
 
 # Give this driver more priority so it is chosen instead of the catalyst one
 PRIORITY = 2
 
+PCI_FILE = "ati.ids"
 
 class Radeon(Hardware):
     """ AMD ATI open graphics driver """
 
     def __init__(self):
-        Hardware.__init__(self, CLASS_NAME, CLASS_ID,
-                          VENDOR_ID, DEVICES, PRIORITY)
+        Hardware.__init__(self, CLASS_NAME, CLASS_ID, VENDOR_ID, PCI_FILE, PRIORITY)
 
     @staticmethod
     def get_packages():

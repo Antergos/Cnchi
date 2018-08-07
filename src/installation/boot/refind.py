@@ -31,12 +31,10 @@
 
 import logging
 
-import parted3.fs_module as fs
-
 from misc.run_cmd import chroot_call
 
 
-class REFInd(object):
+class REFInd():
     """ Class to perform boot loader installation """
 
     def __init__(self, dest_dir, settings, uuids):
@@ -51,13 +49,13 @@ class REFInd(object):
 
         cmd = ["refind-install"]
         self.settings.set('bootloader_installation_successful', False)
-        if chroot_call(cmd, self.dest_dir, timeout=300) != False:
+        if chroot_call(cmd, self.dest_dir, timeout=300):
             # This script will attempt to find the kernel in /boot and
             # automatically generate refind_linux.conf.
             # The script will only set up the most basic kernel
             # parameters, so be sure to check the file it created for
             # correctness.
             cmd = ["refind-mkrlconf"]
-            if chroot_call(cmd, self.dest_dir, timeout=300) != False:
+            if chroot_call(cmd, self.dest_dir, timeout=300):
                 self.settings.set('bootloader_installation_successful', True)
                 logging.debug("rEFIind installed.")

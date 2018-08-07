@@ -3,7 +3,7 @@
 #
 # _test_page.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -29,31 +29,29 @@
 
 """ Test page (simulates main window to test a ui page) """
 
-import sys
 import os
+import sys
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 
+CNCHI_PATH = "/usr/share/cnchi"
+sys.path.append(CNCHI_PATH)
+sys.path.append(os.path.join(CNCHI_PATH, "src"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/download"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/hardware"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/installation"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/misc"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pacman"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/pages/dialogs"))
+sys.path.append(os.path.join(CNCHI_PATH, "src/parted3"))
+
 def get_page(page_name, params):
     """ Import page code so we can execute it """
     page = None
-
-
-
-#    package = package_root + filename
-#    name = filename.capitalize()
-#    # This instruction is the same as "from package import name"
-#    class_name = getattr(__import__(
-#        package, fromlist=[name]), "CLASS_NAME")
-#    obj = getattr(__import__(package, fromlist=[
-#                    class_name]), class_name)()
-#    self.all_objects.append(obj)
-
-
-
 
     if page_name == "desktop":
         import pages.desktop as desktop
@@ -110,6 +108,9 @@ def get_page(page_name, params):
     elif page_name == "mirrors":
         import pages.mirrors as mirrors
         page = mirrors.Mirrors(params)
+    elif page_name == "cache":
+        import pages.cache as cache
+        page = cache.Cache(params)
     return page
 
 
@@ -129,8 +130,8 @@ def run(page_name):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
-        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s',
-        "%Y-%m-%d %H:%M:%S")
+        '[%(asctime)s] [%(module)s] %(levelname)s: %(message)s')
+        #"%Y-%m-%d %H:%M:%S.%f")
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
@@ -160,6 +161,8 @@ def run(page_name):
 
     settings.set('desktops', DESKTOPS)
     settings.set('language_code', 'ca')
+
+    settings.set('main_window', None)
 
     params = {
         'a11y': False,

@@ -3,7 +3,7 @@
 #
 #  proxy.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -26,15 +26,22 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+
+""" Proxy dialog """
+
+import logging
+import os
+
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-import os
-import logging
-
-
-def _(x): return x
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 
 class ProxyDialog(Gtk.Dialog):
@@ -63,7 +70,7 @@ class ProxyDialog(Gtk.Dialog):
 
         # Connect UI signals
         switch = self.ui.get_object("use_same_proxy_switch")
-        switch.connect("notify::active", self.on_use_same_proxy_activated)
+        switch.connect("notify::active", self.use_same_proxy_activated)
 
         if use_same_proxy:
             switch.set_active(True)
@@ -72,22 +79,24 @@ class ProxyDialog(Gtk.Dialog):
         content_area = self.get_content_area()
         content_area.add(dialog_grid)
 
-    def on_use_same_proxy_activated(self, switch, data):
+    def use_same_proxy_activated(self, switch, _data):
+        """ Use same proxy for all protocols """
         widget_names = [
             "https_proxy_label", "ftp_proxy_label", "socks_proxy_label",
             "https_proxy_entry", "ftp_proxy_entry", "socks_proxy_entry",
             "https_proxy_port_label", "https_proxy_port_label",
             "ftp_proxy_port_label", "socks_proxy_port_label",
-            "https_proxy_port",  "https_proxy_port", "ftp_proxy_port",
+            "https_proxy_port", "https_proxy_port", "ftp_proxy_port",
             "socks_proxy_port"]
 
         is_active = switch.get_active()
 
         for name in widget_names:
-            w = self.ui.get_object(name)
-            w.set_sensitive(not is_active)
+            widget = self.ui.get_object(name)
+            widget.set_sensitive(not is_active)
 
     def setup_port_spin_buttons(self):
+        """ Adjust spin widgets """
         spin_names = [
             "http_proxy_port", "https_proxy_port",
             "https_proxy_port", "ftp_proxy_port",
@@ -101,6 +110,7 @@ class ProxyDialog(Gtk.Dialog):
             spin.set_text("")
 
     def translate_ui(self):
+        """ Translate all widgets """
         self.set_title(_("Cnchi - Internet Connection Proxy Setup"))
 
         label = self.ui.get_object("http_proxy_label")
@@ -143,9 +153,10 @@ class ProxyDialog(Gtk.Dialog):
                     entry_widget.set_text(host)
                     port_widget.set_text(port)
                 except (IndexError, KeyError) as err:
-                    pass
+                    logging.warning(err)
 
-    def get_use_same_proxy_for_all_protocols(self):
+    def use_same_proxy(self):
+        """ Checks if user wants the same proxy address for all protocols """
         switch = self.ui.get_object("use_same_proxy_switch")
         return switch.get_active()
 

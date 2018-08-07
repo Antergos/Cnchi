@@ -3,7 +3,7 @@
 #
 #  features.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -44,30 +44,37 @@ from pages.gtkbasebox import GtkBaseBox
 
 from lembrame.dialog import LembrameDialog
 
+from hardware.modules.nvidia import Nvidia
+from hardware.modules.nvidia_390xx import Nvidia390xx
+from hardware.modules.nvidia_340xx import Nvidia340xx
+from hardware.modules.nvidia_304xx import Nvidia304xx
+from hardware.modules.catalyst import Catalyst
+from hardware.modules.amdgpu import AMDGpu
+from hardware.modules.amdgpu_exp import AMDGpuExp
+from hardware.modules.i915 import Intel915
 
-class Graphics(object):
+class Graphics():
     """ Gets graphic device info using the hardware module """
-    def nvidia(self):
+
+    @staticmethod
+    def nvidia():
         """ Returns true if an nVidia card is detected """
-        from hardware.modules.nvidia import Nvidia
-        if Nvidia().detect():
-            return True
-        from hardware.modules.nvidia_340xx import Nvidia340xx
-        if Nvidia340xx().detect():
-            return True
-        from hardware.modules.nvidia_304xx import Nvidia304xx
-        if Nvidia304xx().detect():
+        if (Nvidia().detect() or Nvidia390xx().detect() or
+            Nvidia340xx().detect() or Nvidia304xx().detect()):
             return True
         return False
 
-    def amd(self):
+    @staticmethod
+    def amd():
         """ Returns true if an AMD card is detected """
-        from hardware.modules.catalyst import Catalyst
-        return Catalyst().detect()
+        if (Catalyst().detect() or AMDGpu().detect() or
+            AMDGpuExp().detect()):
+            return True
+        return False
 
-    def i915(self):
+    @staticmethod
+    def i915():
         """ Returns if an Intel card is detected """
-        from hardware.modules.i915 import Intel915
         return Intel915().detect()
 
     def bumblebee(self):
@@ -83,18 +90,19 @@ class Features(GtkBaseBox):
     COL_DESCRIPTION = 2
     COL_SWITCH = 3
 
-    def __init__(self, params, prev_page="desktop", next_page="mirrors"):
+    def __init__(self, params, prev_page="desktop", next_page="cache"):
         """ Initializes features ui """
+        # This is initialized each time this screen is shown in prepare()
+        self.features = None
+
         super().__init__(self, params, "features", prev_page, next_page)
 
-        self.detect = Graphics()
+        self.graphics = Graphics()
 
         self.listbox_rows = {}
 
         self.a11y = params['a11y']
 
-        # TODO: Set this to False and add a checkbox so the user can
-        # hide/show advanced features
         self.show_advanced = False
         self.advanced_checkbutton = self.ui.get_object("advanced_checkbutton")
         self.advanced_checkbutton.set_active(False)
@@ -104,25 +112,19 @@ class Features(GtkBaseBox):
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
 
-        # self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
-        # self.listbox.connect("row-selected", self.on_listbox_row_selected)
-
-        # This is initialized each time this screen is shown in prepare()
-        self.features = None
-
         # Only show ufw rules and aur disclaimer info once
         self.info_already_shown = {"ufw": False, "aur": False}
 
         # Only load defaults for each DE the first time this screen is shown
         self.defaults_loaded = False
 
-    def on_show_advanced_features_toggled(self, widget):
+    def show_advanced_toggled(self, _widget):
         """ Display or hide advanced features """
         self.show_advanced = self.advanced_checkbutton.get_active()
         self.update_advanced_features()
 
     @staticmethod
-    def on_listbox_row_selected(listbox, listbox_row):
+    def on_listbox_row_selected(_listbox, listbox_row):
         """ Someone selected a different row of the listbox
             WARNING: IF LIST LAYOUT IS CHANGED THEN THIS SHOULD BE CHANGED ACCORDINGLY. """
         if listbox_row is not None:
@@ -167,7 +169,7 @@ class Features(GtkBaseBox):
         text_box.pack_start(label, False, False, 0)
         box.pack_start(text_box, False, False, 0)
 
-    def on_switch_activated(self, switch, gparam):
+    def on_switch_activated(self, switch, _gparam):
         """ Feature has been activated or deactivated """
         for feature in self.features:
             row = self.listbox_rows[feature]
@@ -213,12 +215,13 @@ class Features(GtkBaseBox):
         # Only add graphic-driver feature if an AMD or Nvidia is detected
         if "graphic_drivers" in self.features:
             allow = False
-            if self.detect.amd():
+            if self.graphics.amd():
                 allow = True
-            if self.detect.nvidia() and not self.detect.bumblebee():
+            if self.graphics.nvidia() and not self.graphics.bumblebee():
                 allow = True
             if not allow:
-                logging.debug("Removing proprietary graphic drivers feature.")
+                logging.debug("Neither AMD nor Nvidia cards have been detected. "
+                              "Removing proprietary graphic drivers feature.")
                 self.features.remove("graphic_drivers")
 
         for feature in self.features:
@@ -232,22 +235,26 @@ class Features(GtkBaseBox):
             self.add_feature_switch(feature, box)
             # Add row to our gtklist
             self.listbox.add(box)
-        
+
         self.listbox.show_all()
 
     def update_advanced_features(self):
         """ Shows or hides advanced features """
-        for feature in self.features:
-            row = self.listbox_rows[feature]
-            box = row[Features.COL_ICON].get_parent()
-            listboxrow = box.get_parent()
-            if feature in features_info.ADVANCED and not self.show_advanced:
-                listboxrow.hide()
-            else:
-                listboxrow.show()
+        try:
+            if self.features:
+                for feature in self.features:
+                    row = self.listbox_rows[feature]
+                    box = row[Features.COL_ICON].get_parent()
+                    listboxrow = box.get_parent()
+                    if feature in features_info.ADVANCED and not self.show_advanced:
+                        listboxrow.hide()
+                    else:
+                        listboxrow.show()
+        except AttributeError as msg:
+            logging.debug(msg)
 
     @staticmethod
-    def listbox_sort_by_name(row1, row2, user_data):
+    def listbox_sort_by_name(row1, row2, _user_data):
         """ Sort function for listbox
             Returns : < 0 if row1 should be before row2, 0 if they are equal and > 0 otherwise
             WARNING: IF LAYOUT IS CHANGED IN fill_listbox THEN THIS SHOULD BE
@@ -305,13 +312,13 @@ class Features(GtkBaseBox):
 
         if 'bluetooth' in self.features:
             try:
-                process1 = subprocess.Popen(["lsusb"], stdout=subprocess.PIPE)
+                process1 = subprocess.Popen(["/usr/bin/lsusb"], stdout=subprocess.PIPE)
                 process2 = subprocess.Popen(
-                    ["grep", "-i", "bluetooth"],
+                    ["/usr/bin/grep", "-i", "bluetooth"],
                     stdin=process1.stdout,
                     stdout=subprocess.PIPE)
                 process1.stdout.close()
-                out, process_error = process2.communicate()
+                out, _process_error = process2.communicate()
                 if out.decode():
                     row = self.listbox_rows['bluetooth']
                     row[Features.COL_SWITCH].set_active(True)
@@ -472,8 +479,3 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Features')

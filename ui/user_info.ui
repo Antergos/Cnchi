@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.1 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <object class="GtkBox" id="user_info">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="hexpand">True</property>
     <property name="orientation">vertical</property>
     <property name="spacing">10</property>
     <child>
       <object class="GtkOverlay" id="user_info_overlay">
-        <property name="width_request">60</property>
-        <property name="height_request">80</property>
+        <property name="width_request">160</property>
+        <property name="height_request">90</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
@@ -34,6 +37,7 @@
         <property name="margin_end">20</property>
         <property name="margin_top">10</property>
         <property name="margin_bottom">10</property>
+        <property name="hexpand">True</property>
         <property name="row_spacing">6</property>
         <property name="column_spacing">6</property>
         <child>
@@ -411,7 +415,7 @@
             <property name="halign">start</property>
             <property name="valign">start</property>
             <property name="draw_indicator">True</property>
-            <signal name="toggled" handler="on_checkbutton_show_password_toggled" swapped="no"/>
+            <signal name="toggled" handler="show_password_toggled" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -433,7 +437,7 @@
                 <property name="halign">start</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">login_pass</property>
-                <signal name="clicked" handler="on_authentication_toggled" swapped="no"/>
+                <signal name="clicked" handler="authentication_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -466,7 +470,7 @@
                 <property name="halign">start</property>
                 <property name="margin_start">20</property>
                 <property name="draw_indicator">True</property>
-                <signal name="clicked" handler="on_authentication_toggled" swapped="no"/>
+                <signal name="clicked" handler="authentication_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -482,7 +486,7 @@
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
+        <property name="expand">True</property>
         <property name="fill">True</property>
         <property name="position">1</property>
       </packing>

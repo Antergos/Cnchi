@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  installation_process.py
+#  pacman_conf_test.py
 #
 #  Copyright 2014 Markus M. May
 #  Copyright 2014 Antergos
@@ -21,36 +21,42 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 
-import os, sys
+import os
+import sys
 import logging
 from mock import Mock
+from installation.install import Installation
 
-logging.basicConfig(level=10)
-logger = logging.getLogger(__name__)
+def test():
+    """ Function to test pacman.conf file creation """
+    logging.basicConfig(level=10)
+    logger = logging.getLogger(__name__)
 
-parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(parentdir)
-sys.path.append(os.path.join(parentdir, 'src'))
+    parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.append(parentdir)
+    sys.path.append(os.path.join(parentdir, 'src'))
 
-logger.debug("parentdir: %s" % parentdir)
+    logger.debug("parentdir: %s", parentdir)
 
-from installation_process import InstallationProcess
+    # set needed config options
+    settings = dict()
+    settings['data'] = os.path.join(parentdir, 'data')
 
-# set needed config options
-settings = dict()
-settings['data'] = os.path.join(parentdir, 'data')
+    # create mock object to test just one method and not the __init__
+    mobject = Mock(Installation)
 
-# create mock object to test just one method and not the __init__
-mobject = Mock(InstallationProcess)
+    mobject.settings = settings
+    mobject.dest_dir = '/tmp'
+    mobject.arch = 'x86_64'
 
-mobject.settings = settings
-mobject.dest_dir = '/tmp'
-mobject.arch = 'x86_64'
+    mobject.write_file = Installation.write_file.__get__(mobject)
 
-mobject.write_file = InstallationProcess.write_file.__get__(mobject)
+    Installation.create_pacman_conf_file(mobject)
 
-InstallationProcess.create_pacman_conf_file(mobject)
+    logger.debug('Done')
 
-logger.debug('Done')
+    assert os.path.isfile('/tmp/pacman.conf')
 
-assert os.path.isfile('/tmp/pacman.conf')
+
+if __name__ == '__main__':
+    test()

@@ -40,7 +40,6 @@ from gi.repository import Gtk, GObject
 
 import cairo
 
-from misc.run_cmd import call
 from misc.extra import raised_privileges
 
 
@@ -57,38 +56,32 @@ class KeyboardWidget(Gtk.DrawingArea):
     """ Draws a keyboard widget """
     __gtype_name__ = 'KeyboardWidget'
 
-    kb_104 = {
+    KB_104 = {
         "extended_return": False,
         "keys": [
             (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
-            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16,
-             0x17, 0x18, 0x19, 0x1a, 0x1b, 0x2b),
+            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x2b),
             (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28),
             (0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35),
             ()]
     }
 
-    kb_105 = {
+    KB_105 = {
         "extended_return": True,
         "keys": [
             (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd),
-            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15,
-             0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
-            (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23,
-             0x24, 0x25, 0x26, 0x27, 0x28, 0x2b),
+            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
+            (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x2b),
             (0x54, 0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35),
             ()]
     }
 
-    kb_106 = {
+    KB_106 = {
         "extended_return": True,
         "keys": [
-            (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7,
-             0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe),
-            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15,
-             0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
-            (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23,
-             0x24, 0x25, 0x26, 0x27, 0x28, 0x29),
+            (0x29, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe),
+            (0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b),
+            (0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29),
             (0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36),
             ()]
     }
@@ -106,7 +99,7 @@ class KeyboardWidget(Gtk.DrawingArea):
 
         self.space = 6
 
-        self.kb = None
+        self.keyboard = None
 
     def set_layout(self, layout):
         """ Set keymap layout """
@@ -117,88 +110,40 @@ class KeyboardWidget(Gtk.DrawingArea):
         # broken: ad (Andorra), lk (Sri Lanka), brai (Braille)
         # ?!?: us:chr
 
+        # Default
         self.font = "Helvetica"
 
-        # Load fonts from ttf-aboriginal-sans package
-
-        # us:chr
-        if self.variant == "chr":
-            self.font = "Aboriginal Sans"
-
         # Load fonts from:
-        # ttf-indic-otf, ttf-khmer, ttf-lohit-fonts, ttf-myanmar3
-        # ttf-thaana-fonts, ttf-tlwg
+        # ttf-aboriginal-sans, ttf-indic-otf, ttf-khmer, ttf-lohit-fonts, ttf-myanmar3,
+        # ttf-thaana-fonts and ttf-tlwg
 
-        # Font: Akaash
-        if self.layout == "bd":
-            self.font = "Akaash"
+        fonts = {
+            'Aboriginal Sans': ['chr'],
+            'Akaash': ['bd'],
+            'Gargi': ['np', 'in'],
+            'khmerOS': ['kh'],
+            'Lohit Bengali': ['ben_probhat', 'ben'],
+            'Lohit Kannada': ['kan'],
+            'Lohit Oriya': ['ori'],
+            'Lohit Punjabi': ['guru', 'jhelum'],
+            'Lohit Tamil': ['tam_keyboard_with_numerals', 'tam'],
+            'Lohit Telugu': ['tel'],
+            'Malayalam': ['mal', 'mal_lalitha'],
+            'MVBoli': ['mv'],
+            'Myanmar3': ['mm'],
+            'Oriya': [
+                'geo', 'urd-phonetic3', 'urd-phonetic', 'urd-winkeys',
+                'af', 'ara', 'am', 'cn', 'ge', 'gr', 'gn', 'ir',
+                'iq', 'ie', 'il', 'la', 'ma', 'pk', 'lk', 'sy'],
+            'Padmaa': ['guj'],
+            'Tlwg Mono': ['th'],
+            'TSCu_Times': ['tam_TAB', 'tam_TSCII', 'tam_unicode']
+        }
 
-        # Font: Gari
-        if self.layout == "np" or self.layout == "in":
-            self.font = "Gargi"
-
-        # Font: KhmerOS
-        if self.layout == "kh":
-            self.font = "KhmerOS"
-
-        # Font: Bengali
-        if self.variant == "ben_probhat" or self.variant == "ben":
-            self.font = "Lohit Bengali"
-
-        # Font: Padmaa
-        if self.variant == "guj":  # not all keys
-            self.font = "Padmaa"
-
-        # Font: Punjabi
-        if self.variant == "guru" or self.variant == "jhelum":
-            self.font = "Lohit Punjabi"
-
-        # Font: Kannada
-        if self.variant == "kan":
-            self.font = "Lohit Kannada"
-
-        # Font: Malayalam
-        if self.variant == "mal" or self.variant == "mal_lalitha":
-            self.font = "Malayalam"
-
-        # Font: Tamil
-        if self.variant == "tam_keyboard_with_numerals" or self.variant == "tam":
-            self.font = "Lohit Tamil"
-
-        # Font: TSCu Times
-        lst = ["tam_TAB", "tam_TSCII", "tam_unicode"]
-        if self.variant in lst:
-            self.font = "TSCu_Times"
-
-        # Font: Telugu
-        if self.variant == "tel":
-            self.font = "Lohit Telugu"
-
-        # Font: Oriya
-        lst = [
-            "af", "ara", "am", "cn", "ge", "gr", "gn", "ir", "iq", "ie", "il",
-            "la", "ma", "pk", "lk", "sy"]
-        if self.layout in lst:
-            self.font = "Oriya"
-
-        lst = ["geo", "urd-phonetic3", "urd-phonetic", "urd-winkeys"]
-        if self.variant in lst:
-            self.font = "Oriya"
-
-        if self.variant == "ori":
-            self.font = "Lohit Oriya"
-
-        # Font: Mv Boli
-        if self.layout == "mv":
-            self.font = "MVBoli"
-
-        # Font: Myanmar
-        if self.layout == "mm":
-            self.font = "Myanmar3"
-
-        # Font: Tlwg
-        if self.layout == "th":
-            self.font = "Tlwg Mono"
+        for font in fonts:
+            if self.layout in fonts[font] or self.variant in fonts[font]:
+                self.font = font
+                break
 
     def set_variant(self, variant):
         """ Set keymap layout variant """
@@ -211,45 +156,132 @@ class KeyboardWidget(Gtk.DrawingArea):
 
     def load_info(self):
         """ Get keyboard keys based on keymap layout """
-        kbl_104 = ["us", "th"]
-        kbl_106 = ["jp"]
-
         # Most keyboards are 105 key so default to that
-        if self.layout in kbl_104:
-            self.kb = self.kb_104
-        elif self.layout in kbl_106:
-            self.kb = self.kb_106
-        elif self.kb != self.kb_105:
-            self.kb = self.kb_105
+        if self.layout in ['us', 'th']:
+            self.keyboard = self.KB_104
+        elif self.layout in ['jp']:
+            self.keyboard = self.KB_106
+        elif self.keyboard != self.KB_105:
+            self.keyboard = self.KB_105
 
     @staticmethod
-    def rounded_rectangle(cr, x, y, width, height, aspect=1.0):
+    def rounded_rectangle(context, start_x, start_y, width, height, aspect=1.0):
+        """ Draws a rectangle with rounded corners """
         corner_radius = height / 10.0
         radius = corner_radius / aspect
         degrees = math.pi / 180.0
+        degrees_90 = 90 * degrees
+        degrees_180 = 180 * degrees
 
-        cr.new_sub_path()
-        cr.arc(x + width - radius, y + radius, radius, -90 * degrees, 0)
-        cr.arc(x + width - radius, y + height -
-               radius, radius, 0, 90 * degrees)
-        cr.arc(x + radius, y + height - radius,
-               radius, 90 * degrees, 180 * degrees)
-        cr.arc(x + radius, y + radius, radius, 180 * degrees, 270 * degrees)
-        cr.close_path()
+        context.new_sub_path()
+        context.arc(start_x + width - radius, start_y + radius, radius, -degrees_90, 0)
+        context.arc(start_x + width - radius, start_y + height -
+                    radius, radius, 0, degrees_90)
+        context.arc(start_x + radius, start_y + height - radius,
+                    radius, degrees_90, degrees_180)
+        context.arc(start_x + radius, start_y + radius, radius, degrees_180, 270 * degrees)
+        context.close_path()
 
-        cr.set_source_rgb(0.5, 0.5, 0.5)
-        cr.fill_preserve()
-        cr.set_source_rgba(0.2, 0.2, 0.2, 0.5)
-        cr.set_line_width(2)
-        cr.stroke()
+        context.set_source_rgb(0.5, 0.5, 0.5)
+        context.fill_preserve()
+        context.set_source_rgba(0.2, 0.2, 0.2, 0.5)
+        context.set_line_width(2)
+        context.stroke()
 
-    def do_draw(self, cr):
-        """ The 'cr' variable is the current Cairo context """
+    @staticmethod
+    def draw_ext_return(context, point1, width1, point2, rect_x, key_width):
+        """ this is some serious crap... but it has to be so
+            maybe one day keyboards won't look like this...
+            one can only hope """
+        point_x1, point_y1 = point1
+        point_x2, point_y2 = point2
+        degrees = math.pi / 180.0
+        degrees90 = 90 * degrees
+        degrees180 = 180 * degrees
+
+        context.new_sub_path()
+
+        context.move_to(point_x1, point_y1 + rect_x)
+        context.arc(point_x1 + rect_x, point_y1 + rect_x, rect_x,
+                    degrees180, -degrees90)
+        context.line_to(point_x1 + width1 - rect_x, point_y1)
+        context.arc(point_x1 + width1 - rect_x, point_y1 +
+                    rect_x, rect_x, -degrees90, 0)
+        context.line_to(point_x1 + width1, point_y2 + key_width - rect_x)
+        context.arc(point_x1 + width1 - rect_x, point_y2 + key_width - rect_x, rect_x,
+                    0, degrees90)
+        context.line_to(point_x2 + rect_x, point_y2 + key_width)
+        context.arc(point_x2 + rect_x, point_y2 + key_width - rect_x, rect_x,
+                    degrees90, degrees180)
+        context.line_to(point_x2, point_y1 + key_width)
+        context.line_to(point_x1 + rect_x, point_y1 + key_width)
+        context.arc(point_x1 + rect_x, point_y1 + key_width - rect_x, rect_x,
+                    degrees90, degrees180)
+
+        context.close_path()
+
+        context.set_source_rgb(0.5, 0.5, 0.5)
+        context.fill_preserve()
+        context.set_source_rgba(0.2, 0.2, 0.2, 0.5)
+        context.set_line_width(2)
+        context.stroke()
+
+    def draw_row(self, context, row, start_x, start_y, max_width, key_width, space, last_end=False):
+        """ Draw a row of the keyboard """
+        my_x = start_x
+        my_y = start_y
+        keys = row
+        rect_width = max_width - start_x
+        i = 0
+        for key in keys:
+            rect = (my_x, my_y, key_width, key_width)
+
+            if i == len(keys) - 1 and last_end:
+                rect = (rect[0], rect[1], rect_width, rect[3])
+
+            self.rounded_rectangle(
+                context, rect[0], rect[1], rect[2], rect[3])
+
+            point_x = rect[0] + 5
+            point_y = rect[1] + rect[3] - (rect[3] / 4)
+
+            if self.codes:
+                # Draw lower character
+                context.set_source_rgb(1.0, 1.0, 1.0)
+                context.select_font_face(
+                    self.font,
+                    cairo.FONT_SLANT_NORMAL,
+                    cairo.FONT_WEIGHT_BOLD)
+                context.set_font_size(10)
+                context.move_to(point_x, point_y)
+                context.show_text(self.regular_text(key))
+
+                point_x = rect[0] + 5
+                point_y = rect[1] + (rect[3] / 3)
+
+                # Draw upper character
+                context.set_source_rgb(0.82, 0.82, 0.82)
+                context.select_font_face(
+                    self.font,
+                    cairo.FONT_SLANT_NORMAL,
+                    cairo.FONT_WEIGHT_NORMAL)
+                context.set_font_size(8)
+                context.move_to(point_x, point_y)
+                context.show_text(self.shift_text(key))
+
+            rect_width = rect_width - space - key_width
+            my_x = my_x + space + key_width
+            i += 1
+        return my_x, rect_width
+
+
+    def do_draw(self, context):
+        """ context: current Cairo context """
         # alloc = self.get_allocation()
         # real_width = alloc.width
         # real_height = alloc.height
 
-        if not self.kb:
+        if not self.keyboard:
             return
 
         width = 460
@@ -259,78 +291,28 @@ class KeyboardWidget(Gtk.DrawingArea):
         key_w = (usable_width - 14 * self.space) / 15
 
         # Set background color to transparent
-        cr.set_source_rgba(1.0, 1.0, 1.0, 0.0)
-        cr.paint()
+        context.set_source_rgba(1.0, 1.0, 1.0, 0.0)
+        context.paint()
 
-        cr.set_source_rgb(0.84, 0.84, 0.84)
-        cr.set_line_width(2)
+        context.set_source_rgb(0.84, 0.84, 0.84)
+        context.set_line_width(2)
 
-        cr.rectangle(0, 0, width, height)
-        cr.stroke()
+        context.rectangle(0, 0, width, height)
+        context.stroke()
 
-        cr.set_source_rgb(0.22, 0.22, 0.22)
+        context.set_source_rgb(0.22, 0.22, 0.22)
 
-        rx = 3
+        rect_x = 3
 
         space = self.space
-        w = usable_width
-        kw = key_w
+        max_width = usable_width
+        key_width = key_w
 
-        # Use this to show real widget size (useful when debugging this widget)
-        # cr.rectangle(0, 0, real_width, real_height)
+        my_x = 6
+        my_y = 6
 
-        def draw_row(row, sx, sy, last_end=False):
-            """ Draw a row of the keyboard """
-            x = sx
-            y = sy
-            keys = row
-            rw = w - sx
-            i = 0
-            for k in keys:
-                rect = (x, y, kw, kw)
-
-                if i == len(keys) - 1 and last_end:
-                    rect = (rect[0], rect[1], rw, rect[3])
-
-                self.rounded_rectangle(cr, rect[0], rect[1], rect[2], rect[3])
-
-                px = rect[0] + 5
-                py = rect[1] + rect[3] - (rect[3] / 4)
-
-                if self.codes and len(self.codes) > 0:
-                    # Draw lower character
-                    cr.set_source_rgb(1.0, 1.0, 1.0)
-                    cr.select_font_face(
-                        self.font,
-                        cairo.FONT_SLANT_NORMAL,
-                        cairo.FONT_WEIGHT_BOLD)
-                    cr.set_font_size(10)
-                    cr.move_to(px, py)
-                    cr.show_text(self.regular_text(k))
-
-                    px = rect[0] + 5
-                    py = rect[1] + (rect[3] / 3)
-
-                    # Draw upper character
-                    cr.set_source_rgb(0.82, 0.82, 0.82)
-                    cr.select_font_face(
-                        self.font,
-                        cairo.FONT_SLANT_NORMAL,
-                        cairo.FONT_WEIGHT_NORMAL)
-                    cr.set_font_size(8)
-                    cr.move_to(px, py)
-                    cr.show_text(self.shift_text(k))
-
-                rw = rw - space - kw
-                x = x + space + kw
-                i += 1
-            return x, rw
-
-        x = 6
-        y = 6
-
-        keys = self.kb["keys"]
-        ext_return = self.kb["extended_return"]
+        keys = self.keyboard["keys"]
+        ext_return = self.keyboard["extended_return"]
 
         first_key_w = 0
 
@@ -342,64 +324,41 @@ class KeyboardWidget(Gtk.DrawingArea):
             if first_key_w > 0:
                 first_key_w *= 1.375
 
-                if self.kb == self.kb_105 and i == 3:
-                    first_key_w = kw * 1.275
+                if self.keyboard == self.KB_105 and i == 3:
+                    first_key_w = key_width * 1.275
 
-                self.rounded_rectangle(cr, 6, y, first_key_w, kw)
-                x = 6 + first_key_w + space
+                self.rounded_rectangle(context, 6, my_y, first_key_w, key_width)
+                my_x = 6 + first_key_w + space
             else:
-                first_key_w = kw
+                first_key_w = key_width
 
-            x, rw = draw_row(keys[i], x, y, i == 1 and not ext_return)
+            last_end = i == 1 and not ext_return
+            my_x, rect_width = self.draw_row(
+                context, keys[i], my_x, my_y, max_width, key_width, space, last_end)
 
-            remaining_x[i] = x
-            remaining_widths[i] = rw
+            remaining_x[i] = my_x
+            remaining_widths[i] = rect_width
 
             if i != 1 and i != 2:
-                self.rounded_rectangle(cr, x, y, rw, kw)
+                self.rounded_rectangle(context, my_x, my_y, rect_width, key_width)
 
-            x = .5
-            y = y + space + kw
+            my_x = .5
+            my_y = my_y + space + key_width
 
         if ext_return:
-            # rx = rx * 2
-            x1 = remaining_x[1]
-            y1 = 6 + kw * 1 + space * 1
-            w1 = remaining_widths[1]
-            x2 = remaining_x[2]
-            y2 = 6 + kw * 2 + space * 2
+            # rect_x = rect_x * 2
+            point1 = (remaining_x[1], 6 + key_width * 1 + space * 1)
+            width1 = remaining_widths[1]
+            point2 = (remaining_x[2], 6 + key_width * 2 + space * 2)
 
-            # this is some serious crap... but it has to be so
-            # maybe one day keyboards won't look like this...
-            # one can only hope
-            degrees = math.pi / 180.0
-
-            cr.new_sub_path()
-
-            cr.move_to(x1, y1 + rx)
-            cr.arc(x1 + rx, y1 + rx, rx, 180 * degrees, -90 * degrees)
-            cr.line_to(x1 + w1 - rx, y1)
-            cr.arc(x1 + w1 - rx, y1 + rx, rx, -90 * degrees, 0)
-            cr.line_to(x1 + w1, y2 + kw - rx)
-            cr.arc(x1 + w1 - rx, y2 + kw - rx, rx, 0, 90 * degrees)
-            cr.line_to(x2 + rx, y2 + kw)
-            cr.arc(x2 + rx, y2 + kw - rx, rx, 90 * degrees, 180 * degrees)
-            cr.line_to(x2, y1 + kw)
-            cr.line_to(x1 + rx, y1 + kw)
-            cr.arc(x1 + rx, y1 + kw - rx, rx, 90 * degrees, 180 * degrees)
-
-            cr.close_path()
-
-            cr.set_source_rgb(0.5, 0.5, 0.5)
-            cr.fill_preserve()
-            cr.set_source_rgba(0.2, 0.2, 0.2, 0.5)
-            cr.set_line_width(2)
-            cr.stroke()
+            self.draw_ext_return(context, point1, width1,
+                                 point2, rect_x, key_width)
         else:
-            x = remaining_x[2]
+            my_x = remaining_x[2]
             # Changed .5 to 6 because return key was out of line
-            y = 6 + kw * 2 + space * 2
-            self.rounded_rectangle(cr, x, y, remaining_widths[2], kw)
+            my_y = 6 + key_width * 2 + space * 2
+            self.rounded_rectangle(
+                context, my_x, my_y, remaining_widths[2], key_width)
 
     def regular_text(self, index):
         """ Get regular key code  """
@@ -430,33 +389,29 @@ class KeyboardWidget(Gtk.DrawingArea):
             return " "
 
     def load_codes(self):
-        """ Load keyboard codes """
+        """ Load keyboard codes (script ckbcomp is needed!) """
+
         if self.layout is None:
             return
 
-        cmd = [
-            "/usr/share/cnchi/scripts/ckbcomp",
-            "-model",
-            "pc106",
-            "-layout",
-            self.layout]
+        cmd = ["/usr/share/cnchi/scripts/ckbcomp",
+               "-model", "pc106",
+               "-layout", self.layout]
 
         if self.variant:
             cmd.extend(["-variant", self.variant])
 
         cmd.append("-compact")
-        output = []
 
         try:
-            with raised_privileges() as privileged:
+            with raised_privileges():
                 output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
                 if output:
-                    output = output.decode().split('\n')
+                    output = output.decode()
+                    output = output.split('\n')
         except subprocess.CalledProcessError as process_error:
-            logging.error(
-                "Error running command %s: %s",
-                process_error.cmd,
-                process_error)
+            msg = "Error running command %s: %s"
+            logging.error(msg, process_error.cmd, process_error)
             return
 
         # Clear current codes

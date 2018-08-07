@@ -3,7 +3,7 @@
 #
 # lemp.py
 #
-# Copyright © 2013-2017 Antergos
+# Copyright © 2013-2018 Antergos
 #
 # This file is part of Cnchi.
 #
@@ -91,8 +91,8 @@ def nginx_setup():
             if sections["http"] and "server {" in line:
                 sections["server"] = True
 
-            if sections["http"] and sections["server"] and "#location ~ \.php$ {" in line:
-                nginx_conf.write("        location ~ \.php$ {\n")
+            if sections["http"] and sections["server"] and "#location ~ \\.php$ {" in line:
+                nginx_conf.write("        location ~ \\.php$ {\n")
                 nginx_conf.write(
                     "            fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;\n")
                 nginx_conf.write("            fastcgi_index  index.php;\n")

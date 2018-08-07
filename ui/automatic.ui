@@ -92,7 +92,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <signal name="changed" handler="on_select_drive_changed" swapped="no"/>
+                        <signal name="changed" handler="select_drive_changed" swapped="no"/>
                     </object>
                     <packing>
                         <property name="expand">False</property>
@@ -121,7 +121,7 @@
                         <property name="halign">center</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_bootloader_device_check_toggled" swapped="no"/>
+                        <signal name="toggled" handler="bootloader_device_check_toggled" swapped="no"/>
                         <child>
                             <object class="GtkLabel" id="bootloader_device_info_label">
                                 <property name="visible">True</property>
@@ -160,7 +160,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="valign">center</property>
                                 <property name="margin_start">5</property>
-                                <signal name="changed" handler="on_bootloader_entry_changed" swapped="no"/>
+                                <signal name="changed" handler="bootloader_entry_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -186,7 +186,7 @@
                                 <property name="can_focus">False</property>
                                 <property name="valign">center</property>
                                 <property name="margin_start">5</property>
-                                <signal name="changed" handler="on_bootloader_device_entry_changed" swapped="no"/>
+                                <signal name="changed" handler="bootloader_device_entry_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="left_attach">1</property>
@@ -240,7 +240,7 @@
                                 <property name="visibility">False</property>
                                 <property name="invisible_char">●</property>
                                 <property name="input_purpose">password</property>
-                                <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                                <signal name="changed" handler="luks_password_changed" swapped="no"/>
                             </object>
                             <packing>
                                 <property name="expand">False</property>
@@ -276,7 +276,7 @@
                         <property name="halign">start</property>
                         <!--<property name="xalign">0.5</property>-->
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_checkbutton_show_password_toggled" swapped="no"/>
+                        <signal name="toggled" handler="show_password_toggled" swapped="no"/>
                     </object>
                     <packing>
                         <property name="left_attach">2</property>
@@ -316,7 +316,7 @@
                         <property name="visibility">False</property>
                         <property name="invisible_char">●</property>
                         <property name="input_purpose">password</property>
-                        <signal name="changed" handler="on_luks_password_changed" swapped="no"/>
+                        <signal name="changed" handler="luks_password_changed" swapped="no"/>
                     </object>
                     <packing>
                         <property name="left_attach">1</property>

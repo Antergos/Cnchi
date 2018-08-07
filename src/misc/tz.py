@@ -5,7 +5,7 @@
 #
 # Copyright (C) 2006, 2007 Canonical Ltd.
 # Written by Colin Watson <cjwatson@ubuntu.com>.
-# New modifications Copyright © 2013-2017 Antergos
+# New modifications Copyright © 2013-2018 Antergos
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,9 +28,10 @@ from __future__ import print_function
 import os
 import datetime
 import time
-import xml.dom.minidom
 import hashlib
 import logging
+
+import defusedxml.minidom as minidom
 
 from gi.repository import GObject, GLib
 
@@ -39,23 +40,22 @@ ISO_3166_FILE = '/usr/share/xml/iso-codes/iso_3166.xml'
 
 
 def _seconds_since_epoch(my_datetime):
-    # TODO cjwatson 2006-02-23: %s escape is not portable
     return int(my_datetime.replace(tzinfo=None).strftime('%s'))
 
 
 class SystemTzInfo(datetime.tzinfo):
     """ Class that represents current timezone info """
 
-    def __init__(self, tz=None):
-        self.tz = tz
+    def __init__(self, timezone=None):
+        self.timezone = timezone
 
     def _select_tz(self):
         """ Select timezone """
         tzbackup = None
         if 'TZ' in os.environ:
             tzbackup = os.environ['TZ']
-        if self.tz is not None:
-            os.environ['TZ'] = self.tz
+        if self.timezone is not None:
+            os.environ['TZ'] = self.timezone
         time.tzset()
         return tzbackup
 
@@ -95,10 +95,10 @@ class SystemTzInfo(datetime.tzinfo):
         self._restore_tz(tzbackup)
         return daylight
 
-    def is_dst(self, dt):
+    def is_dst(self, my_datetime):
         """ Are we in DST? """
         tzbackup = self._select_tz()
-        localtime = time.localtime(_seconds_since_epoch(dt))
+        localtime = time.localtime(_seconds_since_epoch(my_datetime))
         isdst = localtime.tm_isdst
         self._restore_tz(tzbackup)
         return isdst
@@ -133,7 +133,7 @@ class SystemTzInfo(datetime.tzinfo):
 
     def tzname(self, unused_dt):
         """ Return timezone """
-        return self.tz
+        return self.timezone
 
     def tzname_letters(self, my_datetime):
         """ Get localtime """
@@ -145,12 +145,12 @@ class SystemTzInfo(datetime.tzinfo):
             self._restore_tz(tzbackup)
 
 
-class Iso3166(object):
+class Iso3166():
     """ Read Iso 3166 xml file """
 
     def __init__(self):
         self.names = {}
-        document = xml.dom.minidom.parse(ISO_3166_FILE)
+        document = minidom.parse(ISO_3166_FILE)
         entries = document.getElementsByTagName('iso_3166_entries')[0]
         self.handle_entries(entries)
 
@@ -189,7 +189,7 @@ def _parse_position(position, wholedigits):
         return whole - fraction / pow(10.0, len(fractionstr))
 
 
-class Location(object):
+class Location():
     """ Class to store a location """
     __gtype_name__ = "Location"
     __gproperties__ = {
@@ -248,13 +248,13 @@ class Location(object):
         self.latitude = _parse_position(latitude, 2)
         self.longitude = _parse_position(longitude, 3)
 
-        # Grab md5sum of the timezone file for later comparison
+        # Calculate the sha256 sum of the timezone file for later comparison
         try:
             zone_path = os.path.join('/usr/share/zoneinfo', self.zone)
             with open(zone_path, 'rb') as tz_file:
-                self.md5sum = hashlib.md5(tz_file.read()).digest()
+                self.sha256sum = hashlib.sha256(tz_file.read()).digest()
         except IOError:
-            self.md5sum = None
+            self.sha256sum = None
 
         try:
             today = datetime.datetime.today()
@@ -280,7 +280,7 @@ class Location(object):
         setattr(self, prop, value)
 
 
-class _Database(object):
+class _Database():
     """ Store all ISO 3166 information """
 
     def __init__(self):
@@ -303,30 +303,30 @@ class _Database(object):
             else:
                 self.cc_to_locs[loc.country] = [loc]
 
-    def get_loc(self, tz):
+    def get_loc(self, timezone):
         """ Get timezone's location """
         try:
-            return self.tz_to_loc[tz]
-        except:
+            return self.tz_to_loc[timezone]
+        except (KeyError, IndexError):
             # Sometimes we'll encounter timezones that aren't really
             # city-zones, like "US/Eastern" or "Mexico/General".  So first,
             # we check if the timezone is known.  If it isn't, we search for
-            # one with the same md5sum and make a reference to it
+            # one with the same sha256 sum and make a reference to it
             try:
-                zone_path = os.path.join('/usr/share/zoneinfo', tz)
+                zone_path = os.path.join('/usr/share/zoneinfo', timezone)
                 with open(zone_path, 'rb') as tz_file:
-                    md5sum = hashlib.md5(tz_file.read()).digest()
+                    sha256sum = hashlib.sha256(tz_file.read()).digest()
 
                 for loc in self.locations:
-                    if md5sum == loc.md5sum:
-                        self.tz_to_loc[tz] = loc
+                    if sha256sum == loc.sha256sum:
+                        self.tz_to_loc[timezone] = loc
                         return loc
             except IOError:
                 pass
 
             # If not found, oh well, just warn and move on.
-            logging.error('Could not understand timezone %s', tz)
-            self.tz_to_loc[tz] = None  # save it for the future
+            logging.error('Could not understand timezone %s', timezone)
+            self.tz_to_loc[timezone] = None  # save it for the future
             return None
 
     def get_locations(self):
@@ -334,12 +334,11 @@ class _Database(object):
         return self.locations
 
 
-_database = None
+_DATABASE = None
 
-
-def Database():
-    """ Class to store a timezone/location database globaly """
-    global _database
-    if not _database:
-        _database = _Database()
-    return _database
+def get_database():
+    """ Function that simulates a class that stores a timezone/location database globaly """
+    global _DATABASE
+    if not _DATABASE:
+        _DATABASE = _Database()
+    return _DATABASE
