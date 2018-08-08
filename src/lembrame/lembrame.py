@@ -79,8 +79,8 @@ class Lembrame:
         self.settings = settings
         self.config = LembrameConfig()
         self.credentials = self.settings.get('lembrame_credentials')
-        self.user_home = '/home/' + self.settings.get('username')
-        self.install_user_home = '/install/home/' + self.settings.get('username')
+        self.user_home = '/home/' + self.settings.get('user_name')
+        self.install_user_home = '/install/home/' + self.settings.get('user_name')
         self.dest_folder = '/.lembrame-sync'
 
     def download_file(self):
@@ -232,7 +232,7 @@ class Lembrame:
 
         # Enable Gnome Shell extensions and other shell settings like favorite apps
         gsettings.dconf_load(
-            self.settings.get('username'),
+            self.settings.get('user_name'),
             '/org/gnome/shell/',
             self.user_home + self.dest_folder + '/' + self.config.dconf_dump
         )
@@ -244,7 +244,7 @@ class Lembrame:
             logging.debug("Configuring the background")
             background_image = background_folder[0]
             gsettings.set(
-                self.settings.get('username'),
+                self.settings.get('user_name'),
                 'org.gnome.desktop.background',
                 'picture-uri',
                 'file://' + self.user_home + self.dest_folder + '/background/' + background_image
@@ -257,7 +257,7 @@ class Lembrame:
             logging.debug("Configuring the screensaver")
             screensaver_image = screensaver_folder[0]
             gsettings.set(
-                self.settings.get('username'),
+                self.settings.get('user_name'),
                 'org.gnome.desktop.screensaver',
                 'picture-uri',
                 'file://' + self.user_home + self.dest_folder + '/screensaver/' + screensaver_image
@@ -272,7 +272,7 @@ class Lembrame:
         chroot_call([
             'chown',
             '-R',
-            self.settings.get('username') + ':' + 'users',
+            self.settings.get('user_name') + ':' + 'users',
             self.user_home + self.dest_folder
         ])
 

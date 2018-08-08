@@ -8,6 +8,7 @@ python-mako
 python-requests
 python-geoip2
 python-maxminddb
+python-libnacl
 geoip2-database
 pyparted
 dosfstools
