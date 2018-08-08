@@ -163,7 +163,7 @@
             <pkgname>vim</pkgname>
         </feature>
         <feature name="aur">
-            <pkgname>aurman</pkgname>
+            <pkgname>yay</pkgname>
             <pkgname>bzr</pkgname>
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
