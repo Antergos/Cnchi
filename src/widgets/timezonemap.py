@@ -41,7 +41,7 @@ import logging
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
-from gi.repository import GObject, Gdk, Gtk, GdkPixbuf
+from gi.repository import GObject, Gdk, Gtk, GdkPixbuf, GLib
 
 gi.require_version('PangoCairo', '1.0')
 from gi.repository import Pango, PangoCairo
@@ -123,14 +123,11 @@ class TimezoneMap(Gtk.Widget):
 
             self._pin = GdkPixbuf.Pixbuf.new_from_file(
                 os.path.join(TimezoneMap.IMAGES_PATH, "pin.png"))
-        except Exception as ex:
-            template = "Error loading timezone widget. " \
-                "An exception of type {0} occured. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
+        except GLib.Error as err:
+            logging.error("Cannot load timezone widget: %s", err)
             sys.exit(1)
 
-        self.tzdb = tz.get_database()
+        self.tzdb = tz.Database()
 
     def load_olsen_map_timezones(self):
         """ Load olson map timezones """

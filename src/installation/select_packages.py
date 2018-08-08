@@ -460,7 +460,7 @@ class SelectPackages():
             if locale in ['en_GB', 'en_ZA']:
                 code = locale
             else:
-                code = None 
+                code = None
         else:
             # All the other language packs use their language code
             code = self.settings.get('language_code')

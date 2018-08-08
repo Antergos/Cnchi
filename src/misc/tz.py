@@ -31,7 +31,7 @@ import time
 import hashlib
 import logging
 
-import defusedxml.minidom as minidom
+from xml.dom.minidom import parse
 
 from gi.repository import GObject, GLib
 
@@ -120,14 +120,12 @@ class SystemTzInfo(datetime.tzinfo):
                 # no DST information, so assume no DST; None would be more
                 # accurate but causes awkwardness in fromutc()
                 return datetime.timedelta(0)
-            else:
-                localtime = time.localtime(_seconds_since_epoch(dt))
-                if localtime.tm_isdst != 1:
-                    # not in DST
-                    return datetime.timedelta(0)
-                else:
-                    dst_minutes = (time.timezone - time.altzone) / 60
-                    return datetime.timedelta(minutes=int(dst_minutes))
+            localtime = time.localtime(_seconds_since_epoch(dt))
+            if localtime.tm_isdst != 1:
+                # not in DST
+                return datetime.timedelta(0)
+            dst_minutes = (time.timezone - time.altzone) / 60
+            return datetime.timedelta(minutes=int(dst_minutes))
         finally:
             self._restore_tz(tzbackup)
 
@@ -150,7 +148,7 @@ class Iso3166():
 
     def __init__(self):
         self.names = {}
-        document = minidom.parse(ISO_3166_FILE)
+        document = parse(ISO_3166_FILE)
         entries = document.getElementsByTagName('iso_3166_entries')[0]
         self.handle_entries(entries)
 
@@ -185,8 +183,7 @@ def _parse_position(position, wholedigits):
     fraction = float(fractionstr)
     if whole >= 0.0:
         return whole + fraction / pow(10.0, len(fractionstr))
-    else:
-        return whole - fraction / pow(10.0, len(fractionstr))
+    return whole - fraction / pow(10.0, len(fractionstr))
 
 
 class Location():
@@ -280,7 +277,7 @@ class Location():
         setattr(self, prop, value)
 
 
-class _Database():
+class Database():
     """ Store all ISO 3166 information """
 
     def __init__(self):
@@ -332,13 +329,3 @@ class _Database():
     def get_locations(self):
         """ Return all locations """
         return self.locations
-
-
-_DATABASE = None
-
-def get_database():
-    """ Function that simulates a class that stores a timezone/location database globaly """
-    global _DATABASE
-    if not _DATABASE:
-        _DATABASE = _Database()
-    return _DATABASE
