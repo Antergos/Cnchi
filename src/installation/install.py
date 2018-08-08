@@ -48,8 +48,6 @@ import pacman.pac as pac
 
 import hardware.hardware as hardware
 
-from lembrame.lembrame import Lembrame
-
 DEST_DIR = "/install"
 
 # When testing, no _() is available

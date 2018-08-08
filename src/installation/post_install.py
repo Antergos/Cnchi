@@ -46,6 +46,8 @@ from misc.run_cmd import call, chroot_call
 
 import parted3.fs_module as fs
 
+from lembrame.lembrame import Lembrame
+
 # When testing, no _() is available
 try:
     _("")
@@ -858,6 +860,15 @@ class PostInstallation():
 
         # Fixes thermald service file
         self.fix_thermald_service()
+
+        # Overwrite settings with Lembrame if enabled
+        # TODO: Rethink this function because we need almost everything but some things for Lembrame
+        if self.settings.get("feature_lembrame"):
+            logging.debug("Overwriting configs from Lembrame")
+            self.queue_event('info', _("Overwriting configs from Lembrame"))
+
+            lembrame = Lembrame(self.settings)
+            lembrame.overwrite_content()
 
         # This must be done at the end of the installation when using zfs
         if self.method == "zfs":

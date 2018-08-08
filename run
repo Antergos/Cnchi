@@ -28,7 +28,7 @@ fi
 _PYTHON="/usr/bin/python"
 _PYTHON_OPTIONS="-Wall"
 _XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v -s bugsnag"
+_CNCHI_OPTIONS="-d -v"
 
 if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
