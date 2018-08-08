@@ -427,15 +427,22 @@ class SelectPackages():
 
     def add_hunspell(self, language_code):
         """ Adds hunspell dictionary """
-        available_codes = [
-            'de-frami', 'de',
-            'en', 'en_AU', 'en_CA', 'en_GB', 'en_US',
-            'es_any', 'es_ar', 'es_bo', 'es_cl', 'es_co', 'es_cr', 'es_cu', 'es_do', 'es_ec',
-            'es_es', 'es_gt', 'es_hn', 'es_mx', 'es_ni', 'es_pa', 'es_pe', 'es_pr', 'es_py',
-            'es_sv', 'es_uy', 'es_ve',
-            'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
+        # Try to read available codes from hunspell.txt
+        data_dir = self.settings.get("data")
+        path = os.path.join(data_dir, "hunspell.txt")
+        if os.path.exists(path):
+            with open(path, 'r') as lang_file:
+                lang_codes = lang_file.read().split()
+        else:
+            # hunspell.txt not available, let's use this hardcoded version (as failsafe)
+            lang_codes = [
+                'de-frami', 'de', 'en', 'en_AU', 'en_CA', 'en_GB', 'en_US',
+                'es_any', 'es_ar', 'es_bo', 'es_cl', 'es_co', 'es_cr', 'es_cu',
+                'es_do', 'es_ec', 'es_es', 'es_gt', 'es_hn', 'es_mx', 'es_ni',
+                'es_pa', 'es_pe', 'es_pr', 'es_py', 'es_sv', 'es_uy', 'es_ve',
+                'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
 
-        if language_code in available_codes:
+        if language_code in lang_codes:
             pkg_text = "hunspell-{0}".format(language_code)
             logging.debug(
                 "Adding hunspell dictionary for %s language", pkg_text)
@@ -446,24 +453,54 @@ class SelectPackages():
 
     def add_libreoffice_language(self):
         """ Adds libreoffice language package """
-        lang_name = self.settings.get("language_name").lower()
-        code = None
-        if lang_name == "english":
-            locale = self.settings.get("locale").split('.')[0]
+        lang_name = self.settings.get('language_name').lower()
+        if lang_name == 'english':
+            # There're some English variants available but not all of them.
+            locale = self.settings.get('locale').split('.')[0]
             if locale in ['en_GB', 'en_ZA']:
-                # There're some English variants available but not all of them.
                 code = locale
+            else:
+                code = None 
         else:
             # All the other language packs use their language code
             code = self.settings.get('language_code')
 
         if code:
-            code = code.replace('_', '-')
+            code = code.replace('_', '-').lower()
             pkg_text = "libreoffice-fresh-{0}".format(code)
             logging.debug(
                 "Adding libreoffice language package (%s)", pkg_text)
             self.packages.append(pkg_text)
             self.add_hunspell(code)
+
+    def add_firefox_language(self):
+        """ Add firefox language package """
+        # Try to load available languages from firefox.txt (easy updating if necessary)
+        data_dir = self.settings.get("data")
+        path = os.path.join(data_dir, "firefox.txt")
+        if os.path.exists(path):
+            with open(path, 'r') as lang_file:
+                lang_codes = lang_file.read().split()
+        else:
+            # Couldn't find firefox.txt, use this hardcoded version then (as failsafe)
+            lang_codes = [
+                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
+                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
+                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
+                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
+                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
+                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt', 'lv',
+                'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no', 'or',
+                'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si', 'sk',
+                'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr', 'uk',
+                'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
+
+        lang_code = self.settings.get('language_code')
+        lang_code = lang_code.replace('_', '-').lower()
+        if lang_code in lang_codes:
+            pkg_text = "firefox-i18n-{0}".format(lang_code)
+            logging.debug("Adding firefox language package (%s)", pkg_text)
+            self.packages.append(pkg_text)
 
     def add_features(self):
         """ Selects packages based on user selected features """
@@ -491,22 +528,4 @@ class SelectPackages():
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
-            # Firefox is available in these languages
-            lang_codes = [
-                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
-                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
-                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
-                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
-                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
-                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt',
-                'lv', 'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no',
-                'or', 'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si',
-                'sk', 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr',
-                'uk', 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
-
-            lang_code = self.settings.get('language_code')
-            lang_code = lang_code.replace('_', '-')
-            if lang_code in lang_codes:
-                pkg_text = "firefox-i18n-{0}".format(lang_code)
-                logging.debug("Adding firefox language package (%s)", pkg_text)
-                self.packages.append(pkg_text)
+            self.add_firefox_language()
