@@ -67,7 +67,7 @@ class Timezone(GtkBaseBox):
         # Show regions in three columns
         self.combobox_region.set_wrap_width(3)
 
-        self.tzdb = tz.get_database()
+        self.tzdb = tz.Database()
         self.timezone = None
 
         # This is for populate_cities
