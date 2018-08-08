@@ -31,7 +31,7 @@ import time
 import hashlib
 import logging
 
-import defusedxml.minidom as minidom
+from xml.dom.minidom import parse
 
 from gi.repository import GObject, GLib
 
@@ -150,7 +150,7 @@ class Iso3166():
 
     def __init__(self):
         self.names = {}
-        document = minidom.parse(ISO_3166_FILE)
+        document = parse(ISO_3166_FILE)
         entries = document.getElementsByTagName('iso_3166_entries')[0]
         self.handle_entries(entries)
 
