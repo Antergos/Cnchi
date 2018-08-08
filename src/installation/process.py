@@ -76,7 +76,7 @@ class Process(multiprocessing.Process):
 
         # We won't download anything here. It's just to create the metalinks list
         pacman_conf = {}
-        pacman_conf['file'] = '/etc/pacman.conf'
+        pacman_conf['file'] = self.settings.get('pacman_config_file')
         pacman_conf['cache'] = '/var/cache/pacman/pkg'
         self.down = download.DownloadPackages(
             package_names=self.pkg.packages,
