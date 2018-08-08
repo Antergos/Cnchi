@@ -222,11 +222,10 @@
             <pkgname>vim</pkgname>
         </feature>
         <feature name="aur">
-            <pkgname>aurman</pkgname>
             <pkgname>bzr</pkgname>
             <pkgname>cmake</pkgname>
             <pkgname>git</pkgname>
-            <pkgname>yaourt</pkgname>
+            <pkgname>yay</pkgname>
         </feature>
         <feature name="energy">
             <pkgname>thermald</pkgname>

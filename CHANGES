@@ -1,3 +1,6 @@
+[2018-07-11 00:53:17 +0200]  Forgot these two                                                           karasu      {5cefd815}
+[2018-07-11 00:51:55 +0200]  Add documentation (sphinx)                                                 karasu      {03cb064b}
+[2018-06-24 02:07:42 +0200]  zd1211-firmware has been removed from arch core                            karasu      {624f39f0}
 [2018-05-24 17:34:00 +0200]  Fixes #885 (unharmful)                                                     karasu      {d3d1cd08}
 [2018-05-17 15:20:22 +0200]  Add eventbox also to detect when the camera feed is clicked on             karasu      {77c26b1b}
 [2018-05-17 14:49:34 +0200]  Add copyright notice                                                       karasu      {0b9d058d}
