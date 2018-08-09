@@ -34,9 +34,10 @@ import math
 import queue
 
 from misc.extra import InstallError
-from misc.run_cmd import call, popen
+from misc.run_cmd import call
 import parted3.fs_module as fs
 
+from installation import luks
 from installation import wrapper
 
 # NOTE: Exceptions in this file
@@ -53,184 +54,6 @@ MAX_ROOT_SIZE = 30000
 # Vbox, by default, creates disks of 8GB. We should limit to this so vbox installations do not fail
 # (if installing kde and not enough free space is available is their fault, not ours)
 MIN_ROOT_SIZE = 8000
-
-
-def printk(enable):
-    """ Enables / disables printing kernel messages to console """
-    with open("/proc/sys/kernel/printk", "w") as fpk:
-        if enable:
-            fpk.write("4")
-        else:
-            fpk.write("0")
-
-
-def unmount(directory):
-    """ Unmount """
-    logging.debug("Unmounting %s", directory)
-    call(["/usr/bin/umount", "-l", directory])
-
-def unmount_swap():
-    """ Unmount all swap devices """
-    cmd = ["/usr/bin/swapon", "--show=NAME", "--noheadings"]
-    swaps = call(cmd)
-    if swaps:
-        swaps = swaps.split("\n")
-        for name in filter(None, swaps):
-            if "/dev/zram" not in name:
-                call(["/usr/bin/swapoff", name])
-
-def unmount_all_in_directory(dest_dir):
-    """ Unmounts all devices that are mounted inside dest_dir """
-
-    # Unmount all swap devices
-    unmount_swap()
-
-    # Get all mounted devices
-    mount_result = call(["/usr/bin/mount"]).split("\n")
-
-    # Umount all devices mounted inside dest_dir (if any)
-    dirs = []
-    for mount in mount_result:
-        if dest_dir in mount:
-            try:
-                directory = mount.split()[2]
-                # Do not unmount dest_dir now (we will do it later)
-                if directory != dest_dir:
-                    dirs.append(directory)
-            except IndexError:
-                pass
-
-    for directory in dirs:
-        unmount(directory)
-
-    # Now is the time to unmount the device that is mounted in dest_dir (if any)
-    unmount(dest_dir)
-
-
-def unmount_all_in_device(device):
-    """ Unmounts all partitions from device """
-
-    # Unmount all swap devices
-    unmount_swap()
-
-    # Get all mounted devices
-    mount_result = call(["/usr/bin/mount"]).split("\n")
-
-    # Umount all partitions of device
-    dirs = []
-    for mount in mount_result:
-        if device in mount:
-            try:
-                directory = mount.split()[0]
-                dirs.append(directory)
-            except IndexError:
-                pass
-
-    for directory in dirs:
-        unmount(directory)
-
-
-def remove_lvm(device):
-    """ Remove all previous LVM volumes
-    (it may have been left created due to a previous failed installation) """
-
-    err_msg = "Can't delete existent LVM volumes in device {0}".format(device)
-
-    cmd = ["/usr/bin/lvs", "-o", "lv_name,vg_name,devices", "--noheadings"]
-    lvolumes = call(cmd, msg=err_msg)
-    if lvolumes:
-        lvolumes = lvolumes.split("\n")
-        for lvolume in lvolumes:
-            if lvolume:
-                (lvolume, vgroup, ldevice) = lvolume.split()
-                if device in ldevice:
-                    lvdev = "/dev/" + vgroup + "/" + lvolume
-                    call(["/usr/bin/wipefs", "-a", lvdev], msg=err_msg)
-                    call(["/usr/bin/lvremove", "-f", lvdev], msg=err_msg)
-
-    cmd = ["/usr/bin/vgs", "-o", "vg_name,devices", "--noheadings"]
-    vgnames = call(cmd, msg=err_msg)
-    if vgnames:
-        vgnames = vgnames.split("\n")
-        for vgname in vgnames:
-            (vgname, vgdevice) = vgname.split()
-            if vgname and device in vgdevice:
-                call(["/usr/bin/vgremove", "-f", vgname], msg=err_msg)
-
-    cmd = ["/usr/bin/pvs", "-o", "pv_name", "--noheadings"]
-    pvolumes = call(cmd, msg=err_msg)
-    if pvolumes:
-        pvolumes = pvolumes.split("\n")
-        for pvolume in pvolumes:
-            pvolume = pvolume.strip()
-            if device in pvolume:
-                cmd = ["/usr/bin/pvremove", "-ff", "-y", pvolume]
-                call(cmd, msg=err_msg)
-
-
-def close_antergos_luks_devices():
-    """ Close LUKS devices (they may have been left open because of a previous
-    failed installation) """
-
-    volumes = ["/dev/mapper/cryptAntergos", "/dev/mapper/cryptAntergosHome"]
-
-    err_msg = "Can't close already opened LUKS devices"
-
-    for volume in volumes:
-        if os.path.exists(volume):
-            cmd = ["/usr/bin/cryptsetup", "luksClose", volume]
-            call(cmd, msg=err_msg)
-
-
-def setup_luks(luks_device, luks_name, luks_pass=None, luks_key=None):
-    """ Setups a luks device """
-
-    if (luks_pass is None or luks_pass == "") and luks_key is None:
-        txt = "Can't setup LUKS in device {0}. A password or a key file are needed".format(
-            luks_device)
-        logging.error(txt)
-        return
-
-    # For now, we we'll use the same password for root and /home
-    # If instead user wants to use a key file, we'll have two different key files.
-
-    logging.debug("Cnchi will setup LUKS on device %s", luks_device)
-
-    # Wipe LUKS header (just in case we're installing on a pre LUKS setup)
-    # For 512 bit key length the header is 2MiB
-    # If in doubt, just be generous and overwrite the first 10MiB or so
-    wrapper.run_dd("/dev/zero", luks_device, bytes_block=512, count=20480)
-
-    err_msg = "Can't format and open the LUKS device {0}".format(luks_device)
-
-    #cypher = 'aes-xts-plain64'
-    cypher = 'serpent-xts-plain64'
-
-    if luks_pass is None or luks_pass == "":
-        # No key password given, let's create a random keyfile
-        wrapper.run_dd("/dev/urandom", luks_key, bytes_block=1024, count=4)
-
-        # Set up luks with a keyfile
-        cmd = ["/usr/bin/cryptsetup", "luksFormat", "-q", "-c", cypher,
-               "-s", "512", "-h", "sha512", luks_device, luks_key]
-        call(cmd, msg=err_msg, fatal=True)
-
-        cmd = ["/usr/bin/cryptsetup", "luksOpen", luks_device, luks_name, "-q",
-               "--key-file", luks_key]
-        call(cmd, msg=err_msg, fatal=True)
-    else:
-        # Set up luks with a password key
-
-        luks_pass_bytes = bytes(luks_pass, 'UTF-8')
-
-        cmd = ["/usr/bin/cryptsetup", "luksFormat", "-q", "-c", cypher,
-               "-s", "512", "-h", "sha512", "--key-file=-", luks_device]
-        proc = popen(cmd, msg=err_msg, fatal=True)
-        proc.communicate(input=luks_pass_bytes)
-
-        cmd = ["/usr/bin/cryptsetup", "luksOpen", luks_device, luks_name, "-q", "--key-file=-"]
-        proc = popen(cmd, msg=err_msg, fatal=True)
-        proc.communicate(input=luks_pass_bytes)
 
 
 class AutoPartition():
@@ -624,11 +447,9 @@ class AutoPartition():
 
     def run_gpt(self, part_sizes):
         """ Auto partition using a GPT table """
-
         # Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
-
         device = self.auto_device
 
         # Clean partition table to avoid issues!
@@ -697,11 +518,9 @@ class AutoPartition():
 
     def run_mbr(self, part_sizes):
         """ DOS MBR partition table """
-
         # Our computed sizes are all in mebibytes (MiB) i.e. powers of 1024, not metric megabytes.
         # These are 'M' in sgdisk and 'MiB' in parted.
         # If you use 'M' in parted you'll get MB instead of MiB, and you're gonna have a bad time.
-
         device = self.auto_device
 
         # Start at sector 1 for 4k drive compatibility and correct alignment
@@ -807,18 +626,11 @@ class AutoPartition():
     def create_filesystems(self, devices):
         """ Create filesystems in newly created partitions """
         mount_points = {
-            'efi': '/boot/efi',
-            'boot': '/boot',
-            'root': '/',
-            'home': '/home',
-            'swap': ''}
+            'efi': '/boot/efi', 'boot': '/boot', 'root': '/', 'home': '/home', 'swap': ''}
 
         labels = {
-            'efi': 'UEFI_SYSTEM',
-            'boot': 'AntergosBoot',
-            'root': 'AntergosRoot',
-            'home': 'AntergosHome',
-            'swap': 'AntergosSwap'}
+            'efi': 'UEFI_SYSTEM', 'boot': 'AntergosBoot', 'root': 'AntergosRoot',
+            'home': 'AntergosHome', 'swap': 'AntergosSwap'}
 
         fs_devices = self.get_fs_devices()
 
@@ -863,6 +675,128 @@ class AutoPartition():
             cmd = ['mv', key_files[1], luks_dir]
             call(cmd, msg=err_msg)
 
+    @staticmethod
+    def remove_lvm(device):
+        """ Remove all previous LVM volumes
+        (it may have been left created due to a previous failed installation) """
+
+        err_msg = "Can't delete existent LVM volumes in device {0}".format(device)
+
+        cmd = ["/usr/bin/lvs", "-o", "lv_name,vg_name,devices", "--noheadings"]
+        lvolumes = call(cmd, msg=err_msg)
+        if lvolumes:
+            lvolumes = lvolumes.split("\n")
+            for lvolume in lvolumes:
+                if lvolume:
+                    (lvolume, vgroup, ldevice) = lvolume.split()
+                    if device in ldevice:
+                        lvdev = "/dev/" + vgroup + "/" + lvolume
+                        call(["/usr/bin/wipefs", "-a", lvdev], msg=err_msg)
+                        call(["/usr/bin/lvremove", "-f", lvdev], msg=err_msg)
+
+        cmd = ["/usr/bin/vgs", "-o", "vg_name,devices", "--noheadings"]
+        vgnames = call(cmd, msg=err_msg)
+        if vgnames:
+            vgnames = vgnames.split("\n")
+            for vgname in vgnames:
+                (vgname, vgdevice) = vgname.split()
+                if vgname and device in vgdevice:
+                    call(["/usr/bin/vgremove", "-f", vgname], msg=err_msg)
+
+        cmd = ["/usr/bin/pvs", "-o", "pv_name", "--noheadings"]
+        pvolumes = call(cmd, msg=err_msg)
+        if pvolumes:
+            pvolumes = pvolumes.split("\n")
+            for pvolume in pvolumes:
+                pvolume = pvolume.strip()
+                if device in pvolume:
+                    cmd = ["/usr/bin/pvremove", "-ff", "-y", pvolume]
+                    call(cmd, msg=err_msg)
+    @staticmethod
+    def printk(enable):
+        """ Enables / disables printing kernel messages to console """
+        with open("/proc/sys/kernel/printk", "w") as fpk:
+            if enable:
+                fpk.write("4")
+            else:
+                fpk.write("0")
+
+    @staticmethod
+    def unmount(directory):
+        """ Unmount """
+        logging.debug("Unmounting %s", directory)
+        call(["/usr/bin/umount", "-l", directory])
+
+    @staticmethod
+    def unmount_swap():
+        """ Unmount all swap devices """
+        cmd = ["/usr/bin/swapon", "--show=NAME", "--noheadings"]
+        swaps = call(cmd)
+        if swaps:
+            swaps = swaps.split("\n")
+            for name in filter(None, swaps):
+                if "/dev/zram" not in name:
+                    call(["/usr/bin/swapoff", name])
+
+    def unmount_all_in_directory(self, dest_dir):
+        """ Unmounts all devices that are mounted inside dest_dir """
+
+        # Unmount all swap devices
+        self.unmount_swap()
+
+        # Get all mounted devices
+        mount_result = call(["/usr/bin/mount"]).split("\n")
+
+        # Umount all devices mounted inside dest_dir (if any)
+        dirs = []
+        for mount in mount_result:
+            if dest_dir in mount:
+                try:
+                    directory = mount.split()[2]
+                    # Do not unmount dest_dir now (we will do it later)
+                    if directory != dest_dir:
+                        dirs.append(directory)
+                except IndexError:
+                    pass
+
+        for directory in dirs:
+            self.unmount(directory)
+
+        # Now is the time to unmount the device that is mounted in dest_dir (if any)
+        self.unmount(dest_dir)
+
+    def unmount_all_in_device(self, device):
+        """ Unmounts all partitions from device """
+
+        # Unmount all swap devices
+        self.unmount_swap()
+
+        # Get all mounted devices
+        mount_result = call(["/usr/bin/mount"]).split("\n")
+
+        # Umount all partitions of device
+        dirs = []
+        for mount in mount_result:
+            if device in mount:
+                try:
+                    directory = mount.split()[0]
+                    dirs.append(directory)
+                except IndexError:
+                    pass
+
+        for directory in dirs:
+            self.unmount(directory)
+
+    def log_devices(self, devices):
+        """ Log all devices for debugging purposes """
+        if self.gpt and self.bootloader == "grub2":
+            logging.debug("EFI: %s", devices['efi'])
+        logging.debug("Boot: %s", devices['boot'])
+        logging.debug("Root: %s", devices['root'])
+        if self.home:
+            logging.debug("Home: %s", devices['home'])
+        logging.debug("Swap: %s", devices['swap'])
+
     def run(self):
         """ Main method. Runs auto partition sequence """
         disk_size = self.get_disk_size()
@@ -873,44 +807,36 @@ class AutoPartition():
         self.log_part_sizes(part_sizes)
 
         # Disable swap and unmount all partitions inside dest_dir
-        unmount_all_in_directory(self.dest_dir)
+        self.unmount_all_in_directory(self.dest_dir)
         # Disable swap and unmount all partitions of device
-        unmount_all_in_device(device)
+        self.unmount_all_in_device(device)
         # Remove lvm in destination device
-        remove_lvm(device)
+        self.remove_lvm(device)
         # Close luks devices in destination device
-        close_antergos_luks_devices()
+        luks.close_antergos_devices()
 
-        printk(False)
-
+        self.printk(False)
         if self.gpt:
             self.run_gpt(part_sizes)
         else:
             self.run_mbr(part_sizes)
-
-        printk(True)
+        self.printk(True)
 
         # Wait until /dev initialized correct devices
         call(["udevadm", "settle"])
 
         devices = self.get_devices()
 
-        if self.gpt and self.bootloader == "grub2":
-            logging.debug("EFI: %s", devices['efi'])
-
-        logging.debug("Boot: %s", devices['boot'])
-        logging.debug("Root: %s", devices['root'])
-
-        if self.home:
-            logging.debug("Home: %s", devices['home'])
-
-        logging.debug("Swap: %s", devices['swap'])
+        self.log_devices(devices)
 
         if self.luks:
-            k_file = AutoPartition.LUKS_KEY_FILES
-            setup_luks(devices['luks_root'], "cryptAntergos", self.luks_password, k_file[0])
+            luks_options = {'password': self.luks_password,
+                            'key': AutoPartition.LUKS_KEY_FILES[0]}
+            luks.setup(devices['luks_root'], 'cryptAntergos', luks_options)
             if self.home and not self.lvm:
-                setup_luks(devices['luks_home'], "cryptAntergosHome", self.luks_password, k_file[1])
+                luks_options = {'password': self.luks_password,
+                                'key': AutoPartition.LUKS_KEY_FILES[1]}
+                luks.setup(devices['luks_home'], 'cryptAntergosHome', luks_options)
 
         if self.lvm:
             self.run_lvm(devices, part_sizes, start_part_sizes, disk_size)
