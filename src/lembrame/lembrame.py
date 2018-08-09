@@ -49,6 +49,7 @@ from lembrame.gnome_extensions.downloader import GnomeExtensionsDownloader
 
 import misc.gsettings as gsettings
 from misc.run_cmd import chroot_call
+from misc.extra import InstallError
 
 
 def _(x): return x
@@ -95,8 +96,7 @@ class Lembrame:
                         encrypted_file.write(data)
                 return True
             else:
-                logging.error("Downloading the Lembrame encrypted file failed")
-                return False
+                raise InstallError(_("Downloading the Lembrame encrypted file failed"))
         else:
             return False
 
@@ -112,8 +112,7 @@ class Lembrame:
             logging.debug("API responded with a download link")
             return True
         else:
-            logging.error("Requesting for download link to Lembrame failed")
-            return False
+            raise InstallError(_("Requesting for download link to Lembrame failed"))
 
     def setup(self):
         self.before_setup()
@@ -126,8 +125,7 @@ class Lembrame:
                 if self.decrypt_file() is False:
                     return False
             else:
-                logging.error("Signature on the Lembrame file doesn't match")
-                return False
+                raise InstallError(_("Signature on the Lembrame file doesn't match"))
         else:
             logging.error("Lembrame encrypted file doesn't exists")
             return False
@@ -145,6 +143,7 @@ class Lembrame:
             self.encrypted_file = open(self.config.file_path, 'rb')
         except IOError:
             logging.error("Can't read Lembrame encrypted file: %s", IOError)
+            raise InstallError(_("Can't read Lembrame encrypted file"))
 
     def verify_file_signature(self):
         if self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM:
@@ -162,8 +161,7 @@ class Lembrame:
         try:
             prot_keynonce = libnacl.crypto_secretbox_open(prot_box, saltnonce, prot_key)
         except ValueError:
-            logging.error("Incorrect upload code trying to decrypt Lembrame file")
-            return False
+            raise InstallError(_("Incorrect upload code trying to decrypt Lembrame file"))
 
         data_nonce = prot_keynonce[0:self.LEN_NONCE]
         data_key = prot_keynonce[self.LEN_NONCE:self.LEN_NONCE + self.LEN_KEY]
@@ -190,7 +188,7 @@ class Lembrame:
             return True
         except tarfile.TarError as err:
             logging.error("Error trying to extract Lembrame decrypted file: %s", str(err))
-            return False
+            raise InstallError(_("Error trying to extract Lembrame decrypted file"))
 
     def copy_folder_to_dest(self):
         shutil.copytree(self.config.folder_file_path, self.install_user_home + self.dest_folder, False, None)
@@ -311,6 +309,7 @@ class Lembrame:
                         logging.debug("We can't get the Display Manager from the file")
             except OSError as error:
                 logging.error("We can't open the file to get the Display Manager: %s", error)
+                raise InstallError(_("We can't open the file to get the Display Manager"))
 
         logging.debug("Display manager selected: %s", display_manager)
         return display_manager
