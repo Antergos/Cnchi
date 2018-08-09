@@ -38,6 +38,7 @@ from misc.run_cmd import call
 import parted3.fs_module as fs
 
 from installation import luks
+from installation import mount
 from installation import wrapper
 
 # When testing, no _() is available
@@ -731,72 +732,6 @@ class AutoPartition():
             else:
                 fpk.write("0")
 
-    @staticmethod
-    def unmount(directory):
-        """ Unmount """
-        logging.debug("Unmounting %s", directory)
-        call(["/usr/bin/umount", "-l", directory])
-
-    @staticmethod
-    def unmount_swap():
-        """ Unmount all swap devices """
-        cmd = ["/usr/bin/swapon", "--show=NAME", "--noheadings"]
-        swaps = call(cmd)
-        if swaps:
-            swaps = swaps.split("\n")
-            for name in filter(None, swaps):
-                if "/dev/zram" not in name:
-                    call(["/usr/bin/swapoff", name])
-
-    def unmount_all_in_directory(self, dest_dir):
-        """ Unmounts all devices that are mounted inside dest_dir """
-
-        # Unmount all swap devices
-        self.unmount_swap()
-
-        # Get all mounted devices
-        mount_result = call(["/usr/bin/mount"]).split("\n")
-
-        # Umount all devices mounted inside dest_dir (if any)
-        dirs = []
-        for mount in mount_result:
-            if dest_dir in mount:
-                try:
-                    directory = mount.split()[2]
-                    # Do not unmount dest_dir now (we will do it later)
-                    if directory != dest_dir:
-                        dirs.append(directory)
-                except IndexError:
-                    pass
-
-        for directory in dirs:
-            self.unmount(directory)
-
-        # Now is the time to unmount the device that is mounted in dest_dir (if any)
-        self.unmount(dest_dir)
-
-    def unmount_all_in_device(self, device):
-        """ Unmounts all partitions from device """
-
-        # Unmount all swap devices
-        self.unmount_swap()
-
-        # Get all mounted devices
-        mount_result = call(["/usr/bin/mount"]).split("\n")
-
-        # Umount all partitions of device
-        dirs = []
-        for mount in mount_result:
-            if device in mount:
-                try:
-                    directory = mount.split()[0]
-                    dirs.append(directory)
-                except IndexError:
-                    pass
-
-        for directory in dirs:
-            self.unmount(directory)
-
     def log_devices(self, devices):
         """ Log all devices for debugging purposes """
         if self.gpt and self.bootloader == "grub2":
@@ -817,9 +752,9 @@ class AutoPartition():
         self.log_part_sizes(part_sizes)
 
         # Disable swap and unmount all partitions inside dest_dir
-        self.unmount_all_in_directory(self.dest_dir)
+        mount.unmount_all_in_directory(self.dest_dir)
         # Disable swap and unmount all partitions of device
-        self.unmount_all_in_device(device)
+        mount.unmount_all_in_device(device)
         # Remove lvm in destination device
         self.remove_lvm(device)
         # Close luks devices in destination device

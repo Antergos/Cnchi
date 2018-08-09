@@ -270,12 +270,13 @@ class InstallationAutomatic(GtkBaseBox):
         ssd = {self.auto_device: fs.is_ssd(self.auto_device)}
 
         self.installation = install.Installation(
-            self.settings,
-            self.callback_queue,
-            packages,
-            metalinks,
-            self.mount_devices,
-            self.fs_devices,
-            ssd)
+            settings=self.settings,
+            callback_queue=self.callback_queue,
+            packages=packages,
+            metalinks=metalinks,
+            mount_devices=self.mount_devices,
+            fs_devices=self.fs_devices,
+            ssd=ssd,
+            blvm=False)
 
         self.installation.start()
