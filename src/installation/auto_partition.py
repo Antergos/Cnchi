@@ -790,9 +790,9 @@ class AutoPartition():
         self.create_filesystems(devices)
 
         # NOTE: encrypted and/or lvm2 hooks will be added to mkinitcpio.conf
-        # in process.py if necessary
+        #       in mkinitcpio.py, if necessary.
         # NOTE: /etc/default/grub, /etc/stab and /etc/crypttab will be modified
-        # in process.py, too.
+        #       in post_install.py, if necessary.
 
         if self.luks and self.luks_password == "":
             self.copy_luks_keyfiles()

@@ -38,13 +38,29 @@ from misc.run_cmd import chroot_call
 def run(dest_dir, settings, mount_devices, blvm):
     """ Runs mkinitcpio """
 
-    #cpu = get_cpu()
+    swap = 'swap' in mount_devices
+    hooks = get_hooks(dest_dir, settings, swap, blvm)
+    modules = get_modules(settings)
+    files = get_files(settings)
 
-    # Add lvm and encrypt hooks if necessary
-    hooks = ['base', 'udev', 'autodetect',
-             'modconf', 'block', 'keyboard', 'keymap']
-    modules = []
-    files = []
+    set_hooks_modules_and_files(dest_dir, hooks, modules, files)
+
+    # Run mkinitcpio on the target system
+    # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
+    locale = settings.get('locale')
+    cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux'.format(locale)]
+    chroot_call(cmd, dest_dir)
+    if settings.get('feature_lts'):
+        cmd = ['sh', '-c',
+               'LANG={0} /usr/bin/mkinitcpio -p linux-lts'.format(locale)]
+        chroot_call(cmd, dest_dir)
+
+
+def get_hooks(dest_dir, settings, swap, blvm):
+    """ Get hooks for mkinitcpio """
+
+    hooks = [
+        'base', 'udev', 'autodetect', 'modconf', 'block', 'keyboard', 'keymap']
 
     # It is important that the plymouth hook comes before any encrypt hook
     plymouth_bin = os.path.join(dest_dir, "usr/bin/plymouth")
@@ -59,55 +75,58 @@ def run(dest_dir, settings, mount_devices, blvm):
         else:
             hooks.append('encrypt')
 
-        modules.extend(['dm_mod', 'dm_crypt', 'ext4'])
-
-        arch = os.uname()[-1]
-        if arch == 'x86_64':
-            modules.extend(['aes_x86_64'])
-        else:
-            modules.extend(['aes_i586'])
-
-        modules.extend(['sha256', 'sha512'])
-
-    if blvm or settings.get('use_lvm'):
+    if settings.get('use_lvm') or blvm:
         hooks.append('lvm2')
 
-    if 'swap' in mount_devices:
+    if swap:
         hooks.append('resume')
 
     if settings.get('zfs'):
         # the zfs hook must come before the filesystems hook
         hooks.append('zfs')
-        libgcc_path = '/usr/lib/libgcc_s.so.1'
-        if os.path.exists(libgcc_path):
-            files.append(libgcc_path)
 
     hooks.append('filesystems')
-
-    crc32 = ['crc32', 'libcrc32c', 'crc32c_generic',
-             'crc32c-intel', 'crc32-pclmul']
-
-    if settings.get('f2fs'):
-        modules.append('f2fs')
-
-    if settings.get('btrfs') or settings.get('f2fs'):
-        modules.extend(crc32)
 
     if not settings.get('btrfs') and not settings.get('zfs'):
         # Use the fsck hook only if not using btrfs or zfs
         hooks.append('fsck')
 
-    set_hooks_modules_and_files(dest_dir, hooks, modules, files)
+    return hooks
 
-    # Run mkinitcpio on the target system
-    # Fix for bsdcpio error. See: http://forum.antergos.com/viewtopic.php?f=5&t=1378&start=20#p5450
-    locale = settings.get('locale')
-    cmd = ['sh', '-c', 'LANG={0} /usr/bin/mkinitcpio -p linux'.format(locale)]
-    chroot_call(cmd, dest_dir)
-    if settings.get('feature_lts'):
-        cmd = ['sh', '-c',
-               'LANG={0} /usr/bin/mkinitcpio -p linux-lts'.format(locale)]
-        chroot_call(cmd, dest_dir)
+
+def get_modules(settings):
+    """ Get modules line for mkinitcpio """
+
+    modules = []
+
+    # It is important that the encrypt hook comes before the filesystems hook
+    # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
+    if settings.get('use_luks'):
+        modules.extend(['dm_mod', 'dm_crypt', 'ext4'])
+        modules.extend(['aes_x86_64'])
+        modules.extend(['sha256', 'sha512'])
+
+    if settings.get('f2fs'):
+        modules.append('f2fs')
+
+    if settings.get('btrfs') or settings.get('f2fs'):
+        modules.extend(
+            ['crc32', 'libcrc32c', 'crc32c_generic', 'crc32c-intel', 'crc32-pclmul'])
+
+    return modules
+
+
+def get_files(settings):
+    """ Get files line for mkinitcpio """
+
+    files = []
+
+    if settings.get('zfs'):
+        libgcc_path = '/usr/lib/libgcc_s.so.1'
+        if os.path.exists(libgcc_path):
+            files.append(libgcc_path)
+
+    return files
 
 
 def set_hooks_modules_and_files(dest_dir, hooks, modules, files):
@@ -131,14 +150,3 @@ def set_hooks_modules_and_files(dest_dir, hooks, modules, files):
             elif line.startswith("FILES"):
                 line = 'FILES="{0}"\n'.format(' '.join(files))
             mkinitcpio_file.write(line)
-
-
-def get_cpu():
-    """ Gets CPU string definition """
-    with open("/proc/cpuinfo") as proc_file:
-        lines = proc_file.readlines()
-
-    for line in lines:
-        if "vendor_id" in line:
-            return line.split(":")[1].replace(" ", "").lower()
-    return ""
