@@ -95,7 +95,7 @@ class Lembrame:
                         encrypted_file.write(data)
                 return True
             else:
-                logging.debug("Downloading the Lembrame encrypted file failed")
+                logging.error("Downloading the Lembrame encrypted file failed")
                 return False
         else:
             return False
@@ -112,7 +112,7 @@ class Lembrame:
             logging.debug("API responded with a download link")
             return True
         else:
-            logging.debug("Requesting for download link to Lembrame failed")
+            logging.error("Requesting for download link to Lembrame failed")
             return False
 
     def setup(self):
@@ -126,10 +126,10 @@ class Lembrame:
                 if self.decrypt_file() is False:
                     return False
             else:
-                logging.debug("Signature on the Lembrame file doesn't match")
+                logging.error("Signature on the Lembrame file doesn't match")
                 return False
         else:
-            logging.debug("Lembrame encrypted file doesn't exists")
+            logging.error("Lembrame encrypted file doesn't exists")
             return False
 
         if self.extract_encrypted_file():
@@ -144,7 +144,7 @@ class Lembrame:
         try:
             self.encrypted_file = open(self.config.file_path, 'rb')
         except IOError:
-            logging.debug("Can't read Lembrame encrypted file: %s", IOError)
+            logging.error("Can't read Lembrame encrypted file: %s", IOError)
 
     def verify_file_signature(self):
         if self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM:
@@ -162,7 +162,7 @@ class Lembrame:
         try:
             prot_keynonce = libnacl.crypto_secretbox_open(prot_box, saltnonce, prot_key)
         except ValueError:
-            logging.debug("Incorrect upload code trying to decrypt Lembrame file")
+            logging.error("Incorrect upload code trying to decrypt Lembrame file")
             return False
 
         data_nonce = prot_keynonce[0:self.LEN_NONCE]
@@ -189,7 +189,7 @@ class Lembrame:
             tar.close()
             return True
         except tarfile.TarError as err:
-            logging.debug("Error trying to extract Lembrame decrypted file: %s", str(err))
+            logging.error("Error trying to extract Lembrame decrypted file: %s", str(err))
             return False
 
     def copy_folder_to_dest(self):
@@ -291,7 +291,7 @@ class Lembrame:
                         else:
                             logging.debug("There's no enabled extensions")
         else:
-            logging.debug("There's a problem with the dconf dump file. Gnome Shell extension can't be downloaded")
+            logging.error("There's a problem with the dconf dump file. Gnome Shell extension can't be downloaded")
 
         downloader = GnomeExtensionsDownloader(self.install_user_home, self.config)
         downloader.run(enabled_extensions)
@@ -310,7 +310,7 @@ class Lembrame:
                     else:
                         logging.debug("We can't get the Display Manager from the file")
             except OSError as error:
-                logging.debug("We can't open the file to get the Display Manager: %s", error)
+                logging.error("We can't open the file to get the Display Manager: %s", error)
 
         logging.debug("Display manager selected: %s", display_manager)
         return display_manager
