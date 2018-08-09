@@ -40,6 +40,13 @@ import parted3.fs_module as fs
 from installation import luks
 from installation import wrapper
 
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
+
 # NOTE: Exceptions in this file
 # On a warning situation, Cnchi should try to continue, so we need to catch
 # the exception here. If we don't catch the exception here, it will be caught
@@ -61,20 +68,23 @@ class AutoPartition():
 
     LUKS_KEY_FILES = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
 
-    def __init__(self, dest_dir, auto_device, use_luks, luks_password, use_lvm,
-                 use_home, bootloader, callback_queue):
+    def __init__(self, dest_dir, auto_device, settings, callback_queue):
         """ Class initialization """
+
         self.dest_dir = dest_dir
         self.auto_device = auto_device
-        self.luks_password = luks_password
-        # Use LUKS encryption
-        self.luks = use_luks
-        # Use LVM
-        self.lvm = use_lvm
-        # Make home a different partition or if using LVM, a different volume
-        self.home = use_home
 
-        self.bootloader = bootloader.lower()
+        # Use LUKS encryption
+        self.luks = settings.get("use_luks")
+        self.luks_password = settings.get("luks_root_password")
+
+        # Use LVM
+        self.lvm = settings.get("use_lvm")
+
+        # Make home a different partition or if using LVM, a different volume
+        self.home = settings.get("use_home")
+
+        self.bootloader = settings.get("bootloader").lower()
 
         # Will use these queue to show progress info to the user
         self.callback_queue = callback_queue
@@ -853,21 +863,29 @@ class AutoPartition():
             self.copy_luks_keyfiles()
 
 
-if __name__ == '__main__':
+def test_module():
+    """ Test autopartition module """
     import gettext
 
     _ = gettext.gettext
 
     os.makedirs("/var/log/cnchi")
     logging.basicConfig(
-        filename="/var/log/cnchi/cnchi-autopartition.log", level=logging.DEBUG)
+        filename="/var/log/cnchi/cnchi-autopartition.log",
+        level=logging.DEBUG)
+
+    settings = {
+        'use_luks': True,
+        'luks_password': "luks",
+        'use_lvm': True,
+        'use_home': True,
+        'bootloader': "grub2"}
 
     AutoPartition(
         dest_dir="/install",
         auto_device="/dev/sdb",
-        use_luks=True,
-        luks_password="luks",
-        use_lvm=True,
-        use_home=True,
-        bootloader="grub2",
+        settings=settings,
         callback_queue=None).run()
+
+if __name__ == '__main__':
+    test_module()
