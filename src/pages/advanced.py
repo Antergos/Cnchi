@@ -64,6 +64,9 @@ from pages.dialogs.create_table import CreateTableDialog
 
 from widgets.partition_treeview import PartitionTreeview
 
+#from installation import auto_partition as ap
+from installation import luks
+
 # When testing, no _() is available
 try:
     _("")
@@ -1578,9 +1581,6 @@ class InstallationAdvanced(GtkBaseBox):
                 cmd = ["swapoff", name]
                 call(cmd)
 
-        # We'll use auto_partition.setup_luks if necessary
-        from installation import auto_partition as ap
-
         partitions = {}
         if self.disks is None:
             # There's nothing we can do
@@ -1659,12 +1659,9 @@ class InstallationAdvanced(GtkBaseBox):
                         txt = "Encrypting {0}, assigning volume name {1} and formatting it..."
                         txt = txt.format(partition_path, vol_name)
                         logging.info(txt)
-
+                        luks_options = {'password': password}
                         with misc.raised_privileges():
-                            ap.setup_luks(
-                                luks_device=partition_path,
-                                luks_name=vol_name,
-                                luks_pass=password)
+                            luks.setup(partition_path, vol_name, luks_options)
                         self.settings.set("use_luks", True)
                         luks_device = "/dev/mapper/" + vol_name
                         error, msg = fs.create_fs(luks_device, fisy, lbl)

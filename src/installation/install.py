@@ -35,10 +35,9 @@ from mako.template import Template
 
 from download import download
 
-from installation import auto_partition
 from installation import special_dirs
-
 from installation import post_install
+from installation import mount
 
 import misc.extra as misc
 from misc.extra import InstallError
@@ -127,7 +126,7 @@ class Installation():
             # We use unmount_all_in_directory from auto_partition to do this.
             # ZFS already mounts everything automagically (except /boot that
             # is not in zfs)
-            auto_partition.unmount_all_in_directory(DEST_DIR)
+            mount.unmount_all_in_directory(DEST_DIR)
 
         # NOTE: Advanced method formats root by default in advanced.py
         if "/" in self.mount_devices:
@@ -336,7 +335,7 @@ class Installation():
         self.queue_event('progress_bar', 'hide')
 
         # Finally, try to unmount DEST_DIR
-        auto_partition.unmount_all_in_directory(DEST_DIR)
+        mount.unmount_all_in_directory(DEST_DIR)
 
         self.running = False
 
@@ -464,7 +463,7 @@ class Installation():
                 for fpath in to_delete:
                     try:
                         os.remove(fpath)
-                    except Exception as err:
+                    except OSError as err:
                         logging.error(err)
 
     @staticmethod

@@ -31,8 +31,6 @@
 
 import logging
 
-import parted
-
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -213,11 +211,7 @@ class InstallationAutomatic(GtkBaseBox):
         auto = auto_partition.AutoPartition(
             dest_dir=DEST_DIR,
             auto_device=self.auto_device,
-            use_luks=self.settings.get("use_luks"),
-            luks_password=self.settings.get("luks_root_password"),
-            use_lvm=self.settings.get("use_lvm"),
-            use_home=self.settings.get("use_home"),
-            bootloader=self.settings.get("bootloader"),
+            settings=self.settings,
             callback_queue=self.callback_queue)
 
         #devices = auto.get_devices()
@@ -255,11 +249,7 @@ class InstallationAutomatic(GtkBaseBox):
         auto = auto_partition.AutoPartition(
             dest_dir=DEST_DIR,
             auto_device=self.auto_device,
-            use_luks=self.settings.get("use_luks"),
-            luks_password=self.settings.get("luks_root_password"),
-            use_lvm=self.settings.get("use_lvm"),
-            use_home=self.settings.get("use_home"),
-            bootloader=self.settings.get("bootloader"),
+            settings=self.settings,
             callback_queue=self.callback_queue)
         auto.run()
 

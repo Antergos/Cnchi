@@ -109,7 +109,7 @@ DESCRIPTIONS = {
 
 TOOLTIPS = {
     'a11y': _("Useful packages for individuals who are blind or visually impaired."),
-    'aur': _("Use yaourt to install AUR packages.\n"
+    'aur': _("Use yay to install packages from the Arch User Repository.\n"
              "The AUR was created to organize and share new packages\n"
              "from the community and to help expedite popular packages'\n"
              "inclusion into the [community] repository."),
