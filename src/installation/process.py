@@ -63,6 +63,7 @@ class Process(multiprocessing.Process):
         self.install_screen = install_screen
         self.pkg = None
         self.down = None
+        self.lembrame = None
 
     def create_metalinks_list(self):
         """ Create metalinks list """
@@ -75,7 +76,7 @@ class Process(multiprocessing.Process):
 
         # We won't download anything here. It's just to create the metalinks list
         pacman_conf = {}
-        pacman_conf['file'] = '/etc/pacman.conf'
+        pacman_conf['file'] = self.settings.get('pacman_config_file')
         pacman_conf['cache'] = '/var/cache/pacman/pkg'
         self.down = download.DownloadPackages(
             package_names=self.pkg.packages,
@@ -90,15 +91,57 @@ class Process(multiprocessing.Process):
             txt = _("Cannot create download package list (metalinks).")
             raise misc.InstallError(txt)
 
+    def init_lembrame(self):
+        if self.settings.get("feature_lembrame"):
+            logging.debug("Initializing Lembrame")
+            from lembrame.lembrame import Lembrame
+            self.lembrame = Lembrame(self.settings)
+
+    def prepare_lembrame(self):
+        if self.settings.get("feature_lembrame") and self.lembrame:
+            logging.debug("Preparing Lembrame files")
+
+            self.queue_event('pulse', 'start')
+            self.queue_event('info', _("Downloading Lembrame file with your synced configuration"))
+
+            lembrame_download_status = self.lembrame.download_file()
+
+            if lembrame_download_status:
+                self.queue_event('info', _("Decrypting your Lembrame file"))
+                logging.debug("Setting up Lembrame configurations")
+                self.lembrame.setup()
+
+            self.queue_event('info', _("Initializing package downloading"))
+            self.queue_event('pulse', 'stop')
+
+    def overwrite_variables_lembrame(self):
+        if self.settings.get("feature_lembrame") and self.lembrame:
+            self.queue_event('info', _("Overwriting Cnchi config variables with Lembrame"))
+
+            self.lembrame.overwrite_installer_variables()
+
+            self.queue_event('info', _("Initializing package downloading"))
+
     def run(self):
         """ Calculates download package list and then calls run_format and
         run_install. Takes care of the exceptions, too. """
 
         try:
+            # Initialize Lembrame
+            self.init_lembrame()
+
+            # Start Lembrame download package if activated. We'll need the package list to
+            # overwrite the one used by the installer by default
+            self.prepare_lembrame()
+
             # Before formatting, let's try to calculate package download list
             # this way, if something fails (a missing package, mostly) we have
             # not formatted anything yet.
             self.create_metalinks_list()
+
+            # Overwrite Cnchi config variables with Lembrame
+            # In order to overwrite Display Manager, we have to run this after creating the package list
+            self.overwrite_variables_lembrame()
 
             self.queue_event(
                 'info', _("Getting your disk(s) ready for Antergos..."))

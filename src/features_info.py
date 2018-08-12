@@ -43,6 +43,7 @@ ICON_NAMES = {
     'games': 'applications-games',
     'graphic_drivers': 'gnome-system',
     'lamp': 'applications-internet',
+    'lembrame': 'com.antergos.Lembrame',
     'lts': 'applications-accessories',
     'office': 'accessories-text-editor',
     'sshd': 'network-connect',
@@ -78,6 +79,7 @@ TITLES = {
     'games': _("Steam + PlayonLinux"),
     'graphic_drivers': _("Graphic drivers (Proprietary)"),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP"),
+    'lembrame': _("Lembrame"),
     'lts': _("Kernel (LTS version)"),
     'office': _("LibreOffice"),
     'sshd': _("SSH Service"),
@@ -96,6 +98,7 @@ DESCRIPTIONS = {
     'graphic_drivers': _("Installs AMD or Nvidia proprietary graphic driver."),
     'games': _("Installs Steam and Playonlinux for gaming enthusiasts."),
     'lamp': _("Apache (or Nginx) + Mariadb + PHP installation and setup."),
+    'lembrame': _("Sync your Gnome and system settings between installations"),
     'cups': _("Installation of printer drivers and management tools."),
     'office': _("Open source office suite. Supports editing MS Office files."),
     'visual': _("Enable transparency, shadows, and other desktop effects."),
@@ -153,6 +156,9 @@ TOOLTIPS = {
     'lamp': _("This option installs a web server (you can choose\n"
               "Apache or Nginx) plus a database server (Mariadb)\n"
               "and PHP."),
+    'lembrame': _("Lembrame is a concept tool to sync your settings to the cloud\n"
+                  "and reuse them on your next install to have the same desktop settings,\n"
+                  "packages and more."),
     'lts': _("The linux-lts package is an alternative Arch kernel package.\n"
              "This particular kernel version enjoys long-term support from upstream,\n"
              "including security fixes and some feature backports. Additionally, this\n"

@@ -42,6 +42,8 @@ from misc.extra import InstallError
 
 import hardware.hardware as hardware
 
+from lembrame.lembrame import Lembrame
+
 # When testing, no _() is available
 try:
     _("")
@@ -75,6 +77,11 @@ class SelectPackages():
         self.my_arch = os.uname()[-1]
 
         self.xml_root = None
+
+        # If Lembrame enabled set pacman.conf pointing to the decrypted folder
+        if self.settings.get('feature_lembrame'):
+            self.lembrame = Lembrame(self.settings)
+            self.settings.set('pacman_config_file', self.lembrame.config.folder_file_path + '/pacman.conf')
 
     def queue_fatal_event(self, txt):
         """ Enqueues a fatal event and quits """
@@ -119,7 +126,7 @@ class SelectPackages():
         """ Updates pacman databases """
         # Init pyalpm
         try:
-            pacman = pac.Pac("/etc/pacman.conf", self.callback_queue)
+            pacman = pac.Pac(self.settings.get('pacman_config_file'), self.callback_queue)
         except Exception as ex:
             template = (
                 "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}")
@@ -379,6 +386,12 @@ class SelectPackages():
             "Check for user desired features and add them to our installation")
         self.add_features()
         logging.debug("All features needed packages have been added")
+
+        # Add Lembrame packages but install Cnchi defaults too
+        # TODO: Lembrame has to generate a better package list indicating DM and stuff
+        if self.settings.get("feature_lembrame"):
+            self.queue_event('info', _("Appending list of packages from Lembrame"))
+            self.packages = self.packages + self.lembrame.get_pacman_packages()
 
         # Remove duplicates and conflicting packages
         self.cleanup_packages_list()

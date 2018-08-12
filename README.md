@@ -82,6 +82,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - iso-codes
  - clutter, clutter-gtk, clutter-gst
  - gsteamer1.0
+ - python-libnacl
 
 ## Unit tests
  - python-mock

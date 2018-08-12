@@ -42,6 +42,8 @@ import misc.extra as misc
 
 from pages.gtkbasebox import GtkBaseBox
 
+from lembrame.dialog import LembrameDialog
+
 from hardware.modules.nvidia import Nvidia
 from hardware.modules.nvidia_390xx import Nvidia390xx
 from hardware.modules.nvidia_340xx import Nvidia340xx
@@ -174,6 +176,22 @@ class Features(GtkBaseBox):
             if row[Features.COL_SWITCH] == switch:
                 is_active = switch.get_active()
                 self.settings.set("feature_" + feature, is_active)
+                # Extra actions on this switch trigger
+                self.extra_switch_actions(feature, is_active)
+
+    def extra_switch_actions(self, feature, is_active):
+        # Disable all if Lembrame is selected
+        if feature == 'lembrame' and is_active:
+            logging.debug("Activating Lembrame. Deactivating the rest of the switches")
+            for rowFeature in self.listbox_rows:
+                if rowFeature != 'lembrame':
+                    self.listbox_rows[rowFeature][Features.COL_SWITCH].set_active(False)
+
+        # Disable lembrame if any other option is activated
+        if feature != 'lembrame' and is_active:
+            if self.listbox_rows['lembrame'][Features.COL_SWITCH].get_active():
+                logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
+                self.listbox_rows['lembrame'][Features.COL_SWITCH].set_active(False)
 
     def add_feature_switch(self, feature, box):
         """ Add a switch so the user can activate/deactivate the feature """
@@ -390,6 +408,22 @@ class Features(GtkBaseBox):
             else:
                 self.settings.set("feature_lemp", False)
 
+    def ask_lembrame(self):
+        if self.settings.get("feature_lembrame"):
+            dlg = LembrameDialog(
+                self.get_main_window(),
+                self.ui_dir)
+
+            response = dlg.run()
+
+            if response == Gtk.ResponseType.APPLY:
+                logging.debug("Saving Lembrame credentials")
+                self.settings.set(
+                    'lembrame_credentials',
+                    dlg.get_credentials())
+
+            dlg.destroy()
+
     def store_switches(self):
         """ Store current feature selections """
         for feature in self.features:
@@ -405,6 +439,7 @@ class Features(GtkBaseBox):
         self.store_switches()
         self.show_disclaimer_messages()
         self.ask_nginx()
+        self.ask_lembrame()
 
         self.listbox_rows = {}
 

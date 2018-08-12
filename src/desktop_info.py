@@ -70,24 +70,24 @@ LIBS = {
 
 ALL_FEATURES = [
     "a11y", "aur", "bluetooth", "cups", "chromium", "energy", "firefox", "firewall", "flash",
-    "games", "graphic_drivers", "lamp", "lts", "office", "sshd", "visual", "vivaldi"]
+    "games", "graphic_drivers", "lamp", "lembrame", "lts", "office", "sshd", "visual", "vivaldi"]
 """ List: All features """
 
 
 EXCLUDED_FEATURES = {
     'base': ["bluetooth", "chromium", "firefox", "firewall", "flash", "games",
-             "graphic_drivers", "office", "visual", "vivaldi"],
-    'cinnamon': ["lamp", "visual"],
-    'deepin': ["lamp", "visual"],
+             "graphic_drivers", "office", "visual", "vivaldi", "lembrame"],
+    'cinnamon': ["lamp", "visual", "lembrame"],
+    'deepin': ["lamp", "visual", "lembrame"],
     'gnome': ["lamp", "visual"],
-    'kde': ["lamp", "visual"],
-    'mate': ["lamp", "visual"],
-    'openbox': ["lamp"],
-    'xfce': ["lamp", "visual"],
-    'budgie': ["lamp", "visual"],
-    'enlightenment': ["lamp", "visual"],
-    'i3': ["lamp"],
-    'lxqt': ["lamp", "visual"]
+    'kde': ["lamp", "visual", "lembrame"],
+    'mate': ["lamp", "visual", "lembrame"],
+    'openbox': ["lamp", "lembrame"],
+    'xfce': ["lamp", "visual", "lembrame"],
+    'budgie': ["lamp", "visual", "lembrame"],
+    'enlightenment': ["lamp", "visual", "lembrame"],
+    'i3': ["lamp", "lembrame"],
+    'lxqt': ["lamp", "visual", "lembrame"]
 }
 """ Dict: Not all desktops have all features """
 
