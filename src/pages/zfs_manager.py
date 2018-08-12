@@ -86,7 +86,7 @@ def init_device(device_path, scheme="GPT"):
         # Create fresh MBR table
         wrapper.parted_mklabel(device_path, "msdos")
 
-    call(["sync"])
+    settle()
 
 
 def get_pool_size(pool_name):
@@ -103,16 +103,13 @@ def get_pool_size(pool_name):
         else:
             pool_size = int(pool_size_str[:-1])
         if 'M' in pool_size_str:
-            pool_size //= 1024
+            pool_size = pool_size // 1024
         elif 'T' in pool_size_str:
             pool_size = pool_size * 1024
         elif 'P' in pool_size_str:
             pool_size = pool_size * 1024 * 1024
     except (subprocess.CalledProcessError, ValueError) as err:
-        logging.warning(
-            "Can't get zfs %s pool size: %s",
-            pool_name,
-            err)
+        logging.warning("Can't get zfs %s pool size: %s", pool_name, err)
         pool_size = 0
     return pool_size
 
@@ -177,8 +174,11 @@ def set_mountpoint(zvol, mount_point):
         because we set mountpoint to / instead of /install. ZFS cannot
         mount it because / is not empty (same for /home if it's in a zvol). """
     try:
-        cmd = ["/usr/bin/zfs", "set",
-               "mountpoint={0}".format(mount_point), zvol]
+        cmd = [
+            "/usr/bin/zfs",
+            "set",
+            "mountpoint={0}".format(mount_point),
+            zvol]
         _output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as err:
         err_output = err.output.decode().strip("\n")
@@ -280,10 +280,6 @@ def create_pool(pool_name, pool_type, device_paths, force_4k):
     if pool_type not in ZFS_POOL_TYPES.values():
         raise InstallError("Unknown pool type: {0}".format(pool_type))
 
-    # for device_path in device_paths:
-    #    cmd = ["zpool", "labelclear", device_path]
-    #    call(cmd)
-
     cmd = ["/usr/bin/zpool", "create"]
 
     if force_4k:
@@ -309,7 +305,6 @@ def create_pool(pool_name, pool_type, device_paths, force_4k):
     else:
         cmd.append(pool_type)
         cmd.extend(device_paths)
-
     settle()
 
     logging.debug("Creating zfs pool %s...", pool_name)
@@ -321,7 +316,6 @@ def create_pool(pool_name, pool_type, device_paths, force_4k):
             # (Waiting a bit sometimes works)
             time.sleep(10)
             call(cmd, fatal=True)
-
     settle()
 
     if pool_type == "stripe":
@@ -338,11 +332,8 @@ def create_swap(pool_name, vol_name):
 
     zvol = "{0}/{1}".format(pool_name, vol_name)
 
-    cmd = ["/usr/bin/zfs", "set", "com.sun:auto-snapshot=false", zvol]
-    call(cmd)
-
-    cmd = ["/usr/bin/zfs", "set", "sync=always", zvol]
-    call(cmd)
+    call(["/usr/bin/zfs", "set", "com.sun:auto-snapshot=false", zvol])
+    call(["/usr/bin/zfs", "set", "sync=always", zvol])
 
     path = "/dev/zvol/{0}/swap".format(pool_name)
     if os.path.exists(path):
@@ -383,17 +374,15 @@ def create_vol(pool_name, vol_name, swap_size=None):
 
 def get_partition_path(device, part_num):
     """ Form partition path from device and partition number """
-    full_path = ""
+
     # Remove /dev/
     path = device.replace('/dev/', '')
-    partials = ['rd/', 'ida/', 'cciss/', 'sx8/',
-                'mapper/', 'mmcblk', 'md', 'nvme']
+    partials = [
+        'rd/', 'ida/', 'cciss/', 'sx8/', 'mapper/', 'mmcblk', 'md', 'nvme']
     found = [p for p in partials if path.startswith(p)]
     if found:
-        full_path = "{0}p{1}".format(device, part_num)
-    else:
-        full_path = "{0}{1}".format(device, part_num)
-    return full_path
+        return "{0}p{1}".format(device, part_num)
+    return "{0}{1}".format(device, part_num)
 
 
 def setup(solaris_partition_number, zfs_options, use_home):
@@ -435,10 +424,11 @@ def setup(solaris_partition_number, zfs_options, use_home):
 
     if not pool_name_is_valid(pool_name):
         txt = _(
-            "Pool name is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
+            "Pool name {0} is invalid. It must contain only alphanumeric characters (a-zA-Z0-9_), "
             "hyphens (-), colons (:), and/or spaces ( ). Names starting with the letter 'c' "
             "followed by a number (c[0-9]) are not allowed. The following names are also not "
-            "allowed: 'mirror', 'raidz', 'spare', 'log'.")
+            "allowed: 'mirror', 'raidz', 'spare' and 'log'.")
+        txt = txt.format(pool_name)
         raise InstallError(txt)
 
     # Create zpool
@@ -470,7 +460,6 @@ def setup(solaris_partition_number, zfs_options, use_home):
     # Create swap zvol (it has to be named "swap")
     swap_size = get_swap_size(pool_name)
     create_vol(pool_name, "swap", swap_size)
-
     settle()
 
     # Export the pool
@@ -478,14 +467,13 @@ def setup(solaris_partition_number, zfs_options, use_home):
     # the disk acknowledging that the export was done, and removes all
     # knowledge that the storage pool existed in the system
     logging.debug("Exporting pool %s...", pool_name)
-    cmd = ["/usr/bin/zpool", "export", "-f", pool_name]
-    call(cmd, fatal=True)
+    call(["/usr/bin/zpool", "export", "-f", pool_name], fatal=True)
 
     # Let's get the id of the pool (to import it)
     pool_id, _status = get_pool_id(pool_name)
 
     if not pool_id:
-        # Something bad has happened. Will use the pool name instead.
+        # Something bad has happened. Will try using the pool name instead.
         logging.warning("Can't get %s zpool id", pool_name)
         pool_id = pool_name
 
@@ -495,7 +483,7 @@ def setup(solaris_partition_number, zfs_options, use_home):
     cmd = ["/usr/bin/zpool", "import", "-f", "-d", "/dev/disk/by-id", "-R", DEST_DIR, pool_id]
     call(cmd, fatal=True)
 
-    # Copy created cache file to destination
+    # Copy zpool cache file to destination
     try:
         dst_dir = os.path.join(DEST_DIR, "etc/zfs")
         os.makedirs(dst_dir, mode=0o755, exist_ok=True)

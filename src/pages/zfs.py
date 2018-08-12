@@ -535,15 +535,16 @@ class InstallationZFS(GtkBaseBox):
 
         # Wipe all disks that will be part of the installation.
         # This cannot be undone!
-        zfs.init_device(device_paths[0], self.zfs_options['scheme'])
+        scheme = self.zfs_options['scheme']
+        zfs.init_device(device_paths[0], scheme)
         for device_path in device_paths[1:]:
-            zfs.init_device(device_path, 'GPT')
+            zfs.init_device(device_path, scheme)
 
         device_path = device_paths[0]
 
         self.settings.set('bootloader_device', device_path)
 
-        if self.zfs_options['scheme'] == 'GPT':
+        if scheme == 'GPT':
             solaris_part_num = self.run_format_gpt(device_path)
             # The rest of the disk will be of solaris type
             # (2 or 3) Solaris (bf00)
@@ -564,8 +565,10 @@ class InstallationZFS(GtkBaseBox):
 
         zfs.settle()
 
-        use_home = self.settings.get('use_home')
-        pool_id = zfs.setup(solaris_part_num, self.zfs_options, use_home)
+        pool_id = zfs.setup(
+            solaris_part_num,
+            self.zfs_options,
+            self.settings.get('use_home'))
 
         # Save pool id
         self.settings.set('zfs_pool_id', pool_id)
