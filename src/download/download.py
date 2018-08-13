@@ -47,6 +47,7 @@ except ModuleNotFoundError:
     import metalink as ml
     import download_requests
 
+from misc.events import Events
 import misc.extra as misc
 
 # When testing, no _() is available
@@ -74,7 +75,7 @@ class DownloadPackages():
         else:
             self.xz_cache_dirs = []
 
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
 
         # Create pacman cache dir (it's ok if it already exists)
         os.makedirs(self.pacman_cache_dir, mode=0o755, exist_ok=True)
@@ -105,7 +106,7 @@ class DownloadPackages():
         download = download_requests.Download(
             self.pacman_cache_dir,
             self.xz_cache_dirs,
-            self.callback_queue,
+            self.events.queue,
             proxies)
 
         if not download.start(self.metalinks):
@@ -147,8 +148,8 @@ class DownloadPackages():
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
 
-        self.queue_event('percent', '0')
-        self.queue_event(
+        self.events.add('percent', '0')
+        self.events.add(
             'info', _('Creating the list of packages to download...'))
         processed_packages = 0
         total_packages = len(self.package_names)
@@ -158,7 +159,7 @@ class DownloadPackages():
         try:
             pacman = pac.Pac(
                 conf_path=self.pacman_conf_file,
-                callback_queue=self.callback_queue)
+                callback_queue=self.events.queue)
             if pacman is None:
                 return False
         except pyalpm.error as ex:
@@ -185,7 +186,7 @@ class DownloadPackages():
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
-                self.queue_event('percent', str(percent))
+                self.events.add('percent', str(percent))
 
             pacman.release()
             del pacman
@@ -198,29 +199,8 @@ class DownloadPackages():
             return False
 
         # Overwrite last event (to clean up the last message)
-        self.queue_event('info', "")
+        self.events.add('info', "")
         return True
-
-    def queue_event(self, event_type, event_text=""):
-        """ Adds an event to Cnchi event queue """
-
-        if self.callback_queue is None:
-            if event_type != "percent":
-                logging.debug("%s:%s", event_type, event_text)
-            return
-
-        if event_type in self.last_event:
-            if self.last_event[event_type] == event_text:
-                # do not repeat same event
-                return
-
-        self.last_event[event_type] = event_text
-
-        try:
-            # Add the event
-            self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
-            pass
 
 
 def test():

@@ -40,6 +40,8 @@ import threading
 
 import requests
 
+from misc.events import Events
+
 try:
     import download.download_hash as dhash
 except ModuleNotFoundError:
@@ -85,8 +87,9 @@ class Download():
         """ Initialize Download class. Gets default configuration """
         self.pacman_cache_dir = pacman_cache_dir
         self.xz_cache_dirs = xz_cache_dirs
-        self.callback_queue = callback_queue
         self.proxies = proxies
+
+        self.events = Events(callback_queue)
 
         if self.proxies:
             logging.debug("Will use these proxy settings: %s", self.proxies)
@@ -105,8 +108,8 @@ class Download():
         downloaded = 0
         total_downloads = len(downloads)
 
-        self.queue_event('downloads_progress_bar', 'show')
-        self.queue_event('downloads_percent', '0')
+        self.events.add('downloads_progress_bar', 'show')
+        self.events.add('downloads_percent', '0')
 
         self.copy_to_cache_threads = []
 
@@ -120,14 +123,14 @@ class Download():
             # Get package to download from downloads list
             _identity, element = downloads.popitem()
 
-            self.queue_event('percent', '0')
+            self.events.add('percent', '0')
 
             txt = _("Fetching {0} {1} ({2}/{3})...").format(
                 element['identity'],
                 element['version'],
                 downloaded + 1,
                 total_downloads)
-            self.queue_event('info', txt)
+            self.events.add('info', txt)
 
             dst_path = os.path.join(self.pacman_cache_dir, element['filename'])
 
@@ -185,16 +188,16 @@ class Download():
 
             downloaded += 1
 
-            self.queue_event('progress_bar_show_text', '')
+            self.events.add('progress_bar_show_text', '')
 
             downloads_percent = round(float(downloaded / total_downloads), 2)
-            self.queue_event('downloads_percent', str(downloads_percent))
+            self.events.add('downloads_percent', str(downloads_percent))
 
         # Wait until all xz packages are also copied to provided cache (if any)
         for cache_thread in self.copy_to_cache_threads:
             cache_thread.join()
 
-        self.queue_event('downloads_progress_bar', 'hide')
+        self.events.add('downloads_progress_bar', 'hide')
         return True
 
     def download_package(self, element, dst_path):
@@ -281,10 +284,10 @@ class Download():
                         else:
                             percent += 0.1
                         if old_percent != percent:
-                            self.queue_event('percent', percent)
+                            self.events.add('percent', percent)
                         bps = completed_length // (time.perf_counter() - start)
                         msg = self.format_progress_message(percent, bps)
-                        self.queue_event('progress_bar_show_text', msg)
+                        self.events.add('progress_bar_show_text', msg)
 
                 # Check hash of downloaded package
                 if element and not dhash.check_hash(dst_path, element):
@@ -311,24 +314,3 @@ class Download():
         else:
             msg = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
         return msg
-
-    def queue_event(self, event_type, event_text=None):
-        """ Adds an event to Cnchi event queue """
-
-        if self.callback_queue is None:
-            if event_type != "percent":
-                logging.debug("%s: %s", event_type, event_text)
-            return
-
-        if event_type in self.last_event:
-            if self.last_event[event_type] == event_text:
-                # do not repeat same event
-                return
-
-        self.last_event[event_type] = event_text
-
-        try:
-            # Add the event
-            self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
-            pass

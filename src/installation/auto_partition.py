@@ -31,10 +31,10 @@
 import os
 import logging
 import math
-import queue
 
 from misc.extra import InstallError
 from misc.run_cmd import call
+import misc.events as events
 import parted3.fs_module as fs
 
 from installation import luks
@@ -88,9 +88,7 @@ class AutoPartition():
         self.bootloader = settings.get("bootloader").lower()
 
         # Will use these queue to show progress info to the user
-        self.callback_queue = callback_queue
-        self.last_event = {}
-        self.percent = 0
+        self.events = events.Events(callback_queue)
 
         if os.path.exists("/sys/firmware/efi"):
             # If UEFI use GPT
@@ -100,27 +98,6 @@ class AutoPartition():
             # If BIOS, use MBR
             self.uefi = False
             self.gpt = False
-
-    def queue_event(self, event_type, event_text=""):
-        """ Adds an event to Cnchi event queue """
-
-        if self.callback_queue is None:
-            if event_type != "percent":
-                logging.debug("%s:%s", event_type, event_text)
-            return
-
-        if event_type in self.last_event:
-            if self.last_event[event_type] == event_text:
-                # do not repeat same event
-                return
-
-        self.last_event[event_type] = event_text
-
-        try:
-            # Add the event
-            self.callback_queue.put_nowait((event_type, event_text))
-        except queue.Full:
-            pass
 
     def mkfs(self, device, fs_type, mount_point, label_name, fs_options="", btrfs_devices=""):
         """ We have two main cases: "swap" and everything else. """

@@ -38,6 +38,7 @@ import queue
 
 import pyalpm
 
+from misc.events import Events
 import misc.extra as misc
 
 from download import download
@@ -59,7 +60,7 @@ class Process(multiprocessing.Process):
         """ Initialize process class """
         multiprocessing.Process.__init__(self)
         self.settings = settings
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
         self.install_screen = install_screen
         self.pkg = None
         self.down = None
@@ -67,7 +68,7 @@ class Process(multiprocessing.Process):
 
     def create_metalinks_list(self):
         """ Create metalinks list """
-        self.pkg = pack.SelectPackages(self.settings, self.callback_queue)
+        self.pkg = pack.SelectPackages(self.settings, self.events.queue)
         self.pkg.create_package_list()
 
         if not self.pkg.packages:
@@ -82,7 +83,7 @@ class Process(multiprocessing.Process):
             package_names=self.pkg.packages,
             pacman_conf=pacman_conf,
             settings=self.settings,
-            callback_queue=self.callback_queue)
+            callback_queue=self.events.queue)
 
         # Create metalinks list
         self.down.create_metalinks_list()
@@ -103,26 +104,26 @@ class Process(multiprocessing.Process):
         if self.settings.get("feature_lembrame") and self.lembrame:
             logging.debug("Preparing Lembrame files")
 
-            self.queue_event('pulse', 'start')
-            self.queue_event('info', _("Downloading Lembrame file with your synced configuration"))
+            self.events.add('pulse', 'start')
+            self.events.add('info', _("Downloading Lembrame file with your synced configuration"))
 
             lembrame_download_status = self.lembrame.download_file()
 
             if lembrame_download_status:
-                self.queue_event('info', _("Decrypting your Lembrame file"))
+                self.events.add('info', _("Decrypting your Lembrame file"))
                 logging.debug("Setting up Lembrame configurations")
                 self.lembrame.setup()
 
-            self.queue_event('info', _("Initializing package downloading"))
-            self.queue_event('pulse', 'stop')
+            self.events.add('info', _("Initializing package downloading"))
+            self.events.add('pulse', 'stop')
 
     def overwrite_variables_lembrame(self):
         """ Overwrite cnchi options with lembrame's ones """
         if self.settings.get("feature_lembrame") and self.lembrame:
-            self.queue_event('info', _("Overwriting Cnchi config variables with Lembrame"))
+            self.events.add('info', _("Overwriting Cnchi config variables with Lembrame"))
 
             self.lembrame.overwrite_installer_variables()
-            self.queue_event('info', _("Initializing package downloading"))
+            self.events.add('info', _("Initializing package downloading"))
 
     def run(self):
         """ Calculates download package list and then calls run_format and
@@ -146,7 +147,7 @@ class Process(multiprocessing.Process):
             # package list
             self.overwrite_variables_lembrame()
 
-            self.queue_event(
+            self.events.add(
                 'info', _("Getting your disk(s) ready for Antergos..."))
             with misc.raised_privileges():
                 self.install_screen.run_format()
@@ -157,7 +158,7 @@ class Process(multiprocessing.Process):
                 part_file.write("# users to reboot before retry\n")
                 part_file.write("# formatting their hard disk(s)\n")
 
-            self.queue_event('info', _("Installation will start now!"))
+            self.events.add('info', _("Installation will start now!"))
             with misc.raised_privileges():
                 self.install_screen.run_install(
                     self.pkg.packages, self.down.metalinks)
@@ -174,7 +175,7 @@ class Process(multiprocessing.Process):
             txt = _("Error running command {0}: {1}").format(
                 process_error.cmd,
                 process_error.output)
-            self.queue_fatal_event(txt)
+            self.events.add_fatal(txt)
         except (misc.InstallError, pyalpm.error,
                 KeyboardInterrupt, TypeError,
                 AttributeError, OSError, IOError) as install_error:
@@ -184,19 +185,4 @@ class Process(multiprocessing.Process):
                 exc_type, exc_value, exc_traceback)
             for line in trace:
                 logging.error(line.rstrip())
-            self.queue_fatal_event(install_error)
-
-    def queue_fatal_event(self, txt):
-        """ Enqueues a fatal event and exits process """
-        self.queue_event('error', txt)
-        sys.exit(0)
-
-    def queue_event(self, event_type, event_text=""):
-        """ Enqueue an event """
-        if self.callback_queue is not None:
-            try:
-                self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
-                pass
-        else:
-            print("{0}: {1}".format(event_type, event_text))
+            self.events.add_fatal(install_error)

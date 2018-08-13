@@ -37,6 +37,8 @@ import desktop_info
 import info
 
 import pacman.pac as pac
+
+from misc.events import Events
 import misc.extra as misc
 from misc.extra import InstallError
 
@@ -60,7 +62,7 @@ class SelectPackages():
     def __init__(self, settings, callback_queue):
         """ Initialize package class """
 
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
         self.settings = settings
         self.alternate_package_list = self.settings.get(
             'alternate_package_list')
@@ -82,22 +84,6 @@ class SelectPackages():
         if self.settings.get('feature_lembrame'):
             self.lembrame = Lembrame(self.settings)
             self.settings.set('pacman_config_file', self.lembrame.config.folder_file_path + '/pacman.conf')
-
-    def queue_fatal_event(self, txt):
-        """ Enqueues a fatal event and quits """
-        self.queue_event('error', txt)
-        # self.callback_queue.join()
-        sys.exit(0)
-
-    def queue_event(self, event_type, event_text=""):
-        """ Enqueue event """
-        if self.callback_queue is not None:
-            try:
-                self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
-                pass
-        else:
-            print("{0}: {1}".format(event_type, event_text))
 
     def create_package_list(self):
         """ Create package list """
@@ -126,7 +112,7 @@ class SelectPackages():
         """ Updates pacman databases """
         # Init pyalpm
         try:
-            pacman = pac.Pac(self.settings.get('pacman_config_file'), self.callback_queue)
+            pacman = pac.Pac(self.settings.get('pacman_config_file'), self.events.queue)
         except Exception as ex:
             template = (
                 "Can't initialize pyalpm. An exception of type {0} occured. Arguments:\n{1!r}")
@@ -201,7 +187,7 @@ class SelectPackages():
             # The list of packages is retrieved from an online XML to let us
             # control the pkgname in case of any modification
 
-            self.queue_event('info', _("Getting package list..."))
+            self.events.add('info', _("Getting package list..."))
 
             try:
                 url = SelectPackages.PKGLIST_URL
@@ -390,7 +376,7 @@ class SelectPackages():
         # Add Lembrame packages but install Cnchi defaults too
         # TODO: Lembrame has to generate a better package list indicating DM and stuff
         if self.settings.get("feature_lembrame"):
-            self.queue_event('info', _("Appending list of packages from Lembrame"))
+            self.events.add('info', _("Appending list of packages from Lembrame"))
             self.packages = self.packages + self.lembrame.get_pacman_packages()
 
         # Remove duplicates and conflicting packages

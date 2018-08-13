@@ -32,12 +32,14 @@
 """ Module interface to pyalpm """
 
 from collections import OrderedDict
-import inspect
+
 import logging
 import os
 import queue
 import sys
 #import traceback
+
+from misc.events import Events
 
 import pacman.alpm_include as _alpm
 import pacman.pkginfo as pkginfo
@@ -66,7 +68,7 @@ class Pac():
     LOG_FOLDER = '/var/log/cnchi'
 
     def __init__(self, conf_path="/etc/pacman.conf", callback_queue=None):
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
 
         self.conflict_to_remove = None
 
@@ -453,52 +455,6 @@ class Pac():
             info = {}
         return info
 
-    def queue_event(self, event_type, event_text=""):
-        """ Queues events to the event list in the GUI thread """
-
-        if event_type == "percent":
-            # Limit percent to two decimal
-            event_text = "{0:.2f}".format(event_text)
-
-        if event_type in self.last_event:
-            if self.last_event[event_type] == event_text:
-                # Do not enqueue the same event twice
-                return
-
-        self.last_event[event_type] = event_text
-
-        if event_type == "error":
-            # Format message to show file, function, and line where the
-            # error was issued
-            # Get the previous frame in the stack, otherwise it would be
-            # this function
-            func = inspect.currentframe().f_back.f_code
-            # Dump the message + the name of this function to the log.
-            event_text = "{0}: {1} in {2}:{3}".format(
-                event_text,
-                func.co_name,
-                func.co_filename,
-                func.co_firstlineno)
-
-        if self.callback_queue is None:
-            if event_type == "error":
-                logging.error(event_text)
-                sys.exit(1)
-            else:
-                logging.debug(event_text)
-        else:
-            try:
-                self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
-                logging.warning("Callback queue is full")
-
-            if event_type == "error":
-                # We've queued a fatal event so we must exit installer_process
-                # process wait until queue is empty (is emptied in slides.py,
-                # in the GUI thread), then exit
-                self.callback_queue.join()
-                sys.exit(1)
-
     # Callback functions
 
     @staticmethod
@@ -546,7 +502,7 @@ class Pac():
 
         if action != self.last_action:
             self.last_action = action
-            self.queue_event('info', action)
+            self.events.add('info', action)
 
     def cb_log(self, level, line):
         """ Log pyalpm warning and error messages.
@@ -577,7 +533,7 @@ class Pac():
         if target:
             action = _("Installing {0} ({1}/{2})").format(target, current, total)
             percent = current / total
-            self.queue_event('info', action)
+            self.events.add('info', action)
         else:
             percent = round(percent / 100, 2)
 
@@ -586,7 +542,7 @@ class Pac():
 
         if percent != self.last_percent:
             self.last_percent = percent
-            self.queue_event('percent', percent)
+            self.events.add('percent', percent)
 
     def cb_totaldl(self, total_size):
         """ Stores total download size for use in cb_dl and cb_progress """
@@ -609,11 +565,11 @@ class Pac():
 
         if action != self.last_action:
             self.last_action = action
-            self.queue_event('info', action)
+            self.events.add('info', action)
 
         if percent != self.last_percent:
             self.last_percent = percent
-            self.queue_event('percent', percent)
+            self.events.add('percent', percent)
         elif transferred == total:
             self.already_transferred += total
             self.downloaded_packages += 1

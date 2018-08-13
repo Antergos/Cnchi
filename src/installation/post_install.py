@@ -41,6 +41,7 @@ from installation.post_fstab import PostFstab
 from installation.post_features import PostFeatures
 from installation import services as srv
 
+from misc.events import Events
 import misc.gocryptfs as gocryptfs
 from misc.run_cmd import call, chroot_call
 
@@ -67,7 +68,7 @@ class PostInstallation():
 
         """ Initialize installation class """
         self.settings = settings
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
 
         self.pacman_conf_updated = False
 
@@ -84,19 +85,8 @@ class PostInstallation():
             self.ssd = {}
 
         self.mount_devices = mount_devices
-
         self.fs_devices = fs_devices
-
         self.virtual_box = self.settings.get('is_vbox')
-
-
-    def queue_event(self, event_type, event_text=""):
-        """ Enqueue a new event """
-        if self.callback_queue:
-            try:
-                self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
-                pass
 
     def copy_logs(self):
         """ Copy Cnchi logs to new installation """
@@ -259,7 +249,7 @@ class PostInstallation():
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
         txt = _("Configuring LightDM desktop manager...")
-        self.queue_event('info', txt)
+        self.events.add('info', txt)
 
         if self.desktop in desktop_info.SESSIONS:
             session = desktop_info.SESSIONS[self.desktop]
@@ -534,7 +524,7 @@ class PostInstallation():
 
         ## Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
-            self.queue_event('info', _("Encrypting user home dir..."))
+            self.events.add('info', _("Encrypting user home dir..."))
             gocryptfs.setup(username, "users", DEST_DIR, password)
             logging.debug("User home dir encrypted")
 
@@ -557,7 +547,7 @@ class PostInstallation():
 
     def rebuild_zfs_modules(self):
         """ Sometimes dkms tries to build the zfs module before spl. """
-        self.queue_event('info', _("Building zfs modules..."))
+        self.events.add('info', _("Building zfs modules..."))
         zfs_version = self.get_installed_zfs_version()
         spl_module = 'spl/{}'.format(zfs_version)
         zfs_module = 'zfs/{}'.format(zfs_version)
@@ -624,8 +614,8 @@ class PostInstallation():
             Set clock, language, timezone, run mkinitcpio,
             populate pacman keyring, setup systemd services, ... """
 
-        self.queue_event('pulse', 'start')
-        self.queue_event('info', _("Configuring your new system"))
+        self.events.add('pulse', 'start')
+        self.events.add('info', _("Configuring your new system"))
 
         auto_fstab = PostFstab(
             self.method, self.mount_devices, self.fs_devices, self.ssd, self.settings)
@@ -728,7 +718,7 @@ class PostInstallation():
 
         # Generate locales
         locale = self.settings.get("locale")
-        self.queue_event('info', _("Generating locales..."))
+        self.events.add('info', _("Generating locales..."))
         self.uncomment_locale_gen(locale)
         chroot_call(['locale-gen'])
         locale_conf_path = os.path.join(DEST_DIR, "etc/locale.conf")
@@ -740,16 +730,16 @@ class PostInstallation():
         # with open(environment_path, "w") as environment:
         #    environment.write('LANG={0}\n'.format(locale))
 
-        self.queue_event('info', _("Adjusting hardware clock..."))
+        self.events.add('info', _("Adjusting hardware clock..."))
         self.auto_timesetting()
 
-        self.queue_event('info', _("Configuring keymap..."))
+        self.events.add('info', _("Configuring keymap..."))
         self.set_keymap()
 
         # Install configs for root
         chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
 
-        self.queue_event('info', _("Configuring hardware..."))
+        self.events.add('info', _("Configuring hardware..."))
 
         # Copy generated xorg.conf to target
         if os.path.exists("/etc/X11/xorg.conf"):
@@ -784,7 +774,7 @@ class PostInstallation():
         # It should work out of the box most of the time.
         # This way we don't have to fix deprecated hooks.
         # NOTE: With LUKS or LVM maybe we'll have to fix deprecated hooks.
-        self.queue_event('info', _("Configuring System Startup..."))
+        self.events.add('info', _("Configuring System Startup..."))
         mkinitcpio.run(DEST_DIR, self.settings, self.mount_devices, self.blvm)
 
         # Patch user-dirs-update-gtk.desktop
@@ -803,7 +793,7 @@ class PostInstallation():
         # Install boot loader (always after running mkinitcpio)
         if self.settings.get('bootloader_install'):
             try:
-                self.queue_event('info', _("Installing bootloader..."))
+                self.events.add('info', _("Installing bootloader..."))
                 boot_loader = loader.Bootloader(
                     DEST_DIR,
                     self.settings,
@@ -816,7 +806,7 @@ class PostInstallation():
                 logging.error(message)
 
         # Create an initial database for mandb (slow)
-        #self.queue_event('info', _("Updating man pages..."))
+        #self.events.add('info', _("Updating man pages..."))
         #chroot_call(["mandb", "--quiet"])
 
         # Initialise pkgfile (pacman .files metadata explorer) database
@@ -865,7 +855,7 @@ class PostInstallation():
         # TODO: Rethink this function because we need almost everything but some things for Lembrame
         if self.settings.get("feature_lembrame"):
             logging.debug("Overwriting configs from Lembrame")
-            self.queue_event('info', _("Overwriting configs from Lembrame"))
+            self.events.add('info', _("Overwriting configs from Lembrame"))
 
             lembrame = Lembrame(self.settings)
             lembrame.overwrite_content()

@@ -42,7 +42,7 @@ from installation import mount
 import misc.extra as misc
 from misc.extra import InstallError
 from misc.run_cmd import call
-
+from misc.events import Events
 import pacman.pac as pac
 
 import hardware.hardware as hardware
@@ -66,7 +66,7 @@ class Installation():
         """ Initialize installation class """
 
         self.settings = settings
-        self.callback_queue = callback_queue
+        self.events = Events(callback_queue)
         self.packages = packages
         self.metalinks = metalinks
 
@@ -104,17 +104,9 @@ class Installation():
         """ Queues the fatal event and exits process """
         self.error = True
         self.running = False
-        self.queue_event('error', txt)
+        self.events.add('error', txt)
         # self.callback_queue.join()
         sys.exit(0)
-
-    def queue_event(self, event_type, event_text=""):
-        """ Enqueue a new event """
-        if self.callback_queue:
-            try:
-                self.callback_queue.put_nowait((event_type, event_text))
-            except queue.Full:
-                pass
 
     def mount_partitions(self):
         """ Do not call this in automatic mode as AutoPartition class mounts
@@ -233,7 +225,7 @@ class Installation():
             os.environ['CNCHI_RUNNING'] = 'True'
 
         msg = _("Installing using the '{0}' method").format(self.method)
-        self.queue_event('info', msg)
+        self.events.add('info', msg)
 
         # Mount needed partitions (in automatic it's already done)
         if self.method in ['alongside', 'advanced', 'zfs']:
@@ -313,7 +305,7 @@ class Installation():
         logging.debug("Configuring system...")
         post = post_install.PostInstallation(
             self.settings,
-            self.callback_queue,
+            self.events.queue,
             self.mount_devices,
             self.fs_devices,
             self.ssd,
@@ -331,8 +323,8 @@ class Installation():
         logging.debug("Copying install log to /var/log.")
         post.copy_logs()
 
-        self.queue_event('pulse', 'stop')
-        self.queue_event('progress_bar', 'hide')
+        self.events.add('pulse', 'stop')
+        self.events.add('progress_bar', 'hide')
 
         # Finally, try to unmount DEST_DIR
         mount.unmount_all_in_directory(DEST_DIR)
@@ -340,7 +332,7 @@ class Installation():
         self.running = False
 
         # Installation finished successfully
-        self.queue_event('finished', _("Installation finished"))
+        self.events.add('finished', _("Installation finished"))
         self.error = False
         return True
 
@@ -357,7 +349,7 @@ class Installation():
             package_names=self.packages,
             pacman_conf=pacman_conf,
             settings=self.settings,
-            callback_queue=self.callback_queue)
+            callback_queue=self.events.queue)
 
         # Metalinks have already been calculated before,
         # When downloadpackages class has been called in process.py to test
@@ -391,13 +383,13 @@ class Installation():
         self.create_pacman_conf_file()
 
         msg = _("Updating package manager security. Please wait...")
-        self.queue_event('info', msg)
+        self.events.add('info', msg)
         self.prepare_pacman_keyring()
 
         # Init pyalpm
         try:
             self.pacman = pac.Pac(
-                Installation.TMP_PACMAN_CONF, self.callback_queue)
+                Installation.TMP_PACMAN_CONF, self.events.queue)
         except Exception as ex:
             self.pacman = None
             template = ("Can't initialize pyalpm. "
@@ -521,7 +513,7 @@ class Installation():
             raise InstallError(txt)
 
         # All downloading and installing has been done, so we hide progress bar
-        self.queue_event('progress_bar', 'hide')
+        self.events.add('progress_bar', 'hide')
 
     def is_running(self):
         """ Checks if thread is running """

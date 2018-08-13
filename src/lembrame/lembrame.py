@@ -39,7 +39,7 @@ import ast
 try:
     import libnacl
 except ImportError:
-    sys.stderr.write('Please install python-libnacl package')
+    logging.error('Please install python-libnacl package')
     exit()
 
 import libnacl.utils
