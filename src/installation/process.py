@@ -92,12 +92,14 @@ class Process(multiprocessing.Process):
             raise misc.InstallError(txt)
 
     def init_lembrame(self):
+        """ Initializes lembrame, loading its settings """
         if self.settings.get("feature_lembrame"):
             logging.debug("Initializing Lembrame")
             from lembrame.lembrame import Lembrame
             self.lembrame = Lembrame(self.settings)
 
     def prepare_lembrame(self):
+        """ Download and decrypt lembrame files (encrypted settings) """
         if self.settings.get("feature_lembrame") and self.lembrame:
             logging.debug("Preparing Lembrame files")
 
@@ -115,11 +117,11 @@ class Process(multiprocessing.Process):
             self.queue_event('pulse', 'stop')
 
     def overwrite_variables_lembrame(self):
+        """ Overwrite cnchi options with lembrame's ones """
         if self.settings.get("feature_lembrame") and self.lembrame:
             self.queue_event('info', _("Overwriting Cnchi config variables with Lembrame"))
 
             self.lembrame.overwrite_installer_variables()
-
             self.queue_event('info', _("Initializing package downloading"))
 
     def run(self):
@@ -140,7 +142,8 @@ class Process(multiprocessing.Process):
             self.create_metalinks_list()
 
             # Overwrite Cnchi config variables with Lembrame
-            # In order to overwrite Display Manager, we have to run this after creating the package list
+            # In order to overwrite Display Manager, we have to run this after creating the
+            # package list
             self.overwrite_variables_lembrame()
 
             self.queue_event(
