@@ -26,6 +26,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Download Gnome extensions module """
+
 import os
 import requests
 import logging
@@ -33,6 +35,7 @@ import zipfile
 
 
 class GnomeExtensionsDownloader(object):
+    """ Class used to download gnome extensions """
     extensions = False
     extension_name = False
     extension_info = False
@@ -124,4 +127,3 @@ class GnomeExtensionsDownloader(object):
         except OSError as err:
             logging.debug("Error trying to extract extension '%s': %s", self.extension_name, str(err))
             return False
-
