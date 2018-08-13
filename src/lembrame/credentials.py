@@ -26,18 +26,23 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Lembrame credentials store module """
 
 class LembrameCredentials(object):
+    """ Lembrame credentials store class """
+
     user_id = False
     upload_code = False
 
     def __init__(self, user_id, upload_code):
+        """ Store user id and code """
         self.user_id = user_id
         self.upload_code = upload_code
-    
+
     def get_user_id(self):
+        """ Returns user id """
         return self.user_id
 
     def get_upload_code(self):
+        """ Returns user code """
         return self.upload_code
-

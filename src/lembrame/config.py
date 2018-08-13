@@ -26,8 +26,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Lembrame config store module """
 
 class LembrameConfig(object):
+    """ Lembrame config store class """
     request_download_endpoint = False
     file_path = False
     decrypted_file_path = False
@@ -36,8 +38,9 @@ class LembrameConfig(object):
     gnome_extensions_url = False
 
     def __init__(self):
-        self.request_download_endpoint = \
-            'https://4f8m7i5wz4.execute-api.us-east-1.amazonaws.com/production/request-download-link'
+        """ Initialize with defaults """
+        self.request_download_endpoint = (
+            'https://4f8m7i5wz4.execute-api.us-east-1.amazonaws.com/production/request-download-link')
         self.file_path = "/tmp/export.tar.gz.encrypted"
         self.decrypted_file_path = "/tmp/export.tar.gz"
         self.folder_file_path = "/tmp/export"
