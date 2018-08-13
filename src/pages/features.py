@@ -180,12 +180,13 @@ class Features(GtkBaseBox):
                 self.extra_switch_actions(feature, is_active)
 
     def extra_switch_actions(self, feature, is_active):
-        # Disable all if Lembrame is selected
+        """ Lembrame feature disables all others, any other disables lembrame """
+        # Disables all switches if Lembrame is selected
         if feature == 'lembrame' and is_active:
             logging.debug("Activating Lembrame. Deactivating the rest of the switches")
-            for rowFeature in self.listbox_rows:
-                if rowFeature != 'lembrame':
-                    self.listbox_rows[rowFeature][Features.COL_SWITCH].set_active(False)
+            for row_feature in self.listbox_rows:
+                if row_feature != 'lembrame':
+                    self.listbox_rows[row_feature][Features.COL_SWITCH].set_active(False)
 
         # Disable lembrame if any other option is activated
         if feature != 'lembrame' and is_active:
@@ -409,6 +410,7 @@ class Features(GtkBaseBox):
                 self.settings.set("feature_lemp", False)
 
     def ask_lembrame(self):
+        """ Asks user for lembrame credentials """
         if self.settings.get("feature_lembrame"):
             dlg = LembrameDialog(
                 self.get_main_window(),
