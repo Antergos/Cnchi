@@ -56,7 +56,7 @@ def _(x): return x
 
 
 def get_key_decryption_file(pass_hash, salt):
-    for _i in range(2, 2 ** 17):
+    for _index in range(2, 2 ** 17):
         pass_hash = libnacl.crypto_hash_sha512(salt + pass_hash)
     return libnacl.crypto_hash_sha256(salt + pass_hash)
 
