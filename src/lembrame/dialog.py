@@ -26,6 +26,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Lembrame credentials GUI module """
+
 import gi
 
 gi.require_version('Gtk', '3.0')
