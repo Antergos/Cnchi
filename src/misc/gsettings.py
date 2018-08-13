@@ -26,6 +26,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Get/Set gnome settings """
 
 import logging
 
@@ -33,6 +34,7 @@ from misc.run_cmd import chroot_call
 
 
 def set(installation_user, schema, key, value):
+    """ Set a gnome setting """
     cmd = [
         'runuser',
         '-l', installation_user,
@@ -44,6 +46,7 @@ def set(installation_user, schema, key, value):
 
 
 def get(installation_user, schema, key):
+    """ Get a gnome setting """
     cmd = [
         'runuser',
         '-l', installation_user,
@@ -55,6 +58,7 @@ def get(installation_user, schema, key):
 
 
 def dconf_load(installation_user, schema, file):
+    """ Load dconf setup from a file """
     cmd = [
         'runuser',
         '-l', installation_user,
