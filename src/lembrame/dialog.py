@@ -32,12 +32,12 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 import os
-import logging
 
 from lembrame.credentials import LembrameCredentials
 
 
-def _(x): return x
+def _(msg):
+    return msg
 
 
 class LembrameDialog(Gtk.Dialog):
@@ -63,6 +63,7 @@ class LembrameDialog(Gtk.Dialog):
         content_area.add(dialog_grid)
 
     def translate_ui(self):
+        """ Translate GUI widgets """
         self.set_title(_("Cnchi - Lembrame credentials"))
 
         label = self.ui.get_object("lembrame_label")
@@ -75,6 +76,7 @@ class LembrameDialog(Gtk.Dialog):
         label.set_text(_("Your upload code:"))
 
     def get_credentials(self):
+        """ Load credentials from UI and return them as a class """
         user_id = self.ui.get_object("userid_entry")
         upload_code = self.ui.get_object("uploadcode_entry")
 
