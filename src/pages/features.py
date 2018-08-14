@@ -198,18 +198,20 @@ class Features(GtkBaseBox):
                             switch.set_active(False)
             else:
                 # Disable lembrame if any other option is activated
+                self.features_lembrame = []
                 try:
                     switch = self.listbox_rows['lembrame'][Features.COL_SWITCH]
                     if switch and switch.get_active():
                         logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
                         switch.set_active(False)
-                        # Activate previous deactivated features
-                        for row_feature in self.features_lembrame:
-                            switch = self.listbox_rows[row_feature][Features.COL_SWITCH]
-                            switch.set_active(True)
-                        self.features_lembrame = []
                 except KeyError as err:
                     logging.warning(err)
+        elif feature == 'lembrame':
+            # Activate previous deactivated features
+            for row_feature in self.features_lembrame:
+                switch = self.listbox_rows[row_feature][Features.COL_SWITCH]
+                switch.set_active(True)
+            self.features_lembrame = []
 
     def add_feature_switch(self, feature, box):
         """ Add a switch so the user can activate/deactivate the feature """
