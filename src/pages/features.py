@@ -118,6 +118,10 @@ class Features(GtkBaseBox):
         # Only load defaults for each DE the first time this screen is shown
         self.defaults_loaded = False
 
+        # Store which features where active when lembrame was selected
+        # (when lembrame is selected, all other features are deactivated)
+        self.features_lembrame = []
+
     def show_advanced_toggled(self, _widget):
         """ Display or hide advanced features """
         self.show_advanced = self.advanced_checkbutton.get_active()
@@ -181,18 +185,31 @@ class Features(GtkBaseBox):
 
     def extra_switch_actions(self, feature, is_active):
         """ Lembrame feature disables all others, any other disables lembrame """
-        # Disables all switches if Lembrame is selected
-        if feature == 'lembrame' and is_active:
-            logging.debug("Activating Lembrame. Deactivating the rest of the switches")
-            for row_feature in self.listbox_rows:
-                if row_feature != 'lembrame':
-                    self.listbox_rows[row_feature][Features.COL_SWITCH].set_active(False)
-
-        # Disable lembrame if any other option is activated
-        if feature != 'lembrame' and is_active:
-            if self.listbox_rows['lembrame'][Features.COL_SWITCH].get_active():
-                logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
-                self.listbox_rows['lembrame'][Features.COL_SWITCH].set_active(False)
+        if is_active:
+            if feature == 'lembrame':
+                # Disable all switches if Lembrame is selected
+                logging.debug("Activating Lembrame. Deactivating the rest of the switches")
+                self.features_lembrame = []
+                for row_feature in self.listbox_rows:
+                    if row_feature != 'lembrame':
+                        switch = self.listbox_rows[row_feature][Features.COL_SWITCH]
+                        if switch.get_active():
+                            self.features_lembrame.append(row_feature)
+                            switch.set_active(False)
+            else:
+                # Disable lembrame if any other option is activated
+                try:
+                    switch = self.listbox_rows['lembrame'][Features.COL_SWITCH]
+                    if switch and switch.get_active():
+                        logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
+                        switch.set_active(False)
+                        # Activate previous deactivated features
+                        for row_feature in self.features_lembrame:
+                            switch = self.listbox_rows[row_feature][Features.COL_SWITCH]
+                            switch.set_active(True)
+                        self.features_lembrame = []
+                except KeyError as err:
+                    logging.warning(err)
 
     def add_feature_switch(self, feature, box):
         """ Add a switch so the user can activate/deactivate the feature """
