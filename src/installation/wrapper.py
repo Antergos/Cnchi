@@ -66,8 +66,21 @@ def run_dd(input_device, output_device, bytes_block=512, count=2048, seek=0):
         logging.warning("Command %s failed: %s", err.cmd, err.output)
 
 
+def partprobe():
+    """ Runs partprobe """
+    try:
+        subprocess.check_output('/usr/bin/partprobe', stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError as err:
+        logging.error("Command %s failed: %s", err.cmd, err.output.decode())
+
+
 def sgdisk(command, device):
     """ Helper function to call sgdisk (GPT) """
+    if command == 'zap-all':
+        # this will be the first sgdisk command. Try to run partprobe first
+        # so previous changes are communicated to the kernel
+        partprobe()
+
     cmd = ['sgdisk', "--{0}".format(command), device]
     try:
         subprocess.check_output(cmd, stderr=subprocess.STDOUT)
