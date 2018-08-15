@@ -688,25 +688,26 @@ class InstallationAdvanced(GtkBaseBox):
     def get_disk_path_from_selection(model, tree_iter):
         """ Helper function that returns the disk path where the selected
             partition is in """
+
         if tree_iter and model:
             row = model[tree_iter]
             # partition_path = row[COL_PARTITION_PATH]
 
-            # Get partition type from the user selection
-            part_type = row[PartitionTreeview.COL_PARTITION_TYPE]
-
             # Get our parent drive
             parent_iter = model.iter_parent(tree_iter)
 
-            if part_type == pm.PARTITION_LOGICAL:
+            if row[PartitionTreeview.COL_PARTITION_TYPE] == pm.PARTITION_LOGICAL:
                 # If we are a logical partition, our drive won't be our
                 # father but our grandfather (we have to skip the extended
                 # partition we're in)
                 parent_iter = model.iter_parent(parent_iter)
+            
+            parent_row = model[parent_iter]
+            if parent_row:
+                return parent_row[PartitionTreeview.COL_PATH]
 
-            return model[parent_iter][PartitionTreeview.COL_PATH]
-        else:
-            return None
+        logging.warning("Couldn't get disk from partition selection in treeview")
+        return None
 
     # ---------------------------------------------------------------------
 

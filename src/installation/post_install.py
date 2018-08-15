@@ -370,10 +370,11 @@ class PostInstallation():
                 shutil.copy(src, dst)
                 logging.debug("%s copied.", src)
             except FileNotFoundError:
-                logging.error("File %s not found", src)
+                logging.error("File %s not found in live media", src)
             except FileExistsError:
                 logging.warning("File %s already exists.", dst)
-
+            except shutil.Error as err:
+                logging.error(err)
     @staticmethod
     def get_installed_zfs_version():
         """ Get installed zfs version """
