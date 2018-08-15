@@ -37,6 +37,7 @@ import logging.handlers
 import gettext
 import locale
 import gi
+import pwd
 
 CNCHI_PATH = "/usr/share/cnchi"
 sys.path.append(CNCHI_PATH)
@@ -54,6 +55,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
 import misc.extra as misc
+from misc.run_cmd import call
 import show_message as show
 import info
 
@@ -478,11 +480,15 @@ class CnchiInit():
 
     def disable_suspend(self):
         """ Disable gnome settings suspend to ram """
-        schema = 'org.gnome.settings-daemon.plugins.power'
-        keys = ['sleep-inactive-ac-type', 'sleep-inactive-battery-type']
-        value = 'nothing'
-        for key in keys:
-            self.gsettings_set('antergos', schema, key, value)
+        try:
+            pwd.getpwnam('antergos')
+            schema = 'org.gnome.settings-daemon.plugins.power'
+            keys = ['sleep-inactive-ac-type', 'sleep-inactive-battery-type']
+            value = 'nothing'
+            for key in keys:
+                self.gsettings_set('antergos', schema, key, value)
+        except KeyError:
+            logging.warning('User "antergos" does not exist')
 
     @staticmethod
     def gsettings_set(user, schema, key, value):
@@ -493,10 +499,7 @@ class CnchiInit():
             '-c', "dbus-launch gsettings set " + schema + " " + key + " " + value]
 
         logging.debug("Running set on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
-        try:
-            subprocess.call(cmd)
-        except subprocess.CalledProcessError as err:
-            logging.warning(err)
+        return call(cmd)
 
 def main():
     """ Main function. Initializes Cnchi and creates it as a GTK App """
