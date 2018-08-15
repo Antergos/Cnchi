@@ -31,6 +31,7 @@
 import os
 import sys
 import shutil
+import subprocess
 import logging
 import logging.handlers
 import gettext
@@ -53,7 +54,6 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
 import misc.extra as misc
-import misc.gsettings as gsettings
 import show_message as show
 import info
 
@@ -476,14 +476,27 @@ class CnchiInit():
 
         return True
 
-    @staticmethod
-    def disable_suspend():
+    def disable_suspend(self):
         """ Disable gnome settings suspend to ram """
         schema = 'org.gnome.settings-daemon.plugins.power'
         keys = ['sleep-inactive-ac-type', 'sleep-inactive-battery-type']
         value = 'nothing'
         for key in keys:
-            gsettings.set('antergos', schema, key, value)
+            self.gsettings_set('antergos', schema, key, value)
+
+    @staticmethod
+    def gsettings_set(user, schema, key, value):
+        """ Set a gnome setting """
+        cmd = [
+            'runuser',
+            '-l', user,
+            '-c', "dbus-launch gsettings set " + schema + " " + key + " " + value]
+
+        logging.debug("Running set on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
+        try:
+            subprocess.call(cmd)
+        except subprocess.CalledProcessError as err:
+            logging.warning(err)
 
 def main():
     """ Main function. Initializes Cnchi and creates it as a GTK App """
