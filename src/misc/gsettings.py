@@ -38,8 +38,7 @@ def set(installation_user, schema, key, value):
     cmd = [
         'runuser',
         '-l', installation_user,
-        '-c', "dbus-launch gsettings set " + schema + " " + key + " " + value
-    ]
+        '-c', "dbus-launch gsettings set " + schema + " " + key + " " + value]
 
     logging.debug("Running set on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
     return chroot_call(cmd)
@@ -50,8 +49,7 @@ def get(installation_user, schema, key):
     cmd = [
         'runuser',
         '-l', installation_user,
-        '-c', "dbus-launch gsettings get " + schema + " " + key
-    ]
+        '-c', "dbus-launch gsettings get " + schema + " " + key]
 
     logging.debug("Running get on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
     return chroot_call(cmd)
@@ -62,8 +60,7 @@ def dconf_load(installation_user, schema, file):
     cmd = [
         'runuser',
         '-l', installation_user,
-        '-c', "dbus-launch dconf load " + schema + " < " + file
-    ]
+        '-c', "dbus-launch dconf load " + schema + " < " + file]
 
     logging.debug("Running dconf_load: %s", ''.join(str(e) + ' ' for e in cmd))
     return chroot_call(cmd)

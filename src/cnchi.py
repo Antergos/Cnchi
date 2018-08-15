@@ -53,6 +53,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GObject
 
 import misc.extra as misc
+import misc.gsettings as gsettings
 import show_message as show
 import info
 
@@ -214,6 +215,9 @@ class CnchiInit():
         # Check ISO version where Cnchi is running from
         if not self.check_iso_version():
             sys.exit(1)
+
+        # Disable suspend to RAM
+        self.disable_suspend()
 
         # Init PyObject Threads
         self.threads_init()
@@ -472,6 +476,14 @@ class CnchiInit():
 
         return True
 
+    @staticmethod
+    def disable_suspend():
+        """ Disable gnome settings suspend to ram """
+        schema = 'org.gnome.settings-daemon.plugins.power'
+        keys = ['sleep-inactive-ac-type', 'sleep-inactive-battery-type']
+        value = 'nothing'
+        for key in keys:
+            gsettings.set('antergos', schema, key, value)
 
 def main():
     """ Main function. Initializes Cnchi and creates it as a GTK App """
