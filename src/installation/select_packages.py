@@ -241,7 +241,7 @@ class SelectPackages():
         try:
             # Detect which hardware drivers are needed
             hardware_install = hardware.HardwareInstall(
-                self.settings.get("cnchi"),
+                self.settings.get('cnchi'),
                 self.settings.get('feature_graphic_drivers'))
             driver_names = hardware_install.get_found_driver_names()
             if driver_names:
