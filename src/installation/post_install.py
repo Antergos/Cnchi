@@ -27,7 +27,6 @@
 import crypt
 import logging
 import os
-import queue
 import shutil
 import time
 

@@ -30,7 +30,6 @@
 
 import os
 import logging
-import queue
 
 import pyalpm
 

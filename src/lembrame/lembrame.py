@@ -52,10 +52,12 @@ from misc.run_cmd import chroot_call
 from misc.extra import InstallError
 
 
-def _(x): return x
+def _(msg):
+    return msg
 
 
 def get_key_decryption_file(pass_hash, salt):
+    """ Gets key for decryption """
     for _index in range(2, 2 ** 17):
         pass_hash = libnacl.crypto_hash_sha512(salt + pass_hash)
     return libnacl.crypto_hash_sha256(salt + pass_hash)
@@ -139,6 +141,7 @@ class Lembrame:
             return False
 
     def open_file(self):
+        """ Opens encrypted file """
         try:
             self.encrypted_file = open(self.config.file_path, 'rb')
         except IOError:
@@ -146,12 +149,14 @@ class Lembrame:
             raise InstallError(_("Can't read Lembrame encrypted file"))
 
     def verify_file_signature(self):
+        """ Verifies signature of the encrypted file """
         if self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM:
             return True
         else:
             return False
 
     def decrypt_file(self):
+        """ Decripts file """
         pass_hash, saltnonce = self.get_decryption_hash()
         prot_key = get_key_decryption_file(pass_hash, saltnonce)
 
@@ -175,12 +180,14 @@ class Lembrame:
         return True
 
     def get_decryption_hash(self):
+        """ Gets sha512 hash from password """
         self.encrypted_file.seek(self.LEN_MAGICNUM)
         saltnonce = self.encrypted_file.read(self.LEN_NONCE)
         password = saltnonce + self.credentials.get_upload_code().encode('utf-8')
         return libnacl.crypto_hash_sha512(password), saltnonce
 
     def extract_encrypted_file(self):
+        """ Untars decrypted file """
         try:
             tar = tarfile.open(self.config.decrypted_file_path, "r:gz")
             tar.extractall(self.config.folder_file_path)
@@ -191,9 +198,11 @@ class Lembrame:
             raise InstallError(_("Error trying to extract Lembrame decrypted file"))
 
     def copy_folder_to_dest(self):
+        """ Copies whole configuration folder to destination """
         shutil.copytree(self.config.folder_file_path, self.install_user_home + self.dest_folder, False, None)
 
     def before_setup(self):
+        """ Cleanup before trying to get user configuration (just in case) """
         logging.debug("Removing existing decrypted files from Lembrame")
         try:
             os.remove(self.config.decrypted_file_path)
@@ -206,6 +215,7 @@ class Lembrame:
         shutil.rmtree(self.install_user_home + self.dest_folder, True)
 
     def get_pacman_packages(self):
+        """ Get list of pacman packages stored in lembrame user's configuration """
         packages = []
         package_list_file = self.config.folder_file_path + '/' + self.config.pacman_packages
         package_list = Path(self.config.folder_file_path + '/' + self.config.pacman_packages)
@@ -217,10 +227,12 @@ class Lembrame:
         return packages
 
     def overwrite_installer_variables(self):
+        """ Overwrites installer variables with the ones obtained from lembrame """
         # Overwrite Display Manager
         self.settings.set('desktop_manager', self.get_synced_display_manager())
 
     def overwrite_content(self):
+        """ Copy user configuration and files to new installation """
         # Copy the extracted Lembrame file to the user's home
         self.copy_folder_to_dest()
 
@@ -275,6 +287,7 @@ class Lembrame:
         ])
 
     def download_gnome_extensions(self):
+        """ Download Gnome extensions that are selected in user's lembrame configuration """
         dconf_dump_file = Path(self.install_user_home + self.dest_folder + '/' + self.config.dconf_dump)
         enabled_extensions = []
         if dconf_dump_file.is_file():
@@ -295,6 +308,7 @@ class Lembrame:
         downloader.run(enabled_extensions)
 
     def get_synced_display_manager(self):
+        """ Get display manager selected by the user """
         # Current default Antergos Display Manager
         display_manager = 'lightdm'
 
@@ -309,7 +323,7 @@ class Lembrame:
                         logging.debug("We can't get the Display Manager from the file")
             except OSError as error:
                 logging.error("We can't open the file to get the Display Manager: %s", error)
-                raise InstallError(_("We can't open the file to get the Display Manager"))
+                # raise InstallError(_("We can't open the file to get the Display Manager"))
 
         logging.debug("Display manager selected: %s", display_manager)
         return display_manager

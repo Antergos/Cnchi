@@ -34,7 +34,6 @@ import subprocess
 import traceback
 import logging
 import sys
-import queue
 
 import pyalpm
 
