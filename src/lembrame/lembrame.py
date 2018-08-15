@@ -151,10 +151,7 @@ class Lembrame:
 
     def verify_file_signature(self):
         """ Verifies signature of the encrypted file """
-        if self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM:
-            return True
-        else:
-            return False
+        return bool(self.encrypted_file.read(self.LEN_MAGICNUM) == self.APP_MAGICNUM)
 
     def decrypt_file(self):
         """ Decripts file """

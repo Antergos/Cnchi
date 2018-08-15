@@ -39,7 +39,7 @@ class GnomeExtensionsDownloader(object):
     extensions = False
     extension_name = False
     extension_info = False
-    extension_latest_shell_supported = False
+    extension_latest_shell = False
     extension_download_link = False
 
     def __init__(self, install_user_home, config):
@@ -64,7 +64,7 @@ class GnomeExtensionsDownloader(object):
         """ Proceed to download the extension """
         # Gather information
         self.extension_info = self.get_extension_info()
-        self.extension_latest_shell_supported = self.get_latest_shell_supported()
+        self.extension_latest_shell = self.get_latest_shell_supported()
         self.extension_download_link = self.get_extension_download_link()
 
         # Download the extension
@@ -108,7 +108,7 @@ class GnomeExtensionsDownloader(object):
         req_url = self.extension_info_url + \
                   self.extension_name + \
                   "&shell_version=" + \
-                  self.extension_latest_shell_supported
+                  self.extension_latest_shell
         req = requests.get(req_url, stream=True)
         if req.status_code == requests.codes.ok:
             logging.debug("We got the download link for '%s'", self.extension_name)
