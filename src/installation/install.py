@@ -27,7 +27,6 @@
 import glob
 import logging
 import os
-import queue
 import shutil
 import sys
 

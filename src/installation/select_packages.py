@@ -27,7 +27,6 @@
 import logging
 import os
 import queue
-import sys
 import requests
 from requests.exceptions import RequestException
 

@@ -35,9 +35,7 @@ from collections import OrderedDict
 
 import logging
 import os
-import queue
 import sys
-#import traceback
 
 from misc.events import Events
 
@@ -173,7 +171,6 @@ class Pac():
             transaction.commit()
         except pyalpm.error as err:
             logging.error("Can't finalize alpm transaction: %s", err)
-            #traceback.print_exc()
             transaction.release()
             return False
         transaction.release()

@@ -26,15 +26,15 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Lembrame module. Gets and applies previous user's lembrame setup """
 
-import requests
-import sys
+import ast
+import logging
 import os
+from pathlib import Path
+import requests
 import shutil
 import tarfile
-from pathlib import Path
-import logging
-import ast
 
 try:
     import libnacl
@@ -117,6 +117,7 @@ class Lembrame:
             raise InstallError(_("Requesting for download link to Lembrame failed"))
 
     def setup(self):
+        """ Get lembrame user's preferences """
         self.before_setup()
         logging.debug("Checking if the Lembrame encrypted file exists")
         encrypted_file = Path(self.config.file_path)

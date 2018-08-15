@@ -70,7 +70,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
         self.have_install_id = False
         self.after_location_screen = False
         self.install_id = ""
-        self.ip_addr = '0.0.0.0'
+        self.ip_addr = '1.2.3.4'
 
     def filter(self, record):
         uid = str(uuid.uuid1()).split("-")
@@ -89,11 +89,11 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
 
         if CNCHI_RELEASE_STAGE == 'development':
             self.install_id = 'development'
-            self.ip_addr = '0.0.0.0'
+            self.ip_addr = '1.2.3.4'
             self.have_install_id = True
             return 'development'
 
-        info = {'ip': '0.0.0.0', 'id': '0'}
+        info = {'ip': '1.2.3.4', 'id': '0'}
         url = self.get_url_for_id_request()
         headers = {self.api_key: CNCHI_VERSION}
 

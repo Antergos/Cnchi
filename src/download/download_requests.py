@@ -31,7 +31,6 @@
 
 import os
 import logging
-import queue
 import shutil
 import time
 import socket
