@@ -305,12 +305,18 @@ class Download():
     @staticmethod
     def format_progress_message(percent, bps):
         """ Formats speed message information """
+        if percent <= 1:
+            percent = int(percent * 100)
+        
+        if percent > 100:
+            percent = 100
+
         if bps >= (1024 * 1024):
             mbps = bps / (1024 * 1024)
-            msg = "{0}%   {1:.2f} Mbps".format(int(percent * 100), mbps)
+            msg = "{0}%   {1:.2f} Mbps".format(percent, mbps)
         elif bps >= 1024:
             kbps = bps / 1024
-            msg = "{0}%   {1:.2f} Kbps".format(int(percent * 100), kbps)
+            msg = "{0}%   {1:.2f} Kbps".format(percent, kbps)
         else:
-            msg = "{0}%   {1:.2f} bps".format(int(percent * 100), bps)
+            msg = "{0}%   {1:.2f} bps".format(percent, bps)
         return msg
