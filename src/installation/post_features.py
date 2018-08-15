@@ -191,7 +191,10 @@ class PostFeatures():
                             line = "CheckAURUpdates\n"
                     fout.write(line)
             fout.close()
-            shutil.move(name, pamac_conf)
-            logging.debug("Enabled AUR in %s file", pamac_conf)
+            try:
+                shutil.move(name, pamac_conf)
+                logging.debug("Enabled AUR in %s file", pamac_conf)
+            except shutil.Error as err:
+                logging.error("Could not enable AUR in pamac: %s", err)
         else:
             logging.warning("Cannot find %s file", pamac_conf)
