@@ -307,12 +307,13 @@ class Download():
         """ Formats speed message information """
         if percent <= 1:
             percent = int(percent * 100)
-        
+
         if percent > 100:
             percent = 100
 
-        if bps >= (1024 * 1024):
-            mbps = bps / (1024 * 1024)
+        # 1024 * 1024 = 1048576
+        if bps >= 1048576:
+            mbps = bps / 1048576
             msg = "{0}%   {1:.2f} Mbps".format(percent, mbps)
         elif bps >= 1024:
             kbps = bps / 1024

@@ -107,7 +107,8 @@ def get_pool_size(pool_name):
         elif 'T' in pool_size_str:
             pool_size = pool_size * 1024
         elif 'P' in pool_size_str:
-            pool_size = pool_size * 1024 * 1024
+            # 1024 * 1024 = 1048576
+            pool_size = pool_size * 1048576
     except (subprocess.CalledProcessError, ValueError) as err:
         logging.warning("Can't get zfs %s pool size: %s", pool_name, err)
         pool_size = 0

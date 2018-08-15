@@ -701,7 +701,7 @@ class InstallationAdvanced(GtkBaseBox):
                 # father but our grandfather (we have to skip the extended
                 # partition we're in)
                 parent_iter = model.iter_parent(parent_iter)
-            
+
             parent_row = model[parent_iter]
             if parent_row:
                 return parent_row[PartitionTreeview.COL_PATH]
