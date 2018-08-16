@@ -403,14 +403,14 @@ class CnchiInit():
             "-f", "--force", help=_("Runs cnchi even when another instance is running"),
             action="store_true")
         parser.add_argument(
-            "-i", "--disable-tryit", help=_("Disables first screen's 'try it' option"),
-            action="store_true")
-        parser.add_argument(
             "-n", "--no-check", help=_("Makes checks optional in check screen"),
             action="store_true")
         parser.add_argument(
             "-p", "--packagelist", help=_("Install packages referenced by a local XML file"),
             nargs='?')
+        parser.add_argument(
+            "-t", "--no-tryit", help=_("Disables first screen's 'try it' option"),
+            action="store_true")
         parser.add_argument(
             "-v", "--verbose", help=_("Show logging messages to stdout"),
             action="store_true")
@@ -418,7 +418,7 @@ class CnchiInit():
             "-V", "--version", help=_("Show Cnchi version and quit"),
             action="store_true")
         parser.add_argument(
-            "-z", "--z_hidden", help=_("Show options in development (use at your own risk!)"),
+            "-z", "--hidden", help=_("Show options in development (use at your own risk!)"),
             action="store_true")
 
         return parser.parse_args()
