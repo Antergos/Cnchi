@@ -31,12 +31,13 @@
 
 # Enabled desktops
 
-DESKTOPS = ["base", "cinnamon", "deepin",
-            "gnome", "kde", "mate", "openbox", "xfce"]
+DESKTOPS = ["base", "budgie", "cinnamon", "deepin",
+            "gnome", "i3", "kde", "mate", "openbox",
+            "xfce"]
 """ List: available destkops to install. """
 
-DESKTOPS_DEV = DESKTOPS + ["budgie", "enlightenment", "i3", "lxqt"]
-""" List: availabel desktops to install in development mode. """
+DESKTOPS_DEV = DESKTOPS + ["enlightenment", "lxqt"]
+""" List: available desktops to install in development mode. """
 
 DESKTOPS_A11Y = ["gnome", "mate"]
 """ List: desktops that have the accessibility feature. """
