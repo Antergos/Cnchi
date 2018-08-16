@@ -409,7 +409,7 @@ class CnchiInit():
             "-n", "--no-check", help=_("Makes checks optional in check screen"),
             action="store_true")
         parser.add_argument(
-            "-p", "--packagelist", help=_("Install packages referenced by a local xml file"),
+            "-p", "--packagelist", help=_("Install packages referenced by a local XML file"),
             nargs='?')
         parser.add_argument(
             "-v", "--verbose", help=_("Show logging messages to stdout"),
