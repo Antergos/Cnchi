@@ -375,7 +375,7 @@ class CnchiInit():
             if hostname.endswith("sonar"):
                 self.cmd_line.a11y = True
         else:
-            logging.debug("Not running from ISO")
+            logging.warning("Not running from ISO")
         return True
 
     @staticmethod
