@@ -7,8 +7,6 @@
 ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
 ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
 
-![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)
-
 You are viewing the `0.16.x` branch (development).
 
 ## Current Status
@@ -18,7 +16,6 @@ You are viewing the `0.16.x` branch (development).
 |Cnchi Stable|0.14.x|![0.14.473](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
 |Cnchi Development|0.16.x|![0.16.201](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|0.17.x|Development|
-
 
 ## Usage:
 
@@ -38,12 +35,9 @@ sudo -E cnchi.py
 |```-i``` or ```--disable-tryit```|*Disables first screen's 'try it' option*|
 |```-n``` or ```--no-check```|*Makes checks optional in check screen*|
 |```-p``` or ```--packagelist```|*Install the packages referenced by a local xml instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
-|```-s``` or ```--log-server```|*Choose to which log server send Cnchi logs.  Expects a hostname or an IP address*|
-|```-u``` or ```--update```|*Upgrade/downgrade Cnchi to the web version*|
-|```--disable-update```|*Do not search for new Cnchi versions online*|
 |```-v``` or ```--verbose```|*Show logging messages to stdout*|
 |```-V``` or ```--version```|*Show Cnchi version and quit*|
-|```-z``` or ```--z_hidden```|*Show options in development (for developers only, do not use this!)*|
+|```-z``` or ```--hidden```|*Show options in development (for developers only, do not use this!)*|
 
 To create logs to help debug problems:
 ```sh
