@@ -375,7 +375,7 @@ class UserInfo(GtkBaseBox):
         # Check if all fields are filled and ok
         all_ok = True
         ok_widgets = self.image_is_ok.values()
-        if not self.settings.get('z_hidden'):
+        if not self.settings.get('hidden'):
             for ok_widget in ok_widgets:
                 icon_name = ok_widget.get_property('icon-name')
                 visible = ok_widget.is_visible()

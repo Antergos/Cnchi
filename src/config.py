@@ -124,7 +124,7 @@ class Settings():
             'user_name': '',
             'user_password': '',
             'xz_cache': [],
-            'z_hidden': False,
+            'hidden': False,
             'zfs': False,
             'zfs_pool_name': 'antergos',
             'zfs_pool_id': 0})

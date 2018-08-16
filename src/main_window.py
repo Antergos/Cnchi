@@ -130,13 +130,13 @@ class MainWindow(Gtk.ApplicationWindow):
         data_dir = self.settings.get('data')
 
         # For things we are not ready for users to test
-        self.settings.set('z_hidden', cmd_line.z_hidden)
+        self.settings.set('hidden', cmd_line.hidden)
 
         # a11y
         self.settings.set('a11y', cmd_line.a11y)
 
         # Set enabled desktops
-        if self.settings.get('z_hidden'):
+        if self.settings.get('hidden'):
             self.settings.set('desktops', desktop_info.DESKTOPS_DEV)
         elif self.settings.get('a11y'):
             self.settings.set('desktops', desktop_info.DESKTOPS_A11Y)
@@ -234,7 +234,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['process_list'] = self.process_list
 
         self.params['checks_are_optional'] = cmd_line.no_check
-        self.params['disable_tryit'] = cmd_line.disable_tryit
+        self.params['no_tryit'] = cmd_line.no_tryit
         self.params['a11y'] = cmd_line.a11y
 
         # Just load the first two screens (the other ones will be loaded later)

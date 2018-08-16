@@ -99,7 +99,7 @@ class Welcome(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        if not self.disable_tryit:
+        if not self.no_tryit:
             txt = _("Use Antergos without making any changes to your system.")
         else:
             txt = ""
@@ -172,7 +172,7 @@ class Welcome(GtkBaseBox):
         self.buttons['graph'].set_can_default(True)
         self.main_window.set_default(self.buttons['graph'])
 
-        if self.disable_tryit:
+        if self.no_tryit:
             self.buttons['tryit'].set_sensitive(False)
         if direction == "backwards":
             self.show_loading_message(do_show=False)

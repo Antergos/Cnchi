@@ -169,7 +169,7 @@ def run(page_name):
         'title': "Cnchi",
         'main_window': window,
         'ui_dir': "/usr/share/cnchi/ui",
-        'disable_tryit': False,
+        'no_tryit': False,
         'settings': settings,
         'forward_button': Gtk.Button.new(),
         'backwards_button': Gtk.Button.new(),
