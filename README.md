@@ -27,17 +27,17 @@ sudo -E cnchi.py
 
 |Command|Description|
 ----------------- | -------------- |
-|```-a``` or ```--a11y```|*Set accessibility feature on by default*|
-|```-c``` or ```--cache```|*Use pre-downloaded xz packages when possible*|
-|```-d``` or ```--debug```|*Sets Cnchi log level to 'debug'*|
-|```-e``` or ```--environment```|*Sets the Desktop Environment that will be installed, see [desktop_info.py](cnchi/desktop_info.py) for options*|
-|```-f``` or ```--force```|*Runs cnchi even if it detects that another instance is running*|
-|```-n``` or ```--no-check```|*Makes checks optional in check screen*|
-|```-p``` or ```--packagelist```|*Install the packages referenced by a local xml instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
-|```-t``` or ```--no-tryit```|*Disables first screen's 'try it' option*|
-|```-v``` or ```--verbose```|*Show logging messages to stdout*|
-|```-V``` or ```--version```|*Show Cnchi version and quit*|
-|```-z``` or ```--hidden```|*Show options in development (for developers only, do not use this!)*|
+|```-a``` , ```--a11y```|*Set accessibility feature on by default*|
+|```-c``` , ```--cache```|*Use pre-downloaded xz packages when possible*|
+|```-d``` , ```--debug```|*Sets Cnchi log level to 'debug'*|
+|```-e``` , ```--environment```|*Sets the Desktop Environment that will be installed, see [desktop_info.py](cnchi/desktop_info.py) for options*|
+|```-f``` , ```--force```|*Runs cnchi even if it detects that another instance is running*|
+|```-n``` , ```--no-check```|*Makes checks optional in check screen*|
+|```-p``` , ```--packagelist```|*Install the packages referenced by a local xml instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
+|```-t``` , ```--no-tryit```|*Disables first screen's 'try it' option*|
+|```-v``` , ```--verbose```|*Show logging messages to stdout*|
+|```-V``` , ```--version```|*Show Cnchi version and quit*|
+|```-z``` , ```--hidden```|*Show options in development (for developers only, do not use this!)*|
 
 To create logs to help debug problems:
 ```sh
