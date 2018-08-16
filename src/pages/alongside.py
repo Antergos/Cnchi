@@ -295,152 +295,150 @@ class InstallationAlongside(GtkBaseBox):
         print("existing", existing_os, existing_device)
         print("new", new_os, new_device)
 
-        '''
-        partition_path = row[COL_DEVICE]
-        otherOS = row[COL_DETECTED_OS]
-        fs_type = row[COL_FILESYSTEM]
+        # partition_path = row[COL_DEVICE]
+        # otherOS = row[COL_DETECTED_OS]
+        # fs_type = row[COL_FILESYSTEM]
 
-        # TODO: Fix this for mmcblk devices
-        device_path = row[COL_DEVICE][:len("/dev/sdX")]
+        ## TODO: Fix this for mmcblk devices
+        #device_path = row[COL_DEVICE][:len("/dev/sdX")]
 
-        new_size = self.new_size
+        #new_size = self.new_size
 
-        # First, shrink filesystem
-        res = fs.resize(partition_path, fs_type, new_size)
-        if res:
-            txt = "Filesystem on {0} shrunk.".format(partition_path)
-            logging.debug(txt)
-            txt = "Will recreate partition now on device {0} partition {1}"
-            txt = txt.format(device_path, partition_path)
-            logging.debug(txt)
-            # Destroy original partition and create a new resized one
-            res = pm.split_partition(device_path, partition_path, new_size)
-        else:
-            txt = "Can't shrink {0}({1}) filesystem".format(otherOS, fs_type)
-            logging.error(txt)
-            show.error(self.get_main_window(), txt)
-            return
+        ## First, shrink filesystem
+        #res = fs.resize(partition_path, fs_type, new_size)
+        #if res:
+        #    txt = "Filesystem on {0} shrunk.".format(partition_path)
+        #    logging.debug(txt)
+        #    txt = "Will recreate partition now on device {0} partition {1}"
+        #    txt = txt.format(device_path, partition_path)
+        #    logging.debug(txt)
+        #    # Destroy original partition and create a new resized one
+        #    res = pm.split_partition(device_path, partition_path, new_size)
+        #else:
+        #    txt = "Can't shrink {0}({1}) filesystem".format(otherOS, fs_type)
+        #    logging.error(txt)
+        #    show.error(self.get_main_window(), txt)
+        #    return
 
-        # res is either False or a parted.Geometry for the new free space
-        if res is None:
-            txt = "Can't shrink {0}({1}) partition".format(otherOS, fs_type)
-            logging.error(txt)
-            show.error(self.get_main_window(), txt)
-            txt = "*** FILESYSTEM IN UNSAFE STATE ***"
-            txt = txt + "\n"
-            txt = txt + "Filesystem shrink succeeded but partition shrink failed."
-            logging.error(txt)
-            return
+        ## res is either False or a parted.Geometry for the new free space
+        #if res is None:
+        #    txt = "Can't shrink {0}({1}) partition".format(otherOS, fs_type)
+        #    logging.error(txt)
+        #    show.error(self.get_main_window(), txt)
+        #    txt = "*** FILESYSTEM IN UNSAFE STATE ***"
+        #    txt = txt + "\n"
+        #    txt = txt + "Filesystem shrink succeeded but partition shrink failed."
+        #    logging.error(txt)
+        #    return
 
-        txt = "Partition {0} shrink complete".format(partition_path)
-        logging.debug(txt)
+        #txt = "Partition {0} shrink complete".format(partition_path)
+        #logging.debug(txt)
 
-        devices = pm.get_devices()
-        disk = devices[device_path][0]
-        mount_devices = {}
-        fs_devices = {}
+        #devices = pm.get_devices()
+        #disk = devices[device_path][0]
+        #mount_devices = {}
+        #fs_devices = {}
 
-        mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
-        mem_total = int(mem_total.split()[1])
-        mem = mem_total / 1024
+        #mem_total = subprocess.check_output(["grep", "MemTotal", "/proc/meminfo"]).decode()
+        #mem_total = int(mem_total.split()[1])
+        #mem = mem_total / 1024
 
-        # If geometry gives us at least 7.5GB (InstallationAlongside.MIN_ROOT_SIZE + 1GB)
-        # we'll create ROOT and SWAP
-        no_swap = False
-        if res.getLength('MB') < InstallationAlongside.MIN_ROOT_SIZE + 1:
-            if mem < 2048:
-                # Less than 2GB RAM and no swap? No way.
-                logging.error("Cannot create new swap partition. Not enough free space")
-                txt = _("Cannot create new swap partition. Not enough free space")
-                show.error(self.get_main_window(), txt)
-                return
-            else:
-                no_swap = True
+        ## If geometry gives us at least 7.5GB (InstallationAlongside.MIN_ROOT_SIZE + 1GB)
+        ## we'll create ROOT and SWAP
+        #no_swap = False
+        #if res.getLength('MB') < InstallationAlongside.MIN_ROOT_SIZE + 1:
+        #    if mem < 2048:
+        #        # Less than 2GB RAM and no swap? No way.
+        #        logging.error("Cannot create new swap partition. Not enough free space")
+        #        txt = _("Cannot create new swap partition. Not enough free space")
+        #        show.error(self.get_main_window(), txt)
+        #        return
+        #    else:
+        #        no_swap = True
 
-        if no_swap:
-            npart = pm.create_partition(device_path, 0, res)
-            if npart is None:
-                logging.error("Cannot create new partition.")
-                txt = _("Cannot create new partition.")
-                show.error(self.get_main_window(), txt)
-                return
-            pm.finalize_changes(disk)
-            mount_devices["/"] = npart.path
-            fs_devices[npart.path] = "ext4"
-            fs.create_fs(npart.path, 'ext4', label='ROOT')
-        else:
-            # We know for a fact we have at least
-            # InstallationAlongside.MIN_ROOT_SIZE + 1GB of space,
-            # and at least InstallationAlongside.MIN_ROOT_SIZE of those must go to ROOT.
+        #if no_swap:
+        #    npart = pm.create_partition(device_path, 0, res)
+        #    if npart is None:
+        #        logging.error("Cannot create new partition.")
+        #        txt = _("Cannot create new partition.")
+        #        show.error(self.get_main_window(), txt)
+        #        return
+        #    pm.finalize_changes(disk)
+        #    mount_devices["/"] = npart.path
+        #    fs_devices[npart.path] = "ext4"
+        #    fs.create_fs(npart.path, 'ext4', label='ROOT')
+        #else:
+        #    # We know for a fact we have at least
+        #    # InstallationAlongside.MIN_ROOT_SIZE + 1GB of space,
+        #    # and at least InstallationAlongside.MIN_ROOT_SIZE of those must go to ROOT.
 
-            # Suggested sizes from Anaconda installer
-            if mem < 2048:
-                swap_part_size = 2 * mem
-            elif 2048 <= mem < 8192:
-                swap_part_size = mem
-            elif 8192 <= mem < 65536:
-                swap_part_size = mem / 2
-            else:
-                swap_part_size = 4096
+        #    # Suggested sizes from Anaconda installer
+        #    if mem < 2048:
+        #        swap_part_size = 2 * mem
+        #    elif 2048 <= mem < 8192:
+        #        swap_part_size = mem
+        #    elif 8192 <= mem < 65536:
+        #        swap_part_size = mem / 2
+        #    else:
+        #        swap_part_size = 4096
 
-            # Max swap size is 10% of all available disk size
-            max_swap = res.getLength('MB') * 0.1
-            if swap_part_size > max_swap:
-                swap_part_size = max_swap
+        #    # Max swap size is 10% of all available disk size
+        #    max_swap = res.getLength('MB') * 0.1
+        #    if swap_part_size > max_swap:
+        #        swap_part_size = max_swap
 
-            # Create swap partition
-            units = 1000000
-            sec_size = disk.device.sectorSize
-            new_length = int(swap_part_size * units / sec_size)
-            new_end_sector = res.start + new_length
-            my_geometry = pm.geom_builder(disk, res.start, new_end_sector, swap_part_size)
-            logging.debug("create_partition %s", my_geometry)
-            swappart = pm.create_partition(disk, 0, my_geometry)
-            if swappart is None:
-                logging.error("Cannot create new swap partition.")
-                txt = _("Cannot create new swap partition.")
-                show.error(self.get_main_window(), txt)
-                return
+        #    # Create swap partition
+        #    units = 1000000
+        #    sec_size = disk.device.sectorSize
+        #    new_length = int(swap_part_size * units / sec_size)
+        #    new_end_sector = res.start + new_length
+        #    my_geometry = pm.geom_builder(disk, res.start, new_end_sector, swap_part_size)
+        #    logging.debug("create_partition %s", my_geometry)
+        #    swappart = pm.create_partition(disk, 0, my_geometry)
+        #    if swappart is None:
+        #        logging.error("Cannot create new swap partition.")
+        #        txt = _("Cannot create new swap partition.")
+        #        show.error(self.get_main_window(), txt)
+        #        return
 
-            # Create new partition for /
-            new_size_in_mb = res.getLength('MB') - swap_part_size
-            start_sector = new_end_sector + 1
-            my_geometry = pm.geom_builder(disk, start_sector, res.end, new_size_in_mb)
-            logging.debug("create_partition %s", my_geometry)
-            npart = pm.create_partition(disk, 0, my_geometry)
-            if npart is None:
-                logging.error("Cannot create new partition.")
-                txt = _("Cannot create new partition.")
-                show.error(self.get_main_window(), txt)
-                return
+        #    # Create new partition for /
+        #    new_size_in_mb = res.getLength('MB') - swap_part_size
+        #    start_sector = new_end_sector + 1
+        #    my_geometry = pm.geom_builder(disk, start_sector, res.end, new_size_in_mb)
+        #    logging.debug("create_partition %s", my_geometry)
+        #    npart = pm.create_partition(disk, 0, my_geometry)
+        #    if npart is None:
+        #        logging.error("Cannot create new partition.")
+        #        txt = _("Cannot create new partition.")
+        #        show.error(self.get_main_window(), txt)
+        #        return
 
-            pm.finalize_changes(disk)
+        #    pm.finalize_changes(disk)
 
-            # Mount points
-            mount_devices["swap"] = swappart.path
-            fs_devices[swappart.path] = "swap"
-            fs.create_fs(swappart.path, 'swap', 'SWAP')
+        #    # Mount points
+        #    mount_devices["swap"] = swappart.path
+        #    fs_devices[swappart.path] = "swap"
+        #    fs.create_fs(swappart.path, 'swap', 'SWAP')
 
-            mount_devices["/"] = npart.path
-            fs_devices[npart.path] = "ext4"
-            fs.create_fs(npart.path, 'ext4', 'ROOT')
+        #    mount_devices["/"] = npart.path
+        #    fs_devices[npart.path] = "ext4"
+        #    fs.create_fs(npart.path, 'ext4', 'ROOT')
 
-        # TODO: User should be able to choose if installing a bootloader or not (and which one)
-        self.settings.set('bootloader_install', True)
+        ## TODO: User should be able to choose if installing a bootloader or not (and which one)
+        #self.settings.set('bootloader_install', True)
 
-        if self.settings.get('bootloader_install'):
-            self.settings.set('bootloader', "grub2")
-            self.settings.set('bootloader_device', device_path)
-            msg = "Antergos will install the bootloader {0} in device {1}"
-            msg = msg.format(self.bootloader, self.bootloader_device)
-            logging.info(msg)
-        else:
-            logging.info("Cnchi will not install any bootloader")
+        #if self.settings.get('bootloader_install'):
+        #    self.settings.set('bootloader', "grub2")
+        #    self.settings.set('bootloader_device', device_path)
+        #    msg = "Antergos will install the bootloader {0} in device {1}"
+        #    msg = msg.format(self.bootloader, self.bootloader_device)
+        #    logging.info(msg)
+        #else:
+        #    logging.info("Cnchi will not install any bootloader")
 
-        self.process = installation_process.InstallationProcess(
-            self.settings,
-            self.callback_queue,
-            mount_devices,
-            fs_devices)
-        self.process.start()
-        '''
+        #self.process = installation_process.InstallationProcess(
+        #    self.settings,
+        #    self.callback_queue,
+        #    mount_devices,
+        #    fs_devices)
+        #self.process.start()
