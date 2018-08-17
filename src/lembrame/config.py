@@ -28,7 +28,9 @@
 
 """ Lembrame config store module """
 
-class LembrameConfig(object):
+import os
+
+class LembrameConfig():
     """ Lembrame config store class """
     request_download_endpoint = False
     file_path = False
@@ -37,13 +39,14 @@ class LembrameConfig(object):
     pacman_packages = False
     gnome_extensions_url = False
 
-    def __init__(self):
+    def __init__(self, temp):
         """ Initialize with defaults """
+        self.temp = temp
         self.request_download_endpoint = (
             'https://4f8m7i5wz4.execute-api.us-east-1.amazonaws.com/production/request-download-link')
-        self.file_path = "/tmp/export.tar.gz.encrypted"
-        self.decrypted_file_path = "/tmp/export.tar.gz"
-        self.folder_file_path = "/tmp/export"
+        self.file_path = os.path.join(temp, "export.tar.gz.encrypted")
+        self.decrypted_file_path = os.path.join(temp, "/export.tar.gz")
+        self.folder_file_path = os.path.join(temp, "export")
         self.pacman_packages = 'pacman_package_list'
         self.dconf_dump = 'dconf_org_gnome_shell'
         self.display_manager_file = 'display_manager'

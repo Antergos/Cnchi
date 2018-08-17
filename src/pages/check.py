@@ -29,10 +29,11 @@
 
 """ Check screen (detects if Antergos prerequisites are meet) """
 
-import dbus
 import logging
 import os
 import subprocess
+
+import dbus
 
 from gi.repository import GLib
 
@@ -44,6 +45,13 @@ from misc.run_cmd import call
 from pages.gtkbasebox import GtkBaseBox
 
 import show_message as show
+
+# When testing, no _() is available
+try:
+    _("")
+except NameError as err:
+    def _(message):
+        return message
 
 # Constants
 NM = 'org.freedesktop.NetworkManager'
@@ -123,7 +131,9 @@ class Check(GtkBaseBox):
 
     def check_all(self):
         """ Check that all requirements are meet """
-        if os.path.exists("/tmp/.cnchi_partitioning_completed"):
+        temp = self.settings.get('temp')
+        path = os.path.join(temp, ".cnchi_partitioning_completed")
+        if os.path.exists(path):
             msg = "You must reboot before retrying again."
             logging.error(msg)
             msg = _("You must reboot before retrying again.")
@@ -139,7 +149,8 @@ class Check(GtkBaseBox):
         space = self.has_enough_space()
         self.prepare_enough_space.set_state(space)
 
-        packaging_issues = os.path.exists('/tmp/.packaging_issue')
+        path = os.path.join(temp, ".cnchi_partitioning_completed")
+        packaging_issues = os.path.exists(path)
         self.packaging_issues.set_state(not packaging_issues)
 
         if has_internet:
@@ -290,16 +301,3 @@ class Check(GtkBaseBox):
 
         # Set timer
         self.timeout_id = GLib.timeout_add(5000, self.on_timer)
-
-
-# When testing, no _() is available
-try:
-    _("")
-except NameError as err:
-    def _(message):
-        return message
-
-if __name__ == '__main__':
-    from test_screen import _, run
-
-    run('Check')

@@ -80,7 +80,7 @@ class Lembrame:
 
     def __init__(self, settings):
         self.settings = settings
-        self.config = LembrameConfig()
+        self.config = LembrameConfig(settings.get('temp'))
         self.credentials = self.settings.get('lembrame_credentials')
         self.user_home = '/home/' + self.settings.get('user_name')
         self.install_user_home = '/install/home/' + self.settings.get('user_name')

@@ -79,12 +79,14 @@ except NameError as err:
 class CnchiApp(Gtk.Application):
     """ Main Cnchi App class """
 
+    TEMP_FOLDER = '/var/tmp/cnchi'
+
     def __init__(self, cmd_line):
         """ Constructor. Call base class """
         Gtk.Application.__init__(self,
                                  application_id="com.antergos.cnchi",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
-        self.tmp_running = "/tmp/.setup-running"
+        self.tmp_running = os.path.join(CnchiApp.TEMP_FOLDER, ".setup-running")
         self.cmd_line = cmd_line
 
     def do_activate(self):
@@ -174,12 +176,15 @@ class CnchiInit():
     GTK_VERSION_NEEDED = "3.18.0"
 
     LOG_FOLDER = '/var/log/cnchi'
+    TEMP_FOLDER = '/var/tmp/cnchi'
 
     def __init__(self):
         """ This function initialises Cnchi """
 
         # Sets SIGTERM handler, so Cnchi can clean up before exiting
         # signal.signal(signal.SIGTERM, sigterm_handler)
+
+        os.makedirs(CnchiInit.TEMP_FOLDER, mode=0o755, exist_ok=True)
 
         # Configures gettext to be able to translate messages, using _()
         self.setup_gettext()
@@ -193,7 +198,7 @@ class CnchiInit():
             sys.exit(0)
 
         if self.cmd_line.force:
-            misc.remove_temp_files()
+            misc.remove_temp_files(CnchiInit.TEMP_FOLDER)
 
         # Drop root privileges
         misc.drop_privileges()
@@ -327,8 +332,7 @@ class CnchiInit():
             except ImportError as import_error:
                 logging.error(import_error)
             return False
-        else:
-            logging.info("Using GTK v%d.%d.%d", major, minor, micro)
+        logging.info("Using GTK v%d.%d.%d", major, minor, micro)
 
         return True
 

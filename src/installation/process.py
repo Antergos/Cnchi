@@ -30,6 +30,7 @@
 """ Format and Installation process module. """
 
 import multiprocessing
+import os
 import subprocess
 import traceback
 import logging
@@ -151,7 +152,8 @@ class Process(multiprocessing.Process):
             with misc.raised_privileges():
                 self.install_screen.run_format()
 
-            path = "/tmp/.cnchi_partitioning_completed"
+            temp = self.settings.get('temp')
+            path = os.path.join(temp, ".cnchi_partitioning_completed")
             with open(path, 'w') as part_file:
                 part_file.write("# File created by Cnchi to force\n")
                 part_file.write("# users to reboot before retry\n")

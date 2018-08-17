@@ -110,7 +110,7 @@ class Settings():
             'timezone_longitude': 0,
             'timezone_done': False,
             'timezone_start': False,
-            'tmp': '/tmp',
+            'temp': '/var/tmp/cnchi',
             'ui': '/usr/share/cnchi/ui/',
             'use_home': False,
             'use_luks': False,

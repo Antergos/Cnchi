@@ -47,8 +47,7 @@ except NameError as err:
 def fatal_error(parent, my_message):
     """ Shows an error message and quits """
 
-    # Remove /tmp/.setup-running
-    path = "/tmp/.setup-running"
+    path = "/var/tmp/cnchi/.setup-running"
     if os.path.exists(path):
         os.remove(path)
 

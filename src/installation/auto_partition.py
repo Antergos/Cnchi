@@ -67,13 +67,14 @@ MIN_ROOT_SIZE = 8000
 class AutoPartition():
     """ Class used by the automatic installation method """
 
-    LUKS_KEY_FILES = ["/tmp/.keyfile-root", "/tmp/.keyfile-home"]
+    LUKS_KEY_FILES = [".keyfile-root", ".keyfile-home"]
 
     def __init__(self, dest_dir, auto_device, settings, callback_queue):
         """ Class initialization """
 
         self.dest_dir = dest_dir
         self.auto_device = auto_device
+        self.temp = settings.get('temp')
 
         # Use LUKS encryption
         self.luks = settings.get("use_luks")
@@ -651,17 +652,18 @@ class AutoPartition():
             is reasonably safe (boot partition is not) """
 
         key_files = AutoPartition.LUKS_KEY_FILES
-        err_msg = "Can't copy LUKS keyfile to the installation device."
-        os.chmod(key_files[0], 0o400)
+        key_file = os.path.join(self.temp, key_files[0])
+        os.chmod(key_file, 0o400)
         boot_path = os.path.join(self.dest_dir, "boot")
-        cmd = ['mv', key_files[0], boot_path]
-        call(cmd, msg=err_msg)
+        cmd = ['mv', key_file, boot_path]
+        call(cmd, msg="Can't copy root LUKS keyfile to the installation device.")
         if self.home and not self.lvm:
-            os.chmod(key_files[1], 0o400)
+            key_file = os.path.join(self.temp, key_files[1])
+            os.chmod(key_files, 0o400)
             luks_dir = os.path.join(self.dest_dir, 'etc/luks-keys')
             os.makedirs(luks_dir, mode=0o755, exist_ok=True)
-            cmd = ['mv', key_files[1], luks_dir]
-            call(cmd, msg=err_msg)
+            cmd = ['mv', key_file, luks_dir]
+            call(cmd, msg="Can't copy home LUKS keyfile to the installation device.")
 
     @staticmethod
     def remove_lvm(device):

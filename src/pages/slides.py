@@ -292,7 +292,7 @@ class Slides(GtkBaseBox):
             "Installation Complete!\n"
             "Do you want to restart your system now?")
         response = show.question(self.get_main_window(), install_ok)
-        misc.remove_temp_files()
+        misc.remove_temp_files(self.settings.get('temp'))
         logging.shutdown()
         if response == Gtk.ResponseType.YES:
             self.reboot()

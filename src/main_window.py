@@ -443,7 +443,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_exit_button_clicked(self, _widget, _data=None):
         """ Quit Cnchi """
         try:
-            misc.remove_temp_files()
+            misc.remove_temp_files(self.settings.get('temp'))
             logging.info("Quiting installer...")
             for (proc, _pipe) in self.process_list:
                 if proc.is_alive():

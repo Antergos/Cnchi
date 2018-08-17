@@ -29,12 +29,13 @@
 """ Download Gnome extensions module """
 
 import os
-import requests
 import logging
 import zipfile
 
+import requests
 
-class GnomeExtensionsDownloader(object):
+
+class GnomeExtensionsDownloader():
     """ Class used to download gnome extensions """
     extensions = False
     extension_name = False
@@ -46,7 +47,7 @@ class GnomeExtensionsDownloader(object):
         self.config = config
         self.install_user_home = install_user_home
         self.extension_info_url = self.config.gnome_extensions_url + '/extension-info/?uuid='
-        self.tmp_downloads = '/tmp/gshell-extensions/'
+        self.tmp_downloads = os.path.join(self.config.temp, 'gshell-extensions')
         self.extensions_path = self.install_user_home + self.config.gnome_shell_extensions_path
 
     def run(self, extensions):
@@ -80,7 +81,8 @@ class GnomeExtensionsDownloader(object):
 
                 return True
             else:
-                logging.debug("Downloading of '%s' gnome shell extension failed.", self.extension_name)
+                logging.debug(
+                    "Downloading of '%s' gnome shell extension failed.", self.extension_name)
                 return False
 
         logging.debug("We don't have a download link. Something was wrong.")
@@ -90,10 +92,12 @@ class GnomeExtensionsDownloader(object):
         """ Request for the complete information about the current GShell extension """
         req = requests.get(self.extension_info_url + self.extension_name, stream=True)
         if req.status_code == requests.codes.ok:
-            logging.debug("We got the info for the gnome extension '%s'", self.extension_name)
+            logging.debug(
+                "We got the info for the gnome extension '%s'", self.extension_name)
             return req.json()
         else:
-            logging.debug("Requesting the extension info failed for '%s'", self.extension_name)
+            logging.debug(
+                "Requesting the extension info failed for '%s'", self.extension_name)
             return False
 
     def get_latest_shell_supported(self):
@@ -104,7 +108,8 @@ class GnomeExtensionsDownloader(object):
         return latest_supported
 
     def get_extension_download_link(self):
-        """ Based on the latest GShell supported version, ask for the specific information with the download link """
+        """ Based on the latest GShell supported version, ask for the specific
+            information with the download link """
         req_url = self.extension_info_url + \
                   self.extension_name + \
                   "&shell_version=" + \
@@ -114,7 +119,8 @@ class GnomeExtensionsDownloader(object):
             logging.debug("We got the download link for '%s'", self.extension_name)
             return self.config.gnome_extensions_url + req.json()['download_url']
         else:
-            logging.debug("Requesting the extension download link failed for '%s'", self.extension_name)
+            logging.debug(
+                "Requesting the extension download link failed for '%s'", self.extension_name)
             return False
 
     def extract_extension(self):
@@ -125,5 +131,6 @@ class GnomeExtensionsDownloader(object):
             zip_file.close()
             return True
         except OSError as err:
-            logging.debug("Error trying to extract extension '%s': %s", self.extension_name, str(err))
+            logging.debug(
+                "Error trying to extract extension '%s': %s", self.extension_name, str(err))
             return False
