@@ -39,7 +39,8 @@ def run(dest_dir, settings, mount_devices, blvm):
     """ Runs mkinitcpio """
 
     swap = 'swap' in mount_devices
-    hooks = get_hooks(dest_dir, settings, swap, blvm)
+    usr = '/usr' in mount_devices
+    hooks = get_hooks(dest_dir, settings, swap, blvm, usr)
     modules = get_modules(settings)
     files = get_files(settings)
 
@@ -56,7 +57,7 @@ def run(dest_dir, settings, mount_devices, blvm):
         chroot_call(cmd, dest_dir)
 
 
-def get_hooks(dest_dir, settings, swap, blvm):
+def get_hooks(dest_dir, settings, swap, blvm, usr):
     """ Get hooks for mkinitcpio """
 
     hooks = [
@@ -91,6 +92,14 @@ def get_hooks(dest_dir, settings, swap, blvm):
         # Use the fsck hook only if not using btrfs or zfs
         hooks.append('fsck')
 
+    if usr and "systemd" not in hooks:
+        # If you keep / usr as a separate partition, you must adhere to the following requirements:
+        # Add the fsck hook, mark / usr with a passno of 0 in / etc/fstab. While recommended
+        # for everyone, it is mandatory if you want your / usr partition to be fsck'ed at boot-up.
+        # Without this hook, /usr will never be fsck'd. If not using the systemd hook,
+        # add the usr hook. This will mount the / usr partition after root is mounted.
+        hooks.append('usr')
+
     return hooks
 
 
@@ -99,8 +108,6 @@ def get_modules(settings):
 
     modules = []
 
-    # It is important that the encrypt hook comes before the filesystems hook
-    # (in case you are using LVM on LUKS, the order should be: encrypt lvm2 filesystems)
     if settings.get('use_luks'):
         modules.extend(['dm_mod', 'dm_crypt', 'ext4'])
         modules.extend(['aes_x86_64'])
