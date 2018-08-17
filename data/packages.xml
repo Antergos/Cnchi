@@ -50,7 +50,6 @@
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
                 <pkgname>antergos-alpm-hooks</pkgname>
-                <!-- <pkgname>antergos-common-meta</pkgname> -->
                 <pkgname>accountsservice</pkgname>
                 <pkgname>antergos-wallpapers</pkgname>
                 <pkgname>antergos-desktop-settings</pkgname>
