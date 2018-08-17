@@ -45,7 +45,7 @@ class EditPartitionDialog(PartitionBaseDialog):
 
     def __init__(self, gui_dir, transient_for=None):
 
-        ui_info = {
+        gui_info = {
             'gui_dir': gui_dir,
             'gui_file': EditPartitionDialog.GUI_FILE,
             'gui_object': EditPartitionDialog.GUI_OBJECT}
