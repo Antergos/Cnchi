@@ -50,7 +50,6 @@
         <edition name="graphic" description="Common to all graphic desktops">
             <packages>
                 <pkgname>antergos-alpm-hooks</pkgname>
-                <!-- <pkgname>antergos-common-meta</pkgname> -->
                 <pkgname>accountsservice</pkgname>
                 <pkgname>antergos-wallpapers</pkgname>
                 <pkgname>antergos-desktop-settings</pkgname>
@@ -170,7 +169,7 @@
                 <pkgname>gnome-shell-extensions</pkgname>
                 <pkgname>gnome-shell-extension-dash-to-dock</pkgname>
                 <pkgname>gnome-shell-extension-status-menu-buttons</pkgname>
-                <pkgname>gnome-sound-recorder<pkgname>
+                <pkgname>gnome-sound-recorder</pkgname>
                 <pkgname>gnome-system-monitor</pkgname>
                 <pkgname>gnome-terminal</pkgname>
                 <pkgname>gnome-themes-extra</pkgname>
@@ -183,7 +182,7 @@
                 <pkgname>hicolor-icon-theme</pkgname>
                 <pkgname>libgnome-keyring</pkgname>
                 <pkgname>nautilus</pkgname>
-                <pkgname>network-manager-applet<pkgname>
+                <pkgname>network-manager-applet</pkgname>
                 <pkgname>networkmanager-openvpn</pkgname>
                 <pkgname>networkmanager-pptp</pkgname>
                 <pkgname>pamac</pkgname>
