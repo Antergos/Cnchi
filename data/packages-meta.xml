@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cnchi>
+    <editions>
+        <edition name="common" description="Packages common to all DE and base">
+            <packages>
+                <pkgname>acpid</pkgname>
+                <pkgname>alsa-utils</pkgname>
+                <pkgname>antergos-keyring</pkgname>
+                <pkgname>antergos-mirrorlist</pkgname>
+                <pkgname>antergos-midnight-timers</pkgname>
+                <pkgname>b43-fwcutter</pkgname>
+                <!-- Group -->
+                <pkgname>base</pkgname>
+                <!-- Group -->
+                <pkgname>base-devel</pkgname>
+                <pkgname>bash-completion</pkgname>
+                <pkgname>bind-tools</pkgname>
+                <pkgname>crda</pkgname>
+                <pkgname>cryfs</pkgname>
+                <pkgname>dosfstools</pkgname>
+                <pkgname>haveged</pkgname>
+                <pkgname>htop</pkgname>
+                <pkgname>gzip</pkgname>
+                <pkgname>intel-ucode</pkgname>
+                <pkgname>ipw2100-fw</pkgname>
+                <pkgname>ipw2200-fw</pkgname>
+                <pkgname>mlocate</pkgname>
+                <pkgname>modemmanager</pkgname>
+                <pkgname>net-tools</pkgname>
+                <pkgname>networkmanager</pkgname>
+                <pkgname>ntfs-3g</pkgname>
+                <pkgname>openssh</pkgname>
+                <pkgname>pkgfile</pkgname>
+                <pkgname>reflector</pkgname>
+                <pkgname>screenfetch</pkgname>
+                <pkgname>sudo</pkgname>
+                <pkgname>terminus-font</pkgname>
+                <pkgname>tar</pkgname>
+                <pkgname>unzip</pkgname>
+                <pkgname>unrar</pkgname>
+                <pkgname>usb_modeswitch</pkgname>
+                <pkgname>wget</pkgname>
+                <pkgname>whois</pkgname>
+                <pkgname>wireless_tools</pkgname>
+                <pkgname>wpa_actiond</pkgname>
+                <!--<pkgname>zd1211-firmware</pkgname>-->
+            </packages>
+        </edition>
+
+        <edition name="graphic" description="Common to all graphic desktops">
+            <packages>
+                <pkgname>antergos-common-meta</pkgname>
+                <pkgname>antergos-desktop-settings</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="base" description="Without X">
+            <packages>
+                <pkgname>cabextract</pkgname>
+                <pkgname>bzip2</pkgname>
+                <pkgname>dialog</pkgname>
+                <pkgname>rsync</pkgname>
+                <pkgname>sharutils</pkgname>
+                <pkgname>uudeview</pkgname>
+                <pkgname>xz</pkgname>
+                <pkgname>zip</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Gnome" description="Gnome Desktop">
+            <packages>
+                <pkgname>antergos-gnome-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Cinnamon" description="Cinnamon desktop">
+            <packages>
+                <pkgname>antergos-cinnamon-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="XFCE" description="XFCE Desktop">
+            <packages>
+                <pkgname>antergos-xfce-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Mate" description="MATE Desktop">
+            <packages>
+                <pkgname>antergos-mate-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="openbox" description="Openbox Window Manager">
+            <packages>
+                <pkgname>antergos-openbox-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="KDE" description="KDE Desktop">
+            <packages>
+                <pkgname>antergos-kde-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Deepin" description="Deepin Desktop">
+            <packages>
+                <pkgname>antergos-deepin-meta</pkgname>
+            </packages>
+        </edition>
+
+        <!-- EXPERIMENTAL EDITIONS -->
+
+        <edition name="lxqt" description="LXQT Desktop">
+            <packages>
+                <pkgname>kalu</pkgname>
+                <pkgname>lxqt-about</pkgname>
+                <pkgname>lxqt-config</pkgname>
+                <pkgname>lxqt-notificationd</pkgname>
+                <pkgname>lxqt-openssh-askpass</pkgname>
+                <pkgname>lxqt-panel</pkgname>
+                <pkgname>lxqt-policykit</pkgname>
+                <pkgname>lxqt-powermanagement</pkgname>
+                <pkgname>lxqt-qtplugin</pkgname>
+                <pkgname>lxqt-runner</pkgname>
+                <pkgname>lxqt-session</pkgname>
+                <pkgname>openbox</pkgname>
+                <pkgname>pcmanfm-qt</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Enlightenment" description="Enlightenment Desktop">
+            <packages>
+                <pkgname>ark</pkgname>
+                <!--<pkgname>emotion_generic_players</pkgname>-->
+                <pkgname>enlightenment</pkgname>
+                <pkgname nm='true' name='connman'>connman</pkgname>
+                <pkgname>econnman</pkgname>
+                <!--<pkgname>gtk-theme-e17gtk</pkgname>-->
+                <pkgname>kalu</pkgname>
+                <pkgname>qt5ct</pkgname>
+                <!-- video player -->
+                <pkgname>rage</pkgname>
+                <!-- terminal emulator -->
+                <pkgname>terminology</pkgname>
+                <pkgname>ttf-dejavu</pkgname>
+                <pkgname>ttf-bitstream-vera</pkgname>
+                <pkgname>udisks2</pkgname>
+                <pkgname>xdg-user-dirs-gtk</pkgname>
+                <pkgname>vlc</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="Budgie" description="Solus desktop">
+            <packages>
+                <pkgname>antergos-budgie-meta</pkgname>
+            </packages>
+        </edition>
+
+        <edition name="i3" description="Tiling window manager">
+            <packages>
+                <pkgname>arandr</pkgname>
+                <pkgname>awesome-terminal-fonts</pkgname>
+                <pkgname>dmenu</pkgname>
+                <pkgname>file-roller</pkgname>
+                <pkgname>galculator</pkgname>
+                <pkgname>gpicview</pkgname>
+                <pkgname>gvfs-google</pkgname>
+                <pkgname>gvfs-mtp</pkgname>
+                <pkgname>gvfs-smb</pkgname>
+                <pkgname>i3-wm</pkgname>
+                <pkgname>i3lock</pkgname>
+                <pkgname>i3status</pkgname>
+                <pkgname>kalu</pkgname>
+                <pkgname>lxappearance-gtk3</pkgname>
+                <pkgname>lxinput-gtk3</pkgname>
+                <pkgname>moc</pkgname>
+                <pkgname>mpv</pkgname>
+                <pkgname nm='true' name='NetworkManager'>network-manager-applet</pkgname>
+                <pkgname>networkmanager-openvpn</pkgname>
+                <pkgname>networkmanager-pptp</pkgname>
+                <pkgname>nitrogen</pkgname>
+                <pkgname>notify-osd</pkgname>
+                <pkgname>pcmanfm</pkgname>
+                <pkgname>polkit-gnome</pkgname>
+                <!-- needed by python smb clients -->
+                <pkgname>python-pysmbc</pkgname>
+                <pkgname>scrot</pkgname>
+                <pkgname>termite</pkgname>
+                <pkgname>udiskie</pkgname>
+                <pkgname>volumeicon</pkgname>
+                <pkgname>xdg-user-dirs-gtk</pkgname>
+                <pkgname>xfburn</pkgname>
+                <pkgname>xscreensaver</pkgname>
+            </packages>
+        </edition>
+    </editions>
+
+    <!-- User desired features -->
+    <features>
+        <feature name="a11y">
+            <pkgname>alsa-utils</pkgname>
+            <pkgname>bluez</pkgname>
+            <pkgname>bluez-libs</pkgname>
+            <pkgname>brltty-minimal</pkgname>
+            <pkgname>clonezilla</pkgname>
+            <pkgname>darkhttpd</pkgname>
+            <pkgname>ddrescue</pkgname>
+            <pkgname>dhclient</pkgname>
+            <pkgname>dnsmasq</pkgname>
+            <pkgname>elinks</pkgname>
+            <pkgname>espeak</pkgname>
+            <pkgname>espeakup</pkgname>
+            <pkgname>ethtool</pkgname>
+            <pkgname>gnu-netcat</pkgname>
+            <pkgname>gpm</pkgname>
+            <pkgname>irssi</pkgname>
+            <pkgname>lftp</pkgname>
+            <pkgname>mc</pkgname>
+            <pkgname>orca</pkgname>
+            <pkgname>python2-speechd</pkgname>
+            <pkgname>vim</pkgname>
+        </feature>
+        <feature name="aur">
+            <pkgname>bzr</pkgname>
+            <pkgname>cmake</pkgname>
+            <pkgname>git</pkgname>
+            <pkgname>yay</pkgname>
+        </feature>
+        <feature name="energy">
+            <pkgname>thermald</pkgname>
+            <pkgname>tlp</pkgname>
+        </feature>
+        <feature name="bluetooth">
+            <pkgname>bluez</pkgname>
+            <pkgname>bluez-utils</pkgname>
+            <pkgname>pulseaudio-bluetooth</pkgname>
+            <pkgname desktops='cinnamon,mate,openbox'>blueberry</pkgname>
+            <pkgname desktops='kde,lxqt'>bluedevil</pkgname>
+            <pkgname desktops='gnome'>gnome-bluetooth</pkgname>
+        </feature>
+        <feature name="cups">
+            <pkgname>cups</pkgname>
+            <pkgname>cups-pk-helper</pkgname>
+            <!--<pkgname>foomatic-db-nonfree</pkgname>-->
+            <pkgname>gsfonts</pkgname>
+            <!--<pkgname lib='gtk'>gtk3-print-backends</pkgname>-->
+            <!--<pkgname>gutenprint</pkgname>-->
+            <pkgname>hplip</pkgname>
+            <pkgname lib='qt'>print-manager</pkgname>
+            <pkgname lib='gtk'>system-config-printer</pkgname>
+            <pkgname lib='gtk'>python2-gnomekeyring</pkgname>
+            <pkgname>splix</pkgname>
+            <!-- These two are required by hp-setup -->
+            <pkgname>python-pyqt5</pkgname>
+            <pkgname>python-gobject</pkgname>
+        </feature>
+        <feature name="chromium">
+            <pkgname>chromium</pkgname>
+        </feature>
+        <feature name="firefox">
+            <pkgname>firefox</pkgname>
+        </feature>
+        <feature name="firewall">
+            <pkgname>gufw</pkgname>
+            <pkgname>ufw</pkgname>
+        </feature>
+        <feature name="flash">
+            <pkgname>pepper-flash</pkgname>
+            <pkgname>flashplugin</pkgname>
+        </feature>
+        <feature name="games">
+            <pkgname>steam-native-runtime</pkgname>
+            <pkgname>steam</pkgname>
+            <pkgname>playonlinux</pkgname>
+            <pkgname arch="x86_64">lib32-libldap</pkgname>
+        </feature>
+        <feature name="lamp">
+            <pkgname>apache</pkgname>
+            <pkgname>php</pkgname>
+            <pkgname>php-apache</pkgname>
+            <pkgname>mariadb</pkgname>
+            <pkgname>phpmyadmin</pkgname>
+            <pkgname>php-mcrypt</pkgname>
+        </feature>
+        <feature name="lemp">
+            <pkgname>nginx</pkgname>
+            <pkgname>php-fpm</pkgname>
+            <pkgname>mariadb</pkgname>
+            <pkgname>phpmyadmin</pkgname>
+            <pkgname>php-mcrypt</pkgname>
+        </feature>
+        <feature name="lts">
+            <pkgname>linux-lts</pkgname>
+            <pkgname>linux-lts-headers</pkgname>
+        </feature>
+        <feature name="office">
+            <!-- There're now two libreoffice branches, fresh and still
+            Fresh is a LibreOffice branch which contains new features and
+            program enhancements while still is more stable and only gets
+            bug fixes. -->
+            <pkgname>libreoffice-fresh</pkgname>
+        </feature>
+        <feature name="sshd">
+            <pkgname>openssh</pkgname>
+        </feature>
+        <feature name="visual">
+            <pkgname>compton</pkgname>
+            <pkgname>paranoid</pkgname>
+        </feature>
+        <feature name="vivaldi">
+            <pkgname>vivaldi</pkgname>
+        </feature>
+        <feature name="opera">
+            <pkgname>opera</pkgname>
+        </feature>
+    </features>
+
+    <net>
+        <broadcom>
+            <pkgname>broadcom-wl</pkgname>
+        </broadcom>
+    </net>
+
+    <filesystems>
+        <pkgname>btrfs-progs</pkgname>
+        <pkgname>cifs-utils</pkgname>
+        <pkgname>dmraid</pkgname>
+        <pkgname>dosfstools</pkgname>
+        <pkgname>exfat-utils</pkgname>
+        <pkgname>e2fsprogs</pkgname>
+        <pkgname>f2fs-tools</pkgname>
+        <pkgname>jfsutils</pkgname>
+        <pkgname>nfs-utils</pkgname>
+        <pkgname>nilfs-utils</pkgname>
+        <pkgname>ntfs-3g</pkgname>
+        <pkgname>reiserfsprogs</pkgname>
+        <pkgname>xfsprogs</pkgname>
+    </filesystems>
+
+    <zfs>
+        <pkgname>grub-zfs</pkgname>
+        <pkgname>spl</pkgname>
+        <pkgname>spl-utils</pkgname>
+        <pkgname>zfs</pkgname>
+        <pkgname>zfs-utils</pkgname>
+    </zfs>
+
+    <locale_fonts>
+        <chinese>
+            <pkgname>opendesktop-fonts</pkgname>
+        </chinese>
+    </locale_fonts>
+
+    <bootloaders>
+        <bootloader name="grub2">
+            <pkgname>efibootmgr</pkgname>
+            <pkgname>grub</pkgname>
+            <pkgname>os-prober</pkgname>
+            <pkgname>grub2-theme-antergos</pkgname>
+        </bootloader>
+        <bootloader name="systemd-boot">
+            <!-- previously called gummiboot, now comes with systemd -->
+            <pkgname>efibootmgr</pkgname>
+        </bootloader>
+        <bootloader name="refind">
+            <pkgname>efibootmgr</pkgname>
+            <pkgname>refind-efi</pkgname>
+        </bootloader>
+    </bootloaders>
+</cnchi>
