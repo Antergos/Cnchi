@@ -47,15 +47,15 @@ except NameError as err:
 class ProxyDialog(Gtk.Dialog):
     """ Asks user for proxy settings """
 
-    def __init__(self, transient_for, proxies, use_same_proxy, ui_dir):
+    def __init__(self, transient_for, proxies, use_same_proxy, gui_dir):
         Gtk.Dialog.__init__(self)
 
         self.set_transient_for(transient_for)
-        self.ui_dir = ui_dir
+        self.gui_dir = gui_dir
 
-        self.ui = Gtk.Builder()
-        self.ui_file = os.path.join(self.ui_dir, "proxy.ui")
-        self.ui.add_from_file(self.ui_file)
+        self.gui = Gtk.Builder()
+        self.gui_file = os.path.join(self.gui_dir, "proxy.ui")
+        self.gui.add_from_file(self.gui_file)
 
         self.translate_ui()
 
@@ -69,13 +69,13 @@ class ProxyDialog(Gtk.Dialog):
             self.set_proxies(proxies)
 
         # Connect UI signals
-        switch = self.ui.get_object("use_same_proxy_switch")
+        switch = self.gui.get_object("use_same_proxy_switch")
         switch.connect("notify::active", self.use_same_proxy_activated)
 
         if use_same_proxy:
             switch.set_active(True)
 
-        dialog_grid = self.ui.get_object("ProxyDialogGrid")
+        dialog_grid = self.gui.get_object("ProxyDialogGrid")
         content_area = self.get_content_area()
         content_area.add(dialog_grid)
 
@@ -92,7 +92,7 @@ class ProxyDialog(Gtk.Dialog):
         is_active = switch.get_active()
 
         for name in widget_names:
-            widget = self.ui.get_object(name)
+            widget = self.gui.get_object(name)
             widget.set_sensitive(not is_active)
 
     def setup_port_spin_buttons(self):
@@ -105,7 +105,7 @@ class ProxyDialog(Gtk.Dialog):
             adjustment = Gtk.Adjustment(
                 value=3128, lower=0, upper=65536, step_increment=1,
                 page_increment=10, page_size=10)
-            spin = self.ui.get_object(name)
+            spin = self.gui.get_object(name)
             spin.set_adjustment(adjustment)
             spin.set_text("")
 
@@ -113,15 +113,15 @@ class ProxyDialog(Gtk.Dialog):
         """ Translate all widgets """
         self.set_title(_("Cnchi - Internet Connection Proxy Setup"))
 
-        label = self.ui.get_object("http_proxy_label")
+        label = self.gui.get_object("http_proxy_label")
         label.set_text(_("HTTP proxy server:"))
-        label = self.ui.get_object("https_proxy_label")
+        label = self.gui.get_object("https_proxy_label")
         label.set_text(_("HTTPS proxy server:"))
-        label = self.ui.get_object("ftp_proxy_label")
+        label = self.gui.get_object("ftp_proxy_label")
         label.set_text(_("FTP proxy server:"))
-        label = self.ui.get_object("socks_proxy_label")
+        label = self.gui.get_object("socks_proxy_label")
         label.set_text(_("SOCKS host server:"))
-        label = self.ui.get_object("use_same_proxy_label")
+        label = self.gui.get_object("use_same_proxy_label")
         label.set_text(_("Use this proxy server for all protocols"))
 
         port_names = [
@@ -129,7 +129,7 @@ class ProxyDialog(Gtk.Dialog):
             "https_proxy_port_label", "ftp_proxy_port_label",
             "socks_proxy_port_label"]
         for name in port_names:
-            label = self.ui.get_object(name)
+            label = self.gui.get_object(name)
             label.set_text(_("Port:"))
 
     def set_proxies(self, proxies):
@@ -138,9 +138,9 @@ class ProxyDialog(Gtk.Dialog):
             protocols = ["http", "https", "ftp", "socks"]
             for protocol in protocols:
                 entry_id = protocol + "_proxy_entry"
-                entry_widget = self.ui.get_object(entry_id)
+                entry_widget = self.gui.get_object(entry_id)
                 port_id = protocol + "_proxy_port"
-                port_widget = self.ui.get_object(port_id)
+                port_widget = self.gui.get_object(port_id)
 
                 try:
                     proxy = proxies[protocol]
@@ -157,7 +157,7 @@ class ProxyDialog(Gtk.Dialog):
 
     def use_same_proxy(self):
         """ Checks if user wants the same proxy address for all protocols """
-        switch = self.ui.get_object("use_same_proxy_switch")
+        switch = self.gui.get_object("use_same_proxy_switch")
         return switch.get_active()
 
     def get_proxies(self):
@@ -169,9 +169,9 @@ class ProxyDialog(Gtk.Dialog):
             entry_id = protocol + "_proxy_entry"
             port_id = protocol + "_proxy_port"
 
-            entry_widget = self.ui.get_object(entry_id)
+            entry_widget = self.gui.get_object(entry_id)
             host = entry_widget.get_text()
-            port_widget = self.ui.get_object(port_id)
+            port_widget = self.gui.get_object(port_id)
             port = port_widget.get_text()
 
             if host and port:
@@ -179,7 +179,7 @@ class ProxyDialog(Gtk.Dialog):
                     host = "http://" + host
                 proxies[protocol] = host + ":" + port
 
-        switch = self.ui.get_object("use_same_proxy_switch")
+        switch = self.gui.get_object("use_same_proxy_switch")
         if 'http' in proxies.keys():
             if switch.get_active():
                 proxies['https'] = proxies['ftp'] = proxies['socks'] = proxies['http']

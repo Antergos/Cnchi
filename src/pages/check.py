@@ -78,7 +78,7 @@ class Check(GtkBaseBox):
         self.packaging_issues = None
         self.remote_version = None
 
-        self.label_space = self.ui.get_object("label_space")
+        self.label_space = self.gui.get_object("label_space")
 
         if 'checks_are_optional' in params:
             self.checks_are_optional = params['checks_are_optional']
@@ -90,11 +90,11 @@ class Check(GtkBaseBox):
         txt = _("System Check")
         self.header.set_subtitle(txt)
 
-        self.updated = self.ui.get_object("updated")
+        self.updated = self.gui.get_object("updated")
         txt = _("Cnchi is up to date")
         self.updated.set_property("label", txt)
 
-        self.prepare_enough_space = self.ui.get_object("prepare_enough_space")
+        self.prepare_enough_space = self.gui.get_object("prepare_enough_space")
         txt = _("has at least {0}GB available storage space. (*)")
         txt = txt.format(MIN_ROOT_SIZE / 1000000000)
         self.prepare_enough_space.set_property("label", txt)
@@ -107,21 +107,21 @@ class Check(GtkBaseBox):
         self.label_space.set_line_wrap(True)
         self.label_space.set_max_width_chars(80)
 
-        self.prepare_power_source = self.ui.get_object("prepare_power_source")
+        self.prepare_power_source = self.gui.get_object("prepare_power_source")
         txt = _("is plugged in to a power source")
         self.prepare_power_source.set_property("label", txt)
 
-        self.prepare_network_connection = self.ui.get_object(
+        self.prepare_network_connection = self.gui.get_object(
             "prepare_network_connection")
         txt = _("is connected to the Internet")
         self.prepare_network_connection.set_property("label", txt)
 
-        self.packaging_issues = self.ui.get_object("packaging_issues")
+        self.packaging_issues = self.gui.get_object("packaging_issues")
         txt = _(
             "There are no temporary packaging issues that would interfere with installation.")
         self.packaging_issues.set_property("label", txt)
 
-        self.prepare_best_results = self.ui.get_object("prepare_best_results")
+        self.prepare_best_results = self.gui.get_object("prepare_best_results")
         txt = _("For best results, please ensure that this computer:")
         txt = '<span weight="bold" size="large">{0}</span>'.format(txt)
         self.prepare_best_results.set_markup(txt)

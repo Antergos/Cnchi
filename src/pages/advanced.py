@@ -138,15 +138,15 @@ class InstallationAdvanced(GtkBaseBox):
         # Dialogs
         main_window = self.get_main_window()
         self.create_part_dlg = CreatePartitionDialog(
-            self.ui_dir, main_window)
+            self.gui_dir, main_window)
         self.edit_part_dlg = EditPartitionDialog(
-            self.ui_dir, main_window)
+            self.gui_dir, main_window)
         self.create_table_dlg = CreateTableDialog(
-            self.ui_dir, main_window)
+            self.gui_dir, main_window)
 
-        self.boot_ui = boot_ui.BootUI(self.ui)
+        self.boot_ui = boot_ui.BootUI(self.gui)
 
-        self.scrolledwindow = self.ui.get_object(
+        self.scrolledwindow = self.gui.get_object(
             'partition_treeview_scrolledwindow')
         self.partition_treeview = PartitionTreeview()
         self.partition_treeview.prepare()
@@ -221,11 +221,11 @@ class InstallationAdvanced(GtkBaseBox):
             return
 
         button = {
-            'undo': self.ui.get_object('partition_button_undo'),
-            'new': self.ui.get_object('partition_button_new'),
-            'delete': self.ui.get_object('partition_button_delete'),
-            'edit': self.ui.get_object('partition_button_edit'),
-            'new_label': self.ui.get_object('partition_button_new_label')}
+            'undo': self.gui.get_object('partition_button_undo'),
+            'new': self.gui.get_object('partition_button_new'),
+            'delete': self.gui.get_object('partition_button_delete'),
+            'edit': self.gui.get_object('partition_button_edit'),
+            'new_label': self.gui.get_object('partition_button_new_label')}
 
         for key in button:
             button[key].set_sensitive(False)
@@ -1042,8 +1042,8 @@ class InstallationAdvanced(GtkBaseBox):
     def partition_row_activated(self, _path, _column, _user_data):
         """ Simulate a click in new or edit if a partition or free space
             is double clicked """
-        button_edit = self.ui.get_object('partition_button_edit')
-        button_new = self.ui.get_object('partition_button_new')
+        button_edit = self.gui.get_object('partition_button_edit')
+        button_new = self.gui.get_object('partition_button_new')
 
         if button_edit.get_sensitive():
             self.edit_partition(None)
@@ -1068,28 +1068,28 @@ class InstallationAdvanced(GtkBaseBox):
 
         txt = _("Mount Checklist:")
         txt = "<span weight='bold'>{0}</span>".format(txt)
-        label = self.ui.get_object('mnt_chklist')
+        label = self.gui.get_object('mnt_chklist')
         label.set_markup(txt)
 
-        part = self.ui.get_object('root_part')
+        part = self.gui.get_object('root_part')
         txt = _("Root")
         part.props.label = txt + " ( / )"
 
-        part = self.ui.get_object('boot_part')
+        part = self.gui.get_object('boot_part')
         txt = _("Boot")
         part.props.label = txt + " ( /boot )"
 
-        part = self.ui.get_object('boot_efi_part')
+        part = self.gui.get_object('boot_efi_part')
         txt = _("EFI")
         part.props.label = txt + " ( /boot/efi )"
 
-        part = self.ui.get_object('swap_part')
+        part = self.gui.get_object('swap_part')
         txt = _("Swap")
         part.props.label = txt
 
         # txt = _("TODO: Here goes a warning message")
         # txt = "<span weight='bold'>{0}</span>".format(txt)
-        # label = self.ui.get_object('part_advanced_warning_message')
+        # label = self.gui.get_object('part_advanced_warning_message')
         # label.set_markup(txt)
 
         # Assign labels and images to buttons
@@ -1103,7 +1103,7 @@ class InstallationAdvanced(GtkBaseBox):
         for grp in btns:
             btn_id, icon, lbl = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
+            btn = self.gui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)
@@ -1117,15 +1117,15 @@ class InstallationAdvanced(GtkBaseBox):
 
         self.fill_bootloader_entry()
 
-        # button = self.ui.get_object('create_partition_encryption_settings')
-        # button = self.ui.get_object('edit_partition_encryption_settings')
+        # button = self.gui.get_object('create_partition_encryption_settings')
+        # button = self.gui.get_object('edit_partition_encryption_settings')
 
-        # label = self.ui.get_object('part_advanced_recalculating_label')
+        # label = self.gui.get_object('part_advanced_recalculating_label')
         # label.hide()
-        # spinner = self.ui.get_object('partition_recalculating_spinner')
+        # spinner = self.gui.get_object('partition_recalculating_spinner')
         # spinner.hide()
 
-        button = self.ui.get_object('partition_button_lvm')
+        button = self.gui.get_object('partition_button_lvm')
         button.hide()
 
         widget_ids = [
@@ -1136,7 +1136,7 @@ class InstallationAdvanced(GtkBaseBox):
             'partition_button_undo']
 
         for widget_id in widget_ids:
-            button = self.ui.get_object(widget_id)
+            button = self.gui.get_object(widget_id)
             button.set_sensitive(False)
 
     def new_partition_table(self, _button):
@@ -1304,7 +1304,7 @@ class InstallationAdvanced(GtkBaseBox):
 
         if mount_point in label_names:
             label_name = label_names[mount_point]
-            label = self.ui.get_object(label_name)
+            label = self.gui.get_object(label_name)
         if label:
             if status == 'show':
                 label.show()
@@ -1564,7 +1564,7 @@ class InstallationAdvanced(GtkBaseBox):
             "partition_treeview", "box2",
             "box3", "box4"]
         for name in widgets:
-            widget = self.ui.get_object(name)
+            widget = self.gui.get_object(name)
             widget.set_sensitive(status)
         while Gtk.events_pending():
             Gtk.main_iteration()

@@ -43,15 +43,15 @@ class Wireless(GtkBaseBox):
 
         super().__init__(self, params, "wireless", prev_page, next_page)
 
-        self.page = self.ui.get_object('wireless')
+        self.page = self.gui.get_object('wireless')
 
-        self.nmwidget = self.ui.get_object('nmwidget')
+        self.nmwidget = self.gui.get_object('nmwidget')
         self.nmwidget.connect('connection', self.state_changed)
         self.nmwidget.connect('selection_changed', self.selection_changed)
         self.nmwidget.connect('pw_validated', self.pw_validated)
 
-        self.no_wireless = self.ui.get_object('no_wireless')
-        self.use_wireless = self.ui.get_object('use_wireless')
+        self.no_wireless = self.gui.get_object('no_wireless')
+        self.use_wireless = self.gui.get_object('use_wireless')
         self.use_wireless.connect('toggled', self.wireless_toggled)
         self.plugin_widgets = self.page
         self.have_selection = False
@@ -64,14 +64,14 @@ class Wireless(GtkBaseBox):
 
     def translate_ui(self):
         """ Translate labels """
-        lbl = self.ui.get_object('wireless_section_label')
+        lbl = self.gui.get_object('wireless_section_label')
         lbl.set_markup(_("Connecting this computer to a wi-fi network"))
 
-        btn = self.ui.get_object('no_wireless')
+        btn = self.gui.get_object('no_wireless')
         btn.set_label(
             _("I don't want to connect to a wi-fi network right now"))
 
-        btn = self.ui.get_object('use_wireless')
+        btn = self.gui.get_object('use_wireless')
         btn.set_label(_("Connect to this network"))
 
         password_label_text = _("Password:")
@@ -158,7 +158,7 @@ class Wireless(GtkBaseBox):
         self.show_all()
         if not nm.wireless_hardware_present():
             self.nmwidget.set_sensitive(False)
-            btn = self.ui.get_object('use_wireless')
+            btn = self.gui.get_object('use_wireless')
             btn.set_sensitive(False)
 
     @staticmethod

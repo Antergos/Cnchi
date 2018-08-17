@@ -168,7 +168,7 @@ def run(page_name):
         'a11y': False,
         'title': "Cnchi",
         'main_window': window,
-        'ui_dir': "/usr/share/cnchi/ui",
+        'gui_dir': "/usr/share/cnchi/ui",
         'no_tryit': False,
         'settings': settings,
         'forward_button': Gtk.Button.new(),

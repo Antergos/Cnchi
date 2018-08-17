@@ -44,33 +44,33 @@ except NameError as err:
 class CreatePartitionDialog(PartitionBaseDialog):
     """ Shows creation partition dialog """
 
-    UI_FILE = 'create_partition.ui'
-    UI_OBJECT = 'create_partition_vbox'
+    GUI_FILE = 'create_partition.ui'
+    GUI_OBJECT = 'create_partition_vbox'
 
-    def __init__(self, ui_dir, transient_for=None):
-        ui_info = {
-            'ui_dir': ui_dir,
-            'ui_file': CreatePartitionDialog.UI_FILE,
-            'ui_object': CreatePartitionDialog.UI_OBJECT}
-        PartitionBaseDialog.__init__(self, self, ui_info, transient_for)
+    def __init__(self, gui_dir, transient_for=None):
+        gui_info = {
+            'gui_dir': gui_dir,
+            'gui_file': CreatePartitionDialog.GUI_FILE,
+            'gui_object': CreatePartitionDialog.GUI_OBJECT}
+        PartitionBaseDialog.__init__(self, self, gui_info, transient_for)
 
     def get_partition_size(self):
         """ Returns desired partition size """
-        size_spin = self.ui.get_object('size_spinbutton')
+        size_spin = self.gui.get_object('size_spinbutton')
         size = int(size_spin.get_value())
         return size
 
     def wants_primary(self):
         """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_primary').get_active()
+        return self.gui.get_object('create_type_primary').get_active()
 
     def wants_logical(self):
         """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_logical').get_active()
+        return self.gui.get_object('create_type_logical').get_active()
 
     def wants_extended(self):
         """ Returns True if the user wants to create a primary partition """
-        return self.ui.get_object('create_type_extended').get_active()
+        return self.gui.get_object('create_type_extended').get_active()
 
     def prepare_radiobuttons(self, params):
         """ Prepare radio buttons for showing (before run)
@@ -79,9 +79,9 @@ class CreatePartitionDialog(PartitionBaseDialog):
                     'is_primary_or_extended',
                     'max_size_mb' """
         radio = {
-            "primary": self.ui.get_object('create_type_primary'),
-            "logical": self.ui.get_object('create_type_logical'),
-            "extended": self.ui.get_object('create_type_extended')}
+            "primary": self.gui.get_object('create_type_primary'),
+            "logical": self.gui.get_object('create_type_logical'),
+            "extended": self.gui.get_object('create_type_extended')}
 
         radio['primary'].set_active(True)
         radio['logical'].set_active(False)
@@ -104,15 +104,15 @@ class CreatePartitionDialog(PartitionBaseDialog):
             radio['logical'].set_active(True)
             radio['extended'].set_visible(False)
 
-        radio['begin'] = self.ui.get_object('create_place_beginning')
-        radio['end'] = self.ui.get_object('create_place_end')
+        radio['begin'] = self.gui.get_object('create_place_beginning')
+        radio['end'] = self.gui.get_object('create_place_end')
 
         radio['begin'].set_active(True)
         radio['end'].set_active(False)
 
     def prepare_size_spin(self, max_size_mb):
         """ Prepare size spin """
-        size_spin = self.ui.get_object('size_spinbutton')
+        size_spin = self.gui.get_object('size_spinbutton')
         size_spin.set_digits(0)
         adjustment = Gtk.Adjustment(
             value=max_size_mb, lower=1, upper=max_size_mb,

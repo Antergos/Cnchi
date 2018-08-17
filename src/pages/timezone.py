@@ -59,10 +59,10 @@ class Timezone(GtkBaseBox):
     def __init__(self, params, prev_page="location", next_page="keymap"):
         super().__init__(self, params, "timezone", prev_page, next_page)
 
-        self.map_window = self.ui.get_object('timezone_map_window')
+        self.map_window = self.gui.get_object('timezone_map_window')
 
-        self.combobox_zone = self.ui.get_object('comboboxtext_zone')
-        self.combobox_region = self.ui.get_object('comboboxtext_region')
+        self.combobox_zone = self.gui.get_object('comboboxtext_zone')
+        self.combobox_region = self.gui.get_object('comboboxtext_region')
 
         # Show regions in three columns
         self.combobox_region.set_wrap_width(3)
@@ -91,15 +91,15 @@ class Timezone(GtkBaseBox):
 
     def translate_ui(self):
         """ Translates all ui elements """
-        label = self.ui.get_object('label_zone')
+        label = self.gui.get_object('label_zone')
         txt = _("Zone:")
         label.set_markup(txt)
 
-        label = self.ui.get_object('label_region')
+        label = self.gui.get_object('label_region')
         txt = _("Region:")
         label.set_markup(txt)
 
-        label = self.ui.get_object('label_ntp')
+        label = self.gui.get_object('label_ntp')
         txt = _("Use Network Time Protocol (NTP) for clock synchronization")
         label.set_markup(txt)
 

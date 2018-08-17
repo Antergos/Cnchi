@@ -50,8 +50,8 @@ class Keymap(GtkBaseBox):
 
         self.prepare_called = False
 
-        self.keyboard_test_entry = self.ui.get_object("keyboard_test_entry")
-        self.keyboard_widget = self.ui.get_object("keyboard_widget")
+        self.keyboard_test_entry = self.gui.get_object("keyboard_test_entry")
+        self.keyboard_widget = self.gui.get_object("keyboard_widget")
 
         self.keyboard_layout = {'code': None, 'description': None}
         self.keyboard_variant = {'code': None, 'description': None}
@@ -60,7 +60,7 @@ class Keymap(GtkBaseBox):
         self.kbd_names = keyboard_names.KeyboardNames(base_xml_path)
 
         # Init keymap treeview
-        self.keymap_treeview = self.ui.get_object("keymap_treeview")
+        self.keymap_treeview = self.gui.get_object("keymap_treeview")
         self.keymap_treeview.set_model(Gtk.TreeStore(str))
         column = Gtk.TreeViewColumn("Layouts")
         self.keymap_treeview.append_column(column)
@@ -86,7 +86,7 @@ class Keymap(GtkBaseBox):
         """ Translates all ui elements """
         self.header.set_subtitle(_("Select Your Keyboard Layout"))
 
-        lbl = self.ui.get_object("label_layouts")
+        lbl = self.gui.get_object("label_layouts")
         if lbl:
             lbl.set_markup(
                 _("Choose your keyboard layout and variant (if applies).\n"

@@ -66,14 +66,14 @@ class InstallationZFS(GtkBaseBox):
             self, params, prev_page="installation_ask", next_page="summary"):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
-        self.page = self.ui.get_object('zfs')
+        self.page = self.gui.get_object('zfs')
 
         self.disks = None
         self.diskdic = {}
 
         self.change_list = []
 
-        self.zfs_treeview = ZFSTreeview(self.ui)
+        self.zfs_treeview = ZFSTreeview(self.gui)
         self.zfs_treeview.connect_use_device(self.use_device_toggled)
 
         self.installation = None
@@ -109,7 +109,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Set grub2 bootloader as default
         self.bootloader = "grub2"
-        self.bootloader_entry = self.ui.get_object('bootloader_entry')
+        self.bootloader_entry = self.gui.get_object('bootloader_entry')
 
     def use_device_toggled(self, _widget, _path):
         """ Use device clicked """
@@ -132,7 +132,7 @@ class InstallationZFS(GtkBaseBox):
             self.bootloader_entry.show()
         else:
             self.bootloader_entry.hide()
-            widget = self.ui.get_object("bootloader_label")
+            widget = self.gui.get_object("bootloader_label")
             if widget:
                 widget.hide()
 
@@ -144,7 +144,7 @@ class InstallationZFS(GtkBaseBox):
 
     def fill_text_combobox(self, object_name, text, zfs_option):
         """ Fill combobox """
-        combo = self.ui.get_object(object_name)
+        combo = self.gui.get_object(object_name)
         combo.remove_all()
         active_index = 0
         for index in text:
@@ -158,7 +158,7 @@ class InstallationZFS(GtkBaseBox):
         self.header.set_subtitle(_("ZFS Setup"))
 
         # Encrypt disk checkbox
-        btn = self.ui.get_object("encrypt_disk_btn")
+        btn = self.gui.get_object("encrypt_disk_btn")
         # TODO: Finnish LUKS+ZFS
         self.zfs_options["encrypt_disk"] = False
         btn.set_sensitive(False)
@@ -169,22 +169,22 @@ class InstallationZFS(GtkBaseBox):
             'password_entry', 'password_check_entry',
             'password_lbl', 'password_check_lbl']
         for name in entries:
-            entry = self.ui.get_object(name)
+            entry = self.gui.get_object(name)
             entry.set_sensitive(self.zfs_options["encrypt_disk"])
 
         # Encrypt swap
-        btn = self.ui.get_object('encrypt_swap_btn')
+        btn = self.gui.get_object('encrypt_swap_btn')
         # TODO: Finnish LUKS+ZFS
         self.zfs_options["encrypt_swap"] = False
         btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_swap"])
 
         # Pool name checkbox
-        btn = self.ui.get_object("pool_name_btn")
+        btn = self.gui.get_object("pool_name_btn")
         btn.set_active(self.zfs_options["use_pool_name"])
 
         # Disable/Enable Pool name entry
-        entry = self.ui.get_object('pool_name_entry')
+        entry = self.gui.get_object('pool_name_entry')
         entry.set_sensitive(self.zfs_options["use_pool_name"])
 
         # Fill pool types and partition scheme combobox
@@ -199,7 +199,7 @@ class InstallationZFS(GtkBaseBox):
             'password_lbl': _("Password"),
             'swap_size_lbl': _("Swap size (MB)")}
         for key, value in labels.items():
-            lbl = self.ui.get_object(key)
+            lbl = self.gui.get_object(key)
             lbl.set_markup(value)
 
         # Set button labels
@@ -209,12 +209,12 @@ class InstallationZFS(GtkBaseBox):
             'pool_name_btn': _("Pool name"),
             'force_4k_btn': _("Force ZFS 4k block size")}
         for key, value in labels.items():
-            btn = self.ui.get_object(key)
+            btn = self.gui.get_object(key)
             btn.set_label(value)
 
         # Set swap Size
         swap_size = str(self.zfs_options["swap_size"])
-        entry = self.ui.get_object("swap_size_entry")
+        entry = self.gui.get_object("swap_size_entry")
         entry.set_text(swap_size)
 
     def check_pool_type(self, show_warning=False):
@@ -275,7 +275,7 @@ class InstallationZFS(GtkBaseBox):
 
     def on_pool_type_help_btn_clicked(self, _widget):
         """ User clicked pool type help button """
-        combo = self.ui.get_object('pool_type_combo')
+        combo = self.gui.get_object('pool_type_combo')
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
@@ -335,14 +335,14 @@ class InstallationZFS(GtkBaseBox):
             'password_lbl', 'password_check_lbl']
 
         for name in names:
-            obj = self.ui.get_object(name)
+            obj = self.gui.get_object(name)
             obj.set_sensitive(status)
         self.zfs_options["encrypt_disk"] = status
         self.settings.set('use_luks', status)
 
     def on_pool_name_btn_toggled(self, _widget):
         """ Use a specific pool name """
-        obj = self.ui.get_object('pool_name_entry')
+        obj = self.gui.get_object('pool_name_entry')
         status = not obj.get_sensitive()
         obj.set_sensitive(status)
         self.zfs_options["use_pool_name"] = status
@@ -383,7 +383,7 @@ class InstallationZFS(GtkBaseBox):
         self.zfs_options["device_paths"] = self.zfs_treeview.get_device_paths()
 
         # Get swap size
-        txt = self.ui.get_object("swap_size_entry").get_text()
+        txt = self.gui.get_object("swap_size_entry").get_text()
         try:
             self.zfs_options["swap_size"] = int(txt)
         except ValueError as _verror:
@@ -391,7 +391,7 @@ class InstallationZFS(GtkBaseBox):
             self.zfs_options["swap_size"] = 8192
 
         # Get pool name
-        txt = self.ui.get_object("pool_name_entry").get_text()
+        txt = self.gui.get_object("pool_name_entry").get_text()
         if txt:
             self.zfs_options["pool_name"] = txt
 
@@ -400,7 +400,7 @@ class InstallationZFS(GtkBaseBox):
         self.settings.set("zfs_pool_name", self.zfs_options["pool_name"])
 
         # Get password
-        txt = self.ui.get_object("password_lbl").get_text()
+        txt = self.gui.get_object("password_lbl").get_text()
         self.zfs_options["encrypt_password"] = txt
 
         return True

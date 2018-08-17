@@ -104,11 +104,11 @@ class Features(GtkBaseBox):
         self.a11y = params['a11y']
 
         self.show_advanced = False
-        self.advanced_checkbutton = self.ui.get_object("advanced_checkbutton")
+        self.advanced_checkbutton = self.gui.get_object("advanced_checkbutton")
         self.advanced_checkbutton.set_active(False)
 
         # Set up list box
-        self.listbox = self.ui.get_object("listbox")
+        self.listbox = self.gui.get_object("listbox")
         self.listbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
 
@@ -433,7 +433,7 @@ class Features(GtkBaseBox):
         if self.settings.get("feature_lembrame"):
             dlg = LembrameDialog(
                 self.get_main_window(),
-                self.ui_dir)
+                self.gui_dir)
 
             response = dlg.run()
 

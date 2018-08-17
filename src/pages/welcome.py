@@ -58,22 +58,22 @@ class Welcome(GtkBaseBox):
 
         self.main_window = params['main_window']
 
-        self.labels = {'welcome': self.ui.get_object("welcome_label"),
-                       'tryit': self.ui.get_object("tryit_welcome_label"),
-                       'installit': self.ui.get_object("installit_welcome_label"),
-                       'loading': self.ui.get_object("loading_label")}
+        self.labels = {'welcome': self.gui.get_object("welcome_label"),
+                       'tryit': self.gui.get_object("tryit_welcome_label"),
+                       'installit': self.gui.get_object("installit_welcome_label"),
+                       'loading': self.gui.get_object("loading_label")}
 
-        self.buttons = {'tryit': self.ui.get_object("tryit_button"),
-                        # 'cli': self.ui.get_object("cli_button"),
-                        'graph': self.ui.get_object("graph_button")}
+        self.buttons = {'tryit': self.gui.get_object("tryit_button"),
+                        # 'cli': self.gui.get_object("cli_button"),
+                        'graph': self.gui.get_object("graph_button")}
 
         for key in self.buttons:
             btn = self.buttons[key]
             btn.set_name(key + "_btn")
 
-        self.images = {'tryit': self.ui.get_object("tryit_image"),
-                       # 'cli': self.ui.get_object("cli_image"),
-                       'graph': self.ui.get_object("graph_image")}
+        self.images = {'tryit': self.gui.get_object("tryit_image"),
+                       # 'cli': self.gui.get_object("cli_image"),
+                       'graph': self.gui.get_object("graph_image")}
 
         self.filenames = {
             'tryit': {

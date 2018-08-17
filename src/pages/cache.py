@@ -57,8 +57,8 @@ class Cache(GtkBaseBox):
         # Stores device and partition tuple that will be used as cache
         # if partition is None, cnchi will try to use the whole device
         self.cache_path = (None, None)
-        self.part_store = self.ui.get_object('select_part')
-        self.part_label = self.ui.get_object('select_part_label')
+        self.part_store = self.gui.get_object('select_part')
+        self.part_label = self.gui.get_object('select_part_label')
         self.devices_and_partitions = {}
 
     def translate_ui(self):
@@ -66,13 +66,13 @@ class Cache(GtkBaseBox):
         txt = _("Select cache partition:")
         self.part_label.set_markup(txt)
 
-        label = self.ui.get_object('text_info')
+        label = self.gui.get_object('text_info')
         txt = _("It is recommended to use an additional cache\n"
                 "This installer needs to download a TON of packages from the Internet!")
         txt = "<b>{}</b>".format(txt)
         label.set_markup(txt)
 
-        label = self.ui.get_object('info_label')
+        label = self.gui.get_object('info_label')
         par1 = _("You can use an aditional device or partition to use as packages' cache. "
                  "In case you need to restart this installation\nyou won't be needing to "
                  "re-download all packages again.")

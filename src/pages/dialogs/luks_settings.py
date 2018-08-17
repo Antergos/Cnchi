@@ -51,24 +51,24 @@ class LuksSettingsDialog(Gtk.Dialog):
 
     UI_FILE = "luks_settings.ui"
 
-    def __init__(self, ui_dir, transient_for=None):
+    def __init__(self, gui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
         self.transient_for = transient_for
         self.set_transient_for(transient_for)
 
-        self.ui = Gtk.Builder()
-        ui_file = os.path.join(
-            ui_dir, 'dialogs', LuksSettingsDialog.UI_FILE)
-        self.ui.add_from_file(ui_file)
+        self.gui = Gtk.Builder()
+        gui_file = os.path.join(
+           gui_dir, 'dialogs', LuksSettingsDialog.UI_FILE)
+        self.gui.add_from_file(gui_file)
 
         # Connect UI signals
-        self.ui.connect_signals(self)
+        self.gui.connect_signals(self)
 
         # Show an warning message just once
         self.warning_message_shown = False
 
         area = self.get_content_area()
-        area.add(self.ui.get_object('luks_settings_vbox'))
+        area.add(self.gui.get_object('luks_settings_vbox'))
 
         self.buttons = {}
         self.buttons['apply'] = self.add_button(
@@ -87,9 +87,9 @@ class LuksSettingsDialog(Gtk.Dialog):
     def prepare(self, options):
         """ Show LUKS encryption options dialog """
 
-        entry_vol_name = self.ui.get_object('vol_name_entry')
-        entry_password = self.ui.get_object('password_entry')
-        entry_password_confirm = self.ui.get_object('password_confirm_entry')
+        entry_vol_name = self.gui.get_object('vol_name_entry')
+        entry_password = self.gui.get_object('password_entry')
+        entry_password_confirm = self.gui.get_object('password_confirm_entry')
 
         use_luks, vol_name, password = options
 
@@ -97,7 +97,7 @@ class LuksSettingsDialog(Gtk.Dialog):
         entry_password.set_text(password)
         entry_password_confirm.set_text(password)
 
-        switch_use_luks = self.ui.get_object('use_luks_switch')
+        switch_use_luks = self.gui.get_object('use_luks_switch')
         switch_use_luks.set_active(use_luks)
         self.enable_widgets(use_luks)
 
@@ -133,27 +133,27 @@ class LuksSettingsDialog(Gtk.Dialog):
 
         for grp in labels:
             name, txt = grp
-            label = self.ui.get_object(name)
+            label = self.gui.get_object(name)
             label.set_markup(txt)
 
     def get_use_luks(self):
         """ Returns if luks switch is activated or not """
-        switch = self.ui.get_object('use_luks_switch')
+        switch = self.gui.get_object('use_luks_switch')
         return switch.get_active()
 
     def get_vol_name(self):
         """ Returns volume name """
-        entry = self.ui.get_object('vol_name_entry')
+        entry = self.gui.get_object('vol_name_entry')
         return entry.get_text()
 
     def get_password(self):
         """ Returns luks password """
-        entry = self.ui.get_object('password_entry')
+        entry = self.gui.get_object('password_entry')
         return entry.get_text()
 
     def get_password_confirm(self):
         """ Returns luks password confirmation """
-        entry = self.ui.get_object('password_confirm_entry')
+        entry = self.gui.get_object('password_confirm_entry')
         return entry.get_text()
 
     def use_luks_switch_activated(self, widget, _data):
@@ -168,15 +168,15 @@ class LuksSettingsDialog(Gtk.Dialog):
         w_hide = ['password_confirm_image', 'password_status_label']
 
         for w_name in w_sensitive:
-            widget = self.ui.get_object(w_name)
+            widget = self.gui.get_object(w_name)
             widget.set_sensitive(status)
 
         if status is False:
             for w_name in w_hide:
-                widget = self.ui.get_object(w_name)
+                widget = self.gui.get_object(w_name)
                 widget.hide()
 
-        widget = self.ui.get_object('use_luks_switch')
+        widget = self.gui.get_object('use_luks_switch')
         widget.set_active(status)
         if status:
             self.password_changed()
@@ -210,18 +210,18 @@ class LuksSettingsDialog(Gtk.Dialog):
 
     def hide_password_info(self):
         """ Hide password's information """
-        self.ui.get_object('password_confirm_image').hide()
-        self.ui.get_object('password_status_label').hide()
-        self.ui.get_object('password_strength').hide()
+        self.gui.get_object('password_confirm_image').hide()
+        self.gui.get_object('password_status_label').hide()
+        self.gui.get_object('password_strength').hide()
 
     def password_changed(self, _widget=None):
         """ User has introduced new information. Check it here. """
         password = {}
-        password['entry'] = self.ui.get_object('password_entry')
-        password['confirm'] = self.ui.get_object('password_confirm_entry')
-        password['image'] = self.ui.get_object('password_confirm_image')
-        password['status'] = self.ui.get_object('password_status_label')
-        password['strength'] = self.ui.get_object('password_strength')
+        password['entry'] = self.gui.get_object('password_entry')
+        password['confirm'] = self.gui.get_object('password_confirm_entry')
+        password['image'] = self.gui.get_object('password_confirm_image')
+        password['status'] = self.gui.get_object('password_status_label')
+        password['strength'] = self.gui.get_object('password_strength')
 
         validation.check_password(
             password['entry'], password['confirm'],

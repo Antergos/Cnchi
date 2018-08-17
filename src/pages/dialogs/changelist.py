@@ -47,19 +47,19 @@ class ChangeListDialog(Gtk.Dialog):
 
     UI_FILE = "changelist.ui"
 
-    def __init__(self, ui_dir, transient_for=None):
+    def __init__(self, gui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
         self.transient_for = transient_for
         self.set_transient_for(transient_for)
 
-        self.ui = Gtk.Builder()
-        self.ui_dir = ui_dir
-        ui_file = os.path.join(
-            ui_dir, 'dialogs', ChangeListDialog.UI_FILE)
-        self.ui.add_from_file(ui_file)
+        self.gui = Gtk.Builder()
+        self.gui_dir = gui_dir
+        gui_file = os.path.join(
+            gui_dir, 'dialogs', ChangeListDialog.UI_FILE)
+        self.gui.add_from_file(gui_file)
 
         # Connect UI signals
-        self.ui.connect_signals(self)
+        self.gui.connect_signals(self)
 
         self.translate_ui()
 
@@ -72,7 +72,7 @@ class ChangeListDialog(Gtk.Dialog):
         for grp in btns:
             (btn_id, icon, lbl) = grp
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
-            btn = self.ui.get_object(btn_id)
+            btn = self.gui.get_object(btn_id)
             btn.set_always_show_image(True)
             btn.set_image(image)
             btn.set_label(lbl)

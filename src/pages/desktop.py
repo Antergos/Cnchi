@@ -51,13 +51,13 @@ class DesktopAsk(GtkBaseBox):
         data_dir = self.settings.get('data')
         self.desktops_dir = os.path.join(data_dir, "images", "desktops")
 
-        self.desktop_info = self.ui.get_object("desktop_info")
+        self.desktop_info = self.gui.get_object("desktop_info")
 
         self.desktop_image = None
         self.icon_desktop_image = None
 
         # Set up list box
-        self.listbox = self.ui.get_object("listbox_desktop")
+        self.listbox = self.gui.get_object("listbox_desktop")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
         self.listbox.set_sort_func(self.listbox_sort_by_name, None)
@@ -70,7 +70,7 @@ class DesktopAsk(GtkBaseBox):
 
     def translate_ui(self, desktop, set_header=True):
         """ Translates all ui elements """
-        label = self.ui.get_object("desktop_info")
+        label = self.gui.get_object("desktop_info")
         txt = "<span weight='bold'>{0}</span>\n".format(
             desktop_info.NAMES[desktop])
         description = desktop_info.DESCRIPTIONS[desktop]
@@ -81,7 +81,7 @@ class DesktopAsk(GtkBaseBox):
         path = os.path.join(self.desktops_dir, desktop + ".png")
         if self.desktop_image is None:
             self.desktop_image = Gtk.Image.new_from_file(path)
-            overlay = self.ui.get_object("image_overlay")
+            overlay = self.gui.get_object("image_overlay")
             overlay.add(self.desktop_image)
         else:
             self.desktop_image.set_from_file(path)
@@ -110,7 +110,7 @@ class DesktopAsk(GtkBaseBox):
                         "image-missing",
                         Gtk.IconSize.DIALOG)
 
-            overlay = self.ui.get_object("image_overlay")
+            overlay = self.gui.get_object("image_overlay")
             overlay.add_overlay(self.icon_desktop_image)
         else:
             if icon_exists:

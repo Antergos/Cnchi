@@ -64,16 +64,16 @@ class Slides(GtkBaseBox):
         """ Initialize class and its vars """
         super().__init__(self, params, "slides", prev_page, next_page)
 
-        self.progress_bar = self.ui.get_object("progress_bar")
+        self.progress_bar = self.gui.get_object("progress_bar")
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
 
-        self.downloads_progress_bar = self.ui.get_object(
+        self.downloads_progress_bar = self.gui.get_object(
             "downloads_progress_bar")
         self.downloads_progress_bar.set_show_text(True)
         self.downloads_progress_bar.set_name('a_progressbar')
 
-        self.info_label = self.ui.get_object("info_label")
+        self.info_label = self.gui.get_object("info_label")
 
         self.fatal_error = False
         self.should_pulse = False
@@ -81,7 +81,7 @@ class Slides(GtkBaseBox):
         self.webkit = {}
         self.webkit['view'] = None
         self.webkit['settings'] = None
-        self.webkit['box'] = self.ui.get_object("scrolledwindow")
+        self.webkit['box'] = self.gui.get_object("scrolledwindow")
 
         GLib.timeout_add(1000, self.manage_events_from_cb_queue)
 

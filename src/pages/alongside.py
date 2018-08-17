@@ -108,11 +108,11 @@ class InstallationAlongside(GtkBaseBox):
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
 
-        self.label = self.ui.get_object('label_info')
+        self.label = self.gui.get_object('label_info')
 
-        self.choose_partition_label = self.ui.get_object(
+        self.choose_partition_label = self.gui.get_object(
             'choose_partition_label')
-        self.choose_partition_combo = self.ui.get_object(
+        self.choose_partition_combo = self.gui.get_object(
             'choose_partition_combo')
 
         self.oses = bootinfo.get_os_dict()
@@ -176,7 +176,7 @@ class InstallationAlongside(GtkBaseBox):
         else:
             self.resize_widget = gtkwidgets.ResizeWidget(
                 part_size, min_size, max_size)
-            main_box = self.ui.get_object('alongside')
+            main_box = self.gui.get_object('alongside')
             main_box.pack_start(self.resize_widget, True, False, 5)
 
         self.resize_widget.set_part_title(

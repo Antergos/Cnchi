@@ -63,7 +63,7 @@ class Language(GtkBaseBox):
         super().__init__(self, params, "language", prev_page, next_page)
 
         # Set up list box
-        self.listbox = self.ui.get_object("listbox")
+        self.listbox = self.gui.get_object("listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
@@ -76,10 +76,10 @@ class Language(GtkBaseBox):
             "languagelist.txt.gz")
         self.set_languages_list()
 
-        image1 = self.ui.get_object("image1")
+        image1 = self.gui.get_object("image1")
         image1.set_from_file(os.path.join(data_dir, "images/languages.png"))
 
-        label = self.ui.get_object("welcome_label")
+        label = self.gui.get_object("welcome_label")
         label.set_name("WelcomeMessage")
 
         self.main_window = params['main_window']
@@ -124,7 +124,7 @@ class Language(GtkBaseBox):
                 "<a href='{1}'>{1}</a>")
         url = "http://bugs.antergos.com"
         txt = txt.format(txt_bold, url)
-        label = self.ui.get_object("welcome_label")
+        label = self.gui.get_object("welcome_label")
         label.set_markup(txt)
 
         label.set_hexpand(False)
@@ -238,7 +238,7 @@ class Language(GtkBaseBox):
             self.get_main_window(),
             self.settings.get('proxies'),
             self.settings.get('use_same_proxy_for_all_protocols'),
-            self.ui_dir)
+            self.gui_dir)
 
         response = dlg.run()
 

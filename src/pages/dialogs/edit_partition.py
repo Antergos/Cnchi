@@ -40,20 +40,20 @@ except NameError as err:
 class EditPartitionDialog(PartitionBaseDialog):
     """ Shows edit partition dialog """
 
-    UI_FILE = 'edit_partition.ui'
-    UI_OBJECT = 'edit_partition_vbox'
+    GUI_FILE = 'edit_partition.ui'
+    GUI_OBJECT = 'edit_partition_vbox'
 
-    def __init__(self, ui_dir, transient_for=None):
+    def __init__(self, gui_dir, transient_for=None):
 
         ui_info = {
-            'ui_dir': ui_dir,
-            'ui_file': EditPartitionDialog.UI_FILE,
-            'ui_object': EditPartitionDialog.UI_OBJECT}
-        PartitionBaseDialog.__init__(self, self, ui_info, transient_for)
+            'gui_dir': gui_dir,
+            'gui_file': EditPartitionDialog.GUI_FILE,
+            'gui_object': EditPartitionDialog.GUI_OBJECT}
+        PartitionBaseDialog.__init__(self, self, gui_info, transient_for)
 
     def wants_format(self):
         """ Returns if format checkbox is active """
-        format_check = self.ui.get_object('format_check')
+        format_check = self.gui.get_object('format_check')
         return format_check.get_active()
 
     def prepare(self):
@@ -74,7 +74,7 @@ class EditPartitionDialog(PartitionBaseDialog):
 
     def set_filesystem(self, filesystem):
         """ Selects the fs in the combobox """
-        combo = self.ui.get_object('use_combo')
+        combo = self.gui.get_object('use_combo')
         combo_model = combo.get_model()
 
         combo_iter = combo_model.get_iter_first()
@@ -88,16 +88,16 @@ class EditPartitionDialog(PartitionBaseDialog):
 
     def set_mount_point(self, mount_point):
         """ Sets current mount point """
-        mount_combo_entry = self.ui.get_object('mount_combo_entry')
+        mount_combo_entry = self.gui.get_object('mount_combo_entry')
         mount_combo_entry.set_text(mount_point)
 
     def set_label(self, label):
         """ Sets current partition label """
-        label_entry = self.ui.get_object('label_entry')
+        label_entry = self.gui.get_object('label_entry')
         label_entry.set_text(label)
 
     def set_format(self, format_active, format_sensitive):
         """ Sets format checkbox """
-        format_check = self.ui.get_object('format_check')
+        format_check = self.gui.get_object('format_check')
         format_check.set_active(format_active)
         format_check.set_sensitive(format_sensitive)

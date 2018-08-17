@@ -51,21 +51,21 @@ class CreateTableDialog(Gtk.Dialog):
 
     UI_FILE = "create_table.ui"
 
-    def __init__(self, ui_dir, transient_for=None):
+    def __init__(self, gui_dir, transient_for=None):
         Gtk.Dialog.__init__(self)
         self.set_transient_for(transient_for)
 
-        self.ui = Gtk.Builder()
-        self.ui_dir = ui_dir
-        ui_file = os.path.join(
-            ui_dir, 'dialogs', CreateTableDialog.UI_FILE)
-        self.ui.add_from_file(ui_file)
+        self.gui = Gtk.Builder()
+        self.gui_dir = gui_dir
+        gui_file = os.path.join(
+            gui_dir, 'dialogs', CreateTableDialog.UI_FILE)
+        self.gui.add_from_file(gui_file)
 
         # Connect UI signals
-        self.ui.connect_signals(self)
+        self.gui.connect_signals(self)
 
         area = self.get_content_area()
-        area.add(self.ui.get_object('create_table_vbox'))
+        area.add(self.gui.get_object('create_table_vbox'))
 
         self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
@@ -76,7 +76,7 @@ class CreateTableDialog(Gtk.Dialog):
     def get_table_type(self):
         """ Returns selected table type (msdos or gpt) """
         line = None
-        combo = self.ui.get_object('partition_types_combo')
+        combo = self.gui.get_object('partition_types_combo')
         if combo:
             line = combo.get_active_text()
             if line:
@@ -85,7 +85,7 @@ class CreateTableDialog(Gtk.Dialog):
 
     def prepare(self):
         """ Prepare partition types combobox """
-        combo = self.ui.get_object('partition_types_combo')
+        combo = self.gui.get_object('partition_types_combo')
         combo.remove_all()
         combo.append_text("msdos (MBR)")
         combo.append_text("GUID Partition Table (GPT)")

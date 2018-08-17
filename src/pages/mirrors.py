@@ -326,8 +326,8 @@ class Mirrors(GtkBaseBox):
         self.listboxes = []
         self.scrolledwindows = []
 
-        self.scrolledwindows.append(self.ui.get_object("scrolledwindow1"))
-        self.scrolledwindows.append(self.ui.get_object("scrolledwindow2"))
+        self.scrolledwindows.append(self.gui.get_object("scrolledwindow1"))
+        self.scrolledwindows.append(self.gui.get_object("scrolledwindow2"))
 
         for mirror_file in Mirrors.MIRRORLISTS:
             mirror_listbox = MirrorListBox(mirror_file, self.settings)
@@ -337,7 +337,7 @@ class Mirrors(GtkBaseBox):
         for index, scrolled_window in enumerate(self.scrolledwindows):
             scrolled_window.add(self.listboxes[index])
 
-        self.listboxes_box = self.ui.get_object("listboxes_box")
+        self.listboxes_box = self.gui.get_object("listboxes_box")
 
         self.use_rankmirrors = True
         self.use_listboxes = False
@@ -414,23 +414,23 @@ class Mirrors(GtkBaseBox):
 
         #bold_style = '<span weight="bold">{0}</span>'
 
-        radio = self.ui.get_object("rank_radiobutton")
+        radio = self.gui.get_object("rank_radiobutton")
         txt = _("Let Cnchi sort the mirrors lists (recommended)")
         radio.set_label(txt)
         radio.set_name('rank_radio_btn')
 
-        radio = self.ui.get_object("leave_radiobutton")
+        radio = self.gui.get_object("leave_radiobutton")
         txt = _("Leave the mirrors lists as they are (by default)")
         radio.set_label(txt)
         radio.set_name('leave_radio_btn')
 
-        radio = self.ui.get_object("user_radiobutton")
+        radio = self.gui.get_object("user_radiobutton")
         txt = _("Let me manage the mirrors lists (advanced)")
         radio.set_label(txt)
         radio.set_name('user_radio_btn')
 
         intro_txt = _("How would you like to proceed?")
-        intro_label = self.ui.get_object("introduction")
+        intro_label = self.gui.get_object("introduction")
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
         intro_label.set_hexpand(False)

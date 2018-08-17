@@ -51,14 +51,14 @@ class Location(GtkBaseBox):
     def __init__(self, params, prev_page="check", next_page="timezone"):
         super().__init__(self, params, "location", prev_page, next_page)
 
-        self.listbox = self.ui.get_object("location-listbox")
+        self.listbox = self.gui.get_object("location-listbox")
         self.listbox.set_name("location-listbox")
         self.listbox.connect("row-selected", self.on_listbox_row_selected)
         self.listbox.set_selection_mode(Gtk.SelectionMode.BROWSE)
 
-        self.label_choose_country = self.ui.get_object("label_choose_country")
+        self.label_choose_country = self.gui.get_object("label_choose_country")
         self.label_choose_country.set_name("location-label-choose-country")
-        self.label_help = self.ui.get_object("label_help")
+        self.label_help = self.gui.get_object("label_help")
         self.label_help.set_name("location-label-help")
 
         self.locales = {}
@@ -69,11 +69,11 @@ class Location(GtkBaseBox):
 
         self.show_all_locations = False
 
-        button = self.ui.get_object("show_all_locations_checkbutton")
+        button = self.gui.get_object("show_all_locations_checkbutton")
         button.set_name("location-checkbutton-show-all-locations")
         button.connect("toggled", self.all_locations_toggled, "")
 
-        self.scrolledwindow = self.ui.get_object("scrolledwindow1")
+        self.scrolledwindow = self.gui.get_object("scrolledwindow1")
 
     def all_locations_toggled(self, button, _name):
         """ Force to show all locations """
@@ -100,7 +100,7 @@ class Location(GtkBaseBox):
         txt = "<span weight='bold'>{0}</span>".format(txt)
         self.label_choose_country.set_markup(txt)
 
-        check = self.ui.get_object('show_all_locations_checkbutton')
+        check = self.gui.get_object('show_all_locations_checkbutton')
         txt = _("Show all locations")
         check.set_label(txt)
 
@@ -139,7 +139,7 @@ class Location(GtkBaseBox):
             "eventbox1", "eventbox2", "scrolledwindow1", "listbox_countries"]
 
         for name in names:
-            control = self.ui.get_object(name)
+            control = self.gui.get_object(name)
             if control is not None:
                 control.hide()
 

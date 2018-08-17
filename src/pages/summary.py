@@ -73,7 +73,7 @@ class Summary(GtkBaseBox):
         if not self.main_window:
             raise InstallError("Can't get main window")
 
-        scrolled_window = self.ui.get_object("scrolled_window")
+        scrolled_window = self.gui.get_object("scrolled_window")
         if scrolled_window:
             scrolled_window.set_policy(
                 Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
@@ -95,25 +95,25 @@ class Summary(GtkBaseBox):
             "partitions": _("Partitions")}
 
         for item_id in items:
-            label = self.ui.get_object(item_id + "_label")
+            label = self.gui.get_object(item_id + "_label")
             txt = "<b>{0}</b>".format(items[item_id])
             label.set_markup(txt)
 
         # Fill stateboxes
 
         # Location
-        statebox = self.ui.get_object("location_statebox")
+        statebox = self.gui.get_object("location_statebox")
         statebox.set_property("label", self.settings.get('location'))
 
         # Timezone
-        statebox = self.ui.get_object("timezone_statebox")
+        statebox = self.gui.get_object("timezone_statebox")
         txt = "{0}/{1}".format(
             self.settings.get("timezone_human_country"),
             self.settings.get("timezone_human_zone"))
         statebox.set_property("label", txt)
 
         # Keyboard
-        statebox = self.ui.get_object("keyboard_statebox")
+        statebox = self.gui.get_object("keyboard_statebox")
         layout = self.settings.get("keyboard_layout")
         variant = self.settings.get("keyboard_variant")
         txt = _("Layout: {0}").format(layout)
@@ -122,13 +122,13 @@ class Summary(GtkBaseBox):
         statebox.set_property("label", txt)
 
         # Desktop Environment
-        statebox = self.ui.get_object("de_statebox")
+        statebox = self.gui.get_object("de_statebox")
         desktop = self.settings.get('desktop')
         desktop_name = desktop_info.NAMES[desktop]
         statebox.set_property("label", desktop_name)
 
         # Features
-        statebox = self.ui.get_object("features_statebox")
+        statebox = self.gui.get_object("features_statebox")
         txt = ""
         self.num_features = 0
         for feature in features_info.TITLES:
@@ -143,7 +143,7 @@ class Summary(GtkBaseBox):
         install_screen = self.get_install_screen()
         if install_screen:
             txt = ""
-            statebox = self.ui.get_object("partitions_statebox")
+            statebox = self.gui.get_object("partitions_statebox")
             changes = install_screen.get_changes()
             if changes is None or not changes:
                 txt = _("Error getting changes from install screen")
@@ -184,7 +184,7 @@ class Summary(GtkBaseBox):
         if self.num_features == 0:
             names = ["features_statebox", "features_label"]
             for name in names:
-                widget = self.ui.get_object(name)
+                widget = self.gui.get_object(name)
                 widget.hide()
 
     def store_values(self):
@@ -228,7 +228,7 @@ class Summary(GtkBaseBox):
         description_txt = "<i>{}</i>".format(description_txt)
 
         wait_ui = Gtk.Builder()
-        ui_file = os.path.join(self.ui_dir, "wait.ui")
+        ui_file = os.path.join(self.gui_dir, "wait.ui")
         wait_ui.add_from_file(ui_file)
 
         action_lbl = wait_ui.get_object("action_label")
@@ -265,7 +265,7 @@ class Summary(GtkBaseBox):
         wait_window.show_all()
 
         # Disable this page (so the user can't click on it)
-        summary_box = self.ui.get_object("summary")
+        summary_box = self.gui.get_object("summary")
         if summary_box:
             summary_box.set_sensitive(False)
 

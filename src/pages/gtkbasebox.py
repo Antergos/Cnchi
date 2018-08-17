@@ -47,7 +47,7 @@ class GtkBaseBox(Gtk.Box):
         self.header = params['header']
         self.main_progressbar = params['main_progressbar']
         self.settings = params['settings']
-        self.ui_dir = params['ui_dir']
+        self.gui_dir = params['gui_dir']
         self.process_list = params['process_list']
         self.main_window = params['main_window']
         self.prev_page = prev_page
@@ -60,14 +60,14 @@ class GtkBaseBox(Gtk.Box):
 
         logging.debug("Loading '%s' screen", name)
 
-        self.ui = Gtk.Builder()
-        self.ui_file = os.path.join(self.ui_dir, "{}.ui".format(name))
-        self.ui.add_from_file(self.ui_file)
+        self.gui = Gtk.Builder()
+        self.gui_file = os.path.join(self.gui_dir, "{}.ui".format(name))
+        self.gui.add_from_file(self.gui_file)
 
         # Connect UI signals
-        self.ui.connect_signals(child)
+        self.gui.connect_signals(child)
 
-        child.add(self.ui.get_object(name))
+        child.add(self.gui.get_object(name))
 
     def get_prev_page(self):
         """ Returns previous screen """

@@ -50,30 +50,30 @@ except NameError as err:
 class PartitionBaseDialog(Gtk.Dialog):
     """ Create/Edit partition base dialog """
 
-    def __init__(self, child, ui_info, transient_for):
+    def __init__(self, child, gui_info, transient_for):
         """ Init base class """
         Gtk.Dialog.__init__(self)
         self.transient_for = transient_for
         self.set_transient_for(transient_for)
 
-        # ui_info is a dict with these fields:
-        # ui_dir, ui_file, ui_object
-        self.ui = Gtk.Builder()
-        self.ui_dir = ui_info['ui_dir']
-        self.ui_path = os.path.join(
-            self.ui_dir, 'dialogs', ui_info['ui_file'])
-        self.ui.add_from_file(self.ui_path)
+        # gui_info is a dict with these fields:
+        # gui_dir, gui_file, gui_object
+        self.gui = Gtk.Builder()
+        self.gui_dir = gui_info['gui_dir']
+        self.gui_path = os.path.join(
+            self.gui_dir, 'dialogs', gui_info['gui_file'])
+        self.gui.add_from_file(self.gui_path)
 
         # Connect UI signals
-        self.ui.connect_signals(self)
-        self.ui.connect_signals(child)
+        self.gui.connect_signals(self)
+        self.gui.connect_signals(child)
 
         self.luks_dialog = None
         # luks options is a tuple (use_luks, vol_name, password)
         self.luks_options = (False, "", "")
 
         area = self.get_content_area()
-        area.add(self.ui.get_object(ui_info['ui_object']))
+        area.add(self.gui.get_object(gui_info['gui_object']))
 
         self.add_stock_buttons()
 
@@ -100,12 +100,12 @@ class PartitionBaseDialog(Gtk.Dialog):
 
     def get_beginning_point(self):
         """ Returns where the new partition should start """
-        beg = self.ui.get_object('create_place_beginning')
+        beg = self.gui.get_object('create_place_beginning')
         return beg.get_active()
 
     def get_label(self):
         """ Returns partition label """
-        label = self.ui.get_object('label_entry')
+        label = self.gui.get_object('label_entry')
         if label:
             label = label.get_text()
             if not label.isalpha():
@@ -122,14 +122,14 @@ class PartitionBaseDialog(Gtk.Dialog):
 
     def get_mount_point(self):
         """ Returns mount point for the new partition """
-        mount_combo = self.ui.get_object('mount_combo_entry')
+        mount_combo = self.gui.get_object('mount_combo_entry')
         if mount_combo:
             return mount_combo.get_text().strip()
         return ""
 
     def get_filesystem(self):
         """ Returns desired filesystem """
-        fs_combo = self.ui.get_object('use_combo')
+        fs_combo = self.gui.get_object('use_combo')
         if fs_combo:
             filesystem = fs_combo.get_active_text()
             if filesystem is None:
@@ -141,12 +141,12 @@ class PartitionBaseDialog(Gtk.Dialog):
         """ If user selects to create an extended partition,
             some widgets must be disabled """
         wdgts = {
-            'use_label': self.ui.get_object('use_label'),
-            'use_combo': self.ui.get_object('use_combo'),
-            'mount_label': self.ui.get_object('mount_label'),
-            'mount_combo': self.ui.get_object('mount_combo'),
-            'label_label': self.ui.get_object('label_label'),
-            'label_entry': self.ui.get_object('label_entry')}
+            'use_label': self.gui.get_object('use_label'),
+            'use_combo': self.gui.get_object('use_combo'),
+            'mount_label': self.gui.get_object('mount_label'),
+            'mount_combo': self.gui.get_object('mount_combo'),
+            'label_label': self.gui.get_object('label_label'),
+            'label_entry': self.gui.get_object('label_entry')}
 
         sensitive = True
 
@@ -160,7 +160,7 @@ class PartitionBaseDialog(Gtk.Dialog):
         """ Show luks settings dialog """
         if not self.luks_dialog:
             self.luks_dialog = LuksSettingsDialog(
-                self.ui_dir, self.transient_for)
+                self.gui_dir, self.transient_for)
 
         # Do not show warning message when creating
         # a new partition. It's obvious all data will be
@@ -180,8 +180,8 @@ class PartitionBaseDialog(Gtk.Dialog):
         """ If user selects a swap fs, it can't be mounted the usual way """
         fs_selected = selection.get_active_text()
 
-        mount_combo = self.ui.get_object('mount_combo')
-        mount_label = self.ui.get_object('mount_label')
+        mount_combo = self.gui.get_object('mount_combo')
+        mount_label = self.gui.get_object('mount_label')
 
         if fs_selected == 'swap':
             mount_combo.hide()
@@ -194,27 +194,27 @@ class PartitionBaseDialog(Gtk.Dialog):
         """ Prepare elements for showing (before run) """
 
         # Initialize filesystems combobox
-        combo = self.ui.get_object('use_combo')
+        combo = self.gui.get_object('use_combo')
         combo.remove_all()
         for fs_name in sorted(fs.NAMES):
             combo.append_text(fs_name)
         combo.set_wrap_width(2)
 
         # Initialize edit partition dialog mount point combobox.
-        combo = self.ui.get_object('mount_combo')
+        combo = self.gui.get_object('mount_combo')
         combo.remove_all()
         for mount_point in fs.COMMON_MOUNT_POINTS:
             combo.append_text(mount_point)
 
         # label
-        label_entry = self.ui.get_object('label_entry')
+        label_entry = self.gui.get_object('label_entry')
         label_entry.set_text("")
 
         # use as (fs)
-        fs_combo = self.ui.get_object('use_combo')
+        fs_combo = self.gui.get_object('use_combo')
         fs_combo.set_active(3)
         # mount combo entry
-        mount_combo = self.ui.get_object('mount_combo_entry')
+        mount_combo = self.gui.get_object('mount_combo_entry')
         mount_combo.set_text("")
 
         self.translate_ui()
@@ -238,6 +238,6 @@ class PartitionBaseDialog(Gtk.Dialog):
 
         for grp in labels:
             label_id, text = grp
-            label = self.ui.get_object(label_id)
+            label = self.gui.get_object(label_id)
             if label:
                 label.set_label(text)

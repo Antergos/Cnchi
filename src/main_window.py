@@ -97,19 +97,19 @@ class MainWindow(Gtk.ApplicationWindow):
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
         self.settings = config.Settings()
-        self.ui_dir = self.settings.get('ui')
+        self.gui_dir = self.settings.get('ui')
 
-        if not os.path.exists(self.ui_dir):
+        if not os.path.exists(self.gui_dir):
             cnchi_dir = os.path.join(os.path.dirname(__file__), './')
             self.settings.set('cnchi', cnchi_dir)
 
-            ui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
-            self.settings.set('ui', ui_dir)
+            gui_dir = os.path.join(os.path.dirname(__file__), 'ui/')
+            self.settings.set('ui', gui_dir)
 
             data_dir = os.path.join(os.path.dirname(__file__), 'data/')
             self.settings.set('data', data_dir)
 
-            self.ui_dir = self.settings.get('ui')
+            self.gui_dir = self.settings.get('ui')
 
         # By default, always try to use local /var/cache/pacman/pkg
         xz_cache = ["/var/cache/pacman/pkg"]
@@ -153,7 +153,7 @@ class MainWindow(Gtk.ApplicationWindow):
                     my_desktop)
 
         self.cnchi_ui = Gtk.Builder()
-        path = os.path.join(self.ui_dir, "cnchi.ui")
+        path = os.path.join(self.gui_dir, "cnchi.ui")
         self.cnchi_ui.add_from_file(path)
 
         main = self.cnchi_ui.get_object("main")
@@ -161,7 +161,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.add(main)
 
         self.header_ui = Gtk.Builder()
-        path = os.path.join(self.ui_dir, "header.ui")
+        path = os.path.join(self.gui_dir, "header.ui")
         self.header_ui.add_from_file(path)
         self.header = self.header_ui.get_object("header")
 
@@ -225,7 +225,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params = dict()
         self.params['main_window'] = self
         self.params['header'] = self.header
-        self.params['ui_dir'] = self.ui_dir
+        self.params['gui_dir'] = self.gui_dir
         self.params['forward_button'] = self.forward_button
         self.params['backwards_button'] = self.backwards_button
         self.params['callback_queue'] = self.callback_queue

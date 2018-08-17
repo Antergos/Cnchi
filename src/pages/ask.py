@@ -107,15 +107,15 @@ class InstallationAsk(GtkBaseBox):
             "partitioner",
             "small")
 
-        image = self.ui.get_object("automatic_image")
+        image = self.gui.get_object("automatic_image")
         path = os.path.join(partitioner_dir, "automatic.png")
         image.set_from_file(path)
 
-        # image = self.ui.get_object("alongside_image")
+        # image = self.gui.get_object("alongside_image")
         # path = os.path.join(partitioner_dir, "alongside.png")
         # image.set_from_file(path)
 
-        image = self.ui.get_object("advanced_image")
+        image = self.gui.get_object("advanced_image")
         path = os.path.join(partitioner_dir, "advanced.png")
         image.set_from_file(path)
 
@@ -145,7 +145,7 @@ class InstallationAsk(GtkBaseBox):
         btn = Gtk.Button.new_with_label(btn_label)
         btn.connect(
             'clicked', self.alongside_wiki_button_clicked)
-        ask_box = self.ui.get_object("ask")
+        ask_box = self.gui.get_object("ask")
         ask_box.pack_start(btn, True, False, 0)
 
         self.browser = None
@@ -208,12 +208,12 @@ class InstallationAsk(GtkBaseBox):
             "home_checkbutton", "home_label"]
 
         for name in names:
-            obj = self.ui.get_object(name)
+            obj = self.gui.get_object(name)
             obj.set_sensitive(status)
 
         names = ["zfs_checkbutton", "zfs_label"]
         for name in names:
-            obj = self.ui.get_object(name)
+            obj = self.gui.get_object(name)
             obj.set_sensitive(status and self.is_zfs_available)
 
     def prepare(self, direction):
@@ -224,7 +224,7 @@ class InstallationAsk(GtkBaseBox):
             ('use_zfs', 'zfs_checkbutton'), ('use_home', 'home_checkbutton')}
 
         for (setting_name, widget_id) in widgets_settings:
-            widget = self.ui.get_object(widget_id)
+            widget = self.gui.get_object(widget_id)
             setting_value = self.settings.get(setting_name)
             widget.set_active(setting_value)
 
@@ -246,7 +246,7 @@ class InstallationAsk(GtkBaseBox):
                 "alongside_image"]
 
         for name in widgets:
-            widget = self.ui.get_object(name)
+            widget = self.gui.get_object(name)
             if widget is not None:
                 widget.hide()
 
@@ -284,7 +284,7 @@ class InstallationAsk(GtkBaseBox):
         max_width_chars = 80
 
         # Automatic Install
-        radio = self.ui.get_object("automatic_radiobutton")
+        radio = self.gui.get_object("automatic_radiobutton")
         if oses_str:
             txt = _("Replace {0} with Antergos").format(oses_str)
         else:
@@ -292,7 +292,7 @@ class InstallationAsk(GtkBaseBox):
         radio.set_label(txt)
         radio.set_name('auto_radio_btn')
 
-        label = self.ui.get_object("automatic_description")
+        label = self.gui.get_object("automatic_description")
         txt = _("Warning: This will erase ALL data on your disk.")
         # txt = description_style.format(txt)
         label.set_text(txt)
@@ -301,7 +301,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
-        button = self.ui.get_object("encrypt_checkbutton")
+        button = self.gui.get_object("encrypt_checkbutton")
         txt = _("Encrypt this installation for increased security.")
         button.set_label(txt)
         button.set_name("enc_btn")
@@ -309,7 +309,7 @@ class InstallationAsk(GtkBaseBox):
         # button.set_line_wrap(True)
         # button.set_max_width_chars(max_width_chars)
 
-        label = self.ui.get_object("encrypt_label")
+        label = self.gui.get_object("encrypt_label")
         txt = _("You will be asked to create an encryption password in the "
                 "next step.")
         # txt = description_style.format(txt)
@@ -319,7 +319,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
-        button = self.ui.get_object("lvm_checkbutton")
+        button = self.gui.get_object("lvm_checkbutton")
         txt = _("Use LVM with this installation.")
         button.set_label(txt)
         button.set_name("lvm_btn")
@@ -327,7 +327,7 @@ class InstallationAsk(GtkBaseBox):
         # button.set_line_wrap(True)
         # button.set_max_width_chars(max_width_chars)
 
-        label = self.ui.get_object("lvm_label")
+        label = self.gui.get_object("lvm_label")
         txt = _("This will setup LVM and allow you to easily manage "
                 "partitions and create snapshots.")
         # txt = description_style.format(txt)
@@ -337,7 +337,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
-        button = self.ui.get_object("zfs_checkbutton")
+        button = self.gui.get_object("zfs_checkbutton")
         txt = _("Use ZFS with this installation.")
         button.set_label(txt)
         button.set_name("zfs_btn")
@@ -345,7 +345,7 @@ class InstallationAsk(GtkBaseBox):
         # button.set_line_wrap(True)
         # button.set_max_width_chars(max_width_chars)
 
-        label = self.ui.get_object("zfs_label")
+        label = self.gui.get_object("zfs_label")
         txt = _("This will setup ZFS on your drive(s).")
         # txt = description_style.format(txt)
         label.set_text(txt)
@@ -354,7 +354,7 @@ class InstallationAsk(GtkBaseBox):
         label.set_line_wrap(True)
         label.set_max_width_chars(max_width_chars)
 
-        button = self.ui.get_object("home_checkbutton")
+        button = self.gui.get_object("home_checkbutton")
         txt = _("Set your Home in a different partition/volume")
         button.set_label(txt)
         button.set_name("home_btn")
@@ -362,7 +362,7 @@ class InstallationAsk(GtkBaseBox):
         # button.set_line_wrap(True)
         # button.set_max_width_chars(max_width_chars)
 
-        label = self.ui.get_object("home_label")
+        label = self.gui.get_object("home_label")
         txt = _("This will setup your /home directory in a different "
                 "partition or volume.")
         # txt = description_style.format(txt)
@@ -375,10 +375,10 @@ class InstallationAsk(GtkBaseBox):
         # Alongside Install (For now, only works with Windows)
         # if len(oses_str) > 0:
         #     txt = _("Install Antergos alongside {0}").format(oses_str)
-        #     radio = self.ui.get_object("alongside_radiobutton")
+        #     radio = self.gui.get_object("alongside_radiobutton")
         #     radio.set_label(txt)
         #
-        #     label = self.ui.get_object("alongside_description")
+        #     label = self.gui.get_object("alongside_description")
         #     txt = _("Installs Antergos without removing {0}").format(oses_str)
         #     txt = description_style.format(txt)
         #     label.set_markup(txt)
@@ -389,7 +389,7 @@ class InstallationAsk(GtkBaseBox):
         # else:
         intro_txt = _("How would you like to proceed?")
 
-        intro_label = self.ui.get_object("introduction")
+        intro_label = self.gui.get_object("introduction")
         # intro_txt = bold_style.format(intro_txt)
         intro_label.set_text(intro_txt)
         intro_label.set_name("intro_label")
@@ -398,12 +398,12 @@ class InstallationAsk(GtkBaseBox):
         intro_label.set_max_width_chars(max_width_chars)
 
         # Advanced Install
-        radio = self.ui.get_object("advanced_radiobutton")
+        radio = self.gui.get_object("advanced_radiobutton")
         radio.set_label(
             _("Choose exactly where Antergos should be installed."))
         radio.set_name("advanced_radio_btn")
 
-        label = self.ui.get_object("advanced_description")
+        label = self.gui.get_object("advanced_description")
         txt = _("Edit partition table and choose mount points.")
         # txt = description_style.format(txt)
         label.set_text(txt)
@@ -414,16 +414,16 @@ class InstallationAsk(GtkBaseBox):
 
     def store_values(self):
         """ Store selected values """
-        check = self.ui.get_object("encrypt_checkbutton")
+        check = self.gui.get_object("encrypt_checkbutton")
         use_luks = check.get_active()
 
-        check = self.ui.get_object("lvm_checkbutton")
+        check = self.gui.get_object("lvm_checkbutton")
         use_lvm = check.get_active()
 
-        check = self.ui.get_object("zfs_checkbutton")
+        check = self.gui.get_object("zfs_checkbutton")
         use_zfs = check.get_active()
 
-        check = self.ui.get_object("home_checkbutton")
+        check = self.gui.get_object("home_checkbutton")
         use_home = check.get_active()
 
         self.settings.set('use_lvm', use_lvm)
@@ -474,7 +474,7 @@ class InstallationAsk(GtkBaseBox):
     def automatic_radiobutton_toggled(self, widget):
         """ Automatic selected, enable all options """
         if widget.get_active():
-            check = self.ui.get_object("zfs_checkbutton")
+            check = self.gui.get_object("zfs_checkbutton")
             if check.get_active():
                 self.next_page = "installation_zfs"
             else:
@@ -487,7 +487,7 @@ class InstallationAsk(GtkBaseBox):
         if widget.get_active():
             self.next_page = "installation_automatic"
             # Disable ZFS if using LVM
-            check = self.ui.get_object("zfs_checkbutton")
+            check = self.gui.get_object("zfs_checkbutton")
             if check.get_active():
                 check.set_active(False)
 
@@ -496,7 +496,7 @@ class InstallationAsk(GtkBaseBox):
         if widget.get_active():
             self.next_page = "installation_zfs"
             # Disable LVM if using ZFS
-            check = self.ui.get_object("lvm_checkbutton")
+            check = self.gui.get_object("lvm_checkbutton")
             if check.get_active():
                 check.set_active(False)
         else:

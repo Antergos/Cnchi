@@ -65,19 +65,19 @@ class InstallationAutomatic(GtkBaseBox):
 
         self.auto_device = None
 
-        self.device_store = self.ui.get_object('part_auto_select_drive')
-        self.device_label = self.ui.get_object('part_auto_select_drive_label')
+        self.device_store = self.gui.get_object('part_auto_select_drive')
+        self.device_label = self.gui.get_object('part_auto_select_drive_label')
 
         self.entry = {
-            'luks_password': self.ui.get_object('entry_luks_password'),
-            'luks_password_confirm': self.ui.get_object('entry_luks_password_confirm')}
+            'luks_password': self.gui.get_object('entry_luks_password'),
+            'luks_password_confirm': self.gui.get_object('entry_luks_password_confirm')}
 
-        self.image_password_ok = self.ui.get_object('image_password_ok')
+        self.image_password_ok = self.gui.get_object('image_password_ok')
 
         self.devices = {}
         self.installation = None
 
-        self.boot_ui = boot_ui.BootUI(self.ui)
+        self.boot_ui = boot_ui.BootUI(self.gui)
 
         self.mount_devices = {}
         self.fs_devices = {}
@@ -87,30 +87,30 @@ class InstallationAutomatic(GtkBaseBox):
         txt = _("Select drive:")
         self.device_label.set_markup(txt)
 
-        label = self.ui.get_object('text_automatic')
+        label = self.gui.get_object('text_automatic')
         txt = _("WARNING! This will overwrite everything currently on your drive!")
         txt = "<b>{0}</b>".format(txt)
         label.set_markup(txt)
 
-        label = self.ui.get_object('info_label')
+        label = self.gui.get_object('info_label')
         txt = _("Select the drive we should use to install Antergos and then "
                 "click above to start the process.")
         label.set_markup(txt)
 
-        label = self.ui.get_object('label_luks_password')
+        label = self.gui.get_object('label_luks_password')
         txt = _("Encryption Password:")
         label.set_markup(txt)
 
-        label = self.ui.get_object('label_luks_password_confirm')
+        label = self.gui.get_object('label_luks_password_confirm')
         txt = _("Confirm your password:")
         label.set_markup(txt)
 
-        label = self.ui.get_object('label_luks_password_warning')
+        label = self.gui.get_object('label_luks_password_warning')
         txt = _(
             "LUKS Password. We do not recommend using special characters or accents!")
         label.set_markup(txt)
 
-        btn = self.ui.get_object('checkbutton_show_password')
+        btn = self.gui.get_object('checkbutton_show_password')
         btn.set_label(_("Show password"))
 
         self.header.set_subtitle(_("Automatic Installation Mode"))
@@ -119,7 +119,7 @@ class InstallationAutomatic(GtkBaseBox):
 
     def show_password_toggled(self, _widget):
         """ show/hide LUKS passwords """
-        btn = self.ui.get_object('checkbutton_show_password')
+        btn = self.gui.get_object('checkbutton_show_password')
         show = btn.get_active()
         self.entry['luks_password'].set_visibility(show)
         self.entry['luks_password_confirm'].set_visibility(show)
@@ -150,7 +150,7 @@ class InstallationAutomatic(GtkBaseBox):
         self.show_all()
         self.fill_bootloader_entry()
 
-        luks_grid = self.ui.get_object('luks_grid')
+        luks_grid = self.gui.get_object('luks_grid')
         luks_grid.set_sensitive(self.settings.get('use_luks'))
 
     def store_values(self):
