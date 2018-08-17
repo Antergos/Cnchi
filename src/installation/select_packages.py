@@ -421,15 +421,15 @@ class SelectPackages(object):
                 logging.debug(
                     "Adding libreoffice language package (%s)", pkg_text)
                 self.packages.append(pkg_text)
-                # hunspell
-                code = code[:2]
-                codes = ['de', 'es', 'fr', 'he', 'it',
-                         'ro', 'el', 'hu', 'nl', 'pl']
-                if code in codes:
-                    pkg_text = "hunspell-{0}".format(code)
-                    logging.debug(
-                        "Adding hunspell dictionaries for %s language", pkg_text)
-                    self.packages.append(pkg_text)
+                ## hunspell
+                #code = code[:2]
+                #codes = ['de', 'es', 'fr', 'he', 'it',
+                #         'ro', 'el', 'hu', 'nl', 'pl']
+                #if code in codes:
+                #    pkg_text = "hunspell-{0}".format(code)
+                #    logging.debug(
+                #        "Adding hunspell dictionaries for %s language", pkg_text)
+                #    self.packages.append(pkg_text)
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
