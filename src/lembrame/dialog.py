@@ -45,22 +45,22 @@ def _(msg):
 class LembrameDialog(Gtk.Dialog):
     """ Asks user for lembrame credentials """
 
-    def __init__(self, transient_for, ui_dir):
+    def __init__(self, transient_for, gui_dir):
         Gtk.Dialog.__init__(self)
 
         self.set_transient_for(transient_for)
-        self.ui_dir = ui_dir
+        self.gui_dir = gui_dir
         self.set_default_size(300, 150)
 
-        self.ui = Gtk.Builder()
-        self.ui_file = os.path.join(self.ui_dir, "lembrame.ui")
-        self.ui.add_from_file(self.ui_file)
+        self.gui = Gtk.Builder()
+        self.gui_file = os.path.join(self.gui_dir, "lembrame.ui")
+        self.gui.add_from_file(self.gui_file)
 
         self.translate_ui()
 
         self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
 
-        dialog_grid = self.ui.get_object("LembrameDialogGrid")
+        dialog_grid = self.gui.get_object("LembrameDialogGrid")
         content_area = self.get_content_area()
         content_area.add(dialog_grid)
 
@@ -68,18 +68,18 @@ class LembrameDialog(Gtk.Dialog):
         """ Translate GUI widgets """
         self.set_title(_("Cnchi - Lembrame credentials"))
 
-        label = self.ui.get_object("lembrame_label")
+        label = self.gui.get_object("lembrame_label")
         label.set_text(_("You will need to write your UserID and your upload code\n"
                          "which you should generate first with the Lembrame tool\n"
                          "before beginning a new installation."))
-        label = self.ui.get_object("userid_label")
+        label = self.gui.get_object("userid_label")
         label.set_text(_("Your UserID:"))
-        label = self.ui.get_object("uploadcode_label")
+        label = self.gui.get_object("uploadcode_label")
         label.set_text(_("Your upload code:"))
 
     def get_credentials(self):
         """ Load credentials from UI and return them as a class """
-        user_id = self.ui.get_object("userid_entry")
-        upload_code = self.ui.get_object("uploadcode_entry")
+        user_id = self.gui.get_object("userid_entry")
+        upload_code = self.gui.get_object("uploadcode_entry")
 
         return LembrameCredentials(user_id.get_text(), upload_code.get_text())
