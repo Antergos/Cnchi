@@ -60,7 +60,7 @@ class Avatars(Gtk.Dialog):
         self.set_default_size(-1, -1)
         self.set_resizable(False)
 
-        self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
+        #self.add_button(Gtk.STOCK_APPLY, Gtk.ResponseType.APPLY)
 
         self.selected_avatar = None
 
@@ -95,6 +95,7 @@ class Avatars(Gtk.Dialog):
     def avatar_selected(self, _iconview, treepath):
         """ Store selected avatar """
         self.selected_avatar = self.list_store[treepath][0]
+        self.response(Gtk.ResponseType.OK)
 
 def test_module():
     """ Test avatar dialog """
