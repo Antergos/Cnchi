@@ -225,7 +225,7 @@
                 <pkgname>gnome-screenshot</pkgname>
                 <pkgname>gnome-system-monitor</pkgname>
                 <pkgname>gnome-terminal</pkgname>
-                <pkgname>gnome-themes-standard</pkgname>
+                <!-- <pkgname>gnome-themes-standard</pkgname> -->
                 <pkgname>gvfs-google</pkgname>
                 <pkgname>gvfs-mtp</pkgname>
                 <pkgname>gvfs-smb</pkgname>
@@ -607,7 +607,7 @@
                 <pkgname>gnome-sound-recorder</pkgname>
                 <pkgname>gnome-system-monitor</pkgname>
                 <pkgname>gnome-terminal</pkgname>
-                <pkgname>gnome-themes-standard</pkgname>
+                <!-- <pkgname>gnome-themes-standard</pkgname> -->
                 <pkgname>gnome-tweak-tool</pkgname>
                 <pkgname>gnome-weather</pkgname>
                 <pkgname>gvfs-google</pkgname>

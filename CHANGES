@@ -1,3 +1,4 @@
+[2018-08-17 17:20:16 +0200]  Fix packages.xml                                                           karasu      {0af03381}
 [2018-08-17 15:14:54 +0200]  Remove hunspell installation (temporary fix)                               karasu      {88d720c5}
 [2018-08-17 15:13:25 +0200]  Remove antergos-common-meta                                                karasu      {3f6d48c6}
 [2018-08-17 15:12:41 +0200]  Do not use meta packages (temporary)                                       karasu      {dda0ae16}
