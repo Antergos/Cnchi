@@ -121,9 +121,14 @@ class CnchiApp(Gtk.Application):
         self.add_window(window)
         window.show()
 
-        with open(self.tmp_running, "w") as tmp_file:
-            txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
-            tmp_file.write(txt)
+        try:
+            with misc.raised_privileges():
+                with open(self.tmp_running, 'w') as tmp_file:
+                    txt = "Cnchi {0}\n{1}\n".format(info.CNCHI_VERSION, os.getpid())
+                    tmp_file.write(txt)
+        except PermissionError as err:
+            logging.error(err)
+            show.error(None, err)
 
         # This is unnecessary as show_all is called in MainWindow
         # window.show_all()
@@ -159,10 +164,10 @@ class CnchiApp(Gtk.Application):
             if misc.check_pid(pid):
                 logging.info("Cnchi with pid '%d' already running.", pid)
                 return True
-            else:
-                # Cnchi with pid 'pid' is no longer running, we can safely
-                # remove the offending file and continue.
-                os.remove(self.tmp_running)
+
+            # Cnchi with pid 'pid' is no longer running, we can safely
+            # remove the offending file and continue.
+            os.remove(self.tmp_running)
         return False
 
 class CnchiInit():
@@ -184,6 +189,7 @@ class CnchiInit():
         # Sets SIGTERM handler, so Cnchi can clean up before exiting
         # signal.signal(signal.SIGTERM, sigterm_handler)
 
+        # Create Cnchi's temporary folder
         os.makedirs(CnchiInit.TEMP_FOLDER, mode=0o755, exist_ok=True)
 
         # Configures gettext to be able to translate messages, using _()
