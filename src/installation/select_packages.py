@@ -251,24 +251,25 @@ class SelectPackages(object):
                     for pkg in edition.iter('pkgname'):
                         self.add_package(pkg)
 
+        # Arch has removed kde-l10-xx packages
         # Set KDE language pack
-        if self.desktop == 'kde':
-            pkg_text = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
-                if locale in lang_packs:
-                    pkg_text = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
-                pkg_text = base_name + lang_code
-            if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg_text)
-                self.packages.append(pkg_text)
+        #if self.desktop == 'kde':
+        #    pkg_text = ""
+        #    base_name = 'kde-l10n-'
+        #    lang_name = self.settings.get("language_name").lower()
+        #    if lang_name == "english":
+        #        # There're some English variants available but not all of them.
+        #        lang_packs = ['en_gb']
+        #        locale = self.settings.get('locale').split('.')[0].lower()
+        #        if locale in lang_packs:
+        #            pkg_text = base_name + locale
+        #    else:
+        #        # All the other language packs use their language code
+        #        lang_code = self.settings.get('language_code').lower()
+        #        pkg_text = base_name + lang_code
+        #    if pkg_text:
+        #        logging.debug("Selected kde language pack: %s", pkg_text)
+        #        self.packages.append(pkg_text)
 
         try:
             # Detect which hardware drivers are needed
