@@ -1,3 +1,4 @@
+[2018-08-18 19:01:02 +0200]  update packages.xml (budgie)                                               karasu      {a3ee5b81}
 [2018-08-18 18:38:56 +0200]  gnome-themes-standard removed.                                             karasu      {2d9e8af3}
 [2018-08-17 17:20:16 +0200]  Fix packages.xml                                                           karasu      {0af03381}
 [2018-08-17 15:14:54 +0200]  Remove hunspell installation (temporary fix)                               karasu      {88d720c5}
