@@ -212,28 +212,6 @@ class SelectPackages():
             xml_tree = elementTree.parse(xml_filename)
             self.xml_root = xml_tree.getroot()
 
-    def maybe_add_kde_languagepack(self):
-        """ Adds KDE language packages if KDE is selected """
-        if self.desktop == 'kde':
-            pkg_text = ""
-            base_name = 'kde-l10n-'
-            lang_name = self.settings.get("language_name").lower()
-
-            if lang_name == "english":
-                # There're some English variants available but not all of them.
-                lang_packs = ['en_gb']
-                locale = self.settings.get('locale').split('.')[0].lower()
-                if locale in lang_packs:
-                    pkg_text = base_name + locale
-            else:
-                # All the other language packs use their language code
-                lang_code = self.settings.get('language_code').lower()
-                pkg_text = base_name + lang_code
-
-            if pkg_text:
-                logging.debug("Selected kde language pack: %s", pkg_text)
-                self.packages.append(pkg_text)
-
     def add_drivers(self):
         """ Add package drivers """
         try:
@@ -346,9 +324,6 @@ class SelectPackages():
 
         # Add common and desktop specific packages
         self.add_edition_packages()
-
-        # Add KDE language pack
-        self.maybe_add_kde_languagepack()
 
         # Add drivers' packages
         self.add_drivers()
