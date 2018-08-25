@@ -415,7 +415,6 @@
                 <pkgname>aspell-en</pkgname>
                 <pkgname>breeze</pkgname>
                 <pkgname>breeze-gtk</pkgname>
-                <pkgname>breeze-kde4</pkgname>
                 <pkgname>cdrdao</pkgname>
                 <pkgname>clementine</pkgname>
                 <pkgname>dolphin</pkgname>
@@ -752,14 +751,12 @@
             <pkgname>php-apache</pkgname>
             <pkgname>mariadb</pkgname>
             <pkgname>phpmyadmin</pkgname>
-            <pkgname>php-mcrypt</pkgname>
         </feature>
         <feature name="lemp">
             <pkgname>nginx</pkgname>
             <pkgname>php-fpm</pkgname>
             <pkgname>mariadb</pkgname>
             <pkgname>phpmyadmin</pkgname>
-            <pkgname>php-mcrypt</pkgname>
         </feature>
         <feature name="lts">
             <pkgname>linux-lts</pkgname>
