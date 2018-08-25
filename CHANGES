@@ -1,3 +1,4 @@
+[2018-08-25 12:32:03 +0200]  Replace qtcurve-qt4 with qtcurve-qt5                                       karasu      {b38a7cd6}
 [2018-08-25 12:09:46 +0200]  kdesudo has been dropped (by Antergos)                                     karasu      {7b3f42cc}
 [2018-08-25 12:00:38 +0200]  breeze-qt4 has been removed                                                karasu      {a2e3e40a}
 [2018-08-23 18:01:02 +0200]  Arch dropped kde-l10n packages                                             karasu      {85a9f65b}
