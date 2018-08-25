@@ -431,7 +431,7 @@
                 <pkgname>kdelibs4support</pkgname>
                 <pkgname>kopete</pkgname>
                 <pkgname>kde-servicemenus-rootactions</pkgname>
-                <pkgname>kdesudo</pkgname>
+                <!--<pkgname>kdesudo</pkgname>-->
                 <pkgname>sweeper</pkgname>
                 <pkgname>kdialog</pkgname>
                 <pkgname>kfaenza-icon-theme</pkgname>
