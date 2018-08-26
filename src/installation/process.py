@@ -69,10 +69,11 @@ class Process(multiprocessing.Process):
     def create_metalinks_list(self):
         """ Create metalinks list """
         self.pkg = pack.SelectPackages(self.settings, self.events.queue)
+
         self.pkg.create_package_list()
 
         if not self.pkg.packages:
-            txt = _("Cannot create package list.")
+            txt = _("Cannot create package list")
             raise misc.InstallError(txt)
 
         # We won't download anything here. It's just to create the metalinks list

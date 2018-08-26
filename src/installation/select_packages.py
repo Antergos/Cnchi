@@ -26,6 +26,7 @@
 
 import logging
 import os
+import subprocess
 import requests
 from requests.exceptions import RequestException
 
@@ -81,7 +82,8 @@ class SelectPackages():
         # If Lembrame enabled set pacman.conf pointing to the decrypted folder
         if self.settings.get('feature_lembrame'):
             self.lembrame = Lembrame(self.settings)
-            self.settings.set('pacman_config_file', self.lembrame.config.folder_file_path + '/pacman.conf')
+            path = os.path.join(self.lembrame.config.folder_file_path, 'pacman.conf')
+            self.settings.set('pacman_config_file', path)
 
     def create_package_list(self):
         """ Create package list """
@@ -355,6 +357,30 @@ class SelectPackages():
         # Remove duplicates and conflicting packages
         self.cleanup_packages_list()
         logging.debug("Packages list: %s", ','.join(self.packages))
+
+        # Check if all packages ARE in the repositories
+        # This is done mainly to avoid errors when Arch removes a package silently
+        self.check_packages()
+
+    def check_packages(self):
+        """ Checks that all selected packages ARE in the repositories """
+        not_found = []
+        for pkg_name in self.packages:
+            # TODO: Use libalpm instead
+            cmd = ["/usr/bin/pacman", "-Ss", pkg_name]
+            try:
+                output = subprocess.check_output(cmd).decode()
+            except subprocess.CalledProcessError:
+                output = ""
+
+            if pkg_name not in output:
+                not_found.append(pkg_name)
+                logging.error("Package %s...NOT FOUND!", pkg_name)
+
+        if not_found:
+            txt = _("Cannot find these packages: {}").format(', '.join(not_found))
+            raise misc.InstallError(txt)
+
 
     def cleanup_packages_list(self):
         """ Cleans up a bit our packages list """
