@@ -202,10 +202,11 @@ class Features(GtkBaseBox):
                 try:
                     switch = self.listbox_rows['lembrame'][Features.COL_SWITCH]
                     if switch and switch.get_active():
-                        logging.debug("Activating something else besides Lembrame. Deactivating Lembrame.")
+                        msg = "Activating something else besides Lembrame. Deactivating Lembrame."
+                        logging.debug(msg)
                         switch.set_active(False)
                 except KeyError as err:
-                    logging.warning(err)
+                    pass
         elif feature == 'lembrame':
             # Activate previous deactivated features
             for row_feature in self.features_lembrame:
