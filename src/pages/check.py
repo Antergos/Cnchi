@@ -53,15 +53,13 @@ except NameError as err:
     def _(message):
         return message
 
-# Constants
-NM = 'org.freedesktop.NetworkManager'
-NM_STATE_CONNECTED_GLOBAL = 70
-UPOWER = 'org.freedesktop.UPower'
-UPOWER_PATH = '/org/freedesktop/UPower'
-MIN_ROOT_SIZE = 8000000000
 
 class Check(GtkBaseBox):
     """ Check class """
+
+    UPOWER_KEY = 'org.freedesktop.UPower'
+    UPOWER_PATH = '/org/freedesktop/UPower'
+    MIN_ROOT_SIZE = 16000000000
 
     def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
@@ -96,7 +94,7 @@ class Check(GtkBaseBox):
 
         self.prepare_enough_space = self.gui.get_object("prepare_enough_space")
         txt = _("has at least {0}GB available storage space. (*)")
-        txt = txt.format(MIN_ROOT_SIZE / 1000000000)
+        txt = txt.format(Check.MIN_ROOT_SIZE / 1000000000)
         self.prepare_enough_space.set_property("label", txt)
 
         txt = _("This highly depends on which desktop environment you choose, "
@@ -172,12 +170,11 @@ class Check(GtkBaseBox):
         """ Checks if we are on battery power """
         if self.has_battery():
             bus = dbus.SystemBus()
-            upower = bus.get_object(UPOWER, UPOWER_PATH)
-            result = misc.get_prop(upower, UPOWER_PATH, 'OnBattery')
+            upower = bus.get_object(Check.UPOWER_KEY, Check.UPOWER_PATH)
+            result = misc.get_prop(upower, Check.UPOWER_PATH, 'OnBattery')
             if result is None:
                 # Cannot read property, something is wrong.
-                logging.warning("Cannot read %s/%s dbus property",
-                                UPOWER_PATH, 'OnBattery')
+                logging.warning("Cannot read %s/OnBattery dbus property", Check.UPOWER_PATH)
                 # We will assume we are connected to a power supply
                 result = False
             return result
@@ -214,7 +211,7 @@ class Check(GtkBaseBox):
                     if size > max_size:
                         max_size = size
 
-        return max_size >= MIN_ROOT_SIZE
+        return max_size >= Check.MIN_ROOT_SIZE
 
     def is_updated(self):
         """ Checks that we're running the latest stable cnchi version """
