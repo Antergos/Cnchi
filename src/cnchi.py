@@ -510,7 +510,8 @@ class CnchiInit():
             '-c', "dbus-launch gsettings set " + schema + " " + key + " " + value]
 
         logging.debug("Running set on gsettings: %s", ''.join(str(e) + ' ' for e in cmd))
-        return call(cmd)
+        with misc.raised_privileges():
+            return call(cmd)
 
 def main():
     """ Main function. Initializes Cnchi and creates it as a GTK App """
