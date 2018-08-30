@@ -365,7 +365,10 @@ class SelectPackages():
     def check_packages(self):
         """ Checks that all selected packages ARE in the repositories """
         not_found = []
-        for pkg_name in self.packages:
+        self.events.add('percent', 0)
+        self.events.add('info', _("Checking that all selected packages are available online..."))
+        num_pkgs = len(self.packages)
+        for index, pkg_name in enumerate(self.packages):
             # TODO: Use libalpm instead
             cmd = ["/usr/bin/pacman", "-Ss", pkg_name]
             try:
@@ -376,6 +379,9 @@ class SelectPackages():
             if pkg_name not in output:
                 not_found.append(pkg_name)
                 logging.error("Package %s...NOT FOUND!", pkg_name)
+
+            percent = (index + 1) / num_pkgs
+            self.events.add('percent', percent)
 
         if not_found:
             txt = _("Cannot find these packages: {}").format(', '.join(not_found))
