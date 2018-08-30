@@ -68,8 +68,7 @@ class Slides(GtkBaseBox):
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
 
-        self.downloads_progress_bar = self.gui.get_object(
-            "downloads_progress_bar")
+        self.downloads_progress_bar = self.gui.get_object("downloads_progress_bar")
         self.downloads_progress_bar.set_show_text(True)
         self.downloads_progress_bar.set_name('a_progressbar')
 
@@ -102,14 +101,18 @@ class Slides(GtkBaseBox):
         }
 
     def _apply_webkit_settings(self):
-        self.webkit['settings'] = WebKit2.Settings()
-        all_settings = self._get_settings_for_webkit()
+        try:
+            self.webkit['settings'] = WebKit2.Settings()
 
-        for setting_name, value in all_settings.items():
-            setting_name = 'set_{}'.format(setting_name)
-            set_setting = getattr(self.webkit['settings'], setting_name)
+            all_settings = self._get_settings_for_webkit()
 
-            set_setting(value)
+            for setting_name, value in all_settings.items():
+                setting_name = 'set_{}'.format(setting_name)
+                set_setting = getattr(self.webkit['settings'], setting_name)
+                set_setting(value)
+        except TypeError as err:
+            self.webkit['settings'] = None
+            logging.error(err)
 
     def prepare(self, direction):
         """ Prepare slides screen """
@@ -118,10 +121,11 @@ class Slides(GtkBaseBox):
             # Add a webkit view and load our html file to show the slides
             try:
                 self._apply_webkit_settings()
-                self.webkit['view'] = WebKit2.WebView.new_with_settings(
-                    self.webkit['settings'])
-                self.webkit['view'].connect(
-                    'context-menu', lambda _a, _b, _c, _d: True)
+                if self.webkit['settings']:
+                    self.webkit['view'] = WebKit2.WebView.new_with_settings(self.webkit['settings'])
+                else:
+                    self.webkit['view'] = WebKit2.WebView.new()
+                self.webkit['view'].connect('context-menu', lambda _a, _b, _c, _d: True)
                 self.webkit['view'].set_hexpand(True)
                 self.webkit['view'].load_uri(Slides.URI)
             except IOError as io_error:
