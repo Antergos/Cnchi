@@ -190,7 +190,8 @@ class CnchiInit():
         # signal.signal(signal.SIGTERM, sigterm_handler)
 
         # Create Cnchi's temporary folder
-        os.makedirs(CnchiInit.TEMP_FOLDER, mode=0o755, exist_ok=True)
+        with misc.raised_privileges():
+            os.makedirs(CnchiInit.TEMP_FOLDER, mode=0o755, exist_ok=True)
 
         # Configures gettext to be able to translate messages, using _()
         self.setup_gettext()
