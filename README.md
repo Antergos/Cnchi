@@ -59,12 +59,14 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
 <a name="dependencies">Dependencies</a>
 
  - gtk3
- - python3
+ - python (python3)
  - python-cairo
+ - python-chardet
  - python-dbus
  - python-defusedxml
  - python-feedparser
  - python-gobject
+ - python-idna
  - python-mako
  - python-requests
  - geoip (python-geoip2, python-maxminddb, geoip2-database)

@@ -268,7 +268,8 @@ class CnchiInit():
         # File logger
         log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
         try:
-            file_handler = logging.FileHandler(log_path, mode='w')
+            with misc.raised_privileges():
+                file_handler = logging.FileHandler(log_path, mode='w')
             file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
