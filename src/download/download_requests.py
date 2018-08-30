@@ -122,7 +122,7 @@ class Download():
             # Get package to download from downloads list
             _identity, element = downloads.popitem()
 
-            self.events.add('percent', '0')
+            self.events.add('percent', 0)
 
             txt = _("Fetching {0} {1} ({2}/{3})...").format(
                 element['identity'],

@@ -43,8 +43,13 @@ class Events():
         """ Queues events to the event list in the GUI thread """
 
         if event_type == "percent":
-            # Limit percent to two decimal
-            event_text = "{0:.2f}".format(event_text)
+            try:
+                event_text = float(event_text)
+                # Limit percent to two decimals
+                event_text = "{0:.2f}".format(event_text)
+            except ValueError:
+                msg = "{} cannot be converted to a float number".format(event_text)
+                logging.warning(msg)
 
         if event_type in self.last_event:
             if self.last_event[event_type] == event_text:

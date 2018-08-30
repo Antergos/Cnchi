@@ -147,7 +147,7 @@ class DownloadPackages():
     def create_metalinks_list(self):
         """ Creates a downloads list (metalinks) from the package list """
 
-        self.events.add('percent', '0')
+        self.events.add('percent', 0)
         self.events.add(
             'info', _('Creating the list of packages to download...'))
         processed_packages = 0
@@ -185,7 +185,7 @@ class DownloadPackages():
                 # Show progress to the user
                 processed_packages += 1
                 percent = round(float(processed_packages / total_packages), 2)
-                self.events.add('percent', str(percent))
+                self.events.add('percent', percent)
 
             pacman.release()
             del pacman
