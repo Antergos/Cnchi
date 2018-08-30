@@ -29,7 +29,7 @@
 
 """ Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.15.292"
+CNCHI_VERSION = "0.15.293"
 """ Cnchi version """
 
 CNCHI_WEBSITE = "http://www.antergos.com"

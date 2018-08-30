@@ -128,11 +128,12 @@ class Slides(GtkBaseBox):
                 self.webkit['view'].connect('context-menu', lambda _a, _b, _c, _d: True)
                 self.webkit['view'].set_hexpand(True)
                 self.webkit['view'].load_uri(Slides.URI)
-            except IOError as io_error:
-                logging.warning(io_error)
+            except (IOError, GLib.Error) as err:
+                logging.error(err)
 
-            self.webkit['box'].add(self.webkit['view'])
-            self.webkit['box'].set_size_request(800, 335)
+            if self.webkit['view']:
+                self.webkit['box'].add(self.webkit['view'])
+                self.webkit['box'].set_size_request(800, 335)
 
         self.translate_ui()
         self.show_all()
