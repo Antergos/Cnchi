@@ -238,7 +238,8 @@ class CnchiInit():
     def setup_logging(self):
         """ Configure our logger """
 
-        os.makedirs(CnchiInit.LOG_FOLDER, mode=0o755, exist_ok=True)
+        with misc.raise_privileges():
+            os.makedirs(CnchiInit.LOG_FOLDER, mode=0o755, exist_ok=True)
 
         logger = logging.getLogger()
 
