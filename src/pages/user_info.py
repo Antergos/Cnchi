@@ -381,14 +381,12 @@ class UserInfo(GtkBaseBox):
 
     def get_prev_page(self):
         """ Returns previous screen """
-        partition_mode = self.settings.get('partition_mode')
+        pages = {
+            'advanced':  'installation_advanced',
+            'alongside': 'installation_alongside',
+            'automatic': 'installation_automatic',
+            'zfs': 'installation_zfs'}
 
-        if partition_mode == 'alongside':
-            self.prev_page = "installation_alongside"
-        elif partition_mode == 'advanced':
-            self.prev_page = "installation_advanced"
-        elif partition_mode == 'automatic':
-            self.prev_page = "installation_automatic"
-        elif partition_mode == 'zfs':
-            self.prev_page = "installation_zfs"
+        partition_mode = self.settings.get('partition_mode')
+        self.prev_page = pages.get(partition_mode, None)
         return self.prev_page
