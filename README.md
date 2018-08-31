@@ -7,6 +7,8 @@
 ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
 ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
 
+[![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 You are viewing the `0.15.x` branch (development).
 
 ## Current Status
