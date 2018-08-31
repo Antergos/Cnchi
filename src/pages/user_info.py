@@ -67,34 +67,7 @@ class UserInfo(GtkBaseBox):
     def __init__(self, params, prev_page=None, next_page="summary"):
         super().__init__(self, params, "user_info", prev_page, next_page)
 
-        self.image_is_ok = dict()
-        self.image_is_ok['fullname'] = self.gui.get_object('fullname_ok')
-        self.image_is_ok['hostname'] = self.gui.get_object('hostname_ok')
-        self.image_is_ok['username'] = self.gui.get_object('username_ok')
-        self.image_is_ok['password'] = self.gui.get_object('password_ok')
-
-        self.error_label = dict()
-        self.error_label['hostname'] = self.gui.get_object(
-            'hostname_error_label')
-        self.error_label['username'] = self.gui.get_object(
-            'username_error_label')
-        self.error_label['password'] = self.gui.get_object(
-            'password_error_label')
-
-        self.password_strength = self.gui.get_object('password_strength')
-
-        self.entry = dict()
-        self.entry['fullname'] = self.gui.get_object('fullname')
-        self.entry['hostname'] = self.gui.get_object('hostname')
-        self.entry['username'] = self.gui.get_object('username')
-        self.entry['password'] = self.gui.get_object('password')
-        self.entry['verified_password'] = self.gui.get_object(
-            'verified_password')
-
-        self.login = dict()
-        self.login['auto'] = self.gui.get_object('login_auto')
-        self.login['pass'] = self.gui.get_object('login_pass')
-        self.login['encrypt'] = self.gui.get_object('login_encrypt')
+        self.load_widgets()
 
         self.require_password = True
         self.encrypt_home = False
@@ -103,8 +76,8 @@ class UserInfo(GtkBaseBox):
         self.avatars_path = os.path.join(self.data_path, 'images/avatars')
         self.avatars = ['bob', 'jarry', 'jonathan', 'mike', 'suzanne', 'tom']
 
-        self.overlay = self.gui.get_object('user_info_overlay')
-        self.overlay.show()
+        if self.overlay:
+            self.overlay.show()
 
         self.avatar_image = None
         self.selected_avatar_path = None
@@ -136,6 +109,44 @@ class UserInfo(GtkBaseBox):
             random.seed()
             avatar = random.choice(self.avatars)
             self.set_avatar(avatar)
+
+    def load_widgets(self):
+        """ Get widgets """
+        self.widgets = dict()
+
+        self.widgets['fullname'] = dict()
+        self.widgets['fullname']['entry'] = self.gui.get_object('fullname')
+        self.widgets['fullname']['image'] = self.gui.get_object('fullname_ok')
+
+        self.widgets['hostname'] = dict()
+        self.widgets['hostname']['entry'] = self.gui.get_object('hostname')
+        self.widgets['hostname']['image'] = self.gui.get_object('hostname_ok')
+        self.widgets['hostname']['label'] = self.gui.get_object(
+            'hostname_error_label')
+
+        self.widgets['username'] = dict()
+        self.widgets['username']['entry'] = self.gui.get_object('username')
+        self.widgets['username']['image'] = self.gui.get_object('username_ok')
+        self.widgets['username']['label'] = self.gui.get_object(
+            'username_error_label')
+
+        self.widgets['password'] = dict()
+        self.widgets['password']['entry'] = self.gui.get_object('password')
+        self.widgets['password']['image'] = self.gui.get_object('password_ok')
+        self.widgets['password']['label'] = self.gui.get_object(
+            'password_error_label')
+        self.widgets['password']['strength'] = self.gui.get_object('password_strength')
+
+        self.widgets['verified_password'] = dict()
+        self.widgets['verified_password']['entry'] = self.gui.get_object(
+            'verified_password')
+
+        self.login = dict()
+        self.login['auto'] = self.gui.get_object('login_auto')
+        self.login['pass'] = self.gui.get_object('login_pass')
+        self.login['encrypt'] = self.gui.get_object('login_encrypt')
+
+        self.overlay = self.gui.get_object('user_info_overlay')
 
     def set_avatar(self, avatar):
         """ Sets avatar image """
@@ -216,7 +227,7 @@ class UserInfo(GtkBaseBox):
 
         for name, txt in labels.items():
             txt = small_dark_red.format(txt)
-            self.error_label[name].set_markup(txt)
+            self.widgets[name]['label'].set_markup(txt)
 
         self.login['auto'].set_label(_("Log in automatically"))
         self.login['pass'].set_label(_("Require my password to log in"))
@@ -227,18 +238,16 @@ class UserInfo(GtkBaseBox):
 
         self.header.set_subtitle(_("Create Your User Account"))
 
-
     def hide_widgets(self):
         """ Hide unused and message widgets """
-        ok_widgets = self.image_is_ok.values()
-        for ok_widget in ok_widgets:
-            ok_widget.hide()
 
-        error_label_widgets = self.error_label.values()
-        for error_label in error_label_widgets:
-            error_label.hide()
+        for element in self.widgets:
+            if 'image' in element.keys():
+                element['image'].hide()
+            if 'label' in element.keys():
+                element['label'].hide()
 
-        self.password_strength.hide()
+        self.widgets['password']['strength'].hide()
 
         # Hide cryfs encryption if using LUKS encryption
         # (user must use one or the other but not both)
@@ -251,10 +260,12 @@ class UserInfo(GtkBaseBox):
 
     def store_values(self):
         """ Store all user values in self.settings """
-        self.settings.set('user_fullname', self.entry['fullname'].get_text())
-        self.settings.set('hostname', self.entry['hostname'].get_text())
-        self.settings.set('user_name', self.entry['username'].get_text())
-        self.settings.set('user_password', self.entry['password'].get_text())
+        self.settings.set(
+            'user_fullname', self.widgets['fullname']['entry'].get_text())
+        self.settings.set(
+            'hostname', self.widgets['hostname']['entry'].get_text())
+        self.settings.set('user_name', self.widgets['username']['entry'].get_text())
+        self.settings.set('user_password', self.widgets['password']['entry'].get_text())
         self.settings.set('require_password', self.require_password)
 
         # FIXME: Allow home encryption
@@ -293,8 +304,8 @@ class UserInfo(GtkBaseBox):
         """ show/hide user password """
         btn = self.gui.get_object('checkbutton_show_password')
         shown = btn.get_active()
-        self.entry['password'].set_visibility(shown)
-        self.entry['verified_password'].set_visibility(shown)
+        self.widgets['password']['entry'].set_visibility(shown)
+        self.widgets['verified_password']['entry'].set_visibility(shown)
 
     def authentication_toggled(self, widget):
         """ User has changed autologin or home encrypting """
@@ -306,79 +317,64 @@ class UserInfo(GtkBaseBox):
 
     def validate(self, element, value):
         """ Check that what the user is typing is ok """
-        if not value:
-            self.image_is_ok[element].set_from_icon_name(
-                UserInfo.ICON_WARNING,
-                Gtk.IconSize.LARGE_TOOLBAR)
-            self.image_is_ok[element].show()
-            self.error_label[element].show()
+        val_error = validation.check(element, value)
+        if not val_error:
+            # Value validated
+            self.set_icon(element, UserInfo.ICON_OK)
+            self.widgets[element]['label'].hide()
         else:
-            result = validation.check(element, value)
-            if not result:
-                self.image_is_ok[element].set_from_icon_name(
-                    UserInfo.ICON_OK,
-                    Gtk.IconSize.LARGE_TOOLBAR)
-                self.image_is_ok[element].show()
-                self.error_label[element].hide()
-            else:
-                self.image_is_ok[element].set_from_icon_name(
-                    UserInfo.ICON_WARNING,
-                    Gtk.IconSize.LARGE_TOOLBAR)
-                self.image_is_ok[element].show()
+            # Not validated. Show warning icon and error
+            self.set_icon(element, UserInfo.ICON_WARNING)
+            txt = self.format_validation_error(val_error)
+            self.widgets[element]['label'].set_markup(txt)
+            self.widgets[element]['label'].show()
 
-                if validation.NAME_BADCHAR in result:
-                    txt = _("Invalid characters entered")
-                elif validation.NAME_BADDOTS in result:
-                    txt = _("Username can't contain dots")
-                elif validation.NAME_LENGTH in result:
-                    txt = _("Too many characters")
-                else:
-                    txt = _("Unknown error")
+    def set_icon(self, element, icon_type):
+        """ Sets icon image """
+        self.widgets[element]['image'].set_from_icon_name(
+            icon_type,
+            Gtk.IconSize.LARGE_TOOLBAR)
+        self.widgets[element]['image'].show()
 
-                my_format = "<small><span color='darkred'>{0}</span></small>"
-                txt = my_format.format(txt)
-                self.error_label[element].set_markup(txt)
-                self.error_label[element].show()
+    @staticmethod
+    def format_validation_error(validation_error):
+        """ Format validation error message """
+        if validation.NAME_BADCHAR in validation_error:
+            txt = _("Invalid characters entered")
+        elif validation.NAME_BADDOTS in validation_error:
+            txt = _("Username can't contain dots")
+        elif validation.NAME_LENGTH in validation_error:
+            txt = _("Too few or too many characters")
+        else:
+            txt = _("Unknown error")
+        txt = "<small><span color='darkred'>{0}</span></small>"
+        return txt.format(txt)
 
     def info_loop(self, widget):
         """ User has introduced new information. Check it here. """
 
-        if widget == self.entry['fullname']:
-            fullname = self.entry['fullname'].get_text()
-            if fullname:
-                self.image_is_ok['fullname'].set_from_icon_name(
-                    UserInfo.ICON_OK,
-                    Gtk.IconSize.LARGE_TOOLBAR)
-            else:
-                self.image_is_ok['fullname'].set_from_icon_name(
-                    UserInfo.ICON_WARNING,
-                    Gtk.IconSize.LARGE_TOOLBAR)
-            self.image_is_ok['fullname'].show()
+        for key, element in self.widgets.items():
+            if widget != element['entry']:
+                continue
+            if key in ('fullname', 'hostname', 'username'):
+                value = element['entry'].get_text()
+                self.validate(key, value)
+            elif key in ('password', 'verified_password'):
+                self.validate_password()
 
-        elif widget == self.entry['hostname']:
-            hostname = self.entry['hostname'].get_text()
-            self.validate('hostname', hostname)
-
-        elif widget == self.entry['username']:
-            username = self.entry['username'].get_text()
-            self.validate('username', username)
-
-        elif (widget == self.entry['password'] or
-              widget == self.entry['verified_password']):
-            validation.check_password(
-                self.entry['password'],
-                self.entry['verified_password'],
-                self.image_is_ok['password'],
-                self.error_label['password'],
-                self.password_strength)
-
-        # Check if all fields are filled and ok
+        # Check if all fields are filled and ok by checking image icons
         all_ok = True
-        ok_widgets = self.image_is_ok.values()
         if not self.settings.get('hidden'):
-            for ok_widget in ok_widgets:
-                icon_name = ok_widget.get_property('icon-name')
-                visible = ok_widget.is_visible()
-                if not visible or icon_name == UserInfo.ICON_WARNING:
-                    all_ok = False
+            for element in self.widgets:
+                if 'image' in element.keys():
+                    icon_name = element['image'].get_property('icon-name')
+                    visible = element['image'].is_visible()
+                    if not visible or icon_name == UserInfo.ICON_WARNING:
+                        all_ok = False
         self.forward_button.set_sensitive(all_ok)
+
+    def validate_password(self):
+        """ Validates changed password entry """
+        validation.check_password(
+            self.widgets['password'],
+            self.widgets['verified_password'])

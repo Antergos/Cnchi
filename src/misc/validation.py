@@ -10,6 +10,11 @@
 
 """  Validation module """
 
+NAME_LENGTH = 1
+NAME_BADCHAR = 2
+NAME_BADHYPHEN = 3
+NAME_BADDOTS = 4
+
 if __debug__:
     def _(message):
         return message
@@ -30,18 +35,15 @@ def check_grub_device(device):
     return bool(regex.search(device))
 
 
-NAME_LENGTH = 1
-NAME_BADCHAR = 2
-NAME_BADHYPHEN = 3
-NAME_BADDOTS = 4
-
-
 def check(element, value):
     """ Check element value """
+    if not value:
+        return [NAME_LENGTH]
     if element == 'username':
         return check_username(value)
     if element == 'hostname':
         return check_hostname(value)
+    return []
 
 
 def check_username(name):
@@ -56,7 +58,7 @@ def check_username(name):
     import re
     result = set()
 
-    if len(name) < 1 or len(name) > 40:
+    if not name or len(name) > 40:
         result.add(NAME_LENGTH)
 
     regex = re.compile(r'^[a-z0-9.\-]+$')
@@ -82,7 +84,7 @@ def check_hostname(name):
     import re
     result = set()
 
-    if len(name) < 1 or len(name) > 63:
+    if not name or len(name) > 63:
         result.add(NAME_LENGTH)
 
     regex = re.compile(r'^[a-zA-Z0-9.-]+$')
@@ -156,38 +158,36 @@ def human_password_strength(password):
     return hint, color
 
 
-def check_password(password, verified_password, password_ok,
-                   password_error_label, strength,
-                   allow_empty=False):
+def check_password(password, verified_password, allow_empty=False):
     """ Check user password
-        This function expects Gtk widgets as parameters """
+        This function expects dicts with Gtk widgets as parameters """
 
     complete = True
-    passw = password.get_text()
-    vpassw = verified_password.get_text()
+    passw = password['entry'].get_text()
+    vpassw = verified_password['entry'].get_text()
     if passw != vpassw:
         complete = False
-        password_ok.hide()
+        password['image'].hide()
         if passw and (len(vpassw) / float(len(passw)) > 0.8):
             red_fmt = '<small><span foreground="darkred"><b>{0}</b></span></small>'
             txt = red_fmt.format(_("Passwords do not match"))
-            password_error_label.set_markup(txt)
-            password_error_label.show()
+            password['label'].set_markup(txt)
+            password['label'].show()
     else:
-        password_error_label.hide()
+        password['label'].hide()
 
     if allow_empty:
-        strength.hide()
+        password['strength'].hide()
     elif not passw:
-        strength.hide()
+        password['strength'].hide()
         complete = False
     else:
-        (txt, color) = human_password_strength(passw)
+        txt, color = human_password_strength(passw)
         color_fmt = '<small><span foreground="{0}"><b>{1}</b></span></small>'
         txt = color_fmt.format(color, txt)
-        strength.set_markup(txt)
-        strength.show()
+        password['strength'].set_markup(txt)
+        password['strength'].show()
         if passw == vpassw:
-            password_ok.show()
+            password['image'].show()
 
     return complete
