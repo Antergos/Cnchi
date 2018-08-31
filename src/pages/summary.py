@@ -209,11 +209,6 @@ class Summary(GtkBaseBox):
         self.process.start()
         return True
 
-    def get_prev_page(self):
-        """ Gets previous page """
-        page = "installation_" + self.settings.get('partition_mode')
-        return page
-
     def create_wait_window(self):
         """ Creates a wait dialog so the user knows that cnchi is updating
         the mirror lists. Returns the wait window and its progress bar """

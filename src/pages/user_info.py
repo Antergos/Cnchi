@@ -302,6 +302,10 @@ class UserInfo(GtkBaseBox):
         # Disable forward button until user data is filled correctly
         self.forward_button.set_sensitive(False)
 
+        # First time this will do nothing, next ones will try to revalidate
+        # already entered information, and will update forward_button
+        self.info_loop()
+
     def show_password_toggled(self, _widget):
         """ show/hide user password """
         btn = self.gui.get_object('checkbutton_show_password')
@@ -364,7 +368,7 @@ class UserInfo(GtkBaseBox):
         tmpl = "<small><span color='darkred'>{0}</span></small>"
         return tmpl.format(txt)
 
-    def info_loop(self, widget):
+    def info_loop(self, widget=None):
         """ User has introduced new information. Check it here. """
 
         for key, element in self.widgets.items():
@@ -394,13 +398,6 @@ class UserInfo(GtkBaseBox):
             self.widgets['verified_password'])
 
     def get_prev_page(self):
-        """ Returns previous screen """
-        pages = {
-            'advanced':  'installation_advanced',
-            'alongside': 'installation_alongside',
-            'automatic': 'installation_automatic',
-            'zfs': 'installation_zfs'}
-
-        partition_mode = self.settings.get('partition_mode')
-        self.prev_page = pages.get(partition_mode, None)
-        return self.prev_page
+        """ Gets previous page """
+        page = "installation_" + self.settings.get('partition_mode')
+        return page
