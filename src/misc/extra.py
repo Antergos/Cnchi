@@ -22,6 +22,7 @@
 
 import contextlib
 import grp
+import http.client
 import locale
 import logging
 import os
@@ -35,7 +36,7 @@ import string
 import subprocess
 import syslog
 import urllib
-
+import ssl
 import dbus
 
 
@@ -415,26 +416,39 @@ def get_nm_state():
 
 def has_connection():
     """ Checks if we have an Internet connection """
+    # The ips are reversed (to avoid spam)
     urls = [
-        'http://130.206.13.20',
-        'http://173.194.40.112',
-        'http://104.27.140.167']
+        ('http', '20.13.206.130'),
+        ('https', '167.140.27.104'),
+        ('https', '167.141.27.104')]
 
-    for url in urls:
+    for prot, ip_addr in urls:
         try:
-            urllib.request.urlopen(url, timeout=5)
-        except (OSError, timeout, urllib.error.URLError) as url_err:
-            logging.warning(url_err)
-        else:
-            return True
+            ip_addr = ip_addr.split('.')[::-1]
+            ip_addr = '.'.join(ip_addr)
+            url = "{0}://{1}".format(prot, ip_addr)
+            if prot == 'http':
+                urllib.request.urlopen(url, timeout=5)
+            elif prot == 'https':
+                conn = http.client.HTTPSConnection(ip_addr, timeout=5)           
+                conn.request("GET", "/")
+                conn.close()
+        except ssl.SSLError as err:
+            # Cannot establish a SSL connection but site exists, so it's fine.
+            conn.close()
+        except (KeyError, OSError, timeout, urllib.error.URLError, http.client.InvalidURL) as err:
+            # Cannot connect, either site is down or there is no Internet connection
+            logging.error("%s: %s", url, err)
+            return False
 
-    # We cannot connect to any url, let's ask NetworkManager
-    # Problem: In a Virtualbox VM this returns true even when
-    # the host OS has no connection
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-        return True
-
-    return False
+    return True
+    ## We cannot connect to any url, let's ask NetworkManager
+    ## Problem: In a Virtualbox VM this returns true even when
+    ## the host OS has no connection
+    #if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
+    #    return True
+    #
+    #return False
 
 
 def add_connection_watch(func):
