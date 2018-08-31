@@ -322,21 +322,33 @@ class UserInfo(GtkBaseBox):
         val_error = validation.check(element, value)
         if not val_error:
             # Value validated
-            self.set_icon(element, UserInfo.ICON_OK)
-            self.widgets[element]['label'].hide()
+            self.set_icon_and_label(element)
         else:
             # Not validated. Show warning icon and error
-            self.set_icon(element, UserInfo.ICON_WARNING)
-            txt = self.format_validation_error(val_error)
-            self.widgets[element]['label'].set_markup(txt)
-            self.widgets[element]['label'].show()
+            label_text = self.format_validation_error(val_error)
+            self.set_icon_and_label(element, label_text)
 
-    def set_icon(self, element, icon_type):
-        """ Sets icon image """
-        self.widgets[element]['image'].set_from_icon_name(
-            icon_type,
-            Gtk.IconSize.LARGE_TOOLBAR)
-        self.widgets[element]['image'].show()
+    def set_icon_and_label(self, element, label_text=""):
+        """ Sets icon image and error label text """
+
+        image = self.widgets[element].get('image', None)
+        if image:
+            if label_text:
+                # label_text is filled, validation has failed
+                icon_type = UserInfo.ICON_WARNING
+            else:
+                icon_type = UserInfo.ICON_OK
+            image.set_from_icon_name(icon_type, Gtk.IconSize.LARGE_TOOLBAR)
+            image.show()
+
+        label = self.widgets[element].get('label', None)
+        if label:
+            if label_text:
+                # Show validation error
+                label.set_markup(label_text)
+                label.show()
+            else:
+                label.hide()
 
     @staticmethod
     def format_validation_error(validation_error):
