@@ -241,14 +241,11 @@ class UserInfo(GtkBaseBox):
     def hide_widgets(self):
         """ Hide unused and message widgets """
 
-        for element in self.widgets:
-            if isinstance(element, dict):
-                if 'image' in element.keys():
-                    element['image'].hide()
-                if 'label' in element.keys():
-                    element['label'].hide()
-            else:
-                print(element)
+        for _key, element in self.widgets.items():
+            if 'image' in element.keys():
+                element['image'].hide()
+            if 'label' in element.keys():
+                element['label'].hide()
         try:
             self.widgets['password']['strength'].hide()
         except KeyError:
@@ -370,7 +367,7 @@ class UserInfo(GtkBaseBox):
         # Check if all fields are filled and ok by checking image icons
         all_ok = True
         if not self.settings.get('hidden'):
-            for element in self.widgets:
+            for _key, element in self.widgets.items():
                 if 'image' in element.keys():
                     icon_name = element['image'].get_property('icon-name')
                     visible = element['image'].is_visible()
