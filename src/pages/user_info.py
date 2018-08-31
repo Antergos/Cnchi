@@ -361,8 +361,8 @@ class UserInfo(GtkBaseBox):
             txt = _("Too few or too many characters")
         else:
             txt = _("Unknown error")
-        txt = "<small><span color='darkred'>{0}</span></small>"
-        return txt.format(txt)
+        tmpl = "<small><span color='darkred'>{0}</span></small>"
+        return tmpl.format(txt)
 
     def info_loop(self, widget):
         """ User has introduced new information. Check it here. """
