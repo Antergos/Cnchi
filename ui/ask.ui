@@ -334,7 +334,7 @@
             <object class="GtkLabel" id="advanced_description">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin-start">70</property>
+                <property name="margin_start">70</property>
                 <property name="halign">start</property>
                 <property name="valign">start</property>
                 <property name="label" translatable="yes"></property>
