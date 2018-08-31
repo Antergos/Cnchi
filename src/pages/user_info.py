@@ -242,12 +242,17 @@ class UserInfo(GtkBaseBox):
         """ Hide unused and message widgets """
 
         for element in self.widgets:
-            if 'image' in element.keys():
-                element['image'].hide()
-            if 'label' in element.keys():
-                element['label'].hide()
-
-        self.widgets['password']['strength'].hide()
+            if isinstance(element, dict):
+                if 'image' in element.keys():
+                    element['image'].hide()
+                if 'label' in element.keys():
+                    element['label'].hide()
+            else:
+                print(element)
+        try:
+            self.widgets['password']['strength'].hide()
+        except KeyError:
+            pass
 
         # Hide cryfs encryption if using LUKS encryption
         # (user must use one or the other but not both)
