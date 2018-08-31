@@ -378,3 +378,17 @@ class UserInfo(GtkBaseBox):
         validation.check_password(
             self.widgets['password'],
             self.widgets['verified_password'])
+
+    def get_prev_page(self):
+        """ Returns previous screen """
+        partition_mode = self.settings.get('partition_mode')
+
+        if partition_mode == 'alongside':
+            self.prev_page = "installation_alongside"
+        elif partition_mode == 'advanced':
+            self.prev_page = "installation_advanced"
+        elif partition_mode == 'automatic':
+            self.prev_page = "installation_automatic"
+        elif partition_mode == 'zfs':
+            self.prev_page = "installation_zfs"
+        return self.prev_page
