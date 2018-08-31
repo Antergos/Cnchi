@@ -69,6 +69,8 @@ class UserInfo(GtkBaseBox):
 
         self.load_widgets()
 
+        self.first_time_shown = True
+
         self.require_password = True
         self.encrypt_home = False
 
@@ -288,7 +290,6 @@ class UserInfo(GtkBaseBox):
         """ Prepare screen """
         self.translate_ui()
         self.show_all()
-        self.hide_widgets()
 
         if self.webcam and not self.webcam.error:
             self.webcam.show_all()
@@ -302,9 +303,14 @@ class UserInfo(GtkBaseBox):
         # Disable forward button until user data is filled correctly
         self.forward_button.set_sensitive(False)
 
-        # First time this will do nothing, next ones will try to revalidate
-        # already entered information, and will update forward_button
+        # try to revalidate already entered information, and update forward_button
+        self.validate_all()
         self.info_loop()
+
+        # First time we show this screen we must hide all validation warnings
+        if self.first_time_shown:
+            self.hide_widgets()
+            self.first_time_shown = False
 
     def show_password_toggled(self, _widget):
         """ show/hide user password """
@@ -367,6 +373,15 @@ class UserInfo(GtkBaseBox):
             txt = _("Unknown error")
         tmpl = "<small><span color='darkred'>{0}</span></small>"
         return tmpl.format(txt)
+
+    def validate_all(self):
+        """ Validate all user info """
+        for key, element in self.widgets.items():
+            if key in ('fullname', 'hostname', 'username'):
+                value = element['entry'].get_text()
+                self.validate(key, value)
+            elif key in ('password', 'verified_password'):
+                self.validate_password()
 
     def info_loop(self, widget=None):
         """ User has introduced new information. Check it here. """
