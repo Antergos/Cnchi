@@ -6,11 +6,14 @@
         <property name="can_focus">False</property>
         <property name="margin_start">10</property>
         <property name="margin_end">10</property>
-        <property name="margin_top">5</property>
-        <property name="margin_bottom">10</property>
+        <!--<property name="margin_top">5</property>
+        <property name="margin_bottom">10</property>-->
         <property name="hexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">15</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+
         <child>
             <object class="GtkBox" id="box1">
                 <property name="visible">True</property>
