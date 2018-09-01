@@ -32,8 +32,11 @@
 import logging
 import os
 import subprocess
-
+import tarfile
+import tempfile
 import dbus
+
+import requests
 
 from gi.repository import GLib
 
@@ -66,7 +69,7 @@ class Check(GtkBaseBox):
         super().__init__(self, params, "check", prev_page, next_page)
 
         self.remove_timer = False
-
+        self.remote_version = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
@@ -74,7 +77,6 @@ class Check(GtkBaseBox):
         self.prepare_best_results = None
         self.updated = None
         self.packaging_issues = None
-        self.remote_version = None
 
         self.label_space = self.gui.get_object("label_space")
 
@@ -215,13 +217,12 @@ class Check(GtkBaseBox):
 
     def is_updated(self):
         """ Checks that we're running the latest stable cnchi version """
-        remote_version = self.get_cnchi_version_in_repo()
-        local_version = info.CNCHI_VERSION
+        if not self.remote_version:
+            self.remote_version = self.get_cnchi_version_in_repo()
 
-        if remote_version:
-            return self.compare_versions(remote_version, local_version)
-        else:
-            return False
+        if self.remote_version:
+            return self.compare_versions(self.remote_version, info.CNCHI_VERSION)
+        return False
 
     @staticmethod
     def compare_versions(remote, local):
@@ -230,45 +231,56 @@ class Check(GtkBaseBox):
 
         remote = remote.split('.')
         local = local.split('.')
-
         for i, remote_val in enumerate(remote):
             remote[i] = int(remote_val)
-
         for i, local_val in enumerate(local):
             local[i] = int(local_val)
-
         if remote[0] < local[0]:
             return True
-
         if remote[0] > local[0]:
             return False
-
         if remote[1] < local[1]:
             return True
-
         if remote[1] > local[1]:
             return False
-
         if remote[2] > local[2]:
             return False
-
         return True
 
-    def get_cnchi_version_in_repo(self):
+    @staticmethod
+    def get_cnchi_version_in_repo():
         """ Checks cnchi version in the Antergos repository """
-        if not self.remote_version:
+        mirrors = [
+            ("info.antergos.repo", "/antergos/x86_64/antergos.db"),
+            ("net.leaseweb.de.mirror", "/antergos/antergos/x86_64/antergos.db")]
+
+        for fdqn, path in mirrors:
+            fdqn = '.'.join(fdqn.split('.')[::-1])
+            url = 'https://' + fdqn + path
+            pkg = None
             try:
-                cmd = ["pacman", "-Ss", "cnchi"]
-                line = subprocess.check_output(cmd).decode().split()
-                version = line[1]
-                if '-' in version:
-                    version = version.split('-')[0]
-                logging.debug(
-                    'Cnchi version in the repository is: %s', version)
-                self.remote_version = version
-            except subprocess.CalledProcessError as err:
-                logging.debug(err)
-        return self.remote_version
+                ant_db = tempfile.NamedTemporaryFile(delete=False)
+                response = requests.get(url)
+                ant_db.write(response.content)
+                ant_db.close()
+
+                with tarfile.open(ant_db.name) as tar:
+                    members = tar.getmembers()
+                    for tarinfo in members:
+                        if ("desc" not in tarinfo.name and
+                                "cnchi" in tarinfo.name and
+                                "cnchi-dev" not in tarinfo.name):
+                            pkg = tarinfo.name
+                            break
+                if pkg:
+                    version = pkg.split('-')[1]
+                    logging.debug('Cnchi version in the Antergos repository is: %s', version)
+                    return version
+            except (requests.exceptions.ConnectionError, tarfile.ReadError) as err:
+                logging.warning(err)
+
+        logging.error("Cannot get Cnchi's version from Antergos repository!")
+        return None
 
     def on_timer(self):
         """ If all requirements are meet, enable forward button """
