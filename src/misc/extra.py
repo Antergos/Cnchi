@@ -424,13 +424,12 @@ def has_connection():
 
     for prot, ip_addr in urls:
         try:
-            ip_addr = ip_addr.split('.')[::-1]
-            ip_addr = '.'.join(ip_addr)
+            ip_addr = '.'.join(ip_addr.split('.')[::-1])
             url = "{0}://{1}".format(prot, ip_addr)
             if prot == 'http':
                 urllib.request.urlopen(url, timeout=5)
             elif prot == 'https':
-                conn = http.client.HTTPSConnection(ip_addr, timeout=5)           
+                conn = http.client.HTTPSConnection(ip_addr, timeout=5)
                 conn.request("GET", "/")
                 conn.close()
         except ssl.SSLError as err:
