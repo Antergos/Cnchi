@@ -16,7 +16,7 @@ You are viewing the `0.15.x` branch (development).
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |Cnchi Stable|0.14.x|![0.14.473](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
-|Cnchi Development|0.15.x|![0.15.312](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
+|Cnchi Development|0.15.x|![0.15.313](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|0.17.x|Development|
 
 ## Usage:
