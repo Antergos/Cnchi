@@ -8,14 +8,16 @@
         <property name="halign">center</property>
         <child>
             <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="width_request">170</property>
+                <property name="width_request">150</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="margin_end">10</property>
+                <!--<property name="margin_end">10</property>-->
                 <property name="shadow_type">in</property>
                 <property name="margin-top">20</property>
-                <property name="valign">start</property>
-                <property name="min-content-height">380</property>
+                <!--<property name="valign">start</property>              -->
+                <property name="hexpand">True</property>              
+                <property name="vexpand">True</property>              
+                <!--<property name="min-content-height">380</property>-->
                 <child>
                     <object class="GtkListBox" id="listbox_desktop">
                         <property name="visible">True</property>
@@ -24,8 +26,8 @@
                 </child>
             </object>
             <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
             </packing>
         </child>
