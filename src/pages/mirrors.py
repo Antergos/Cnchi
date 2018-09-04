@@ -127,7 +127,7 @@ class MirrorListBox(Gtk.ListBox):
     }
 
     # 6 mirrors for Arch repos and 6 for Antergos repos
-    MAX_MIRRORS = 6
+    MAX_MIRRORS = 7
     # DND_ID_LISTBOX_ROW = 6791
 
     def __init__(self, mirrors_file_path, settings):
@@ -146,6 +146,18 @@ class MirrorListBox(Gtk.ListBox):
         self.load_mirrors()
         self.fillme()
 
+    @staticmethod
+    def uncommented_mirrors_first(mirrors):
+        """ Put uncommented mirrors first. Order is not guaranteed """
+        commented = []
+        uncommented = []
+        for mirror in mirrors:
+            if mirror.startswith("#"):
+                commented.append(mirror)
+            else:
+                uncommented.append(mirror)
+        return uncommented + commented
+
     def load_mirrors(self):
         """ Load mirrors from text file """
         lines = []
@@ -162,6 +174,8 @@ class MirrorListBox(Gtk.ListBox):
             if line.startswith("Server") or line.startswith("#Server"):
                 lines.append(line)
         tmp_lines = []
+
+        lines = self.uncommented_mirrors_first(lines)
 
         # Use MAX_MIRRORS at max
         if len(lines) > MirrorListBox.MAX_MIRRORS:
@@ -435,6 +449,12 @@ class Mirrors(GtkBaseBox):
         intro_label.set_line_wrap(True)
 
         intro_label.set_max_width_chars(80)
+
+        lbl = self.gui.get_object("arch_mirrors_label")
+        lbl.set_text(_("Arch Mirrors"))
+
+        lbl = self.gui.get_object("antergos_mirrors_label")
+        lbl.set_text(_("Antergos Mirrors"))
 
     def store_values(self):
         """ Store selected values """
