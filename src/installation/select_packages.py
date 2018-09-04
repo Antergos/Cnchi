@@ -33,7 +33,6 @@ from requests.exceptions import RequestException
 import defusedxml.cElementTree as elementTree
 
 import desktop_info
-import info
 
 import pacman.pac as pac
 
@@ -63,10 +62,7 @@ class SelectPackages():
 
         self.events = Events(callback_queue)
         self.settings = settings
-        self.alternate_package_list = self.settings.get(
-            'alternate_package_list')
         self.desktop = self.settings.get('desktop')
-        self.zfs = self.settings.get('zfs')
 
         # Packages to be removed
         self.conflicts = []
@@ -75,7 +71,6 @@ class SelectPackages():
         self.packages = []
 
         self.vbox = False
-        self.my_arch = os.uname()[-1]
 
         self.xml_root = None
 
@@ -142,7 +137,7 @@ class SelectPackages():
         libs = desktop_info.LIBS
 
         arch = pkg.attrib.get('arch')
-        if arch and arch != self.my_arch:
+        if arch and arch != os.uname()[-1]:
             return False
 
         lang = pkg.attrib.get('lang')
@@ -174,45 +169,54 @@ class SelectPackages():
         self.packages.append(pkg.text)
         return True
 
-    def load_xml_root_node(self):
-        """ Loads xml data, storing the root node """
-        xml_data = None
-        xml_filename = None
-        self.xml_root = None
-
-        if self.alternate_package_list:
-            # Use file passed by parameter (overrides server one)
-            xml_filename = self.alternate_package_list
-        else:
-            # The list of packages is retrieved from an online XML to let us
-            # control the pkgname in case of any modification
-
-            self.events.add('info', _("Getting package list..."))
-
-            try:
-                url = SelectPackages.PKGLIST_URL
-                logging.debug("Getting url %s...", url)
-                req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-                xml_data = req.content
-            except RequestException as url_error:
-                # If the installer can't retrieve the remote file Cnchi will use
-                # a local copy, which might be updated or not.
-                data_dir = self.settings.get("data")
-                xml_filename = os.path.join(data_dir, 'packages.xml')
-                msg = "{0}. Can't retrieve remote package list, using the local file instead."
-                msg = msg.format(url_error)
-                if info.CNCHI_RELEASE_STAGE == "production":
-                    logging.warning(msg)
-                else:
-                    logging.debug(msg)
-
-        if xml_data is not None:
-            logging.debug("Loading xml data from server...")
-            self.xml_root = elementTree.fromstring(xml_data)
-        else:
+    def load_xml_local(self, xml_filename):
+        """ Load xml packages list from file name """
+        self.events.add('info', _("Reading local package list..."))
+        if os.path.exists(xml_filename):
             logging.debug("Loading %s", xml_filename)
             xml_tree = elementTree.parse(xml_filename)
             self.xml_root = xml_tree.getroot()
+        else:
+            logging.warning("Cannot find %s file", xml_filename)
+
+    def load_xml_remote(self):
+        """ Load xml packages list from url """
+        self.events.add('info', _("Getting online package list..."))
+        url = SelectPackages.PKGLIST_URL
+        logging.debug("Getting url %s...", url)
+        try:
+            req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+            self.xml_root = elementTree.fromstring(req.content)
+        except RequestException as url_error:
+            msg = "Can't retrieve remote package list: {}".format(
+                url_error)
+            logging.warning(msg)
+
+    def load_xml_root_node(self):
+        """ Loads xml data, storing the root node """
+        self.xml_root = None
+
+        alternate_package_list = self.settings.get('alternate_package_list')
+        if alternate_package_list:
+            # Use file passed by parameter (overrides server one)
+            self.load_xml_local(alternate_package_list)
+
+        if self.xml_root is None:
+            # The list of packages is retrieved from an online XML to let us
+            # control the pkgname in case of any modification
+            self.load_xml_remote()
+
+        if self.xml_root is None:
+            # If the installer can't retrieve the remote file Cnchi will use
+            # a local copy, which might be updated or not.
+            xml_filename = os.path.join(self.settings.get('data'), 'packages.xml')
+            self.load_xml_local(xml_filename)
+
+        if self.xml_root is None:
+            txt = "Could not load packages XML file (neither local nor from the Internet)"
+            logging.error(txt)
+            txt = _("Could not load packages XML file (neither local nor from the Internet)")
+            raise InstallError(txt)
 
     def add_drivers(self):
         """ Add package drivers """
@@ -253,7 +257,7 @@ class SelectPackages():
                 self.add_package(pkg)
 
         # Add ZFS filesystem
-        if self.zfs:
+        if self.settings.get('zfs'):
             logging.debug("Adding zfs packages")
             for child in self.xml_root.iter("zfs"):
                 for pkg in child.iter('pkgname'):

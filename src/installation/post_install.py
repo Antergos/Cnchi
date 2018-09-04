@@ -63,7 +63,7 @@ class PostInstallation():
     LOG_FOLDER = '/var/log/cnchi'
 
     def __init__(
-        self, settings, callback_queue, mount_devices, fs_devices, ssd=None, blvm=False):
+            self, settings, callback_queue, mount_devices, fs_devices, ssd=None, blvm=False):
 
         """ Initialize installation class """
         self.settings = settings
@@ -104,8 +104,8 @@ class PostInstallation():
                 log_dest_dir, "{0}-{1}.log".format(name, datetime))
             try:
                 shutil.copy(src, dst)
-            except FileNotFoundError:
-                logging.warning("Can't copy %s log to %s", src, dst)
+            except FileNotFoundError as err:
+                logging.warning("Can't copy %s log to %s: %s", src, dst, str(err))
             except FileExistsError:
                 pass
 

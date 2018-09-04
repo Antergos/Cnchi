@@ -160,7 +160,7 @@ class PacmanConfig(collections.OrderedDict):
         self.options["RootDir"] = "/"
         self.options["DBPath"] = "/var/lib/pacman"
         self.options["GPGDir"] = "/etc/pacman.d/gnupg/"
-        self.options["LogFile"] = "/var/log/pacman.log"
+        self.options["LogFile"] = "/var/log/cnchi/pacman.log"
         self.options["Architecture"] = os.uname()[-1]
         self.repo_order = []
         if conf is not None:

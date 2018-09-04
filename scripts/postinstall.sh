@@ -368,7 +368,7 @@ postinstall() {
 }
 
 touch /tmp/.postinstall.lock
-echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6] [$7]" > /var/log/postinstall.log
+echo "Called installation script with these parameters: [$1] [$2] [$3] [$4] [$5] [$6] [$7]" > /var/log/cnchi/postinstall.log
 CN_USER_NAME=$1
 CN_DESTDIR=$2
 CN_DESKTOP=$3
@@ -380,5 +380,5 @@ CN_KEYBOARD_VARIANT=$7
 # Use this to test this script (remember to mount /install manually before testing)
 #chroot_setup "${CN_DESTDIR}"
 
-{ postinstall; } >> /var/log/postinstall.log 2>&1
+{ postinstall; } >> /var/log/cnchi/postinstall.log 2>&1
 rm /tmp/.postinstall.lock
