@@ -275,9 +275,7 @@ class MirrorListBox(Gtk.ListBox):
         url = server_line.split('=')[1].strip()
 
         # Remove end part to get the FDQN only
-        endstr = "/$repo/os/$arch"
-        if url.endswith(endstr):
-            url = url[:-len(endstr)]
+        url = url.replace("/$repo/os/$arch", "")
 
         return url
 
