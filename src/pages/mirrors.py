@@ -123,7 +123,7 @@ class MirrorListBoxRow(Gtk.ListBoxRow):
 class MirrorListBox(Gtk.ListBox):
     """ List that stores all mirrors """
     __gsignals__ = {
-        'switch-activated': (GObject.SIGNAL_RUN_FIRST, None, ())
+        'switch-activated': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     # 6 mirrors for Arch repos and 6 for Antergos repos
