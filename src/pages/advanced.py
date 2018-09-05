@@ -958,7 +958,12 @@ class InstallationAdvanced(GtkBaseBox):
                     pm.create_partition(disk, pm.PARTITION_EXTENDED, geometry)
                 elif self.create_part_dlg.wants_logical():
                     logical_count = len(list(disk.getLogicalPartitions()))
-                    max_logicals = disk.getMaxLogicalPartitions()
+                    try:
+                        max_logicals = disk.getMaxLogicalPartitions()
+                    except AttributeError:
+                        # Limit logical partitions to 256 if we cannot get
+                        # the real disk limit (if any)
+                        max_logicals = 256
                     if logical_count < max_logicals:
                         logging.debug("Creating a logical partition")
                         pm.create_partition(
