@@ -25,8 +25,9 @@ if ! [[ -f /usr/share/cnchi ]]; then
 fi
 
 
-_PYTHON="/usr/bin/python"
-_PYTHON_OPTIONS="-Wall"
+#_PYTHON="/usr/bin/python"
+_PYTHON="/opt/pypy3/bin/pypy3"
+_PYTHON_OPTIONS="-Wall -X track-resources"
 _XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-d -v"
 
@@ -34,9 +35,6 @@ if [ -f /usr/bin/python3 ]; then
     _PYTHON="/usr/bin/python3"
 fi
 
-#sudo -E $_PYTHON $_PYTHON_OPTIONS cnchi/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-
-#pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $CNCHI_DIR/bin/cnchi $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $_PYTHON $_PYTHON_OPTIONS $CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
 
 exit 0
