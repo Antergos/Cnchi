@@ -4,37 +4,19 @@
 # This script is a helper that the developers use to call Cnchi (testing purposes only)
 # Please, do not use if your intention is to do a "normal" installation
 
-cleanup() {
-    if [[ -h /usr/share/cnchi ]]; then
-        sudo unlink /usr/share/cnchi
-        sudo mv /usr/share/cnchi.tmp /usr/share/cnchi > /dev/null 2>&1
-    fi
-    sudo killall python3 > /dev/null 2>&1
-}
-
-#trap cleanup EXIT
-
-#if [[ -d /usr/share/cnchi ]] && ! [[ -h /usr/share/cnchi ]]; then
-#    sudo mv /usr/share/cnchi /usr/share/cnchi.tmp > /dev/null 2>&1
-#fi
-
-CNCHI_DIR=`pwd`
-echo $CNCHI_DIR
+_CNCHI_DIR=`pwd`
 if ! [[ -f /usr/share/cnchi ]]; then
-    sudo ln -sf ${CNCHI_DIR} /usr/share/cnchi
+    sudo rm /usr/share/cnchi
+    echo Creating soft link /usr/share/cnchi to ${_CNCHI_DIR} 
+    sudo ln -sf ${_CNCHI_DIR} /usr/share/cnchi
 fi
 
-
-#_PYTHON="/usr/bin/python"
-_PYTHON="/opt/pypy3/bin/pypy3"
+_PYTHON="/usr/bin/python"
+#_PYTHON="/opt/pypy3/bin/pypy3"
 _PYTHON_OPTIONS="-Wall -X track-resources"
-_XML="/usr/share/cnchi/data/packages.xml"
+#_XML="/usr/share/cnchi/data/packages.xml"
 _CNCHI_OPTIONS="-d -v"
 
-if [ -f /usr/bin/python3 ]; then
-    _PYTHON="/usr/bin/python3"
-fi
-
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $_PYTHON $_PYTHON_OPTIONS $CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-
+#pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $_PYTHON $_PYTHON_OPTIONS $CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
+pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $_PYTHON $_PYTHON_OPTIONS $_CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS ${@} 2>&1
 exit 0
