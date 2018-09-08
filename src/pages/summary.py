@@ -269,14 +269,16 @@ class Summary(GtkBaseBox):
             must_wait = False
             for proc in processes:
                 if misc.check_pid(proc['pid']):
-                    if proc['name'] == "rankmirrors" and proc['pipe'] and proc['pipe'].poll():
+                    if proc['name'] != 'rankmirrors':
+                        must_wait = True
+                    elif proc['pipe'] and proc['pipe'].poll():
                         # Update wait window progress bar
                         try:
                             fraction = proc['pipe'].recv()
                             progress_bar.set_fraction(fraction)
                         except EOFError as _err:
                             pass
-                    must_wait = True
+                        must_wait = True
             while Gtk.events_pending():
                 Gtk.main_iteration()
         logging.debug(
