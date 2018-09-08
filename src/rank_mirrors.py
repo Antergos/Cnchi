@@ -130,12 +130,15 @@ class RankMirrors(multiprocessing.Process):
         except KeyError as err:
             logging.warning('Failed to parse retrieved mirror data: %s', err)
 
+        mirror_urls = []
         for mirror in self.data['antergos']['entries']:
             title = mirror['title']
             if "is UP" in title:
                 # In RSS, all mirrors are in http:// format, we prefer https://
                 mirror['url'] = mirror['link'].replace('http://', 'https://')
-                mirrors['antergos'].append(mirror)
+                if mirror['url'] not in mirror_urls:
+                    mirrors['antergos'].append(mirror)
+                    mirror_urls.append(mirror['url'])
 
         return mirrors
 
