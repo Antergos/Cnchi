@@ -220,12 +220,19 @@ class Timezone(GtkBaseBox):
 
         self.show_all()
 
+    def append_process(self, pid, name, sentinel, pipe=None):
+        """ Adds process tuple info (pid, sentinel) to processes setting """
+        processes = self.settings.get('processes')
+        pinfo = {'pid': pid, 'name': name, 'sentinel': sentinel, 'pipe': pipe}
+        processes.append(pinfo)
+        self.settings.set('processes', processes)
+
     def start_auto_timezone_process(self):
         """ Starts timezone thread """
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
         proc.name = "timezone"
-        self.process_list.append((proc, None))
+        self.append_process(proc.pid, proc.name, proc.sentinel)
         proc.start()
 
     @staticmethod

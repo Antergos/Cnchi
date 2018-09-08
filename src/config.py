@@ -94,6 +94,7 @@ class Settings():
             'network_manager': 'NetworkManager',
             'pacman_config_file': '/etc/pacman.conf',
             'partition_mode': 'automatic',
+            'processes': [],
             'proxies': None,
             'rankmirrors_done': False,
             'rankmirrors_result': '',

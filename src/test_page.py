@@ -176,8 +176,7 @@ def run(page_name):
         'main_progressbar': Gtk.ProgressBar.new(),
         'header': Gtk.HeaderBar.new(),
         'callback_queue': None,
-        'alternate_package_list': "",
-        'process_list': []}
+        'alternate_package_list': ""}
 
     page = get_page(page_name, params)
 

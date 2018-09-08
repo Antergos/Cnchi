@@ -48,7 +48,6 @@ class GtkBaseBox(Gtk.Box):
         self.main_progressbar = params['main_progressbar']
         self.settings = params['settings']
         self.gui_dir = params['gui_dir']
-        self.process_list = params['process_list']
         self.main_window = params['main_window']
         self.prev_page = prev_page
         self.next_page = next_page

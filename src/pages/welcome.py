@@ -30,6 +30,7 @@
 
 import os
 import logging
+import multiprocessing
 import sys
 
 import gi
@@ -125,12 +126,9 @@ class Welcome(GtkBaseBox):
     def quit_cnchi(self):
         """ Quits installer """
         misc.remove_temp_files(self.settings.get('temp'))
-        for (proc, _pipe) in self.process_list:
-            # Wait 'timeout' seconds at most for all processes to end
-            proc.join(timeout=5)
-            if proc.is_alive():
-                proc.terminate()
-                proc.join()
+        for proc in self.settings.get('processes'):
+            # Wait 'timeout' seconds for each process to end
+            multiprocessing.connection.wait([proc['sentinel']], timeout=5)
         logging.shutdown()
         sys.exit(0)
 

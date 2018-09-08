@@ -208,7 +208,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.callback_queue = multiprocessing.JoinableQueue()
 
         # This list will have all processes (rankmirrors, autotimezone...)
-        self.process_list = []
+        self.settings.set('processes', [])
 
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
@@ -228,7 +228,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.params['callback_queue'] = self.callback_queue
         self.params['settings'] = self.settings
         self.params['main_progressbar'] = self.progressbar
-        self.params['process_list'] = self.process_list
 
         self.params['checks_are_optional'] = cmd_line.no_check
         self.params['no_tryit'] = cmd_line.no_tryit
@@ -442,10 +441,9 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files(self.settings.get('temp'))
             logging.info("Quiting installer...")
-            for (proc, _pipe) in self.process_list:
-                if proc.is_alive():
-                    proc.terminate()
-                    proc.join()
+            for proc in self.settings.get('processes'):
+                # Wait 'timeout' seconds for each process to end
+                multiprocessing.connection.wait([proc['sentinel']], timeout=5)
             logging.shutdown()
         except KeyboardInterrupt:
             pass

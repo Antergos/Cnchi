@@ -394,10 +394,18 @@ class Mirrors(GtkBaseBox):
         self.check_active_mirrors()
         self.listboxes_box.set_sensitive(True)
 
+    def append_process(self, pid, name, sentinel, pipe=None):
+        """ Adds process tuple info (pid, sentinel) to processes setting """
+        processes = self.settings.get('processes')
+        pinfo = {'pid': pid, 'name': name, 'sentinel': sentinel, 'pipe': pipe}
+        processes.append(pinfo)
+        self.settings.set('processes', processes)
+
     def start_rank_mirrors(self):
         """ Launch rank mirrors process to optimize Arch and Antergos mirrorlists
             As user can come and go from/to this screen, we must get sure he/she
             has not already run Rankmirrors before """
+
         if not self.rank_mirrors_launched:
             logging.debug("Cnchi is ranking your mirrors lists...")
             parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
@@ -406,7 +414,7 @@ class Mirrors(GtkBaseBox):
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()
-            self.process_list.append((proc, parent_conn))
+            self.append_process(proc.pid, proc.name, proc.sentinel, parent_conn)
             self.rank_mirrors_launched = True
 
     def prepare(self, direction):

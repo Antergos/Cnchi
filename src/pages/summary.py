@@ -42,8 +42,7 @@ import features_info
 from pages.gtkbasebox import GtkBaseBox
 from installation.process import Process
 
-from misc.extra import InstallError
-
+import misc.extra as misc
 import show_message as show
 
 # When testing, no _() is available
@@ -71,7 +70,7 @@ class Summary(GtkBaseBox):
         self.main_window = params['main_window']
 
         if not self.main_window:
-            raise InstallError("Can't get main window")
+            raise misc.InstallError("Can't get main window")
 
         scrolled_window = self.gui.get_object("scrolled_window")
         if scrolled_window:
@@ -168,7 +167,7 @@ class Summary(GtkBaseBox):
             msg = "Can't find installation page called {0}: {1}"
             msg = msg.format(page, page_error)
             logging.error(msg)
-            raise InstallError(msg)
+            raise misc.InstallError(msg)
         return install_screen
 
     def prepare(self, direction):
@@ -249,10 +248,12 @@ class Summary(GtkBaseBox):
 
         # Check if there are still processes to finish
         must_wait = False
-        for (proc, _pipe) in self.process_list:
-            if proc.is_alive():
-                must_wait = True
-                break
+        processes = self.settings.get('processes')
+        for pid, sentinel, _pipe in processes:
+            pass
+            #if proc.is_alive():
+            #    must_wait = True
+            #    break
         if not must_wait:
             return
 
@@ -267,17 +268,16 @@ class Summary(GtkBaseBox):
         logging.debug("Waiting for all external processes to finish...")
         while must_wait:
             must_wait = False
-            for (proc, pipe) in self.process_list:
-                if proc.is_alive():
-                    if proc.name == "rankmirrors" and pipe and pipe.poll():
+            for proc in processes:
+                if misc.check_pid(proc['pid']):
+                    if proc['name'] == "rankmirrors" and proc['pipe'] and proc['pipe'].poll():
                         # Update wait window progress bar
                         try:
-                            fraction = pipe.recv()
+                            fraction = proc['pipe'].recv()
                             progress_bar.set_fraction(fraction)
                         except EOFError as _err:
                             pass
                     must_wait = True
-
             while Gtk.events_pending():
                 Gtk.main_iteration()
         logging.debug(
