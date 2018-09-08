@@ -167,10 +167,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.logo = self.header_ui.get_object("logo")
         path = os.path.join(
-            data_dir,
-            "images",
-            "antergos",
-            "antergos-logo-mini2.png")
+            data_dir, "images", "antergos", "antergos-logo-mini2.png")
         self.logo.set_from_file(path)
 
         # To honor our css

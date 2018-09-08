@@ -213,6 +213,10 @@ class CnchiInit():
         # Setup our logging framework
         self.setup_logging()
 
+        # Check that all repositories are present in pacman.conf file
+        if not self.check_pacman_conf("/etc/pacman.conf"):
+            sys.exit(1)
+
         # Check Cnchi is correctly installed
         if not self.check_for_files():
             sys.exit(1)
@@ -234,6 +238,28 @@ class CnchiInit():
 
         # Init PyObject Threads
         self.threads_init()
+
+    @staticmethod
+    def check_pacman_conf(path):
+        """ Check that pacman.conf has the correct options """
+
+        with open(path, 'rt') as pacman:
+            lines = pacman.readlines()
+
+        repos = ["[antergos]", "[core]",
+                 "[extra]", "[community]", "[multilib]"]
+
+        for line in lines:
+            line = line.strip('\n')
+            if line in repos:
+                repos.remove(line)
+        if repos:
+            for repo in repos:
+                logging.error("Repository %s not in pacman.conf file", repo)
+            return False
+        
+        logging.debug("All repositories are present in pacman.conf file")
+        return True
 
     def setup_logging(self):
         """ Configure our logger """
