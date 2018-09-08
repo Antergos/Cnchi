@@ -38,14 +38,14 @@
             <property name="margin_top">10</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkRadioButton" id="leave_radiobutton">
+              <object class="GtkRadioButton" id="rank_radiobutton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
+                <property name="receives_default">False</property>
                 <property name="halign">start</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="leave_radiobutton_toggled" swapped="no"/>
+                <signal name="toggled" handler="rank_radiobutton_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -54,15 +54,15 @@
               </packing>
             </child>
             <child>
-              <object class="GtkRadioButton" id="rank_radiobutton">
+              <object class="GtkRadioButton" id="leave_radiobutton">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
+                <property name="receives_default">True</property>
                 <property name="halign">start</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <property name="group">leave_radiobutton</property>
-                <signal name="toggled" handler="rank_radiobutton_toggled" swapped="no"/>
+                <property name="group">rank_radiobutton</property>
+                <signal name="toggled" handler="leave_radiobutton_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -78,7 +78,7 @@
                 <property name="halign">start</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <property name="group">leave_radiobutton</property>
+                <property name="group">rank_radiobutton</property>
                 <signal name="toggled" handler="user_radiobutton_toggled" swapped="no"/>
               </object>
               <packing>

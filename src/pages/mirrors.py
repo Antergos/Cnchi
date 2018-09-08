@@ -264,7 +264,8 @@ class MirrorListBox(Gtk.ListBox):
         selection_data.set_text(data, len(data))
         self.get_window().set_cursor(None)
 
-    def drag_data_received(self, widget, _drag_context, _pos_x, _pos_y, selection_data, _info, _time):
+    def drag_data_received(
+        self, widget, _drag_context, _pos_x, _pos_y, selection_data, _info, _time):
         """ When drag data is received by the destination """
         data = selection_data.get_text()
         try:
@@ -428,7 +429,7 @@ class Mirrors(GtkBaseBox):
         #bold_style = '<span weight="bold">{0}</span>'
 
         radio = self.gui.get_object("rank_radiobutton")
-        txt = _("Let Cnchi sort the mirrors lists")
+        txt = _("Let Cnchi sort the mirrors lists (recommended)")
         radio.set_label(txt)
         radio.set_name('rank_radio_btn')
 
