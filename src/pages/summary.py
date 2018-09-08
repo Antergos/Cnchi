@@ -269,25 +269,26 @@ class Summary(GtkBaseBox):
         while must_wait:
             must_wait = False
             for proc in processes:
-                if misc.check_pid(proc['pid']):
-                    if proc['name'] != 'rankmirrors':
-                        must_wait = True
-                    else:
-                        if proc['pipe'] and proc['pipe'].poll():
-                            # Update wait window progress bar
-                            try:
-                                fraction = proc['pipe'].recv()
-                                progress_bar.set_fraction(fraction)
-                            except EOFError as _err:
-                                fraction = -1
-                            if fraction < 1.0:
-                                must_wait = True
-                        else:
+                if not misc.check_pid(proc['pid']):
+                    continue
+                if proc['name'] != 'rankmirrors':
+                    must_wait = True
+                else:
+                    if proc['pipe'] and proc['pipe'].poll():
+                        fraction = 0
+                        # Update wait window progress bar
+                        try:
+                            fraction = proc['pipe'].recv()
+                            progress_bar.set_fraction(fraction)
+                        except EOFError as _err:
+                            fraction = 0
+                        if 0 <= fraction <= 1:
                             must_wait = True
+                    else:
+                        must_wait = True
             while Gtk.events_pending():
                 Gtk.main_iteration()
-        logging.debug(
-            "All child processes are finished. Installation can go on")
+        logging.debug("All child processes are finished. Installation can go on")
         wait_window.hide()
         wait_window.destroy()
 

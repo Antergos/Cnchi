@@ -377,7 +377,7 @@ class RankMirrors(multiprocessing.Process):
             self.settings.set('rankmirrors_result', self.mirrorlist_ranked['arch'])
 
         if self.fraction:
-            self.fraction.send(1.0)
+            self.fraction.send(-1)
             self.fraction.close()
 
         logging.debug("Auto mirror selection has been run successfully.")
