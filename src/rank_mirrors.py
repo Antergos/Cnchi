@@ -81,7 +81,6 @@ class RankMirrors(multiprocessing.Process):
             fraction_pipe is a pipe used to send progress for a gtk.progress widget update
             in another process (see start_rank_mirrors() in mirrors.py) """
         super().__init__()
-        self.rankmirrors_pid = None
         # Antergos mirrors info is returned as RSS, arch's as JSON
         self.data = {'arch': {}, 'antergos': {}}
         self.mirrorlist_ranked = {'arch': [], 'antergos': []}
@@ -206,25 +205,26 @@ class RankMirrors(multiprocessing.Process):
 
             def worker():
                 """ worker thread. Retrieves data to test mirror speed """
-                while not q_in.empty():
-                    mirror_url, full_url = q_in.get()
-                    # Leave the rate as 0 if the connection fails.
-                    rate = 0
-                    dtime = float('NaN')
-                    if full_url:
-                        req = urllib.request.Request(url=full_url)
-                        try:
-                            time0 = time.time()
-                            with urllib.request.urlopen(req, None, 5) as my_file:
-                                size = len(my_file.read())
-                                dtime = time.time() - time0
-                                rate = size / dtime
-                        except (OSError, urllib.error.HTTPError,
-                                http.client.HTTPException) as err:
-                            logging.warning("Couldn't download %s", full_url)
-                            logging.warning(err)
-                    q_out.put((mirror_url, full_url, rate, dtime))
-                    q_in.task_done()
+                while True:
+                    if not q_in.empty():
+                        mirror_url, full_url = q_in.get()
+                        # Leave the rate as 0 if the connection fails.
+                        rate = 0
+                        dtime = float('NaN')
+                        if full_url:
+                            req = urllib.request.Request(url=full_url)
+                            try:
+                                time0 = time.time()
+                                with urllib.request.urlopen(req, None, 5) as my_file:
+                                    size = len(my_file.read())
+                                    dtime = time.time() - time0
+                                    rate = size / dtime
+                            except (OSError, urllib.error.HTTPError,
+                                    http.client.HTTPException) as err:
+                                logging.warning("Couldn't download %s", full_url)
+                                logging.warning(err)
+                        q_out.put((mirror_url, full_url, rate, dtime))
+                        q_in.task_done()
 
             # Load the input queue.Queue
             url_len = 0
@@ -232,6 +232,7 @@ class RankMirrors(multiprocessing.Process):
                 url_len = max(url_len, len(mirror['url']))
                 logging.debug("Rating mirror '%s'", mirror['url'])
                 if repo == 'antergos':
+                    logging.debug("Getting full url for mirror %s", mirror['url'])
                     url = self.get_antergos_mirror_url(mirror['url'])
                     # Save mirror url
                     mirror['url'] = url
