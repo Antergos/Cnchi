@@ -207,9 +207,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # (pacman/pac.py) to the main thread (installation/process.py)
         self.callback_queue = multiprocessing.JoinableQueue()
 
-        # This list will have all processes (rankmirrors, autotimezone...)
-        self.settings.set('processes', [])
-
         if cmd_line.packagelist:
             self.settings.set('alternate_package_list', cmd_line.packagelist)
             logging.info(
@@ -441,9 +438,8 @@ class MainWindow(Gtk.ApplicationWindow):
         try:
             misc.remove_temp_files(self.settings.get('temp'))
             logging.info("Quiting installer...")
-            for proc in self.settings.get('processes'):
-                # Wait 'timeout' seconds for each process to end
-                multiprocessing.connection.wait([proc['sentinel']], timeout=5)
+            for proc in multiprocessing.active_children():
+                proc.terminate()
             logging.shutdown()
         except KeyboardInterrupt:
             pass

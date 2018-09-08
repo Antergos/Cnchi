@@ -126,9 +126,8 @@ class Welcome(GtkBaseBox):
     def quit_cnchi(self):
         """ Quits installer """
         misc.remove_temp_files(self.settings.get('temp'))
-        for proc in self.settings.get('processes'):
-            # Wait 'timeout' seconds for each process to end
-            multiprocessing.connection.wait([proc['sentinel']], timeout=5)
+        for proc in multiprocessing.active_children():
+            proc.terminate()
         logging.shutdown()
         sys.exit(0)
 

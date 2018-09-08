@@ -32,6 +32,7 @@
 
 import logging
 import os
+import multiprocessing
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -247,14 +248,7 @@ class Summary(GtkBaseBox):
             waits for them to finish """
 
         # Check if there are still processes to finish
-        must_wait = False
-        processes = self.settings.get('processes')
-        for proc in processes:
-            if misc.check_pid(proc['pid']):
-                must_wait = True
-                break
-
-        if not must_wait:
+        if not multiprocessing.active_children():
             return
 
         wait_window, progress_bar = self.create_wait_window()
@@ -266,33 +260,22 @@ class Summary(GtkBaseBox):
             summary_box.set_sensitive(False)
 
         logging.debug("Waiting for child processes to finish...")
-        while must_wait:
-            must_wait = False
-            for proc in processes:
-                if not misc.check_pid(proc['pid']):
-                    continue
-                if proc['name'] != 'rankmirrors':
-                    must_wait = True
-                else:
-                    if proc['pipe'] and proc['pipe'].poll():
-                        fraction = 0
+        pipe = self.settings.get('rankmirrors_pipe')
+        while multiprocessing.active_children():
+            for proc in multiprocessing.active_children():
+                if proc.name == 'rankmirrors' and pipe and pipe.poll():
+                    try:
                         # Update wait window progress bar
-                        try:
-                            fraction = proc['pipe'].recv()
-                            progress_bar.set_fraction(fraction)
-                        except EOFError as _err:
-                            fraction = 0
-                        if 0 <= fraction <= 1:
-                            must_wait = True
-                    else:
-                        must_wait = True
-            while Gtk.events_pending():
-                Gtk.main_iteration()
+                        fraction = pipe.recv()
+                        progress_bar.set_fraction(fraction)
+                    except EOFError as _err:
+                        pass
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+
         logging.debug("All child processes are finished. Installation can go on")
         wait_window.hide()
         wait_window.destroy()
-
-        self.settings.set('processes', [])
 
         # Enable ask page so the user can continue the installation process
         if summary_box:
