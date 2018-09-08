@@ -365,15 +365,17 @@ class PostInstallation():
         files = ["/etc/X11/xorg.conf.d/00-keyboard.conf", "/etc/vconsole.conf"]
         for src in files:
             try:
-                dst = os.path.join(DEST_DIR, src[1:])
-                shutil.copy(src, dst)
-                logging.debug("%s copied.", src)
+                if os.path.exists(src):
+                    dst = os.path.join(DEST_DIR, src[1:])
+                    shutil.copy(src, dst)
+                    logging.debug("%s copied.", src)
             except FileNotFoundError:
                 logging.error("File %s not found in live media", src)
             except FileExistsError:
-                logging.warning("File %s already exists.", dst)
+                pass
             except shutil.Error as err:
                 logging.error(err)
+  
     @staticmethod
     def get_installed_zfs_version():
         """ Get installed zfs version """
