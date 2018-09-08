@@ -232,8 +232,8 @@ class Timezone(GtkBaseBox):
         proc = AutoTimezoneProcess(self.auto_timezone_coords, self.settings)
         proc.daemon = True
         proc.name = "timezone"
-        self.append_process(proc.pid, proc.name, proc.sentinel)
         proc.start()
+        self.append_process(proc.pid, proc.name, proc.sentinel)
 
     @staticmethod
     def log_location(loc):
