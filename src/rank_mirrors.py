@@ -154,7 +154,7 @@ class RankMirrors(multiprocessing.Process):
                 url = url.split('=')[1].strip()
                 return url
         logging.warning("%s not found in %s", mirror_url, mirrorlist_path)
-        return mirror_url
+        return None
 
     @staticmethod
     def get_package_version(name):
@@ -238,8 +238,11 @@ class RankMirrors(multiprocessing.Process):
                 url_len = max(url_len, len(mirror['url']))
                 logging.debug("Rating mirror '%s'", mirror['url'])
                 if repo == 'antergos':
-                    url = self.get_antergos_mirror_url(
-                        mirror['url'])
+                    url = self.get_antergos_mirror_url(mirror['url'])
+                    if not url:
+                        # Mirror is not present in antergos-mirrorlist file
+                        continue
+
                     # Save mirror url
                     mirror['url'] = url
                     # Compose package url

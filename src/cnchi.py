@@ -246,8 +246,8 @@ class CnchiInit():
         with open(path, 'rt') as pacman:
             lines = pacman.readlines()
 
-        repos = ["[antergos]", "[core]",
-                 "[extra]", "[community]", "[multilib]"]
+        repos = [
+            "[antergos]", "[core]", "[extra]", "[community]", "[multilib]"]
 
         for line in lines:
             line = line.strip('\n')
