@@ -352,7 +352,7 @@ class Mirrors(GtkBaseBox):
 
         self.listboxes_box = self.gui.get_object("listboxes_box")
 
-        self.use_rankmirrors = False
+        self.use_rankmirrors = True
         self.use_listboxes = False
 
         # Boolean variable to check if rank_mirrors has already been run
