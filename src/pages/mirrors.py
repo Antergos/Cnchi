@@ -410,7 +410,7 @@ class Mirrors(GtkBaseBox):
             logging.debug("Cnchi is ranking your mirrors lists...")
             parent_conn, child_conn = multiprocessing.Pipe(duplex=False)
             # Store parent_conn for later use in ask.py (rankmirrors dialog)
-            proc = RankMirrors(self.settings, child_conn)
+            proc = RankMirrors(fraction_pipe=child_conn)
             proc.daemon = True
             proc.name = "rankmirrors"
             proc.start()

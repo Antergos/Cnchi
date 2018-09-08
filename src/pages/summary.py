@@ -253,6 +253,7 @@ class Summary(GtkBaseBox):
             if misc.check_pid(proc['pid']):
                 must_wait = True
                 break
+
         if not must_wait:
             return
 
@@ -264,7 +265,7 @@ class Summary(GtkBaseBox):
         if summary_box:
             summary_box.set_sensitive(False)
 
-        logging.debug("Waiting for all external processes to finish...")
+        logging.debug("Waiting for child processes to finish...")
         while must_wait:
             must_wait = False
             for proc in processes:
@@ -286,9 +287,11 @@ class Summary(GtkBaseBox):
             while Gtk.events_pending():
                 Gtk.main_iteration()
         logging.debug(
-            "All external processes are finished. Installation can go on")
+            "All child processes are finished. Installation can go on")
         wait_window.hide()
         wait_window.destroy()
+
+        self.settings.set('processes', [])
 
         # Enable ask page so the user can continue the installation process
         if summary_box:
