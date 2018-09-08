@@ -247,9 +247,11 @@ class RankMirrors(multiprocessing.Process):
                 q_in.put((mirror['url'], package_url))
 
             # Launch threads
+            my_threads = []
             for _index in range(num_threads):
                 my_thread = threading.Thread(target=worker)
                 my_thread.start()
+                my_threads.append(my_thread)
 
             # Wait for queue to empty
             while not q_in.empty():
@@ -279,6 +281,10 @@ class RankMirrors(multiprocessing.Process):
                     logging.debug(fmt, url, kibps, dtime)
                     rates[url] = rate
                 q_out.task_done()
+
+            # Wait for all threads to finnish (all will be finished, but...)
+            for my_thread in my_threads:
+                my_thread.join()
 
             try:
                 # Sort by rate
@@ -370,11 +376,11 @@ class RankMirrors(multiprocessing.Process):
                 x for x in self.mirrorlist_ranked['arch'] if x]
             self.settings.set('rankmirrors_result', self.mirrorlist_ranked['arch'])
 
-        logging.debug("Auto mirror selection has been run successfully.")
-
         if self.fraction:
             self.fraction.send(1.0)
             self.fraction.close()
+
+        logging.debug("Auto mirror selection has been run successfully.")
 
 
     @staticmethod
