@@ -30,7 +30,7 @@ import subprocess
 import requests
 from requests.exceptions import RequestException
 
-import defusedxml.cElementTree as elementTree
+import xml.etree.cElementTree as elementTree
 
 import desktop_info
 

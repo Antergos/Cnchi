@@ -35,7 +35,7 @@ import sys
 import locale
 import re
 
-import defusedxml.cElementTree as elementTree
+import xml.etree.cElementTree as elementTree
 
 import gi
 gi.require_version('Gtk', '3.0')

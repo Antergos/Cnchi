@@ -31,7 +31,7 @@ import time
 import hashlib
 import logging
 
-from defusedxml.minidom import parse
+from xml.dom.minidom import parse
 
 from gi.repository import GObject, GLib
 

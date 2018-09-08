@@ -82,6 +82,25 @@ class Slides(GtkBaseBox):
         self.webkit['settings'] = None
         self.webkit['box'] = self.gui.get_object("scrolledwindow")
 
+        # Add a webkit view and load our html file to show the slides
+        try:
+            self._apply_webkit_settings()
+            if self.webkit['settings']:
+                self.webkit['view'] = WebKit2.WebView.new_with_settings(
+                    self.webkit['settings'])
+            else:
+                self.webkit['view'] = WebKit2.WebView.new()
+            self.webkit['view'].connect(
+                'context-menu', lambda _a, _b, _c, _d: True)
+            self.webkit['view'].set_hexpand(True)
+            self.webkit['view'].load_uri(Slides.URI)
+        except (IOError, GLib.Error) as err:
+            logging.error(err)
+
+        if self.webkit['view']:
+            self.webkit['box'].add(self.webkit['view'])
+            self.webkit['box'].set_size_request(800, 335)
+
         GLib.timeout_add(1000, self.manage_events_from_cb_queue)
 
     def translate_ui(self):
@@ -115,8 +134,7 @@ class Slides(GtkBaseBox):
             logging.error(err)
 
     def prepare(self, direction):
-        """ Prepare slides screen """
-        # We don't load webkit until we reach this screen
+        """ Prepare slides screen
         if self.webkit['view'] is None:
             # Add a webkit view and load our html file to show the slides
             try:
@@ -134,7 +152,7 @@ class Slides(GtkBaseBox):
             if self.webkit['view']:
                 self.webkit['box'].add(self.webkit['view'])
                 self.webkit['box'].set_size_request(800, 335)
-
+        """
         self.translate_ui()
         self.show_all()
 

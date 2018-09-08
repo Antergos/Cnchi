@@ -27,7 +27,7 @@ from collections import OrderedDict
 
 from gi.repository import GObject
 
-import defusedxml.cElementTree as elementTree
+import xml.etree.cElementTree as elementTree
 
 
 class Model(GObject.GObject):
