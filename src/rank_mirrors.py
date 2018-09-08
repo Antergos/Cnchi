@@ -241,20 +241,19 @@ class RankMirrors(multiprocessing.Process):
                     url = self.get_antergos_mirror_url(mirror['url'])
                     if not url:
                         # Mirror is not present in antergos-mirrorlist file
-                        continue
-
-                    # Save mirror url
-                    mirror['url'] = url
-                    # Compose package url
-                    package_url = url.replace('$repo', 'antergos')
-                    package_url = package_url.replace('$arch', 'x86_64')
-                    db_subpath = RankMirrors.DB_SUBPATHS['antergos']
-                    db_subpath = db_subpath.format(name, version)
-                    package_url += db_subpath
+                        package_url = None
+                        total_num_mirrors -= 1
+                    else:
+                        # Save mirror url
+                        mirror['url'] = url
+                        # Compose package url
+                        package_url = url.replace('$repo', 'antergos').replace('$arch', 'x86_64')
+                        package_url += RankMirrors.DB_SUBPATHS['antergos'].format(name, version)
                 else:
                     package_url = mirror['url']
-                # print(mirror['url'], package_url)
-                q_in.put((mirror['url'], package_url))
+
+                if package_url:
+                    q_in.put((mirror['url'], package_url))
 
             # Wait for queue to empty
             while not q_in.empty():
