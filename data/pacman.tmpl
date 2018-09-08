@@ -1,5 +1,6 @@
 [options]
 Architecture = auto
+CheckSpace
 SigLevel = Required DatabaseOptional
 LocalFileSigLevel = Optional
 
@@ -10,6 +11,7 @@ LogFile = /var/log/cnchi/pacman.log
 
 # Repositories
 [antergos]
+SigLevel = PackageRequired
 Include = /etc/pacman.d/antergos-mirrorlist
 
 [core]
@@ -21,7 +23,5 @@ Include = /etc/pacman.d/mirrorlist
 [community]
 Include = /etc/pacman.d/mirrorlist
 
-% if arch == 'x86_64':
 [multilib]
 Include = /etc/pacman.d/mirrorlist
-% endif
