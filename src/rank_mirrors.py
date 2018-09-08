@@ -207,31 +207,25 @@ class RankMirrors(multiprocessing.Process):
 
             def worker():
                 """ worker thread. Retrieves data to test mirror speed """
-                while True:
-                    if not q_in.empty():
-                        mirror_url, full_url = q_in.get()
-                        # Leave the rate as 0 if the connection fails.
-                        rate = 0
-                        dtime = float('NaN')
-                        if full_url:
-                            req = urllib.request.Request(url=full_url)
-                            try:
-                                time0 = time.time()
-                                with urllib.request.urlopen(req, None, 5) as my_file:
-                                    size = len(my_file.read())
-                                    dtime = time.time() - time0
-                                    rate = size / dtime
-                            except (OSError, urllib.error.HTTPError,
-                                    http.client.HTTPException) as err:
-                                logging.warning("Couldn't download %s", full_url)
-                                logging.warning(err)
-                        q_out.put((mirror_url, full_url, rate, dtime))
-                        q_in.task_done()
-
-            # Launch threads
-            for _index in range(num_threads):
-                my_thread = threading.Thread(target=worker)
-                my_thread.start()
+                while not q_in.empty():
+                    mirror_url, full_url = q_in.get()
+                    # Leave the rate as 0 if the connection fails.
+                    rate = 0
+                    dtime = float('NaN')
+                    if full_url:
+                        req = urllib.request.Request(url=full_url)
+                        try:
+                            time0 = time.time()
+                            with urllib.request.urlopen(req, None, 5) as my_file:
+                                size = len(my_file.read())
+                                dtime = time.time() - time0
+                                rate = size / dtime
+                        except (OSError, urllib.error.HTTPError,
+                                http.client.HTTPException) as err:
+                            logging.warning("Couldn't download %s", full_url)
+                            logging.warning(err)
+                    q_out.put((mirror_url, full_url, rate, dtime))
+                    q_in.task_done()
 
             # Load the input queue.Queue
             url_len = 0
@@ -251,6 +245,11 @@ class RankMirrors(multiprocessing.Process):
                 else:
                     package_url = mirror['url']
                 q_in.put((mirror['url'], package_url))
+
+            # Launch threads
+            for _index in range(num_threads):
+                my_thread = threading.Thread(target=worker)
+                my_thread.start()
 
             # Wait for queue to empty
             while not q_in.empty():
@@ -376,6 +375,7 @@ class RankMirrors(multiprocessing.Process):
         if self.fraction:
             self.fraction.send(1.0)
             self.fraction.close()
+
 
     @staticmethod
     def update_mirrorlists():
