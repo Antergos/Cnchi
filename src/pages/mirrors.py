@@ -351,7 +351,7 @@ class Mirrors(GtkBaseBox):
 
         self.listboxes_box = self.gui.get_object("listboxes_box")
 
-        self.use_rankmirrors = True
+        self.use_rankmirrors = False
         self.use_listboxes = False
 
         # Boolean variable to check if rank_mirrors has already been run
@@ -370,7 +370,7 @@ class Mirrors(GtkBaseBox):
                 ok_to_proceed = False
         self.forward_button.set_sensitive(ok_to_proceed)
 
-    def on_rank_radiobutton_toggled(self, _widget):
+    def rank_radiobutton_toggled(self, _widget):
         """ Use rankmirrors """
         self.use_rankmirrors = True
         self.use_listboxes = False
@@ -378,7 +378,7 @@ class Mirrors(GtkBaseBox):
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_leave_radiobutton_toggled(self, _widget):
+    def leave_radiobutton_toggled(self, _widget):
         """ Do not modify mirror lists """
         self.use_rankmirrors = False
         self.use_listboxes = False
@@ -386,7 +386,7 @@ class Mirrors(GtkBaseBox):
         # self.listboxes_box.hide()
         self.listboxes_box.set_sensitive(False)
 
-    def on_user_radiobutton_toggled(self, _widget):
+    def user_radiobutton_toggled(self, _widget):
         """ Let user choose mirrorlist ordering """
         self.use_rankmirrors = False
         self.use_listboxes = True
@@ -435,17 +435,17 @@ class Mirrors(GtkBaseBox):
         #bold_style = '<span weight="bold">{0}</span>'
 
         radio = self.gui.get_object("rank_radiobutton")
-        txt = _("Let Cnchi sort the mirrors lists (recommended)")
+        txt = _("Let Cnchi sort the mirrors lists")
         radio.set_label(txt)
         radio.set_name('rank_radio_btn')
 
         radio = self.gui.get_object("leave_radiobutton")
-        txt = _("Leave the mirrors lists as they are (by default)")
+        txt = _("Leave the mirrors lists as they are")
         radio.set_label(txt)
         radio.set_name('leave_radio_btn')
 
         radio = self.gui.get_object("user_radiobutton")
-        txt = _("Let me manage the mirrors lists (advanced)")
+        txt = _("Manage the mirrors lists manually (advanced)")
         radio.set_label(txt)
         radio.set_name('user_radio_btn')
 
