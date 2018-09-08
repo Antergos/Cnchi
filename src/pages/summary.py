@@ -249,11 +249,10 @@ class Summary(GtkBaseBox):
         # Check if there are still processes to finish
         must_wait = False
         processes = self.settings.get('processes')
-        for pid, sentinel, _pipe in processes:
-            pass
-            #if proc.is_alive():
-            #    must_wait = True
-            #    break
+        for proc in processes:
+            if misc.check_pid(proc['pid']):
+                must_wait = True
+                break
         if not must_wait:
             return
 
