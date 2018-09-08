@@ -244,7 +244,16 @@ class RankMirrors(multiprocessing.Process):
                         package_url += RankMirrors.DB_SUBPATHS['antergos'].format(name, version)
                 else:
                     package_url = mirror['url']
-                q_in.put((mirror['url'], package_url))
+                if mirror['url'] and package_url:
+                    q_in.put((mirror['url'], package_url))
+
+            # Remove mirrors that are not present in antergos-mirrorlist
+            if repo == 'antergos':
+                mirrors_pruned = []
+                for mirror in mirrors[repo]:
+                    if mirror['url'] is not None:
+                        mirrors_pruned.append(mirror)
+                mirrors[repo] = mirrors_pruned
 
             # Launch threads
             my_threads = []
@@ -286,8 +295,8 @@ class RankMirrors(multiprocessing.Process):
             for my_thread in my_threads:
                 my_thread.join()
 
+            # Sort mirrors by rate
             try:
-                # Sort by rate
                 rated_mirrors[repo] = [m for m in mirrors[repo] if rates[m['url']] > 0]
                 rated_mirrors[repo].sort(key=lambda m: rates[m['url']], reverse=True)
             except KeyError as err:
