@@ -63,6 +63,7 @@ class RankMirrors(multiprocessing.Process):
     MIRROR_STATUS = {
         'antergos': 'http://rss.uptimerobot.com/u600152-d6c3c10d099982e3a185c2c5ce561a7b',
         'arch': 'http://www.archlinux.org/mirrors/status/json/'}
+
     MIRRORLIST = {
         'antergos': '/etc/pacman.d/antergos-mirrorlist',
         'arch': '/etc/pacman.d/mirrorlist'}
@@ -111,7 +112,7 @@ class RankMirrors(multiprocessing.Process):
                 )
                 self.data['arch'] = req.json()
             except requests.RequestException as err:
-                logging.debug(
+                logging.warning(
                     'Failed to retrieve mirror status information: %s', err)
 
         # Load status data (RSS) for antergos mirrors
@@ -122,22 +123,19 @@ class RankMirrors(multiprocessing.Process):
         mirrors = {'arch': [], 'antergos': []}
 
         try:
-            # Filter incomplete mirrors  and mirrors that haven't synced.
+            # Filter incomplete mirrors and mirrors that haven't synced.
             mirrors['arch'] = self.data['arch']['urls']
             mirrors['arch'] = [m for m in mirrors['arch'] if self.is_good_mirror(m)]
             #self.data['arch']['urls'] = mirrors['arch']
         except KeyError as err:
-            logging.debug('Failed to parse retrieved mirror data: %s', err)
+            logging.warning('Failed to parse retrieved mirror data: %s', err)
 
-        mirror_urls = []
         for mirror in self.data['antergos']['entries']:
             title = mirror['title']
-            url = mirror['link']
-            if "UP" in title and "DOWN" not in title and url not in mirror_urls:
-                mirror['url'] = url
-                if self.is_good_mirror(mirror):
-                    mirror_urls.append(url)
-                    mirrors['antergos'].append(mirror)
+            if "is UP" in title:
+                # In RSS, all mirrors are in http:// format, we prefer https://
+                mirror['url'] = mirror['link'].replace('http://', 'https://')
+                mirrors['antergos'].append(mirror)
 
         return mirrors
 
@@ -157,7 +155,6 @@ class RankMirrors(multiprocessing.Process):
     @staticmethod
     def get_package_version(name):
         """ Returns pkg_name package version """
-        logging.debug('Checking %s version with pacman...', name)
         try:
             cmd = ["/usr/bin/pacman", "-Ss", name]
             line = subprocess.check_output(cmd).decode().split()
@@ -165,11 +162,11 @@ class RankMirrors(multiprocessing.Process):
             logging.debug(
                 '%s version is: %s (used to test mirror speed)', name, version)
         except subprocess.CalledProcessError as err:
-            logging.debug(err)
+            logging.warning(err)
             version = False
         return version
 
-    def sort_mirrors_by_speed(self, mirrors=None, max_threads=5):
+    def sort_mirrors_by_speed(self, mirrors=None, max_threads=8):
         """ Sorts mirror list """
 
         test_packages = {
@@ -201,38 +198,33 @@ class RankMirrors(multiprocessing.Process):
             name = test_packages[repo]['name']
             version = test_packages[repo]['version']
 
-            logging.debug("Testing %s mirrors...", repo)
-
             def worker():
                 """ worker thread. Retrieves data to test mirror speed """
-                while True:
-                    if not q_in.empty():
-                        mirror_url, full_url = q_in.get()
-                        # Leave the rate as 0 if the connection fails.
-                        rate = 0
-                        dtime = float('NaN')
-                        if full_url:
-                            req = urllib.request.Request(url=full_url)
-                            try:
-                                time0 = time.time()
-                                with urllib.request.urlopen(req, None, 5) as my_file:
-                                    size = len(my_file.read())
-                                    dtime = time.time() - time0
-                                    rate = size / dtime
-                            except (OSError, urllib.error.HTTPError,
-                                    http.client.HTTPException) as err:
-                                logging.warning("Couldn't download %s", full_url)
-                                logging.warning(err)
-                        q_out.put((mirror_url, full_url, rate, dtime))
-                        q_in.task_done()
+                while not q_in.empty():
+                    mirror_url, full_url = q_in.get()
+                    # Leave the rate as 0 if the connection fails.
+                    rate = 0
+                    dtime = float('NaN')
+                    if full_url:
+                        req = urllib.request.Request(url=full_url)
+                        try:
+                            time0 = time.time()
+                            with urllib.request.urlopen(req, None, 5) as my_file:
+                                size = len(my_file.read())
+                                dtime = time.time() - time0
+                                rate = size / dtime
+                        except (OSError, urllib.error.HTTPError,
+                                http.client.HTTPException) as err:
+                            logging.warning("Couldn't download %s", full_url)
+                            logging.warning(err)
+                    q_out.put((mirror_url, full_url, rate, dtime))
+                    q_in.task_done()
 
             # Load the input queue.Queue
             url_len = 0
             for mirror in mirrors[repo]:
                 url_len = max(url_len, len(mirror['url']))
-                logging.debug("Rating mirror '%s'", mirror['url'])
                 if repo == 'antergos':
-                    logging.debug("Getting full url for mirror %s", mirror['url'])
                     url = self.get_antergos_mirror_url(mirror['url'])
                     # Save mirror url
                     mirror['url'] = url
@@ -247,6 +239,13 @@ class RankMirrors(multiprocessing.Process):
                 if mirror['url'] and package_url:
                     q_in.put((mirror['url'], package_url))
 
+            # Launch threads
+            my_threads = []
+            for _index in range(num_threads):
+                my_thread = threading.Thread(target=worker)
+                my_thread.start()
+                my_threads.append(my_thread)
+
             # Remove mirrors that are not present in antergos-mirrorlist
             if repo == 'antergos':
                 mirrors_pruned = []
@@ -254,13 +253,6 @@ class RankMirrors(multiprocessing.Process):
                     if mirror['url'] is not None:
                         mirrors_pruned.append(mirror)
                 mirrors[repo] = mirrors_pruned
-
-            # Launch threads
-            my_threads = []
-            for _index in range(num_threads):
-                my_thread = threading.Thread(target=worker)
-                my_thread.start()
-                my_threads.append(my_thread)
 
             # Wait for queue to empty
             while not q_in.empty():
@@ -342,7 +334,6 @@ class RankMirrors(multiprocessing.Process):
         """ Filter and sort mirrors """
 
         mlist = self.get_mirror_stats()
-        logging.debug("Mirror stats downloaded.")
         mirrors = self.sort_mirrors_by_speed(mirrors=mlist)
 
         for repo in ['arch', 'antergos']:
@@ -410,6 +401,11 @@ class RankMirrors(multiprocessing.Process):
 
 def test_module():
     """ Helper function to test this module """
+    import logging
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
     proc = RankMirrors()
     proc.daemon = True
     proc.name = "rankmirrors"
