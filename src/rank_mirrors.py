@@ -149,10 +149,9 @@ class RankMirrors(multiprocessing.Process):
         mirrorlist_path = RankMirrors.MIRRORLIST['antergos']
         with open(mirrorlist_path, 'r') as mirror_file:
             lines = mirror_file.readlines()
-        for url in lines:
-            if mirror_url in url:
-                url = url.split('=')[1].strip()
-                return url
+        for line in lines:
+            if mirror_url in line:
+                return line.split('=')[1].strip()
         logging.warning("%s not found in %s", mirror_url, mirrorlist_path)
         return None
 
