@@ -434,6 +434,27 @@ def check_for_files():
     return True
 
 
+def enable_multilib():
+    """ Enable multilib repo in /etc/pacman.conf """
+
+    # Check if it is enabled
+    with open("/etc/pacman.conf", 'rt') as pconf:
+        lines = pconf.readlines()
+
+    enabled = False
+    for line in lines:
+        if line.startswith("[multilib]"):
+            enabled = True
+            break
+
+    if not enabled:
+        logging.debug("Adding multilib repository to /etc/pacman.conf")
+        with misc.raised_privileges():
+            with open("/etc/pacman.conf", 'at') as pconf:
+                pconf.write("[multilib]\n")
+                pconf.write("Include = /etc/pacman.d/mirrorlist\n\n")
+
+
 def init_cnchi():
     """ This function initialises Cnchi """
 
@@ -476,6 +497,9 @@ def init_cnchi():
     # Check ISO version where Cnchi is running from
     if not check_iso_version():
         sys.exit(1)
+
+    # Workaround for bug in antergos-iso
+    enable_multilib()
 
     # Init PyObject Threads
     threads_init()
