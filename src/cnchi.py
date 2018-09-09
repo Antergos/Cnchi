@@ -233,6 +233,9 @@ class CnchiInit():
         if not self.check_iso_version():
             sys.exit(1)
 
+        # Enables multilib repo only if it's not enabled
+        self.enable_multilib()
+
         # Disable suspend to RAM
         self.disable_suspend()
 
@@ -515,6 +518,27 @@ class CnchiInit():
                 return False
 
         return True
+
+    @staticmethod
+    def enable_multilib():
+        """ Enable multilib repo in /etc/pacman.conf """
+
+        # Check if it is enabled
+        with open("/etc/pacman.conf", 'rt') as pconf:
+            lines = pconf.readlines()
+
+        enabled = False
+        for line in lines:
+            if line.startswith("[multilib]"):
+                enabled = True
+                break
+
+        if not enabled:
+            logging.debug("Adding multilib repository to /etc/pacman.conf")
+            with misc.raised_privileges():
+                with open("/etc/pacman.conf", 'at') as pconf:
+                    pconf.write("[multilib]\n")
+                    pconf.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
     def disable_suspend(self):
         """ Disable gnome settings suspend to ram """
