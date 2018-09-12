@@ -404,8 +404,6 @@ class RankMirrors(multiprocessing.Process):
 
 def test_module():
     """ Helper function to test this module """
-    import logging
-
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
