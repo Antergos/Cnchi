@@ -536,9 +536,11 @@ class InstallationAsk(GtkBaseBox):
                         try:
                             fraction = pipe.recv()
                             progress_bar.set_fraction(fraction)
+                            must_wait = fraction < 1.0
                         except EOFError as _err:
                             pass
-                    must_wait = True
+                    else:
+                        must_wait = True
 
             while Gtk.events_pending():
                 Gtk.main_iteration()
