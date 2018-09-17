@@ -38,7 +38,7 @@ import subprocess
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, GdkPixbuf
 
 import show_message as show
 import misc.extra as misc
@@ -81,6 +81,7 @@ class Slides(GtkBaseBox):
         self.should_pulse = False
 
         self.revealer = self.gui.get_object('revealer1')
+        self.revealer.connect('notify::child-revealed', self.image_revealed)
         self.slide = 0
 
         GLib.timeout_add(Slides.MANAGE_EVENTS_TIMER, self.manage_events_from_cb_queue)
@@ -113,16 +114,18 @@ class Slides(GtkBaseBox):
         # Set slide image (and show it)
         self.reveal_next_slide()
 
-        self.revealer.connect('notify::child-revealed', self.image_revealed)
-
     def reveal_next_slide(self):
         """ Loads slide and reveals it """
-        data_dir = self.settings.get('data')
         self.slide = ((self.slide + 1) % 3) + 1
         if 0 < self.slide <= 3:
+            data_dir = self.settings.get('data')
             path = os.path.join(data_dir, 'images/slides', '{}.png'.format(self.slide))
             img = self.gui.get_object('slide1')
-            img.set_from_file(path)
+            # img.set_from_file(path)
+            # 800x334
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path, 820, 334, False)
+            # set the content of the image as the pixbuf
+            img.set_from_pixbuf(pixbuf)
             # Reveal image
             self.revealer.set_reveal_child(True)
 
