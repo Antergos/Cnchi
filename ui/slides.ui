@@ -28,8 +28,8 @@
         -->
         <child>
             <object class="GtkRevealer" id="revealer1">
-                <property name="transition-duration">2000</property>
-                <property name="transition-type">slide-up</property>
+                <property name="transition-duration">4000</property>
+                <property name="transition-type">crossfade</property>
                 <child>
                     <object class="GtkImage" id="slide1">
                     <property name='visible'>False</property>
@@ -39,7 +39,7 @@
                 </child>
             </object>
             <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
             </packing>

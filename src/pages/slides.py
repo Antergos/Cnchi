@@ -57,9 +57,11 @@ except NameError as err:
 class Slides(GtkBaseBox):
     """ Slides page """
 
-    # Timers in miliseconds
-    MANAGE_EVENTS_TIMER = 1000
-    SLIDESHOW_TIMER = 1000
+    # Check events queue once every two seconds
+    MANAGE_EVENTS_TIMER = 2000
+
+    # Change image slide every two minutes
+    SLIDESHOW_TIMER = 120000
 
     def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
@@ -78,8 +80,10 @@ class Slides(GtkBaseBox):
         self.fatal_error = False
         self.should_pulse = False
 
+        self.revealer = self.gui.get_object('revealer1')
+        self.slide = 0
+
         GLib.timeout_add(Slides.MANAGE_EVENTS_TIMER, self.manage_events_from_cb_queue)
-        GLib.timeout_add(Slides.SLIDESHOW_TIMER, self.slideshow)
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -106,25 +110,36 @@ class Slides(GtkBaseBox):
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
 
-        # Set image
-        img1 = self.gui.get_object('slide1')
+        # Set slide image (and show it)
+        self.reveal_next_slide()
+
+        self.revealer.connect('notify::child-revealed', self.image_revealed)
+
+    def reveal_next_slide(self):
+        """ Loads slide and reveals it """
         data_dir = self.settings.get('data')
-        path = os.path.join(data_dir, 'images/slides', '1.png')
-        img1.set_from_file(path)
+        self.slide = ((self.slide + 1) % 3) + 1
+        if 0 < self.slide <= 3:
+            path = os.path.join(data_dir, 'images/slides', '{}.png'.format(self.slide))
+            img = self.gui.get_object('slide1')
+            img.set_from_file(path)
+            # Reveal image
+            self.revealer.set_reveal_child(True)
 
-        # Reveal image
-        revealer = self.gui.get_object('revealer1')
-        revealer.set_reveal_child(True)
+    def image_revealed(self, revealer, _revealed):
+        """ Called when a image slide is shown
+            revealer: Gtk.Revealer
+            revealed: GParamBoolean """
+        if revealer.get_child_revealed():
+            GLib.timeout_add(Slides.SLIDESHOW_TIMER, self.hide_slide)
+        else:
+            self.reveal_next_slide()
 
-        revealer.connect('notify::child-revealed', self.image_revealed)
-
-    def image_revealed(self):
-        """ Called when a image slide is shown """
-        print("image revealed!!! *******************")
-    
-    def slideshow(self):
-        """ Change image shown in slideshow """
-        pass
+    def hide_slide(self):
+        """ Hide image shown in slideshow, this will trigger image_revealed()
+        so the next slide image will be revealed """
+        self.revealer.set_reveal_child(False)
+        return False
 
     @staticmethod
     def store_values():
