@@ -213,6 +213,9 @@ class CnchiInit():
         # Setup our logging framework
         self.setup_logging()
 
+        # Enables needed repositories only if it's not enabled
+        self.enable_repositories()
+
         # Check that all repositories are present in pacman.conf file
         if not self.check_pacman_conf("/etc/pacman.conf"):
             sys.exit(1)
@@ -232,9 +235,6 @@ class CnchiInit():
         # Check ISO version where Cnchi is running from
         if not self.check_iso_version():
             sys.exit(1)
-
-        # Enables multilib repo only if it's not enabled
-        self.enable_multilib()
 
         # Disable suspend to RAM
         self.disable_suspend()
@@ -260,7 +260,7 @@ class CnchiInit():
             for repo in repos:
                 logging.error("Repository %s not in pacman.conf file", repo)
             return False
-        
+
         logging.debug("All repositories are present in pacman.conf file")
         return True
 
@@ -520,25 +520,36 @@ class CnchiInit():
         return True
 
     @staticmethod
-    def enable_multilib():
-        """ Enable multilib repo in /etc/pacman.conf """
+    def enable_repositories():
+        """ Enable needed repositories in /etc/pacman.conf (just in case) """
 
-        # Check if it is enabled
+        repositories = ['antergos', 'core', 'extra', 'community', 'multilib']
+
+        # Read pacman.conf file
         with open("/etc/pacman.conf", 'rt') as pconf:
             lines = pconf.readlines()
 
-        enabled = False
-        for line in lines:
-            if line.startswith("[multilib]"):
-                enabled = True
-                break
+        # For each repository, check if it is enabled or not
+        enabled = {}
+        for repo in repositories:
+            enabled[repo] = False
+            for line in lines:
+                if line.startswith('[' + repo + ']'):
+                    enabled[repo] = True
+                    break
 
-        if not enabled:
-            logging.debug("Adding multilib repository to /etc/pacman.conf")
-            with misc.raised_privileges():
-                with open("/etc/pacman.conf", 'at') as pconf:
-                    pconf.write("[multilib]\n")
-                    pconf.write("Include = /etc/pacman.d/mirrorlist\n\n")
+        # For each repository, add it's definition if it is not enabled
+        for repo in repositories:
+            if not enabled[repo]:
+                logging.debug("Adding %s repository to /etc/pacman.conf", repo)
+                with misc.raised_privileges():
+                    with open("/etc/pacman.conf", 'at') as pconf:
+                        pconf.write("[{}]\n".format(repo))
+                        if repo == 'antergos':
+                            pconf.write("SigLevel = PackageRequired\n")
+                            pconf.write("Include = /etc/pacman.d/antergos-mirrorlist\n\n")
+                        else:
+                            pconf.write("Include = /etc/pacman.d/mirrorlist\n\n")
 
     def disable_suspend(self):
         """ Disable gnome settings suspend to ram """
