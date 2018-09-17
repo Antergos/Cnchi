@@ -8,6 +8,7 @@
         <property name="spacing">10</property>
         <property name="halign">fill</property>
         <property name="hexpand">True</property>
+        <!-->
         <child>
             <object class="GtkBox" id="scrolledwindow">
                 <property name="visible">True</property>
@@ -24,6 +25,28 @@
                 <property name="position">0</property>
             </packing>
         </child>
+        -->
+        <child>
+            <object class="GtkRevealer" id="revealer1">
+                <property name="transition-duration">2000</property>
+                <property name="transition-type">slide-up</property>
+                <child>
+                    <object class="GtkImage" id="slide1">
+                    <property name='visible'>False</property>
+                    <!-- <property name="icon-name">face-cool-symbolic</property>
+                    <property name="icon-size">large</property> -->
+                    </object>
+                </child>
+            </object>
+            <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+            </packing>
+        </child>
+
+
+
         <child>
             <object class="GtkProgressBar" id="downloads_progress_bar">
                 <property name="visible">True</property>

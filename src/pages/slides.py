@@ -31,14 +31,14 @@
 
 import sys
 import logging
+import os
+import queue
 import subprocess
 
-import queue
 
 import gi
 gi.require_version('Gtk', '3.0')
-gi.require_version('WebKit2', '4.0')
-from gi.repository import Gtk, GLib, WebKit2
+from gi.repository import Gtk, GLib
 
 import show_message as show
 import misc.extra as misc
@@ -57,51 +57,29 @@ except NameError as err:
 class Slides(GtkBaseBox):
     """ Slides page """
 
-    # There is a bug (I guess its a bug) where webkit2 renders local html files as plain text.
-    URI = 'https://antergos.com/cnchi-installer-slideshow'
+    # Timers in miliseconds
+    MANAGE_EVENTS_TIMER = 1000
+    SLIDESHOW_TIMER = 1000
 
     def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
-        super().__init__(self, params, "slides", prev_page, next_page)
+        super().__init__(self, params, 'slides', prev_page, next_page)
 
-        self.progress_bar = self.gui.get_object("progress_bar")
+        self.progress_bar = self.gui.get_object('progress_bar')
         self.progress_bar.set_show_text(True)
         self.progress_bar.set_name('i_progressbar')
 
-        self.downloads_progress_bar = self.gui.get_object("downloads_progress_bar")
+        self.downloads_progress_bar = self.gui.get_object('downloads_progress_bar')
         self.downloads_progress_bar.set_show_text(True)
         self.downloads_progress_bar.set_name('a_progressbar')
 
-        self.info_label = self.gui.get_object("info_label")
+        self.info_label = self.gui.get_object('info_label')
 
         self.fatal_error = False
         self.should_pulse = False
 
-        self.webkit = {}
-        self.webkit['view'] = None
-        self.webkit['settings'] = None
-        self.webkit['box'] = self.gui.get_object("scrolledwindow")
-
-        # Add a webkit view and load our html file to show the slides
-        try:
-            self._apply_webkit_settings()
-            if self.webkit['settings']:
-                self.webkit['view'] = WebKit2.WebView.new_with_settings(
-                    self.webkit['settings'])
-            else:
-                self.webkit['view'] = WebKit2.WebView.new()
-            self.webkit['view'].connect(
-                'context-menu', lambda _a, _b, _c, _d: True)
-            self.webkit['view'].set_hexpand(True)
-            self.webkit['view'].load_uri(Slides.URI)
-        except (IOError, GLib.Error) as err:
-            logging.error(err)
-
-        if self.webkit['view']:
-            self.webkit['box'].add(self.webkit['view'])
-            self.webkit['box'].set_size_request(800, 335)
-
-        GLib.timeout_add(1000, self.manage_events_from_cb_queue)
+        GLib.timeout_add(Slides.MANAGE_EVENTS_TIMER, self.manage_events_from_cb_queue)
+        GLib.timeout_add(Slides.SLIDESHOW_TIMER, self.slideshow)
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -110,49 +88,8 @@ class Slides(GtkBaseBox):
 
         self.header.set_subtitle(_("Installing Antergos..."))
 
-    @staticmethod
-    def _get_settings_for_webkit():
-        return {
-            'enable_developer_extras': False,
-            'javascript_can_open_windows_automatically': True,
-            'allow_file_access_from_file_urls': True,
-            'enable_write_console_messages_to_stdout': False
-        }
-
-    def _apply_webkit_settings(self):
-        try:
-            self.webkit['settings'] = WebKit2.Settings()
-
-            all_settings = self._get_settings_for_webkit()
-
-            for setting_name, value in all_settings.items():
-                setting_name = 'set_{}'.format(setting_name)
-                set_setting = getattr(self.webkit['settings'], setting_name)
-                set_setting(value)
-        except TypeError as err:
-            self.webkit['settings'] = None
-            logging.error(err)
-
     def prepare(self, direction):
-        """ Prepare slides screen
-        if self.webkit['view'] is None:
-            # Add a webkit view and load our html file to show the slides
-            try:
-                self._apply_webkit_settings()
-                if self.webkit['settings']:
-                    self.webkit['view'] = WebKit2.WebView.new_with_settings(self.webkit['settings'])
-                else:
-                    self.webkit['view'] = WebKit2.WebView.new()
-                self.webkit['view'].connect('context-menu', lambda _a, _b, _c, _d: True)
-                self.webkit['view'].set_hexpand(True)
-                self.webkit['view'].load_uri(Slides.URI)
-            except (IOError, GLib.Error) as err:
-                logging.error(err)
-
-            if self.webkit['view']:
-                self.webkit['box'].add(self.webkit['view'])
-                self.webkit['box'].set_size_request(800, 335)
-        """
+        """ Prepare slides screen """
         self.translate_ui()
         self.show_all()
 
@@ -168,6 +105,26 @@ class Slides(GtkBaseBox):
 
         # Hide close button (we've reached the point of no return)
         self.header.set_show_close_button(False)
+
+        # Set image
+        img1 = self.gui.get_object('slide1')
+        data_dir = self.settings.get('data')
+        path = os.path.join(data_dir, 'images/slides', '1.png')
+        img1.set_from_file(path)
+
+        # Reveal image
+        revealer = self.gui.get_object('revealer1')
+        revealer.set_reveal_child(True)
+
+        revealer.connect('notify::child-revealed', self.image_revealed)
+
+    def image_revealed(self):
+        """ Called when a image slide is shown """
+        print("image revealed!!! *******************")
+    
+    def slideshow(self):
+        """ Change image shown in slideshow """
+        pass
 
     @staticmethod
     def store_values():
