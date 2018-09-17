@@ -30,9 +30,11 @@
             <object class="GtkRevealer" id="revealer1">
                 <property name="transition-duration">4000</property>
                 <property name="transition-type">crossfade</property>
+                <property name="hexpand">True</property>
                 <child>
                     <object class="GtkImage" id="slide1">
                     <property name='visible'>False</property>
+                    <property name="hexpand">True</property>
                     <!-- <property name="icon-name">face-cool-symbolic</property>
                     <property name="icon-size">large</property> -->
                     </object>

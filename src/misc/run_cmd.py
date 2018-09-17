@@ -55,11 +55,8 @@ def ensured_executable(cmd):
     cmd = list(cmd)
 
     if cmd and not shutil.which(cmd[0]) and os.path.exists(cmd[0]):
-        try:
+        with raised_privileges():
             os.chmod(cmd[0], 0o777)
-        except Exception:
-            with raised_privileges():
-                os.chmod(cmd[0], 0o777)
 
     return shutil.which(cmd[0]) is not None
 
@@ -68,10 +65,17 @@ def log_exception_info():
     """ This function logs information about the exception that is currently
         being handled. The information returned is specific both to the current
         thread and to the current stack frame. """
+
+    # If no exception is being handled anywhere on the stack,
+    # a tuple containing three None values is returned by sys.exc_info()
     exc_type, exc_value, exc_traceback = sys.exc_info()
-    trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
-    for line in trace:
-        logging.error(line.rstrip())
+    if not (exc_type is None and exc_value is None and exc_traceback is None):
+        # The return value of format_exception is a list of strings,
+        # each ending in a newline and some containing internal newlines.
+        trace = traceback.format_exception(exc_type, exc_value, exc_traceback)
+        lines = ''.join(trace).split('\n')
+        for line in lines:
+            logging.error(line.rstrip())
 
 
 def call(cmd, warning=True, error=False, fatal=False, msg=None, timeout=None,

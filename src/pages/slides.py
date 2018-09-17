@@ -57,8 +57,8 @@ except NameError as err:
 class Slides(GtkBaseBox):
     """ Slides page """
 
-    # Check events queue once every two seconds
-    MANAGE_EVENTS_TIMER = 2000
+    # Check events queue every second
+    MANAGE_EVENTS_TIMER = 1000
 
     # Change image slide every two minutes
     SLIDESHOW_TIMER = 120000
@@ -266,8 +266,10 @@ class Slides(GtkBaseBox):
         log_util = ContextFilter()
         log_util.send_install_result("True")
 
-        if (self.settings.get('bootloader_install') and
-                not self.settings.get('bootloader_installation_successful')):
+        bootloader_install = self.settings.get('bootloader_install')
+        bootloader_install_ok = self.settings.get('bootloader_installation_successful')
+
+        if bootloader_install and not bootloader_install_ok:
             # Warn user about GRUB and ask if we should open wiki page.
             boot_warn = _(
                 "IMPORTANT: There may have been a problem with the bootloader installation which "
