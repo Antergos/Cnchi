@@ -60,8 +60,8 @@ class Slides(GtkBaseBox):
     # Check events queue every second
     MANAGE_EVENTS_TIMER = 1000
 
-    # Change image slide every two minutes
-    SLIDESHOW_TIMER = 120000
+    # Change image slide every half minute
+    SLIDESHOW_TIMER = 30000
 
     def __init__(self, params, prev_page=None, next_page=None):
         """ Initialize class and its vars """
