@@ -43,7 +43,6 @@
                 <pkgname>whois</pkgname>
                 <pkgname>wireless_tools</pkgname>
                 <pkgname>wpa_actiond</pkgname>
-                <pkgname>zd1211-firmware</pkgname>
             </packages>
         </edition>
 
