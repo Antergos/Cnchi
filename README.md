@@ -38,7 +38,7 @@ sudo -E cnchi.py
 
 To create logs to help debug problems:
 ```sh
-sudo -E cnchi.py -dv -s bugsnag
+sudo -E cnchi.py -dv
 ```
 
 ## Reporting bugs:
@@ -61,7 +61,6 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - python-cairo
  - python-chardet
  - python-dbus
- - python-defusedxml
  - python-feedparser
  - python-gobject
  - python-idna
@@ -70,7 +69,6 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - geoip (python-geoip2, python-maxminddb, geoip2-database)
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
- - webkit2gtk
  - upower
  - gocryptfs
  - iso-codes
@@ -101,7 +99,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
 You will need to install all [dependencies](#dependencies).
 
 - Fork Cnchi
-- Do your changes (use 0.16.x branch as base!)
+- Do your changes (use 0.16.x branch (stable) as base!)
 
 Then, you can use the run script to test Cnchi. As this is a Installer, you will need to use a [Virtual Machine](http://virtualbox.org) or an additional harddisk to test it.
 
