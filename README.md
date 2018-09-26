@@ -11,7 +11,7 @@
 
 [![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-You are viewing the `0.17.x` branch (development).
+You are viewing the `0.16.x` branch (stable).
 
 ## Current Status
 
