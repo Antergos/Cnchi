@@ -38,7 +38,7 @@ sudo -E cnchi.py
 
 To create logs to help debug problems:
 ```sh
-sudo -E cnchi.py -dv -s bugsnag
+sudo -E cnchi.py -dv
 ```
 
 ## Reporting bugs:
