@@ -7,7 +7,8 @@
 ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
 ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
 
-[![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
 
 You are viewing the `0.17.x` branch (development).
 
