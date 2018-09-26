@@ -32,7 +32,7 @@ sudo -E cnchi.py
 |```-a``` , ```--a11y```|*Set accessibility feature on by default*|
 |```-c``` , ```--cache```|*Use pre-downloaded xz packages when possible*|
 |```-d``` , ```--debug```|*Sets Cnchi log level to 'debug'*|
-|```-e``` , ```--environment```|*Sets the Desktop Environment that will be installed, see [desktop_info.py](cnchi/desktop_info.py) for options*|
+|```-e``` , ```--environment```|*Sets the Desktop Environment that will be installed, see [desktop_info.py](src/desktop_info.py) for options*|
 |```-f``` , ```--force```|*Runs cnchi even if it detects that another instance is running*|
 |```-n``` , ```--no-check```|*Makes checks optional in check screen*|
 |```-p``` , ```--packagelist```|*Install the packages referenced by a local xml instead of the defaults, see [#617](https://github.com/Antergos/Cnchi/issues/617) for proper usage*|
