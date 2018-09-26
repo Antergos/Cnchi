@@ -2,14 +2,7 @@
 
 **Graphical Installer for Antergos Linux**
 
-![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg)
-
-![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg)
-![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg)
-
-![Release date](https://img.shields.io/github/release-date/SubtitleEdit/subtitleedit.svg)
-
-[![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg) ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg) ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg) ![Release date](https://img.shields.io/github/release-date/SubtitleEdit/subtitleedit.svg) [![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 You are viewing the `0.16.x` branch (stable).
 
@@ -68,7 +61,6 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - python-cairo
  - python-chardet
  - python-dbus
- - python-defusedxml
  - python-feedparser
  - python-gobject
  - python-idna
@@ -77,7 +69,6 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
  - geoip (python-geoip2, python-maxminddb, geoip2-database)
  - pyparted (parted, dosfstools, mtools, ntfs-3g, ntfsprogs)
  - pyalpm (alpm)
- - webkit2gtk
  - upower
  - gocryptfs
  - iso-codes
