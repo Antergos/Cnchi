@@ -55,9 +55,8 @@ def get_uuid(part):
     info = get_info(part)
     if "UUID" in info.keys():
         return info['UUID']
-    else:
-        logging.error("Can't get partition %s UUID", part)
-        return ""
+    logging.error("Can't get partition %s UUID", part)
+    return ""
 
 
 def get_label(part):
@@ -65,11 +64,9 @@ def get_label(part):
     info = get_info(part)
     if "LABEL" in info.keys():
         return info['LABEL']
-    else:
-        logging.debug(
-            "Can't get partition %s label (or it does not have any)",
-            part)
-        return ""
+    logging.debug(
+        "Can't get partition %s label (or it does not have any)", part)
+    return ""
 
 
 @misc.raise_privileges
@@ -172,17 +169,15 @@ def label_fs(fstype, part, label):
         ret = (1, _("Can't label a {0} partition").format(fstype))
     return ret
 
-##################################################################################
 
 @misc.raise_privileges
-def create_fs(part, fstype, label='', other_options=''):
+def create_fs(part, fstype, label='', options=''):
     """ Create filesystem using mkfs """
 
     # Set some default options
     # -m 1 reserves 1% for root, because I think 5% is too much on
     # newer bigger drives.
     # Also turn on dir_index for ext.  Not sure about other fs opts
-
     # The return value is tuple.
     # (failed, msg)
     # First arg is False for success, True for fail
@@ -215,8 +210,7 @@ def create_fs(part, fstype, label='', other_options=''):
         'swap': 'mkswap'}
 
     if fstype not in mkfs_cmd.keys():
-        msg = _("Unknown filesystem {0} for partition {1}")
-        msg = msg.format(fstype, part)
+        msg = _("Unknown filesystem {0} for partition {1}").format(fstype, part)
         return True, msg
 
     cmd = mkfs_cmd[fstype]
@@ -228,28 +222,33 @@ def create_fs(part, fstype, label='', other_options=''):
             lbl_opt = '-l'
         elif fstype in ['fat', 'fat16', 'fat32', 'vfat']:
             lbl_opt = '-n'
-        cmd += " " + lbl_opt + " " + label
+        cmd = "{0} {1} {2}".format(cmd, lbl_opt, label)
 
-    # Use default options if not other options are provided
-    if not other_options:
-        default_opts = {'ext2': '-m 1',
-                        'ext3': '-m 1 -O dir_index',
-                        'ext4': '-m 1 -O dir_index'}
-        cmd += " " + default_opts.get(fstype, "")
-    else:
-        cmd += " " + other_options
+    if not options:
+        # Use default options if no options are provided
+        default_options = {
+            'ext2': '-m 1',
+            'ext3': '-m 1 -O dir_index',
+            'ext4': '-m 1 -O dir_index'}
+        options = default_options.get(fstype, None)
 
-    cmd += " " + part
+    if options:
+        # Add options to our cmd line
+        cmd = "{0} {1}".format(cmd, options)
+
+    # Convert to a list
+    cmd = cmd.split()
+
+    # Add partition as last option (issue #1092)
+    cmd.append(part)
 
     try:
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
-        logging.error("Error running %s: %s", err.cmd, err.output)
+        logging.error("Error running %s: %s", err.cmd, err.output.decode())
         ret = (True, err)
     return ret
-
-##################################################################################
 
 @misc.raise_privileges
 def is_ssd(disk_path):
