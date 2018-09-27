@@ -30,7 +30,6 @@
 """ Functions to work with file systems """
 
 import subprocess
-import shlex
 import logging
 import os
 
@@ -138,35 +137,36 @@ def get_pknames():
 @misc.raise_privileges
 def label_fs(fstype, part, label):
     """ Get filesystem label """
-    ladic = {'ext2': 'e2label %(part)s %(label)s',
-             'ext3': 'e2label %(part)s %(label)s',
-             'ext4': 'e2label %(part)s %(label)s',
-             'f2fs': 'blkid -s LABEL -o value %(part)s %(label)s',
-             'fat': 'mlabel -i %(part)s ::%(label)s',
-             'fat16': 'mlabel -i %(part)s ::%(label)s',
-             'fat32': 'mlabel -i %(part)s ::%(label)s',
-             'vfat': 'mlabel -i %(part)s ::%(label)s',
-             'ntfs': 'ntfslabel %(part)s %(label)s',
-             'jfs': 'jfs_tune -L %(label)s %(part)s',
-             'reiserfs': 'reiserfstune -l %(label)s %(part)s',
-             'xfs': 'xfs_admin -l %(label)s %(part)s',
-             'btrfs': 'btrfs filesystem label %(part)s %(label)s',
-             'swap': 'swaplabel -L %(label)s %(part)s'}
+    # {0} : part
+    # {1} : label
+    ladic = {
+        'ext2': 'e2label {0} {1}',
+        'ext3': 'e2label {0} {1}',
+        'ext4': 'e2label {0} {1}',
+        'f2fs': 'blkid -s LABEL -o value {0} {1}',
+        'fat': 'mlabel -i {0} ::{1}',
+        'fat16': 'mlabel -i {0} ::{1}',
+        'fat32': 'mlabel -i {0} ::{1}',
+        'vfat': 'mlabel -i {0} ::{1}',
+        'ntfs': 'ntfslabel {0} {1}',
+        'jfs': 'jfs_tune -L {1} {0}',
+        'reiserfs': 'reiserfstune -l {1} {0}',
+        'xfs': 'xfs_admin -l {1} {0}',
+        'btrfs': 'btrfs filesystem label {0} {1}',
+        'swap': 'swaplabel -L {1} {0}'}
+
     fstype = fstype.lower()
-    # OK, the below is a quick cheat.  vars() returns all variables
-    # in a dictionary.  So 'part' and 'label' will be defined
-    # and replaced in above dic
     if fstype in ladic:
+        cmd = ladic[fstype].format(part, label).split()
         try:
-            cmd = shlex.split(ladic[fstype] % vars())
             result = subprocess.check_output(cmd).decode()
             ret = (0, result)
         except subprocess.CalledProcessError as err:
-            logging.error("Error running %s: %s", err.cmd, err.output)
+            logging.error("Error running %s: %s", err.cmd, err.output.decode())
             ret = (1, err)
             # check_call returns exit code.  0 should mean success
     else:
-        ret = (1, _("Can't label a {0} partition").format(fstype))
+        ret = (1, _("Cnchi does not know how to label a {0} partition").format(fstype))
     return ret
 
 
