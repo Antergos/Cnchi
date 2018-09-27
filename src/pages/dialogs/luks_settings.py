@@ -218,12 +218,10 @@ class LuksSettingsDialog(Gtk.Dialog):
         """ User has introduced new information. Check it here. """
         password = {}
         password['entry'] = self.gui.get_object('password_entry')
-        password['confirm'] = self.gui.get_object('password_confirm_entry')
         password['image'] = self.gui.get_object('password_confirm_image')
-        password['status'] = self.gui.get_object('password_status_label')
+        password['label'] = self.gui.get_object('password_status_label')
         password['strength'] = self.gui.get_object('password_strength')
 
-        validation.check_password(
-            password['entry'], password['confirm'],
-            password['image'], password['status'],
-            password['strength'])
+        verified_password = self.gui.get_object('password_confirm_entry')
+
+        validation.check_password(password, verified_password)

@@ -410,7 +410,7 @@ class UserInfo(GtkBaseBox):
         """ Validates changed password entry """
         validation.check_password(
             self.widgets['password'],
-            self.widgets['verified_password'])
+            self.widgets['verified_password']['entry'])
 
     def get_prev_page(self):
         """ Gets previous page """
