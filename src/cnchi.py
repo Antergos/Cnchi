@@ -452,6 +452,9 @@ class CnchiInit():
             "-p", "--packagelist", help=_("Install packages referenced by a local XML file"),
             nargs='?')
         parser.add_argument(
+            "-s", "--logserver", help=_("Log server (deprecated, always uses bugsnag)"),
+            nargs='?')
+        parser.add_argument(
             "-t", "--no-tryit", help=_("Disables first screen's 'try it' option"),
             action="store_true")
         parser.add_argument(

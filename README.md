@@ -2,7 +2,7 @@
 
 **Graphical Installer for Antergos Linux**
 
-![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg) [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg) ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg) [![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Read the docs](https://readthedocs.org/projects/cnchi/badge/?version=latest) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/141e37590a9e4a2da3b3d84c0a6241ac)](https://www.codacy.com/project/karasu/Cnchi/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Antergos/Cnchi&amp;utm_campaign=Badge_Grade_Dashboard) ![License](https://img.shields.io/github/license/antergos/cnchi.svg) ![GitHub issues](https://img.shields.io/github/issues/antergos/cnchi.svg) ![Github commits](https://img.shields.io/github/commits-since/antergos/cnchi/latest.svg) ![Release date](https://img.shields.io/github/release-date/SubtitleEdit/subtitleedit.svg) [![Gitter](https://badges.gitter.im/Antergos/Cnchi.svg)](https://gitter.im/Antergos/Cnchi?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 You are viewing the `0.17.x` branch (development).
 
@@ -10,7 +10,7 @@ You are viewing the `0.17.x` branch (development).
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|Cnchi Stable|0.16.x|![0.16.1](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
+|Cnchi Stable|0.16.x|![0.16.3](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
 |Cnchi Development|0.17.x|![0.17.1](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|master|Development|
 
