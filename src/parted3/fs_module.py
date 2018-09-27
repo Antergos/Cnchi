@@ -172,9 +172,10 @@ def label_fs(fstype, part, label):
         ret = (1, _("Can't label a {0} partition").format(fstype))
     return ret
 
+##################################################################################
 
 @misc.raise_privileges
-def create_fs(part, fstype, label='', other_opts=''):
+def create_fs(part, fstype, label='', other_options=''):
     """ Create filesystem using mkfs """
 
     # Set some default options
@@ -197,69 +198,50 @@ def create_fs(part, fstype, label='', other_opts=''):
 
     fstype = fstype.lower()
 
-    comdic = {'ext2': 'mkfs.ext2 -F -q',
-              'ext3': 'mkfs.ext3 -F -q',
-              'ext4': 'mkfs.ext4 -F -q',
-              'f2fs': 'mkfs.f2fs -f',
-              'fat': 'mkfs.vfat -F 32',
-              'fat16': 'mkfs.vfat -F 16',
-              'fat32': 'mkfs.vfat -F 32',
-              'vfat': 'mkfs.vfat -F 32',
-              'ntfs': 'mkfs.ntfs -f',
-              'jfs': 'mkfs.jfs -q',
-              'reiserfs': 'mkfs.reiserfs -q',
-              'xfs': 'mkfs.xfs -f',
-              'btrfs': 'mkfs.btrfs -f',
-              'swap': 'mkswap'}
+    mkfs_cmd = {
+        'ext2': 'mkfs.ext2 -F -q',
+        'ext3': 'mkfs.ext3 -F -q',
+        'ext4': 'mkfs.ext4 -F -q',
+        'f2fs': 'mkfs.f2fs -f',
+        'fat': 'mkfs.vfat -F 32',
+        'fat16': 'mkfs.vfat -F 16',
+        'fat32': 'mkfs.vfat -F 32',
+        'vfat': 'mkfs.vfat -F 32',
+        'ntfs': 'mkfs.ntfs -f',
+        'jfs': 'mkfs.jfs -q',
+        'reiserfs': 'mkfs.reiserfs -q',
+        'xfs': 'mkfs.xfs -f',
+        'btrfs': 'mkfs.btrfs -f',
+        'swap': 'mkswap'}
 
-    if fstype not in comdic.keys():
+    if fstype not in mkfs_cmd.keys():
         msg = _("Unknown filesystem {0} for partition {1}")
         msg = msg.format(fstype, part)
         return True, msg
 
-    cmd = comdic[fstype]
+    cmd = mkfs_cmd[fstype]
 
     if label:
-        lbldic = {'ext2': '-L "%(label)s"',
-                  'ext3': '-L "%(label)s"',
-                  'ext4': '-L "%(label)s"',
-                  'f2fs': '-l "%(label)s"',
-                  'fat': '-n "%(label)s"',
-                  'fat16': '-n "%(label)s"',
-                  'fat32': '-n "%(label)s"',
-                  'vfat': '-n "%(label)s"',
-                  'ntfs': '-L "%(label)s"',
-                  'jfs': '-L "%(label)s"',
-                  'reiserfs': '-l "%(label)s"',
-                  'xfs': '-L "%(label)s"',
-                  'btrfs': '-L "%(label)s"',
-                  'swap': '-L "%(label)s"'}
-        cmd += " " + lbldic[fstype]
+        # -L is the most widely used label option
+        lbl_opt = '-L'
+        if fstype in ['f2fs', 'reiserfs']:
+            lbl_opt = '-l'
+        elif fstype in ['fat', 'fat16', 'fat32', 'vfat']:
+            lbl_opt = '-n'
+        cmd += " " + lbl_opt + " " + label
 
-    if not other_opts:
+    # Use default options if not other options are provided
+    if not other_options:
         default_opts = {'ext2': '-m 1',
                         'ext3': '-m 1 -O dir_index',
-                        'ext4': '-m 1 -O dir_index',
-                        'f2fs': '',
-                        'fat': '',
-                        'fat16': '',
-                        'fat32': '',
-                        'vfat': '',
-                        'ntfs': '',
-                        'jfs': '',
-                        'reiserfs': '',
-                        'btrfs': '',
-                        'xfs': '',
-                        'swap': ''}
-        other_opts = default_opts[fstype]
+                        'ext4': '-m 1 -O dir_index'}
+        cmd += " " + default_opts.get(fstype, "")
+    else:
+        cmd += " " + other_options
 
-    if other_opts:
-        cmd += " %(other_opts)s"
-
-    cmd += " %(part)s"
+    cmd += " " + part
 
     try:
-        cmd = shlex.split(cmd % vars())
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
@@ -267,6 +249,7 @@ def create_fs(part, fstype, label='', other_opts=''):
         ret = (True, err)
     return ret
 
+##################################################################################
 
 @misc.raise_privileges
 def is_ssd(disk_path):
