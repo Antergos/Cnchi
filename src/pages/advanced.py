@@ -962,7 +962,7 @@ class InstallationAdvanced(GtkBaseBox):
                         pm.create_partition(
                             disk, pm.PARTITION_LOGICAL, geometry)
 
-                if self.is_uefi and (mymount == "/boot" or mymount == "/boot/efi"):
+                if self.is_uefi and mymount in ["/boot", "/boot/efi"]:
                     logging.info(
                         "/boot or /boot/efi need to be fat32 in UEFI systems. Forcing it.")
                     myfs = "fat32"
@@ -985,12 +985,13 @@ class InstallationAdvanced(GtkBaseBox):
                         # Store partition luks options
                         self.luks_options[uid] = self.create_part_dlg.luks_options
                         if mymount == "/":
-                            # Set if we'll be using LUKS in the root partition
-                            # (for process.py to know)
+                            # Set if we'll be using LUKS in the root partition (for process.py)
                             self.settings.set(
-                                'use_luks_in_root', self.create_part_dlg.luks_options[0])
+                                'use_luks_in_root',
+                                self.create_part_dlg.luks_options[0])
                             self.settings.set(
-                                'luks_root_volume', self.create_part_dlg.luks_options[1])
+                                'luks_root_volume',
+                                self.create_part_dlg.luks_options[1])
 
                 # Update partition list treeview
                 self.update_view()
