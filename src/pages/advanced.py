@@ -863,7 +863,7 @@ class InstallationAdvanced(GtkBaseBox):
         if self.disks is None:
             self.disks = pm.get_devices()
 
-        (disk, _result) = self.disks[disk_path]
+        disk, _result = self.disks[disk_path]
 
         # Added extended, moving extended details up here
         extended = disk.getExtendedPartition()
@@ -884,8 +884,6 @@ class InstallationAdvanced(GtkBaseBox):
                 show.warning(self.get_main_window(), msg)
                 return
 
-        # ------------------------------------------------------------------
-
         # Get the objects from the dialog
         params = {}
         params['supports_extended'] = disk.supportsFeature(pm.DISK_EXTENDED)
@@ -893,7 +891,6 @@ class InstallationAdvanced(GtkBaseBox):
         params['is_primary_or_extended'] = is_primary_or_extended
 
         # Prepare size spin
-
         dev = disk.device
         partitions = pm.get_partitions(disk)
         partition = partitions[partition_path]
@@ -934,11 +931,7 @@ class InstallationAdvanced(GtkBaseBox):
                 start_sector = partition.geometry.start
                 end_sector = partition.geometry.end
                 geometry = pm.geom_builder(
-                    disk,
-                    start_sector,
-                    end_sector,
-                    size,
-                    beg_var)
+                    disk, start_sector, end_sector, size, beg_var)
 
                 # User wants to create an extended, logical or primary partition
                 if self.create_part_dlg.wants_primary():
@@ -975,6 +968,7 @@ class InstallationAdvanced(GtkBaseBox):
                     myfs = "fat32"
 
                 # Store new stage partition info in self.stage_opts
+
                 old_parts = []
                 for mydevice in self.all_partitions:
                     for part in mydevice:
@@ -983,17 +977,20 @@ class InstallationAdvanced(GtkBaseBox):
                 partitions = pm.get_partitions(disk)
                 for part in partitions:
                     if part not in old_parts:
+                        # Get partition UID
                         uid = self.gen_partition_uid(partition=partitions[part])
+                        # Store partition info
                         self.stage_opts[uid] = (
                             True, mylabel, mymount, myfs, formatme)
-                        self.luks_options[uid] = self.edit_part_dlg.luks_options
+                        # Store partition luks options
+                        self.luks_options[uid] = self.create_part_dlg.luks_options
                         if mymount == "/":
                             # Set if we'll be using LUKS in the root partition
                             # (for process.py to know)
                             self.settings.set(
-                                'use_luks_in_root', self.edit_part_dlg.luks_options[0])
+                                'use_luks_in_root', self.create_part_dlg.luks_options[0])
                             self.settings.set(
-                                'luks_root_volume', self.edit_part_dlg.luks_options[1])
+                                'luks_root_volume', self.create_part_dlg.luks_options[1])
 
                 # Update partition list treeview
                 self.update_view()
