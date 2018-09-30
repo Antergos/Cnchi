@@ -134,6 +134,8 @@ class Slides(GtkBaseBox):
                     # Reveal image
                     self.revealer.set_reveal_child(True)
                 except FileNotFoundError:
+                    # FIXME: Installation process finishes before we can read these values ?¿
+                    logging.warning("Can't get configuration values.")
                     self.stop_slideshow = True
 
     def image_revealed(self, revealer, _revealed):
@@ -210,10 +212,8 @@ class Slides(GtkBaseBox):
                 self.downloads_progress_bar.set_fraction(float(event[1]))
             elif event[0] == 'progress_bar_show_text':
                 if event[1]:
-                    # self.progress_bar.set_show_text(True)
                     self.progress_bar.set_text(event[1])
                 else:
-                    # self.progress_bar.set_show_text(False)
                     self.progress_bar.set_text("")
             elif event[0] == 'progress_bar':
                 if event[1] == 'hide':
@@ -246,6 +246,8 @@ class Slides(GtkBaseBox):
                 logging.debug(
                     'Adding %s to cache_pkgs_md5_check_failed list', event[1])
                 self.settings.set('cache_pkgs_md5_check_failed', event[1])
+            else:
+                logging.warning("Event %s not recognised. Ignoring.", event[0])
 
             self.callback_queue.task_done()
 
@@ -279,24 +281,29 @@ class Slides(GtkBaseBox):
 
         self.stop_slideshow = True
 
-        bootloader_install = self.settings.get('bootloader_install')
-        bootloader_install_ok = self.settings.get('bootloader_installation_successful')
+        try:
+            bootloader_install = self.settings.get('bootloader_install')
+            bootloader_install_ok = self.settings.get('bootloader_installation_successful')
 
-        if bootloader_install and not bootloader_install_ok:
-            # Warn user about GRUB and ask if we should open wiki page.
-            boot_warn = _(
-                "IMPORTANT: There may have been a problem with the bootloader installation which "
-                "could prevent your system from booting properly. Before rebooting, you may want "
-                "to verify whether or not the bootloader is installed and configured.\n\n"
-                "The Arch Linux Wiki contains troubleshooting information:\n"
-                "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
-                "Would you like to view the wiki page now?")
-            response = show.question(self.get_main_window(), boot_warn)
-            if response == Gtk.ResponseType.YES:
-                import webbrowser
-                misc.drop_privileges()
-                wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
-                webbrowser.open(wiki_url)
+            if bootloader_install and not bootloader_install_ok:
+                # Warn user about GRUB and ask if we should open wiki page.
+                boot_warn = _(
+                    "IMPORTANT: There may have been a problem with the bootloader installation "
+                    "which could prevent your system from booting properly. Before rebooting, "
+                    "you may want to verify whether or not the bootloader is installed and "
+                    "configured.\n\n"
+                    "The Arch Linux Wiki contains troubleshooting information:\n"
+                    "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
+                    "Would you like to view the wiki page now?")
+                response = show.question(self.get_main_window(), boot_warn)
+                if response == Gtk.ResponseType.YES:
+                    import webbrowser
+                    misc.drop_privileges()
+                    wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
+                    webbrowser.open(wiki_url)
+        except FileNotFoundError:
+            # FIXME: Installation process finishes before we can read these values ?¿
+            logging.warning("Can't get configuration values.")
 
         install_ok = _(
             "Installation Complete!\n"
