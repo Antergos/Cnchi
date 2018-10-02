@@ -322,6 +322,7 @@ class Slides(GtkBaseBox):
             logging.warning("Can't get configuration values.")
 
         logging.shutdown()
+
         if response == Gtk.ResponseType.YES:
             self.reboot()
         else:
