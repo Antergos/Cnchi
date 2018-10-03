@@ -160,11 +160,19 @@ def human_password_strength(password):
 
 def check_password(password, verified_password, allow_empty=False):
     """ Check user password
-        This function expects dicts with Gtk widgets as parameters """
+        This function expects Gtk widgets as parameters
+
+        password['entry']: password entry
+        password['image']: password image (status)
+        password['label']: password label (status)
+        password['strength']: password strength
+
+        verified_password: password confirm entry
+    """
 
     complete = True
     passw = password['entry'].get_text()
-    vpassw = verified_password['entry'].get_text()
+    vpassw = verified_password.get_text()
     if passw != vpassw:
         complete = False
         password['image'].hide()

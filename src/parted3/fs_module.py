@@ -30,7 +30,6 @@
 """ Functions to work with file systems """
 
 import subprocess
-import shlex
 import logging
 import os
 
@@ -55,9 +54,8 @@ def get_uuid(part):
     info = get_info(part)
     if "UUID" in info.keys():
         return info['UUID']
-    else:
-        logging.error("Can't get partition %s UUID", part)
-        return ""
+    logging.error("Can't get partition %s UUID", part)
+    return ""
 
 
 def get_label(part):
@@ -65,11 +63,9 @@ def get_label(part):
     info = get_info(part)
     if "LABEL" in info.keys():
         return info['LABEL']
-    else:
-        logging.debug(
-            "Can't get partition %s label (or it does not have any)",
-            part)
-        return ""
+    logging.debug(
+        "Can't get partition %s label (or it does not have any)", part)
+    return ""
 
 
 @misc.raise_privileges
@@ -141,47 +137,47 @@ def get_pknames():
 @misc.raise_privileges
 def label_fs(fstype, part, label):
     """ Get filesystem label """
-    ladic = {'ext2': 'e2label %(part)s %(label)s',
-             'ext3': 'e2label %(part)s %(label)s',
-             'ext4': 'e2label %(part)s %(label)s',
-             'f2fs': 'blkid -s LABEL -o value %(part)s %(label)s',
-             'fat': 'mlabel -i %(part)s ::%(label)s',
-             'fat16': 'mlabel -i %(part)s ::%(label)s',
-             'fat32': 'mlabel -i %(part)s ::%(label)s',
-             'vfat': 'mlabel -i %(part)s ::%(label)s',
-             'ntfs': 'ntfslabel %(part)s %(label)s',
-             'jfs': 'jfs_tune -L %(label)s %(part)s',
-             'reiserfs': 'reiserfstune -l %(label)s %(part)s',
-             'xfs': 'xfs_admin -l %(label)s %(part)s',
-             'btrfs': 'btrfs filesystem label %(part)s %(label)s',
-             'swap': 'swaplabel -L %(label)s %(part)s'}
+    # {0} : part
+    # {1} : label
+    ladic = {
+        'ext2': 'e2label {0} {1}',
+        'ext3': 'e2label {0} {1}',
+        'ext4': 'e2label {0} {1}',
+        'f2fs': 'blkid -s LABEL -o value {0} {1}',
+        'fat': 'mlabel -i {0} ::{1}',
+        'fat16': 'mlabel -i {0} ::{1}',
+        'fat32': 'mlabel -i {0} ::{1}',
+        'vfat': 'mlabel -i {0} ::{1}',
+        'ntfs': 'ntfslabel {0} {1}',
+        'jfs': 'jfs_tune -L {1} {0}',
+        'reiserfs': 'reiserfstune -l {1} {0}',
+        'xfs': 'xfs_admin -l {1} {0}',
+        'btrfs': 'btrfs filesystem label {0} {1}',
+        'swap': 'swaplabel -L {1} {0}'}
+
     fstype = fstype.lower()
-    # OK, the below is a quick cheat.  vars() returns all variables
-    # in a dictionary.  So 'part' and 'label' will be defined
-    # and replaced in above dic
     if fstype in ladic:
+        cmd = ladic[fstype].format(part, label).split()
         try:
-            cmd = shlex.split(ladic[fstype] % vars())
             result = subprocess.check_output(cmd).decode()
             ret = (0, result)
         except subprocess.CalledProcessError as err:
-            logging.error("Error running %s: %s", err.cmd, err.output)
+            logging.error("Error running %s: %s", err.cmd, err.output.decode())
             ret = (1, err)
             # check_call returns exit code.  0 should mean success
     else:
-        ret = (1, _("Can't label a {0} partition").format(fstype))
+        ret = (1, _("Cnchi does not know how to label a {0} partition").format(fstype))
     return ret
 
 
 @misc.raise_privileges
-def create_fs(part, fstype, label='', other_opts=''):
+def create_fs(part, fstype, label='', options=''):
     """ Create filesystem using mkfs """
 
     # Set some default options
     # -m 1 reserves 1% for root, because I think 5% is too much on
     # newer bigger drives.
     # Also turn on dir_index for ext.  Not sure about other fs opts
-
     # The return value is tuple.
     # (failed, msg)
     # First arg is False for success, True for fail
@@ -197,76 +193,62 @@ def create_fs(part, fstype, label='', other_opts=''):
 
     fstype = fstype.lower()
 
-    comdic = {'ext2': 'mkfs.ext2 -F -q',
-              'ext3': 'mkfs.ext3 -F -q',
-              'ext4': 'mkfs.ext4 -F -q',
-              'f2fs': 'mkfs.f2fs -f',
-              'fat': 'mkfs.vfat -F 32',
-              'fat16': 'mkfs.vfat -F 16',
-              'fat32': 'mkfs.vfat -F 32',
-              'vfat': 'mkfs.vfat -F 32',
-              'ntfs': 'mkfs.ntfs -f',
-              'jfs': 'mkfs.jfs -q',
-              'reiserfs': 'mkfs.reiserfs -q',
-              'xfs': 'mkfs.xfs -f',
-              'btrfs': 'mkfs.btrfs -f',
-              'swap': 'mkswap'}
+    mkfs_cmd = {
+        'ext2': 'mkfs.ext2 -F -q',
+        'ext3': 'mkfs.ext3 -F -q',
+        'ext4': 'mkfs.ext4 -F -q',
+        'f2fs': 'mkfs.f2fs -f',
+        'fat': 'mkfs.vfat -F 32',
+        'fat16': 'mkfs.vfat -F 16',
+        'fat32': 'mkfs.vfat -F 32',
+        'vfat': 'mkfs.vfat -F 32',
+        'ntfs': 'mkfs.ntfs -f',
+        'jfs': 'mkfs.jfs -q',
+        'reiserfs': 'mkfs.reiserfs -q',
+        'xfs': 'mkfs.xfs -f',
+        'btrfs': 'mkfs.btrfs -f',
+        'swap': 'mkswap'}
 
-    if fstype not in comdic.keys():
-        msg = _("Unknown filesystem {0} for partition {1}")
-        msg = msg.format(fstype, part)
+    if fstype not in mkfs_cmd.keys():
+        msg = _("Unknown filesystem {0} for partition {1}").format(fstype, part)
         return True, msg
 
-    cmd = comdic[fstype]
+    cmd = mkfs_cmd[fstype]
 
     if label:
-        lbldic = {'ext2': '-L "%(label)s"',
-                  'ext3': '-L "%(label)s"',
-                  'ext4': '-L "%(label)s"',
-                  'f2fs': '-l "%(label)s"',
-                  'fat': '-n "%(label)s"',
-                  'fat16': '-n "%(label)s"',
-                  'fat32': '-n "%(label)s"',
-                  'vfat': '-n "%(label)s"',
-                  'ntfs': '-L "%(label)s"',
-                  'jfs': '-L "%(label)s"',
-                  'reiserfs': '-l "%(label)s"',
-                  'xfs': '-L "%(label)s"',
-                  'btrfs': '-L "%(label)s"',
-                  'swap': '-L "%(label)s"'}
-        cmd += " " + lbldic[fstype]
+        # -L is the most widely used label option
+        lbl_opt = '-L'
+        if fstype in ['f2fs', 'reiserfs']:
+            lbl_opt = '-l'
+        elif fstype in ['fat', 'fat16', 'fat32', 'vfat']:
+            lbl_opt = '-n'
+        cmd = "{0} {1} {2}".format(cmd, lbl_opt, label)
 
-    if not other_opts:
-        default_opts = {'ext2': '-m 1',
-                        'ext3': '-m 1 -O dir_index',
-                        'ext4': '-m 1 -O dir_index',
-                        'f2fs': '',
-                        'fat': '',
-                        'fat16': '',
-                        'fat32': '',
-                        'vfat': '',
-                        'ntfs': '',
-                        'jfs': '',
-                        'reiserfs': '',
-                        'btrfs': '',
-                        'xfs': '',
-                        'swap': ''}
-        other_opts = default_opts[fstype]
+    if not options:
+        # Use default options if no options are provided
+        default_options = {
+            'ext2': '-m 1',
+            'ext3': '-m 1 -O dir_index',
+            'ext4': '-m 1 -O dir_index'}
+        options = default_options.get(fstype, None)
 
-    if other_opts:
-        cmd += " %(other_opts)s"
+    if options:
+        # Add options to our cmd line
+        cmd = "{0} {1}".format(cmd, options)
 
-    cmd += " %(part)s"
+    # Convert to a list
+    cmd = cmd.split()
+
+    # Add partition as last option (issue #1092)
+    cmd.append(part)
 
     try:
-        cmd = shlex.split(cmd % vars())
         result = subprocess.check_output(cmd).decode()
         ret = (False, result)
     except subprocess.CalledProcessError as err:
-        logging.error("Error running %s: %s", err.cmd, err.output)
+        logging.error("Error running %s: %s", err.cmd, err.output.decode())
         ret = (True, err)
     return ret
-
 
 @misc.raise_privileges
 def is_ssd(disk_path):

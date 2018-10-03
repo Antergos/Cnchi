@@ -10,7 +10,7 @@ You are viewing the `0.17.x` branch (development).
 
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
-|Cnchi Stable|0.16.x|![0.16.3](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
+|Cnchi Stable|0.16.x|![0.16.11](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
 |Cnchi Development|0.17.x|![0.17.1](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|master|Development|
 
