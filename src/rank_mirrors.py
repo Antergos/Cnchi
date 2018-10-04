@@ -69,7 +69,7 @@ class RankMirrors(multiprocessing.Process):
         'arch': '/etc/pacman.d/mirrorlist'}
 
     MIRRORLIST_URL = {
-        'arch': "https://www.archlinux.org/mirrorlist/all/",
+        'arch': "https://www.archlinux.org/mirrorlist/all/https/",
         'antergos': ("https://raw.githubusercontent.com/Antergos/antergos-packages/master/"
                      "antergos/antergos-mirrorlist/antergos-mirrorlist")}
 
@@ -98,7 +98,7 @@ class RankMirrors(multiprocessing.Process):
         # JSON arch status mirror
         return (mirror['last_sync'] and
                 mirror['completion_pct'] == 1.0 and
-                mirror['protocol'] == 'http' and
+                mirror['protocol'] == 'https' and
                 int(mirror['delay']) <= 3600)
 
     def get_mirror_stats(self):
