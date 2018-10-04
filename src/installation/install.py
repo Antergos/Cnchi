@@ -319,7 +319,7 @@ class Installation():
         post.set_desktop_settings()
 
         # Copy installer log to the new installation
-        logging.debug("Copying install log to /var/log.")
+        logging.debug("Copying install log to /var/log/cnchi")
         post.copy_logs()
 
         self.events.add('pulse', 'stop')

@@ -11,7 +11,7 @@ You are viewing the `0.17.x` branch (development).
 |Development Stage|Branch|Version| Code Status|
 ----------------- | -------------- | -------------- | -------- |
 |Cnchi Stable|0.16.x|![0.16.11](https://img.shields.io/github/release/antergos/cnchi.svg)|Frozen|
-|Cnchi Development|0.17.x|![0.17.2](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
+|Cnchi Development|0.17.x|![0.17.3](https://img.shields.io/github/release/antergos/cnchi/all.svg)|Development|
 |Cnchi Next (UI agnostic)|master|master|Development|
 
 ## Usage:
@@ -99,7 +99,7 @@ We manage our translations via [Transifex](https://www.transifex.com/projects/p/
 You will need to install all [dependencies](#dependencies).
 
 - Fork Cnchi
-- Do your changes (use 0.16.x branch (stable) as base!)
+- Do your changes (use 0.16.x branch as base!)
 
 Then, you can use the run script to test Cnchi. As this is a Installer, you will need to use a [Virtual Machine](http://virtualbox.org) or an additional harddisk to test it.
 
