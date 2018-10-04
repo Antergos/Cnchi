@@ -276,7 +276,7 @@ class Slides(GtkBaseBox):
 
     def check_bootloader(self):
         """ Check that bootloader has been successfuly installed
-        Shows a dialog to the user in case something has failed """
+            Shows a dialog to the user in case something has failed """
         bootloader_install = self.settings.get('bootloader_install')
         bootloader_install_ok = self.settings.get('bootloader_installation_successful')
 

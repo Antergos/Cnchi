@@ -256,7 +256,7 @@ class Grub2():
             time.sleep(10)
             try:
                 ret = subprocess.check_output(
-                    ['/usr/bin/pidof', 'grub-mount']).decode().strip()
+                    ['/bin/pidof', 'grub-mount']).decode().strip()
                 if ret:
                     subprocess.check_output(['/usr/bin/kill', '-9', ret.split()[0]])
                 else:
@@ -299,11 +299,12 @@ class Grub2():
         # We call mount_special_dirs here just to be sure
         special_dirs.mount(self.dest_dir)
 
-        grub_install = ['grub-install',
-                        '--directory=/usr/lib/grub/i386-pc',
-                        '--target=i386-pc',
-                        '--boot-directory=/boot',
-                        '--recheck']
+        grub_install = [
+            'grub-install',
+            '--directory=/usr/lib/grub/i386-pc',
+            '--target=i386-pc',
+            '--boot-directory=/boot',
+            '--recheck']
 
         # Use --force when installing in /dev/sdXY or in /dev/mmcblk
         if len(grub_location) > len("/dev/sdX"):

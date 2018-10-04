@@ -56,7 +56,9 @@ def unmount_all_in_directory(dest_dir):
     unmount_swap()
 
     # Get all mounted devices
-    mount_result = call(["/usr/bin/mount"]).split("\n")
+    cmd = ["/usr/bin/mount"]
+    mount_result = call(cmd=cmd, debug=False)
+    mount_result = mount_result.split("\n")
 
     # Umount all devices mounted inside dest_dir (if any)
     dirs = []
