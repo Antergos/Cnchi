@@ -274,6 +274,29 @@ class Slides(GtkBaseBox):
             except subprocess.CalledProcessError as error:
                 logging.error(error)
 
+    def check_bootloader(self):
+        """ Check that bootloader has been successfuly installed
+            Shows a dialog to the user in case something has failed """
+        bootloader_install = self.settings.get('bootloader_install')
+        bootloader_install_ok = self.settings.get('bootloader_installation_successful')
+
+        if bootloader_install and not bootloader_install_ok:
+            # Warn user about GRUB and ask if we should open wiki page.
+            boot_warn = _(
+                "IMPORTANT: There may have been a problem with the bootloader installation "
+                "which could prevent your system from booting properly. Before rebooting, "
+                "you may want to verify whether or not the bootloader is installed and "
+                "configured.\n\n"
+                "The Arch Linux Wiki contains troubleshooting information:\n"
+                "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
+                "Would you like to view the wiki page now?")
+            response = show.question(self.get_main_window(), boot_warn)
+            if response == Gtk.ResponseType.YES:
+                import webbrowser
+                misc.drop_privileges()
+                wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
+                webbrowser.open(wiki_url)
+
     def installation_finished(self):
         """ Installation finished """
         log_util = ContextFilter()
@@ -282,25 +305,7 @@ class Slides(GtkBaseBox):
         self.stop_slideshow = True
 
         try:
-            bootloader_install = self.settings.get('bootloader_install')
-            bootloader_install_ok = self.settings.get('bootloader_installation_successful')
-
-            if bootloader_install and not bootloader_install_ok:
-                # Warn user about GRUB and ask if we should open wiki page.
-                boot_warn = _(
-                    "IMPORTANT: There may have been a problem with the bootloader installation "
-                    "which could prevent your system from booting properly. Before rebooting, "
-                    "you may want to verify whether or not the bootloader is installed and "
-                    "configured.\n\n"
-                    "The Arch Linux Wiki contains troubleshooting information:\n"
-                    "\thttps://wiki.archlinux.org/index.php/GRUB\n\n"
-                    "Would you like to view the wiki page now?")
-                response = show.question(self.get_main_window(), boot_warn)
-                if response == Gtk.ResponseType.YES:
-                    import webbrowser
-                    misc.drop_privileges()
-                    wiki_url = 'https://wiki.archlinux.org/index.php/GRUB'
-                    webbrowser.open(wiki_url)
+            self.check_bootloader()
         except FileNotFoundError:
             # FIXME: Installation process finishes before we can read these values ?¿
             logging.warning("Can't get configuration values.")
@@ -309,8 +314,15 @@ class Slides(GtkBaseBox):
             "Installation Complete!\n"
             "Do you want to restart your system now?")
         response = show.question(self.get_main_window(), install_ok)
-        misc.remove_temp_files(self.settings.get('temp'))
+
+        try:
+            misc.remove_temp_files(self.settings.get('temp'))
+        except FileNotFoundError:
+            # FIXME: Installation process finishes before we can read these values ?¿
+            logging.warning("Can't get configuration values.")
+
         logging.shutdown()
+
         if response == Gtk.ResponseType.YES:
             self.reboot()
         else:
