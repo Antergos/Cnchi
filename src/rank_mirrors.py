@@ -77,16 +77,16 @@ class RankMirrors(multiprocessing.Process):
         'arch': 'core/os/x86_64/{0}-{1}-x86_64.pkg.tar.xz',
         'antergos': '/{0}-{1}-any.pkg.tar.xz'}
 
-    def __init__(self, settings=None, fraction_pipe=None):
+    def __init__(self, fraction_pipe, settings):
         """ Initialize process class
             fraction_pipe is a pipe used to send progress for a gtk.progress widget update
             in another process (see start_rank_mirrors() in mirrors.py) """
-        super().__init__()
+        super(RankMirrors, self).__init__()
+        self.settings = settings
+        self.fraction = fraction_pipe
         # Antergos mirrors info is returned as RSS, arch's as JSON
         self.data = {'arch': {}, 'antergos': {}}
         self.mirrorlist_ranked = {'arch': [], 'antergos': []}
-        self.settings = settings
-        self.fraction = fraction_pipe
 
     @staticmethod
     def is_good_mirror(mirror):
@@ -407,7 +407,7 @@ def test_module():
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    proc = RankMirrors()
+    proc = RankMirrors(None, None)
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
