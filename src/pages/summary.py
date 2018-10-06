@@ -259,22 +259,23 @@ class Summary(GtkBaseBox):
         if summary_box:
             summary_box.set_sensitive(False)
 
-        logging.debug("Waiting for child processes to finish...")
         pipe = self.settings.get('rankmirrors_pipe')
-        if pipe:
-            while multiprocessing.active_children():
-                for proc in multiprocessing.active_children():
-                    if proc.name == 'rankmirrors' and pipe.poll():
-                        try:
-                            # Update wait window progress bar
-                            fraction = pipe.recv()
-                            progress_bar.set_fraction(fraction)
-                        except EOFError as _err:
-                            pass
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
-        else:
-            logging.warning("Cannot get rankmirrors process pipe")
+        if not pipe:
+            logging.warning("Cannot comunicate with rankmirrors process")
+
+        logging.debug("Waiting for all processes to finish...")
+        while multiprocessing.active_children():
+            for proc in multiprocessing.active_children():
+                #logging.debug("Process name: %s", proc.name)
+                if proc.name == 'rankmirrors' and pipe and pipe.poll():
+                    try:
+                        # Update wait window progress bar
+                        fraction = pipe.recv()
+                        progress_bar.set_fraction(fraction)
+                    except EOFError as _err:
+                        pass
+            while Gtk.events_pending():
+                Gtk.main_iteration()
 
         logging.debug("Rankmirrors process is finished. Installation can go on")
         wait_window.hide()
