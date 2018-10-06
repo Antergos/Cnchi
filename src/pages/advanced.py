@@ -1780,6 +1780,13 @@ class InstallationAdvanced(GtkBaseBox):
                         self.fs_devices[luks_device] = fs_type
 
         self.installation = install.Installation(
-            self.settings, self.callback_queue, packages, metalinks, self.mount_devices,
-            self.fs_devices, self.ssd, self.blvm)
+            self.settings,
+            self.callback_queue,
+            packages,
+            metalinks,
+            self.mount_devices,
+            self.fs_devices,
+            self.ssd,
+            self.blvm)
+
         self.installation.run()

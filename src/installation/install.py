@@ -353,7 +353,7 @@ class Installation():
         # Metalinks have already been calculated before,
         # When downloadpackages class has been called in process.py to test
         # that Cnchi was able to create it before partitioning/formatting
-        download_packages.start(self.metalinks)
+        download_packages.start_download(self.metalinks)
 
     def create_pacman_conf_file(self):
         """ Creates a temporary pacman.conf """

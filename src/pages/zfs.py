@@ -591,4 +591,4 @@ class InstallationZFS(GtkBaseBox):
             self.mount_devices,
             self.fs_devices)
 
-        self.installation.start()
+        self.installation.run()

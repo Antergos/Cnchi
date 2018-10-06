@@ -226,8 +226,8 @@ class Download():
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
                 copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                self.copy_to_cache_threads += [copy_to_cache_thread]
-                copy_to_cache_thread.start()
+                self.copy_to_cache_threads.append(copy_to_cache_thread)
+                copy_to_cache_thread.run()
 
                 # Get out of the for loop, as we managed
                 # to download the package
