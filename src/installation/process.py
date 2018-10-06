@@ -58,7 +58,8 @@ class Process(multiprocessing.Process):
 
     def __init__(self, install_screen, settings, callback_queue):
         """ Initialize process class """
-        multiprocessing.Process.__init__(self)
+        # multiprocessing.Process.__init__(self)
+        super(Process, self).__init__()
         self.settings = settings
         self.events = Events(callback_queue)
         self.install_screen = install_screen

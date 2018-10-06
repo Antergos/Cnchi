@@ -200,8 +200,8 @@ class Summary(GtkBaseBox):
         if response != Gtk.ResponseType.YES:
             return False
 
-        # Check if there are still processes running...
-        self.wait()
+        # Check if rankmirrors is still running...
+        self.wait_rankmirrors()
 
         install_screen = self.get_install_screen()
         self.process = Process(
@@ -243,37 +243,54 @@ class Summary(GtkBaseBox):
 
         return (wait_window, progress_bar)
 
-    def wait(self):
-        """ Check if there are still processes running and
-            waits for them to finish """
+    def wait_rankmirrors(self):
+        """ Check if rankmirrors is still running and
+            wait for it to finish """
 
-        # Check if there are still processes to finish
-        if not multiprocessing.active_children():
+        logging.debug("Waiting for rankmirrors process to finish...")
+
+        pipe = self.settings.get('rankmirrors_pipe')
+        if not pipe:
+            logging.warning("Cannot comunicate with rankmirrors process")
             return
 
-        wait_window, progress_bar = self.create_wait_window()
-        wait_window.show_all()
+        rankmirrors_proc = None
+        for proc in multiprocessing.active_children():
+            if proc.name == 'rankmirrors':
+                rankmirrors_proc = proc
+
+        if not rankmirrors_proc:
+            logging.debug("Cannot find rankmirrors process. Maybe it has already finished.")
+            return
 
         # Disable this page (so the user can't click on it)
         summary_box = self.gui.get_object("summary")
         if summary_box:
             summary_box.set_sensitive(False)
 
-        logging.debug("Waiting for child processes to finish...")
-        pipe = self.settings.get('rankmirrors_pipe')
-        while multiprocessing.active_children():
-            for proc in multiprocessing.active_children():
-                if proc.name == 'rankmirrors' and pipe and pipe.poll():
-                    try:
-                        # Update wait window progress bar
-                        fraction = pipe.recv()
-                        progress_bar.set_fraction(fraction)
-                    except EOFError as _err:
-                        pass
-                while Gtk.events_pending():
-                    Gtk.main_iteration()
+        # Rankmirrors is still running. Show wait dialog
+        wait_window, progress_bar = self.create_wait_window()
+        wait_window.show_all()
 
-        logging.debug("All child processes are finished. Installation can go on")
+        rankmirrors_active = True
+        while rankmirrors_active:
+            # Check that rankmirrors process is still active
+            rankmirrors_active = False
+            for proc in multiprocessing.active_children():
+                if proc.name == 'rankmirrors':
+                    rankmirrors_active = True
+                    break
+            if rankmirrors_active and pipe and pipe.poll():
+                try:
+                    # Update wait window progress bar
+                    fraction = pipe.recv()
+                    progress_bar.set_fraction(fraction)
+                except EOFError as _err:
+                    pass
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
+        logging.debug("Rankmirrors process is finished. Installation can go on")
         wait_window.hide()
         wait_window.destroy()
 

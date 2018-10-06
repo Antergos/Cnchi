@@ -37,11 +37,16 @@ class Settings():
 
     def __init__(self):
         """ Initialize default configuration """
+        self._manager = multiprocessing.Manager()
 
         # Creates a one element size queue
-        self.settings = multiprocessing.Queue(1)
+        self._settings = self._manager.Queue(1)
 
-        self.settings.put({
+        self._set_defaults()
+
+    def _set_defaults(self):
+        """ Set default values """
+        self._settings.put({
             'alternate_package_list': '',
             'auto_device': '/dev/sda',
             'bootloader': 'grub2',
@@ -132,18 +137,18 @@ class Settings():
 
     def _get_settings(self):
         """ Get a copy of our settings """
-        settings = self.settings.get()
+        settings = self._settings.get()
         copy = settings.copy()
-        self.settings.put(settings)
+        self._settings.put(settings)
         return copy
 
     def _update_settings(self, new_settings):
         """ Updates global settings """
-        settings = self.settings.get()
+        settings = self._settings.get()
         try:
             settings.update(new_settings)
         finally:
-            self.settings.put(settings)
+            self._settings.put(settings)
 
     def get(self, key):
         """ Get one setting value """
@@ -151,7 +156,7 @@ class Settings():
         return settings.get(key, None)
 
     def set(self, key, value):
-        """ Set one setting's value """
+        """ Set one setting value """
         settings = self._get_settings()
         current = settings.get(key, 'keyerror')
         exists = current != 'keyerror'

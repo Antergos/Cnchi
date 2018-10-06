@@ -436,9 +436,9 @@ class InstallationAlongside(GtkBaseBox):
         #else:
         #    logging.info("Cnchi will not install any bootloader")
 
-        #self.process = installation_process.InstallationProcess(
+        #self.install = installation_process.InstallationProcess(
         #    self.settings,
         #    self.callback_queue,
         #    mount_devices,
         #    fs_devices)
-        #self.process.start()
+        #self.install.run()

@@ -193,8 +193,8 @@ class Download():
             self.events.add('downloads_percent', str(downloads_percent))
 
         # Wait until all xz packages are also copied to provided cache (if any)
-        for cache_thread in self.copy_to_cache_threads:
-            cache_thread.join()
+        for copy_to_cache_thread in self.copy_to_cache_threads:
+            copy_to_cache_thread.join()
 
         self.events.add('downloads_progress_bar', 'hide')
         return True
@@ -226,8 +226,8 @@ class Download():
             if download_ok:
                 # Copy downloaded xz file to the cache the user has provided, too.
                 copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
-                self.copy_to_cache_threads += [copy_to_cache_thread]
                 copy_to_cache_thread.start()
+                self.copy_to_cache_threads.append(copy_to_cache_thread)
 
                 # Get out of the for loop, as we managed
                 # to download the package

@@ -1572,6 +1572,19 @@ class InstallationAdvanced(GtkBaseBox):
         while Gtk.events_pending():
             Gtk.main_iteration()
 
+    def finalize_changes(self, disk):
+        """ Save changes to disk """
+        try:
+            pm.finalize_changes(disk)
+            logging.info("Saved partition changes to disk!")
+        except IOError as io_error:
+            msg = "Cannot commit your changes to disk: {0}".format(
+                str(io_error))
+            logging.error(msg)
+            msg = _("Cannot commit your changes to disk: {0}").format(
+                str(io_error))
+            show.error(self.get_main_window(), msg)
+
     def run_format(self):
         """ Create staged partitions """
         logging.debug("Creating partitions and their filesystems...")
@@ -1724,17 +1737,6 @@ class InstallationAdvanced(GtkBaseBox):
                         message = template.format(type(ex).__name__, ex.args)
                         logging.warning(message)
 
-    def finalize_changes(self, disk):
-        """ Save changes to disk """
-        try:
-            pm.finalize_changes(disk)
-            logging.info("Saved partition changes to disk!")
-        except IOError as io_error:
-            msg = "Cannot commit your changes to disk: {0}".format(str(io_error))
-            logging.error(msg)
-            msg = _("Cannot commit your changes to disk: {0}").format(str(io_error))
-            show.error(self.get_main_window(), msg)
-
     def run_install(self, packages, metalinks):
         """ Start installation process """
 
@@ -1778,6 +1780,13 @@ class InstallationAdvanced(GtkBaseBox):
                         self.fs_devices[luks_device] = fs_type
 
         self.installation = install.Installation(
-            self.settings, self.callback_queue, packages, metalinks, self.mount_devices,
-            self.fs_devices, self.ssd, self.blvm)
-        self.installation.start()
+            self.settings,
+            self.callback_queue,
+            packages,
+            metalinks,
+            self.mount_devices,
+            self.fs_devices,
+            self.ssd,
+            self.blvm)
+
+        self.installation.run()
