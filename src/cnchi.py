@@ -68,7 +68,7 @@ try:
 except ImportError as err:
     BUGSNAG_ERROR = str(err)
 
-#BUGSNAG_ERROR = "Bugsnag disabled. Makes requests raise several exceptions. Need to check what is wrong"
+#BUGSNAG_ERROR = "Bugsnag disabled. Makes requests raise several exceptions."
 
 # When testing, no _() is available
 try:

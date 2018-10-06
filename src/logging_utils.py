@@ -32,6 +32,8 @@ import logging
 import uuid
 import json
 import os
+import socket
+
 import requests
 
 from info import CNCHI_VERSION, CNCHI_RELEASE_STAGE
@@ -101,7 +103,7 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
             req = requests.get(url, headers=headers)
             req.raise_for_status()
             info = json.loads(req.json())
-        except Exception as err:
+        except (json.JSONDecodeError, socket.gaierror) as err:
             logger = logging.getLogger()
             msg = "Unable to get an Id for this installation. Error: {0}".format(err.args)
             logger.debug(msg)
@@ -222,9 +224,9 @@ class ContextFilter(logging.Filter, metaclass=Singleton):
                 headers = {self.api_key: CNCHI_VERSION}
                 req = requests.get(url, headers=headers)
                 json.loads(req.json())
-        except Exception as ex:
+        except (json.JSONDecodeError, socket.gaierror) as err:
             logger = logging.getLogger()
-            template = "Can't send install result. An exception of type {0} occured. "
-            template += "Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
+            template = (
+                "Can't send install result. An exception of type {0} occured. Arguments:\n{1!r}")
+            message = template.format(type(err).__name__, err.args)
             logger.error(message)

@@ -426,6 +426,7 @@ def has_connection():
         try:
             ip_addr = '.'.join(ip_addr.split('.')[::-1])
             url = "{0}://{1}".format(prot, ip_addr)
+            #print("*" * 10, url)
             if prot == 'http':
                 urllib.request.urlopen(url, timeout=5)
             elif prot == 'https':
