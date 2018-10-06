@@ -207,7 +207,7 @@ class Installation():
                     call(cmd)
 
     @misc.raise_privileges
-    def start(self):
+    def run(self):
         """ Run installation """
 
         # From this point, on a warning situation, Cnchi should try to continue,

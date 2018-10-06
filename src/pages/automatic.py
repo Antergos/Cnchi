@@ -278,4 +278,4 @@ class InstallationAutomatic(GtkBaseBox):
             self.fs_devices,
             ssd)
 
-        self.installation.start()
+        self.installation.run()

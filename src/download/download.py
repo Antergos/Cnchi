@@ -86,7 +86,7 @@ class DownloadPackages():
         # List of packages' metalinks
         self.metalinks = None
 
-    def start(self, metalinks=None):
+    def start_download(self, metalinks=None):
         """ Begin download """
         if metalinks:
             self.metalinks = metalinks
@@ -227,7 +227,7 @@ def test():
         pacman_conf=pacman_conf,
         settings={},
         callback_queue=None)
-    download_packages.start()
+    download_packages.start_download()
 
 
 if __name__ == '__main__':
