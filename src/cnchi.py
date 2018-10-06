@@ -61,14 +61,14 @@ import info
 from logging_utils import ContextFilter
 import logging_color
 
-#try:
-#    from bugsnag.handlers import BugsnagHandler
-#    import bugsnag
-#    BUGSNAG_ERROR = None
-#except ImportError as err:
-#    BUGSNAG_ERROR = str(err)
+try:
+    from bugsnag.handlers import BugsnagHandler
+    import bugsnag
+    BUGSNAG_ERROR = None
+except ImportError as err:
+    BUGSNAG_ERROR = str(err)
 
-BUGSNAG_ERROR = "Bugsnag disabled. Makes requests raise several exceptions. Need to check what is wrong"
+#BUGSNAG_ERROR = "Bugsnag disabled. Makes requests raise several exceptions. Need to check what is wrong"
 
 # When testing, no _() is available
 try:
