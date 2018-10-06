@@ -243,21 +243,25 @@ class Summary(GtkBaseBox):
 
         return (wait_window, progress_bar)
 
+    @staticmethod
+    def is_rankmirrors_active():
+        """ Checks if rankmirrors process is still active """
+        for proc in multiprocessing.active_children():
+            if proc.name == 'rankmirrors':
+                return True
+        return False
+
     def wait_rankmirrors(self):
         """ Check if rankmirrors is still running and
             wait for it to finish """
 
         logging.debug("Waiting for rankmirrors process to finish...")
 
-        pipe = self.settings.get('rankmirrors_pipe')
-        if not pipe:
-            logging.warning("Cannot comunicate with rankmirrors process")
-            return
-
         rankmirrors_proc = None
         for proc in multiprocessing.active_children():
             if proc.name == 'rankmirrors':
                 rankmirrors_proc = proc
+                break
 
         if not rankmirrors_proc:
             logging.debug("Cannot find rankmirrors process. Maybe it has already finished.")
@@ -272,23 +276,14 @@ class Summary(GtkBaseBox):
         wait_window, progress_bar = self.create_wait_window()
         wait_window.show_all()
 
-        rankmirrors_active = True
-        while rankmirrors_active:
-            # Check that rankmirrors process is still active
-            rankmirrors_active = False
-            for proc in multiprocessing.active_children():
-                if proc.name == 'rankmirrors':
-                    rankmirrors_active = True
-                    break
-            if rankmirrors_active and pipe and pipe.poll():
-                try:
-                    # Update wait window progress bar
-                    fraction = pipe.recv()
-                    progress_bar.set_fraction(fraction)
-                except EOFError as _err:
-                    pass
-            while Gtk.events_pending():
-                Gtk.main_iteration()
+        while self.is_rankmirrors_active():
+            try:
+                # Update wait window progress bar
+                progress_bar.pulse()
+                while Gtk.events_pending():
+                    Gtk.main_iteration()
+            except EOFError as _err:
+                pass
 
         logging.debug("Rankmirrors process is finished. Installation can go on")
         wait_window.hide()

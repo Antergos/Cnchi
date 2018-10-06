@@ -77,13 +77,10 @@ class RankMirrors(multiprocessing.Process):
         'arch': 'core/os/x86_64/{0}-{1}-x86_64.pkg.tar.xz',
         'antergos': '/{0}-{1}-any.pkg.tar.xz'}
 
-    def __init__(self, fraction_pipe, settings):
-        """ Initialize process class
-            fraction_pipe is a pipe used to send progress for a gtk.progress widget update
-            in another process (see start_rank_mirrors() in mirrors.py) """
+    def __init__(self, settings):
+        """ Initialize process class """
         super(RankMirrors, self).__init__()
         self.settings = settings
-        self.fraction_pipe = fraction_pipe
         # Antergos mirrors info is returned as RSS, arch's as JSON
         self.data = {'arch': {}, 'antergos': {}}
         self.mirrorlist_ranked = {'arch': [], 'antergos': []}
@@ -184,8 +181,6 @@ class RankMirrors(multiprocessing.Process):
         total_num_mirrors = 0
         for key in mirrors.keys():
             total_num_mirrors += len(mirrors[key])
-        num_mirrors_done = 0
-        old_fraction = -1
 
         num_threads = min(max_threads, total_num_mirrors)
         # URL input queue.Queue
@@ -256,16 +251,6 @@ class RankMirrors(multiprocessing.Process):
                     if mirror['url'] is not None:
                         mirrors_pruned.append(mirror)
                 mirrors[repo] = mirrors_pruned
-
-            # Wait for queue to empty
-            while not q_in.empty():
-                fraction = (float(q_out.qsize()) + num_mirrors_done) / float(total_num_mirrors)
-                if fraction != old_fraction:
-                    if self.fraction_pipe:
-                        self.fraction_pipe.send(fraction)
-                    old_fraction = fraction
-
-            num_mirrors_done += q_out.qsize()
 
             # Wait for all threads to complete
             q_in.join()
@@ -379,12 +364,7 @@ class RankMirrors(multiprocessing.Process):
                 x for x in self.mirrorlist_ranked['arch'] if x]
             self.settings.set('rankmirrors_result', self.mirrorlist_ranked['arch'])
 
-        if self.fraction_pipe:
-            self.fraction_pipe.send(1)
-            self.fraction_pipe.close()
-
         logging.debug("Auto mirror selection has been run successfully.")
-
 
     @staticmethod
     def update_mirrorlists():
@@ -402,12 +382,13 @@ class RankMirrors(multiprocessing.Process):
                 logging.warning("Couldn't download %s", url)
                 logging.warning(err)
 
+
 def test_module():
     """ Helper function to test this module """
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    proc = RankMirrors(None, None)
+    proc = RankMirrors(None)
     proc.daemon = True
     proc.name = "rankmirrors"
     proc.start()
