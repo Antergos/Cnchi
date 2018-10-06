@@ -64,7 +64,7 @@ class CopyToCache(threading.Thread):
         self.origin = origin
         self.xz_cache_dirs = xz_cache_dirs
 
-    def run(self):
+    def start(self):
         basename = os.path.basename(self.origin)
         for xz_cache_dir in self.xz_cache_dirs:
             # Avoid using the ISO itself
@@ -227,7 +227,7 @@ class Download():
                 # Copy downloaded xz file to the cache the user has provided, too.
                 copy_to_cache_thread = CopyToCache(dst_path, self.xz_cache_dirs)
                 self.copy_to_cache_threads.append(copy_to_cache_thread)
-                copy_to_cache_thread.run()
+                copy_to_cache_thread.start()
 
                 # Get out of the for loop, as we managed
                 # to download the package

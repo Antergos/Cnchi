@@ -83,7 +83,7 @@ class RankMirrors(multiprocessing.Process):
             in another process (see start_rank_mirrors() in mirrors.py) """
         super(RankMirrors, self).__init__()
         self.settings = settings
-        self.fraction = fraction_pipe
+        self.fraction_pipe = fraction_pipe
         # Antergos mirrors info is returned as RSS, arch's as JSON
         self.data = {'arch': {}, 'antergos': {}}
         self.mirrorlist_ranked = {'arch': [], 'antergos': []}
@@ -185,7 +185,7 @@ class RankMirrors(multiprocessing.Process):
         for key in mirrors.keys():
             total_num_mirrors += len(mirrors[key])
         num_mirrors_done = 0
-        old_fraction = 0.0
+        old_fraction = -1
 
         num_threads = min(max_threads, total_num_mirrors)
         # URL input queue.Queue
@@ -261,9 +261,9 @@ class RankMirrors(multiprocessing.Process):
             while not q_in.empty():
                 fraction = (float(q_out.qsize()) + num_mirrors_done) / float(total_num_mirrors)
                 if fraction != old_fraction:
-                    if self.fraction:
-                        self.fraction.send(fraction)
-                old_fraction = fraction
+                    if self.fraction_pipe:
+                        self.fraction_pipe.send(fraction)
+                    old_fraction = fraction
 
             num_mirrors_done += q_out.qsize()
 
@@ -379,9 +379,9 @@ class RankMirrors(multiprocessing.Process):
                 x for x in self.mirrorlist_ranked['arch'] if x]
             self.settings.set('rankmirrors_result', self.mirrorlist_ranked['arch'])
 
-        if self.fraction:
-            self.fraction.send(-1)
-            self.fraction.close()
+        if self.fraction_pipe:
+            self.fraction_pipe.send(1)
+            self.fraction_pipe.close()
 
         logging.debug("Auto mirror selection has been run successfully.")
 
