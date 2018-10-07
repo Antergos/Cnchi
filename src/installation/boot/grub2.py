@@ -273,7 +273,9 @@ class Grub2():
                     # grub-mount is not running. Quit.
                     return
             except subprocess.CalledProcessError as err:
-                logging.warning("Error running %s: %s", ' '.join(cmd), err.output.decode())
+                if err.output.decode():
+                    logging.warning("Error running %s: %s", ' '.join(cmd), err.output.decode())
+                # error running pidof or grub-mount is not running. Quit.
                 return
 
     def run_mkconfig(self):
