@@ -63,7 +63,7 @@ class InstallationZFS(GtkBaseBox):
     SCHEMES = {0: "GPT", 1: "MBR"}
 
     def __init__(
-            self, params, prev_page="installation_ask", next_page="summary"):
+            self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.gui.get_object('zfs')
