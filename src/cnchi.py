@@ -322,7 +322,7 @@ class CnchiInit():
                 bugsnag.configure(
                     api_key=bugsnag_api,
                     app_version=info.CNCHI_VERSION,
-                    project_root='/usr/share/cnchi/cnchi',
+                    project_root='/usr/share/cnchi/src',
                     release_stage=info.CNCHI_RELEASE_STAGE)
                 bugsnag_handler = BugsnagHandler(api_key=bugsnag_api)
                 bugsnag_handler.setLevel(logging.WARNING)

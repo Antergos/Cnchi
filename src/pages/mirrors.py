@@ -191,7 +191,6 @@ class MirrorListBox(Gtk.ListBox):
 
             try:
                 url = line.split("=")[1].strip()
-                logging.debug(url)
                 self.mirrors.append((url, active))
             except KeyError:
                 pass
