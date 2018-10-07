@@ -57,10 +57,14 @@ except NameError as err:
 class Grub2():
     """ Class to perform boot loader installation """
 
+    SPEC_UEFI_ARCH = "x64"
+    UEFI_ARCH = "x86_64"
+
     def __init__(self, dest_dir, settings, uuids):
         self.dest_dir = dest_dir
         self.settings = settings
         self.uuids = uuids
+        self.grub_ripper_thread = None
 
     def install(self):
         """ Install Grub2 bootloader """
@@ -75,6 +79,9 @@ class Grub2():
             self.install_bios()
 
         self.check_root_uuid_in_grub()
+
+        if self.grub_ripper_thread:
+            self.grub_ripper_thread.join()
 
     def check_root_uuid_in_grub(self):
         """ Checks grub.cfg for correct root UUID """
@@ -251,19 +258,23 @@ class Grub2():
 
     @staticmethod
     def grub_ripper():
-        """ Kills grub-mount process """
-        while True:
+        """ Tries to Kill grub-mount process if it is still running """
+        max_tries = 12
+        for _i in range(0, max_tries):
+            # Check after waiting 10 seconds...
             time.sleep(10)
             try:
-                ret = subprocess.check_output(
-                    ['/bin/pidof', 'grub-mount']).decode().strip()
-                if ret:
-                    subprocess.check_output(['/usr/bin/kill', '-9', ret.split()[0]])
+                cmd = ['/usr/bin/pidof', 'grub-mount']
+                output = subprocess.check_output(cmd)
+                if output:
+                    pid = output.decode().strip().split()[0]
+                    subprocess.check_output(['/usr/bin/kill', '-9', pid])
                 else:
-                    break
+                    # grub-mount is not running. Quit.
+                    return
             except subprocess.CalledProcessError as err:
-                logging.warning("Error running %s: %s", err.cmd, err.output)
-                break
+                logging.warning("Error running %s: %s", ' '.join(cmd), err.output.decode())
+                return
 
     def run_mkconfig(self):
         """ Create grub.cfg file using grub-mkconfig """
@@ -273,7 +284,8 @@ class Grub2():
         special_dirs.mount(self.dest_dir)
 
         # Hack to kill grub-mount hanging
-        threading.Thread(target=self.grub_ripper).start()
+        self.grub_ripper_thread = threading.Thread(target=self.grub_ripper)
+        self.grub_ripper_thread.start()
 
         # Add -l option to os-prober's umount call so that it does not hang
         self.apply_osprober_patch()
@@ -329,49 +341,15 @@ class Grub2():
                 logging.warning(txt)
                 self.settings.set('bootloader_installation_successful', False)
 
-    def install_efi(self):
-        """ Install Grub2 bootloader in a UEFI system """
-        uefi_arch = "x86_64"
-        spec_uefi_arch = "x64"
-        spec_uefi_arch_caps = "X64"
-        fpath = '/install/boot/efi/EFI/antergos_grub'
-        bootloader_id = 'antergos_grub' if not os.path.exists(fpath) else \
-            'antergos_grub_{0}'.format(random_generator())
+    def copy_grub_efi_files(self):
+        """ Copy grub into dirs known to be used as default by some OEMs
+            if they do not exist yet. """
 
-        # grub2 in efi needs efibootmgr
-        if not os.path.exists("/usr/bin/efibootmgr"):
-            txt = _(
-                "Please install efibootmgr package to install Grub2 for x86_64-efi platform.")
-            logging.warning(txt)
-            txt = _("GRUB(2) will NOT be installed")
-            logging.warning(txt)
-            self.settings.set('bootloader_installation_successful', False)
-            return
-
-        txt = _("Installing GRUB(2) UEFI {0} boot loader").format(uefi_arch)
-        logging.info(txt)
-
-        grub_install = [
-            'grub-install',
-            '--target={0}-efi'.format(uefi_arch),
-            '--efi-directory=/install/boot/efi',
-            '--bootloader-id={0}'.format(bootloader_id),
-            '--boot-directory=/install/boot',
-            '--recheck']
-        load_module = ['modprobe', '-a', 'efivarfs']
-
-        call(load_module, timeout=15)
-        call(grub_install, timeout=120)
-
-        self.install_locales()
-
-        # Copy grub into dirs known to be used as default by some OEMs
-        # if they do not exist yet.
         grub_defaults = [
             os.path.join(
                 self.dest_dir,
                 "boot/efi/EFI/BOOT",
-                "BOOT{0}.efi".format(spec_uefi_arch_caps)),
+                "BOOT{0}.efi".format(Grub2.SPEC_UEFI_ARCH.upper())),
             os.path.join(
                 self.dest_dir,
                 "boot/efi/EFI/Microsoft/Boot",
@@ -380,7 +358,7 @@ class Grub2():
         grub_path = os.path.join(
             self.dest_dir,
             "boot/efi/EFI/antergos_grub",
-            "grub{0}.efi".format(spec_uefi_arch))
+            "grub{0}.efi".format(Grub2.SPEC_UEFI_ARCH))
 
         for grub_default in grub_defaults:
             path = grub_default.split()[0]
@@ -400,22 +378,60 @@ class Grub2():
                     message = template.format(type(ex).__name__, ex.args)
                     logging.error(message)
 
-        self.run_mkconfig()
-
+    def efi_files_exist(self, bootloader_id):
+        """ Check that necessary EFI files exist """
         paths = [
             os.path.join(self.dest_dir, "boot/grub/x86_64-efi/core.efi"),
             os.path.join(
                 self.dest_dir,
                 "boot/efi/EFI/{0}".format(bootloader_id),
-                "grub{0}.efi".format(spec_uefi_arch))]
+                "grub{0}.efi".format(Grub2.SPEC_UEFI_ARCH))]
 
-        exists = True
+        exist = True
         for path in paths:
             if not os.path.exists(path):
-                exists = False
+                exist = False
                 logging.debug("Path '%s' doesn't exist, when it should", path)
+        return exist
 
-        if exists:
+    def install_efi(self):
+        """ Install Grub2 bootloader in a UEFI system """
+
+        if os.path.exists('/install/boot/efi/EFI/antergos_grub'):
+            bootloader_id = 'antergos_grub_{0}'.format(random_generator())
+        else:
+            bootloader_id = 'antergos_grub'
+
+        # grub2 in efi needs efibootmgr
+        if not os.path.exists("/usr/bin/efibootmgr"):
+            txt = _(
+                "Please install efibootmgr package to install Grub2 for x86_64-efi platform.")
+            logging.warning(txt)
+            txt = _("GRUB(2) will NOT be installed")
+            logging.warning(txt)
+            self.settings.set('bootloader_installation_successful', False)
+            return
+
+        txt = _("Installing GRUB(2) UEFI {0} boot loader").format(Grub2.UEFI_ARCH)
+        logging.info(txt)
+
+        grub_install = [
+            'grub-install',
+            '--target={0}-efi'.format(Grub2.UEFI_ARCH),
+            '--efi-directory=/install/boot/efi',
+            '--bootloader-id={0}'.format(bootloader_id),
+            '--boot-directory=/install/boot',
+            '--recheck']
+        load_module = ['modprobe', '-a', 'efivarfs']
+
+        call(load_module, timeout=15)
+        call(grub_install, timeout=120)
+
+        self.install_locales()
+        self.copy_grub_efi_files()
+        self.run_mkconfig()
+
+        if self.efi_files_exist(bootloader_id):
             logging.info("GRUB(2) UEFI install completed successfully")
             self.settings.set('bootloader_installation_successful', True)
         else:
