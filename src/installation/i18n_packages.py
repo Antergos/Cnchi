@@ -38,6 +38,24 @@ class I18NPackages():
         self.locale = locale
         self.data = data
 
+    def get_failsafe_locale(self):
+        """ Get alternative locale in case locale package does not exist
+            i.e. get en_GB package if en_AU does not exist (instead of defaulting to en_US) """
+
+        locales = {
+            'en_GB': ['en_AU', 'en_NZ'],
+            'es_ES': [
+                'es_AR', 'es_BO', 'es_CL', 'es_CO', 'es_CR', 'es_CU', 'es_DO', 'es_EC',
+                'es_GT', 'es_HN', 'es_MX', 'es_NI', 'es_PA', 'es_PE', 'es_PR', 'es_PY',
+                'es_SV', 'es_UY', 'es_VE']}
+
+        for failsafe in locales:
+            if self.locale in locales[failsafe]:
+                return failsafe
+
+        # No failsafe found. Return same locale.
+        return self.locale
+
     def get_package_i18n_codes(self, package):
         """ Get available i18n packages for package 'package'
             (firefox, libreoffice and hunspell variation packages """
@@ -56,7 +74,7 @@ class I18NPackages():
                 'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr', 'uk',
                 'uz', 'vi', 'xh', 'zh-cn', 'zh-tw'],
             'hunspell': [
-                'de-frami', 'de', 'en', 'en_AU', 'en_CA', 'en_GB', 'en_US',
+                'de-frami', 'de', 'en_AU', 'en_CA', 'en_GB', 'en_US',
                 'es_any', 'es_ar', 'es_bo', 'es_cl', 'es_co', 'es_cr', 'es_cu',
                 'es_do', 'es_ec', 'es_es', 'es_gt', 'es_hn', 'es_mx', 'es_ni',
                 'es_pa', 'es_pe', 'es_pr', 'es_py', 'es_sv', 'es_uy', 'es_ve',
@@ -87,13 +105,21 @@ class I18NPackages():
             return coded_lang_codes[package]
         return None
 
-
     def firefox(self):
         """ Add firefox language package """
         # Try to load available languages from i18n-firefox.txt (easy updating if necessary)
         lang_codes = self.get_package_i18n_codes('firefox')
 
-        code = self.locale.replace('_', '-')
+        code = self.locale.replace('_', '-').lower()
+
+        if code not in lang_codes:
+            # Try removing country part
+            code = code.split('-')[0]
+
+        if code not in lang_codes:
+            # If it still cannot be found, let's try a failsafe locale
+            code = self.get_failsafe_locale().lower()
+            code = code.replace('_', '-')
 
         if code not in lang_codes:
             # Try removing country part
@@ -114,9 +140,19 @@ class I18NPackages():
         # Try to load available languages from i18n-hunspell.txt (easy updating if necessary)
         lang_codes = self.get_package_i18n_codes('hunspell')
 
-        # Lower everything
-        code = self.locale.lower()
-        lang_codes = [x.lower() for x in lang_codes]
+        code = self.locale
+
+        if code not in lang_codes:
+            # Try lowering country
+            code = code.lower()
+
+        if code not in lang_codes:
+             # Try removing country part
+            code = code.split('_')[0]
+
+        if code not in lang_codes:
+            # If it still cannot be found, let's try a failsafe locale
+            code = self.get_failsafe_locale()
 
         if code not in lang_codes:
              # Try removing country part
@@ -136,6 +172,15 @@ class I18NPackages():
         """ Adds libreoffice language package """
         lang_codes = self.get_package_i18n_codes('libreoffice')
         code = self.locale.replace('_', '-')
+
+        if code not in lang_codes:
+            # Try removing country part
+            code = code.split('-')[0]
+
+        if code not in lang_codes:
+            # If it still cannot be found, let's try a failsafe locale
+            code = self.get_failsafe_locale()
+            code = code.replace('_', '-')
 
         if code not in lang_codes:
             # Try removing country part
@@ -173,4 +218,5 @@ def _test_i18n_packages(locale):
 
 if __name__ == '__main__':
     _prepare_logger()
-    _test_i18n_packages('ca_ES.UTF-8')
+    #_test_i18n_packages('ca_ES.UTF-8')
+    _test_i18n_packages('es_MX.UTF-8')
