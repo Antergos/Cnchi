@@ -83,6 +83,7 @@ class I18NPackages():
 
         # Couldn't find i18n-package.txt, use this hardcoded version then
         if package in coded_lang_codes:
+            logging.debug("Could not open %s, Cnchi will use a hardcoded version.", path)
             return coded_lang_codes[package]
         return None
 
