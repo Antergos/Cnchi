@@ -63,7 +63,7 @@ class InstallationZFS(GtkBaseBox):
     SCHEMES = {0: "GPT", 1: "MBR"}
 
     def __init__(
-            self, params, prev_page="installation_ask", next_page="summary"):
+            self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "zfs", prev_page, next_page)
 
         self.page = self.gui.get_object('zfs')
@@ -157,9 +157,11 @@ class InstallationZFS(GtkBaseBox):
         """ Translate widgets """
         self.header.set_subtitle(_("ZFS Setup"))
 
+        # https://blog.heckel.xyz/2017/01/08/zfs-encryption-openzfs-zfs-on-linux/
+        # zpool set feature@encryption=enabled testpool
         # Encrypt disk checkbox
         btn = self.gui.get_object("encrypt_disk_btn")
-        # TODO: Finnish LUKS+ZFS
+        # TODO: Add encryption options to zfs
         self.zfs_options["encrypt_disk"] = False
         btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_disk"])
@@ -174,7 +176,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Encrypt swap
         btn = self.gui.get_object('encrypt_swap_btn')
-        # TODO: Finnish LUKS+ZFS
+        # TODO: Add encryption options to zfs
         self.zfs_options["encrypt_swap"] = False
         btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_swap"])

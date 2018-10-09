@@ -816,6 +816,9 @@
         <chinese>
             <pkgname>opendesktop-fonts</pkgname>
         </chinese>
+        <cjk>
+            <pkgname>noto-fonts-cjk</pkgname>
+        </cjk>
     </locale_fonts>
 
     <bootloaders>

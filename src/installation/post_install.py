@@ -510,21 +510,20 @@ class PostInstallation():
         self.change_user_password('root', password)
         logging.debug("Set the same password to root.")
 
-        # set user's avatar
-        avatar = self.settings.get('user_avatar')
-        if avatar and os.path.exists(avatar):
-            try:
-                dst = os.path.join(
-                    DEST_DIR,
-                    'var/lib/AccountsService/icons',
-                    username + '.png')
-                shutil.copy(avatar, dst)
-            except FileNotFoundError:
-                logging.warning("Can't copy %s log to %s", avatar, dst)
-            except FileExistsError:
-                pass
+        # set user's avatar if accountsservice is installed
+        avatars_path = os.path.join(DEST_DIR, 'var/lib/AccountsService/icons')
+        if os.path.exists(avatars_path):
+            avatar = self.settings.get('user_avatar')
+            if avatar and os.path.exists(avatar):
+                try:
+                    dst = os.path.join(avatars_path, username + '.png')
+                    shutil.copy(avatar, dst)
+                except FileNotFoundError:
+                    logging.warning("Can't copy %s avatar image to %s", avatar, dst)
+                except FileExistsError:
+                    pass
 
-        ## Encrypt user's home directory if requested
+        # Encrypt user's home directory if requested
         if self.settings.get('encrypt_home'):
             self.events.add('info', _("Encrypting user home dir..."))
             gocryptfs.setup(username, "users", DEST_DIR, password)
@@ -548,7 +547,7 @@ class PostInstallation():
                 nanorc.write('include "/usr/share/nano/*.nanorc"\n')
 
     def rebuild_zfs_modules(self):
-        """ Sometimes dkms tries to build the zfs module before spl. """
+        """ Sometimes dkms tries to build the zfs module before the spl one """
         self.events.add('info', _("Building zfs modules..."))
         zfs_version = self.get_installed_zfs_version()
         spl_module = 'spl/{}'.format(zfs_version)
@@ -558,10 +557,10 @@ class PostInstallation():
             for kernel_version in kernel_versions:
                 logging.debug(
                     "Installing zfs v%s modules for kernel %s", zfs_version, kernel_version)
-                chroot_call(
-                    ['dkms', 'install', spl_module, '-k', kernel_version])
-                chroot_call(
-                    ['dkms', 'install', zfs_module, '-k', kernel_version])
+                cmd = ['dkms', 'install', spl_module, '-k', kernel_version]
+                chroot_call(cmd)
+                cmd = ['dkms', 'install', zfs_module, '-k', kernel_version]
+                chroot_call(cmd)
         else:
             # No kernel version found, try to install for current kernel
             logging.debug(

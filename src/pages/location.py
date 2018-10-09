@@ -65,7 +65,7 @@ class Location(GtkBaseBox):
         self.load_locales()
 
         self.geoip_country = None
-        self.selected_country = ""
+        self.selected_area = ""
 
         self.show_all_locations = False
 
@@ -125,7 +125,7 @@ class Location(GtkBaseBox):
                     label = label.get_text()
                     for name in names.values():
                         if name in label:
-                            self.selected_country = label
+                            self.selected_area = label
                             self.listbox.select_row(listbox_row)
                             return
             self.select_first_listbox_item()
@@ -201,8 +201,9 @@ class Location(GtkBaseBox):
             language_name = self.locales[locale_name]
             for country_code in countries:
                 if country_code in language_name:
-                    self.locales[locale_name] = self.locales[locale_name] + \
-                        ", " + countries[country_code]
+                    # Adds country
+                    self.locales[locale_name] = "{0}, {1}".format(
+                        self.locales[locale_name], countries[country_code])
 
     def get_language_areas(self):
         """ Get all territories where a certain language is spoken """
@@ -240,14 +241,14 @@ class Location(GtkBaseBox):
             label.show_all()
             self.listbox.add(label)
 
-        self.selected_country = areas[0]
+        self.selected_area = areas[0]
 
     def on_listbox_row_selected(self, _listbox, listbox_row):
         """ A territory (area) has been selected """
         if listbox_row is not None:
             label = listbox_row.get_children()[0]
             if label is not None:
-                self.selected_country = label.get_text()
+                self.selected_area = label.get_text()
 
     def set_locale(self, mylocale):
         """ Sets system locale """
@@ -291,33 +292,47 @@ class Location(GtkBaseBox):
 
     def store_values(self):
         """ Store user choices """
-        location = self.selected_country
-        logging.debug("Selected location: %s", location)
-        self.settings.set('location', location)
+        area = self.selected_area
+        logging.debug("Selected location: %s", area)
+        self.settings.set('area', area)
 
-        if location == 'en_AU':
-            self.settings.set('location_failback', 'en_GB')
+        mylocale = None
+        for key in self.locales:
+            if self.locales[key] == area:
+                mylocale = key
+
+        if not mylocale:
+            mylocale = 'en_US.UTF-8'
+
+        logging.debug("Selected locale: %s", mylocale)
+        self.settings.set('locale', mylocale)
+
+        if mylocale == 'en_AU.UTF-8':
+            self.settings.set('location_failsafe', 'en_GB.UTF-8')
         else:
-            self.settings.set('location_failback', 'en_US')
+            self.settings.set('location_failsafe', 'en_US.UTF-8')
 
-        for mylocale in self.locales:
-            if self.locales[mylocale] == location:
-                self.set_locale(mylocale)
-        if ',' in location:
-            country_name = location.split(',')[1].strip()
-            match = re.search(r'\(\w+\)', location)
+        logging.debug("Failsafe location: %s", self.settings.get('location_failsafe'))
+
+        self.set_locale(mylocale)
+
+        if ',' in area:
+            country_name = area.split(',')[1].strip()
+            match = re.search(r'\(\w+\)', area)
             if match:
                 country_code = match.group()[1:-1].lower()
             else:
                 logging.error(
                     _("Can't get country code from %s location"),
-                    location)
+                    area)
                 country_code = 'us'
         else:
             country_name = 'USA'
             country_code = 'us'
+
         logging.debug("Selected country name: %s", country_name)
         logging.debug("Selected country code: %s", country_code)
+
         self.settings.set('country_name', country_name)
         self.settings.set('country_code', country_code)
         return True

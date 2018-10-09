@@ -44,6 +44,8 @@ import hardware.hardware as hardware
 
 from lembrame.lembrame import Lembrame
 
+import i18n_packages
+
 # When testing, no _() is available
 try:
     _("")
@@ -263,15 +265,6 @@ class SelectPackages():
                 for pkg in child.iter('pkgname'):
                     self.add_package(pkg)
 
-    def maybe_add_chinese_fonts(self):
-        """ Add chinese fonts if necessary """
-        lang_code = self.settings.get("language_code")
-        if lang_code in ["zh_TW", "zh_CN"]:
-            logging.debug("Selecting chinese fonts.")
-            for child in self.xml_root.iter('chinese'):
-                for pkg in child.iter('pkgname'):
-                    self.add_package(pkg)
-
     def maybe_add_bootloader(self):
         """ Add bootloader packages if needed """
         if self.settings.get('bootloader_install'):
@@ -337,8 +330,8 @@ class SelectPackages():
         # Add file system packages
         self.add_filesystems()
 
-        # Add chinese fonts (if necessary)
-        self.maybe_add_chinese_fonts()
+        # Add asian fonts (if necessary)
+        self.maybe_add_asian_fonts()
 
         # Add bootloader (if user chose it)
         self.maybe_add_bootloader()
@@ -391,7 +384,6 @@ class SelectPackages():
             txt = _("Cannot find these packages: {}").format(', '.join(not_found))
             raise misc.InstallError(txt)
 
-
     def cleanup_packages_list(self):
         """ Cleans up a bit our packages list """
         # Remove duplicates
@@ -420,82 +412,21 @@ class SelectPackages():
             else:
                 self.conflicts.append(conflicts)
 
-    def add_hunspell(self, language_code):
-        """ Adds hunspell dictionary """
-        # Try to read available codes from hunspell.txt
-        data_dir = self.settings.get("data")
-        path = os.path.join(data_dir, "hunspell.txt")
-        if os.path.exists(path):
-            with open(path, 'r') as lang_file:
-                lang_codes = lang_file.read().split()
-        else:
-            # hunspell.txt not available, let's use this hardcoded version (as failsafe)
-            lang_codes = [
-                'de-frami', 'de', 'en', 'en_AU', 'en_CA', 'en_GB', 'en_US',
-                'es_any', 'es_ar', 'es_bo', 'es_cl', 'es_co', 'es_cr', 'es_cu',
-                'es_do', 'es_ec', 'es_es', 'es_gt', 'es_hn', 'es_mx', 'es_ni',
-                'es_pa', 'es_pe', 'es_pr', 'es_py', 'es_sv', 'es_uy', 'es_ve',
-                'fr', 'he', 'it', 'ro', 'el', 'hu', 'nl', 'pl']
-
-        if language_code in lang_codes:
-            pkg_text = "hunspell-{0}".format(language_code)
-            logging.debug(
-                "Adding hunspell dictionary for %s language", pkg_text)
-            self.packages.append(pkg_text)
-        else:
-            logging.debug(
-                "No hunspell language dictionary found for %s language code", language_code)
-
-    def add_libreoffice_language(self):
-        """ Adds libreoffice language package """
-        lang_name = self.settings.get('language_name').lower()
-        if lang_name == 'english':
-            # There're some English variants available but not all of them.
-            locale = self.settings.get('locale').split('.')[0]
-            if locale in ['en_GB', 'en_ZA']:
-                code = locale
-            else:
-                code = None
-        else:
-            # All the other language packs use their language code
-            code = self.settings.get('language_code')
-
-        if code:
-            code = code.replace('_', '-').lower()
-            pkg_text = "libreoffice-fresh-{0}".format(code)
-            logging.debug(
-                "Adding libreoffice language package (%s)", pkg_text)
-            self.packages.append(pkg_text)
-            self.add_hunspell(code)
-
-    def add_firefox_language(self):
-        """ Add firefox language package """
-        # Try to load available languages from firefox.txt (easy updating if necessary)
-        data_dir = self.settings.get("data")
-        path = os.path.join(data_dir, "firefox.txt")
-        if os.path.exists(path):
-            with open(path, 'r') as lang_file:
-                lang_codes = lang_file.read().split()
-        else:
-            # Couldn't find firefox.txt, use this hardcoded version then (as failsafe)
-            lang_codes = [
-                'ach', 'af', 'an', 'ar', 'as', 'ast', 'az', 'be', 'bg', 'bn-bd',
-                'bn-in', 'br', 'bs', 'ca', 'cs', 'cy', 'da', 'de', 'dsb', 'el',
-                'en-gb', 'en-us', 'en-za', 'eo', 'es-ar', 'es-cl', 'es-es',
-                'es-mx', 'et', 'eu', 'fa', 'ff', 'fi', 'fr', 'fy-nl', 'ga-ie',
-                'gd', 'gl', 'gu-in', 'he', 'hi-in', 'hr', 'hsb', 'hu', 'hy-am',
-                'id', 'is', 'it', 'ja', 'kk', 'km', 'kn', 'ko', 'lij', 'lt', 'lv',
-                'mai', 'mk', 'ml', 'mr', 'ms', 'nb-no', 'nl', 'nn-no', 'or',
-                'pa-in', 'pl', 'pt-br', 'pt-pt', 'rm', 'ro', 'ru', 'si', 'sk',
-                'sl', 'son', 'sq', 'sr', 'sv-se', 'ta', 'te', 'th', 'tr', 'uk',
-                'uz', 'vi', 'xh', 'zh-cn', 'zh-tw']
-
-        lang_code = self.settings.get('language_code')
-        lang_code = lang_code.replace('_', '-').lower()
-        if lang_code in lang_codes:
-            pkg_text = "firefox-i18n-{0}".format(lang_code)
-            logging.debug("Adding firefox language package (%s)", pkg_text)
-            self.packages.append(pkg_text)
+    def maybe_add_asian_fonts(self):
+        """ Add chinese, japanese and korean fonts if necessary """
+        locale = self.settings('locale')
+        if locale.endswith('.UTF-8'):
+            locale = locale.split('.')[0]
+        if locale in ['zh_TW', 'zh_CN']:
+            logging.debug("Adding chinese fonts packages (%s)", locale)
+            for child in self.xml_root.iter('chinese'):
+                for pkg in child.iter('pkgname'):
+                    self.add_package(pkg)
+        if locale in ['zh_TW', 'zh_CN', 'ja_JP', 'ko_KR']:
+            logging.debug("Adding cjk font packages (%s)", locale)
+            for child in self.xml_root.iter('cjk'):
+                for pkg in child.iter('pkgname'):
+                    self.add_package(pkg)
 
     def add_features(self):
         """ Selects packages based on user selected features """
@@ -517,10 +448,24 @@ class SelectPackages():
                                 pkg.text,
                                 feature)
 
-        # Add libreoffice language package
-        if self.settings.get('feature_office'):
-            self.add_libreoffice_language()
+        # Prepare i18n packages class
+        i18n_pkgs = i18n_packages.I18NPackages(
+            self.settings.get('locale'),
+            self.settings.get('data'))
 
         # Add firefox language package
         if self.settings.get('feature_firefox'):
-            self.add_firefox_language()
+            pkg = i18n_pkgs.firefox()
+            if pkg:
+                self.packages.append(pkg)
+
+        # Add libreoffice language package
+        if self.settings.get('feature_office'):
+            pkg = i18n_pkgs.libreoffice()
+            if pkg:
+                self.packages.append(pkg)
+
+        # Always add a hunspell dictionary if available
+        pkg = i18n_pkgs.hunspell()
+        if pkg:
+            self.packages.append(pkg)
