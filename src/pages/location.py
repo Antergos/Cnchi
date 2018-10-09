@@ -204,7 +204,7 @@ class Location(GtkBaseBox):
                     self.locales[locale_name] = self.locales[locale_name] + \
                         ", " + countries[country_code]
 
-    def get_areas(self):
+    def get_language_areas(self):
         """ Get all territories where a certain language is spoken """
         areas = []
 
@@ -229,7 +229,7 @@ class Location(GtkBaseBox):
 
     def fill_listbox(self):
         """ Fills listbox with all territories (areas) """
-        areas = self.get_areas()
+        areas = self.get_language_areas()
 
         for listbox_row in self.listbox.get_children():
             listbox_row.destroy()
@@ -294,6 +294,12 @@ class Location(GtkBaseBox):
         location = self.selected_country
         logging.debug("Selected location: %s", location)
         self.settings.set('location', location)
+
+        if location == 'en_AU':
+            self.settings.set('location_failback', 'en_GB')
+        else:
+            self.settings.set('location_failback', 'en_US')
+
         for mylocale in self.locales:
             if self.locales[mylocale] == location:
                 self.set_locale(mylocale)
