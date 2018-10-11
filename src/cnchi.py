@@ -312,7 +312,9 @@ class CnchiInit():
                 with misc.raised_privileges():
                     resources_handler = logging.FileHandler(log_path, mode='w')
                 resources_handler.setLevel(log_level)
-                resources_handler.setFormatter(logging_resources.ResourcesFormatter())
+                resources_formatter = logging_resources.ResourcesFormatter(
+                    fmt, datefmt)
+                resources_handler.setFormatter(resources_formatter)
                 logger.addHandler(resources_handler)
         except PermissionError as permission_error:
             print("Cannot open ", log_path, " : ", permission_error)

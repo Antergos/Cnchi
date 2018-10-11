@@ -30,12 +30,12 @@
 
 import logging
 import resource
-import time
 
 class ResourcesFormatter(logging.Formatter):
+    """ Custom logging formatter """
     def __init__(self, fmt=None, datefmt=None):
         """ Init base class """
-        logging.Formatter.__init__(fmt, datefmt)
+        logging.Formatter.__init__(self, fmt, datefmt)
 
         self.resources = [
             ('ru_utime', 'User time'),
@@ -56,6 +56,6 @@ class ResourcesFormatter(logging.Formatter):
         template = "{0} {1} = {2}"
         for name, desc in self.resources:
             msg.append(template.format(desc, name, getattr(usage, name)))
-        return "\n".join(msg)
+        return '\n'.join(msg) + '\n'
 
 
