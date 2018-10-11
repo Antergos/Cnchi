@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  info.py
+#  logging_resources.py
 #
 #  Copyright © 2013-2018 Antergos
 #
@@ -26,17 +26,25 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
+""" Logging to log resources (for debugging purposes only) """
 
-""" Set some Cnchi global constants """
 
-CNCHI_VERSION = "0.16.26"
-""" Cnchi version """
+"""
+import resource
+import time
 
-CNCHI_WEBSITE = "http://www.antergos.com"
-""" Cnchi website """
+usage = resource.getrusage(resource.RUSAGE_SELF)
 
-CNCHI_RELEASE_STAGE = "production"
-""" Cnchi release stage (production or development) """
+for name, desc in [
+    ('ru_utime', 'User time'),
+    ('ru_stime', 'System time'),
+    ('ru_maxrss', 'Max. Resident Set Size'),
+    ('ru_ixrss', 'Shared Memory Size'),
+    ('ru_idrss', 'Unshared Memory Size'),
+    ('ru_isrss', 'Stack Size'),
+    ('ru_inblock', 'Block inputs'),
+    ('ru_oublock', 'Block outputs'),
+    ]:
+    print '%-25s (%-10s) = %s' % (desc, name, getattr(usage, name))
+"""
 
-if __name__ == '__main__':
-    print(CNCHI_VERSION)

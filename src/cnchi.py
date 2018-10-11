@@ -3,7 +3,7 @@
 #
 #  cnchi.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -452,7 +452,7 @@ class CnchiInit():
             "-p", "--packagelist", help=_("Install packages referenced by a local XML file"),
             nargs='?')
         parser.add_argument(
-            "-r", "--resource", help=_("Logs resource usage for debugging purposes"),
+            "-r", "--logresources", help=_("Logs resources usage (for debugging purposes)"),
             action="store_true")
         parser.add_argument(
             "-s", "--logserver", help=_("Log server (deprecated, always uses bugsnag)"),
@@ -594,24 +594,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-"""
-import resource
-import time
-
-usage = resource.getrusage(resource.RUSAGE_SELF)
-
-for name, desc in [
-    ('ru_utime', 'User time'),
-    ('ru_stime', 'System time'),
-    ('ru_maxrss', 'Max. Resident Set Size'),
-    ('ru_ixrss', 'Shared Memory Size'),
-    ('ru_idrss', 'Unshared Memory Size'),
-    ('ru_isrss', 'Stack Size'),
-    ('ru_inblock', 'Block inputs'),
-    ('ru_oublock', 'Block outputs'),
-    ]:
-    print '%-25s (%-10s) = %s' % (desc, name, getattr(usage, name))
-"""
-
