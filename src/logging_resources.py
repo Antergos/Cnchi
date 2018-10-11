@@ -26,25 +26,36 @@
 #  You should have received a copy of the GNU General Public License
 #  along with Cnchi; If not, see <http://www.gnu.org/licenses/>.
 
-""" Logging to log resources (for debugging purposes only) """
+""" Logging handler to log resources (for debugging purposes only) """
 
-
-"""
+import logging
 import resource
 import time
 
-usage = resource.getrusage(resource.RUSAGE_SELF)
+class ResourcesFormatter(logging.Formatter):
+    def __init__(self, fmt=None, datefmt=None):
+        """ Init base class """
+        logging.Formatter.__init__(fmt, datefmt)
 
-for name, desc in [
-    ('ru_utime', 'User time'),
-    ('ru_stime', 'System time'),
-    ('ru_maxrss', 'Max. Resident Set Size'),
-    ('ru_ixrss', 'Shared Memory Size'),
-    ('ru_idrss', 'Unshared Memory Size'),
-    ('ru_isrss', 'Stack Size'),
-    ('ru_inblock', 'Block inputs'),
-    ('ru_oublock', 'Block outputs'),
-    ]:
-    print '%-25s (%-10s) = %s' % (desc, name, getattr(usage, name))
-"""
+        self.resources = [
+            ('ru_utime', 'User time'),
+            ('ru_stime', 'System time'),
+            ('ru_maxrss', 'Max. Resident Set Size'),
+            ('ru_ixrss', 'Shared Memory Size'),
+            ('ru_idrss', 'Unshared Memory Size'),
+            ('ru_isrss', 'Stack Size'),
+            ('ru_inblock', 'Block inputs'),
+            ('ru_oublock', 'Block outputs')]
+
+    def format(self, record):
+        """ Ignore record and log resources usage """
+        
+        usage = resource.getrusage(resource.RUSAGE_SELF)
+
+        msg = []
+        template = "{0} {1} = {2}"
+        for name, desc in self.resources:
+            msg.append(template.format(desc, name, getattr(usage, name)))
+        return "\n".join(msg)
+
 
