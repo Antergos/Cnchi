@@ -33,6 +33,7 @@ import resource
 
 class ResourcesFormatter(logging.Formatter):
     """ Custom logging formatter """
+
     def __init__(self, fmt=None, datefmt=None):
         """ Init base class """
         logging.Formatter.__init__(self, fmt, datefmt)
@@ -49,13 +50,11 @@ class ResourcesFormatter(logging.Formatter):
 
     def format(self, record):
         """ Ignore record and log resources usage """
-        
+
+        msg = ['[' + record.getMessage() + ']']
         usage = resource.getrusage(resource.RUSAGE_SELF)
-
-        msg = []
-        template = "{0} {1} = {2}"
+        template = "{0} ({1}) = {2}"
         for name, desc in self.resources:
-            msg.append(template.format(desc, name, getattr(usage, name)))
+            msg.append(template.format(
+                desc, name, getattr(usage, name)))
         return '\n'.join(msg) + '\n'
-
-

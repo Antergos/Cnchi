@@ -1,3 +1,4 @@
+[2018-10-11 17:45:16 +0200]  Resources log option is working                                            karasu      {274602d4}
 [2018-10-11 09:53:09 +0200]  Added a new logging formatter that will store resources usage              karasu      {259b92bd}
 [2018-10-11 09:26:40 +0200]  Working on logging resources                                               karasu      {d6e49e38}
 [2018-10-10 10:55:22 +0200]  Working on resource                                                        karasu      {d558a5c0}
