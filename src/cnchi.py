@@ -548,8 +548,12 @@ class CnchiInit():
         repositories = ['antergos', 'core', 'extra', 'community', 'multilib']
 
         # Read pacman.conf file
-        with open("/etc/pacman.conf", 'rt') as pconf:
-            lines = pconf.readlines()
+        try:
+            with open("/etc/pacman.conf", 'rt') as pconf:
+                lines = pconf.readlines()
+        except FileNotFoundError as err:
+            logging.error(err)
+            sys.exit(1)
 
         # For each repository, check if it is enabled or not
         enabled = {}
