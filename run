@@ -12,6 +12,8 @@ if ! [[ -f /usr/share/cnchi ]]; then
 fi
 
 if [[ -f /usr/bin/python3 ]]; then
+  # Debian (for testing at work)
+  sudo touch /etc/pacman.conf
   _PYTHON="/usr/bin/python3"
   _RUN_CMD="sudo -E"
 else
