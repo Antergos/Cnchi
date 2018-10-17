@@ -335,7 +335,7 @@ class Features(GtkBaseBox):
             try:
                 process1 = subprocess.Popen(["/usr/bin/lsusb"], stdout=subprocess.PIPE)
                 process2 = subprocess.Popen(
-                    ["/usr/bin/grep", "-i", "bluetooth"],
+                    ["grep", "-i", "bluetooth"],
                     stdin=process1.stdout,
                     stdout=subprocess.PIPE)
                 process1.stdout.close()

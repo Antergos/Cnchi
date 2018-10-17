@@ -133,7 +133,7 @@ def get_home_size(pool_name):
 def get_swap_size(pool_name):
     """ Gets recommended swap size in GB """
 
-    cmd = ["/usr/bin/grep", "MemTotal", "/proc/meminfo"]
+    cmd = ["grep", "MemTotal", "/proc/meminfo"]
     try:
         mem_total = subprocess.check_output(cmd).decode().split()
         mem_total = int(mem_total[1])
