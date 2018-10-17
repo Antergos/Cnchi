@@ -31,6 +31,7 @@
 
 import logging
 import multiprocessing
+import os
 import shutil
 
 import gi
@@ -161,6 +162,11 @@ class MirrorListBox(Gtk.ListBox):
     def load_mirrors(self):
         """ Load mirrors from text file """
         lines = []
+
+        if not os.path.exists(self.mirrors_file_path):
+            logging.error(
+                "Could not find %s file", self.mirrors_file_path)
+            return
 
         # Load mirror file contents
         with open(self.mirrors_file_path) as mfile:
