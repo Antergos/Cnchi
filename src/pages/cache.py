@@ -102,7 +102,6 @@ class Cache(GtkBaseBox):
         for key in sorted(self.devices_and_partitions.keys()):
             self.part_store.append_text(key)
 
-        #misc.select_first_combobox_item(self.part_store)
         misc.select_combobox_value(self.part_store, 'None')
 
     def select_part_changed(self, _widget):
