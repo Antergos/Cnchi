@@ -22,9 +22,9 @@ If applicable, add screenshots to help explain your problem.
 
 **Log Files**
 - Use a service like http://paste2.org/ to provide links to the logs.
-- Link to /tmp/cnchi.log output.
-- Link to /tmp/cnchi-alpm.log output
-- Link to /tmp/postinstall.log output
+- Link to /var/log/cnchi/cnchi.log output.
+- Link to /var/log/cnchi/cnchi-alpm.log output (if exists)
+- Link to /var/log/cnchi/postinstall.log output (if exists)
 
 **Additional context**
 Add any other context about the problem here.
