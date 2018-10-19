@@ -93,13 +93,16 @@ class Cache(GtkBaseBox):
 
     def populate_devices_and_partitions(self):
         """ Fill list with devices' partitions (5GB or more) """
-        self.devices_and_partitions = populate_devices(do_partitions=True, min_size_gb=5)
+        self.devices_and_partitions = populate_devices(
+            do_partitions=True, min_size_gb=5)
 
         self.part_store.remove_all()
-        for key in self.devices_and_partitions:
+
+        # for key in self.devices_and_partitions:
+        for key in sorted(self.devices_and_partitions.keys()):
             self.part_store.append_text(key)
 
-        misc.select_first_combobox_item(self.part_store)
+        misc.select_combobox_value(self.part_store, 'None')
 
     def select_part_changed(self, _widget):
         """ User selected another drive """
@@ -169,8 +172,11 @@ class Cache(GtkBaseBox):
                 partition_path = self.prepare_whole_device(device_path)
                 if not partition_path:
                     return False
+
             if not os.path.exists(Cache.CACHE_DIRECTORY):
-                os.makedirs(Cache.CACHE_DIRECTORY)
+                with misc.raised_privileges():
+                    os.makedirs(Cache.CACHE_DIRECTORY)
+
             if self.mount_partition(partition_path, Cache.CACHE_DIRECTORY):
                 logging.debug("%s partition mounted on %s to be used as xz cache",
                               partition_path, Cache.CACHE_DIRECTORY)

@@ -3,7 +3,7 @@
 #
 #  cnchi.py
 #
-#  Copyright © 2013-2017 Antergos
+#  Copyright © 2013-2018 Antergos
 #
 #  This file is part of Cnchi.
 #
@@ -296,16 +296,29 @@ class CnchiInit():
             "($BOLD%(filename)s$RESET:%(lineno)d)")
         color_formatter = logging_color.ColoredFormatter(color_fmt, datefmt)
 
-        # File logger
-        log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
         try:
+            # File logger
+            log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi.log')
             with misc.raised_privileges():
                 file_handler = logging.FileHandler(log_path, mode='w')
             file_handler.setLevel(log_level)
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
+
+            # Resources log (debugging purposes)
+            if self.cmd_line.logresources:
+                import logging_resources
+                log_path = os.path.join(CnchiInit.LOG_FOLDER, 'cnchi-resources.log')
+                with misc.raised_privileges():
+                    resources_handler = logging.FileHandler(log_path, mode='w')
+                resources_handler.setLevel(log_level)
+                resources_formatter = logging_resources.ResourcesFormatter(
+                    fmt, datefmt)
+                resources_handler.setFormatter(resources_formatter)
+                logger.addHandler(resources_handler)
         except PermissionError as permission_error:
-            print("Can't open ", log_path, " : ", permission_error)
+            print("Cannot open ", log_path, " : ", permission_error)
+                
 
         # Stdout logger
         if self.cmd_line.verbose:
@@ -314,6 +327,7 @@ class CnchiInit():
             stream_handler.setLevel(log_level)
             stream_handler.setFormatter(color_formatter)
             logger.addHandler(stream_handler)
+       
 
         if not BUGSNAG_ERROR:
             # Bugsnag logger
@@ -452,6 +466,9 @@ class CnchiInit():
             "-p", "--packagelist", help=_("Install packages referenced by a local XML file"),
             nargs='?')
         parser.add_argument(
+            "-r", "--logresources", help=_("Logs resources usage (for debugging purposes)"),
+            action="store_true")
+        parser.add_argument(
             "-s", "--logserver", help=_("Log server (deprecated, always uses bugsnag)"),
             nargs='?')
         parser.add_argument(
@@ -531,8 +548,12 @@ class CnchiInit():
         repositories = ['antergos', 'core', 'extra', 'community', 'multilib']
 
         # Read pacman.conf file
-        with open("/etc/pacman.conf", 'rt') as pconf:
-            lines = pconf.readlines()
+        try:
+            with open("/etc/pacman.conf", 'rt') as pconf:
+                lines = pconf.readlines()
+        except FileNotFoundError as err:
+            logging.error(err)
+            sys.exit(1)
 
         # For each repository, check if it is enabled or not
         enabled = {}

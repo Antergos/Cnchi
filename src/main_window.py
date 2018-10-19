@@ -274,10 +274,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # If minimal iso is detected, skip the welcome page.
         if os.path.exists('/home/antergos/.config/openbox'):
-            self.current_page = self.pages["language"]
+            self.current_page = self.pages['language']
             self.settings.set('timezone_start', True)
         else:
-            self.current_page = self.pages["welcome"]
+            self.current_page = self.pages['welcome']
 
         self.main_box.add(self.current_page)
 

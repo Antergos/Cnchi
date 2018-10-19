@@ -7,16 +7,26 @@
 _CNCHI_DIR=`pwd`
 if ! [[ -f /usr/share/cnchi ]]; then
     sudo rm /usr/share/cnchi
-    echo Creating soft link /usr/share/cnchi to ${_CNCHI_DIR} 
+    echo Creating soft link /usr/share/cnchi to ${_CNCHI_DIR}
     sudo ln -sf ${_CNCHI_DIR} /usr/share/cnchi
 fi
 
-_PYTHON="/usr/bin/python"
+if [[ -f /usr/bin/python3 ]]; then
+  # Debian (for testing at work)
+  sudo touch /etc/pacman.conf
+  _PYTHON="/usr/bin/python3"
+  _RUN_CMD="sudo -E"
+else
+  _PYTHON="/usr/bin/python"
+  _RUN_CMD="pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive"
+fi
+
 #_PYTHON="/opt/pypy3/bin/pypy3"
+
 _PYTHON_OPTIONS="-Wall -X track-resources"
 #_XML="/usr/share/cnchi/data/packages.xml"
-_CNCHI_OPTIONS="-d -v"
+_CNCHI_OPTIONS="-d -r -v"
 
-#pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY $_PYTHON $_PYTHON_OPTIONS $CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS -p $_XML ${@} 2>&1
-pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY GTK_DEBUG=interactive $_PYTHON $_PYTHON_OPTIONS $_CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS ${@} 2>&1
+$_RUN_CMD $_PYTHON $_PYTHON_OPTIONS $_CNCHI_DIR/src/cnchi.py $_CNCHI_OPTIONS ${@} 2>&1
+
 exit 0

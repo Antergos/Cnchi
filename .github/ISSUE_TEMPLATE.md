@@ -8,8 +8,9 @@
 
 ### Log Files
 - Use a service like http://paste2.org/ to provide links to the logs.
-- Link to /tmp/cnchi.log output.
-- Link to /tmp/postinstall.log.
+- Link to /var/log/cnchi/cnchi.log output.
+- Link to /var/log/cnchi/cnchi-alpm.log (if exists)
+- Link to /var/log/cnchi/postinstall.log (if exists)
 
 ### Additional Notes:
 

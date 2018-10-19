@@ -440,7 +440,7 @@ class PostInstallation():
                 contents = makepkg_conf.readlines()
             with open(makepkg_conf_path, 'w') as makepkg_conf:
                 for line in contents:
-                    if '#MAKEFLAGS' in line:
+                    if 'MAKEFLAGS' in line:
                         line = 'MAKEFLAGS="-j$(nproc)"\n'
                     elif 'COMPRESSXZ' in line:
                         line = 'COMPRESSXZ=(xz -c -z - --threads=0)\n'

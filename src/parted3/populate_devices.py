@@ -71,7 +71,7 @@ def populate_devices(do_partitions=False, min_size_gb=0):
 
 
 @misc.raise_privileges
-def populate_partitions(dev, min_size_gb):
+def populate_partitions(dev, min_size_gb=0):
     """ Fill str list with all device's partitions
         that are at least min_size_gb in size """
     partitions = {}
@@ -83,7 +83,7 @@ def populate_partitions(dev, min_size_gb):
                 size = int(parted.formatBytes(size, 'GB'))
                 if size >= min_size_gb:
                     if size >= 1000:
-                        size = float(size / 1000)
+                        size = float(size / 1000.0)
                         line = "\t{0} [{1} TB]"
                     else:
                         line = "\t{0} [{1} GB]"

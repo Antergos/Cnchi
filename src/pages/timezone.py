@@ -310,7 +310,7 @@ class AutoTimezoneProcess(multiprocessing.Process):
             logging.warning(msg)
             coords = self.use_geo_antergos()
 
-        if coords:
+        if coords and float(coords[0]) != 0 and float(coords[1]) != 0:
             logging.debug(
                 _("Timezone (latitude %s, longitude %s) detected."),
                 coords[0],
