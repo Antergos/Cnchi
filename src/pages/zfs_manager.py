@@ -385,6 +385,7 @@ def get_partition_path(device, part_num):
         return "{0}p{1}".format(device, part_num)
     return "{0}{1}".format(device, part_num)
 
+#########################################################################################
 
 def setup(solaris_partition_number, zfs_options, use_home):
     """ Setup ZFS system """
