@@ -738,7 +738,8 @@ class PostInstallation():
         self.set_keymap()
 
         # Install configs for root
-        chroot_call(['cp', '-av', '/etc/skel/.', '/root/'])
+        logging.debug("Copying user configuration files")
+        chroot_call(['cp', '-a', '/etc/skel/.', '/root/'])
 
         self.events.add('info', _("Configuring hardware..."))
 
