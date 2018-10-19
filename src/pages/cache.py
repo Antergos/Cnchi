@@ -98,7 +98,6 @@ class Cache(GtkBaseBox):
 
         self.part_store.remove_all()
 
-        # for key in self.devices_and_partitions:
         for key in sorted(self.devices_and_partitions.keys()):
             self.part_store.append_text(key)
 

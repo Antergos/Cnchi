@@ -310,14 +310,16 @@ class AutoTimezoneProcess(multiprocessing.Process):
             logging.warning(msg)
             coords = self.use_geo_antergos()
 
-        if coords and float(coords[0]) != 0 and float(coords[1]) != 0:
-            logging.debug(
-                _("Timezone (latitude %s, longitude %s) detected."),
-                coords[0],
-                coords[1])
-            self.coords_queue.put(coords)
-        else:
-            logging.warning("Could not detect your timezone!")
+        # If latitude and longitude are zero it means something bad has happened
+        if not coords or (float(coords[0]) == 0 and float(coords[1]) == 0):
+            logging.warning(
+                "Could not detect your timezone. Are you behind a firewall?")
+            return
+
+        logging.debug(
+            _("Timezone (latitude %s, longitude %s) detected."),
+            coords[0], coords[1])
+        self.coords_queue.put(coords)
 
     @staticmethod
     def use_geoip():
