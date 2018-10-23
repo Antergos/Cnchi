@@ -432,22 +432,41 @@ def has_connection():
                 conn = http.client.HTTPSConnection(ip_addr, timeout=5)
                 conn.request("GET", "/")
                 conn.close()
+            # Connection established, we have a working Internet connection
+            return True
         except ssl.SSLError as err:
             # Cannot establish a SSL connection but site exists, so it's fine.
             conn.close()
+            return True
         except (KeyError, OSError, timeout, urllib.error.URLError, http.client.InvalidURL) as err:
             # Cannot connect, either site is down or there is no Internet connection
             logging.error("%s: %s", url, err)
-            return False
 
-    return True
-    ## We cannot connect to any url, let's ask NetworkManager
-    ## Problem: In a Virtualbox VM this returns true even when
-    ## the host OS has no connection
-    #if get_nm_state() == NM_STATE_CONNECTED_GLOBAL:
-    #    return True
-    #
-    #return False
+    # If we reach this point we have not been able to connect to any url.
+    # We can try to ask the NetworkManager service
+    # (We have to take into account that inside a VM this would always
+    #  return a false positive)
+    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL and not inside_hypervisor():
+        return True
+
+    # Cannot connect to any url and either we're inside a VM or Networkmanager
+    # has told us there is no connection.
+    return False
+
+
+def inside_hypervisor():
+    """ Checks if running inside an hypervisor (VM) """
+
+    cpuinfo = ""
+    filename = '/proc/cpuinfo'
+    if os.path.exists(filename):
+        with open(filename, 'rt') as cpuinfo_file:
+            cpuinfo = cpuinfo_file.read()
+
+    if cpuinfo and 'hypervisor' in cpuinfo:
+        return True
+
+    return False
 
 
 def add_connection_watch(func):
