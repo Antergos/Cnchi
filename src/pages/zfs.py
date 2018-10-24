@@ -524,54 +524,19 @@ class InstallationZFS(GtkBaseBox):
 
     def run_format(self):
         """ Create partitions and file systems """
-        # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
-        # https://wiki.archlinux.org/index.php/ZFS#GRUB-compatible_pool_creation
-
-        device_paths = self.zfs_options['device_paths']
-        logging.debug("Configuring ZFS in %s", ",".join(device_paths))
-
-        # Read all preexisting zfs pools. If there's an antergos one, delete it.
-        zfs.destroy_pools()
-
-        # Wipe all disks that will be part of the installation.
-        # This cannot be undone!
-        scheme = self.zfs_options['scheme']
-        zfs.init_device(device_paths[0], scheme)
-        for device_path in device_paths[1:]:
-            zfs.init_device(device_path, scheme)
-
-        device_path = device_paths[0]
-
-        self.settings.set('bootloader_device', device_path)
-
-        if scheme == 'GPT':
-            solaris_part_num = self.run_format_gpt(device_path)
-            # The rest of the disk will be of solaris type
-            # (2 or 3) Solaris (bf00)
-            wrapper.sgdisk_new(device_path, solaris_part_num, 'ANTERGOS_ZFS', 0, 'BF00')
-        else:
-            # BIOS/MBR (Grub)
-            # 1 Solaris (bf00)
-            start = -1
-            wrapper.parted_mkpart(device_path, "primary", start, "-1s")
-            # Set boot partition as bootable
-            wrapper.parted_set(device_path, "1", "boot", "on")
-            solaris_part_num = 1
-
-        # Get partition full path
-        self.devices['root'] = zfs.get_partition_path(device_path, solaris_part_num)
-        # self.fs_devices[self.devices['root']] = "zfs"
-        self.mount_devices['/'] = self.devices['root']
-
-        zfs.settle()
 
         pool_id = zfs.setup(
-            solaris_part_num,
             self.zfs_options,
             self.settings.get('use_home'))
 
         # Save pool id
         self.settings.set('zfs_pool_id', pool_id)
+
+        # Save / partition info
+        # Get partition full path
+        self.devices['root'] = zfs.get_partition_path(device_path, solaris_partition_number)
+        # self.fs_devices[self.devices['root']] = 'zfs'
+        self.mount_devices['/'] = self.devices['root']
 
         # Store swap info
         pool_name = self.zfs_options['pool_name']
