@@ -34,10 +34,8 @@ from installation import action
 from installation import install
 from installation import wrapper
 
-import parted3.fs_module as fs
-
 from widgets.zfs_treeview import ZFSTreeview
-import zfs_manager as zfs
+from zfs_manager import ZFSManager
 
 # When testing, no _() is available
 try:
@@ -45,9 +43,6 @@ try:
 except NameError as err:
     def _(message):
         return message
-
-
-DEST_DIR = "/install"
 
 
 def is_int(num):
@@ -465,7 +460,7 @@ class InstallationZFS(GtkBaseBox):
     def run_format(self):
         """ Create partitions and file systems """
 
-        pool_id, root_device = zfs.setup(
+        pool_id, root_device = ZFSManager.setup(
             self.zfs_options,
             self.settings.get('use_home'))
 
