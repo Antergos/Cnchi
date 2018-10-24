@@ -21,7 +21,6 @@
 """ ZFS installation screen """
 
 import os
-import logging
 import math
 
 from pages.gtkbasebox import GtkBaseBox
@@ -32,7 +31,6 @@ from misc.extra import random_generator
 import show_message as show
 from installation import action
 from installation import install
-from installation import wrapper
 
 from widgets.zfs_treeview import ZFSTreeview
 from zfs_manager import ZFSManager
@@ -154,7 +152,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Encrypt disk checkbox
         btn = self.gui.get_object("encrypt_disk_btn")
-        # TODO: Finnish LUKS+ZFS
+        # TODO: Finnish ZFS encryption
         self.zfs_options["encrypt_disk"] = False
         btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_disk"])
@@ -169,7 +167,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Encrypt swap
         btn = self.gui.get_object('encrypt_swap_btn')
-        # TODO: Finnish LUKS+ZFS
+        # TODO: Finnish ZFS encryption
         self.zfs_options["encrypt_swap"] = False
         btn.set_sensitive(False)
         btn.set_active(self.zfs_options["encrypt_swap"])
@@ -459,26 +457,18 @@ class InstallationZFS(GtkBaseBox):
 
     def run_format(self):
         """ Create partitions and file systems """
+        zfs = ZFSManager(self.devices, self.fs_devices, self.mount_devices, self.bootloader)
 
-        pool_id, root_device = ZFSManager.setup(
-            self.zfs_options,
-            self.settings.get('use_home'))
+        use_home = self.settings.get('use_home')
+        pool_id = zfs.setup(self.zfs_options, use_home)
+
+        self.devices, self.fs_devices, self.mount_devices = zfs.get_devices_info()
+
+        # Set first device as bootloader device
+        self.settings.set('bootloader_device', self.zfs_options['device_paths'][0])
 
         # Save pool id
         self.settings.set('zfs_pool_id', pool_id)
-
-        # Save / partition info
-        # Get partition full path
-        self.devices['root'] = root_device
-        # self.fs_devices[self.devices['root']] = 'zfs'
-        self.mount_devices['/'] = self.devices['root']
-
-        # Store swap info
-        pool_name = self.zfs_options['pool_name']
-        swap_path = "/dev/zvol/{0}/swap".format(pool_name)
-        self.devices['swap'] = swap_path
-        self.fs_devices[swap_path] = 'swap'
-        self.mount_devices['swap'] = swap_path
 
     def run_install(self, packages, metalinks):
         """ Start installation process """
