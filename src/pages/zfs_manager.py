@@ -39,6 +39,8 @@ except NameError as err:
     def _(message):
         return message
 
+#class
+
 # Partition sizes are in MiB
 MAX_ROOT_SIZE = 30000
 MAX_ROOT_SIZE_GB = MAX_ROOT_SIZE // 1024
@@ -387,6 +389,66 @@ def get_partition_path(device, part_num):
 
 #########################################################################################
 
+# BIOS/MBR (Grub)
+# 1 Solaris (bf00)
+
+# BIOS/GPT (Grub)
+# 1 2M BIOS boot partition (ef02)
+# 2 Solaris (bf00)
+
+# UEFI/GPT (rEFInd / systemd-boot)
+# 1 512M EFI boot partition (ef00) (/boot) (vfat)
+# 2 Solaris (bf00)
+
+# UEFI/GPT (Grub)
+# 1 512M EFI boot partition (ef00) (/boot/efi) (vfat)
+# 2 512M boot partition (/boot) (ext4)
+# 3 Solaris (bf00)
+
+def create_efi_partition(self, device_path, part_num, mount_point):
+    """ Create and format EFI partition (512MB) in /boot or in /boot/efi """
+    if mount_point == '/boot/efi':
+        tag = 'efi'
+    else:
+        tag = 'boot'
+
+    wrapper.sgdisk_new(device_path, part_num, 'EFI', 512, 'EF00')
+    self.devices[tag] = get_partition_path(device_path, part_num)
+    self.fs_devices[self.devices[tag]] = 'vfat'
+    self.mount_devices[mount_point] = self.devices[tag]
+    fs.create_fs(self.devices[tag], 'vfat', 'EFI')
+
+def create_boot_partition(self, device_path, part_num):
+    """ Create and format BOOT or EFI partitions (512MB) in /boot or in /boot/efi """
+    wrapper.sgdisk_new(device_path, part_num, 'ANTERGOS_BOOT', 512, '8300')
+    self.devices['boot'] = get_partition_path(device_path, part_num)
+    self.fs_devices[self.devices['boot']] = 'ext4'
+    self.mount_devices['/boot'] = self.devices['boot']
+    fs.create_fs(self.devices['boot'], 'ext4', 'ANTERGOS_BOOT')
+
+def run_format_gpt(self, device_path):
+    """ GPT harddisk schemes """
+    solaris_part_num = 2
+    if not self.uefi:
+        # BIOS/GPT (Grub)
+        # 1 2M BIOS boot partition (ef02)
+        wrapper.sgdisk_new(device_path, 1, 'BIOS_BOOT', 2, 'EF02')
+    else:
+        if self.bootloader == 'grub2':
+            # UEFI/GPT (Grub)
+            # 1 512M EFI boot partition (ef00) (/boot/efi) (vfat)
+            self.create_efi_partition(device_path, 1, '/boot/efi')
+            # 2 512M boot partition (8300) (/boot) (ext4)
+            self.create_boot_partition(device_path, 2)
+            solaris_part_num = 3
+        else:
+            # UEFI/GPT (rEFInd / systemd-boot)
+            # 1 512M EFI boot partition (ef00) (/boot) (vfat)
+            self.create_efi_partition(device_path, 1, '/boot')
+    return solaris_part_num
+
+#########################################################################################
+
 def setup(zfs_options, use_home=False):
     """ Setup ZFS system """
     # https://wiki.archlinux.org/index.php/Installing_Arch_Linux_on_ZFS
@@ -401,9 +463,9 @@ def setup(zfs_options, use_home=False):
     # Wipe all disks that will be part of the installation.
     # This cannot be undone!
     scheme = zfs_options['scheme']
-    zfs.init_device(device_paths[0], scheme)
+    init_device(device_paths[0], scheme)
     for device_path in device_paths[1:]:
-        zfs.init_device(device_path, scheme)
+        init_device(device_path, scheme)
 
     device_path = device_paths[0]
 
@@ -418,27 +480,24 @@ def setup(zfs_options, use_home=False):
         # BIOS/MBR (Grub)
         # 1 Solaris (bf00)
         start = -1
-        wrapper.parted_mkpart(device_path, "primary", start, "-1s")
+        wrapper.parted_mkpart(device_path, 'primary', start, '-1s')
         # Set boot partition as bootable
-        wrapper.parted_set(device_path, "1", "boot", "on")
+        wrapper.parted_set(device_path, '1', 'boot', 'on')
         solaris_partition_number = 1
 
-    # Get partition full path
-    self.devices['root'] = zfs.get_partition_path(device_path, solaris_partition_number)
-    # self.fs_devices[self.devices['root']] = "zfs"
-    self.mount_devices['/'] = self.devices['root']
+    root_device = get_partition_path(device_path, solaris_partition_number)
 
     zfs.settle()
 
     # Make sure the ZFS modules are loaded
-    call(["modprobe", "zfs"])
+    call(['modprobe', 'zfs'])
 
     # Empty DEST_DIR or zfs pool will fail to mount on it
     # (this will delete preexisting installing attempts, too)
     if os.path.exists(DEST_DIR):
         clear_dest_dir()
 
-    device_paths = zfs_options["device_paths"]
+    device_paths = zfs_options['device_paths']
     if not device_paths:
         txt = _("No devices were selected for the ZFS pool")
         raise InstallError(txt)
@@ -453,8 +512,8 @@ def setup(zfs_options, use_home=False):
     logging.debug("Cnchi will create a ZFS pool using %s devices", line)
 
     # Just in case...
-    if os.path.exists("/etc/zfs/zpool.cache"):
-        os.remove("/etc/zfs/zpool.cache")
+    if os.path.exists('/etc/zfs/zpool.cache'):
+        os.remove('/etc/zfs/zpool.cache')
 
     try:
         os.mkdir(DEST_DIR, mode=0o755)
@@ -542,4 +601,4 @@ def setup(zfs_options, use_home=False):
         with open(hostid_path, 'w') as hostid_file:
             hostid_file.write("{0}\n".format(hostid))
 
-    return pool_id
+    return (pool_id, root_device)

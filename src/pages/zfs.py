@@ -462,70 +462,10 @@ class InstallationZFS(GtkBaseBox):
 
         return self.change_list
 
-    # ZFS Creation starts here -------------------------------------------------
-
-    # BIOS/MBR (Grub)
-    # 1 Solaris (bf00)
-
-    # BIOS/GPT (Grub)
-    # 1 2M BIOS boot partition (ef02)
-    # 2 Solaris (bf00)
-
-    # UEFI/GPT (rEFInd / systemd-boot)
-    # 1 512M EFI boot partition (ef00) (/boot) (vfat)
-    # 2 Solaris (bf00)
-
-    # UEFI/GPT (Grub)
-    # 1 512M EFI boot partition (ef00) (/boot/efi) (vfat)
-    # 2 512M boot partition (/boot) (ext4)
-    # 3 Solaris (bf00)
-
-    def create_efi_partition(self, device_path, part_num, mount_point):
-        """ Create and format EFI partition (512MB) in /boot or in /boot/efi """
-        if mount_point == '/boot/efi':
-            tag = 'efi'
-        else:
-            tag = 'boot'
-
-        wrapper.sgdisk_new(device_path, part_num, 'EFI', 512, 'EF00')
-        self.devices[tag] = zfs.get_partition_path(device_path, part_num)
-        self.fs_devices[self.devices[tag]] = 'vfat'
-        self.mount_devices[mount_point] = self.devices[tag]
-        fs.create_fs(self.devices[tag], 'vfat', 'EFI')
-
-    def create_boot_partition(self, device_path, part_num):
-        """ Create and format BOOT or EFI partitions (512MB) in /boot or in /boot/efi """
-        wrapper.sgdisk_new(device_path, part_num, 'ANTERGOS_BOOT', 512, '8300')
-        self.devices['boot'] = zfs.get_partition_path(device_path, part_num)
-        self.fs_devices[self.devices['boot']] = 'ext4'
-        self.mount_devices['/boot'] = self.devices['boot']
-        fs.create_fs(self.devices['boot'], 'ext4', 'ANTERGOS_BOOT')
-
-    def run_format_gpt(self, device_path):
-        """ GPT harddisk schemes """
-        solaris_part_num = 2
-        if not self.uefi:
-            # BIOS/GPT (Grub)
-            # 1 2M BIOS boot partition (ef02)
-            wrapper.sgdisk_new(device_path, 1, 'BIOS_BOOT', 2, 'EF02')
-        else:
-            if self.bootloader == 'grub2':
-                # UEFI/GPT (Grub)
-                # 1 512M EFI boot partition (ef00) (/boot/efi) (vfat)
-                self.create_efi_partition(device_path, 1, '/boot/efi')
-                # 2 512M boot partition (8300) (/boot) (ext4)
-                self.create_boot_partition(device_path, 2)
-                solaris_part_num = 3
-            else:
-                # UEFI/GPT (rEFInd / systemd-boot)
-                # 1 512M EFI boot partition (ef00) (/boot) (vfat)
-                self.create_efi_partition(device_path, 1, '/boot')
-        return solaris_part_num
-
     def run_format(self):
         """ Create partitions and file systems """
 
-        pool_id = zfs.setup(
+        pool_id, root_device = zfs.setup(
             self.zfs_options,
             self.settings.get('use_home'))
 
@@ -534,7 +474,7 @@ class InstallationZFS(GtkBaseBox):
 
         # Save / partition info
         # Get partition full path
-        self.devices['root'] = zfs.get_partition_path(device_path, solaris_partition_number)
+        self.devices['root'] = root_device
         # self.fs_devices[self.devices['root']] = 'zfs'
         self.mount_devices['/'] = self.devices['root']
 
