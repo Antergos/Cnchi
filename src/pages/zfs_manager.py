@@ -162,7 +162,7 @@ class ZFSManager():
             mem_total = subprocess.check_output(cmd).decode().split()
             mem_total = int(mem_total[1])
             mem = mem_total / 1024
-        except (subprocess.CalledProcessError, ValueError) as _mem_error:
+        except (subprocess.CalledProcessError, ValueError, KeyError, IndexError) as _mem_error:
             logging.warning("Can't get system memory")
             mem = 4096
 
@@ -598,7 +598,7 @@ class ZFSManager():
             device_paths[0], solaris_partition_number)
 
         logging.debug(
-            "Cnchi will create a ZFS pool using %s devices", ", ".join(device_paths))
+            "Cnchi will create a ZFS pool using %s device(s)", ", ".join(device_paths))
 
         # Just in case...
         if os.path.exists('/etc/zfs/zpool.cache'):

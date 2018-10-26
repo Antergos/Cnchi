@@ -1,1 +1,4 @@
+[2018-10-24 20:19:13 +0200]  Code "migration" done. Now start testing is needed.                        karasu      {2391eef5}
+[2018-10-24 10:57:17 +0200]  Creating a class. Still wip                                                karasu      {f7991bfb}
+[2018-10-24 08:59:36 +0200]  Need to create a zfsmanager class                                          karasu      {6d6a6da2}
 [2018-10-24 08:41:01 +0200]  Working on zfs (broken atm)                                                karasu      {ae263d95}
