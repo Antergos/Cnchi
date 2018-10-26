@@ -156,10 +156,11 @@ class Process(multiprocessing.Process):
 
             temp = self.settings.get('temp')
             path = os.path.join(temp, ".cnchi_partitioning_completed")
-            with open(path, 'w') as part_file:
-                part_file.write("# File created by Cnchi to force\n")
-                part_file.write("# users to reboot before retry\n")
-                part_file.write("# formatting their hard disk(s)\n")
+            with misc.raised_privileges():
+                with open(path, 'w') as part_file:
+                    part_file.write("# File created by Cnchi to force\n")
+                    part_file.write("# users to reboot before retry\n")
+                    part_file.write("# formatting their hard disk(s)\n")
 
             self.events.add('info', _("Installation will start now!"))
             with misc.raised_privileges():
