@@ -132,22 +132,23 @@ class Process(multiprocessing.Process):
         run_install. Takes care of the exceptions, too. """
 
         try:
-            # Initialize Lembrame
-            self.init_lembrame()
+            if not self.settings.get('offline'):
+                # Initialize Lembrame
+                self.init_lembrame()
 
-            # Start Lembrame download package if activated. We'll need the package list to
-            # overwrite the one used by the installer by default
-            self.prepare_lembrame()
+                # Start Lembrame download package if activated. We'll need the package list to
+                # overwrite the one used by the installer by default
+                self.prepare_lembrame()
 
-            # Before formatting, let's try to calculate package download list
-            # this way, if something fails (a missing package, mostly) we have
-            # not formatted anything yet.
-            self.create_metalinks_list()
+                # Before formatting, let's try to calculate package download list
+                # this way, if something fails (a missing package, mostly) we have
+                # not formatted anything yet.
+                self.create_metalinks_list()
 
-            # Overwrite Cnchi config variables with Lembrame
-            # In order to overwrite Display Manager, we have to run this after creating the
-            # package list
-            self.overwrite_variables_lembrame()
+                # Overwrite Cnchi config variables with Lembrame
+                # In order to overwrite Display Manager, we have to run this after creating the
+                # package list
+                self.overwrite_variables_lembrame()
 
             self.events.add(
                 'info', _("Getting your disk(s) ready for Antergos..."))

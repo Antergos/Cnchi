@@ -38,6 +38,8 @@ from installation import special_dirs
 from installation import post_install
 from installation import mount
 
+from installation.offline import Offline
+
 import misc.extra as misc
 from misc.extra import InstallError
 from misc.run_cmd import call
@@ -248,7 +250,7 @@ class Installation():
         for folder in folders:
             os.makedirs(folder, mode=0o755, exist_ok=True)
 
-        # If kernel images exists in /boot they are most likely from a failed
+        # If kernel images exist in /boot they are most likely from a failed
         # install attempt and need to be removed otherwise pyalpm will raise a
         # fatal exception later on.
         kernel_imgs = (
@@ -258,7 +260,6 @@ class Installation():
             "/install/boot/initramfs-linux-fallback.img",
             "/install/boot/initramfs-linux-lts.img",
             "/install/boot/initramfs-linux-lts-fallback.img")
-
         for img in kernel_imgs:
             if os.path.exists(img):
                 os.remove(img)
@@ -274,9 +275,10 @@ class Installation():
             logging.debug("Removing previous Antergos-Default grub2 theme found in /boot")
             shutil.rmtree('/install/boot/grub/themes/Antergos-Default')
 
-        logging.debug("Preparing pacman...")
-        self.prepare_pacman()
-        logging.debug("Pacman ready")
+        if not self.settings.get('offline'):
+            logging.debug("Preparing pacman...")
+            self.prepare_pacman()
+            logging.debug("Pacman ready")
 
         # Run driver's pre-install scripts
         try:
@@ -292,14 +294,18 @@ class Installation():
             message = template.format(type(ex).__name__, ex.args)
             logging.error(message)
 
-        logging.debug("Downloading packages...")
-        self.download_packages()
+        if not self.settings.get('offline'):
+            logging.debug("Downloading packages...")
+            self.download_packages()
 
         # This mounts (binds) /dev and others to /DEST_DIR/dev and others
         special_dirs.mount(DEST_DIR)
 
         logging.debug("Installing packages...")
-        self.install_packages()
+        if not self.settings.get('offline'):
+            self.install_packages()
+        else:
+            self.install_fromlivecd()
 
         logging.debug("Configuring system...")
         post = post_install.PostInstallation(
@@ -470,18 +476,19 @@ class Installation():
 
     def install_packages(self):
         """ Start pacman installation of packages """
-        result = False
+
+        # At this point system is already formatted and mounted, and packages downloaded.
+
         # This shouldn't be necessary if download.py really downloaded all
         # needed packages, but it does not do it (why?)
         for cache_dir in self.settings.get('xz_cache'):
             self.pacman.handle.add_cachedir(cache_dir)
 
         logging.debug("Installing packages...")
-
         try:
             result = self.pacman.install(pkgs=self.packages)
         except pac.pyalpm.error:
-            pass
+            logging.warning("First attempt at installing packages failed")
 
         stale_pkgs = self.settings.get('cache_pkgs_md5_check_failed')
 
@@ -521,3 +528,34 @@ class Installation():
     def is_ok(self):
         """ Checks if an error has been issued """
         return not self.error
+
+    def install_offline(self):
+        """ Copies livecd system. Highly discouraged.
+            Only used if online installation fails
+            https://bbs.archlinux.org/viewtopic.php?pid=1733243#p1733243 """
+        
+
+        
+        # System is already formatted and mounted
+
+        #self.copy_livecd()
+
+        # cp -ax / /install
+        # dirName: The next directory it found.
+        # subdirList: A list of sub-directories in the current directory.
+        # fileList: A list of files in the current directory.
+
+        ##for dirName, subdirList, fileList in os.walk('/'):
+        ##    #print('Found directory: %s' % dirName)
+        ##    for fname in fileList:
+        ##        #print('\t%s' % fname)
+
+
+
+        ##cmd = ["cp", "-ax", "/", "/install"]
+        ##call(cmd)
+        ##cmd = [
+        ##    "cp", "-vaT",
+        ##    "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz",
+        ##    "/install/boot/vmlinuz-linux"]
+        ##call(cmd)
