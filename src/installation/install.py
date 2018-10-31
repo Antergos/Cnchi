@@ -304,7 +304,7 @@ class Installation():
         if not self.settings.get('offline'):
             self.install_packages()
         else:
-            self.install_fromlivecd()
+            self.install_offline()
 
         logging.debug("Configuring system...")
         post = post_install.PostInstallation(
@@ -530,8 +530,7 @@ class Installation():
 
     def install_offline(self):
         """ Copies livecd system. Highly discouraged.
-            Only used if online installation fails
-            https://bbs.archlinux.org/viewtopic.php?pid=1733243#p1733243 """
+            Only used if online installation fails """
 
-        offline.Offline().run()
-       
+        _offline = offline.Offline(self.events.queue)
+        _offline.run()
