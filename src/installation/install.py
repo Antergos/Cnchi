@@ -37,8 +37,7 @@ from download import download
 from installation import special_dirs
 from installation import post_install
 from installation import mount
-
-from installation.offline import Offline
+from installation import offline
 
 import misc.extra as misc
 from misc.extra import InstallError
@@ -533,29 +532,6 @@ class Installation():
         """ Copies livecd system. Highly discouraged.
             Only used if online installation fails
             https://bbs.archlinux.org/viewtopic.php?pid=1733243#p1733243 """
-        
 
-        
-        # System is already formatted and mounted
-
-        #self.copy_livecd()
-
-        # cp -ax / /install
-        # dirName: The next directory it found.
-        # subdirList: A list of sub-directories in the current directory.
-        # fileList: A list of files in the current directory.
-
-        ##for dirName, subdirList, fileList in os.walk('/'):
-        ##    #print('Found directory: %s' % dirName)
-        ##    for fname in fileList:
-        ##        #print('\t%s' % fname)
-
-
-
-        ##cmd = ["cp", "-ax", "/", "/install"]
-        ##call(cmd)
-        ##cmd = [
-        ##    "cp", "-vaT",
-        ##    "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz",
-        ##    "/install/boot/vmlinuz-linux"]
-        ##call(cmd)
+        offline.Offline().run()
+       

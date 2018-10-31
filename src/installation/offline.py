@@ -26,3 +26,35 @@
 
 import os
 
+class Offline():
+    """ Class to perform an offline installation """
+
+    def __init__(self):
+        """ Initialize class """
+        pass
+    
+    def run(self):
+        """ Perform the installation
+            System is already formatted and mounted at this point """
+
+        #self.copy_livecd()
+
+        # cp -ax / /install
+        # dirName: The next directory it found.
+        # subdirList: A list of sub-directories in the current directory.
+        # fileList: A list of files in the current directory.
+
+        ##for dirName, subdirList, fileList in os.walk('/'):
+        ##    #print('Found directory: %s' % dirName)
+        ##    for fname in fileList:
+        ##        #print('\t%s' % fname)
+
+
+
+        ##cmd = ["cp", "-ax", "/", "/install"]
+        ##call(cmd)
+        ##cmd = [
+        ##    "cp", "-vaT",
+        ##    "/run/archiso/bootmnt/arch/boot/x86_64/vmlinuz",
+        ##    "/install/boot/vmlinuz-linux"]
+        ##call(cmd)
