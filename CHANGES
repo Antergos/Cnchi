@@ -1,18 +1,12 @@
-[2018-10-18 13:09:21 +0200]  Fix #1103                                                                  karasu      {54e4d7b8}
-[2018-10-18 09:23:23 +0200]  Fix issue template and add stale bot setup                                 karasu      {6966f956}
-[2018-10-17 12:54:37 +0200]  Remove unused code                                                         karasu      {4b8676fa}
-[2018-10-17 12:54:09 +0200]  Show cache devices sorted (and select None by default)                     karasu      {61fed73f}
-[2018-10-17 12:26:14 +0200]  Check if some system files are present (they will allways be presen..      karasu      {d8164836}
-[2018-10-17 12:09:11 +0200]  Updated debian script                                                      karasu      {14f47108}
-[2018-10-17 11:00:51 +0200]  Add debian dependencies file                                               karasu      {d13742a9}
-[2018-10-17 08:59:31 +0200]  Create a fake pacman.conf in debian                                        karasu      {cdaf3752}
-[2018-10-17 08:58:12 +0200]  Update run script (debian)                                                 karasu      {322c96cb}
-[2018-10-16 12:19:42 +0200]  Control that /etc/pacman.conf exists                                       karasu      {1fc35bbe}
-[2018-10-12 10:18:18 +0200]  When logging resources also log the message.                               karasu      {fb8f44c7}
-[2018-10-11 17:45:16 +0200]  Resources log option is working                                            karasu      {274602d4}
-[2018-10-11 09:53:09 +0200]  Added a new logging formatter that will store resources usage              karasu      {259b92bd}
-[2018-10-11 09:26:40 +0200]  Working on logging resources                                               karasu      {d6e49e38}
-[2018-10-10 10:55:22 +0200]  Working on resource                                                        karasu      {d558a5c0}
+[2019-01-04 09:06:55 +0100]  Fix #1116                                                                  karasu      {39998a47}
+[2018-10-28 12:26:58 +0100]  Merge pull request #1107 from mpetitjean/0.16.x                        Gustau Castells {e2974d1f}
+[2018-10-28 08:57:27 +0100]  Add Belgian French translations                                        Mathieu Petitjean {76e123a8}
+[2018-10-26 10:24:36 +0200]  Need root privileges to write to /var/log                              Gustau Castells {4f3104fb}
+[2018-10-23 11:53:33 +0200]  Ask networkmanager for connection if we are not inside a VM                karasu      {d395af15}
+[2018-10-19 11:00:33 +0200]  Nothing                                                                    karasu      {98751af9}
+[2018-10-19 10:48:03 +0200]  Remove verbose from skel copy                                              karasu      {e1064137}
+[2018-10-19 08:45:12 +0200]  Merge branch '0.16.x' into 0.17.x                                          karasu      {579e90a7}
+[2018-10-19 08:25:55 +0200]  Merge branch '0.16.x' into 0.17.x                                          karasu      {318386c1}
 [2018-10-09 18:45:45 +0200]  Hack to fix #860 (needs testing)                                           karasu      {3410b195}
 [2018-10-09 18:09:00 +0200]  Updated AUTHORS file                                                       karasu      {15a7922f}
 [2018-10-09 18:03:50 +0200]  Added debug message                                                        karasu      {4928ec41}
