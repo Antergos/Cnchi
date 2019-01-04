@@ -182,7 +182,7 @@ class PostFeatures():
         if new_default:
             path = '/etc/default/grub'
             lines = self.read_file_from_install(path)
-            path = os.path.join(self.dest_dir, path)
+            path = os.path.join(self.dest_dir, path[1:])
             with open(path, 'wt') as grub_file:
                 for line in lines:
                     if "GRUB_DEFAULT" in line:
