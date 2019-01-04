@@ -380,7 +380,7 @@ class PostInstallation():
     def get_installed_zfs_version():
         """ Get installed zfs version """
         zfs_version = "0.6.5.4"
-        path = "/install/usr/src"
+        path = os.path.join(DEST_DIR, "usr/src")
         for file_name in os.listdir(path):
             if file_name.startswith("zfs") and not file_name.startswith("zfs-utils"):
                 try:
@@ -395,7 +395,7 @@ class PostInstallation():
     def get_installed_kernel_versions():
         """ Get installed kernel versions """
         kernel_versions = []
-        path = "/install/usr/lib/modules"
+        path = os.path.join(DEST_DIR, "usr/lib/modules")
         for file_name in os.listdir(path):
             if not file_name.startswith("extramodules"):
                 kernel_versions.append(file_name)
@@ -446,13 +446,9 @@ class PostInstallation():
                         line = 'COMPRESSXZ=(xz -c -z - --threads=0)\n'
                     makepkg_conf.write(line)
 
-    def setup_user(self):
-        """ Set user parameters """
-        username = self.settings.get('user_name')
-        fullname = self.settings.get('user_fullname')
-        password = self.settings.get('user_password')
-        hostname = self.settings.get('hostname')
-
+    @staticmethod
+    def add_sudoer(username):
+        """ Adds user to sudoers """
         sudoers_dir = os.path.join(DEST_DIR, "etc/sudoers.d")
         if not os.path.exists(sudoers_dir):
             os.mkdir(sudoers_dir, 0o710)
@@ -467,6 +463,16 @@ class PostInstallation():
             # Something bad must be happening, though.
             logging.error(io_error)
 
+    def setup_user(self):
+        """ Set user parameters """
+        username = self.settings.get('user_name')
+        fullname = self.settings.get('user_fullname')
+        password = self.settings.get('user_password')
+        hostname = self.settings.get('hostname')
+
+        # Adds user to the sudoers list
+        self.add_sudoer(username)
+
         # Setup user
 
         default_groups = 'wheel'
@@ -475,9 +481,9 @@ class PostInstallation():
             # Why there is no vboxusers group? Add it ourselves.
             chroot_call(['groupadd', 'vboxusers'])
             default_groups += ',vboxusers,vboxsf'
-            srv.enable_services(["vboxservice"])
+            srv.enable_services(['vboxservice'])
 
-        if self.settings.get('require_password') is False:
+        if not self.settings.get('require_password'):
             # Prepare system for autologin.
             # LightDM needs the user to be in the autologin group.
             chroot_call(['groupadd', 'autologin'])
@@ -835,6 +841,7 @@ class PostInstallation():
         # Apply makepkg tweaks upon install (issue #871)
         self.modify_makepkg()
 
+        # Enable colors in Nano editor
         self.nano_setup()
 
         logging.debug("Setting .bashrc to load .bashrc.aliases")
@@ -858,9 +865,13 @@ class PostInstallation():
         if self.settings.get("feature_lembrame"):
             logging.debug("Overwriting configs from Lembrame")
             self.events.add('info', _("Overwriting configs from Lembrame"))
-
             lembrame = Lembrame(self.settings)
             lembrame.overwrite_content()
+
+        # Fix #1116 (root folder permissions)
+        path = os.path.join(DEST_DIR, 'root')
+        cmd = ['chmod', '750', path]
+        call(cmd)
 
         # This must be done at the end of the installation when using zfs
         if self.method == "zfs":
