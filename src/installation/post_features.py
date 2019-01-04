@@ -44,15 +44,16 @@ class PostFeatures():
         services = []
         masked = []
 
-        if self.settings.get("feature_aur"):
+        if self.settings.get('feature_aur'):
             self.enable_aur_in_pamac()
 
-        if self.settings.get("feature_bluetooth"):
+        if self.settings.get('feature_bluetooth'):
             services.append('bluetooth')
 
-        if self.settings.get("feature_cups"):
+        if self.settings.get('feature_cups'):
             services.append('org.cups.cupsd')
             services.append('avahi-daemon')
+            self.enable_mdns()
 
         # openssh comes with two kinds of systemd service files:
         # sshd.service, which will keep the SSH daemon permanently active and
@@ -62,47 +63,47 @@ class PostFeatures():
         # daemon per connection. Using it implies that systemd listens on the SSH
         # socket and will only start the daemon process for an incoming connection.
         # It is the recommended way to run sshd in almost all cases.
-        if self.settings.get("feature_sshd"):
+        if self.settings.get('feature_sshd'):
             services.append('sshd.socket')
 
-        if self.settings.get("feature_firewall"):
+        if self.settings.get('feature_firewall'):
             logging.debug("Configuring firewall...")
             # Set firewall rules
-            firewall.run(["default", "deny"])
+            firewall.run(['default', 'deny'])
             toallow = misc.get_network()
             if toallow:
-                firewall.run(["allow", "from", toallow])
-            firewall.run(["allow", "Transmission"])
-            firewall.run(["allow", "SSH"])
-            firewall.run(["enable"])
+                firewall.run(['allow', 'from', toallow])
+            firewall.run(['allow', 'Transmission'])
+            firewall.run(['allow', 'SSH'])
+            firewall.run(['enable'])
             services.append('ufw')
 
         if self.settings.get('feature_lts'):
             self.set_kernel_lts()
 
-        if (self.settings.get("feature_lamp") and
-                not self.settings.get("feature_lemp")):
+        if (self.settings.get('feature_lamp') and
+                not self.settings.get('feature_lemp')):
             try:
                 from installation import lamp
                 logging.debug("Configuring LAMP...")
                 lamp.setup()
-                services.extend(["httpd", "mysqld"])
+                services.extend(['httpd', 'mysqld'])
             except ImportError as import_error:
                 logging.warning(
                     "Unable to import LAMP module: %s",
                     str(import_error))
-        elif self.settings.get("feature_lemp"):
+        elif self.settings.get('feature_lemp'):
             try:
                 from installation import lemp
                 logging.debug("Configuring LEMP...")
                 lemp.setup()
-                services.extend(["nginx", "mysqld", "php-fpm"])
+                services.extend(['nginx', 'mysqld', 'php-fpm'])
             except ImportError as import_error:
                 logging.warning(
                     "Unable to import LEMP module: %s",
                     str(import_error))
 
-        if self.settings.get("feature_energy"):
+        if self.settings.get('feature_energy'):
             # tlp
             services.extend(['tlp.service', 'tlp-sleep.service'])
             masked.extend(['systemd-rfkill.service', 'systemd-rfkill.socket'])
@@ -112,9 +113,32 @@ class PostFeatures():
         srv.mask_services(masked)
         srv.enable_services(services)
 
+    def enable_mdns(self):
+        """ Modify nsswitch.conf to use mdns for local wifi printers """
+        path = '/etc/nsswitch.conf'
+        lines = self.read_file_from_install(path)
+        if lines:
+            path = os.path.join(self.dest_dir, path[1:])
+            if os.path.exists(path):
+                search_line = "hosts: files mymachines myhostname resolve [!UNAVAIL = return] dns"
+                try:
+                    with open(path, 'w') as nsswitch:
+                        for line in lines:
+                            if search_line in line:
+                                line = "hosts: files mymachines myhostname "
+                                line += "mdns_minimal [NOTFOUND = return] "
+                                line += "resolve [!UNAVAIL = return] dns"
+                            nsswitch.write(line + '\n')
+                except OSError as err:
+                    logging.error("Couldn't modify %s file: %s", path, err)
+
+
     def read_file_from_install(self, path):
         """ Read file from new installation /install """
         lines = []
+        # remove leading / to join it to dest_dir path
+        if path[0] == '/':
+            path = path[1:]
         path = os.path.join(self.dest_dir, path)
         try:
             with open(path) as grub_cfg:
@@ -138,7 +162,7 @@ class PostFeatures():
     def set_kernel_lts_grub(self):
         """ Sets LTS kernel as default in Grub """
         # Get menu options
-        path = 'boot/grub.cfg'
+        path = '/boot/grub.cfg'
         lines = self.read_file_from_install(path)
 
         menu_entries = []
@@ -156,9 +180,9 @@ class PostFeatures():
                 break
 
         if new_default:
-            path = 'etc/default/grub'
+            path = '/etc/default/grub'
             lines = self.read_file_from_install(path)
-            path = os.path.join(self.dest_dir, path)
+            path = os.path.join(self.dest_dir, path[1:])
             with open(path, 'wt') as grub_file:
                 for line in lines:
                     if "GRUB_DEFAULT" in line:
