@@ -489,6 +489,10 @@ class PostInstallation():
             chroot_call(['groupadd', 'autologin'])
             default_groups += ',autologin'
 
+        if self.settings.get('feature_cups'):
+            # Add user to group sys so wifi printers work
+            default_groups += ',sys'
+
         cmd = [
             'useradd', '--create-home',
             '--shell', '/bin/bash',
