@@ -103,7 +103,7 @@ class InstallationAlongside(GtkBaseBox):
     """ Performs an automatic installation next to a previous installed OS """
 
     # Leave at least 6.5GB for Antergos when shrinking
-    MIN_ROOT_SIZE = 6500
+    MIN_ROOT_SIZE = 8000
 
     def __init__(self, params, prev_page="installation_ask", next_page="user_info"):
         super().__init__(self, params, "alongside", prev_page, next_page)
