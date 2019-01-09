@@ -62,7 +62,7 @@ class Check(GtkBaseBox):
 
     UPOWER_KEY = 'org.freedesktop.UPower'
     UPOWER_PATH = '/org/freedesktop/UPower'
-    MIN_ROOT_SIZE = 16000000000
+    MIN_ROOT_SIZE = 8000000000
 
     def __init__(self, params, prev_page="language", next_page="location"):
         """ Init class ui """
