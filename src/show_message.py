@@ -49,7 +49,8 @@ def fatal_error(parent, my_message):
 
     path = "/var/tmp/cnchi/.setup-running"
     if os.path.exists(path):
-        os.remove(path)
+        with misc.raised_privileges():
+            os.remove(path)
 
     # multiprocessing.active_children()
 
