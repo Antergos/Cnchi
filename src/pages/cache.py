@@ -73,7 +73,7 @@ class Cache(GtkBaseBox):
         label.set_markup(txt)
 
         label = self.gui.get_object('info_label')
-        txt = _("You can use an aditional device or partition to use as packages' cache. "
+        txt = _("You can use an additional device or partition to use as packages' cache. "
                  "In case you need to restart this installation\nyou won't be needing to "
                  "re-download all packages again.") + '\n\n'
         txt += _("- It <b>cannot</b> be the same device or partition where you "
