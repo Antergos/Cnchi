@@ -1237,7 +1237,7 @@ msgstr ""
 
 #: cnchi/src/pages/cache.py:76
 msgid ""
-"You can use an aditional device or partition to use as packages' cache. In "
+"You can use an additional device or partition to use as packages' cache. In "
 "case you need to restart this installation\n"
 "you won't be needing to re-download all packages again."
 msgstr ""

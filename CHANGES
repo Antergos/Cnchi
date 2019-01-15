@@ -1,3 +1,9 @@
+[2019-01-15 08:51:09 +0100]  Merge pull request #1123 from Strum355/typo-fix                        Gustau Castells {cf48499f}
+[2019-01-14 22:56:48 +0000]  Fixed typo of Aditional -> Additional                                  Noah Santschi-Cooney {5bdf72af}
+[2019-01-09 13:28:08 +0100]  Fix bug when deleting setup-running file (when a fatal error is iss..      karasu      {914aa3ec}
+[2019-01-09 10:45:43 +0100]  Fixes #1111                                                                karasu      {166f98c1}
+[2019-01-09 10:44:06 +0100]  Fixes #1111                                                                karasu      {18e9ca18}
+[2019-01-04 11:33:55 +0100]  Fix bug                                                                    karasu      {17e1e4f4}
 [2019-01-04 11:33:12 +0100]  Fixes #1118                                                                karasu      {82746481}
 [2019-01-04 11:23:52 +0100]  Fix #1118                                                                  karasu      {22719f8c}
 [2019-01-04 09:10:32 +0100]  Port fix #1116                                                             karasu      {c4591815}
