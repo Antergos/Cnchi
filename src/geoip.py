@@ -45,8 +45,6 @@ class GeoIP():
     REPO_CITY_DATABASE = '/usr/share/GeoIP/GeoLite2-City.mmdb'
     LOCAL_CITY_DATABASE = '/usr/share/cnchi/data/GeoLite2-City.mmdb'
 
-    SERVERS = ["moc.tsetnosj.pi", "pi/0003:kt.ateb-sogretna"]
-
     def __init__(self):
         self.record = None
         self._maybe_wait_for_network()
@@ -70,7 +68,7 @@ class GeoIP():
             db_path = GeoIP.LOCAL_CITY_DATABASE
 
         if os.path.exists(db_path):
-            myip = self._get_external_ip()
+            myip = self._get_external_ip_address()
             logging.debug("Your external IP address is: %s", myip)
             if myip:
                 self._load_database(db_path, myip)
@@ -81,21 +79,18 @@ class GeoIP():
         else:
             logging.error("Cannot find Cities GeoIP database")
 
-
     @staticmethod
-    def _get_external_ip():
-        """ Get external IP """
-        for srv in GeoIP.SERVERS:
-            srv = "http://" + srv[::-1]
-            try:
-                json_text = requests.get(srv).text
-                if not "503 Over Quota" in json_text:
-                    data = json.loads(json_text)
-                    return data['ip']
-            except (requests.ConnectionError, json.decoder.JSONDecodeError) as err:
-                logging.warning(
-                    "Error getting external IP from %s: %s", srv, err)
-        return None
+    def _get_external_ip_address():
+        """ Get external IP Address """
+        server = "=yek_ssecca?kcehc/moc.kcatspi.ipa"
+        key = "a75b99fb88ab4808060b8241931a012c"
+        try:
+            server = "http://" + server[::-1] + key[::-1]
+            json_text = requests.get(server).text
+            data = json.loads(json_text)
+            return data['ip']
+        except (KeyError, requests.ConnectionError, json.decoder.JSONDecodeError) as err:
+            logging.warning("Error getting external IP from %s: %s", server, err)
 
     def _load_database(self, db_path, myip):
         """ Loads cities database """
