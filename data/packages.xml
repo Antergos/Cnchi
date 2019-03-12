@@ -86,7 +86,6 @@
                 <pkgname>xorg-bdftopcf</pkgname>
                 <pkgname>xorg-iceauth</pkgname>
                 <pkgname>xorg-luit</pkgname>
-                <pkgname>xorg-mkfontdir</pkgname>
                 <pkgname>xorg-mkfontscale</pkgname>
                 <pkgname>xorg-sessreg</pkgname>
                 <pkgname>xorg-setxkbmap</pkgname>
