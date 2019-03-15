@@ -167,3 +167,6 @@ class Settings():
             settings[key] = value
 
         self._update_settings(settings)
+
+
+settings = Settings()

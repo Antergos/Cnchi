@@ -234,6 +234,10 @@ class Language(GtkBaseBox):
     def on_setup_proxy(self, _widget, _data=None):
         """ Ask for proxy settings """
 
+        def export_proxies(proxies):
+            for prot in proxies:
+                os.environ[prot + '_proxy'] = proxies[prot]
+
         dlg = ProxyDialog(
             self.get_main_window(),
             self.settings.get('proxies'),
@@ -249,6 +253,7 @@ class Language(GtkBaseBox):
             proxies = dlg.get_proxies()
             if proxies:
                 self.settings.set('proxies', proxies)
+                export_proxies(proxies)
                 logging.debug("Will use these proxy settings: %s", proxies)
 
         dlg.destroy()
