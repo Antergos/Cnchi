@@ -38,6 +38,7 @@ import syslog
 import urllib
 import ssl
 import dbus
+import config
 
 
 NM = 'org.freedesktop.NetworkManager'
@@ -416,6 +417,25 @@ def get_nm_state():
 
 def has_connection():
     """ Checks if we have an Internet connection """
+
+    proxies = config.settings.get('proxies')
+
+    def check_http_connection(url):
+        if proxies and 'http' in proxies:
+            proxy_support = urllib.request.ProxyHandler(proxies)
+            opener = urllib.request.build_opener(proxy_support)
+            urllib.request.install_opener(opener)
+        urllib.request.urlopen(url, timeout=5)
+
+    def check_https_connection(ip_addr):
+        if proxies and 'https' in proxies:
+            conn = http.client.HTTPSConnection(proxies['https'], timeout=5)
+            conn.set_tunnel(ip_addr)
+        else:
+            conn = http.client.HTTPSConnection(ip_addr, timeout=5)
+        conn.request("GET", "/")
+        conn.close()
+
     # The ips are reversed (to avoid spam)
     urls = [
         ('http', '20.13.206.130'),
@@ -427,31 +447,28 @@ def has_connection():
             ip_addr = '.'.join(ip_addr.split('.')[::-1])
             url = "{0}://{1}".format(prot, ip_addr)
             if prot == 'http':
-                urllib.request.urlopen(url, timeout=5)
+                check_http_connection(url)
             elif prot == 'https':
-                conn = http.client.HTTPSConnection(ip_addr, timeout=5)
-                conn.request("GET", "/")
-                conn.close()
-            # Connection established, we have a working Internet connection
-            return True
+                check_https_connection(ip_addr)
         except ssl.SSLError as err:
             # Cannot establish a SSL connection but site exists, so it's fine.
-            conn.close()
-            return True
+            pass
         except (KeyError, OSError, timeout, urllib.error.URLError, http.client.InvalidURL) as err:
             # Cannot connect, either site is down or there is no Internet connection
             logging.error("%s: %s", url, err)
+            return False
 
-    # If we reach this point we have not been able to connect to any url.
-    # We can try to ask the NetworkManager service
-    # (We have to take into account that inside a VM this would always
-    #  return a false positive)
-    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL and not inside_hypervisor():
-        return True
+    return True
+    # # If we reach this point we have not been able to connect to any url.
+    # # We can try to ask the NetworkManager service
+    # # (We have to take into account that inside a VM this would always
+    # #  return a false positive)
+    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL and not inside_hypervisor():
+    #     return True
 
-    # Cannot connect to any url and either we're inside a VM or Networkmanager
-    # has told us there is no connection.
-    return False
+    # # Cannot connect to any url and either we're inside a VM or Networkmanager
+    # # has told us there is no connection.
+    # return False
 
 
 def inside_hypervisor():
