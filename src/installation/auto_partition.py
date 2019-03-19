@@ -689,9 +689,10 @@ class AutoPartition():
         if vgnames:
             vgnames = vgnames.split("\n")
             for vgname in vgnames:
-                (vgname, vgdevice) = vgname.split()
-                if vgname and device in vgdevice:
-                    call(["/usr/bin/vgremove", "-f", vgname], msg=err_msg)
+                if len(vgname):
+                    (vgname, vgdevice) = vgname.split()
+                    if vgname and device in vgdevice:
+                        call(["/usr/bin/vgremove", "-f", vgname], msg=err_msg)
 
         cmd = ["/usr/bin/pvs", "-o", "pv_name", "--noheadings"]
         pvolumes = call(cmd, msg=err_msg)
