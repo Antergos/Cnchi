@@ -35,8 +35,9 @@ import subprocess
 import tarfile
 import tempfile
 import dbus
-
+import multiprocessing
 import requests
+import time
 
 from gi.repository import GLib
 
@@ -68,8 +69,15 @@ class Check(GtkBaseBox):
         """ Init class ui """
         super().__init__(self, params, "check", prev_page, next_page)
 
+        self.results = multiprocessing.Manager().dict()
+        self.results['internet'] = False
+        self.results['power'] = False
+        self.results['space'] = False
+        self.results['packing'] = False
+        self.results['updated'] = False
+        self.results['check_all'] = False
+
         self.remove_timer = False
-        self.remote_version = None
         self.prepare_power_source = None
         self.prepare_network_connection = None
         self.prepare_enough_space = None
@@ -80,10 +88,6 @@ class Check(GtkBaseBox):
 
         self.label_space = self.gui.get_object("label_space")
 
-        if 'checks_are_optional' in params:
-            self.checks_are_optional = params['checks_are_optional']
-        else:
-            self.checks_are_optional = False
 
     def translate_ui(self):
         """ Translates all ui elements """
@@ -129,6 +133,66 @@ class Check(GtkBaseBox):
         self.prepare_best_results.set_line_wrap(True)
         self.prepare_best_results.set_max_width_chars(80)
 
+    def on_timer(self):
+        """ If all requirements are meet, enable forward button """
+        self.prepare_network_connection.set_state(self.results['internet'])
+        self.prepare_power_source.set_state(self.results['power'])
+        self.prepare_enough_space.set_state(self.results['space'])
+        self.packaging_issues.set_state(self.results['packing'])
+        self.updated.set_state(self.results['updated'])
+
+        if not self.remove_timer:
+            self.forward_button.set_sensitive(self.results['check_all'])
+        return not self.remove_timer
+
+    def store_values(self):
+        """ Continue """
+        # Remove timer
+        self.remove_timer = True
+
+        logging.info("We have Internet connection.")
+        logging.info("We're connected to a power source.")
+        logging.info("We have enough disk space.")
+
+        # Enable forward button
+        self.forward_button.set_sensitive(True)
+        return True
+
+    def go_back(self):
+        self.remove_timer = True
+        self.proc.terminate()
+
+    def prepare(self, direction):
+        """ Load screen """
+        self.translate_ui()
+        self.show_all()
+
+        self.forward_button.set_sensitive(self.results['check_all'])
+
+        # Set timer
+        self.on_timer()
+        self.timeout_id = GLib.timeout_add(1000, self.on_timer)
+
+        self.proc = CheckProcess(self.results, self.settings)
+        self.proc.daemon = True
+        self.proc.name = "check_proc"
+        self.proc.start()
+
+
+class CheckProcess(multiprocessing.Process):
+    """ Thread that asks our server for user's location """
+
+    def __init__(self, results, settings):
+        super(CheckProcess, self).__init__()
+        self.results = results
+        self.settings = settings
+        self.remote_version = None
+
+    def run(self):
+        while True:
+            self.check_all()
+            time.sleep(5)
+
     def check_all(self):
         """ Check that all requirements are meet """
         temp = self.settings.get('temp')
@@ -140,33 +204,27 @@ class Check(GtkBaseBox):
             show.fatal_error(self.main_window, msg)
             return False
 
-        has_internet = misc.has_connection()
-        self.prepare_network_connection.set_state(has_internet)
-
         on_power = not self.on_battery()
-        self.prepare_power_source.set_state(on_power)
+        self.results['power'] = on_power
 
         space = self.has_enough_space()
-        self.prepare_enough_space.set_state(space)
+        self.results['space'] = space
 
         path = os.path.join(temp, ".cnchi_partitioning_completed")
         packaging_issues = os.path.exists(path)
-        self.packaging_issues.set_state(not packaging_issues)
+        self.results['packing'] = not packaging_issues
+
+        has_internet = misc.has_connection()
+        self.results['internet'] = has_internet
 
         if has_internet:
-            updated = self.is_updated()
+            self.results['updated']  = self.is_updated()
         else:
-            updated = False
-
-        self.updated.set_state(updated)
-
-        if self.checks_are_optional:
-            return True
+            self.results['updated']  = False
 
         if has_internet and space and not packaging_issues:
-            return True
+            self.results['check_all'] = True
 
-        return False
 
     def on_battery(self):
         """ Checks if we are on battery power """
@@ -281,32 +339,3 @@ class Check(GtkBaseBox):
 
         logging.error("Cannot get Cnchi's version from Antergos repository!")
         return None
-
-    def on_timer(self):
-        """ If all requirements are meet, enable forward button """
-        if not self.remove_timer:
-            self.forward_button.set_sensitive(self.check_all())
-        return not self.remove_timer
-
-    def store_values(self):
-        """ Continue """
-        # Remove timer
-        self.remove_timer = True
-
-        logging.info("We have Internet connection.")
-        logging.info("We're connected to a power source.")
-        logging.info("We have enough disk space.")
-
-        # Enable forward button
-        self.forward_button.set_sensitive(True)
-        return True
-
-    def prepare(self, direction):
-        """ Load screen """
-        self.translate_ui()
-        self.show_all()
-
-        self.forward_button.set_sensitive(self.check_all())
-
-        # Set timer
-        self.timeout_id = GLib.timeout_add(5000, self.on_timer)
