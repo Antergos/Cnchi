@@ -175,8 +175,8 @@ class ProxyDialog(Gtk.Dialog):
             port = port_widget.get_text()
 
             if host and port:
-                if not host.startswith(protocol):
-                    host = "http://" + host
+                #if not host.startswith(protocol):
+                #    host = "http://" + host
                 proxies[protocol] = host + ":" + port
 
         switch = self.gui.get_object("use_same_proxy_switch")

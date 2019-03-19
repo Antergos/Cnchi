@@ -96,7 +96,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
-        self.settings = config.Settings()
+        self.settings = config.settings
         self.gui_dir = self.settings.get('ui')
 
         if not os.path.exists(self.gui_dir):
