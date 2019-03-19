@@ -96,7 +96,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         logging.info("Cnchi installer version %s", info.CNCHI_VERSION)
 
-        self.settings = config.settings
+        self.settings = config.Settings()
         self.gui_dir = self.settings.get('ui')
 
         if not os.path.exists(self.gui_dir):
@@ -313,6 +313,8 @@ class MainWindow(Gtk.ApplicationWindow):
             # Hide progress bar
             self.progressbar.hide()
 
+        self.pages["language"] = pages.language.Language(self.params)
+        self.pages["check"] = pages.check.Check(self.params)
         self.set_focus(None)
 
         misc.gtk_refresh()
@@ -326,10 +328,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def load_pages(self):
         """ Preload all installer pages """
-        if not os.path.exists('/home/antergos/.config/openbox'):
-            self.pages["language"] = pages.language.Language(self.params)
-
-        self.pages["check"] = pages.check.Check(self.params)
         self.pages["location"] = pages.location.Location(self.params)
 
         self.pages["timezone"] = pages.timezone.Timezone(self.params)
@@ -460,12 +458,12 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_forward_button_clicked(self, _widget, _data=None):
         """ Show next screen """
         next_page = self.current_page.get_next_page()
+        if next_page == 'location' and next_page not in self.pages.keys():
+            self.load_pages()
 
         if next_page is not None:
             # self.logo.hide()
             if next_page not in self.pages.keys():
-                # Load all pages
-                self.load_pages()
                 self.progressbar_step = 1.0 / (len(self.pages) - 2)
 
             stored = self.current_page.store_values()
@@ -492,6 +490,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_backwards_button_clicked(self, _widget, _data=None):
         """ Show previous screen """
+        self.current_page.go_back()
         prev_page = self.current_page.get_prev_page()
 
         if prev_page is not None:

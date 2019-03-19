@@ -88,6 +88,10 @@ class GtkBaseBox(Gtk.Box):
         """ This must be implemented by childen """
         raise NotImplementedError
 
+    def go_back(self):
+        """ This must be implemented by childen """
+        pass
+
     def get_name(self):
         """ Return screen name """
         return self.name

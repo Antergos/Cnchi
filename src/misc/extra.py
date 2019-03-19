@@ -415,24 +415,31 @@ def get_nm_state():
     return state
 
 
+def get_proxies():
+    proxies = {}
+    try:
+        proxies['http'] = os.environ['http_proxy']
+        proxies['https'] = os.environ['https_proxy']
+    except:
+        pass
+    return proxies
+
 def has_connection():
     """ Checks if we have an Internet connection """
-
-    proxies = config.settings.get('proxies')
+    proxies = get_proxies()
 
     def check_http_connection(url):
-        if proxies and 'http' in proxies:
+        if 'http' in proxies:
             proxy_support = urllib.request.ProxyHandler(proxies)
             opener = urllib.request.build_opener(proxy_support)
             urllib.request.install_opener(opener)
         urllib.request.urlopen(url, timeout=5)
 
     def check_https_connection(ip_addr):
-        if proxies and 'https' in proxies:
+        conn = http.client.HTTPSConnection(ip_addr, timeout=5)
+        if 'https' in proxies:
             conn = http.client.HTTPSConnection(proxies['https'], timeout=5)
             conn.set_tunnel(ip_addr)
-        else:
-            conn = http.client.HTTPSConnection(ip_addr, timeout=5)
         conn.request("GET", "/")
         conn.close()
 
@@ -452,23 +459,21 @@ def has_connection():
                 check_https_connection(ip_addr)
         except ssl.SSLError as err:
             # Cannot establish a SSL connection but site exists, so it's fine.
-            pass
+            return True
         except (KeyError, OSError, timeout, urllib.error.URLError, http.client.InvalidURL) as err:
             # Cannot connect, either site is down or there is no Internet connection
             logging.error("%s: %s", url, err)
-            return False
 
-    return True
-    # # If we reach this point we have not been able to connect to any url.
-    # # We can try to ask the NetworkManager service
-    # # (We have to take into account that inside a VM this would always
-    # #  return a false positive)
-    # if get_nm_state() == NM_STATE_CONNECTED_GLOBAL and not inside_hypervisor():
-    #     return True
+    # If we reach this point we have not been able to connect to any url.
+    # We can try to ask the NetworkManager service
+    # (We have to take into account that inside a VM this would always
+    #  return a false positive)
+    if get_nm_state() == NM_STATE_CONNECTED_GLOBAL and not inside_hypervisor():
+        return True
 
-    # # Cannot connect to any url and either we're inside a VM or Networkmanager
-    # # has told us there is no connection.
-    # return False
+    # Cannot connect to any url and either we're inside a VM or Networkmanager
+    # has told us there is no connection.
+    return False
 
 
 def inside_hypervisor():
