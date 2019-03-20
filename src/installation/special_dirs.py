@@ -56,7 +56,8 @@ def _get_mounts():
         ("shm", "/dev/shm", "tmpfs", "mode=1777,nosuid,nodev"),
         ("run", "/run", "tmpfs", "nosuid,nodev,mode=0755"),
         ("tmp", "/tmp", "tmpfs", "mode=1777,strictatime,nodev,nosuid"),
-        ("/run/dbus", "/run/dbus", "tmpfs", "bind")]
+        ("/run/dbus", "/run/dbus", "tmpfs", "bind"),
+        ("/run/lvm", "/run/lvm", "tmpfs", "bind")]
 
     efi_dir = "/sys/firmware/efi/efivars"
     if os.path.exists(efi_dir):
