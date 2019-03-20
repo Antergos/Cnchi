@@ -149,6 +149,7 @@ class Check(GtkBaseBox):
         """ Continue """
         # Remove timer
         self.remove_timer = True
+        self.proc.terminate()
 
         logging.info("We have Internet connection.")
         logging.info("We're connected to a power source.")
