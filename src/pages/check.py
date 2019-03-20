@@ -38,7 +38,7 @@ import dbus
 import multiprocessing
 import requests
 import time
-
+from packaging import version
 from gi.repository import GLib
 
 import info
@@ -291,24 +291,7 @@ class CheckProcess(multiprocessing.Process):
     def compare_versions(remote, local):
         """ Compares Cnchi versions (local vs remote) and returns true
             if local is at least as new as remote """
-
-        remote = remote.split('.')
-        local = local.split('.')
-        for i, remote_val in enumerate(remote):
-            remote[i] = int(remote_val)
-        for i, local_val in enumerate(local):
-            local[i] = int(local_val)
-        if remote[0] < local[0]:
-            return True
-        if remote[0] > local[0]:
-            return False
-        if remote[1] < local[1]:
-            return True
-        if remote[1] > local[1]:
-            return False
-        if remote[2] > local[2]:
-            return False
-        return True
+        return version.parse(remote) < version.parse(local)
 
     @staticmethod
     def get_cnchi_version_in_repo():
