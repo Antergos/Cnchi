@@ -162,12 +162,24 @@ class Check(GtkBaseBox):
         self.remove_timer = True
         self.proc.terminate()
 
+    def check_partitioning_completion(self):
+        temp = self.settings.get('temp')
+        path = os.path.join(temp, ".cnchi_partitioning_completed")
+        if os.path.exists(path):
+            msg = "You must reboot before retrying again."
+            logging.error(msg)
+            msg = _("You must reboot before retrying again.")
+            show.fatal_error(self.main_window, msg)
+            return False
+
     def prepare(self, direction):
         """ Load screen """
         self.translate_ui()
         self.show_all()
 
         self.forward_button.set_sensitive(self.results['check_all'])
+
+        self.check_partitioning_completion()
 
         # Set timer
         self.on_timer()
@@ -195,21 +207,13 @@ class CheckProcess(multiprocessing.Process):
 
     def check_all(self):
         """ Check that all requirements are meet """
-        temp = self.settings.get('temp')
-        path = os.path.join(temp, ".cnchi_partitioning_completed")
-        if os.path.exists(path):
-            msg = "You must reboot before retrying again."
-            logging.error(msg)
-            msg = _("You must reboot before retrying again.")
-            show.fatal_error(self.main_window, msg)
-            return False
-
         on_power = not self.on_battery()
         self.results['power'] = on_power
 
         space = self.has_enough_space()
         self.results['space'] = space
 
+        temp = self.settings.get('temp')
         path = os.path.join(temp, ".cnchi_partitioning_completed")
         packaging_issues = os.path.exists(path)
         self.results['packing'] = not packaging_issues

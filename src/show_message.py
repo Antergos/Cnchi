@@ -36,6 +36,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+from misc import extra as misc
+
 # When testing, no _() is available
 try:
     _("")
