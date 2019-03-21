@@ -291,7 +291,7 @@ class CheckProcess(multiprocessing.Process):
     def compare_versions(remote, local):
         """ Compares Cnchi versions (local vs remote) and returns true
             if local is at least as new as remote """
-        return version.parse(remote) < version.parse(local)
+        return version.parse(remote) <= version.parse(local)
 
     @staticmethod
     def get_cnchi_version_in_repo():
