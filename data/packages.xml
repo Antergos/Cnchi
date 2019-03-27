@@ -75,7 +75,6 @@
                 <pkgname>pulseaudio</pkgname>
                 <pkgname>pulseaudio-alsa</pkgname>
                 <pkgname>pulseaudio-bluetooth</pkgname>
-                <pkgname>qt5-styleplugins</pkgname>
                 <pkgname>ttf-bitstream-vera</pkgname>
                 <pkgname>ttf-dejavu</pkgname>
                 <pkgname>ttf-liberation</pkgname>
