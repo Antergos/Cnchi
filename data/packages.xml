@@ -250,7 +250,7 @@
                 <pkgname>catfish</pkgname>
                 <pkgname>evince</pkgname>
                 <pkgname>file-roller</pkgname>
-                <pkgname>gamin</pkgname>
+                <!-- <pkgname>gamin</pkgname> -->
                 <pkgname>gnome-calculator</pkgname>
                 <pkgname>gnome-disk-utility</pkgname>
                 <pkgname>gnome-keyring</pkgname>
