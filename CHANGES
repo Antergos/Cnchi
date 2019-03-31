@@ -1,3 +1,21 @@
+[2019-03-31 08:29:54 +0200]  Plasma session is started as startkde again                                karasu      {c6f5874b}
+[2019-03-27 11:09:29 -0500]  Update packages.xml                                                    Dustin Falgout  {d7b5d95c}
+[2019-03-21 18:42:38 +0100]  Merge pull request #1136 from gbronisz/fixes                           Gustau Castells {bdb50f60}
+[2019-03-21 16:26:43 +0100]  Update src/pages/check.py                                              Gustau Castells {460c7f95}
+[2019-03-20 20:12:26 +0000]  fix: old implementation returns incorrect value sometimes                 gbronisz     {47032db7}
+[2019-03-20 13:43:40 +0000]  cleanup: disable check logs in the next steps                             gbronisz     {4e740850}
+[2019-03-20 13:41:52 +0000]  fix: installation with disc encryption                                    gbronisz     {a9b92f18}
+[2019-03-20 07:44:11 +0100]  Merge pull request #1135 from gbronisz/fixes                           Gustau Castells {e9a44fd9}
+[2019-03-19 19:59:03 +0000]  fix: enable fatal error message                                           gbronisz     {6896d8d6}
+[2019-03-19 20:50:56 +0100]  Merge pull request #1134 from gbronisz/fixes                           Gustau Castells {203cbc14}
+[2019-03-19 14:43:26 +0000]  check conditions are validated in separate process to not block gui       gbronisz     {4302dab5}
+[2019-03-19 14:42:41 +0000]  geoip, mirrors connection processes launched if connection is estab..     gbronisz     {79488f03}
+[2019-03-19 08:37:10 +0000]  Merge remote-tracking branch 'origin/installation_with_proxy' into ..     gbronisz     {37dca3b7}
+[2019-03-17 13:19:25 +0100]  Merge pull request #1131 from gbronisz/installation_with_proxy         Gustau Castells {c0aa3d36}
+[2019-03-16 18:07:05 +0000]  fix: skip splitting for empty string                                      gbronisz     {8aad2f1a}
+[2019-03-15 14:24:24 +0100]  fix: installation with proxy                                           Grzegorz Broniszewski {0156452c}
+[2019-03-12 20:18:12 +0100]  Remove xorg-mkfontdir from packages.xml (#1130)                           NetDwarf     {0b74a6d1}
+[2019-01-15 08:54:35 +0100]  Port translations (and fixes 'additional' typo)                            karasu      {648fc273}
 [2019-01-15 08:51:09 +0100]  Merge pull request #1123 from Strum355/typo-fix                        Gustau Castells {cf48499f}
 [2019-01-14 22:56:48 +0000]  Fixed typo of Aditional -> Additional                                  Noah Santschi-Cooney {5bdf72af}
 [2019-01-09 13:28:08 +0100]  Fix bug when deleting setup-running file (when a fatal error is iss..      karasu      {914aa3ec}

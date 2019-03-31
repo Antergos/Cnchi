@@ -65,7 +65,7 @@ if [[ "${@}" =~ gnome|xfce|openbox && "$(which light-locker)" ]]; then
     sleep 2
 fi
 
-if ! [[ "${@}" =~ plasma|lxqt ]]; then
+if ! [[ "${@}" =~ plasma|lxqt|startkde ]]; then
     # Fix ugly styles for Qt applications when running under GTK-based desktops and Qt 5.7+
     export QT_QPA_PLATFORMTHEME='qt5ct'
     unset QT_STYLE_OVERRIDE
