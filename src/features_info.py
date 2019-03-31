@@ -123,10 +123,11 @@ TOOLTIPS = {
     'chromium': _("Chromium is an open-source browser project that aims to build a\n"
                   "safer, faster, and more stable way for all users to experience the web.\n"
                   "(this is the default)"),
-    'energy': _("Linux thermal daemon (thermald) monitors and controls temperature\n"
-                "in laptops, tablet PC with the latest Intel sandy bridge. Once the\n"
-                "system temperature reaches a certain threshold, the Linux daemon\n"
-                "activates various cooling methods to try to cool the system"),
+    'energy': _("TLP brings you the benefits of advanced power management for Linux\n"
+                "without the need to understand every technical detail. TLP comes with\n"
+                "a default configuration already optimized for battery life, so you may\n"
+                "just install and forget it. Nevertheless TLP is highly customizable to\n"
+                "fulfill your specific requirements."),
     'firefox': _("Mozilla Firefox (known simply as Firefox) is a free and\n"
                  "open-source web browser developed for Windows, OS X, and Linux,\n"
                  "with a mobile version for Android, by the Mozilla Foundation and\n"
