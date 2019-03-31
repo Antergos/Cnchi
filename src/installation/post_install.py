@@ -232,19 +232,6 @@ class PostInstallation():
         else:
             logging.error("Can't find locale.gen file")
 
-    @staticmethod
-    def fix_thermald_service():
-        """ Adds --ignore-cpuid-check to thermald service file """
-        path = os.path.join(DEST_DIR, "usr/lib/systemd/system/thermald.service")
-        if os.path.exists(path):
-            with open(path, 'r') as fin:
-                lines = fin.readlines()
-            for index, line in enumerate(lines):
-                if line.startswith("ExecStart") and "--ignore-cpuid-check" not in line:
-                    lines[index] += " --ignore-cpuid-check"
-            with open(path, 'w') as fout:
-                fout.writelines(lines)
-
     def setup_display_manager(self):
         """ Configures LightDM desktop manager, including autologin. """
         txt = _("Configuring LightDM desktop manager...")
@@ -860,9 +847,6 @@ class PostInstallation():
                     bashrc.write('if [ -e ~/.bashrc.aliases ] ; then\n')
                     bashrc.write('   source ~/.bashrc.aliases\n')
                     bashrc.write('fi\n')
-
-        # Fixes thermald service file
-        self.fix_thermald_service()
 
         # Overwrite settings with Lembrame if enabled
         # TODO: Rethink this function because we need almost everything but some things for Lembrame

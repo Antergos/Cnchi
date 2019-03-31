@@ -1,3 +1,5 @@
+[2019-03-31 08:58:25 +0200]  Remove thermald                                                            karasu      {877af6e5}
+[2019-03-31 08:30:56 +0200]  plasma session is started as startkde again                                karasu      {d19ab2c1}
 [2019-03-31 08:29:54 +0200]  Plasma session is started as startkde again                                karasu      {c6f5874b}
 [2019-03-27 11:09:29 -0500]  Update packages.xml                                                    Dustin Falgout  {d7b5d95c}
 [2019-03-21 18:42:38 +0100]  Merge pull request #1136 from gbronisz/fixes                           Gustau Castells {bdb50f60}

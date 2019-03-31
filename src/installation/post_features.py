@@ -107,8 +107,6 @@ class PostFeatures():
             # tlp
             services.extend(['tlp.service', 'tlp-sleep.service'])
             masked.extend(['systemd-rfkill.service', 'systemd-rfkill.socket'])
-            # thermald
-            services.append('thermald')
 
         srv.mask_services(masked)
         srv.enable_services(services)
