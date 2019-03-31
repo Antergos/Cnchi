@@ -488,7 +488,7 @@
                 <pkgname>deepin-desktop-schemas</pkgname>
                 <pkgname>deepin-dock</pkgname>
                 <pkgname>deepin-file-manager</pkgname>
-                <pkgname>deepin-grub2-themes</pkgname>
+                <!-- <pkgname>deepin-grub2-themes</pkgname> -->
                 <pkgname>deepin-gtk-theme</pkgname>
                 <pkgname>deepin-image-viewer</pkgname>
                 <pkgname>deepin-launcher</pkgname>
