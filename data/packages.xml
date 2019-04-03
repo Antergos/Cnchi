@@ -42,7 +42,7 @@
                 <pkgname>wget</pkgname>
                 <pkgname>whois</pkgname>
                 <pkgname>wireless_tools</pkgname>
-                <pkgname>wpa_actiond</pkgname>
+                <!--<pkgname>wpa_actiond</pkgname>-->
             </packages>
         </edition>
 
