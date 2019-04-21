@@ -666,7 +666,7 @@
             <pkgname>alsa-utils</pkgname>
             <pkgname>bluez</pkgname>
             <pkgname>bluez-libs</pkgname>
-            <pkgname>brltty-minimal</pkgname>
+            <pkgname>brltty</pkgname>
             <pkgname>clonezilla</pkgname>
             <pkgname>darkhttpd</pkgname>
             <pkgname>ddrescue</pkgname>
